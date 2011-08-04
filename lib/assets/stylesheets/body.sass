@@ -1,0 +1,36 @@
+@import base
+
+$grid_width: 800px
+$margin: 10px
+
+body
+  :background                 $background_color
+  :font-family                "Helvetica", "Arial", sans-serif
+  :font-size                  62.5%
+  
+.grid_container
+  .grid-header
+    :height                   59px
+    :background               url('/assets/ui/top_bar_bg.png')
+    h2
+      :margin-top             $margin * 2
+      :padding-left           $margin
+      :font-size              16px
+      :font-weight            bold
+      :color                  #555
+      +text-shadow(#efefef, 1px, 1px, 0)
+      
+  .pager
+    :height                   27px
+
+#content
+  :position                   absolute
+  :top                        0px
+  :left                       200px
+  :bottom                     0
+  :right                      0
+  :text-align                 center
+  :background                 $background_color url('/assets/ui/content_background.png') repeat-x top left
+  
+#screen_content
+  :text-align                 left

@@ -1,0 +1,22 @@
+#navigation
+  %h1= WulinMaster.app_title
+
+  #activity    
+    %h2 Activity
+    #indicators
+  #menu
+    %ul
+      - menu.each do |menu_entry|
+        - if menu_entry.is_submenu?
+          %li.submenu
+            %a{:href => "#"}
+              %span.indicator
+              = menu_entry.title
+              
+            %ul
+              - menu_entry.each do |submenu_entry|
+                %li.item= link_to submenu_entry.title, submenu_entry.path
+        - else
+          %li.item= link_to menu_entry.title, menu_entry.path
+          
+  

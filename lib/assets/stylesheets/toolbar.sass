@@ -1,0 +1,43 @@
+@import base
+
+$toolbar_button_width:  56px
+$toolbar_button_height:  48px
+
+#toolbar
+  :float              right
+  :padding-right      5px
+  :padding-top        5px
+  .toolbar_item
+    :float            right
+    :margin-left      5px
+    :text-align       center
+    a
+      :position           relative    
+      :display            block
+      :text-decoration    none
+      :width              $toolbar_button_width
+      :height             $toolbar_button_height
+      :text-align         center
+      :color              black
+      :font-size          1.2em
+      +text-shadow(white, 0px, 1px, 0)
+      span
+        :display          block
+        :float            none
+        :position         absolute
+        :bottom           0px
+        :left             0px
+        :right            0px
+        :height           12px
+        
+        
+.toolbar_icon_search
+  :background             url('/assets/ui/search_icon2.png') no-repeat top center
+.toolbar_icon_search2
+  :background             url('/assets/ui/search_icon.png') no-repeat top center
+.toolbar_icon_refresh
+  :background             url('/assets/ui/refresh_icon.png') no-repeat top center
+.toolbar_icon_filter
+  :background             url('/assets/ui/filter_icon.png') no-repeat top center
+.toolbar_icon_excel
+  :background             url('/assets/ui/excel_icon.png') no-repeat top center

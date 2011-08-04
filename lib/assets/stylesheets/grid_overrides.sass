@@ -1,0 +1,102 @@
+@import base
+
+$column_header_height:        23px
+$column_header_padding:       4px
+$column_header_border_color:  #dce0e2
+
+$odd_row_background:          #f5f9fc
+$selected_row_background:     #5f83b9
+
+$pager_background:             #eff3f8
+
+/* Grid Column Headers */
+
+.slick-header-column.ui-state-default
+  :height                 $column_header_height - ($column_header_padding * 2)
+  :line-height            $column_header_height - ($column_header_padding * 2)
+  :padding                $column_header_padding
+  :background             url('/assets/ui/column_header_background.png') repeat-x
+  :border                 none
+  :border-left            1px solid $column_header_border_color 
+  :text-align             left
+  :position               relative
+  
+.slick-header-column.ui-state-default.ui-state-hover
+  :background             url('/assets/ui/column_header_background_hover.png') repeat-x
+
+.ui-state-default.slick-header-column.slick-header-column-sorted
+  :background             url('/assets/ui/column_header_background_selected.png') repeat-x
+  :font-style             normal
+
+.slick-sort-indicator-desc,.slick-sort-indicator-asc
+  :display                block
+  :position               absolute
+  :right                  4px
+  :top                    7px
+  :width                  9px
+  :height                 8px
+  :background             url('/assets/ui/sort_indicator_desc.png') no-repeat
+
+.slick-sort-indicator.slick-sort-indicator-asc
+  :background             url('/assets/ui/sort_indicator_asc.png') no-repeat
+
+
+/* Grid Rows Headers */
+
+//.ui-widget-content.slick-row.even,.ui-widget-content.slick-row.odd
+
+.ui-widget-content.slick-row.odd
+  :background            $odd_row_background
+
+.slick-cell
+  :font-size              12px
+  :line-height            20px
+  .editor-text
+    background: none repeat scroll 0 0 transparent
+    height:   100%
+    width:    100%
+    margin:   0
+    padding:  0
+    border:   0
+    outline:  0 none
+
+.ui-widget-content.slick-row.ui-state-active.selected
+  :background             $selected_row_background
+
+  
+.grid-canvas
+  :background             white
+  .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+    :color                white
+    
+/* Grid Secondary row, filters */
+
+.slick-header-columns-secondary
+  :height                 21px
+  input
+    :border-top           none
+    :border-bottom        1px solid $column_header_border_color
+    :border-right         none
+    :border-left          1px solid $column_header_border_color
+    :height               20px
+    :padding-left         2px
+    :padding-right        0
+    :margin               0
+  input.lastColumn
+    :border-right         1px solid $column_header_border_color
+    
+/* Page styling */
+.pager, .slick-pager
+  :background             $pager_background
+  :color                  $default_text_color
+  :font-weight            normal
+  :font-size              12px
+  +text-shadow(white, 1px, 1px, 0)
+  
+/* datapicker icon */
+.ui-datepicker-trigger
+  margin-top: 2px
+  padding: 0
+  vertical-align: top
+  
+

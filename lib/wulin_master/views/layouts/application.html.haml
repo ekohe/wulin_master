@@ -1,0 +1,10 @@
+!!!
+%html
+  %head
+    %title Terra Nova
+    = stylesheet_link_tag    *WulinMaster.stylesheets
+    = javascript_include_tag *WulinMaster.javascripts
+
+    = csrf_meta_tags
+  %body
+    = yield

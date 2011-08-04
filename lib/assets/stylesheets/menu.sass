@@ -1,0 +1,119 @@
+@import base
+
+$menu_width:  199px
+
+#navigation
+  :position                   absolute
+  :top                        0px
+  :left                       0
+  :bottom                     0
+  :width                      $menu_width
+  :background-color           $menu_background_color
+  :padding-top                $margin
+  //:padding-left               8px
+  :font-size                  1.2em
+  :border-right               1px solid #a5a5a5
+  :line-height                1.7em
+
+  h1
+    :font-size                1.3em
+    :text-transform           uppercase
+    :font-weight              bold    
+    :margin-bottom            $margin*2
+    :margin-left              $margin
+    :color                    $app_title_color
+    +text-shadow(#fff, 1px, 1px, 0)
+
+  h2
+    :font-size                1em
+    :text-transform           uppercase
+    :font-weight              bold    
+    
+    :margin-left              $margin
+    :color                    $app_title_color
+    +text-shadow(#fff, 1px, 1px, 0)
+    
+    
+
+  #menu
+    :position relative
+    :left 10px
+    ul
+      :margin-top             2px
+      :margin-bottom          $margin
+      :margin-left            0
+      :padding-left           0 
+      :list-style             none
+      li
+        :position             relative
+        
+        &.submenu
+        :font-weight          bold
+        :margin-bottom        2px
+        
+        a
+          .indicator
+            :position absolute
+            :left -5px
+            :width              12px
+            :height             12px
+
+            :background         url("/assets/icon_sprite.png") no-repeat scroll 0px -80px
+            &.closed
+              :background       url("/assets/icon_sprite.png") no-repeat scroll -16px -80px
+              :top 1px
+          :color              $menu_header_color
+          :text-decoration    none
+          +text-shadow(white, 1px, 1px, 0)
+          :text-transform     uppercase
+          :padding-left       $margin
+          
+        .item
+          :padding-left       9px
+          :margin-left        -10px
+          a
+            :text-transform     none
+            :color              $menu_text_color
+            :font-weight        normal
+            
+          
+        .item.active
+          :background-color $menu_item_active_background
+          a
+            :color          $menu_item_active_text
+            +text-shadow(#000, 1px, 1px, 0)
+            
+  #activity
+    :position absolute
+    :bottom 0
+    :border-top 1px solid #c5c5c5
+    :background-color #ededed
+    :min-height 120px
+    :width  $menu_width
+
+    #indicators  
+      .loading_indicator
+        :margin-left 10px
+        :width            180px
+        :color #717167
+        :font-size 11px
+          
+        .loading_text
+          :margin-top 5px
+          :margin-left 6px
+          //:text-transform uppercase
+          //:font-weight bold
+        
+        .loading_bar
+          :margin-top       0px          
+          :height           16px
+          :background       url('/assets/ui/load_indicator_bar_small.gif') no-repeat
+          // :margin-left      auto
+          // :margin-right     auto
+
+        .loading_stats
+          :font-size 9px
+
+          // :text-align center
+          :margin-top -3px
+          :margin-left 6px
