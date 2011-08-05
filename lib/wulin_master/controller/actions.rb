@@ -1,17 +1,6 @@
-# # Add default export excel button to every grid
-# WulinMaster::Grid.add_to_default_toolbar "Excel", :class => 'excel_export', :icon => 'excel'
-# 
-# # Register xls mime type
-# Mime::Type.register "application/vnd.ms-excel", :xls
-# 
-# # Load excel javascript
-# WulinMaster::add_javascript "excel.js"
-
 module WulinMaster
   module Actions
     def index
-      puts "------------------------------------"
-      puts "===========================" if self.respond_to?(:render_xls)
       respond_to do |format|
         format.html do
           begin
@@ -20,8 +9,10 @@ module WulinMaster
             render '/index', :layout => (request.xhr? ? false : 'application')
           end
         end
-        format.xls do
-          render_xls if self.respond_to?(:render_xls)
+        if Mime::Type.lookup_by_extension("xls")
+          format.xls do
+            render_xls if self.respond_to?(:render_xls)
+          end
         end
         format.json do
           # Create initial query object

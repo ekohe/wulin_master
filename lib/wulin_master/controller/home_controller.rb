@@ -1,5 +1,5 @@
 module WulinMaster
-  class HomeController < ApplicationController
+  class HomeController < ::ApplicationController
     @@menu = nil
     @@submenu = nil
 
