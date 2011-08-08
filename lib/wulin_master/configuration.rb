@@ -10,15 +10,10 @@ module WulinMaster
   
   class Configuration
     # render excel
-    attr_accessor :enable_excel, :app_title
+    attr_accessor :app_title
     
     def initialize
       self.app_title = "Empty App"
-      self.enable_excel = false
-    end
-    
-    def enable_excel?
-      !!@enable_excel
     end
   end
 end
