@@ -32,6 +32,7 @@ module WulinMaster
       require 'wulin_master/configuration'
       require 'wulin_master/menu/menu'
       require 'wulin_master/screen/screen'
+      require 'wulin_master/screen/grid_config'
       require 'wulin_master/controller/actions'
     end
 

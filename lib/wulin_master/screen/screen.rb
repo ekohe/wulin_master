@@ -41,11 +41,15 @@ module WulinMaster
       @grids
     end
 
-    def self.grid(name, &block)
-      @grid_context = Grid.new(name.to_sym)
+    def self.grid(klass)
+      @grid_context = klass.grid_context
       @grids ||= []
       @grids << @grid_context
-      yield if block_given?
+      
+      # magic here
+      klass.screen_context = self
+      klass.config_block.call if klass.config_block
+      
       @grid_context = nil
     end
 
