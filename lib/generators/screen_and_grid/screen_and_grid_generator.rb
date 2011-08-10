@@ -11,11 +11,15 @@ class ScreenAndGridGenerator < ActiveRecord::Generators::Base
   end
 
   def create_controller
-    template "controller.rb", "app/controllers/#{underscored_name}_controller.rb"
+    template "controller.rb", "app/controllers/#{table_name}_controller.rb"
   end
 
   def create_screen
     template "screen.rb", "app/screens/#{underscored_name}_screen.rb"
+  end
+  
+  def create_grid
+    template "grid.rb", "app/grids/#{underscored_name}_grid.rb"
   end
 
   def create_model
@@ -23,7 +27,7 @@ class ScreenAndGridGenerator < ActiveRecord::Generators::Base
   end
 
   def add_route
-    route "resources :#{underscored_name}"
+    route "resources :#{table_name}"
   end
 
   private
