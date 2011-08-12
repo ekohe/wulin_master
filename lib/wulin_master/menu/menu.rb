@@ -12,7 +12,7 @@ module WulinMaster
       ""
     end
   
-    # Render the grid
+    # Render the menu
     def render
       ActionView::Base.new(view_path).render(:partial => "menu", :locals => {:menu => self})
     end

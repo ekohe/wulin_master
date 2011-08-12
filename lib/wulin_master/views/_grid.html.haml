@@ -1,9 +1,0 @@
-%div{:id => "grid_#{grid.name}", :class => 'grid_container'}
-  .grid-header{:style => grid.style_for_header}
-    = grid.toolbar.render
-    %h2= grid.title
-  .grid{:style => grid.style_for_grid}
-  .pager{:style => grid.style_for_pager}
-
-  :javascript
-    gridManager.createNewGrid("#{grid.name.to_s}", #{grid.path.inspect}, #{grid.javascript_column_model});
