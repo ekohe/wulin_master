@@ -6,6 +6,6 @@
   <div class="grid" style="<%= grid.style_for_grid %>"></div>
   <div class="pager" style="<%= grid.style_for_pager %>"></div>
   <script type="text/javascript">
-    gridManager.createNewGrid("<%= grid.name.to_s.html_safe %>", "<%= grid.path.inspect.html_safe %>", "<%= grid.javascript_column_model.html_safe %>");
+    gridManager.createNewGrid("<%= grid.name.to_s.html_safe %>", <%= grid.path.inspect.html_safe %>, <%= grid.javascript_column_model.html_safe %>);
   </script>
 </div>
