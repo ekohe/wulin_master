@@ -1,25 +1,28 @@
 <div id="navigation">
   <h1><%= WulinMaster.configuration.app_title %></h1>
+  
   <div id="activity">
     <h2>Activity</h2>
     <div id="indicators"></div>
   </div>
+  
   <div id="menu">
     <ul>
       <%- menu.each do |menu_entry| %>
         <%- if menu_entry.is_submenu? %>
           <li class="submenu">
             <a href="#">
-              <span class="indicator"><%= menu_entry.title %></span>
+              <span class="indicator"></span>
+              <%= menu_entry.title %>
             </a>
             <ul>
               <%- menu_entry.each do |submenu_entry| %>
                 <li class="item"><%= link_to submenu_entry.title, submenu_entry.path %></li>
               <% end -%>
             </ul>
-          </li>  
+          </li>
         <% else %>
-          <li class="item"><%= link_to menu_entry.title, menu_entry.path %></li>
+          <li class="itme"><%= link_to menu_entry.title, menu_entry.path %></li>
         <% end -%>
       <% end -%>
     </ul>
