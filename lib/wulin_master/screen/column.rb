@@ -32,7 +32,7 @@ module WulinMaster
 
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
-      return query if filtering_value.nil? or filtering_value.to_s.blank?
+      return query if filtering_value.blank?
 
       case sql_type
       when :datetime
@@ -49,7 +49,7 @@ module WulinMaster
     def sql_type
       return :unknown if @grid.nil? or @grid.model.nil?
       column = @grid.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column ? column.type : :unknown
+      column.type.try(:column) || :unknown
     end
   end
 end
