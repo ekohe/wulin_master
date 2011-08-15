@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'wulin_master/screen/column'
 
 describe WulinMaster::Column do
+
   before :each do
     @mock_grid = mock("grid")
     @column = WulinMaster::Column.new("country_name", @mock_grid)
@@ -37,6 +38,20 @@ describe WulinMaster::Column do
     @column.to_column_model.should == {:id => "country_name", :name => "Country name", :field => "country_name", :type => String, :width => 80, :sortable => true, :editable => true}
   end
   
-  it "can apply filters" do
+  it "can apply filter" do
+    @column.should respond_to(:apply_filter)
+    query = mock("Country")
+    @column.apply_filter(query, "").should == query
+    
+    # filter string type
+    @column.stub!(:sql_type) { String }
+    sql_result = nil
+    query.stub!(:where).with("UPPER(country_name) LIKE UPPER('China%')") { sql_result }
+    @column.apply_filter(query, "China").should == sql_result
+    
+    # filter datetime type
+    @column.stub!(:sql_type) { :datetime }
+    query.stub!(:where).with("to_char(country_name, 'YYYY-MM-DD') LIKE UPPER('2011-05-03%')") { sql_result }
+    @column.apply_filter(query, "2011-05-03").should == sql_result
   end
 end
