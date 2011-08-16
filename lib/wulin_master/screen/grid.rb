@@ -9,23 +9,6 @@ module WulinMaster
     @@grids = []
     @@default_toolbar_items = []
 
-    def initialize(name)
-      @name = name
-      @columns = []
-      @height = 400
-      @width = 800
-      @fill_window = false
-      create_default_toolbar
-      add_default_column
-      @@grids.delete(Grid.get(name)) if Grid.get(name)
-      @@grids << self
-    end
-
-    # Grid definition methods  
-    def column(name, options={})
-      @columns << Column.new(name, self, options)
-    end
-
     # Class methods
     # -------------
 
@@ -46,10 +29,37 @@ module WulinMaster
         @@default_toolbar_items << ToolbarItem.new(item, options)
       end
     end
+    
+    # Instance methods
+    # --------------------
+    def initialize(name)
+      @name = name
+      @columns = []
+      @height = 400
+      @width = 800
+      @fill_window = false
+      create_default_toolbar
+      add_default_column
+      @@grids.delete(Grid.get(name)) if Grid.get(name)
+      @@grids << self
+    end
+
+    # Grid definition methods  
+    def column(name, options={})
+      @columns << Column.new(name, self, options)
+    end
+    
+    def add_to_toolbar(item, options={})
+      if item.class == ToolbarItem
+        @toolbar << item
+      elsif item.class == String
+        @toolbar << ToolbarItem.new(item, options)
+      end
+    end
 
     def create_default_toolbar
       @toolbar = Toolbar.new
-      @@default_toolbar_items.each {|item| self.add_to_toolbar item }
+      @@default_toolbar_items.each {|item| add_to_toolbar(item) }
     end
 
     def add_default_column
@@ -159,14 +169,6 @@ module WulinMaster
 
     def fill_window?
       @fill_window==true
-    end
-
-    def add_to_toolbar(item, options={})
-      if item.class == ToolbarItem
-        @toolbar << item
-      elsif item.class == String
-        @toolbar << ToolbarItem.new(item, options)
-      end
     end
   end
 end

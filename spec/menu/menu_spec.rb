@@ -21,10 +21,20 @@ describe WulinMaster::Menu do
   end
   
   it "should render a the right view template" do
-    menu_view = @menu.render
-    menu_view.should match(/navigation/)
-    menu_view.should match(/activity/)
-    menu_view.should match(/menu/)
+    WulinMaster.stub_chain(:configuration, :app_title) {"Terra Nova"}
+    sub_menu_1 = WulinMaster::SubMenu.new("sports")
+    sub_menu_2 = WulinMaster::SubMenu.new("life")
+    @menu << sub_menu_1
+    @menu << sub_menu_2
+    
+    view = @menu.render
+    view.should match(/Terra Nova/)
+    view.should match(/div id=\"navigation\"/)
+    view.should match(/div id=\"activity\"/)
+    view.should match(/div id=\"menu\"/)
+    view.should match(/li class=\"submenu\"/)
+    view.should match(/sports/)
+    view.should match(/life/)
   end
 
 end

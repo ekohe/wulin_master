@@ -1,7 +1,7 @@
 module WulinMaster
   class ToolbarItem
 
-    attr_accessor :title, :javascript, :options
+    attr_accessor :title, :javascript, :icon, :options
 
     def initialize(title, options={})
       @title = title
