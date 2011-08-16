@@ -20,4 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_development_dependency "rspec-rails", "~> 2.6"
+  s.add_development_dependency "ZenTest"
+  s.add_development_dependency "autotest-rails"
+  s.add_development_dependency "spork", "~> 0.9.0.rc9"
 end
