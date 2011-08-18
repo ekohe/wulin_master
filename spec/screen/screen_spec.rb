@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'wulin_master/screen/screen'
-require 'wulin_master/screen/grid_config'
 
 describe WulinMaster::Screen do
   before :each do

@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'wulin_master/screen/grid'
-require 'wulin_master/screen/column'
 
 describe WulinMaster::Grid do
   before :each do
