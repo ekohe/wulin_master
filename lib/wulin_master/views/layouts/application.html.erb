@@ -7,6 +7,9 @@
     <%= javascript_include_tag *WulinMaster.javascripts %>
     
     <%= csrf_meta_tags %>
+    <%= javascript_tag do -%>
+      window._token = '<%= form_authenticity_token %>';
+    <% end -%>
   </head>
   <body>
     <%= yield %>

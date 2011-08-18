@@ -92,7 +92,7 @@
       $.ajax({
         type: "POST",
         url: store.path + "/" + item.id + ".json",
-        data: {_method: 'PUT', item: item},
+        data: {_method: 'PUT', item: item, authenticity_token: window._token},
         success: function(msg) {
           if(msg.success == true) {
 
