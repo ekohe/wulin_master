@@ -62,6 +62,18 @@ module WulinMaster
       end
     end
     
+    def destroy
+      record = grid.model.find(params[:id]) 
+      message = begin 
+        {:success => true } if record.try(:destroy)
+      rescue => e
+         {:success => false, :error_message => e}
+      end
+      respond_to do |format|
+        format.json { render :json => message }
+      end
+    end
+    
     protected
     
     def construct_filters

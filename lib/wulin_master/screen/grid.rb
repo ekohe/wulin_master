@@ -173,4 +173,9 @@ module WulinMaster
   end
 end
 
+# Search action botton
 WulinMaster::Grid.add_to_default_toolbar "Filter", :class => 'filter_toggle', :icon => 'search'
+
+# Delete action button
+WulinMaster::Grid.add_to_default_toolbar "Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'
+
