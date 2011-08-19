@@ -63,9 +63,13 @@ module WulinMaster
     end
     
     def destroy
-      record = grid.model.find(params[:id]) 
+      ids = params[:id].to_s.split(',')
+      records = grid.model.find(ids) 
       message = begin 
-        {:success => true } if record.try(:destroy)
+        grid.model.transaction do
+          records.each {|record| record.destroy }
+        end
+        {:success => true }
       rescue => e
          {:success => false, :error_message => e}
       end

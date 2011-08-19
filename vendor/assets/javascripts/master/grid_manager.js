@@ -52,7 +52,6 @@
 
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			loader.setGrid(grid);
-			console.log(grid)
 
 			// register grid events
 			grid.onCellChange = function(currentRow, currentCell, item) {
@@ -63,18 +62,33 @@
 			// Delete action
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
-				if (grid.getCurrentCell() != null) {
-					var index = grid.getCurrentCell().row;
-					var item = grid.store.loader.data[index];
-					var id = item['id']
-					if (id === null || id === undefined || id == '') {
-						alert("Can not get the recored id!")
-					} else {
-						delete_record(grid, id);	
-					}
+				var selectedIndexs = grid.getSelectedRows();
+				// console.log(selectedIndexs.length);
+				if (selectedIndexs.length > 0) {
+					var ids = selectedIndexs.map(function(n, i) { 
+						var item = grid.store.loader.data[n];
+						return item['id']; 
+						}).join();
+					// console.log(ids)
+					if (confirm("Are you sure to do this?"))
+						deleteRecord(grid, ids);	
+						
 				} else {
-					alert("Please select one row first!")
+					alert("Please select one row first!");
 				}
+				
+				// if (grid.getCurrentCell() != null) {
+				// 	var index = grid.getCurrentCell().row;
+				// 	var item = grid.store.loader.data[index];
+				// 	var id = item['id']
+				// 	if (id === null || id === undefined || id == '') {
+				// 		alert("Can not get the recored id!")
+				// 	} else {
+				// 		// deleteRecord(grid, ids);	
+				// 	}
+				// } else {
+				// 	alert("Please select one row first!")
+				// }
 			});
 
 
@@ -125,14 +139,16 @@
 			});
 		}
 
-		function delete_record(grid, id) {
+		// Delete rows along ajax 
+		function deleteRecord(grid, ids) {
 			$.ajax({
 				type: 'POST',
-				url: grid.store.path + '/' + id + '.json',
+				url: grid.store.path + '/' + ids + '.json',
 				data: {_method: 'DELETE', authenticity_token: window._token},
 				success: function(msg) {
 					if(msg.success == true) {
 						grid.store.loader.reloadData();
+						grid.setSelectedRows([]);
 					} else {
 						alert(msg.error_message);
 					}
