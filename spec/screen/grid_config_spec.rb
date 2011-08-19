@@ -17,6 +17,28 @@ describe WulinMaster::GridConfig do
     TestGrid.grid_context.name.should == :test
   end
   
-  it "should be able to configure " do
+  it "should invoke methods on grid_context" do
+    class TestModel
+    end
+    
+    TestGrid.grid_context.should_receive(:send).with(:title, "Test Grid")
+    TestGrid.title "Test Grid"
+    
+    TestGrid.grid_context.should_receive(:send).with(:base_model, TestModel)
+    TestGrid.base_model TestModel
+    
+    TestGrid.grid_context.should_receive(:send).with(:path, "/tests")
+    TestGrid.path "/tests"
+    
+    TestGrid.grid_context.should_receive(:send).with(:fill_window)
+    TestGrid.fill_window
+    
+    TestGrid.grid_context.should_receive(:send).with(:width, 300)
+    TestGrid.grid_context.should_receive(:send).with(:height, 400)
+    TestGrid.width 300
+    TestGrid.height 400
+    
+    TestGrid.grid_context.should_receive(:send).with(:column, :code, :editable => false)
+    TestGrid.column :code, :editable => false
   end
 end
