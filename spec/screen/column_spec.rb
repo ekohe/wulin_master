@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'wulin_master/screen/column'
 
 describe WulinMaster::Column do
 

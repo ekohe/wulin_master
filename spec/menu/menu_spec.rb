@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'wulin_master/menu/menu'
 
 # Test MenuEntrt
 describe WulinMaster::MenuEntry do
