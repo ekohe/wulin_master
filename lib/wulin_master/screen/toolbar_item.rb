@@ -6,7 +6,7 @@ module WulinMaster
     def initialize(title, options={})
       @title = title
 
-      @javascript =  options.delete(:javascript)
+      @javascript = options.delete(:javascript)
       @icon = options.delete(:icon)
 
       options[:href] = '#' if options[:href].nil?
@@ -14,22 +14,31 @@ module WulinMaster
     end
 
     def javascript?
-      !@javascript.nil?
+      !!@javascript
+    end
+    
+    def icon?
+      !!@icon
     end
 
     def anchor_tag_options
-      if @icon
+      if icon?
         css_class = self.options[:class] || ''
-        css_class += " toolbar_icon_#{@icon}" unless css_class.include?("toolbar_icon_#{@icon}")
-        @options.merge!(:class => css_class)
+        css_class += " toolbar_icon_#{self.icon}" unless css_class.include?("toolbar_icon_#{self.icon}")
+        self.options.merge!(:class => css_class)
+      else
+        self.options[:class] = self.options[:class].split(" ").delete_if{|e| e.include?('toolbar_icon')}.join(" ")
       end
 
       if javascript?
-        return self.options.merge(:href => '#',
+        self.options.merge!(:href => '#',
         :onclick => self.javascript + "; return false;")
       else
-        return self.options
+        self.options.delete(:href)
+        self.options.delete(:onclick)
       end
+      
+      self.options
     end
 
     # Rendering
