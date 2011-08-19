@@ -6,13 +6,14 @@ module WulinMaster
     cattr_reader :screens
     class << self
       alias_method :all, :screens
-      attr_accessor :grids, :title
+      attr_accessor :grids, :title, :path
     end
     @@screens = []
 
     def self.inherited(subclass)
       subclass.grids = []
       subclass.title = nil
+      subclass.path = "/" + subclass.name.sub(/Screen$/, "").tableize
       @@screens << subclass unless @@screens.include?(subclass)
 
       Rails.logger.info "Screen #{subclass} loaded"
@@ -25,6 +26,15 @@ module WulinMaster
         @title || self.to_s.gsub(/Screen/, "")
       else
         @grid_context.title(new_title)
+      end
+    end
+    
+    def self.path(new_path=nil)
+      if @grid_context
+        @grid_context.path(new_path)
+      else
+        @path = new_path unless new_path == nil
+        @path
       end
     end
 
