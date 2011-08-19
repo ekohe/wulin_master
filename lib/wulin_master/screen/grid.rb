@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'toolbar_item')
 module WulinMaster
   class Grid
     attr_reader :name
-    attr_accessor :columns, :base_model, :controller_class, :toolbar
+    attr_accessor :columns, :base_model, :controller_class, :toolbar, :create_win_height, :create_win_width
 
     @@grids = []
     @@default_toolbar_items = []
@@ -22,14 +22,18 @@ module WulinMaster
     end
 
     # Default toolbar
+    # Positon control:
+    # :before => toolbar_title  # before the toolbar which with title equal to toolbar_title
+    # :after => toolbar_title  # after the toolbar which with title equal to toolbar_title
     def self.add_to_default_toolbar(item, options={})
-      if item.class == ToolbarItem
-        @@default_toolbar_items << item
+      new_item = if item.class == ToolbarItem
+        item
       elsif item.class == String
-        @@default_toolbar_items << ToolbarItem.new(item, options)
+        ToolbarItem.new(item, options)
       end
+      @@default_toolbar_items << new_item
     end
-    
+
     # Instance methods
     # --------------------
     def initialize(name)
@@ -48,7 +52,7 @@ module WulinMaster
     def column(name, options={})
       @columns << Column.new(name, self, options)
     end
-    
+
     def add_to_toolbar(item, options={})
       if item.class == ToolbarItem
         @toolbar << item
@@ -179,3 +183,5 @@ WulinMaster::Grid.add_to_default_toolbar "Filter", :class => 'filter_toggle', :i
 # Delete action button
 WulinMaster::Grid.add_to_default_toolbar "Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'
 
+# Create action button
+WulinMaster::Grid.add_to_default_toolbar "Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);'#, :before => 'Delete'

@@ -4,7 +4,8 @@
 		var gridElementSuffix = " .grid";
 		var pagerElementSuffix = " .pager";
 		var filterTriggerElementSuffix = " .grid-header .filter_toggle";
-		var deleteElementSuffix = ' .grid-header .delete_button'
+		var deleteElementSuffix = ' .grid-header .delete_button';
+		var createElementSuffix = ' .grid-header .create_button';
 
 		var grids = [];
 
@@ -57,8 +58,6 @@
 			grid.onCellChange = function(currentRow, currentCell, item) {
 				update_record(this.store, item);
 			};
-
-
 		
 			// Delete action
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
@@ -78,6 +77,30 @@
 				} else {
 					alert("Please select one row first!");
 				}
+			});
+			
+			// Create action
+			createElement = $(gridElementPrefix + name + createElementSuffix);
+			createElement.click(function() {
+				$( '#' + name + '-form' ).dialog({
+					height: 400,
+					width: 500
+				});
+				// var _gird = getGrid(name)
+				// var selectedIndexs = _gird.getSelectedRows();
+				// //console.log(selectedIndexs.length);
+				// if (selectedIndexs.length > 0) {
+				// 	var ids = selectedIndexs.map(function(n, i) { 
+				// 		var item = _gird.store.loader.data[n];
+				// 		return item['id']; 
+				// 		}).join();
+				// 	//console.log(ids)
+				// 	if (confirm("Are you sure to do this?"))
+				// 		deleteRecord(_gird, ids);	
+				// 	
+				// } else {
+				// 	alert("Please select one row first!");
+				// }
 			});
 		
 			// Set connection manager
@@ -144,6 +167,7 @@
 			})
 		}
 
+		function createRecord() {}
 
 		function format_data(item) {
 
