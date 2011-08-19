@@ -12,13 +12,24 @@ describe WulinMaster::Screen do
     WulinMaster::Screen.screens.should == [DemoScreen]
   end
   
-  it "should assign the title" do
-    # default title
+  it "should has the default title" do
     DemoScreen.title.should == "Demo"
-    
+  end
+  
+  it "should assign the title" do  
     # customize title
     DemoScreen.title("Demo Screen")
     DemoScreen.title.should == "Demo Screen"
+  end
+  
+  it "should has the default path" do
+    DemoScreen.path.should == "/demos"
+  end
+  
+  it "should assign the path" do 
+    # customize path
+    DemoScreen.path("/demo_screens")
+    DemoScreen.path.should == "/demo_screens"
   end
   
   it "should define a grid in it" do
