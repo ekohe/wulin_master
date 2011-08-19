@@ -33,7 +33,7 @@ module WulinMaster
       require 'wulin_master/menu/menu'
       require 'wulin_master/screen/screen'
       require 'wulin_master/screen/grid_config'
-      require 'wulin_master/controller/actions'
+      require 'wulin_master/controllers/actions'
     end
 
     config.after_initialize do
@@ -45,8 +45,8 @@ module WulinMaster
       Time::DATE_FORMATS[:time] = "%H:%M"
       WulinMaster.default_datetime_format = :no_seconds
 
-      require 'wulin_master/controller/screen_controller'
-      require 'wulin_master/controller/home_controller'
+      require 'wulin_master/controllers/screen_controller'
+      require 'wulin_master/controllers/home_controller'
     end
   end
 end

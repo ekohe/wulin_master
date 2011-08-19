@@ -17,14 +17,21 @@ describe WulinMaster::Grid do
     column.options.should == {:width => 80, :visible => false, :editable => false, :sortable => true}
   end
   
-  it "should has default toolbar with a filter item" do
-    item = @grid.toolbar.first
+  it "should has default toolbar with a filter item and delete item" do
+    @grid.toolbar.length.should == 2
     
-    @grid.toolbar.length.should == 1
-    item.title.should == "Filter"
-    item.javascript.should == nil
-    item.icon.should == 'search'
-    item.options.should == {:class => "filter_toggle", :href => "#"}
+    item_1 = @grid.toolbar[0]
+    item_2 = @grid.toolbar[1]
+
+    item_1.title.should == "Filter"
+    item_1.javascript.should == nil
+    item_1.icon.should == 'search'
+    item_1.options.should == {:class => "filter_toggle", :href => "#"}
+    
+    item_2.title.should == "Delete"
+    item_2.javascript.should == nil
+    item_2.icon.should == 'delete_trash'
+    item_2.options.should == {:class => "delete_button", :href => "javascript: void(0);"}
   end
   
   it "can add customized columns" do
@@ -40,7 +47,7 @@ describe WulinMaster::Grid do
     @grid.add_to_toolbar("Excel", {:class => "excel_toggle", :javascript => "alert('excel')", :icon => "excel", :href => "/export_excel"})
     new_item = @grid.toolbar.last
     
-    @grid.toolbar.length.should == 2
+    @grid.toolbar.length.should == 3
     new_item.title.should == "Excel"
     new_item.javascript.should == "alert('excel')"
     new_item.icon.should == "excel"
