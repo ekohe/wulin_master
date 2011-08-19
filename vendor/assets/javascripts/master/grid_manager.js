@@ -59,39 +59,27 @@
 			};
 
 
+		
 			// Delete action
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
-				var selectedIndexs = grid.getSelectedRows();
-				// console.log(selectedIndexs.length);
+				var _gird = getGrid(name)
+				var selectedIndexs = _gird.getSelectedRows();
+				//console.log(selectedIndexs.length);
 				if (selectedIndexs.length > 0) {
 					var ids = selectedIndexs.map(function(n, i) { 
-						var item = grid.store.loader.data[n];
+						var item = _gird.store.loader.data[n];
 						return item['id']; 
 						}).join();
-					// console.log(ids)
+					//console.log(ids)
 					if (confirm("Are you sure to do this?"))
-						deleteRecord(grid, ids);	
-						
+						deleteRecord(_gird, ids);	
+					
 				} else {
 					alert("Please select one row first!");
 				}
-				
-				// if (grid.getCurrentCell() != null) {
-				// 	var index = grid.getCurrentCell().row;
-				// 	var item = grid.store.loader.data[index];
-				// 	var id = item['id']
-				// 	if (id === null || id === undefined || id == '') {
-				// 		alert("Can not get the recored id!")
-				// 	} else {
-				// 		// deleteRecord(grid, ids);	
-				// 	}
-				// } else {
-				// 	alert("Please select one row first!")
-				// }
 			});
-
-
+		
 			// Set connection manager
 			connectionManager = new ConnectionManager();
 
@@ -156,6 +144,7 @@
 			})
 		}
 
+
 		function format_data(item) {
 
 		}
@@ -191,9 +180,9 @@
 		function getGrid(name) {
 			var theGrid = null;
 
-			$.each(grids, function(index, grid) {
-				if (grid.name==name)
-				theGrid = grid;
+			$.each(grids, function(index, gridHash) {
+				if (gridHash.name==name)
+				theGrid = gridHash.grid;
 			});
 
 			return theGrid;
