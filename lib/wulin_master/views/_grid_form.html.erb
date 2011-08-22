@@ -1,0 +1,23 @@
+<%#= Grid create form %>
+<div id="<%= grid.name %>-form" title="Create new <%= grid.name %>" class="create_form">
+  <%- 
+  entity_name = grid.name.to_s 
+  columns = grid.columns.delete_if {|x| x.name.to_s == 'id' }
+  datepicker_str = ''
+  %>
+  <form accept-charset="UTF-8" action="/<%= entity_name.tableize %>" class="<%= entity_name %>" id="new_<%= entity_name %>" method="post">
+    <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div> 
+    <%- columns.each do |column| %>
+    <%- column_name = column.name.to_s %>
+    <%- datepicker_str << %!$( "##{entity_name}_#{column_name}" ).datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s == 'datetime'  %>
+    <div class="field">
+      <label for="<%= entity_name %>_<%= column_name %>"><%= column.label %></label>
+      <input id="<%= entity_name %>_<%= column_name %>" name="<%= entity_name %>[<%= column_name %>]" type="text" />
+    </div>
+    <% end -%>
+    <div class="submit"> 
+      <input id="<%= entity_name %>_submit" name="commit" type="submit" value="Create <%= entity_name.titleize %>" /> 
+    </div>
+  </form>
+</div>
+<%= javascript_tag datepicker_str if datepicker_str.present? -%>

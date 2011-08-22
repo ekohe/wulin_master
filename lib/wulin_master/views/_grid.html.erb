@@ -9,24 +9,8 @@
   gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', <%= grid.path.inspect.html_safe %>, <%= grid.javascript_column_model.html_safe %>);
   </script>
 </div>
+
 <!-- Create form -->
-<div id="<%= grid.name %>-form" title="Create new <%= grid.name %>" class="create_form">
-  <%- 
-  entity_name = grid.name.to_s 
-  columns = grid.columns.delete_if {|x| x.name.to_s == 'id' }
-  %>
-  <form accept-charset="UTF-8" action="/<%= entity_name.tableize %>" class="<%= entity_name %>" id="new_<%= entity_name %>" method="post">
-    <%- columns.each do |column| %>
-    <%- column_name = column.name.to_s %>
-    <div class="field">
-      <label for="<%= entity_name %>_<%= column_name %>"><%= column.label %></label>
-      <input id="<%= entity_name %>_<%= column_name %>" name="<%= entity_name %>[<%= column_name %>]" type="text" />
-    </div>
-    <% end -%>
-    <div class="submit"> 
-      <input id="<%= entity_name %>_submit" name="commit" type="submit" value="Create <%= entity_name.titleize %>" /> 
-    </div>
-  </form>
-</div>
+<%= render 'grid_form', :grid => grid %>
 
 

@@ -80,27 +80,21 @@
 			});
 			
 			// Create action
-			createElement = $(gridElementPrefix + name + createElementSuffix);
-			createElement.click(function() {
+			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
+			createButtonElement.click(function() {
 				$( '#' + name + '-form' ).dialog({
-					height: 400,
-					width: 500
+					height: 300,
+					width: 500,
+					show: "blind",
 				});
-				// var _gird = getGrid(name)
-				// var selectedIndexs = _gird.getSelectedRows();
-				// //console.log(selectedIndexs.length);
-				// if (selectedIndexs.length > 0) {
-				// 	var ids = selectedIndexs.map(function(n, i) { 
-				// 		var item = _gird.store.loader.data[n];
-				// 		return item['id']; 
-				// 		}).join();
-				// 	//console.log(ids)
-				// 	if (confirm("Are you sure to do this?"))
-				// 		deleteRecord(_gird, ids);	
-				// 	
-				// } else {
-				// 	alert("Please select one row first!");
-				// }
+			});
+			createFormElement = $('#new_' + name);
+			createFormElement.submit(function() {
+		 		// if (confirm("Are you sure to do this?")) {
+				var _gird = getGrid(name);
+				createRecord(_gird, name);
+		 		// }
+			  return false;
 			});
 		
 			// Set connection manager
@@ -158,8 +152,8 @@
 				data: {_method: 'DELETE', authenticity_token: window._token},
 				success: function(msg) {
 					if(msg.success == true) {
-						grid.store.loader.reloadData();
 						grid.setSelectedRows([]);
+						grid.store.loader.reloadData();
 					} else {
 						alert(msg.error_message);
 					}
@@ -167,7 +161,29 @@
 			})
 		}
 
-		function createRecord() {}
+		// Create row along ajax
+		function createRecord(grid, name) {
+			var createFormElement = $('#new_' + name);
+			$.ajax({
+     		type:'POST',
+     		url: grid.store.path + '.json',
+     		data: jQuery.param(jQuery(createFormElement).serializeArray()) + "&authenticity_token=" + window._token,
+     		success: function(request) { 
+					if (request.success == true) {
+						resetForm(name);
+						$( '#' + name + '-form' ).dialog( "close" );
+						grid.store.loader.reloadData();
+					} else {
+						alert(request.error_message);
+					}
+				}
+   		});
+		}
+		
+		function resetForm(name) {
+			var createFormElement = $('#new_' + name);
+			createFormElement.not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+		}
 
 		function format_data(item) {
 

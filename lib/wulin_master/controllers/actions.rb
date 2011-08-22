@@ -78,6 +78,20 @@ module WulinMaster
       end
     end
     
+    
+    def create
+      record = grid.model.new(params[grid.name.to_sym])
+      message = begin 
+        record.save!
+        {:success => true }
+      rescue => e
+         {:success => false, :error_message => e}
+      end
+      respond_to do |format|
+        format.json { render :json => message }
+      end
+    end
+    
     protected
     
     def construct_filters
@@ -99,7 +113,8 @@ module WulinMaster
     end
     
     def parse_pagination
-      @per_page = (params[:count] && params[:count].to_i!=0) ? params[:count].to_i : 10
+      # The slick.remotemodel's loadingSize is 200, so here we'd better set 200 too.
+      @per_page = params[:count].to_i.zero? ? 200 : params[:count].to_i
       @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
       
