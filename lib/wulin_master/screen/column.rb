@@ -49,7 +49,7 @@ module WulinMaster
     def sql_type
       return :unknown if @grid.nil? or @grid.model.nil?
       column = @grid.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.type.try(:column) || :unknown
+      column.try(:type) || :unknown
     end
   end
 end
