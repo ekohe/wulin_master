@@ -22,7 +22,7 @@ module WulinMaster
           construct_filters
 
           fire_callbacks :query_filters_ready
-          
+  
           # Getting to total count of the dataset
           @count = @query.count
           
@@ -41,9 +41,7 @@ module WulinMaster
           @objects = @query.all
           
           # Render json response
-          render_json
-          
-          render :json => @json
+          render :json => render_json
         end
       end
     end
@@ -105,7 +103,6 @@ module WulinMaster
     def parse_ordering
       @order_column = grid.sql_columns.first
       @order_column = params[:sort_col] if params[:sort_col] and !params[:sort_col].blank?
-      @order_column = "#{@order_column}" unless ((@order_column =~ /^\[(.*)\]$/) != nil) # MSSQL specific
       @order_direction = "ASC"
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] and ["ASC", "DESC"].include?(params[:sort_dir].upcase)
 
@@ -138,12 +135,14 @@ module WulinMaster
 
       t2 = Time.now
 
-      @json = JSON({:offset => @offset,
+      json = JSON({:offset => @offset,
                :total =>  @count,
                :count =>  @per_page,
                :rows =>   @object_array})
 
       logger.info "Rendering JSON (#{((Time.now-t)*1000).to_i}ms) - #{((t2-t)*1000).to_i}ms for objects generation and #{((Time.now-t2)*1000).to_i}ms for jsonification"
+      
+      json
     end
   end
 end
