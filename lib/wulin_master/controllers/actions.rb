@@ -1,6 +1,7 @@
 module WulinMaster
   module Actions
     def index
+      puts "__________________HTML && JSON____________________"
       respond_to do |format|
         format.html do
           begin
@@ -9,11 +10,11 @@ module WulinMaster
             render '/index', :layout => (request.xhr? ? false : 'application')
           end
         end
-        if Mime::Type.lookup_by_extension("xls")
-          format.xls do
-            render_xls if self.respond_to?(:render_xls)
-          end
-        end
+        # if Mime::Type.lookup_by_extension("xls")
+        #   format.xls do
+        #     render_xls if self.respond_to?(:render_xls)
+        #   end
+        # end
         format.json do
           # Create initial query object
           @query = grid.model
@@ -123,24 +124,13 @@ module WulinMaster
     end
     
     def render_json
-      # t = Time.now
-      # # Render ruby hashes
-      # @object_hashes = grid.hashify(@objects)
-      # logger.info "Time to make hashes: #{((Time.now-t)*1000).to_i}ms"
-      # 
-
-      t = Time.now
       # Render ruby objects
       @object_array = grid.arraify(@objects)
-
-      t2 = Time.now
 
       json = JSON({:offset => @offset,
                :total =>  @count,
                :count =>  @per_page,
                :rows =>   @object_array})
-
-      logger.info "Rendering JSON (#{((Time.now-t)*1000).to_i}ms) - #{((t2-t)*1000).to_i}ms for objects generation and #{((Time.now-t2)*1000).to_i}ms for jsonification"
       
       json
     end
