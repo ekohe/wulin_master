@@ -62,7 +62,7 @@
 			// Delete action
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
-				var _gird = getGrid(name)
+				var _gird = getGrid(name).grid;
 				var selectedIndexs = _gird.getSelectedRows();
 				//console.log(selectedIndexs.length);
 				if (selectedIndexs.length > 0) {
@@ -91,7 +91,7 @@
 			createFormElement = $('#new_' + name);
 			createFormElement.submit(function() {
 		 		// if (confirm("Are you sure to do this?")) {
-				var _gird = getGrid(name);
+				var _gird = getGrid(name).grid;
 				createRecord(_gird, name);
 		 		// }
 			  return false;
@@ -222,7 +222,7 @@
 
 			$.each(grids, function(index, gridHash) {
 				if (gridHash.name==name)
-				theGrid = gridHash.grid;
+				theGrid = gridHash;
 			});
 
 			return theGrid;
