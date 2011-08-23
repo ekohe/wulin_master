@@ -1,7 +1,6 @@
 module WulinMaster
   module Actions
     def index
-      puts "__________________HTML && JSON____________________"
       respond_to do |format|
         format.html do
           begin
@@ -10,11 +9,6 @@ module WulinMaster
             render '/index', :layout => (request.xhr? ? false : 'application')
           end
         end
-        # if Mime::Type.lookup_by_extension("xls")
-        #   format.xls do
-        #     render_xls if self.respond_to?(:render_xls)
-        #   end
-        # end
         format.json do
           # Create initial query object
           @query = grid.model
