@@ -167,7 +167,7 @@
 			$.ajax({
      		type:'POST',
      		url: grid.store.path + '.json',
-     		data: jQuery.param(jQuery(createFormElement).serializeArray()) + "&authenticity_token=" + window._token,
+     		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
      		success: function(request) { 
 					if (request.success == true) {
 						resetForm(name);
