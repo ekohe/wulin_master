@@ -132,7 +132,7 @@
 			$.ajax({
 				type: "POST",
 				url: store.path + "/" + item.id + ".json",
-				data: {_method: 'PUT', item: item, authenticity_token: window._token},
+				data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
 				success: function(msg) {
 					if(msg.success == true) {
 
@@ -149,7 +149,7 @@
 			$.ajax({
 				type: 'POST',
 				url: grid.store.path + '/' + ids + '.json',
-				data: {_method: 'DELETE', authenticity_token: window._token},
+				data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
 				success: function(msg) {
 					if(msg.success == true) {
 						grid.setSelectedRows([]);
