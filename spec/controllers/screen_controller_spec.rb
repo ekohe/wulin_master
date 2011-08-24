@@ -11,10 +11,18 @@ class Country < ActiveRecord::Base
 end
 
 describe CountriesController, :type => :controller do
-    
+  
+  def mock_country(stubs={})
+    @mock_country ||= mock_model(Country, stubs).as_null_object
+  end
+  
   describe "Includes WulinMaster::Actions" do
     before :each do
       WulinMaster::ScreenController.load_actions
+      @grid = WulinMaster::Grid.new("country")
+      @grid.base_model(Country)
+      @grid.stub!(:model) { Country }
+      controller.stub!(:grid) { @grid }
     end
     
     describe "get 'index'" do
@@ -23,21 +31,10 @@ describe CountriesController, :type => :controller do
         response.should render_template(:index)
       end
       
-      pending "should render xls if request format :xls" do
-        Mime::Type.stub!(:lookup_by_extension).with("xls") { true }
-        controller.stub!(:respond_to?).with(:render_xls) { true }
-        response.should_receive(:render_xls)
-        get :index, :format => :xls
-      end
-      
       describe "format json" do
         before :each do
           Country.stub!(:count) { 100 }
           Country.stub!(:all) { [] }
-          @grid = WulinMaster::Grid.new("country")
-          @grid.base_model(Country)
-          @grid.stub!(:model) { Country }
-          controller.stub!(:grid) { @grid }
           @mock_model = mock("Country")
           controller.query = @mock_model
         end
@@ -148,10 +145,115 @@ describe CountriesController, :type => :controller do
       end
     end
     
-    describe "post 'update" do
+    describe "post 'create'" do
+      describe "with valid params" do
+        it "assigns a newly created record as @record" do
+          @grid.model.stub(:new).with({'these' => 'params'}) { mock_country(:save => true) }
+          post :create, :country => {'these' => 'params'}
+          assigns(:record).should be(mock_country)
+        end
+        
+        it "render success json if format json" do
+          @grid.model.stub(:new) { mock_country(:save => true) }
+          post :create, :country => {}, :format => :json
+          response.body.should == {:success => true}.to_json 
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved record as @record" do
+          @grid.model.stub(:new).with({'these' => 'params'}) { mock_country(:save => false) }
+          post :create, :country => {'these' => 'params'}
+          assigns(:record).should be(mock_country)
+        end
+      
+        it "render failure json and error message if format json" do
+          @grid.model.stub(:new) { mock_country(:save => false) }
+          mock_country(:save => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
+          post :create, :country => {}, :format => :json  
+          response.body.should == {:success => false, :error_message => "country_errors" }.to_json
+        end
+      end
     end
     
-    describe "delete 'destroy" do
+    describe "post 'update'" do
+      describe "with valid params" do
+        it "updates the requested record" do
+          @grid.model.stub(:find).with("37") { mock_country }
+          mock_country.should_receive(:update_attributes).with({'these' => 'params'})
+          put :update, :id => 37, :item => {'these' => 'params'}
+        end
+
+        it "assigns the requested record as @record" do
+          @grid.model.stub(:find) { mock_country(:update_attributes => true) }
+          put :update, :id => "1", :item => {'these' => 'params'}
+          assigns(:record).should be(mock_country)
+        end
+        
+        it "render success json if format json" do
+          @grid.model.stub(:find) { mock_country(:update_attributes => true) }
+          put :update, :id => "1", :item => {'these' => 'params'}, :format => :json
+          response.body.should == {:success => true}.to_json 
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns the record as @record" do
+          @grid.model.stub(:find) { mock_country(:update_attributes => false) }
+          put :update, :id => "1", :item => {'these' => 'params'}
+          assigns(:record).should be(mock_country)
+        end
+        
+        it "render failure json and error message if format json" do
+          @grid.model.stub(:find) { mock_country(:update_attributes => false) }
+          mock_country(:update_attributes => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
+          put :update, :id => "1", :item => {'these' => 'params'}, :format => :json
+          response.body.should == {:success => false, :error_message => "country_errors" }.to_json
+        end
+      end
+    end
+    
+    describe "delete 'destroy'" do
+      before :each do
+        #@grid.model.stub!(:transaction) { nil }
+      end
+      
+      it "success to destroy the requested county" do
+        ids = ['37','38']
+        mock_country_1 = mock("Country_1")
+        mock_country_2 = mock("Country_2")
+        mock_countries = [mock_country_1, mock_country_2] 
+        
+        @grid.model.stub!(:find).with(ids).and_return(mock_countries)
+        @grid.model.should_receive(:transaction).and_yield
+        mock_countries.should_receive(:each).and_yield(mock_country_1).and_yield(mock_country_2)
+        
+        mock_country_1.should_receive(:destroy)
+        mock_country_2.should_receive(:destroy)
+        
+        delete :destroy, :id => "37,38", :format => :json
+        response.body.should == {:success => true}.to_json
+      end
+      
+      it "fails to destroy the requested county" do
+        ids = ['37','38']
+        mock_country_1 = mock("Country_1")
+        mock_country_2 = mock("Country_2")
+        mock_countries = [mock_country_1, mock_country_2] 
+        
+        # assume mock_country_1 destroy failed
+        mock_country_1.stub!(:destroy).and_raise(Exception.new("can't destroy"))
+        
+        @grid.model.stub!(:find).with(ids).and_return(mock_countries)
+        @grid.model.should_receive(:transaction).and_yield
+        mock_countries.should_receive(:each).and_yield(mock_country_1).and_yield(mock_country_2)
+        
+        mock_country_1.should_receive(:destroy)
+        mock_country_2.should_not_receive(:destroy)
+
+        delete :destroy, :id => "37,38", :format => :json
+        response.body.should == {:success => false, :error_message => "can't destroy" }.to_json
+      end
     end
   end
   

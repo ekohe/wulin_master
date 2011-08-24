@@ -43,12 +43,11 @@ module WulinMaster
     
     def update
       params[:item].delete_if {|k,v| v == "null"}
-      id = params[:item].delete(:id)
-      record = grid.model.find(id) 
-      message = if record.update_attributes(params[:item])
+      @record = grid.model.find(params[:id]) 
+      message = if @record.update_attributes(params[:item])
         {:success => true }
       else
-        {:success => false, :error_message => record.errors.full_messages.join("\n")}
+        {:success => false, :error_message => @record.errors.full_messages.join("\n")}
       end
       respond_to do |format|
         format.json { render :json => message }
@@ -57,14 +56,14 @@ module WulinMaster
     
     def destroy
       ids = params[:id].to_s.split(',')
-      records = grid.model.find(ids) 
+      @records = grid.model.find(ids) 
       message = begin 
         grid.model.transaction do
-          records.each {|record| record.destroy }
+          @records.each {|record| record.destroy }
         end
         {:success => true }
-      rescue => e
-         {:success => false, :error_message => e}
+      rescue Exception => e
+         {:success => false, :error_message => e.message}
       end
       respond_to do |format|
         format.json { render :json => message }
@@ -73,12 +72,11 @@ module WulinMaster
     
     
     def create
-      record = grid.model.new(params[grid.name.to_sym])
-      message = begin 
-        record.save!
+      @record = grid.model.new(params[grid.name.to_sym])
+      message = if @record.save
         {:success => true }
-      rescue => e
-         {:success => false, :error_message => e}
+      else
+        {:success => false, :error_message => @record.errors.full_messages.join("\n")}
       end
       respond_to do |format|
         format.json { render :json => message }
