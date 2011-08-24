@@ -28,6 +28,7 @@ Spork.prefork do
   
   TestApp.routes.draw do
     resources :countries
+    root :to => "homepage#index"
   end
   
   module Rails

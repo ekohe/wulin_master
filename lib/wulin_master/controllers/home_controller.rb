@@ -1,5 +1,5 @@
 module WulinMaster
-  class HomeController < ::ApplicationController
+  class HomeController < ::ApplicationController  
     @@menu = nil
     @@submenu = nil
 
@@ -26,15 +26,23 @@ module WulinMaster
       return @@menu
     end
 
-    def self.submenu(title)
+    def self.submenu(title=nil)
       if block_given?
         @@submenu = SubMenu.new(title)
         yield
         @@menu << @@submenu
-        @@submenu = nil
-      end    
+      end 
+      return @@submenu   
     end
-
+    
+    def self.menu=(menu)
+      @@menu = menu
+    end
+    
+    def self.submenu=(submenu)
+      @@submenu = submenu
+    end
+    
     def menu
       self.class.menu
     end
@@ -43,7 +51,7 @@ module WulinMaster
       return unless @@menu
       title = title_or_screen_class.respond_to?(:title) ? title_or_screen_class.title : title_or_screen_class
       path = path.to_s.presence || (title_or_screen_class.respond_to?(:path) ? title_or_screen_class.path : '/')
-      unless @@submenu.nil?
+      if @@submenu
         @@submenu << MenuEntry.new(title, path)
       else
         @@menu << MenuEntry.new(title, path)
