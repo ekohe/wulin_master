@@ -181,8 +181,7 @@
 		}
 		
 		function resetForm(name) {
-			var createFormElement = $('#new_' + name);
-			createFormElement.not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+			$(':input','#new_' + name).not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
 		}
 
 		function format_data(item) {
