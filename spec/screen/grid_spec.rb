@@ -126,6 +126,64 @@ describe WulinMaster::Grid do
     @grid.path.should == "/countries"
   end
   
+  describe "methods related with columns" do
+    before :each do
+      @column_1 = WulinMaster::Column.new("name", @grid, {:width => 100, :editable => false, :label => "Country Name"})
+      @column_2 = WulinMaster::Column.new("code", @grid, {:width => 200, :editable => true, :label => "Country Code"})
+      @grid.columns = [@column_1, @column_2]
+    end
+    
+    it "should get sql_columns" do
+      @grid.should respond_to(:sql_columns)
+      @grid.sql_columns.should == ["name", "code"]
+    end
+    
+    it "should get sql_select" do
+      @grid.should respond_to(:sql_select)
+      @grid.sql_select.should == "name,code"
+    end
+    
+    it "should apply filters" do
+      @grid.should respond_to(:apply_filter)
+      
+      @query = mock("query")
+      @result_query = mock("result")
+      @column_1.stub!(:apply_filter).with(@query, "China").and_return(@result_query)
+      
+      # filter an existing column
+      @grid.apply_filter(@query, "name", "China").should == @result_query
+      # filter an non-existing column
+      @grid.apply_filter(@query, "money", "China").should == @query
+    end
+
+    it "should arraify objects" do
+      @grid.should respond_to(:arraify)
+      
+      @obj_1 = mock("Country")
+      @obj_1.stub!(:read_attribute).with("name").and_return("China")
+      @obj_1.stub!(:read_attribute).with("code").and_return("CHN")
+      
+      @obj_2 = mock("Country")
+      @obj_2.stub!(:read_attribute).with("name").and_return("United States")
+      @obj_2.stub!(:read_attribute).with("code").and_return("USA")
+      
+      @objects = [@obj_1, @obj_2]
+      
+      @grid.arraify(@objects).should == [[{"name"=>"China"}, {"code"=>"CHN"}], [{"name"=>"United States"}, {"code"=>"USA"}]]
+    end
+
+    it "should get javascript_column_model" do
+      @grid.should respond_to(:javascript_column_model)
+      
+      @attrs_1 = {:id => "name", :name => "Country Name", :field => "name", :type => "String"}
+      @attrs_2 = {:id => "code", :name => "Country Code", :field => "code", :type => "String"}
+      @column_1.stub!(:to_column_model).and_return(@attrs_1)
+      @column_2.stub!(:to_column_model).and_return(@attrs_2)
+      
+      @grid.javascript_column_model.should == [@attrs_1, @attrs_2].to_json
+    end
+  end
+  
   it "should return stylesheet for the grid body" do
     @grid.should respond_to(:style_for_grid)
     

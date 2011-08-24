@@ -74,7 +74,7 @@ module WulinMaster
     # ----------
 
     def sql_columns
-      @columns.map(&:name).map {|col| "#{col}"} # MSSQL specific
+      @columns.map(&:name).map {|col| "#{col}"}
     end
 
     def sql_select
