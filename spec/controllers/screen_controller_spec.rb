@@ -10,11 +10,11 @@ class Country < ActiveRecord::Base
 end
 
 describe CountriesController, :type => :controller do
-  
+
   def mock_country(stubs={})
     @mock_country ||= mock_model(Country, stubs).as_null_object
   end
-  
+
   describe "Includes WulinMaster::Actions" do
     before :each do
       WulinMaster::ScreenController.load_actions
@@ -23,13 +23,13 @@ describe CountriesController, :type => :controller do
       @grid.stub!(:model) { Country }
       controller.stub!(:grid) { @grid }
     end
-    
+
     describe "get 'index'" do
       it "should render index template if request format :html" do
         get :index, :format => :html
         response.should render_template(:index)
       end
-      
+
       describe "format json" do
         before :each do
           Country.stub!(:count) { 100 }
@@ -37,8 +37,8 @@ describe CountriesController, :type => :controller do
           @mock_model = mock("Country")
           controller.query = @mock_model
         end
-        
-        it "should invoke methods of building filters, paginations, ordering, selection and fire callbacks" do 
+
+        it "should invoke methods of building filters, paginations, ordering, selection and fire callbacks" do
           @query_origin = mock("query")
           @grid.should_receive(:model).and_return(@query_origin)
           controller.should_receive(:construct_filters)
@@ -52,42 +52,42 @@ describe CountriesController, :type => :controller do
           @query_origin.should_receive(:all)
           get :index, :format => :json
         end
-        
+
         it "should assign Country model to @query, @count, @objects" do
           controller.stub!(:construct_filters) { true }
-          controller.stub!(:parse_pagination) { true } 
+          controller.stub!(:parse_pagination) { true }
           controller.stub!(:parse_ordering) { true }
           controller.stub!(:add_select) { true }
-          controller.stub!(:render_json) { "" } 
+          controller.stub!(:render_json) { "" }
           get :index, :format => :json
           assigns(:query).should == controller.grid.model
           assigns(:count).should == 100
           assigns(:objects).should == []
         end
-        
+
         it "should render json object as the response" do
           @json_obj = {:offset => 100, :total => 1000, :count => 100, :rows => ["China", "USA"]}.to_json
           controller.stub!(:construct_filters) { true }
-          controller.stub!(:parse_pagination) { true } 
+          controller.stub!(:parse_pagination) { true }
           controller.stub!(:parse_ordering) { true }
           controller.stub!(:add_select) { true }
           controller.stub!(:render_json) {@json_obj}
           get :index, :format => :json
           response.body.should == @json_obj
         end
-        
+
         it "should apply filter on the grid when calling construct_filters if given filter params" do
           controller.stub!(:params).and_return({:filters => [{:column => "name", :value => "China"}]})
           @grid.should_receive(:apply_filter).with(@mock_model, "name", "China")
           controller.send(:construct_filters)
         end
-        
+
         it "should do nothing when calling construct_filters if no filter params given" do
           controller.stub!(:params).and_return({})
           @grid.should_not_receive(:apply_filter)
           controller.send(:construct_filters)
         end
-        
+
         it "should invoke limit and offset on the query according to params count and offset when calling parse_pagination if params given" do
           limited = []
           offseted = []
@@ -98,10 +98,10 @@ describe CountriesController, :type => :controller do
           limited.should_receive(:offset).with(200)
           controller.send(:parse_pagination)
         end
-        
+
         it "should invoke limit and offset on the query with default value when calling parse_pagination if params not given " do
           limited = []
-          offseted = [] 
+          offseted = []
           controller.stub!(:params).and_return({})
           controller.query.stub!(:limit) { limited }
           limited.stub!(:offset) { offseted }
@@ -109,27 +109,27 @@ describe CountriesController, :type => :controller do
           limited.should_receive(:offset).with(0)
           controller.send(:parse_pagination)
         end
-        
+
         it "should invoke order on query when calling parse_ordering if params given" do
           @grid.stub!(:sql_columns) { ["name", "code"] }
           controller.stub!(:params).and_return({:sort_col => "code", :sort_dir => "DESC"})
           controller.query.should_receive(:order).with("code DESC")
           controller.send(:parse_ordering)
         end
-        
+
         it "should invoke order on query with default value when calling parse_ordering if params not given" do
           @grid.stub!(:sql_columns) { ["name", "code"] }
           controller.stub!(:params).and_return({})
           controller.query.should_receive(:order).with("name ASC")
           controller.send(:parse_ordering)
         end
-        
+
         it "should invoke select on query when calling add_select" do
           @grid.stub!(:sql_select) { "sql_select" }
           controller.query.should_receive(:select).with("sql_select")
           controller.send(:add_select)
         end
-        
+
         it "should return a json object after calling render_json" do
           @grid.stub!(:arraify) { ["China", "USA"] }
           @grid.should_receive(:arraify)
@@ -143,7 +143,7 @@ describe CountriesController, :type => :controller do
         end
       end
     end
-    
+
     describe "post 'create'" do
       describe "with valid params" do
         it "assigns a newly created record as @record" do
@@ -151,11 +151,11 @@ describe CountriesController, :type => :controller do
           post :create, :country => {'these' => 'params'}
           assigns(:record).should be(mock_country)
         end
-        
+
         it "render success json if format json" do
           @grid.model.stub(:new) { mock_country(:save => true) }
           post :create, :country => {}, :format => :json
-          response.body.should == {:success => true}.to_json 
+          response.body.should == {:success => true}.to_json
         end
       end
 
@@ -165,16 +165,16 @@ describe CountriesController, :type => :controller do
           post :create, :country => {'these' => 'params'}
           assigns(:record).should be(mock_country)
         end
-      
+
         it "render failure json and error message if format json" do
           @grid.model.stub(:new) { mock_country(:save => false) }
           mock_country(:save => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
-          post :create, :country => {}, :format => :json  
+          post :create, :country => {}, :format => :json
           response.body.should == {:success => false, :error_message => "country_errors" }.to_json
         end
       end
     end
-    
+
     describe "post 'update'" do
       describe "with valid params" do
         it "updates the requested record" do
@@ -188,11 +188,11 @@ describe CountriesController, :type => :controller do
           put :update, :id => "1", :item => {'these' => 'params'}
           assigns(:record).should be(mock_country)
         end
-        
+
         it "render success json if format json" do
           @grid.model.stub(:find) { mock_country(:update_attributes => true) }
           put :update, :id => "1", :item => {'these' => 'params'}, :format => :json
-          response.body.should == {:success => true}.to_json 
+          response.body.should == {:success => true}.to_json
         end
       end
 
@@ -202,7 +202,7 @@ describe CountriesController, :type => :controller do
           put :update, :id => "1", :item => {'these' => 'params'}
           assigns(:record).should be(mock_country)
         end
-        
+
         it "render failure json and error message if format json" do
           @grid.model.stub(:find) { mock_country(:update_attributes => false) }
           mock_country(:update_attributes => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
@@ -211,42 +211,42 @@ describe CountriesController, :type => :controller do
         end
       end
     end
-    
+
     describe "delete 'destroy'" do
       before :each do
         #@grid.model.stub!(:transaction) { nil }
       end
-      
+
       it "success to destroy the requested county" do
         ids = ['37','38']
         mock_country_1 = mock("Country_1")
         mock_country_2 = mock("Country_2")
-        mock_countries = [mock_country_1, mock_country_2] 
-        
+        mock_countries = [mock_country_1, mock_country_2]
+
         @grid.model.stub!(:find).with(ids).and_return(mock_countries)
         @grid.model.should_receive(:transaction).and_yield
         mock_countries.should_receive(:each).and_yield(mock_country_1).and_yield(mock_country_2)
-        
+
         mock_country_1.should_receive(:destroy)
         mock_country_2.should_receive(:destroy)
-        
+
         delete :destroy, :id => "37,38", :format => :json
         response.body.should == {:success => true}.to_json
       end
-      
+
       it "fails to destroy the requested county" do
         ids = ['37','38']
         mock_country_1 = mock("Country_1")
         mock_country_2 = mock("Country_2")
-        mock_countries = [mock_country_1, mock_country_2] 
-        
+        mock_countries = [mock_country_1, mock_country_2]
+
         # assume mock_country_1 destroy failed
         mock_country_1.stub!(:destroy).and_raise(Exception.new("can't destroy"))
-        
+
         @grid.model.stub!(:find).with(ids).and_return(mock_countries)
         @grid.model.should_receive(:transaction).and_yield
         mock_countries.should_receive(:each).and_yield(mock_country_1).and_yield(mock_country_2)
-        
+
         mock_country_1.should_receive(:destroy)
         mock_country_2.should_not_receive(:destroy)
 
@@ -255,30 +255,115 @@ describe CountriesController, :type => :controller do
       end
     end
   end
-  
-  describe "Self defined methods" do    
+
+  describe "Self defined methods" do
     it "should include actions from WulinMaster::Actions" do
       controller.class.should_receive(:send).with(:include, WulinMaster::Actions)
       controller.class.load_actions
     end
-    
+
     it "should indicate the screen by invoking controller_for_screen" do
       controller.class.should respond_to(:controller_for_screen)
-      
+
       @event_screen = mock("Screen")
+      controller.class.should_receive(:load_actions)
+
       controller.class.controller_for_screen(@event_screen)
+      controller.class.screen.should == @event_screen
     end
-    
+
     it "should indicate the main grid it belongs to by involking controller_for_grid" do
       controller.class.should respond_to(:controller_for_grid)
-      @event = mock("Grid")
-      
-      controller.class.controller_for_grid(@event)
+
+      @event_grid = WulinMaster::Grid.new("event")
+      WulinMaster::Grid.stub!(:get).with("event") { @event_grid }
+
+      WulinMaster::Grid.should_receive(:get).with("event")
+      controller.class.should_receive(:load_actions)
+
+      controller.class.controller_for_grid("event")
+      controller.class.grid.should == @event_grid
+      @event_grid.controller_class.should == controller.class
+    end
+
+
+    describe "add callbacks" do
+      it 'can add callbacks to the controller' do
+        controller.should respond_to(:add_callback)
+      end
+
+      it 'should add the method name to callbacks if invoke add_callback without block' do
+        mock_method = mock("Method")
+        controller.callbacks.should == nil
+        controller.add_callback(:before_query, mock_method)
+        controller.callbacks.should == {before_query: [mock_method]}
+      end
+
+      it 'should save the block to callbacks if invoke add_callback with a block' do
+        mock_block = mock("Block")
+        controller.callbacks.should == nil
+        controller.add_callback(:before_query) do
+          mock_block
+        end
+        controller.callbacks.should have_key(:before_query)
+        controller.callbacks[:before_query].length.should == 1
+        controller.callbacks[:before_query].first.should be_a_kind_of(Proc)
+      end
+    end
+
+
+
+    describe "fire callbacks" do
+      before :each do
+        @mock_callbacks = mock("callbacks")
+        @mock_cbs = mock("some_callbacks")
+      end
+
+      it 'can fire callbacks of the controler' do
+        controller.should respond_to(:fire_callbacks)
+      end
+
+      it 'should do nothing i"f no callbacks existing' do
+        controller.stub!(:callbacks) {nil}
+        controller.should_not_receive(:callbacks).with("before_query")
+
+        controller.fire_callbacks("before_query")
+      end
+
+      it 'should do nothing if not found specified callbacks or specified callbacks has no callback in it' do
+        controller.stub!(:callbacks) {@mock_callbacks}
+        controller.stub!(:callbacks).with("before") {@mock_cbs}
+        @mock_cbs.stub!(:blank?) {true}
+
+        @mock_cbs.should_not_receive(:each)
+        controller.fire_callbacks("before")
+      end
+
+
+      it 'should invoke every callback in the specified callbacks if found' do
+        @cb_1 = mock("callback")
+        @cb_2 = mock("callback")
+        @cb_3 = mock("callback")
+
+        @cb_1.stub!(:class) {Proc}
+        controller.stub!(:respond_to?).with(@cb_2) {true}
+        controller.stub!(:respond_to?).with(@cb_3) {false}
+
+        @mock_cbs = [@cb_1, @cb_2, @cb_3]
+
+        controller.stub!(:callbacks) {@mock_callbacks}
+        controller.stub!(:callbacks).with("before") {@mock_cbs}
+
+        @mock_cbs.should_receive(:each).and_yield(@cb_1).and_yield(@cb_2).and_yield(@cb_3)
+        @cb_1.should_receive(:call)   # should call proc
+        controller.should_receive(:send).with(@cb_2)    # should invoke existing method
+        controller.should_not_receive(:send).with(@cb_3)    # should not invoke not-existing method
+
+        controller.fire_callbacks("before")
+
+
+      end
     end
   end
 end
 
-  
-  
-
-  

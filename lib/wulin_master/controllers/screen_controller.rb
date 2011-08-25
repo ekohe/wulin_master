@@ -35,7 +35,7 @@ module WulinMaster
     end
 
     def render_grid(grid_name)
-      return "Grid not found '#{grid_name}'" unless screen.grids.map(&:name).include?(grid_name.to_sym) 
+      return "Grid not found '#{grid_name}'" unless screen.grids.map(&:name).include?(grid_name.to_sym)
       grid = screen.grids.find {|grid| grid.name == grid_name}
       grid.render
     end
@@ -43,7 +43,7 @@ module WulinMaster
     # Callbacks
     #
 
-    def self.add_callback(name, method_name=nil)
+    def add_callback(name, method_name=nil)
       @callbacks ||= {}
       @callbacks[name] ||= []
       if block_given?
@@ -54,17 +54,21 @@ module WulinMaster
     end
 
     def fire_callbacks(name)
-      return unless @callbacks
-      callbacks = @callbacks[name]
+      return unless callbacks
+      cbs = callbacks(name)
 
-      return if callbacks == nil or callbacks.size == 0
-      callbacks.each do |callback|
-        if callback.class == Proc
-          callback.call
+      return if cbs.blank?
+      cbs.each do |cb|
+        if cb.class == Proc
+          cb.call
         else
-          self.send(callback) if self.respond_to?(callback)
+          self.send(cb) if self.respond_to?(cb)
         end
       end
+    end
+
+    def callbacks(name=nil)
+      name ? @callbacks[name] : @callbacks
     end
 
     private
@@ -75,5 +79,4 @@ module WulinMaster
     end
   end
 end
-
 
