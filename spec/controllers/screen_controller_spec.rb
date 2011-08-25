@@ -3,7 +3,6 @@ require 'wulin_master/controllers/actions'
 require 'wulin_master/controllers/screen_controller'
 
 class CountriesController < WulinMaster::ScreenController
-  include ActionDispatch::Routing::UrlFor
   attr_accessor :query
 end
 
@@ -257,10 +256,24 @@ describe CountriesController, :type => :controller do
     end
   end
   
-  describe "Self defined methods" do
+  describe "Self defined methods" do    
     it "should include actions from WulinMaster::Actions" do
-      WulinMaster::ScreenController.should_receive(:send).with(:include, WulinMaster::Actions)
-      WulinMaster::ScreenController.load_actions
+      controller.class.should_receive(:send).with(:include, WulinMaster::Actions)
+      controller.class.load_actions
+    end
+    
+    it "should indicate the screen by invoking controller_for_screen" do
+      controller.class.should respond_to(:controller_for_screen)
+      
+      @event_screen = mock("Screen")
+      controller.class.controller_for_screen(@event_screen)
+    end
+    
+    it "should indicate the main grid it belongs to by involking controller_for_grid" do
+      controller.class.should respond_to(:controller_for_grid)
+      @event = mock("Grid")
+      
+      controller.class.controller_for_grid(@event)
     end
   end
 end
