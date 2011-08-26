@@ -360,8 +360,6 @@ describe CountriesController, :type => :controller do
         controller.should_not_receive(:send).with(@cb_3)    # should not invoke not-existing method
 
         controller.fire_callbacks("before")
-
-
       end
     end
   end
