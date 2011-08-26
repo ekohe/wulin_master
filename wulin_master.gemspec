@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ZenTest"
   s.add_development_dependency "autotest-rails"
   s.add_development_dependency "spork", "~> 0.9.0.rc9"
+  s.add_development_dependency "generator_spec"
 end

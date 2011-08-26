@@ -1,8 +1,8 @@
+require 'rails/generators'
 require 'rails/generators/active_record'
 
 module WulinMaster
   class ScreenAndGridGenerator < ActiveRecord::Generators::Base
-    Rails::Generators::Migration
     source_root File.expand_path('../templates', __FILE__)
     #argument :columns, :type => :array, :default => [], :banner => "column column"
     argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"

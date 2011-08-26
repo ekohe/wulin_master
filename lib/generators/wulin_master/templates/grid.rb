@@ -1,6 +1,6 @@
 class <%= class_name %>Grid < WulinMaster::GridConfig
   config do
-    title "<%= human_name %>"
+    title '<%= human_name %>'
 
     base_model <%= class_name %>
 
