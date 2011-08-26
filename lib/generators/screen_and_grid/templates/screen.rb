@@ -1,4 +1,4 @@
-class <%= class_name %>Screen < Screen
+class <%= class_name %>Screen < WulinMaster::Screen
   title "<%= human_name %>"
 
   path '/<%= table_name %>'

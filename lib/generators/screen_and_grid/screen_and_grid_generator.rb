@@ -4,7 +4,7 @@ class ScreenAndGridGenerator < ActiveRecord::Generators::Base
   #argument :columns, :type => :array, :default => [], :banner => "column column"
   argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
   class_option :model, :type => :boolean, :default => true, :description => "Create model"
-  class_option :indexes,    :type => :boolean, :default => true, :desc => "Add indexes for references and belongs_to columns"
+  class_option :indexes, :type => :boolean, :default => true, :desc => "Add indexes for references and belongs_to columns"
 
   def create_migration_file
     migration_template "migration.rb", "db/migrate/create_#{table_name}.rb"
@@ -23,7 +23,7 @@ class ScreenAndGridGenerator < ActiveRecord::Generators::Base
   end
 
   def create_model
-    template "model.rb", "app/models/views/#{underscored_name}.rb" if options.model?
+    template "model.rb", "app/models/#{underscored_name}.rb" if options.model?
   end
 
   def add_route
