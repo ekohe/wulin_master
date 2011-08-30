@@ -59,9 +59,27 @@
 				update_record(this.store, item);
 			};
 		
-			// Delete action
+			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
+				var ids = selectIds(name);
+				if (ids && confirm("Are you sure to do this?")) {
+					deleteRecord(getGrid(name).grid, ids);
+				} else {
+					alert("Please select one row first!");
+				}
+			});
+			
+			// Delete along "D" keypress
+			$(document).keypress(function(e){
+          if (e.which==100){
+						var ids = selectIds(name);
+						if (ids && confirm("Are you sure to do this?"))
+							deleteRecord(getGrid(name).grid, ids);
+          }
+      })
+
+			function selectIds(name) {
 				var _gird = getGrid(name).grid;
 				var selectedIndexs = _gird.getSelectedRows();
 				//console.log(selectedIndexs.length);
@@ -70,14 +88,11 @@
 						var item = _gird.store.loader.data[n];
 						return item['id']; 
 						}).join();
-					//console.log(ids)
-					if (confirm("Are you sure to do this?"))
-						deleteRecord(_gird, ids);	
-					
+					return ids;
 				} else {
-					alert("Please select one row first!");
+					return false;
 				}
-			});
+			}
 			
 			// Create action
 			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
