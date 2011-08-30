@@ -58,11 +58,20 @@
 			grid.onCellChange = function(currentRow, currentCell, item) {
 				update_record(this.store, item);
 			};
+			
+			grid.onClick = function(currentRow, currentCell, item) {
+				$.each(grids, function(i,hash){
+					if (hash.name != name)
+						hash.grid.setSelectedRows([]);
+				})
+			};
+			
+
 		
 			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
-				var ids = selectIds(name);
+				var ids = Tools.selectIds(name);
 				if (ids && confirm("Are you sure to do this?")) {
 					deleteRecord(getGrid(name).grid, ids);
 				} else {
@@ -70,38 +79,40 @@
 				}
 			});
 			
-			// Delete along "D" keypress
+			// keypress action
 			$(document).keypress(function(e){
-          if (e.which==100){
-						var ids = selectIds(name);
-						if (ids && confirm("Are you sure to do this?"))
+          if (e.which == 100) {  //keypress 'D' for delete
+						var ids = Tools.selectIds(name);
+						var isOpen = Tools.isOpen();
+						if (!isOpen && ids && confirm("Are you sure to do this?"))
 							deleteRecord(getGrid(name).grid, ids);
-          }
+							return false;
+          } else if (e.which == 99) {  //keypress 'C' for show dialog
+						var isOpen = Tools.isOpen();
+						if (isOpen) {
+							// Tools.closeDialog(name);
+							return false;
+						} else {
+							var createButton = $('.create_button');
+							var	gridSize = createButton.size();
+							if (gridSize > 0) {
+								if (gridSize == 1) {
+									Tools.openDialog(name);
+								} else if (Tools.selectIds(name)) {
+									Tools.openDialog(name);
+								} else {
+									return false;
+								} 
+							}
+						}
+					}
       })
 
-			function selectIds(name) {
-				var _gird = getGrid(name).grid;
-				var selectedIndexs = _gird.getSelectedRows();
-				//console.log(selectedIndexs.length);
-				if (selectedIndexs.length > 0) {
-					var ids = selectedIndexs.map(function(n, i) { 
-						var item = _gird.store.loader.data[n];
-						return item['id']; 
-						}).join();
-					return ids;
-				} else {
-					return false;
-				}
-			}
 			
 			// Create action
 			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
 			createButtonElement.click(function() {
-				$( '#' + name + '-form' ).dialog({
-					height: 300,
-					width: 500,
-					show: "blind",
-				});
+				Tools.openDialog(name);
 			});
 			createFormElement = $('#new_' + name);
 			createFormElement.submit(function() {
@@ -185,8 +196,8 @@
      		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
      		success: function(request) { 
 					if (request.success == true) {
-						resetForm(name);
-						$( '#' + name + '-form' ).dialog( "close" );
+						Tools.resetForm(name);
+						Tools.closeDialog(name);
 						grid.store.loader.reloadData();
 					} else {
 						alert(request.error_message);
@@ -195,13 +206,63 @@
    		});
 		}
 		
-		function resetForm(name) {
-			$(':input','#new_' + name).not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
-		}
+		//Common tools
+		var Tools = {
+			// Select record id attribute form grid
+			selectIds: function(name){
+				var _gird = getGrid(name).grid;
+				var selectedIndexs = _gird.getSelectedRows();
+				//console.log(selectedIndexs.length);
+				if (selectedIndexs.length > 0) {
+					var ids = selectedIndexs.map(function(n, i) { 
+						var item = _gird.store.loader.data[n];
+						return item['id']; 
+						}).join();
+					return ids;
+				} else {
+					return false;
+				}
+			},
+			
+			isOpen: function(name) {
+		 		return ($(".ui-dialog:visible").size() > 0);
+			},
+			
+			// Select grid names
+			selectGridNames: function() {
+				var gridContainers = $(".grid_container");
+				return $.map( gridContainers, function(container){
+					var gridName = $(container).attr("id").split("grid_")[1].trim();
+					if (gridName != '' && gridName != null && gridName != undefined)
+				  	return gridName;
+				});
+			},
+			
+			// Reset form
+			resetForm: function(name) {
+				$(':input','#new_' + name).not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+			},
+			
+			// Create and open dialog
+			openDialog: function(name) {
+				$( '#' + name + '-form' ).dialog({
+					height: 300,
+					width: 500,
+					show: "blind",
+					modal: true,
+					open: function(event, ui) { $( '#' + name + '-form input:text' ).first().focus(); }
+				});
+			},
+			
+			// Close dialog
+			closeDialog: function(name) {
+				$( '#' + name + '-form' ).dialog( "close" );
+			}
+			
+		};
+		
 
-		function format_data(item) {
-
-		}
+		function format_data(item) {}
 
 		function createLoadingIndicator(gridElement) {
 			var truncateThreshold = 35;
@@ -247,7 +308,7 @@
 				grid.grid.resizeCanvas();
 			});
 		}
-
+		
 		init();
 
 		return {
@@ -258,9 +319,11 @@
 			"createNewGrid": createNewGrid,
 			"getGrid": getGrid,
 			"resizeGrids": resizeGrids,
-			"buildIndicatorHtml": buildIndicatorHtml			
+			"buildIndicatorHtml": buildIndicatorHtml
 		};
 	}
+	
+	
 	$.extend(true, window, { GridManager: GridManager});
 	})(jQuery);
 
@@ -268,5 +331,3 @@
 	var gridManager = new GridManager();
 
 	$(window).resize(function() { gridManager.resizeGrids(); });
-
-
