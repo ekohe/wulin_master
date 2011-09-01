@@ -81,7 +81,11 @@
 			
 			// keypress action
 			$(document).keypress(function(e){
-          if (e.which == 100) {  //keypress 'D' for delete
+				var isOpen = Tools.isOpen();
+				if (isOpen) {
+					return true;
+				} else {
+					if (e.which == 100) {  //keypress 'D' for delete
 						var ids = Tools.selectIds(name);
 						var isOpen = Tools.isOpen();
 						if (!isOpen && ids && confirm("Are you sure to do this?")) {
@@ -90,25 +94,19 @@
 						}
 						return false;
           } else if (e.which == 99) {  //keypress 'C' for show dialog
-						var isOpen = Tools.isOpen();
-						if (isOpen) {
-							// Tools.closeDialog(name);
-							return false;
-						} else {
-							var gridContainers = $('.grid_container');
-							var	gridSize = gridContainers.size();
-							if (gridSize > 0) {
-								if (gridSize == 1) {
-									Tools.openDialog(name);
-								} else if (Tools.selectIds(name)) {
-									Tools.openDialog(name);
-								} else {
-									return false;
-								} 
+						var gridContainers = $('.grid_container');
+						var	gridSize = gridContainers.size();
+						if (gridSize > 0) {
+							if (gridSize == 1) {
+								Tools.openDialog(name);
+							} else if (Tools.selectIds(name)) {
+								Tools.openDialog(name);
 							}
+							return false;
 						}
 					}
-      })
+				}	
+      });
 
 			
 			// Create action
@@ -116,12 +114,16 @@
 			createButtonElement.click(function() {
 				Tools.openDialog(name);
 			});
-			createFormElement = $('#new_' + name);
-			createFormElement.submit(function() {
-		 		// if (confirm("Are you sure to do this?")) {
+			// Click 'Create' button
+			$('#' + name + '_submit').click(function() {
 				var _gird = getGrid(name).grid;
-				createRecord(_gird, name);
-		 		// }
+				Tools.createByAjax(_gird, name, false);
+			  return false;
+			});
+			// Click 'Create and Continue' button
+			$('#' + name + '_submit_continue').click(function() {
+				var _gird = getGrid(name).grid;
+				Tools.createByAjax(_gird, name, true);
 			  return false;
 			});
 		
@@ -188,28 +190,29 @@
 				}
 			})
 		}
-
-		// Create row along ajax
-		function createRecord(grid, name) {
-			var createFormElement = $('#new_' + name);
-			$.ajax({
-     		type:'POST',
-     		url: grid.store.path + '.json',
-     		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
-     		success: function(request) { 
-					if (request.success == true) {
-						Tools.resetForm(name);
-						Tools.closeDialog(name);
-						grid.store.loader.reloadData();
-					} else {
-						alert(request.error_message);
-					}
-				}
-   		});
-		}
 		
 		//Common tools
 		var Tools = {
+			// Record create along ajax
+			createByAjax: function(grid, name, contuine) {
+				var createFormElement = $('#new_' + name);
+				$.ajax({
+	     		type:'POST',
+	     		url: grid.store.path + '.json',
+	     		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
+	     		success: function(request) { 
+						if (request.success == true) {
+							Tools.resetForm(name);
+							if (!contuine)
+								Tools.closeDialog(name);
+							grid.store.loader.reloadData();
+						} else {
+							alert(request.error_message);
+						}
+					}
+	   		});
+			},
+			
 			// Select record id attribute form grid
 			selectIds: function(name){
 				var _gird = getGrid(name).grid;
