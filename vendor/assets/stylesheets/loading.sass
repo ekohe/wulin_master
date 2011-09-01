@@ -18,11 +18,12 @@ $loading_panel_height:  60px
   :border             1px solid #c9c9c9
   
   // CSS3 Galore
-  +text-shadow(#fff, 1px, 1px, 0)
+  +text-shadow(#fff 1px 1px 0)
   +border-radius(3px)
   +opacity(0.9)
-  +box-shadow(#888, 6px, 6px, 4px, 3px)
-  +radial-gradient(color-stops(#e5e5ef, #ddd))
+  +box-shadow(#888 6px 6px 4px 3px)
+  // +radial-gradient(color-stops(#e5e5ef, #ddd))
+  @include background-image(radial-gradient(#e5e5ef, #ddd))
   
   .loading_text
     :margin-top 10px
