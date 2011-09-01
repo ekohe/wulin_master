@@ -10,9 +10,11 @@
     <%- columns.each do |column| %>
     <%- column_name = column.name.to_s %>
     <%- datepicker_str << %!$( "##{entity_name}_#{column_name}" ).datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s == 'datetime'  %>
-    <div class="field">
+    <div class="field" name="<%= column_name %>">
       <label for="<%= entity_name %>_<%= column_name %>"><%= column.label %></label>
       <input id="<%= entity_name %>_<%= column_name %>" name="<%= entity_name %>[<%= column_name %>]" type="text" />
+      <div class="field_error">
+      </div>
     </div>
     <% end -%>
     <div class="submit"> 

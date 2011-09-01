@@ -201,6 +201,8 @@
 			// Record create along ajax
 			createByAjax: function(grid, name, contuine) {
 				var createFormElement = $('#new_' + name);
+				// clear all the error messages
+				createFormElement.find(".field_error").text("");
 				$.ajax({
 	     		type:'POST',
 	     		url: grid.store.path + '.json',
@@ -212,7 +214,13 @@
 								Tools.closeDialog(name);
 							grid.store.loader.reloadData();
 						} else {
-							alert(request.error_message);
+							for(key in request.error_message){
+							  var errors = "";
+							  for(i in request.error_message[key]){
+							    errors += (request.error_message[key][i] + " ")
+							  }		  
+							  createFormElement.find(".field[name=" + key + "]").find(".field_error").text(errors);
+							}
 						}
 					}
 	   		});
@@ -222,7 +230,6 @@
 			selectIds: function(name){
 				var _gird = getGrid(name).grid;
 				var selectedIndexs = _gird.getSelectedRows();
-				//console.log(selectedIndexs.length);
 				if (selectedIndexs.length > 0) {
 					var ids = selectedIndexs.map(function(n, i) { 
 						var item = _gird.store.loader.data[n];
@@ -260,7 +267,11 @@
 					width: 500,
 					show: "blind",
 					modal: true,
-					open: function(event, ui) { $( '#' + name + '-form input:text' ).first().focus(); }
+					open: function(event, ui) { $( '#' + name + '-form input:text' ).first().focus(); },
+					close: function(event, ui) { 
+					  $(this).find("input:text").val("");
+					  $(this).find(".field_error").text(""); 
+					}
 				});
 			},
 			

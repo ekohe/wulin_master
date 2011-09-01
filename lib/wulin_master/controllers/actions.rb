@@ -76,7 +76,7 @@ module WulinMaster
       message = if @record.save
         {:success => true }
       else
-        {:success => false, :error_message => @record.errors.full_messages.join("\n")}
+        {:success => false, :error_message => @record.errors}
       end
       respond_to do |format|
         format.json { render :json => message }
