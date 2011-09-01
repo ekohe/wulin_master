@@ -184,6 +184,10 @@
 					if(msg.success == true) {
 						grid.setSelectedRows([]);
 						grid.store.loader.reloadData();
+						var recordSize = ids.split(',').length;
+						var recordUnit = recordSize > 1 ? 'records' : 'record';
+						$('#indicators').before('<div class="notic_flash" id="' + ids + '_notice">' + recordSize + ' ' + recordUnit + ' records has been deleted!</div>');
+						$('#' + ids + '_notice').fadeOut(8000);
 					} else {
 						alert(msg.error_message);
 					}
