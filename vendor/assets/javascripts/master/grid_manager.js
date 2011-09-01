@@ -84,17 +84,19 @@
           if (e.which == 100) {  //keypress 'D' for delete
 						var ids = Tools.selectIds(name);
 						var isOpen = Tools.isOpen();
-						if (!isOpen && ids && confirm("Are you sure to do this?"))
+						if (!isOpen && ids && confirm("Are you sure to do this?")) {
 							deleteRecord(getGrid(name).grid, ids);
 							return false;
+						}
+						return false;
           } else if (e.which == 99) {  //keypress 'C' for show dialog
 						var isOpen = Tools.isOpen();
 						if (isOpen) {
 							// Tools.closeDialog(name);
 							return false;
 						} else {
-							var createButton = $('.create_button');
-							var	gridSize = createButton.size();
+							var gridContainers = $('.grid_container');
+							var	gridSize = gridContainers.size();
 							if (gridSize > 0) {
 								if (gridSize == 1) {
 									Tools.openDialog(name);

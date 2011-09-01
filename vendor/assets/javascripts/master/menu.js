@@ -78,15 +78,13 @@ function initialize_menu() {
   $("#menu li.item a").click(function() {
     $("#menu .active").removeClass("active");
     $(this).parent().addClass("active");
-    
     // State management
     var state = {};
     currentUrl = $(this).attr('href');
     state['url'] = currentUrl;
     $.bbq.pushState(state);
-    
     load_page(currentUrl);
-        
+    // resetGridsOnChangeMenu();
     return false;
   });
   
@@ -97,3 +95,12 @@ function initialize_menu() {
     return false;
   });
 }
+
+// function resetGridsOnChangeMenu() {
+// 	var grids = gridManager.grids;
+// 	if (grids.length > 0) {
+// 		$.each(grids, function(i, grid) {
+// 			grid.setSelectedRows([]);
+// 		});
+// 	}
+// }
