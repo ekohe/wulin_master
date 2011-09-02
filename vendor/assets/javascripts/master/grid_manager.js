@@ -65,8 +65,6 @@
 						hash.grid.setSelectedRows([]);
 				})
 			};
-			
-
 		
 			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
@@ -98,7 +96,8 @@
 						var	gridSize = gridContainers.size();
 						if (gridSize > 0) {
 							if (gridSize == 1) {
-								Tools.openDialog(name);
+								var gridName = gridContainers.attr('id').split('grid_')[1];
+								Tools.openDialog(gridName);
 							} else if (Tools.selectIds(name)) {
 								Tools.openDialog(name);
 							}
@@ -106,6 +105,7 @@
 						}
 						return false;
 					}
+					return false;
 				}	
       });
 
