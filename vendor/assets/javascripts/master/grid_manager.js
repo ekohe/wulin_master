@@ -65,8 +65,6 @@
 						hash.grid.setSelectedRows([]);
 				})
 			};
-			
-
 		
 			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
@@ -87,8 +85,7 @@
 				} else {
 					if (e.which == 100) {  //keypress 'D' for delete
 						var ids = Tools.selectIds(name);
-						var isOpen = Tools.isOpen();
-						if (!isOpen && ids && confirm("Are you sure to do this?")) {
+						if (ids && confirm("Are you sure to do this?")) {
 							deleteRecord(getGrid(name).grid, ids);
 							return false;
 						}
@@ -98,7 +95,8 @@
 						var	gridSize = gridContainers.size();
 						if (gridSize > 0) {
 							if (gridSize == 1) {
-								Tools.openDialog(name);
+								var gridName = gridContainers.attr('id').split('grid_')[1];
+								Tools.openDialog(gridName);
 							} else if (Tools.selectIds(name)) {
 								Tools.openDialog(name);
 							}
@@ -106,6 +104,7 @@
 						}
 						return false;
 					}
+					return false;
 				}	
       });
 
@@ -187,7 +186,7 @@
 						grid.store.loader.reloadData();
 						var recordSize = ids.split(',').length;
 						var recordUnit = recordSize > 1 ? 'records' : 'record';
-						$('#indicators').before('<div class="notic_flash" id="' + ids + '_notice">' + recordSize + ' ' + recordUnit + ' records has been deleted!</div>');
+						$('#indicators').before('<div class="notic_flash" id="' + ids + '_notice">' + recordSize + ' ' + recordUnit + ' has been deleted!</div>');
 						$('#' + ids + '_notice').fadeOut(8000);
 					} else {
 						alert(msg.error_message);
