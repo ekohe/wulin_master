@@ -199,7 +199,7 @@
 		//Common tools
 		var Tools = {
 			// Record create along ajax
-			createByAjax: function(grid, name, contuine) {
+			createByAjax: function(grid, name, continue_on) {
 				var createFormElement = $('#new_' + name);
 				// clear all the error messages
 				createFormElement.find(".field_error").text("");
@@ -210,7 +210,7 @@
 	     		success: function(request) { 
 						if (request.success == true) {
 							Tools.resetForm(name);
-							if (!contuine)
+							if (!continue_on)
 								Tools.closeDialog(name);
 							grid.store.loader.reloadData();
 						} else {
