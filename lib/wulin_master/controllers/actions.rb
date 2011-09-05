@@ -74,7 +74,7 @@ module WulinMaster
     def create
       @record = grid.model.new(params[grid.name.to_sym])
       message = if @record.save
-        {:success => true }
+        {:success => true, id: @record.id }
       else
         {:success => false, :error_message => @record.errors}
       end

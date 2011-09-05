@@ -14,7 +14,8 @@
 			enableAddRow: false,
 			enableCellNavigation: true,
 			asyncEditorLoading: false,
-			autoEdit: false
+			autoEdit: false,
+			cellFlashingCssClass: "master_flashing"
 		}
 
 		function init() {
@@ -59,13 +60,14 @@
 				update_record(this.store, item);
 			};
 			
+			// handle multiple grids: select one,release previou one
 			grid.onClick = function(currentRow, currentCell, item) {
 				$.each(grids, function(i,hash){
 					if (hash.name != name)
 						hash.grid.setSelectedRows([]);
 				})
 			};
-		
+			
 			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
@@ -73,7 +75,7 @@
 				if (ids && confirm("Are you sure to do this?")) {
 					deleteRecord(getGrid(name).grid, ids);
 				} else {
-					alert("Please select one row first!");
+					alert("Please select more than one row first!");
 				}
 			});
 			
@@ -83,14 +85,14 @@
 				if (isOpen) {
 					return true;
 				} else {
-					if (e.which == 100) {  //keypress 'D' for delete
+					if (e.which == 100) {  // keypress 'D' for delete
 						var ids = Tools.selectIds(name);
 						if (ids && confirm("Are you sure to do this?")) {
 							deleteRecord(getGrid(name).grid, ids);
 							return false;
 						}
 						return false;
-          } else if (e.which == 99) {  //keypress 'C' for show dialog
+          } else if (e.which == 99) {  // keypress 'C' for show dialog
 						var gridContainers = $('.grid_container');
 						var	gridSize = gridContainers.size();
 						if (gridSize > 0) {
@@ -103,8 +105,9 @@
 							return false;
 						}
 						return false;
+					} else {
+						return true;
 					}
-					return false;
 				}	
       });
 
@@ -116,14 +119,12 @@
 			});
 			// Click 'Create' button
 			$('#' + name + '_submit').click(function() {
-				var _gird = getGrid(name).grid;
-				Tools.createByAjax(_gird, name, false);
+				Tools.createByAjax(name, false);
 			  return false;
 			});
 			// Click 'Create and Continue' button
 			$('#' + name + '_submit_continue').click(function() {
-				var _gird = getGrid(name).grid;
-				Tools.createByAjax(_gird, name, true);
+				Tools.createByAjax(name, true);
 			  return false;
 			});
 		
@@ -184,10 +185,11 @@
 					if(msg.success == true) {
 						grid.setSelectedRows([]);
 						grid.store.loader.reloadData();
+						$('.notic_flash').remove();
 						var recordSize = ids.split(',').length;
 						var recordUnit = recordSize > 1 ? 'records' : 'record';
-						$('#indicators').before('<div class="notic_flash" id="' + ids + '_notice">' + recordSize + ' ' + recordUnit + ' has been deleted!</div>');
-						$('#' + ids + '_notice').fadeOut(8000);
+						$('#indicators').before('<div class="notic_flash">' + recordSize + ' ' + recordUnit + ' has been deleted!</div>');
+						$('.notic_flash').fadeOut(7000);
 					} else {
 						alert(msg.error_message);
 					}
@@ -198,7 +200,8 @@
 		//Common tools
 		var Tools = {
 			// Record create along ajax
-			createByAjax: function(grid, name, continue_on) {
+			createByAjax: function(name, continue_on) {
+				var grid = getGrid(name).grid;
 				var createFormElement = $('#new_' + name);
 				// clear all the error messages
 				createFormElement.find(".field_error").text("");
@@ -209,9 +212,14 @@
 	     		success: function(request) { 
 						if (request.success == true) {
 							Tools.resetForm(name);
-							if (!continue_on)
-								Tools.closeDialog(name);
+							if (!continue_on) { Tools.closeDialog(name); }
 							grid.store.loader.reloadData();
+							// flash new create row
+							var createdIndex = Tools.findCreatedIndex(name, request.id);
+							setTimeout(function(){
+								grid.flashCell(createdIndex, null, 300)
+							}, 500)
+							
 						} else {
 							for(key in request.error_message){
 							  var errors = "";
@@ -240,6 +248,12 @@
 				}
 			},
 			
+			// find the row after a new row was created
+			findCreatedIndex: function(name, recordId) {
+				return $(gridElementPrefix + name + " .slick-row").size();
+			},
+			
+			// return true if the dialog of grid with "name" is open, unless return false 
 			isOpen: function(name) {
 		 		return ($(".ui-dialog:visible").size() > 0);
 			},

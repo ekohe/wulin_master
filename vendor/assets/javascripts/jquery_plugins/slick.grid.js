@@ -1846,15 +1846,27 @@ if (!jQuery.fn.drag) {
         function flashCell(row, cell, speed) {
             speed = speed || 100;
             if (rowsCache[row]) {
-                var $cell = $(rowsCache[row]).children().eq(cell);
+                // jimmy and xuhao fork at 2011/09/05
+                var $cells;
+                if(cell != null){
+                  $cells = [$(rowsCache[row]).children().eq(cell)];
+                } else {
+                  $cells = $(rowsCache[row]).children();
+                }
 
                 function toggleCellClass(times) {
                     if (!times) return;
                     setTimeout(function() {
-                        $cell.queue(function() {
-                            $cell.toggleClass(options.cellFlashingCssClass).dequeue();
-                            toggleCellClass(times-1);
+                        $cells.each(function(){
+                          $(this).queue(function() {
+                              $(this).toggleClass(options.cellFlashingCssClass).dequeue();
+                              toggleCellClass(times-1);
+                          });
                         });
+                        // $cell.queue(function() {
+                        //     $cell.toggleClass(options.cellFlashingCssClass).dequeue();
+                        //     toggleCellClass(times-1);
+                        // });
                     },
                     speed);
                 }
