@@ -1292,7 +1292,21 @@ if (!jQuery.fn.drag) {
             selectedRows = rows.concat();
             selectedRowsLookup = lookup;
         }
-
+        
+        // ----------------------- hack for terra nova -----------------------
+        function getRows() {
+          return rowsCache;
+        }
+      
+        function getRowAt(i){
+          return rowsCache[i];
+        }
+        
+        function isEditing(){
+          return currentEditor != null;
+        }
+        // ------------------------------------------------------------------
+        
         function getColumns() {
             return columns;
         }
@@ -1863,10 +1877,6 @@ if (!jQuery.fn.drag) {
                               toggleCellClass(times-1);
                           });
                         });
-                        // $cell.queue(function() {
-                        //     $cell.toggleClass(options.cellFlashingCssClass).dequeue();
-                        //     toggleCellClass(times-1);
-                        // });
                     },
                     speed);
                 }
@@ -2722,6 +2732,11 @@ if (!jQuery.fn.drag) {
             "setColumns":                   setColumns,
             "getAllColumns":                getAllColumns,
             "setAllColumns":                setAllColumns,
+            // ----------------- hack for terra nova --------------------------
+            "getRows":                      getRows,
+            "getRowAt":                     getRowAt,
+            "isEditing":                    isEditing,
+            // ----------------------------------------------------------------
             "getOptions":                   getOptions,
             "setOptions":                   setOptions,
             "getData":                      getData,
