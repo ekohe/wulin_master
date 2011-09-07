@@ -8,7 +8,7 @@
 		var createElementSuffix = ' .grid-header .create_button';
 
 		var grids = [];
-
+    var createdIds = [];
 		var options = {
 			editable: true,
 			enableAddRow: false,
@@ -203,6 +203,7 @@
 		return {
 			// properties
 			"grids": grids,
+			'createdIds': createdIds,
 
 			// methods
 			"createNewGrid": createNewGrid,

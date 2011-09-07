@@ -62,6 +62,22 @@ var Ui = {
 	// Close dialog
 	closeDialog: function(name) {
 		$( '#' + name + '-form' ).dialog( "close" );
+		setTimeout(function(){
+		  Ui.flashCreatedRows(name);
+		  gridManager.createdIds = [];
+	  }, 500);
+		
+	},
+	
+	flashCreatedRows: function(name) {
+	  var grid = gridManager.getGrid(name);
+	  var createdRows = [];
+	  $.each(gridManager.createdIds, function(){
+	    createdRows.push(grid.getRowByRecordId(this));
+	  });
+	  $.each(createdRows, function(){
+      $(this).effect( 'highlight', {}, 2000 );
+	  });
 	},
 	
 	// find the selected grid
