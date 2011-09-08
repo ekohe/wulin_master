@@ -42,7 +42,7 @@ module WulinMaster
     end
     
     def update
-      params[:item].delete_if {|k,v| v == "null"}
+      params[:item].delete_if {|k,v| v == "null" || k == "id" }
       @record = grid.model.find(params[:id]) 
       message = if @record.update_attributes(params[:item])
         {:success => true }
