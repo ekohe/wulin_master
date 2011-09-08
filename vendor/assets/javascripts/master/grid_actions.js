@@ -55,10 +55,6 @@ var Ui = {
 			close: function(event, ui) { 
 			  $(this).find("input:text").val("");
 			  $(this).find(".field_error").text(""); 
-			  setTimeout(function(){
-    		  Ui.flashCreatedRows(name);
-    		  gridManager.createdIds = [];
-    	  }, 300);
 			}
 		});
 	},
@@ -108,7 +104,7 @@ var Ui = {
   	if (isOpen || isEditing) {
   		return true;
   	} else {
-  		if (e.which == 100) {  // keypress 'D' for delete
+  		if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
   			var ids = Ui.selectIds(grid);
   			if (ids) {
   			  if(confirm("Are you sure to do this?")) {
@@ -117,7 +113,7 @@ var Ui = {
   			  }
   		  }
   			return false;
-      } else if (e.which == 99) {  // keypress 'C' for show dialog
+      } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog
   			var	gridSize = gridManager.grids.length;
   			if (gridSize > 0) {
   				if (gridSize == 1) {
