@@ -12,18 +12,9 @@ Requests = {
    		success: function(request) { 
 				if (request.success == true) {
 					gridManager.createdIds.push(request.id);
-					
 					Ui.resetForm(grid.name);
 					grid.store.loader.reloadData();
-					
 					if (!continue_on) { Ui.closeDialog(grid.name); }
-					
-					// flash new create row
-          // var createdIndex = Ui.findCreatedIndex(name, request.id);
-          // setTimeout(function(){
-          //  grid.flashCell(createdIndex, null, 300)
-          // }, 500);
-					
 				} else {
 					for(key in request.error_message){
 					  var errors = "";

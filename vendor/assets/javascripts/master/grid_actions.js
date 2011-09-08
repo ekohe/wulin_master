@@ -55,6 +55,10 @@ var Ui = {
 			close: function(event, ui) { 
 			  $(this).find("input:text").val("");
 			  $(this).find(".field_error").text(""); 
+			  setTimeout(function(){
+    		  Ui.flashCreatedRows(name);
+    		  gridManager.createdIds = [];
+    	  }, 300);
 			}
 		});
 	},
@@ -65,10 +69,10 @@ var Ui = {
 		setTimeout(function(){
 		  Ui.flashCreatedRows(name);
 		  gridManager.createdIds = [];
-	  }, 500);
-		
+	  }, 300);
 	},
 	
+	// Highlight the created rows after close the dialog
 	flashCreatedRows: function(name) {
 	  var grid = gridManager.getGrid(name);
 	  var createdRows = [];
@@ -76,7 +80,7 @@ var Ui = {
 	    createdRows.push(grid.getRowByRecordId(this));
 	  });
 	  $.each(createdRows, function(){
-      $(this).effect( 'highlight', {}, 2000 );
+      $(this).effect( 'highlight', {}, 5000 );
 	  });
 	},
 	
