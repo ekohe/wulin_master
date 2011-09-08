@@ -1,10 +1,10 @@
-<div id='grid_<%= grid.name %>' class='grid_container'>
-  <div class='grid-header' style='<%= grid.style_for_header %>'>
+<div id='grid_<%= grid.name %>' class='grid_container' style='<%= grid.style_for_container %>'>
+  <div class='grid-header' style='<%#= grid.style_for_header %>'>
     <%= grid.toolbar.render %>
     <h2><%= grid.title %></h2>
   </div>
   <div class='grid' style='<%= grid.style_for_grid %>'></div>
-  <div class='pager' style='<%= grid.style_for_pager %>'></div>
+  <div class='pager' style='<%#= grid.style_for_pager %>'></div>
   <script type='text/javascript'>
   gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', <%= grid.path.inspect.html_safe %>, <%= grid.javascript_column_model.html_safe %>);
   </script>

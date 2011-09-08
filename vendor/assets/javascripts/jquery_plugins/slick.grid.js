@@ -1621,7 +1621,9 @@ if (!jQuery.fn.drag) {
                     removeRowFromCache(i);
                 }
             }
-            th = Math.max(options.rowHeight * newRowCount, viewportH - scrollbarDimensions.height);
+            // hack for terra nova, 2011.09.09
+            var hasHorizontalBar = ($viewport[0].scrollWidth != $viewport[0].clientWidth);
+            th = Math.max(options.rowHeight * newRowCount, viewportH - (hasHorizontalBar ? scrollbarDimensions.height : 0));
             if (th < maxSupportedCssHeight) {
                 // just one page
                 h = ph = th;

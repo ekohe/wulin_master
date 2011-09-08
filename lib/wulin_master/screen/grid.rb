@@ -116,7 +116,16 @@ module WulinMaster
       if fill_window?
         "position: absolute; top:59px; left:0; right:0; bottom:26px;"
       else
-        "height: #{self.height}px; width: #{self.width}px;"
+        # "height: #{self.height}; width: #{self.width};"
+        "height: auto;"
+      end
+    end
+    
+    def style_for_container
+      if fill_window?
+        "position: absolute; top:59px; left:0; right:0; bottom:26px;"
+      else
+        "height: #{self.height}; width: #{self.width};"
       end
     end
 
@@ -124,7 +133,7 @@ module WulinMaster
       if fill_window?
         "position: absolute; left:0; right:0; bottom:0;"
       else
-        "width: #{self.width}px"
+        "width: #{self.width}"
       end
     end
 
@@ -132,7 +141,7 @@ module WulinMaster
       if fill_window?
         "position: absolute; top:0; left:0; right:0;"
       else
-        "width: #{self.width}px"
+        "width: #{self.width}"
       end
     end
 

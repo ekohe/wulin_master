@@ -10,22 +10,23 @@ body
   
 .grid_container
   :float left
-  :margin-right 2px
   .grid-header
     :height                   59px
     :background               url('/assets/ui/top_bar_bg.png')
-    :padding-top 1px
     h2
-      :margin-top             $margin * 2
       :padding-left           $margin
       :font-size              16px
       :font-weight            bold
       :color                  #555
+      :display                inline-block
       +text-shadow(#efefef 1px 1px 0)
       
   .pager
     :height                   27px
-
+  
+  .grid-header, .grid, .pager
+    border-right: 1px solid #A5A5A5
+    
 #content
   :position                   absolute
   :top                        0px
@@ -36,4 +37,6 @@ body
   :background                 $background_color url('/assets/ui/content_background.png') repeat-x top left
   
 #screen_content
-  :text-align                 left
+  :text-align left
+  :height     100%
+  :width      100%

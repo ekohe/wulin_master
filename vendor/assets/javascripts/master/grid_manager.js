@@ -70,6 +70,10 @@
 			
 			// Set connection manager
 			// var connectionManager = new ConnectionManager();
+			
+			// Set grid body height after rendering
+			setGridBodyHeight(gridElement);
+			grid.resizeCanvas();
 
 			// Load the first page
 			grid.onViewportChanged();
@@ -164,7 +168,7 @@
 			var indicators = $("#activity #indicators");
 
 			// Remove init indicator if it exists.
-			indicators.find("#init_menu").remove();
+			indicators.find("#init_menu_indicator").remove();
 
 			var indicator = indicators.find(".loading_indicator#" + id);
 
@@ -178,7 +182,7 @@
 		}
 
 		function buildIndicatorHtml(id, title){
-			return "<div class='loading_indicator' id='" + id + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
+			return "<div class='loading_indicator' id='" + id + "_indicator'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
 		}
 
 		function getGrid(name) {
@@ -191,9 +195,20 @@
 
 			return theGrid;
 		}
+		
+		function setGridBodyHeight(gridElement) {
+		  var container = gridElement.parent(".grid_container");
+		  var ch = container.height();
+		  var hh = container.find(".grid-header").height();
+	    var ph = container.find(".pager").height();
+	    var gh = ch - hh - ph;
+	    gridElement.css("height", gh - 1);
+		}
 
-		function resizeGrids() {
+		function resizeGrids() {		  
 			$.each(grids, function() {
+			  var gridElement = $(gridElementPrefix + this.name + gridElementSuffix);
+			  setGridBodyHeight(gridElement);
 				this.resizeCanvas();
 			});
 		}
@@ -221,3 +236,4 @@
 	var gridManager = new GridManager();
 
 	$(window).resize(function() { gridManager.resizeGrids(); });
+	
