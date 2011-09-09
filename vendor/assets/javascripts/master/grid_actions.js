@@ -34,7 +34,7 @@ var Ui = {
 		var gridContainers = $(".grid_container");
 		return $.map( gridContainers, function(container){
 			var gridName = $(container).attr("id").split("grid_")[1].trim();
-			if (gridName != '' && gridName != null && gridName != undefined)
+			if (gridName)
 		  	return gridName;
 		});
 	},
@@ -55,6 +55,10 @@ var Ui = {
 			close: function(event, ui) { 
 			  $(this).find("input:text").val("");
 			  $(this).find(".field_error").text(""); 
+			  setTimeout(function(){
+    		  Ui.flashCreatedRows(name);
+    		  gridManager.createdIds = [];
+    	  }, 300);
 			}
 		});
 	},

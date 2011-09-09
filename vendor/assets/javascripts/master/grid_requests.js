@@ -1,5 +1,5 @@
 // ------------------------------ CRUD -------------------------------------
-Requests = {
+var Requests = {
   // Record create along ajax
 	createByAjax: function(grid, continue_on) {
 		var createFormElement = $('#new_' + grid.name);
