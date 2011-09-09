@@ -9,7 +9,7 @@ module WulinMaster
       @javascript = options.delete(:javascript)
       @icon = options.delete(:icon)
 
-      options[:href] = '#' if options[:href].nil?
+      options[:href] = '#' unless options[:href]
       @options = options
     end
 

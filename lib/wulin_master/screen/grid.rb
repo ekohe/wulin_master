@@ -22,9 +22,6 @@ module WulinMaster
     end
 
     # Default toolbar
-    # Positon control:
-    # :before => toolbar_title  # before the toolbar which with title equal to toolbar_title
-    # :after => toolbar_title  # after the toolbar which with title equal to toolbar_title
     def self.add_to_default_toolbar(item, options={})
       new_item = if item.class == ToolbarItem
         item
@@ -112,38 +109,40 @@ module WulinMaster
       ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self})
     end
 
-    def style_for_grid
-      if fill_window?
-        "position: absolute; top:59px; left:0; right:0; bottom:26px;"
-      else
-        # "height: #{self.height}; width: #{self.width};"
-        "height: auto;"
-      end
-    end
-    
     def style_for_container
       if fill_window?
-        "position: absolute; top:59px; left:0; right:0; bottom:26px;"
+        # "position: absolute; top:59px; left:0; right:0; bottom:26px;"
+        "height: 100%; width: 100%; position: absolute; left:0; right:0;"
       else
         "height: #{self.height}; width: #{self.width};"
       end
     end
+    
+    # The below methods is not necessary
+    #
+    # def style_for_grid
+    #   if fill_window?
+    #     "position: absolute; top:59px; left:0; right:0; bottom:26px;"
+    #   else
+    #     "height: #{self.height}; width: #{self.width};"
+    #   end
+    # end
 
-    def style_for_pager
-      if fill_window?
-        "position: absolute; left:0; right:0; bottom:0;"
-      else
-        "width: #{self.width}"
-      end
-    end
+    # def style_for_pager
+    #   if fill_window?
+    #     "position: absolute; left:0; right:0; bottom:0;"
+    #   else
+    #     "width: #{self.width}"
+    #   end
+    # end
 
-    def style_for_header
-      if fill_window?
-        "position: absolute; top:0; left:0; right:0;"
-      else
-        "width: #{self.width}"
-      end
-    end
+    # def style_for_header
+    #   if fill_window?
+    #     "position: absolute; top:0; left:0; right:0;"
+    #   else
+    #     "width: #{self.width}"
+    #   end
+    # end
 
     # Return the base model
     def model

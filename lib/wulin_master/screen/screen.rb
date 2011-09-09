@@ -26,7 +26,7 @@ module WulinMaster
     end
     
     def self.path(new_path=nil)
-      @path = new_path unless new_path == nil
+      @path = new_path if new_path
       @path
     end
 
