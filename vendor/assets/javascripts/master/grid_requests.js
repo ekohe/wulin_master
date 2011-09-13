@@ -53,7 +53,7 @@ var Requests = {
 	updateByAjax: function(grid, item) {
 		delete item.slick_index;
 		// format item data like time, date
-		//format_data(item);
+		// format_data(item);
 		// put ajax
 		$.ajax({
 			type: "POST",

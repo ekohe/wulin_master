@@ -84,7 +84,6 @@ function initialize_menu() {
     state['url'] = currentUrl;
     $.bbq.pushState(state);
     load_page(currentUrl);
-    // resetGridsOnChangeMenu();
     return false;
   });
   
@@ -95,12 +94,3 @@ function initialize_menu() {
     return false;
   });
 }
-
-// function resetGridsOnChangeMenu() {
-// 	var grids = gridManager.grids;
-// 	if (grids.length > 0) {
-// 		$.each(grids, function(i, grid) {
-// 			grid.setSelectedRows([]);
-// 		});
-// 	}
-// }

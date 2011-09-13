@@ -38,7 +38,7 @@
 			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
 
 			// Append editor attribute to columns
-			for(i in columns){
+			for(var i in columns){
 				if(columns[i].editable == true) {
 					columns[i].editor = getEditorForType(columns[i].type);
 					if(columns[i].type == "datetime") {
@@ -102,9 +102,7 @@
 			grid.getRowByRecordId = function(id) {
 			  var data = this.store.loader.data;
 			  for(var i in data) {
-			    if(parseInt(i) != NaN && data[i].id == id) {
-			      return this.getRowAt(i);
-			    }
+			    if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return this.getRowAt(i); };
 			  }
 			}
 			
