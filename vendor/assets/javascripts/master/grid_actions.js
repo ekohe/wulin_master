@@ -5,7 +5,7 @@ var Ui = {
 	  if(grid == null) return false;
 		var selectedIndexs = grid.getSelectedRows();
 		if (selectedIndexs.length > 0) {
-			var ids = selectedIndexs.map(function(n, i) { 
+			var ids = $.map(selectedIndexs,function(n, i) { 
 				var item = grid.store.loader.data[n];
 				return item['id']; 
 				}).join();
@@ -33,7 +33,7 @@ var Ui = {
 	selectGridNames: function() {
 		var gridContainers = $(".grid_container");
 		return $.map( gridContainers, function(container){
-			var gridName = $(container).attr("id").split("grid_")[1].trim();
+			var gridName = $.trim($(container).attr("id").split("grid_")[1]);
 			if (gridName)
 		  	return gridName;
 		});
@@ -55,8 +55,9 @@ var Ui = {
 			close: function(event, ui) { 
 			  $(this).find("input:text").val("");
 			  $(this).find(".field_error").text(""); 
+    	  Ui.flashNotice(gridManager.createdIds, 'create');
 			  setTimeout(function(){
-    		  Ui.flashCreatedRows(name);
+    		  Ui.highlightCreatedRows(name);
     		  gridManager.createdIds = [];
     	  }, 300);
 			}
@@ -66,13 +67,14 @@ var Ui = {
 	// Close dialog
 	closeDialog: function(name) {
 		$( '#' + name + '-form' ).dialog( "close" );
+	  Ui.flashNotice(gridManager.createdIds, 'create');
 		setTimeout(function(){
-		  Ui.flashCreatedRows(name);
+		  Ui.highlightCreatedRows(name);
 		  gridManager.createdIds = [];
 	  }, 300);
 	},
 	
-	// handle delete confirm with dialog
+	// Handle delete confirm with dialog
 	deleteGrids: function(ids) {
 	  $( "#confirm_dialog" ).dialog({
 			modal: true,
@@ -89,7 +91,7 @@ var Ui = {
 	},
 	
 	// Highlight the created rows after close the dialog
-	flashCreatedRows: function(name) {
+	highlightCreatedRows: function(name) {
 	  var grid = gridManager.getGrid(name);
 	  var createdRows = [];
 	  $.each(gridManager.createdIds, function(){
@@ -100,7 +102,17 @@ var Ui = {
 	  });
 	},
 	
-	// find the selected grid
+	// Flash the notification
+	flashNotice: function(ids, action) {
+	  $('.notice_flash').remove();
+		var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
+		var recordUnit = recordSize > 1 ? 'records' : 'record';
+		var actionDesc = action === 'delete' ? 'has been deleted!' : 'has been created!'
+		$('#indicators').before('<div class="notice_flash">' + recordSize + ' ' + recordUnit + ' ' + actionDesc + '</div>');
+		$('.notice_flash').fadeOut(7000);
+	},
+	
+	// Find the selected grid
 	findCurrentGrid: function() {
 	  var currentGrid = null;
 	  $.each(gridManager.grids, function(){

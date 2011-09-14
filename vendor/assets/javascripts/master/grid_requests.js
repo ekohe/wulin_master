@@ -38,11 +38,7 @@ var Requests = {
 				if(msg.success == true) {
 					grid.setSelectedRows([]);
 					grid.store.loader.reloadData();
-					$('.notic_flash').remove();
-					var recordSize = ids.split(',').length;
-					var recordUnit = recordSize > 1 ? 'records' : 'record';
-					$('#indicators').before('<div class="notic_flash">' + recordSize + ' ' + recordUnit + ' has been deleted!</div>');
-					$('.notic_flash').fadeOut(7000);
+					Ui.flashNotice(ids, 'delete');
 				} else {
 					alert(msg.error_message);
 				}
