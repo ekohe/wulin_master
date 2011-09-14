@@ -1,7 +1,7 @@
 (function($) {
 	function ConnectionManager(remoteModel) {
 	  // Keeps all the requests available in an array
-    var requests = []
+    var requests = [];
 
     function createConnection(url, indicator, clientOnSuccess, clientOnError) {
       var existingRequest = getConnection(url);
@@ -9,7 +9,7 @@
       // Just return if connection already exists.
       if (existingRequest != null) { return; }
       
-      newRequest = $.ajax({url: url,
+      var newRequest = $.ajax({url: url,
                            success: onSuccess,
                            dataType: 'json',
                            error: onError});

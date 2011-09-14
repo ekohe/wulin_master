@@ -10,7 +10,8 @@ module WulinMaster
     class_option :indexes, :type => :boolean, :default => true, :desc => "Add indexes for references and belongs_to columns"
 
     def create_migration_file
-      migration_template "migration.rb", "db/migrate/create_#{table_name}.rb"
+      migration_template "grid_migration.rb", "db/migrate/create_#{table_name}.rb"
+      migration_template "grid_status_migration.rb", "db/migrate/create_grid_status.rb"
     end
 
     def create_controller
