@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'toolbar_item')
 module WulinMaster
   class Grid
     attr_reader :name
-    attr_accessor :columns, :base_model, :controller_class, :toolbar, :create_win_height, :create_win_width
+    attr_accessor :columns, :base_model, :controller_class, :toolbar, :create_win_height, :create_win_width, :styles
 
     @@grids = []
     @@default_toolbar_items = []
@@ -39,10 +39,15 @@ module WulinMaster
       @height = 400
       @width = 800
       @fill_window = false
+      @styles = ''
       create_default_toolbar
       add_default_column
       @@grids.delete(Grid.get(name)) if Grid.get(name)
       @@grids << self
+    end
+
+    def css(styles)
+      @styles << styles.to_s
     end
 
     # Grid definition methods  
@@ -109,41 +114,6 @@ module WulinMaster
       ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self})
     end
 
-    def style_for_container
-      if fill_window?
-        # "position: absolute; top:59px; left:0; right:0; bottom:26px;"
-        "height: 100%; width: 100%; position: absolute; left:0; right:0;"
-      else
-        "height: #{self.height}; width: #{self.width};"
-      end
-    end
-    
-    # The below methods is not necessary
-    #
-    # def style_for_grid
-    #   if fill_window?
-    #     "position: absolute; top:59px; left:0; right:0; bottom:26px;"
-    #   else
-    #     "height: #{self.height}; width: #{self.width};"
-    #   end
-    # end
-
-    # def style_for_pager
-    #   if fill_window?
-    #     "position: absolute; left:0; right:0; bottom:0;"
-    #   else
-    #     "width: #{self.width}"
-    #   end
-    # end
-
-    # def style_for_header
-    #   if fill_window?
-    #     "position: absolute; top:0; left:0; right:0;"
-    #   else
-    #     "width: #{self.width}"
-    #   end
-    # end
-
     # Return the base model
     def model
       @base_model
@@ -167,16 +137,19 @@ module WulinMaster
 
     def height(new_height=nil)
       @height = new_height if new_height
+      @styles << "height: #{@height};"
       @height
     end
 
     def width(new_width=nil)
       @width = new_width if new_width
+      @styles << "width: #{@width};"
       @width
     end
 
     def fill_window
       @fill_window = true
+      @styles << "height: 100%; width: 100%; position: absolute; left:0; right:0;"
     end
 
     def fill_window?
