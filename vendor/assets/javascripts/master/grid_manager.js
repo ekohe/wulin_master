@@ -23,7 +23,7 @@
 
 		function getEditorForType(type){
 			switch(type){
-				case "string": 
+				case "string":
 				return TextCellEditor;
 				case "text":
 				return LongTextCellEditor;
