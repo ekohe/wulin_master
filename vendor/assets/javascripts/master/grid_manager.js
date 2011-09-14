@@ -128,8 +128,8 @@
 			deleteElement.click(function() {
 				var ids = Ui.selectIds(grid);
 				if (ids) {
-				  if(confirm("Are you sure to do this?"))
-					  Requests.deleteByAjax(grid, ids);
+				  Ui.deleteGrids(ids);
+  			  return false;
 				} else {
 					alert("Please select more than one row first!");
 				}

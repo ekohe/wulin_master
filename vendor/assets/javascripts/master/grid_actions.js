@@ -72,6 +72,22 @@ var Ui = {
 	  }, 300);
 	},
 	
+	// handle delete confirm with dialog
+	deleteGrids: function(ids) {
+	  $( "#confirm_dialog" ).dialog({
+			modal: true,
+			buttons: {
+				Yes: function() {
+				  Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
+					$( this ).dialog( "close" );
+				},
+				Cancle: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	},
+	
 	// Highlight the created rows after close the dialog
 	flashCreatedRows: function(name) {
 	  var grid = gridManager.getGrid(name);
@@ -111,10 +127,8 @@ var Ui = {
   		if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
   			var ids = Ui.selectIds(grid);
   			if (ids) {
-  			  if(confirm("Are you sure to do this?")) {
-  				  Requests.deleteByAjax(grid, ids);
-  				  return false;
-  			  }
+  			  Ui.deleteGrids(ids);
+  			  return false;
   		  }
   			return false;
       } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog

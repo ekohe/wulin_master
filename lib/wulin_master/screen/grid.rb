@@ -165,4 +165,4 @@ WulinMaster::Grid.add_to_default_toolbar "Filter", :class => 'filter_toggle', :i
 WulinMaster::Grid.add_to_default_toolbar "Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'
 
 # Create action button
-WulinMaster::Grid.add_to_default_toolbar "Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);'#, :before => 'Delete'
+WulinMaster::Grid.add_to_default_toolbar "Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);'
