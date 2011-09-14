@@ -159,7 +159,7 @@
 			var truncateThreshold = 35;
 			var parent = gridElement.parent(".grid_container");
 			var id = parent.attr("id");
-			var title = parent.find(".grid-header h2").text().trim();
+			var title = $.trim(parent.find(".grid-header h2").text());
 			if (title.length > truncateThreshold) {
 				title = title.substring(0, truncateThreshold-2) + "..."
 			}
