@@ -120,7 +120,10 @@
 						this.setSelectedRows([]);
 				})
 			};
-				
+			
+			// ------------------------------ register callbacks for handling grid states ------------------------
+			GridStatesManager.onStateEvents(grid);
+			
 			// ------------------------------ button events -----------------------------------------
 			
 			// Delete along delete button

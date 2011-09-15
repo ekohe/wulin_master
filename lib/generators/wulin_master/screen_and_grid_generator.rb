@@ -11,7 +11,7 @@ module WulinMaster
 
     def create_migration_file
       migration_template "grid_migration.rb", "db/migrate/create_#{table_name}.rb"
-      migration_template "grid_status_migration.rb", "db/migrate/create_grid_status.rb"
+      migration_template "grid_states_migration.rb", "db/migrate/create_grid_states.rb"
     end
 
     def create_controller

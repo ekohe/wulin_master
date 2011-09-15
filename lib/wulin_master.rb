@@ -39,6 +39,7 @@ module WulinMaster
     config.before_initialize do
       require 'wulin_master/controllers/screen_controller'
       require 'wulin_master/controllers/home_controller'
+      require 'wulin_master/controllers/grid_states_controller'
     end
 
     config.after_initialize do
