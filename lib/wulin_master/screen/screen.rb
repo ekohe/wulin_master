@@ -1,4 +1,3 @@
-require File.join(File.dirname(__FILE__), 'column')
 require File.join(File.dirname(__FILE__), 'grid')
 
 module WulinMaster

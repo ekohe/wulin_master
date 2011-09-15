@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'toolbar')
 require File.join(File.dirname(__FILE__), 'toolbar_item')
+require File.join(File.dirname(__FILE__), 'column')
 
 module WulinMaster
   class Grid
@@ -35,13 +36,12 @@ module WulinMaster
     # --------------------
     def initialize(name)
       @name = name
-      @columns = []
+      @columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       @height = 400
       @width = 800
       @fill_window = false
       @styles = ''
       create_default_toolbar
-      add_default_column
       @@grids.delete(Grid.get(name)) if Grid.get(name)
       @@grids << self
     end
@@ -68,9 +68,10 @@ module WulinMaster
       @@default_toolbar_items.each {|item| add_to_toolbar(item) }
     end
 
-    def add_default_column
-      @columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
-    end
+    # It does not work in production environment
+    # def add_default_column
+    #   @columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
+    # end
 
     # Helpers for SQL and Javascript generation
     # ----------
