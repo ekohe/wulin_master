@@ -11,6 +11,7 @@ var GridStatesManager = {
   onStateEvents: function(grid) {
     var that = this;
     
+    // save columns width when columns resized
     var originalColumnsResized = grid.onColumnsResized;
     grid.onColumnsResized = function(){
       originalColumnsResized();
@@ -24,6 +25,7 @@ var GridStatesManager = {
       that.saveStates(grid.name, "width", widthJson);  
     };
     
+    // save columns sorting info when columns sorted
     var originalSort = grid.onSort;
     grid.onSort = function(sortCol, sortAsc){
       originalSort(sortCol, sortAsc);
@@ -36,10 +38,17 @@ var GridStatesManager = {
       that.saveStates(grid.name, "sort", sortJson);
     };
     
+    // save columns order when columns re-ordered
     var originalColumnsReordered = grid.onColumnsReordered;
     grid.onColumnsReordered = function(){
       originalColumnsReordered();
       
+      var orderInfo = [];
+      $.each(this.getColumns(), function(index, column){
+        orderInfo.push(column.id);
+      });
+      
+      that.saveStates(grid.name, "order", orderInfo);
     }
   }
 }
