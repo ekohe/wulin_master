@@ -18,16 +18,22 @@ var GridStatesManager = {
       var widthJson = [];
       $.each(this.getColumns(), function(index, column){
         var attr = {};
-        attr[column.name] = column.width;
+        attr[column.id] = column.width;
         widthJson.push(attr);
       }); 
-      that.saveStates(grid.name, "width", widthJson)  
+      that.saveStates(grid.name, "width", widthJson);  
     };
     
     var originalSort = grid.onSort;
     grid.onSort = function(sortCol, sortAsc){
       originalSort(sortCol, sortAsc);
       
+      var loader = grid.store.loader;
+      var attr = {};
+      attr[loader.getSortColumn()] = loader.getSortDirection();
+      var sortJson = [attr];
+      
+      that.saveStates(grid.name, "sort", sortJson);
     };
     
     var originalColumnsReordered = grid.onColumnsReordered;
