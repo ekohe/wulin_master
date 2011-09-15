@@ -104,12 +104,15 @@ var Ui = {
 	
 	// Flash the notification
 	flashNotice: function(ids, action) {
-	  $('.notice_flash').remove();
-		var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
-		var recordUnit = recordSize > 1 ? 'records' : 'record';
-		var actionDesc = action === 'delete' ? 'has been deleted!' : 'has been created!'
-		$('#indicators').before('<div class="notice_flash">' + recordSize + ' ' + recordUnit + ' ' + actionDesc + '</div>');
-		$('.notice_flash').fadeOut(7000);
+  	var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
+	  if (recordSize > 0) {
+  	  $('.notice_flash').remove();
+  		var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
+  		var recordUnit = recordSize > 1 ? 'records' : 'record';
+  		var actionDesc = action === 'delete' ? 'has been deleted!' : 'has been created!'
+  		$('#indicators').before('<div class="notice_flash">' + recordSize + ' ' + recordUnit + ' ' + actionDesc + '</div>');
+  		$('.notice_flash').fadeOut(7000);
+  	}
 	},
 	
 	// Find the selected grid
