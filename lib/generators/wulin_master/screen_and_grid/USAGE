@@ -2,7 +2,7 @@ Description:
     Generates a screen with one basic grid.
 
 Example:
-    rails generate china_region:fu:migration Thing
+    rails generate wulin_master:screen_and_grid
 
     This will create:
         db/migrate/create_china_region_tables.rb

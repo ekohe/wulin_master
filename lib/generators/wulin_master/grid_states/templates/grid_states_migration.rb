@@ -3,7 +3,8 @@ class CreateGridStates < ActiveRecord::Migration
     create_table :grid_states do |t|
       t.integer :user_id
       t.string  :grid_name
-      t.string  :states
+      t.string  :state_type
+      t.string  :state_value
       t.timestamps
     end
   end
