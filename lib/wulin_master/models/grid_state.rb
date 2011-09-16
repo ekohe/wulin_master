@@ -2,8 +2,10 @@ module WulinMaster
   class GridState < ::ActiveRecord::Base
     default_scope :order => 'created_at DESC'
 
-    if defined? WulinAuth::User
+    if defined? WulinAuth
       belongs_to :user, :class_name => "WulinAuth::User"
+    else
+      raise 'WulinAuth is missing! wulin_master gem is dependence on wulin_auth; install wulin_auth gem with "gem install wulin_auth" command.'
     end
 
     def self.update_or_create(attrs)
@@ -21,5 +23,5 @@ end
 if defined? WulinAuth
   WulinAuth::User.send(:has_many, :grid_states, :class_name => "WulinMaster::GridState")
 else
-  raise 'WulinAuth is missing! install wulin_auth gem with "gem install wulin_auth" command.'
+  raise 'WulinAuth is missing! wulin_master gem is dependence on wulin_auth; install wulin_auth gem with "gem install wulin_auth" command.'
 end
