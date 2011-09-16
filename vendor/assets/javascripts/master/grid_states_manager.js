@@ -27,7 +27,7 @@ var GridStatesManager = {
     grid.onSort = function(sortCol, sortAsc){
       originalSort(sortCol, sortAsc);
       
-      var loader = grid.store.loader;
+      var loader = grid.loader;
       var sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();
@@ -46,5 +46,48 @@ var GridStatesManager = {
       
       that.saveStates(grid.name, "order", orderJson);
     }
-  }
+  },
+  
+  restoreOrderStates: function(columns, orderStates){
+	  if(!orderStates) return columns;
+	  
+	  var new_columns = [];
+	  // find id column
+	  for(var i in columns){
+		  if (columns[i].id == "id"){
+		    new_columns.push(columns[i]);
+		    break;
+		  }
+		}
+		// push other columns according to states
+		for(var j in orderStates){
+		  for(var k in columns) {
+		    if(columns[k].id == orderStates[j]){
+		      new_columns.push(columns[k]);
+		      break;
+		    }
+		  }
+		}
+		return new_columns;
+	},
+	
+	restoreWidthStates: function(columns, widthStates) {
+	  if(!widthStates) return false;
+	  
+    // restore width
+    for(var i in widthStates){
+      for(var k in columns){
+        if(columns[k].id == i){
+          columns[k].width = widthStates[i];
+          break;
+        }
+      }
+    }
+	},
+	
+	restoreSortingStates: function(loader, Sortingstates) {
+	  if(Sortingstates){
+	    loader.setSort(Sortingstates["sortCol"], Sortingstates["sortDir"]);
+	  }    
+	}
 }

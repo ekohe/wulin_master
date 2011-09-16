@@ -6,7 +6,7 @@ var Ui = {
 		var selectedIndexs = grid.getSelectedRows();
 		if (selectedIndexs.length > 0) {
 			var ids = $.map(selectedIndexs,function(n, i) { 
-				var item = grid.store.loader.data[n];
+				var item = grid.loader.data[n];
 				return item['id']; 
 				}).join();
 			return ids;

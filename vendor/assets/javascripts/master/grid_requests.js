@@ -13,7 +13,7 @@ var Requests = {
 				if (request.success == true) {
 					gridManager.createdIds.push(request.id);
 					Ui.resetForm(grid.name);
-					grid.store.loader.reloadData();
+					grid.loader.reloadData();
 					if (!continue_on) { Ui.closeDialog(grid.name); }
 				} else {
 					for(key in request.error_message){
@@ -37,7 +37,7 @@ var Requests = {
 			success: function(msg) {
 				if(msg.success == true) {
 					grid.setSelectedRows([]);
-					grid.store.loader.reloadData();
+					grid.loader.reloadData();
 					Ui.flashNotice(ids, 'delete');
 				} else {
 					alert(msg.error_message);
@@ -60,7 +60,7 @@ var Requests = {
     
 				} else {
 					alert(msg.error_message);
-					grid.store.loader.reloadData();
+					grid.loader.reloadData();
 				}
 			}
 		});

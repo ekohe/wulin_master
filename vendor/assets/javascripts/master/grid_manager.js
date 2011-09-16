@@ -45,35 +45,6 @@
 				}
 			}
 		}
-		
-		function applyWidthAndOrderStates(columns, states){
-		  var new_columns = [];
-		  
-		  // find id column
-		  for(var i in columns){
-			  if (columns[i].id == "id"){
-			    new_columns.push(columns[i]);
-			    break;
-			  }
-			}
-			// push other columns according to states
-			for(var j in states.order){
-			  for(var k in columns) {
-			    // restore order
-			    if(columns[k].id == states.order[j]){
-			      // restore width
-			      columns[k].width = states.width[columns[k].id]
-			      new_columns.push(columns[k]);
-			      break;
-			    }
-			  }
-			}
-			return new_columns;
-		}
-		
-		function applySortingStates(loader, states) {
-		  loader.setSort(states.sort["sortCol"], states.sort["sortDir"]);
-		}
 
 		function createNewGrid(name, path, columns, states) {
 			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
@@ -81,8 +52,10 @@
 			// Append editor attribute to columns
 			appendEditor(columns);
 		
-			// apply the width and order states to columns
-		  columns = applyWidthAndOrderStates(columns, states);
+			// restore the order states to columns
+		  columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
+		  // restore the width states to columns
+		  GridStatesManager.restoreWidthStates(columns, states["width"])
       
       // Set Loader
 			var loader = new Slick.Data.RemoteModel(path, columns);
@@ -96,8 +69,8 @@
 			// create loading indicator on the activity panel
 			loader.setLoadingIndicator(createLoadingIndicator(gridElement));
 			
-			// apply the sorting states to grid
-		  applySortingStates(loader, states);
+			// restore the sorting states to grid
+		  GridStatesManager.restoreSortingStates(loader, states["sort"]);
 			
 			// Set Pager
 			var pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
@@ -115,11 +88,7 @@
 			grid.resizeCanvas();
 
 			// Load the first page
-			grid.onViewportChanged();
-
-      // FIX ME!!!!!!
-      var grid_object = {name: name, path: path, columns: columns, loader: loader, grid: grid, pager: pager, filterPanel: filterPanel};
-      grid.store = grid_object;  		
+			grid.onViewportChanged(); 		
 					
 			// Append necessary attributes to the grid
 			var grid_attributes = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};
@@ -140,7 +109,7 @@
 			
 			// get row by record.id
 			grid.getRowByRecordId = function(id) {
-			  var data = this.store.loader.data;
+			  var data = this.loader.data;
 			  for(var i in data) {
 			    if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return this.getRowAt(i); };
 			  }
