@@ -34,9 +34,9 @@
 			}
 		}
 
-		function createNewGrid(name, path, columns) {
+		function createNewGrid(name, path, columns, states) {
 			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
-
+      console.log(states)
 			// Append editor attribute to columns
 			for(var i in columns){
 				if(columns[i].editable == true) {

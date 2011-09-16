@@ -33,6 +33,10 @@ module WulinMaster
     def grid
       self.class.grid
     end
+    
+    def self.current_user
+      current_user
+    end
 
     def render_grid(grid_name)
       return "Grid not found '#{grid_name}'" unless screen.grids.map(&:name).include?(grid_name.to_sym)

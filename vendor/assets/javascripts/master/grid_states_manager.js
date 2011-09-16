@@ -3,8 +3,7 @@ var GridStatesManager = {
     // do ajax save
     var url = "/wulin_master/grid_states/save";
     var data = decodeURIComponent($.param({grid_name: gridName, state_type: type, state_value: value, authenticity_token: window._token}));
-    $.post(url, data, function(){
-      
+    $.post(url, data, function(response){
     });
   },
   
@@ -16,11 +15,9 @@ var GridStatesManager = {
     grid.onColumnsResized = function(){
       originalColumnsResized();
       
-      var widthJson = [];
+      var widthJson = {};
       $.each(this.getColumns(), function(index, column){
-        var attr = {};
-        attr[column.id] = column.width;
-        widthJson.push(attr);
+        widthJson[column.id] = column.width;
       }); 
       that.saveStates(grid.name, "width", widthJson);  
     };
@@ -31,10 +28,9 @@ var GridStatesManager = {
       originalSort(sortCol, sortAsc);
       
       var loader = grid.store.loader;
-      var attr = {};
-      attr[loader.getSortColumn()] = loader.getSortDirection();
-      var sortJson = [attr];
-      
+      var sortJson = {};
+      sortJson["sortCol"] = loader.getSortColumn();
+      sortJson["sortDir"] = loader.getSortDirection();
       that.saveStates(grid.name, "sort", sortJson);
     };
     
@@ -43,12 +39,12 @@ var GridStatesManager = {
     grid.onColumnsReordered = function(){
       originalColumnsReordered();
       
-      var orderInfo = [];
+      var orderJson = {};
       $.each(this.getColumns(), function(index, column){
-        orderInfo.push(column.id);
+        orderJson[index] = column.id;
       });
       
-      that.saveStates(grid.name, "order", orderInfo);
+      that.saveStates(grid.name, "order", orderJson);
     }
   }
 }

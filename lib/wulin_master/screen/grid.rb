@@ -98,6 +98,16 @@ module WulinMaster
     def javascript_column_model
       columns.collect(&:to_column_model).to_json
     end
+    
+    def states_for_user(user)
+      return nil if user.nil?
+      result = {}
+      states = GridState.where(:user_id => user.id, :grid_name => self.name)
+      ["width", "sort", "order"].each do |t|
+        result.merge!({t => ActiveSupport::JSON.decode(states.where(:state_type => t).first.state_value)})
+      end
+      result.to_json
+    end
 
     # Rendering
     # ----------
@@ -111,8 +121,8 @@ module WulinMaster
     end
 
     # Render the grid
-    def render
-      ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self})
+    def render(user=nil)
+      ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self, :current_user => user})
     end
 
     # Return the base model
