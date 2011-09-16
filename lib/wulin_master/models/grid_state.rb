@@ -4,6 +4,8 @@ module WulinMaster
 
     if defined? WulinAuth::User
       belongs_to :user, :class_name => "WulinAuth::User"
+    else
+      raise 'WulinAuth is missing! install wulin_auth gem with "gem install wulin_auth" command.'
     end
 
     def self.update_or_create(attrs)
