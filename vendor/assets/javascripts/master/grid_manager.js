@@ -33,12 +33,9 @@
 				return TextCellEditor;
 			}
 		}
-
-		function createNewGrid(name, path, columns, states) {
-			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
-      console.log(states)
-			// Append editor attribute to columns
-			for(var i in columns){
+		
+		function appendEditor(columns){
+		  for(var i in columns){
 				if(columns[i].editable == true) {
 					columns[i].editor = getEditorForType(columns[i].type);
 					if(columns[i].type == "datetime") {
@@ -47,6 +44,45 @@
 					}
 				}
 			}
+		}
+		
+		function applyWidthAndOrderStates(columns, states){
+		  var new_columns = [];
+		  
+		  // find id column
+		  for(var i in columns){
+			  if (columns[i].id == "id"){
+			    new_columns.push(columns[i]);
+			    break;
+			  }
+			}
+			// push other columns according to states
+			for(var j in states.order){
+			  for(var k in columns) {
+			    // restore order
+			    if(columns[k].id == states.order[j]){
+			      // restore width
+			      columns[k].width = states.width[columns[k].id]
+			      new_columns.push(columns[k]);
+			      break;
+			    }
+			  }
+			}
+			return new_columns;
+		}
+		
+		function applySortingStates(loader, states) {
+		  loader.setSort(states.sort["sortCol"], states.sort["sortDir"]);
+		}
+
+		function createNewGrid(name, path, columns, states) {
+			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
+			
+			// Append editor attribute to columns
+			appendEditor(columns);
+		
+			// apply the width and order states to columns
+		  columns = applyWidthAndOrderStates(columns, states);
       
       // Set Loader
 			var loader = new Slick.Data.RemoteModel(path, columns);
@@ -56,9 +92,12 @@
 			// ------------------------- Create Grid ------------------------------------
 			var grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			loader.setGrid(grid);
-			
+		  
 			// create loading indicator on the activity panel
 			loader.setLoadingIndicator(createLoadingIndicator(gridElement));
+			
+			// apply the sorting states to grid
+		  applySortingStates(loader, states);
 			
 			// Set Pager
 			var pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
@@ -78,11 +117,12 @@
 			// Load the first page
 			grid.onViewportChanged();
 
-			var grid_object = {name: name, path: path, columns: columns, loader: loader, grid: grid, pager: pager, filterPanel: filterPanel};
-			grid.store = grid_object;			
+      // FIX ME!!!!!!
+      var grid_object = {name: name, path: path, columns: columns, loader: loader, grid: grid, pager: pager, filterPanel: filterPanel};
+      grid.store = grid_object;  		
 					
 			// Append necessary attributes to the grid
-			var grid_attributes = {name: name, path: path, pager: pager, filterPanel: filterPanel};
+			var grid_attributes = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};
       for(var attr in grid_attributes) {
         grid[attr] = grid_attributes[attr];
       }
