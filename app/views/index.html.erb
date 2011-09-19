@@ -5,8 +5,8 @@
       <%= javascript_tag do -%>
           alert('Fill window grid must be stand alone!')
       <% end -%>
+      <% Rails.logger.warn "WARNING: Fill window grid must be stand alone!" %>
     <% end -%>  
-    <% Rails.logger.warn "WARNING: Fill window grid must be stand alone!" %>
     <%- break %>
   <% else %>
     <%= grid.render(controller.current_user) %>
