@@ -1,5 +1,5 @@
 module WulinMaster
-  class GridStatesController < ::ApplicationController
+  class GridStatesController < ApplicationController
     
     def save
       GridState.update_or_create({ user_id: current_user.id, 

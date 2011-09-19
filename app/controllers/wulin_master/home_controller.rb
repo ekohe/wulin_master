@@ -1,9 +1,9 @@
 module WulinMaster
-  class HomeController < ::ApplicationController  
+  class HomeController < ApplicationController  
     @@menu = nil
     @@submenu = nil
 
-    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', 'views')]
+    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
 
     def index
       respond_to do |format|

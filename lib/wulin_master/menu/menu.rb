@@ -4,7 +4,7 @@ module WulinMaster
     # Rendering
     # ----------
     def view_path
-      File.join(File.dirname(__FILE__), '..', 'views')
+      File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'views')
     end
   
     # Satisfy render_to_string
@@ -14,7 +14,7 @@ module WulinMaster
   
     # Render the menu
     def render
-      ActionView::Base.new(view_path).render(:partial => "menu", :locals => {:menu => self})
+      ActionView::Base.new(view_path).render(:partial => "/menu", :locals => {:menu => self})
     end
   end
 

@@ -1,3 +1,5 @@
+require 'wulin_master/engine' if defined?(Rails)
+
 module WulinMaster
   @javascripts = []
   @stylesheets = []
@@ -26,31 +28,19 @@ module WulinMaster
     @default_datetime_format || :db
   end
 
-  # rails 3.1 specified
-  class Engine < ::Rails::Engine
-    config.before_configuration do
-      require 'wulin_master/configuration'
-      require 'wulin_master/menu/menu'
-      require 'wulin_master/screen/screen'
-      require 'wulin_master/screen/grid_config'
-      require 'wulin_master/controllers/actions'
-    end 
-    
-    config.before_initialize do
-      require 'wulin_master/controllers/screen_controller'
-      require 'wulin_master/controllers/home_controller'
-      require 'wulin_master/controllers/grid_states_controller'
-      require 'wulin_master/models/grid_state'
-    end
-
-    config.after_initialize do
-      WulinMaster::add_javascript 'master/master.js'
-      WulinMaster::add_stylesheet 'master.css'
-
-      Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
-      Time::DATE_FORMATS[:date] = "%Y-%m-%d"
-      Time::DATE_FORMATS[:time] = "%H:%M"
-      WulinMaster.default_datetime_format = :no_seconds
-    end
-  end
 end
+
+require 'wulin_master/configuration'
+require 'wulin_master/actions'
+require 'wulin_master/menu/menu'
+require 'wulin_master/screen/screen'
+require 'wulin_master/screen/grid_config'
+
+WulinMaster::add_javascript 'master/master.js'
+WulinMaster::add_stylesheet 'master.css'
+
+Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
+Time::DATE_FORMATS[:date] = "%Y-%m-%d"
+Time::DATE_FORMATS[:time] = "%H:%M"
+WulinMaster.default_datetime_format = :no_seconds
+
