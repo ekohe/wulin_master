@@ -96,7 +96,8 @@ module WulinMaster
     end
 
     def javascript_column_model
-      columns.collect(&:to_column_model).to_json
+      @columns.unshift(Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})) if @columns.first.name != 'id'
+      @columns.collect(&:to_column_model).to_json
     end
     
     def states_for_user(user)
