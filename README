@@ -1,4 +1,0 @@
-TODO
-=========================
-
-1. Create a generator that copies all the required javascripts and stylesheets from a template directory to the application public/javascripts folder
