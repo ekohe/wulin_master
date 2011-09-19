@@ -149,7 +149,6 @@ var Ui = {
   	} else {
   		if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
   			var ids = Ui.selectIds(grid);
-  			alert(ids);
   			if (ids) {
   			  Ui.deleteGrids(ids);
   			  return false;

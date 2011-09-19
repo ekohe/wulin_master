@@ -36,7 +36,9 @@ module WulinMaster
     # --------------------
     def initialize(name)
       @name = name
-      @columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+      # @columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+      @columns = []
+      add_default_column
       @height = 400
       @width = 800
       @fill_window = false
@@ -69,9 +71,9 @@ module WulinMaster
     end
 
     # It does not work in production environment
-    # def add_default_column
-    #   @columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
-    # end
+    def add_default_column
+      @columns.unshift(Column.new(:id, self, {:visible => false, :editable => false, :sortable => true}))
+    end
 
     # Helpers for SQL and Javascript generation
     # ----------
@@ -81,7 +83,9 @@ module WulinMaster
     end
 
     def sql_select
-      sql_columns.join(",")
+      select_columns = sql_columns
+      select_columns << 'id' unless sql_columns.include? 'id'
+      select_columns.join(",")
     end
 
     def apply_filter(query, column_name, filtering_value)
@@ -90,16 +94,17 @@ module WulinMaster
     end
 
     def arraify(objects)
+      add_default_column if @columns.first.name.to_s != 'id'
       objects.collect do |object|
         @columns.collect {|col| {col.name => col.format(object.read_attribute(col.name.to_s))} }
       end
     end
 
     def javascript_column_model
-      @columns.unshift(Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})) if @columns.first.name != 'id'
+      add_default_column if @columns.first.name.to_s != 'id'
       @columns.collect(&:to_column_model).to_json
     end
-    
+
     def states_for_user(user)
       return nil if user.nil?
       result = {}

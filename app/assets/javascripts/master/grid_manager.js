@@ -48,14 +48,15 @@
 
 		function createNewGrid(name, path, columns, states) {
 			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
+			console.log(columns);
 			
 			// Append editor attribute to columns
 			appendEditor(columns);
 		
 			// restore the order states to columns
-		  columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
+      columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
 		  // restore the width states to columns
-		  GridStatesManager.restoreWidthStates(columns, states["width"])
+      GridStatesManager.restoreWidthStates(columns, states["width"])
       
       // Set Loader
 			var loader = new Slick.Data.RemoteModel(path, columns);
@@ -70,7 +71,7 @@
 			loader.setLoadingIndicator(createLoadingIndicator(gridElement));
 			
 			// restore the sorting states to grid
-		  GridStatesManager.restoreSortingStates(loader, states["sort"]);
+      GridStatesManager.restoreSortingStates(loader, states["sort"]);
 			
 			// Set Pager
 			var pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
@@ -131,7 +132,7 @@
 			};
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
-			GridStatesManager.onStateEvents(grid);
+      // GridStatesManager.onStateEvents(grid);
 			
 			// ------------------------------ button events -----------------------------------------
 			

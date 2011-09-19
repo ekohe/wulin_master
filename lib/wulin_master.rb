@@ -27,7 +27,6 @@ module WulinMaster
   def self.default_datetime_format
     @default_datetime_format || :db
   end
-
 end
 
 require 'wulin_master/configuration'
