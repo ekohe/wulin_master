@@ -132,7 +132,7 @@
 			};
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
-      // GridStatesManager.onStateEvents(grid);
+      GridStatesManager.onStateEvents(grid);
 			
 			// ------------------------------ button events -----------------------------------------
 			
