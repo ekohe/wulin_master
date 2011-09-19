@@ -118,11 +118,19 @@ var Ui = {
 	// Find the selected grid
 	findCurrentGrid: function() {
 	  var currentGrid = null;
-	  $.each(gridManager.grids, function(){
-	    if(this.getSelectedRows().length > 0) {
-	      currentGrid = this;
-      }
-	  });
+	  if (gridManager.grids.length == 1) {
+	    currentGrid = gridManager.grids[0]
+	  } else {
+	    var currentGridContainer = $('.grid_container:visible');
+	    if (currentGridContainer.size() == 1) {
+        var gridName = currentGridContainer.attr('id').split('grid_')[1];
+        currentGrid = gridManager.getGrid(gridName);
+    	} else {
+    	  $.each(gridManager.grids, function(){
+    	    if(this.getSelectedRows().length > 0) currentGrid = this;
+    	  });
+    	}
+    }
 	  return currentGrid;
 	}
 	
@@ -141,6 +149,7 @@ var Ui = {
   	} else {
   		if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
   			var ids = Ui.selectIds(grid);
+  			alert(ids);
   			if (ids) {
   			  Ui.deleteGrids(ids);
   			  return false;
@@ -148,13 +157,8 @@ var Ui = {
   			return false;
       } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog
   			var	gridSize = gridManager.grids.length;
-  			if (gridSize > 0) {
-  				if (gridSize == 1) {
-  					var gridName = gridManager.grids[0].name;
-  					Ui.openDialog(gridName);
-  				} else if (Ui.selectIds(grid)) {
-  					Ui.openDialog(grid.name);
-  				}
+  			if (gridSize > 0 && grid) {
+					Ui.openDialog(grid.name);
   				return false;
   			}
   			return false;
