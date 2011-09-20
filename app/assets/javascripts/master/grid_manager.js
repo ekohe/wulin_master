@@ -48,7 +48,6 @@
 
 		function createNewGrid(name, path, columns, states) {
 			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
-			console.log(columns);
 			
 			// Append editor attribute to columns
 			appendEditor(columns);
