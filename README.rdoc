@@ -8,9 +8,11 @@ features.
 
 == Getting Started
 
+=== User WulinMaster in Rails 3.1
+
 1. Put 'gem wulin_master' to your Gemfile:
 
-   gem install rails
+   gem wulin_master
 
 2. Run bundler command to install the gem:
 
