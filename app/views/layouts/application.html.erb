@@ -2,12 +2,11 @@
 <html>
   <head>
     <title><%= WulinMaster.configuration.app_title %></title>
-    <%= javascript_include_tag 'jquery' %>
     <%= stylesheet_link_tag *WulinMaster.stylesheets %>
     <%= javascript_include_tag *WulinMaster.javascripts %>
     <%= csrf_meta_tags %>
     <%= javascript_tag do -%>
-      window._token = encodeURIComponent('<%= form_authenticity_token %>');
+      window._token = encodeURIComponent('<%= form_authenticity_token -%>');
     <% end -%>
   </head>
   <body>
