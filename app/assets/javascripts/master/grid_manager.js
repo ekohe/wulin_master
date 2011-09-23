@@ -1,22 +1,22 @@
 (function($) {
 	function GridManager() {
-		var gridElementPrefix = "#grid_";
-		var gridElementSuffix = " .grid";
-		var pagerElementSuffix = " .pager";
-		var filterTriggerElementSuffix = " .grid-header .filter_toggle";
-		var deleteElementSuffix = ' .grid-header .delete_button';
-		var createElementSuffix = ' .grid-header .create_button';
-
-		var grids = [];
-    var createdIds = [];
-		var options = {
+		var gridElementPrefix = "#grid_",
+		gridElementSuffix = " .grid",
+		pagerElementSuffix = " .pager",
+		filterTriggerElementSuffix = " .grid-header .filter_toggle",
+		deleteElementSuffix = ' .grid-header .delete_button',
+		createElementSuffix = ' .grid-header .create_button',
+		
+		grids = [],
+		createdIds = [],
+		options = {
 			editable: true,
 			enableAddRow: false,
 			enableCellNavigation: true,
 			asyncEditorLoading: false,
 			autoEdit: false,
 			cellFlashingCssClass: "master_flashing"
-		}
+		};
 
 		function init() {
 		}
@@ -35,7 +35,8 @@
 		}
 		
 		function appendEditor(columns){
-		  for(var i in columns){
+		  var i;
+		  for(i in columns){
 				if(columns[i].editable == true) {
 					columns[i].editor = getEditorForType(columns[i].type);
 					if(columns[i].type == "datetime") {
@@ -47,7 +48,10 @@
 		}
 
 		function createNewGrid(name, path, columns, states) {
-			var gridElement = $(gridElementPrefix + name + gridElementSuffix);
+		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
+		  gridAttrs, deleteElement, createButtonElement;
+		  
+			gridElement = $(gridElementPrefix + name + gridElementSuffix);
 			
 			// Append editor attribute to columns
 			appendEditor(columns);
@@ -58,12 +62,12 @@
       GridStatesManager.restoreWidthStates(columns, states["width"])
       
       // Set Loader
-			var loader = new Slick.Data.RemoteModel(path, columns);
+			loader = new Slick.Data.RemoteModel(path, columns);
 			// So we know who is the owner
 			// loader.connectionManager.remoteModel = loader;
 
 			// ------------------------- Create Grid ------------------------------------
-			var grid = new Slick.Grid(gridElement, loader.data, columns, options);
+			grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			loader.setGrid(grid);
 		  
 			// create loading indicator on the activity panel
@@ -73,12 +77,12 @@
       GridStatesManager.restoreSortingStates(loader, states["sort"]);
 			
 			// Set Pager
-			var pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-			var pager = new Slick.Controls.Pager(loader, grid, pagerElement);
+			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
+			pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       
       // Set Filter
-			var filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
-			var filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement);
+			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
+			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement);
 			
 			// Set connection manager
 			// var connectionManager = new ConnectionManager();
@@ -91,9 +95,9 @@
 			grid.onViewportChanged(); 		
 					
 			// Append necessary attributes to the grid
-			var grid_attributes = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};
-      for(var attr in grid_attributes) {
-        grid[attr] = grid_attributes[attr];
+			gridAttrs = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};
+      for(var attr in gridAttrs) {
+        grid[attr] = gridAttrs[attr];
       }
       
       // delete old grid if exsisting, then add grid
@@ -136,7 +140,7 @@
 			// ------------------------------ button events -----------------------------------------
 			
 			// Delete along delete button
-			var deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
+			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
 			deleteElement.click(function() {
 				var ids = Ui.selectIds(grid);
 				if (ids) {
@@ -149,7 +153,7 @@
 
 			
 			// Create action
-			var createButtonElement = $(gridElementPrefix + name + createElementSuffix);
+			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
 			createButtonElement.click(function() {
 				Ui.openDialog(name);
 			});
@@ -168,19 +172,22 @@
 		
 
 		function createLoadingIndicator(gridElement) {
-			var truncateThreshold = 35;
-			var parent = gridElement.parent(".grid_container");
-			var id = parent.attr("id");
-			var title = $.trim(parent.find(".grid-header h2").text());
+			var truncateThreshold = 35,
+			parent = gridElement.parent(".grid_container"),
+			id = parent.attr("id"),
+			title = $.trim(parent.find(".grid-header h2").text()),
+			
+			indicators = $("#activity #indicators"), 
+			indicator;
+			
+			
 			if (title.length > truncateThreshold) {
 				title = title.substring(0, truncateThreshold-2) + "..."
 			}
-			var indicators = $("#activity #indicators");
 
 			// Remove init indicator if it exists.
 			indicators.find("#init_menu_indicator").remove();
-
-			var indicator = indicators.find(".loading_indicator#" + id);
+			indicator = indicators.find(".loading_indicator#" + id);
 
 			if (indicator.length == 0) {
 				indicator = $(buildIndicatorHtml(id, title, "")).appendTo(indicators);
@@ -207,17 +214,19 @@
 		}
 		
 		function setGridBodyHeight(gridElement) {
-		  var container = gridElement.parent(".grid_container");
-		  var ch = container.height();
-		  var hh = container.find(".grid-header").height();
-	    var ph = container.find(".pager").height();
-	    var gh = ch - hh - ph;
+		  var container = gridElement.parent(".grid_container"),
+		  ch = container.height(),
+		  hh = container.find(".grid-header").height(),
+		  ph = container.find(".pager").height(),
+	    gh = ch - hh - ph;
+	    
 	    gridElement.css("height", gh - 1);
 		}
 
-		function resizeGrids() {		  
+		function resizeGrids() {
+		  var gridElement;
 			$.each(grids, function() {
-			  var gridElement = $(gridElementPrefix + this.name + gridElementSuffix);
+			  gridElement = $(gridElementPrefix + this.name + gridElementSuffix);
 			  setGridBodyHeight(gridElement);
 				this.resizeCanvas();
 			});

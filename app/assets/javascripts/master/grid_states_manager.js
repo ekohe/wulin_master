@@ -1,17 +1,20 @@
 var GridStatesManager = {
+  // do ajax save
   saveStates: function(gridName, type, value){
-    // do ajax save
-    var url = "/wulin_master/grid_states/save";
-    var data = decodeURIComponent($.param({grid_name: gridName, state_type: type, state_value: value, authenticity_token: window._token}));
+    var url = "/wulin_master/grid_states/save",
+    data = decodeURIComponent($.param({ grid_name: gridName, state_type: type, state_value: value, 
+                                        authenticity_token: window._token }));
     $.post(url, data, function(response){
     });
   },
   
+  // grid events
   onStateEvents: function(grid) {
-    var that = this;
+    var that = this,
+    originalColumnsResized, originalSort, originalColumnsReordered;
     
     // save columns width when columns resized
-    var originalColumnsResized = grid.onColumnsResized;
+    originalColumnsResized = grid.onColumnsResized;
     grid.onColumnsResized = function(){
       originalColumnsResized();
       
@@ -23,19 +26,18 @@ var GridStatesManager = {
     };
     
     // save columns sorting info when columns sorted
-    var originalSort = grid.onSort;
+    originalSort = grid.onSort;
     grid.onSort = function(sortCol, sortAsc){
       originalSort(sortCol, sortAsc);
       
-      var loader = grid.loader;
-      var sortJson = {};
+      var loader = grid.loader, sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();
       that.saveStates(grid.name, "sort", sortJson);
     };
     
     // save columns order when columns re-ordered
-    var originalColumnsReordered = grid.onColumnsReordered;
+    originalColumnsReordered = grid.onColumnsReordered;
     grid.onColumnsReordered = function(){
       originalColumnsReordered();
       
@@ -51,17 +53,17 @@ var GridStatesManager = {
   restoreOrderStates: function(columns, orderStates){
 	  if(!orderStates) return columns;
 	  
-	  var new_columns = [];
+	  var new_columns = [], i, j, k;
 	  // find id column
-	  for(var i in columns){
+	  for(i in columns){
 		  if (columns[i].id == "id"){
 		    new_columns.push(columns[i]);
 		    break;
 		  }
 		}
 		// push other columns according to states
-		for(var j in orderStates){
-		  for(var k in columns) {
+		for(j in orderStates){
+		  for(k in columns) {
 		    if(columns[k].id == orderStates[j]){
 		      new_columns.push(columns[k]);
 		      break;

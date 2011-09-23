@@ -10,6 +10,8 @@ var Requests = {
    		url: grid.path + '.json',
    		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
    		success: function(request) { 
+			  var errors = "";
+			  
 				if (request.success == true) {
 					gridManager.createdIds.push(request.id);
 					Ui.resetForm(grid.name);
@@ -17,7 +19,6 @@ var Requests = {
 					if (!continue_on) { Ui.closeDialog(grid.name); }
 				} else {
 					for(key in request.error_message){
-					  var errors = "";
 					  for(i in request.error_message[key]){
 					    errors += (request.error_message[key][i] + " ")
 					  }		  
