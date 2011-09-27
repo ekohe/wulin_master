@@ -74,7 +74,7 @@ module WulinMaster
     def callbacks(name=nil)
       name ? @callbacks[name] : @callbacks
     end
-
+    
     private
 
     # Load actions
