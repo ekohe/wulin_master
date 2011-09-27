@@ -36,7 +36,6 @@ module WulinMaster
     # --------------------
     def initialize(name)
       @name = name
-      # @columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       @columns = []
       add_default_column
       @height = 400
