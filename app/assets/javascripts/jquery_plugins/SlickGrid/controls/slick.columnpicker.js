@@ -2,6 +2,7 @@
 	function SlickColumnPicker(columns,grid,options)
 	{
 		var $menu;
+		var _self = this;   // Ekohe fork
 
 		var defaults = {
 			fadeSpeed: 250
@@ -9,14 +10,27 @@
 
 		function init() {
 			grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+				
 			options = $.extend({}, defaults, options);
 
 			$menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;' />").appendTo(document.body);
 
 			$menu.bind("mouseleave", function(e) { $(this).fadeOut(options.fadeSpeed) });
 			$menu.bind("click", updateColumn);
-
+			
+			// Ekohe Fork
+			// bind the column pick event
+			$menu.bind("click", handleColumnPick);
+			bindGrid();
+			// ------------------------------------------------
 		}
+		
+		// Ekohe Fork
+		// assign the picker itself to grid
+		function bindGrid() {
+		  grid.picker = _self;
+		}
+		// --------------------------------------------------
 
 		function handleHeaderContextMenu(e, args)
 		{
@@ -58,6 +72,10 @@
 				.css("left", e.pageX - 10)
 				.fadeIn(options.fadeSpeed);
 		}
+		
+		function handleColumnPick(e, args) {
+		  _self.onColumnsPick.notify({});
+		}
 
 		function updateColumn(e)
 		{
@@ -96,6 +114,13 @@
 			}
 		}
 
+    // Ekohe Fork
+    // define the columns pick event
+    $.extend(this, {
+      // Events
+      "onColumnsPick":    new Slick.Event()
+    });
+    // ------------------------------------------
 
 		init();
 	}

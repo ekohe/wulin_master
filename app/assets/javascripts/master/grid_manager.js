@@ -70,7 +70,6 @@
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			grid.setSelectionModel(new Slick.RowSelectionModel());
 			
-			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 			loader.setGrid(grid);
 		  
 			// create loading indicator on the activity panel
@@ -86,6 +85,9 @@
       // Set Filter
 			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
 			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement);
+			
+			// Set ColumnPicker
+			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 			
 			// Set connection manager
 			// var connectionManager = new ConnectionManager();

@@ -39,6 +39,13 @@ var GridStatesManager = {
       
       that.saveStates(grid.name, "order", orderJson);
     });
+    
+    // save columns visibility when pick columns
+    if(grid.picker){
+      grid.picker.onColumnsPick.subscribe(function(e, args){
+        alert("picked!")
+      })
+    }
   },
   
   restoreOrderStates: function(columns, orderStates){
