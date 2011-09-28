@@ -9,7 +9,6 @@ module WulinMaster
   end
   
   class Configuration
-    # render excel
     attr_accessor :app_title
     
     def initialize

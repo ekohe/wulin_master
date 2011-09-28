@@ -1,14 +1,4 @@
-<%- (grids = controller.screen.grids).each_with_index do |grid, index| %>
-  <%- if grid.fill_window? %>
-    <%= grid.render(controller.current_user) if index == 0 -%>
-    <%- if grids.size > 1 %>
-      <%= javascript_tag do -%>
-          alert('Fill window grid must be stand alone!')
-      <% end -%>
-      <% Rails.logger.warn "WARNING: Fill window grid must be stand alone!" %>
-    <% end -%>  
-    <%- break %>
-  <% else %>
-    <%= grid.render(controller.current_user) %>
-  <% end -%>
+<%- controller.screen.grids.each_with_index do |grid, index| %>
+  <%= render :partial => '/grid', :locals => {:grid => grid} %>
+  <%- break if grid.fill_window? %>
 <% end -%>

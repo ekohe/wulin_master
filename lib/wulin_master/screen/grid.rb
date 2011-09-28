@@ -36,7 +36,6 @@ module WulinMaster
     # --------------------
     def initialize(name)
       @name = name
-      # @columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       @columns = []
       add_default_column
       @height = 400
@@ -106,7 +105,7 @@ module WulinMaster
     end
 
     def states_for_user(user)
-      return nil if user.nil?
+      return {}.to_json if user.nil?
       result = {}
       states = GridState.where(:user_id => user.id, :grid_name => self.name)
       ["width", "sort", "order"].each do |t|
@@ -128,8 +127,8 @@ module WulinMaster
     end
 
     # Render the grid
-    def render(user=nil)
-      ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self, :current_user => user})
+    def render
+      ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self})
     end
 
     # Return the base model
