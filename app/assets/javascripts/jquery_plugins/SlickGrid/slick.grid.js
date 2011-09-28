@@ -246,7 +246,11 @@ if (typeof Slick === "undefined") {
             }
 
             viewportW = parseFloat($.css($container[0], "width", true));
-
+            
+            // Ekohe Fork
+            removeInvisibleColumns();
+            // ------------------------------------
+            
             createColumnHeaders();
             setupColumnSort();
             createCssRules();
@@ -312,6 +316,19 @@ if (typeof Slick === "undefined") {
         function getCanvasNode() {
             return $canvas[0];
         }
+        
+        // Ekohe Fork
+        // remove columns which visible:false when initial the grid 
+        function removeInvisibleColumns() {
+            var tmp = [];
+            for (var i = 0; i < columns.length; i++) {
+                if (columns[i].visible != false) {
+                    tmp.push(columns[i]);
+                }
+            }
+            columns = tmp;
+        }
+        // ----------------------------------------------
 
         function measureScrollbar() {
             /// <summary>
