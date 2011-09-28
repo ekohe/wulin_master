@@ -105,7 +105,7 @@ module WulinMaster
     end
 
     def states_for_user(user)
-      return {}.to_json if user.nil?
+      return "false" if user.nil?
       result = {}
       states = GridState.where(:user_id => user.id, :grid_name => self.name)
       ["width", "sort", "order"].each do |t|
