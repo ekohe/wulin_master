@@ -1729,6 +1729,13 @@ if (typeof Slick === "undefined") {
 
         function getCellFromEvent(e) {
             var $cell = $(e.target).closest(".slick-cell", $canvas);
+            //  Ekohe Fork 
+            //  when you click the blank area on the screen, also submit the change in current editor
+            if($cell.length == 0 && currentEditor != null) {
+              var currentEditorCell = currentEditor.getCell();
+              $cell = $(currentEditorCell.next()[0] || currentEditorCell.prev()[0]);
+            }
+            //-------------------------------------------------------------------------
             if (!$cell.length)
                 return null;
 
