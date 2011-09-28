@@ -1255,7 +1255,9 @@ if (typeof Slick === "undefined") {
                     removeRowFromCache(i);
                 }
             }
-            th = Math.max(options.rowHeight * newRowCount, viewportH - scrollbarDimensions.height);
+            // fix the grid canvas height bug when there is no horizontal scroll
+            var hasHorizontalScroll = ($viewport[0].scrollWidth != $viewport[0].clientWidth);
+            th = Math.max(options.rowHeight * newRowCount, viewportH - (hasHorizontalScroll ? scrollbarDimensions.height : 0));
             if (th < maxSupportedCssHeight) {
                 // just one page
                 h = ph = th;
