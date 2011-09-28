@@ -16,23 +16,27 @@
       
       generateFilters();
       
-      $grid.onColumnsReordered = function() { generateFilters(); };
-      $grid.onColumnsResized = function() { generateFilters(); };
+      $grid.onColumnsReordered.subscribe(function(){ 
+        generateFilters(); 
+      });
+      $grid.onColumnsResized.subscribe(function(){
+        generateFilters();
+      });
       
       trigger.click(function() {
-        if ($($grid.getSecondaryHeaderRow()).is(":visible"))
-            $grid.hideSecondaryHeaderRow();
+        if ($($grid.getHeaderRow()).is(":visible"))
+            $grid.hideHeaderRowColumns();
         else
         {
-            $grid.showSecondaryHeaderRow();
+            $grid.showHeaderRowColumns();
             
             // This corrects the scrollLeft of the filter secondary header row.
             // The problem is that if the user scrolls on the left then click on filter, the
             //   filters wouldn't have scrolled while there were hidden so they appear shifted.
             // This corrects this problem by setting the scrollLeft value of the filters panel
             //   to the scrollLeft of the header row
-            secondaryHeaderScroller = $($grid.getSecondaryHeaderRow()).parent()[0];
-            secondaryHeaderScroller.scrollLeft = $(secondaryHeaderScroller).prev()[0].scrollLeft;
+            headerScroller = $($grid.getHeaderRow()).parent()[0];
+            headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
         }
         return false;
       });
@@ -63,10 +67,10 @@
       currentFiltersApplied = [];
       
       // Fills up and display the secondary row
-      $($grid.getSecondaryHeaderRow()).html(html).show();
+      $($grid.getHeaderRow()).html(html).show();
 
       // Hook between the filter input box and the data loader setFilter
-      $("input", $($grid.getSecondaryHeaderRow())).keyup(function(e) {
+      $("input", $($grid.getHeaderRow())).keyup(function(e) {
         $loader.setFilter($(this).attr('id'), $(this).val());
       });
 		}
@@ -76,7 +80,7 @@
 		//  generate the filters boxes with the same values
 		function storeCurrentFilters() {
 		  currentFiltersApplied = [];
-		  $.each($("input", $($grid.getSecondaryHeaderRow())), function() {
+		  $.each($("input", $($grid.getHeaderRow())), function() {
         if ($(this).val()!='')
 		      currentFiltersApplied.push({id:$(this).attr('id'), value:$(this).val()});
 		  });

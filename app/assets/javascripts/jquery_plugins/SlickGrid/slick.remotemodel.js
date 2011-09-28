@@ -39,10 +39,10 @@
         
         ensureData(vp.top, vp.bottom);
       };
-
-      grid.onSort = function(sortCol, sortAsc) {
-        setSort(sortCol.field, sortAsc ? 1 : -1);
-      };
+      
+      grid.onSort.subscribe(function(e, args){
+        setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+      })
     }
     
     function rowsChanged() {
@@ -52,7 +52,7 @@
     
     function dataIsLoaded(args) {
       for (var i = args.from; i <= args.to; i++) {
-        grid.removeRow(i);
+        grid.invalidateRow(i);
       }
 
       grid.updateRowCount();

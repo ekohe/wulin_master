@@ -1636,7 +1636,7 @@ if (typeof Slick === "undefined") {
             if (!cell || (currentEditor !== null && activeRow == cell.row && activeCell == cell.cell)) {
                 return;
             }
-
+            
             trigger(self.onClick, {row:cell.row, cell:cell.cell}, e);
             if (e.isImmediatePropagationStopped()) {
                 return;
@@ -2465,6 +2465,20 @@ if (typeof Slick === "undefined") {
             }
             selectionModel.setSelectedRanges(rowsToRanges(rows));
         }
+        
+        // ----------------------- customized functions -----------------------
+        function getRows() {
+          return rowsCache;
+        }
+      
+        function getRowAt(i){
+          return rowsCache[i];
+        }
+        
+        function isEditing(){
+          return currentEditor != null;
+        }
+        // ------------------------------------------------------------------
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////
@@ -2595,7 +2609,12 @@ if (typeof Slick === "undefined") {
 
             // IEditor implementation
             "getEditorLock":                getEditorLock,
-            "getEditController":            getEditController
+            "getEditController":            getEditController,
+            
+            // Customized APIs
+            "getRows":                      getRows,
+            "getRowAt":                     getRowAt,
+            "isEditing":                    isEditing
         });
 
         init();
