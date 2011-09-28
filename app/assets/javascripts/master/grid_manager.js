@@ -68,6 +68,9 @@
 
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
+			grid.setSelectionModel(new Slick.RowSelectionModel());
+			
+			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 			loader.setGrid(grid);
 		  
 			// create loading indicator on the activity panel
@@ -119,20 +122,19 @@
 			  }
 			}
 			
-			
-			// ------------------------------- register events on the grid ----------------------------------------
-			// register grid events
-			grid.onCellChange = function(currentRow, currentCell, item) {
-				Requests.updateByAjax(this, item);
-			};
+			// ------------------------------- register events on the grid ----------------------------------------			
+			// cell update events
+			grid.onCellChange.subscribe(function(e, args){
+			  Requests.updateByAjax(this, args.item);
+			});
 			
 			// handle multiple grids: select one,release previou one
-			grid.onClick = function(currentRow, currentCell, item) {
-				$.each(grids, function(){
-					if (this.name != grid.name)
-						this.setSelectedRows([]);
-				})
-			};
+      grid.onClick.subscribe(function(e, args){
+        $.each(grids, function(){
+          if (this.name != grid.name)
+            this.setSelectedRows([]);
+        });
+      });
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
       GridStatesManager.onStateEvents(grid);
