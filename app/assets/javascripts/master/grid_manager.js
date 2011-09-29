@@ -58,6 +58,8 @@
 		
 			// restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
+			// restore the visibility states to columns
+		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"])
 		  // restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"])
       
