@@ -18,14 +18,14 @@
 			$menu.bind("mouseleave", function(e) { $(this).fadeOut(options.fadeSpeed) });
 			$menu.bind("click", updateColumn);
 			
-			// Ekohe Fork
+			// Ekohe fork
 			// bind the column pick event
 			$menu.bind("click", handleColumnPick);
 			bindGrid();
 			// ------------------------------------------------
 		}
 		
-		// Ekohe Fork
+		// Ekohe fork
 		// assign the picker itself to grid
 		function bindGrid() {
 		  grid.picker = _self;
@@ -114,7 +114,7 @@
 			}
 		}
 
-    // Ekohe Fork
+    // Ekohe fork
     // define the columns pick event
     $.extend(this, {
       // Events

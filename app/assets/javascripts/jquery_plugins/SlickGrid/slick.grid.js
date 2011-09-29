@@ -247,7 +247,7 @@ if (typeof Slick === "undefined") {
 
             viewportW = parseFloat($.css($container[0], "width", true));
             
-            // Ekohe Fork
+            // Ekohe fork
             removeInvisibleColumns();
             // ------------------------------------
             
@@ -317,7 +317,7 @@ if (typeof Slick === "undefined") {
             return $canvas[0];
         }
         
-        // Ekohe Fork
+        // Ekohe fork
         // remove columns which visible:false when initial the grid 
         function removeInvisibleColumns() {
             var tmp = [];
@@ -1746,7 +1746,7 @@ if (typeof Slick === "undefined") {
 
         function getCellFromEvent(e) {
             var $cell = $(e.target).closest(".slick-cell", $canvas);
-            //  Ekohe Fork 
+            //  Ekohe fork 
             //  when you click the blank area on the screen, also submit the change in current editor
             if($cell.length == 0 && currentEditor != null) {
               var currentEditorCell = currentEditor.getCell();

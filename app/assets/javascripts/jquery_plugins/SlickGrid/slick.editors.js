@@ -138,7 +138,7 @@
                 };
             };
             
-            // Ekohe Fork
+            // Ekohe fork
             // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
