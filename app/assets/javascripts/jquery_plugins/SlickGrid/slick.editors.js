@@ -64,7 +64,7 @@
             return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
         },
         
-        // date cell formatter to handle "yy-mm-dd" format
+        // Date cell formatter to handle "yy-mm-dd" format (for DateCellEditor2)
         DateCellFormatter: function(row, cell, value, columnDef, dataContext) {
             if (value == null || value === "") {
               return "";
@@ -138,12 +138,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
             
             this.init();
         },
@@ -206,12 +203,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
 
             this.init();
         },
@@ -292,17 +286,13 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
 
             this.init();
         },
         
-        // Ekohe fork
         // Date cell editor which can handle "yy-mm-dd" format
         DateCellEditor2: function(args) {
             var $input;
@@ -400,7 +390,6 @@
             
             this.init();
         },
-        //----------------------------------------------------------------------
 
         YesNoSelectCellEditor : function(args) {
             var $select;
@@ -494,12 +483,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $select.parent();
             };
-            //------------------------------------------
 
             this.init();
         },
@@ -575,12 +561,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
 
             this.init();
         },
@@ -643,12 +626,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
 
             this.init();
         },
@@ -756,12 +736,9 @@
                 };
             };
             
-            // Ekohe fork
-            // get the jquery object of the editor cell
             this.getCell = function(){
               return $input.parent();
             };
-            //------------------------------------------
 
             this.init();
         }

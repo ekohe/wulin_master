@@ -247,9 +247,7 @@ if (typeof Slick === "undefined") {
 
             viewportW = parseFloat($.css($container[0], "width", true));
             
-            // Ekohe fork
             removeInvisibleColumns();
-            // ------------------------------------
             
             createColumnHeaders();
             setupColumnSort();
@@ -317,8 +315,7 @@ if (typeof Slick === "undefined") {
             return $canvas[0];
         }
         
-        // Ekohe fork
-        // remove columns which visible:false when initial the grid 
+        // Remove columns which have option of visible:false when initialize the grid
         function removeInvisibleColumns() {
             var tmp = [];
             for (var i = 0; i < columns.length; i++) {
@@ -328,7 +325,6 @@ if (typeof Slick === "undefined") {
             }
             columns = tmp;
         }
-        // ----------------------------------------------
 
         function measureScrollbar() {
             /// <summary>
@@ -1272,9 +1268,12 @@ if (typeof Slick === "undefined") {
                     removeRowFromCache(i);
                 }
             }
-            // fix the grid canvas height bug when there is no horizontal scroll
+            
+            // Fix the viewport height bug when there is no horizontal scroll and the grid height is small than the viewport
+            // There was a gap as high as the horizontal scroll between viewport and pager
             var hasHorizontalScroll = ($viewport[0].scrollWidth != $viewport[0].clientWidth);
             th = Math.max(options.rowHeight * newRowCount, viewportH - (hasHorizontalScroll ? scrollbarDimensions.height : 0));
+            
             if (th < maxSupportedCssHeight) {
                 // just one page
                 h = ph = th;
@@ -1746,13 +1745,13 @@ if (typeof Slick === "undefined") {
 
         function getCellFromEvent(e) {
             var $cell = $(e.target).closest(".slick-cell", $canvas);
-            //  Ekohe fork 
-            //  when you click the blank area on the screen, also submit the change in current editor
+            
+            // get cell of current editor even if you are not clicking on the grid row (anywhere on the viewport)
             if($cell.length == 0 && currentEditor != null) {
               var currentEditorCell = currentEditor.getCell();
               $cell = $(currentEditorCell.next()[0] || currentEditorCell.prev()[0]);
             }
-            //-------------------------------------------------------------------------
+            
             if (!$cell.length)
                 return null;
 
@@ -2492,7 +2491,7 @@ if (typeof Slick === "undefined") {
             selectionModel.setSelectedRanges(rowsToRanges(rows));
         }
         
-        // ----------------------- customized functions -----------------------
+        // ----------------------- customized methods for convenience ------------------------
         function getRows() {
           return rowsCache;
         }
@@ -2504,9 +2503,7 @@ if (typeof Slick === "undefined") {
         function isEditing(){
           return currentEditor != null;
         }
-        // ------------------------------------------------------------------
-
-
+        
         //////////////////////////////////////////////////////////////////////////////////////////////
         // Debug
 
@@ -2635,7 +2632,7 @@ if (typeof Slick === "undefined") {
 
             // IEditor implementation
             "getEditorLock":                getEditorLock,
-            "getEditController":            getEditController,
+            "getEditController":            getEditController
             
             // Customized APIs
             "getRows":                      getRows,
