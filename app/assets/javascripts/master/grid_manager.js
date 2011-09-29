@@ -63,8 +63,6 @@
       
       // Set Loader
 			loader = new Slick.Data.RemoteModel(path, columns);
-			// So we know who is the owner
-			// loader.connectionManager.remoteModel = loader;
 
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
@@ -88,9 +86,6 @@
 			
 			// Set ColumnPicker
 			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
-			
-			// Set connection manager
-			// var connectionManager = new ConnectionManager();
 			
 			// Set grid body height after rendering
 			setGridBodyHeight(gridElement);
