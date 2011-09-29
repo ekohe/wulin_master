@@ -205,6 +205,13 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $input.parent();
+            };
+            //------------------------------------------
 
             this.init();
         },
@@ -284,10 +291,18 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $input.parent();
+            };
+            //------------------------------------------
 
             this.init();
         },
         
+        // Ekohe fork
         // Date cell editor which can handle "yy-mm-dd" format
         DateCellEditor2: function(args) {
             var $input;
@@ -296,6 +311,7 @@
             var calendarOpen = false;
             var showFormat = "yy-mm-dd";
             var sourceFormat = "yy-mm-dd";
+            
             this.init = function() {
                 if (args.column.DateSourceFormat != undefined) {
                     sourceFormat = args.column.DateSourceFormat;
@@ -316,31 +332,37 @@
                 });
                 $input.width($input.width() - 18);
             };
+            
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true, true);
                 $input.datepicker("hide");
                 $input.datepicker("destroy");
                 $input.remove();
             };
+            
             this.show = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).show();
                 }
             };
+            
             this.hide = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).hide();
                 }
             };
+            
             this.position = function(position) {
                 if (!calendarOpen) return;
                 $.datepicker.dpDiv
                 .css("top", position.top + 30)
                 .css("left", position.left);
             };
+            
             this.focus = function() {
                 $input.focus();
             };
+            
             this.loadValue = function(item) {
                 defaultValue = item[args.column.field];
                 var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
@@ -349,26 +371,36 @@
                 $input[0].defaultValue = defaultValue;
                 $input.select();
             };
+            
             this.serializeValue = function() {
                 var thedate = $.datepicker.parseDate(showFormat, $input.val());
                 return $.datepicker.formatDate(sourceFormat,
                 thedate);
             };
+            
             this.applyValue = function(item, state) {
                 item[args.column.field] = state;
             };
+            
             this.isValueChanged = function() {
                 return (! ($input.val() == "" && defaultValue == null))
                 && ($input.val() != defaultValue);
             };
+            
             this.validate = function() {
                 return {
                     valid: true,
                     msg: null
                 };
             };
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
+            
             this.init();
         },
+        //----------------------------------------------------------------------
 
         YesNoSelectCellEditor : function(args) {
             var $select;
@@ -461,6 +493,13 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $select.parent();
+            };
+            //------------------------------------------
 
             this.init();
         },
@@ -535,6 +574,13 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $input.parent();
+            };
+            //------------------------------------------
 
             this.init();
         },
@@ -596,6 +642,13 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $input.parent();
+            };
+            //------------------------------------------
 
             this.init();
         },
@@ -702,6 +755,13 @@
                     msg: null
                 };
             };
+            
+            // Ekohe fork
+            // get the jquery object of the editor cell
+            this.getCell = function(){
+              return $input.parent();
+            };
+            //------------------------------------------
 
             this.init();
         }
