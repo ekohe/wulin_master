@@ -10,57 +10,61 @@ var GridStatesManager = {
   
   // grid events
   onStateEvents: function(grid) {
-    var that = this,
+    var _self = this,
     originalColumnsResized, originalSort, originalColumnsReordered;
     
     // save columns width when columns resized
-    originalColumnsResized = grid.onColumnsResized;
-    grid.onColumnsResized = function(){
-      originalColumnsResized();
-      
+    grid.onColumnsResized.subscribe(function(){
       var widthJson = {};
       $.each(this.getColumns(), function(index, column){
         widthJson[column.id] = column.width;
       }); 
-      that.saveStates(grid.name, "width", widthJson);  
-    };
+      _self.saveStates(grid.name, "width", widthJson);
+    });
     
     // save columns sorting info when columns sorted
-    originalSort = grid.onSort;
-    grid.onSort = function(sortCol, sortAsc){
-      originalSort(sortCol, sortAsc);
-      
+    grid.onSort.subscribe(function(e, args){
       var loader = grid.loader, sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();
-      that.saveStates(grid.name, "sort", sortJson);
-    };
+      _self.saveStates(grid.name, "sort", sortJson);
+    });
     
     // save columns order when columns re-ordered
-    originalColumnsReordered = grid.onColumnsReordered;
-    grid.onColumnsReordered = function(){
-      originalColumnsReordered();
-      
+    grid.onColumnsReordered.subscribe(function(e, args){
       var orderJson = {};
       $.each(this.getColumns(), function(index, column){
         orderJson[index] = column.id;
       });
       
-      that.saveStates(grid.name, "order", orderJson);
+      _self.saveStates(grid.name, "order", orderJson);
+    });
+    
+    // save columns visibility when pick columns
+    if(grid.picker){
+      grid.picker.onColumnsPick.subscribe(function(e, args){
+        var visibilityJson = {};
+        $.each(grid.getColumns(), function(index, column){
+          visibilityJson[index] = column.id;
+        });
+        
+        _self.saveStates(grid.name, "visibility", visibilityJson);
+      })
     }
   },
-  
+	
+  // Restore columns order states
   restoreOrderStates: function(columns, orderStates){
 	  if(!orderStates) return columns;
 	  
 	  var new_columns = [], i, j, k;
-	  // find id column
-	  for(i in columns){
-		  if (columns[i].id == "id"){
-		    new_columns.push(columns[i]);
-		    break;
-		  }
-		}
+    // find id column
+    for(i in columns){
+      if (columns[i].id == "id"){
+        new_columns.push(columns[i]);
+        break;
+      }
+    }
 		// push other columns according to states
 		for(j in orderStates){
 		  for(k in columns) {
@@ -73,23 +77,43 @@ var GridStatesManager = {
 		return new_columns;
 	},
 	
+	// Restore columns visibility states
+	restoreVisibilityStates: function(columns, visibilityStates) {
+	  if(!visibilityStates) return false;
+	  
+	  // push visible columns according to states
+	  for(var i in columns){
+	    var visible = false;
+	    for(var j in visibilityStates){
+	      if(columns[i].id == visibilityStates[j]){
+	        visible = true;
+	        break;
+	      }
+	    }
+	    columns[i].visible = visible;
+	  }
+	},
+	
+	// Restore columns width states
 	restoreWidthStates: function(columns, widthStates) {
 	  if(!widthStates) return false;
 	  
     // restore width
     for(var i in widthStates){
-      for(var k in columns){
-        if(columns[k].id == i){
-          columns[k].width = widthStates[i];
+      for(var j in columns){
+        if(columns[j].id == i){
+          columns[j].width = parseInt(widthStates[i]);
           break;
         }
       }
     }
 	},
 	
-	restoreSortingStates: function(loader, Sortingstates) {
-	  if(Sortingstates){
-	    loader.setSort(Sortingstates["sortCol"], Sortingstates["sortDir"]);
+	// Restore columns sorting states
+	restoreSortingStates: function(loader, sortingStates) {
+	  if(sortingStates){
+	    loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
 	  }    
 	}
+	
 }

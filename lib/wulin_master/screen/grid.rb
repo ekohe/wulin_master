@@ -108,7 +108,7 @@ module WulinMaster
       return "false" if user.nil?
       result = {}
       states = GridState.where(:user_id => user.id, :grid_name => self.name)
-      ["width", "sort", "order"].each do |t|
+      ["width", "sort", "order", "visibility"].each do |t|
         value = states.where(:state_type => t).first.try(:state_value)
         result.merge!(t => ActiveSupport::JSON.decode(value)) if value
       end

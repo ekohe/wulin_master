@@ -38,13 +38,13 @@
         },
 
         BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='/assets/tick.png'>" : "";
+            return value ? "<img src='../images/tick.png'>" : "";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
             // todo:  html encode
             var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
-            return spacer + " <img src='/assets/expand.gif'>&nbsp;" + value;
+            return spacer + " <img src='../images/expand.gif'>&nbsp;" + value;
         },
 
         ResourcesFormatter : function(row, cell, value, columnDef, dataContext) {
@@ -54,17 +54,17 @@
                 return "";
 
             if (columnDef.width < 50)
-                return (resources.length > 1 ? "<center><img src='/assets/user_identity_plus.gif' " : "<center><img src='/assets/user_identity.gif' ") +
+                return (resources.length > 1 ? "<center><img src='../images/user_identity_plus.gif' " : "<center><img src='../images/user_identity.gif' ") +
                         " title='" + resources.join(", ") + "'></center>";
             else
                 return resources.join(", ");
         },
 
         StarFormatter : function(row, cell, value, columnDef, dataContext) {
-            return (value) ? "<img src='/assets/bullet_star.png' align='absmiddle'>" : "";
+            return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
         },
         
-        // added by jimmy, 2011-07-27, datatime formatter
+        // Date cell formatter to handle "yy-mm-dd" format (for DateCellEditor2)
         DateCellFormatter: function(row, cell, value, columnDef, dataContext) {
             if (value == null || value === "") {
               return "";
@@ -72,8 +72,7 @@
             var thedate = $.datepicker.parseDate("yy-mm-dd", value);
             return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
         },
-
-
+        
         TextCellEditor : function(args) {
             var $input;
             var defaultValue;
@@ -94,13 +93,17 @@
             this.destroy = function() {
                 $input.remove();
             };
-            
-            this.getCell = function(){
-              return $input.parent();
-            }
 
             this.focus = function() {
                 $input.focus();
+            };
+
+            this.getValue = function() {
+                return $input.val();
+            };
+
+            this.setValue = function(val) {
+                $input.val(val);
             };
 
             this.loadValue = function(item) {
@@ -134,7 +137,11 @@
                     msg: null
                 };
             };
-
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
+            
             this.init();
         },
 
@@ -195,6 +202,10 @@
                     msg: null
                 };
             };
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
 
             this.init();
         },
@@ -212,7 +223,7 @@
                 $input.datepicker({
                     showOn: "button",
                     buttonImageOnly: true,
-                    buttonImage: "/assets/calendar.gif",
+                    buttonImage: "../images/calendar.gif",
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false }
                 });
@@ -274,11 +285,15 @@
                     msg: null
                 };
             };
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
 
             this.init();
         },
         
-        // added by jimmy, 2011-07-27
+        // Date cell editor which can handle "yy-mm-dd" format
         DateCellEditor2: function(args) {
             var $input;
             var defaultValue;
@@ -286,6 +301,7 @@
             var calendarOpen = false;
             var showFormat = "yy-mm-dd";
             var sourceFormat = "yy-mm-dd";
+            
             this.init = function() {
                 if (args.column.DateSourceFormat != undefined) {
                     sourceFormat = args.column.DateSourceFormat;
@@ -306,31 +322,37 @@
                 });
                 $input.width($input.width() - 18);
             };
+            
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true, true);
                 $input.datepicker("hide");
                 $input.datepicker("destroy");
                 $input.remove();
             };
+            
             this.show = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).show();
                 }
             };
+            
             this.hide = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).hide();
                 }
             };
+            
             this.position = function(position) {
                 if (!calendarOpen) return;
                 $.datepicker.dpDiv
                 .css("top", position.top + 30)
                 .css("left", position.left);
             };
+            
             this.focus = function() {
                 $input.focus();
             };
+            
             this.loadValue = function(item) {
                 defaultValue = item[args.column.field];
                 var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
@@ -339,28 +361,37 @@
                 $input[0].defaultValue = defaultValue;
                 $input.select();
             };
+            
             this.serializeValue = function() {
                 var thedate = $.datepicker.parseDate(showFormat, $input.val());
                 return $.datepicker.formatDate(sourceFormat,
                 thedate);
             };
+            
             this.applyValue = function(item, state) {
                 item[args.column.field] = state;
             };
+            
             this.isValueChanged = function() {
                 return (! ($input.val() == "" && defaultValue == null))
                 && ($input.val() != defaultValue);
             };
+            
             this.validate = function() {
                 return {
                     valid: true,
                     msg: null
                 };
             };
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
+            
             this.init();
         },
 
-        YesNoSelectCellEditor: function(args) {
+        YesNoSelectCellEditor : function(args) {
             var $select;
             var defaultValue;
             var scope = this;
@@ -380,7 +411,7 @@
             };
 
             this.loadValue = function(item) {
-                $select.val((defaultValue = item[args.column.field]) ? "yes": "no");
+                $select.val((defaultValue = item[args.column.field]) ? "yes" : "no");
                 $select.select();
             };
 
@@ -388,10 +419,10 @@
                 return ($select.val() == "yes");
             };
 
-            this.applyValue = function(item, state) {
+            this.applyValue = function(item,state) {
                 item[args.column.field] = state;
             };
-
+           
             this.isValueChanged = function() {
                 return ($select.val() != defaultValue);
             };
@@ -405,7 +436,6 @@
 
             this.init();
         },
-
 
         YesNoCheckboxCellEditor : function(args) {
             var $select;
@@ -451,6 +481,10 @@
                     valid: true,
                     msg: null
                 };
+            };
+            
+            this.getCell = function(){
+              return $select.parent();
             };
 
             this.init();
@@ -526,6 +560,10 @@
                     msg: null
                 };
             };
+            
+            this.getCell = function(){
+              return $input.parent();
+            };
 
             this.init();
         },
@@ -549,7 +587,7 @@
             }
 
             this.init = function() {
-                $input = $("<IMG src='/assets/bullet_star.png' align=absmiddle tabIndex=0 title='Click or press Space to toggle' />")
+                $input = $("<IMG src='../images/bullet_star.png' align=absmiddle tabIndex=0 title='Click or press Space to toggle' />")
                     .bind("click keydown", toggle)
                     .appendTo(args.container)
                     .focus();
@@ -586,6 +624,10 @@
                     valid: true,
                     msg: null
                 };
+            };
+            
+            this.getCell = function(){
+              return $input.parent();
             };
 
             this.init();
@@ -692,6 +734,10 @@
                     valid: true,
                     msg: null
                 };
+            };
+            
+            this.getCell = function(){
+              return $input.parent();
             };
 
             this.init();

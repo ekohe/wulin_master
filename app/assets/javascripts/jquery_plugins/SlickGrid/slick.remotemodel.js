@@ -1,30 +1,4 @@
-/***
- * A simple observer pattern implementation.
- */
-function EventHelper() {
-	this.handlers = [];
-
-	this.subscribe = function(fn) {
-    this.handlers.push(fn);
-  };
-
-	this.notify = function(args) {
-    for (var i = 0; i < this.handlers.length; i++) {
-      this.handlers[i].call(this, args);
-    }
-  };
-
-	return this;
-}
-
-// find keys in a js hash object
-function getKeys(h) {
-  var keys = new Array();
-  for (var key in h)
-    keys.push(key);
-  return keys;
-}
-
+// Remote model with pagination
 
 (function($) {
 	function RemoteModel(path, columns) {
@@ -52,9 +26,9 @@ function getKeys(h) {
     
     
 		// events
-		var onDataLoading = new EventHelper();
-    var onPagingInfoChanged = new EventHelper();
-    var onDataLoaded = new EventHelper();
+		var onDataLoading = new Slick.Event();
+    var onPagingInfoChanged = new Slick.Event();
+    var onDataLoaded = new Slick.Event();
 
     function setGrid(newGrid) {
       grid = newGrid;
@@ -65,10 +39,10 @@ function getKeys(h) {
         
         ensureData(vp.top, vp.bottom);
       };
-
-      grid.onSort = function(sortCol, sortAsc) {
-        setSort(sortCol.field, sortAsc ? 1 : -1);
-      };
+      
+      grid.onSort.subscribe(function(e, args){
+        setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+      })
     }
     
     function rowsChanged() {
@@ -78,7 +52,7 @@ function getKeys(h) {
     
     function dataIsLoaded(args) {
       for (var i = args.from; i <= args.to; i++) {
-        grid.removeRow(i);
+        grid.invalidateRow(i);
       }
 
       grid.updateRowCount();
@@ -263,7 +237,13 @@ function getKeys(h) {
 			// Updating pager
 			onPagingInfoChanged.notify(getPagingInfo());			
 		}
-    
+		
+	  function getKeys(h) {
+      var keys = new Array();
+      for (var key in h)
+        keys.push(key);
+      return keys;
+    } 
 
 		function reloadData(from,to) {
 			for (var i=from; i<=to; i++)

@@ -58,16 +58,18 @@
 		
 			// restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
+			// restore the visibility states to columns
+		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"])
 		  // restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"])
       
       // Set Loader
 			loader = new Slick.Data.RemoteModel(path, columns);
-			// So we know who is the owner
-			// loader.connectionManager.remoteModel = loader;
 
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
+			grid.setSelectionModel(new Slick.RowSelectionModel());
+			
 			loader.setGrid(grid);
 		  
 			// create loading indicator on the activity panel
@@ -84,8 +86,8 @@
 			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
 			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement);
 			
-			// Set connection manager
-			// var connectionManager = new ConnectionManager();
+			// Set ColumnPicker
+			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 			
 			// Set grid body height after rendering
 			setGridBodyHeight(gridElement);
@@ -107,32 +109,21 @@
 				}
 			}
 			grids.push(grid);
-      
-      
-      // ------------------------------- customized methods for the grid ----------------------------－－－－－－－
-			
-			// get row by record.id
-			grid.getRowByRecordId = function(id) {
-			  var data = this.loader.data;
-			  for(var i in data) {
-			    if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return this.getRowAt(i); };
-			  }
-			}
 			
 			
-			// ------------------------------- register events on the grid ----------------------------------------
-			// register grid events
-			grid.onCellChange = function(currentRow, currentCell, item) {
-				Requests.updateByAjax(this, item);
-			};
+			// ------------------------------- register events on the grid ----------------------------------------			
+			// cell update events
+			grid.onCellChange.subscribe(function(e, args){
+			  Requests.updateByAjax(this, args.item);
+			});
 			
 			// handle multiple grids: select one,release previou one
-			grid.onClick = function(currentRow, currentCell, item) {
-				$.each(grids, function(){
-					if (this.name != grid.name)
-						this.setSelectedRows([]);
-				})
-			};
+      grid.onClick.subscribe(function(e, args){
+        $.each(grids, function(){
+          if (this.name != grid.name)
+            this.setSelectedRows([]);
+        });
+      });
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
       if(states)
