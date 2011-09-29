@@ -2632,7 +2632,7 @@ if (typeof Slick === "undefined") {
 
             // IEditor implementation
             "getEditorLock":                getEditorLock,
-            "getEditController":            getEditController
+            "getEditController":            getEditController,
             
             // Customized APIs
             "getRows":                      getRows,
