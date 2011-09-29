@@ -2504,6 +2504,14 @@ if (typeof Slick === "undefined") {
           return currentEditor != null;
         }
         
+        // Get row by record.id
+        function getRowByRecordId(id){
+          var data = getData();
+  			  for(var i in data) {
+  			    if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return getRowAt(i); };
+  			  }
+        }
+        
         //////////////////////////////////////////////////////////////////////////////////////////////
         // Debug
 
@@ -2637,7 +2645,8 @@ if (typeof Slick === "undefined") {
             // Customized APIs
             "getRows":                      getRows,
             "getRowAt":                     getRowAt,
-            "isEditing":                    isEditing
+            "isEditing":                    isEditing,
+            "getRowByRecordId":             getRowByRecordId
         });
 
         init();

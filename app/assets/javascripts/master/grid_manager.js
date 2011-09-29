@@ -107,17 +107,7 @@
 				}
 			}
 			grids.push(grid);
-      
-      
-      // ------------------------------- customized methods for the grid ----------------------------－－－－－－－
 			
-			// get row by record.id
-			grid.getRowByRecordId = function(id) {
-			  var data = this.loader.data;
-			  for(var i in data) {
-			    if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return this.getRowAt(i); };
-			  }
-			}
 			
 			// ------------------------------- register events on the grid ----------------------------------------			
 			// cell update events
