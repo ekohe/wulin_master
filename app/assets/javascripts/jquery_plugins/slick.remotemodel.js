@@ -67,7 +67,7 @@ function getKeys(h) {
       };
 
       grid.onSort = function(sortCol, sortAsc) {
-        setSort(sortCol.field, sortAsc ? 1 : -1);
+        setSort(sortCol.table + "." + sortCol.sortColumn, sortAsc ? 1 : -1);
       };
     }
     

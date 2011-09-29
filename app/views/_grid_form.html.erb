@@ -7,11 +7,15 @@
   <form accept-charset="UTF-8" action="/<%= model_name.tableize %>" class="<%= model_name %>" id="new_<%= grid.name %>" method="post">
     <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div> 
     <%- columns.each do |column| %>
-    <%- column_name = column.name.to_s %>
+    <%- column_name = column.form_name %>
     <%- datepicker_str << %!$( "##{model_name}_#{column_name}" ).datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s == 'datetime'  %>
     <div class="field" name="<%= column_name %>">
       <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
-      <input id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" type="text" />
+      <%- if column.sql_type.to_s == 'belongs_to' %>
+        <%= select_tag "#{model_name}[#{column_name}]", options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px"} %>
+      <%- else %>
+        <input id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" type="text" style="width:250px" />
+      <%- end %>
       <div class="field_error">
       </div>
     </div>
@@ -23,3 +27,4 @@
   </form>
 </div>
 <%= javascript_tag datepicker_str if datepicker_str.present? -%>
+<%= javascript_tag '$(".chzn-select").chosen();'%>

@@ -53,7 +53,13 @@ var Ui = {
         width: 500,
         show: "blind",
         modal: true,
-        open: function(event, ui) { $( '#' + name + '-form input:text' ).first().focus(); },
+        open: function(event, ui) {
+					$( '#' + name + '-form input:text' ).first().focus();
+					// the dialog show animation makes the first field lose focus so after 400ms we reapply the focus
+					setTimeout(function() {
+						$( '#' + name + '-form input:text' ).first().focus();
+					}, 400);
+				},
         close: function(event, ui) { 
           $(this).find("input:text").val("");
           $(this).find(".field_error").text(""); 

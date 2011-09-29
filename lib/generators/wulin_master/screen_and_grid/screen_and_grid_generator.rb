@@ -44,7 +44,7 @@ module WulinMaster
     end
 
     def human_name
-      name.underscore.humanize
+      name.underscore.humanize.pluralize
     end
 
   end

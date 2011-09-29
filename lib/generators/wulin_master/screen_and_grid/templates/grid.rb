@@ -6,6 +6,8 @@ class <%= class_name %>Grid < WulinMaster::GridConfig
 
     path '/<%= table_name %>'    
 
+    fill_window
+
 <% attributes.each do |column| -%>
     column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
 <% end -%>
