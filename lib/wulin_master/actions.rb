@@ -30,6 +30,12 @@ module WulinMaster
           # Add select
           add_select
           
+          # Add includes (OUTER JOIN)
+          add_includes
+
+          # Add joins (INNER JOIN)
+          add_joins
+          
           fire_callbacks :query_ready
 
           # Get all the objects
@@ -42,9 +48,9 @@ module WulinMaster
     end
     
     def update
-      params[:item].delete_if {|k,v| v == "null" || k == "id" }
+      updated_attributes = get_updated_attributes(params[:item])
       @record = grid.model.find(params[:id]) 
-      message = if @record.update_attributes(params[:item])
+      message = if @record.update_attributes(updated_attributes)
         {:success => true }
       else
         {:success => false, :error_message => @record.errors.full_messages.join("\n")}
@@ -112,7 +118,15 @@ module WulinMaster
     end
     
     def add_select
-      @query = @query.select(grid.sql_select)
+      #@query = @query.select(grid.sql_select)
+    end
+    
+    def add_includes
+      @query = @query.includes(grid.includes)
+    end
+    
+    def add_joins
+      @query = @query.joins(grid.joins)
     end
     
     def render_json
@@ -123,8 +137,21 @@ module WulinMaster
                :total =>  @count,
                :count =>  @per_page,
                :rows =>   @object_array})
-      
       json
+    end
+    
+    def get_updated_attributes(attrs)
+      attrs.delete_if {|k,v| v == "null" || k == "id" }
+      associations = grid.model.reflections.keys
+      new_attributes = {}
+      attrs.each do |k,v|
+        if associations.include?(k.to_sym)
+          association_attributes = attrs.delete(k) 
+          new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+        end
+      end
+      attrs.merge!(new_attributes)
+      attrs
     end
   end
 end

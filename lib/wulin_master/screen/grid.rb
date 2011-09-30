@@ -78,12 +78,11 @@ module WulinMaster
     # ----------
 
     def sql_columns
-      @columns.map(&:name).map {|col| "#{col}"}
+      @columns.map(&:sql_names).flatten.uniq.map {|col| "#{col}"}
     end
 
     def sql_select
       select_columns = sql_columns
-      select_columns << 'id' unless sql_columns.include? 'id'
       select_columns.join(",")
     end
 
@@ -92,17 +91,27 @@ module WulinMaster
       column.nil? ? query : column.apply_filter(query, filtering_value)
     end
 
+    # Returns the includes to add to the query
+    def includes
+      @columns.map{|col| col.includes}.flatten.uniq
+    end
+
+    # Returns the joins to add to the query
+    def joins
+      @columns.map{|col| col.joins}.flatten.uniq
+    end
+
     def arraify(objects)
-      add_default_column if @columns.first.name.to_s != 'id'
       objects.collect do |object|
-        @columns.collect {|col| {col.name => col.format(object.read_attribute(col.name.to_s))} }
+        @columns.collect {|col| {col.name => col.json(object)} }
       end
     end
 
     def javascript_column_model
-      add_default_column if @columns.first.name.to_s != 'id'
-      @columns.collect(&:to_column_model).to_json
+      @javascript_column_model ||= @columns.collect(&:to_column_model).to_json
     end
+    
+    # State
 
     def states_for_user(user)
       return "false" if user.nil?
@@ -113,22 +122,6 @@ module WulinMaster
         result.merge!(t => ActiveSupport::JSON.decode(value)) if value
       end
       result.to_json
-    end
-
-    # Rendering
-    # ----------
-    def view_path
-      File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'views')
-    end
-
-    # Satisfy render_to_string
-    def action_name
-      ""
-    end
-
-    # Render the grid
-    def render
-      ActionView::Base.new(view_path).render(:partial => "grid", :locals => {:grid => self})
     end
 
     # Return the base model

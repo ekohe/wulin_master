@@ -1,3 +1,4 @@
+
 (function($) {
 	function GridManager() {
 		var gridElementPrefix = "#grid_",
@@ -15,7 +16,8 @@
 			enableCellNavigation: true,
 			asyncEditorLoading: false,
 			autoEdit: false,
-			cellFlashingCssClass: "master_flashing"
+			cellFlashingCssClass: "master_flashing",
+			rowHeight: 25
 		};
 
 		function init() {
@@ -29,6 +31,8 @@
 				return LongTextCellEditor;
 				case "datetime":
 				return DateCellEditor2;
+				case "belongs_to":
+				return BelongsToEditor;
 				default:
 				return TextCellEditor;
 			}
@@ -42,6 +46,10 @@
 					if(columns[i].type == "datetime") {
 						columns[i].formatter = DateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
+					}
+
+					if(columns[i].type == "belongs_to") {
+						columns[i].formatter = BelongsToFormatter;
 					}
 				}
 			}

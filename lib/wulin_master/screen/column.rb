@@ -17,7 +17,12 @@ module WulinMaster
     end
 
     def to_column_model
-      {:id => @name, :name => self.label, :field => @name, :type => sql_type}.merge(options)
+      field_name = self.reflection ? self.reflection.foreign_key.to_s : @name.to_s
+      sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
+      table_name = self.reflection ? self.reflection.klass.table_name.to_s : self.model.table_name.to_s
+      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(options)
+      h.merge!(reflection_options) if reflection
+      h
     end
 
     # Format a value 
@@ -36,9 +41,6 @@ module WulinMaster
 
       case sql_type
       when :datetime
-        # For a list of datetime conversion types:
-        # http://msdn.microsoft.com/en-us/library/ms187928.aspx
-        # 20 is the ODBC canonical type: yyyy-mm-dd hh:mi:ss(24h)
         return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
       else
         filtering_value = filtering_value.gsub(/'/, "''")
@@ -46,10 +48,89 @@ module WulinMaster
       end
     end
 
+    def model
+      @grid.model
+    end
+
+    # Function name isn't good
     def sql_type
       return :unknown if @grid.nil? or @grid.model.nil?
-      column = @grid.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || :unknown
+      column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
+      reflection = self.model.reflections[self.name.to_sym]
+      if column
+        column.type
+      elsif reflection
+        reflection.macro
+      else
+        :unknown
+      end
+    end
+    
+    def reflection
+      @reflection ||= self.model.reflections[@name.to_sym]
+    end
+    
+    def choices
+      @choices ||= (self.reflection ? self.reflection.klass.all : [])
+    end
+    
+    def reflection_options
+      {:choices => self.choices.collect{|k| {:id => k.id, option_text_attribute => k.read_attribute(option_text_attribute)}},
+       :optionTextAttribute => self.option_text_attribute}
+    end
+    
+    def foreign_key
+      self.reflection.try(:foreign_key)
+    end
+    
+    def form_name
+      self.reflection ? self.foreign_key : self.name
+    end
+    
+    # Returns the sql names used to generate the select
+    def sql_names
+      if self.reflection.nil?
+        [self.model.table_name+"."+name.to_s]
+      else
+        [self.model.table_name+"."+self.reflection.foreign_key.to_s, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
+      end
+    end
+    
+    def presence_required?
+      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
+                                             validator.attributes.include?(@name.to_sym)}
+    end
+    
+    # Returns the´includes to add to the query 
+    def includes
+      if self.reflection
+        [@name.to_sym]
+      else
+        []
+      end
+    end
+
+    # Returns the´joins to add to the query 
+    def joins
+      if self.reflection && presence_required?
+        [@name.to_sym]
+      else
+        []
+      end
+    end
+
+    # Returns the json for the object in argument
+    def json(object)
+      if self.reflection
+        {:id => object.read_attribute(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).read_attribute(option_text_attribute)}
+      else
+        self.format(object.read_attribute(self.name.to_s))
+      end
+    end
+    
+    # For belongs_to association, the name of the attribute to display
+    def option_text_attribute
+      @options[:option_text_attribute] || :name
     end
   end
 end
