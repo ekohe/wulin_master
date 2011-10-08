@@ -631,7 +631,6 @@
       return this.pending_backstroke = null;
     };
     Chosen.prototype.keyup_checker = function(evt) {
-			console.log("key up!");
       var stroke, _ref;
       stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
       this.search_field_scale();
