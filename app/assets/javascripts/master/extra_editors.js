@@ -26,9 +26,9 @@
 					
 					// FIXME
 					// Fix keyboard enter bug stupidly, find a better way please.
-					setTimeout(function(){
-            $(".chzn-drop").css('left', '0');
-            }, 80);
+          setTimeout(function(){
+                      $(".grid_container .chzn-drop").css('left', '0');
+                      }, 80);
 				};
 				
 				this.destroy = function() {
