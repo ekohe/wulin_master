@@ -12,7 +12,15 @@ datepicker_str = ''
       <div class="field" name="<%= column_name %>">
         <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
         <%- if column.sql_type.to_s == 'belongs_to' %>
-          <%= select_tag "#{model_name}[#{column_name}]", options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px"} %>
+          <%= select_tag "#{model_name}[#{column_name}]", 
+          options_from_collection_for_select(column.choices, "id", column.option_text_attribute), 
+          {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px"} %>
+          
+        <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
+          <%= select_tag "#{model_name}[#{column.reflection.name.to_s}]", 
+          options_from_collection_for_select(column.choices, "id", column.option_text_attribute), 
+          {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px"} %>
+        
         <%- else %>
           <input id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" type="text" style="width:250px" />
         <%- end %>

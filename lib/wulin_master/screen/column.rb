@@ -54,16 +54,9 @@ module WulinMaster
 
     # Function name isn't good
     def sql_type
-      return :unknown if @grid.nil? or @grid.model.nil?
+      return :unknown if @grid.try(:model).blank?
       column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      reflection = self.model.reflections[self.name.to_sym]
-      if column
-        column.type
-      elsif reflection
-        reflection.macro
-      else
-        :unknown
-      end
+      column.try(:type) || association_type || :unknown
     end
     
     def reflection
@@ -121,8 +114,12 @@ module WulinMaster
 
     # Returns the json for the object in argument
     def json(object)
-      if self.reflection
+      if association_type.to_s == 'belongs_to'
         {:id => object.read_attribute(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).read_attribute(option_text_attribute)}
+      elsif association_type.to_s == 'has_and_belongs_to_many'
+        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
+        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.read_attribute(option_text_attribute)}.join(',')
+        {id: ids, option_text_attribute => op_attribute}
       else
         self.format(object.read_attribute(self.name.to_s))
       end
@@ -131,6 +128,13 @@ module WulinMaster
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
       @options[:option_text_attribute] || :name
+    end
+    
+    
+    private
+    
+    def association_type
+      self.reflection.try(:macro)
     end
   end
 end

@@ -33,6 +33,8 @@
 				return DateCellEditor2;
 				case "belongs_to":
 				return BelongsToEditor;
+				case "has_and_belongs_to_many":
+				return BelongsToEditor;
 				default:
 				return TextCellEditor;
 			}
@@ -48,7 +50,7 @@
 						columns[i].DateShowFormat = "yy-mm-dd";
 					}
 
-					if(columns[i].type == "belongs_to") {
+					if(columns[i].type == "belongs_to" || columns[i].type == "has_and_belongs_to_many" ) {
 						columns[i].formatter = BelongsToFormatter;
 					}
 				}

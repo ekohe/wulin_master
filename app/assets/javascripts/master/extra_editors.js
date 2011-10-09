@@ -14,7 +14,11 @@
 				var defaultValue;
         
 				this.init = function() {
-					$select = $("<select class='chzn-select'></select>");
+				  if (args.column.type === 'has_and_belongs_to_many') {
+				    $select = $("<select class='chzn-select' multiple></select>");
+				  } else {
+				    $select = $("<select class='chzn-select'></select>");
+				  }
 					$select.css('width', width-horizontalMargin);
           $select.appendTo(args.container);
           $select.focus();
@@ -52,7 +56,13 @@
 		        // the only restriction is that it must be a simple object that can be passed around even
 		        // when the editor itself has been destroyed
 						var obj = {id: $select.val()};
-						obj[optionTextAttribute] = $('option:selected', $select).text();
+						if (args.column.type === 'has_and_belongs_to_many') {
+  				    obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){
+                return $(n).text();
+              }).join();
+  				  } else {
+  				    obj[optionTextAttribute] = $('option:selected', $select).text();
+  				  }
 		        return obj;
 		    };
 
@@ -89,6 +99,8 @@
 
 				this.init();
 			}
+		  
+		  
 		};
 		
     $.extend(window, ExtraEditors);
