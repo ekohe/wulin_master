@@ -8,7 +8,7 @@ datepicker_str = ''
     <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div> 
     <%- columns.each do |column| %>
       <%- column_name = column.form_name %>
-      <%- datepicker_str << %!$( "##{model_name}_#{column_name}" ).datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s == 'datetime'  %>
+      <%- datepicker_str << %!$('##{model_name}_#{column_name}').datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s == 'datetime'  %>
       <div class="field" name="<%= column_name %>">
         <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
         <%- if column.sql_type.to_s == 'belongs_to' %>
