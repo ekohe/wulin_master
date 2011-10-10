@@ -64,8 +64,8 @@
             return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
         },
         
-        // Date cell formatter to handle "yy-mm-dd" format (for DateCellEditor2)
-        DateCellFormatter: function(row, cell, value, columnDef, dataContext) {
+        // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
+        StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
             if (value == null || value === "") {
               return "";
             }
@@ -294,7 +294,7 @@
         },
         
         // Date cell editor which can handle "yy-mm-dd" format
-        DateCellEditor2: function(args) {
+        StandardDateCellEditor: function(args) {
             var $input;
             var defaultValue;
             var scope = this;

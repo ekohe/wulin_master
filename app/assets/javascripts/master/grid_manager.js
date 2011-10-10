@@ -46,7 +46,7 @@
 				if(columns[i].editable == true) {
 					columns[i].editor = getEditorForType(columns[i].type);
 					if(columns[i].type == "datetime") {
-						columns[i].formatter = DateCellFormatter;
+						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
 					}
 
