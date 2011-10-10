@@ -44,6 +44,8 @@ var Ui = {
     // Reset form
     resetForm: function(name) {
       $(':input','#new_' + name).not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+      // For chosen
+      $('ul.chzn-choices li.search-choice').remove();
     },
 
     // Create and open dialog
