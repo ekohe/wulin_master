@@ -45,12 +45,12 @@ function load_page(url) {
     dataType: 'html',
     url: url,
     success: function(html) {
-      indicators.find("#init_menu").fadeOut();
-      $("#screen_content").empty().html(html);
+      indicators.find("#init_menu_indicator").fadeOut();
+      $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
     },
     error: function() {
-      indicators.find("#init_menu").fadeOut();
+      indicators.find("#init_menu_indicator").fadeOut();
       displayErrorMessage("An error occured while trying to load page. Please try again.");
     }
   });
