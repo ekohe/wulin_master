@@ -1,5 +1,5 @@
 <%- 
-model_name = grid.model.name.downcase
+model_name = grid.model.name.underscore
 columns = grid.columns.delete_if {|x| x.name.to_s == 'id' }
 datepicker_str = ''
 %>
