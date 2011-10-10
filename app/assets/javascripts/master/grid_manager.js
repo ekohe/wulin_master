@@ -30,7 +30,7 @@
 				case "text":
 				return LongTextCellEditor;
 				case "datetime":
-				return DateCellEditor2;
+				return StandardDateCellEditor;
 				case "belongs_to":
 				return BelongsToEditor;
 				case "has_and_belongs_to_many":
