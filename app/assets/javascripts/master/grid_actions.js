@@ -125,8 +125,11 @@ var Ui = {
 
         // Find the selected grid
         findCurrentGrid: function() {
-          var currentGrid = null,
-          currentGridContainer = $('.grid_container:visible'),
+          var currentGrid = null;
+          currentGridContainer = $('.grid_container:visible');
+          if (currentGridContainer.size() == 0) {
+            return null;
+          }
           gridName = currentGridContainer.attr('id').split('grid_')[1];
 
           if (gridManager.grids.length == 1) {
