@@ -9,9 +9,7 @@ var Requests = {
    		type:'POST',
    		url: grid.path + '.json',
    		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
-   		success: function(request) { 
-			  var errors = "";
-			  
+   		success: function(request) { 		  
 				if (request.success == true) {
 					gridManager.createdIds.push(request.id);
 					Ui.resetForm(grid.name);
@@ -19,10 +17,7 @@ var Requests = {
 					if (!continue_on) { Ui.closeDialog(grid.name); }
 				} else {
 					for(key in request.error_message){
-					  for(i in request.error_message[key]){
-					    errors += (request.error_message[key][i] + " ")
-					  }		  
-					  createFormElement.find(".field[name=" + key + "]").find(".field_error").text(errors);
+					  createFormElement.find(".field[name=" + key + "]").find(".field_error").text(request.error_message[key].join());
 					}
 				}
 			}
