@@ -14,19 +14,19 @@ module WulinMaster
     end
 
     def create_controller
-      template "controller.rb", "app/controllers/#{table_name}_controller.rb"
+      template "controller.rb", "app/#{WulinMaster::FOLDER_NAME}/controllers/#{table_name}_controller.rb"
     end
 
     def create_screen
-      template "screen.rb", "app/screens/#{underscored_name}_screen.rb"
+      template "screen.rb", "app/#{WulinMaster::FOLDER_NAME}/screens/#{underscored_name}_screen.rb"
     end
 
     def create_grid
-      template "grid.rb", "app/grids/#{underscored_name}_grid.rb"
+      template "grid.rb", "app/#{WulinMaster::FOLDER_NAME}/grids/#{underscored_name}_grid.rb"
     end
 
     def create_model
-      template "model.rb", "app/models/#{underscored_name}.rb" if options.model?
+      template "model.rb", "app/#{WulinMaster::FOLDER_NAME}/models/#{underscored_name}.rb" if options.model?
     end
 
     def add_route
