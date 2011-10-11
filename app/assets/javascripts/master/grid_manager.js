@@ -104,7 +104,7 @@
 			grid.resizeCanvas();
 
 			// Load the first page
-			grid.onViewportChanged(); 		
+			grid.onViewportChanged.notify();		
 					
 			// Append necessary attributes to the grid
 			gridAttrs = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};

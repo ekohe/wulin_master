@@ -34,15 +34,14 @@
       grid = newGrid;
       
       //  Connect the grid and the loader
-      grid.onViewportChanged = function() {
+      grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
-        
         ensureData(vp.top, vp.bottom);
-      };
+      });
       
       grid.onSort.subscribe(function(e, args){
         setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
-      })
+      });
     }
     
     function rowsChanged() {
