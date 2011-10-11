@@ -23,7 +23,7 @@ module WulinMaster
       @title = new_title if new_title # sets the new title if there's any
       @title || self.to_s.gsub(/Screen/, "")
     end
-    
+
     def self.path(new_path=nil)
       @path = new_path if new_path
       @path
@@ -37,18 +37,18 @@ module WulinMaster
       @grid_context = klass.grid_context
       @grids ||= []
       @grids << @grid_context
-      
+
       # magic here
       klass.config_block.call if klass.config_block
-      
+
       @grid_context = nil
     end
 
     # Not used if you have the autoload_paths setup in application.rb to %W(#{config.root}/app/screens)
-    def self.load_all
-      Dir.glob("#{Rails.root}/app/screens/*.rb").each do |file|
-        require file
-      end
-    end
+    # def self.load_all
+    #   Dir.glob("#{Rails.root}/app/#{FOLDER_NAME}/screens/*.rb").each do |file|
+    #     require file
+    #   end
+    # end
   end
 end
