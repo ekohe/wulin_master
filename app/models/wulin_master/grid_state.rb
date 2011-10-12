@@ -1,9 +1,9 @@
-if defined? WulinAuth
+# if defined? WulinAuth
   module WulinMaster 
     class GridState < ::ActiveRecord::Base
       default_scope :order => 'created_at DESC'
 
-      belongs_to :user, :class_name => "WulinAuth::User"
+      belongs_to :user, :class_name => "WulinAuth::User" if defined? WulinAuth
 
       def self.update_or_create(attrs)
         attrs_dup = attrs.dup
@@ -18,7 +18,7 @@ if defined? WulinAuth
     end
   end
   
-  WulinAuth::User.send(:has_many, :grid_states, :class_name => "WulinMaster::GridState")
-end
+  WulinAuth::User.send(:has_many, :grid_states, :class_name => "WulinMaster::GridState") if defined? WulinAuth
+# end
 
 # WulinAuth::User.send(:has_many, :grid_states, :class_name => "WulinMaster::GridState") if defined? WulinAuth

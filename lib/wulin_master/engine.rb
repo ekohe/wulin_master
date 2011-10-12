@@ -2,13 +2,14 @@ require "wulin_master"
 require "rails"
 
 module WulinMaster
-  FOLDER_NAME = 'wulin_master'
-  
+
   class Engine < Rails::Engine
-    engine_name :wulin_master    
-    config.autoload_paths << "app/#{WulinMaster::FOLDER_NAME}/controllers"
-    config.autoload_paths << "app/#{WulinMaster::FOLDER_NAME}/models"
-    config.autoload_paths << "app/#{WulinMaster::FOLDER_NAME}/grids"
-    config.autoload_paths << "app/#{WulinMaster::FOLDER_NAME}/screens"
+    engine_name :wulin_master 
+    config.before_configuration do |app|
+      app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/grids"
+      app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/screens"
+      app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/controllers"
+      app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/models"
+    end
   end
 end
