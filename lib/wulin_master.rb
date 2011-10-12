@@ -2,8 +2,8 @@ require 'wulin_master/engine' if defined?(Rails)
 
 module WulinMaster
   # The folder name with files belongs to wulin_master under Rails app's app directory
-  @javascripts = []
-  @stylesheets = []
+  @javascripts = ['application']
+  @stylesheets = ['application']
 
   def self.add_javascript(script)
     @javascripts << script
