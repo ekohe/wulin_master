@@ -1,3 +1,4 @@
+<% current_user = (controller.respond_to?(:current_user) ? controller.current_user : nil) -%>
 <div id='grid_<%= grid.name %>' class='grid_container' style='<%= grid.styles %>'>
   <div class='grid-header'>
     <%= grid.toolbar.render %>
@@ -6,7 +7,7 @@
   <div class='grid'></div>
   <div class='pager'></div>
   <script type='text/javascript'>
-  gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', <%= grid.path.inspect.html_safe %>, <%= grid.javascript_column_model.html_safe %>, <%= grid.states_for_user(controller.try(:current_user)).html_safe %>);
+  gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', <%= grid.path.inspect.html_safe %>, <%= grid.javascript_column_model.html_safe %>, <%= grid.states_for_user(current_user).html_safe %>);
   </script>
 </div>
 

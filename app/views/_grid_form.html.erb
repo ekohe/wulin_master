@@ -1,6 +1,6 @@
 <%- 
 model_name = grid.model.name.underscore
-columns = grid.columns.delete_if {|x| x.name.to_s == 'id' }
+columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
 datepicker_str = ''
 %>
 <div id="<%= grid.name %>-form" title="Create new <%= model_name.titleize %>" class="create_form">
