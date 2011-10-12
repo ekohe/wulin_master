@@ -115,7 +115,7 @@ module WulinMaster
     # Returns the json for the object in argument
     def json(object)
       if association_type.to_s == 'belongs_to'
-        {:id => object.read_attribute(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).read_attribute(option_text_attribute)}
+        {:id => object.read_attribute(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:read_attribute,option_text_attribute).to_s}
       elsif association_type.to_s == 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.read_attribute(option_text_attribute)}.join(',')
