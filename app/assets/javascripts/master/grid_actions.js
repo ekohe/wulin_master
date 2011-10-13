@@ -2,7 +2,7 @@
 var Ui = {	
   // Select record id attribute form grid
   selectIds: function(grid){
-    var selectedIndexs = grid.getSelectedRows(),
+    var selectedIndexs = grid.getSelectedRows();
     ids, item;
     if (grid == null) return false;
     if (selectedIndexs.length > 0) {
@@ -155,27 +155,29 @@ var Ui = {
         $(document).keypress(function(e){
           var isEditing = Ui.isEditing(), 
           isOpen = Ui.isOpen(),
-          grid = Ui.findCurrentGrid(),
-          ids = Ui.selectIds(grid),
-          gridSize = gridManager.grids.length;
+          grid = Ui.findCurrentGrid();
+          if (grid) {
+            var ids = Ui.selectIds(grid),
+            gridSize = gridManager.grids.length;
 
-          if (isOpen || isEditing) {
-            return true;
-          } else {
-            if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
-            if (ids) {
-              Ui.deleteGrids(ids);
+            if (isOpen || isEditing) {
+              return true;
+            } else {
+              if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
+              if (ids) {
+                Ui.deleteGrids(ids);
+                return false;
+              }
               return false;
-            }
-            return false;
-            } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog
-            if (gridSize > 0 && grid) {
-              Ui.openDialog(grid.name);
+              } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog
+              if (gridSize > 0 && grid) {
+                Ui.openDialog(grid.name);
+                return false;
+              }
               return false;
+            } else {
+              return true;
             }
-            return false;
-          } else {
-            return true;
           }
         }	
       });

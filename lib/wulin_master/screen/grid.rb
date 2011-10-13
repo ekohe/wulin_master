@@ -11,25 +11,26 @@ module WulinMaster
     @@default_toolbar_items = []
 
     # Class methods
-    # -------------
-
-    # Get a grid with its name
-    def self.get(name)
-      @@grids.find{|grid| grid.name == name}
-    end
-
-    def self.grids
-      @@grids
-    end
-
-    # Default toolbar
-    def self.add_to_default_toolbar(item, options={})
-      new_item = if item.class == ToolbarItem
-        item
-      elsif item.class == String
-        ToolbarItem.new(item, options)
+    # -------------------
+    class <<self
+      # Get a grid with its name
+      def get(name)
+        @@grids.find{|grid| grid.name == name}
       end
-      @@default_toolbar_items << new_item
+
+      def grids
+        @@grids
+      end
+
+      # Default toolbar
+      def add_to_default_toolbar(item, options={})
+        new_item = if item.class == ToolbarItem
+          item
+        elsif item.class == String
+          ToolbarItem.new(item, options)
+        end
+        @@default_toolbar_items << new_item
+      end
     end
 
     # Instance methods
@@ -69,7 +70,6 @@ module WulinMaster
       @@default_toolbar_items.each {|item| add_to_toolbar(item) }
     end
 
-    # It does not work in production environment
     def add_default_column
       @columns.unshift(Column.new(:id, self, {:visible => false, :editable => false, :sortable => true}))
     end
@@ -110,7 +110,7 @@ module WulinMaster
     def javascript_column_model
       @javascript_column_model ||= @columns.collect(&:to_column_model).to_json
     end
-    
+
     # State
 
     def states_for_user(user)
