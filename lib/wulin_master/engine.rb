@@ -10,6 +10,7 @@ module WulinMaster
       app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/screens"
       app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/controllers"
       app.config.autoload_paths << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/models"
+      # app.configpaths["app/views"] << "#{Rails.root}/app/#{WulinMaster::FOLDER_NAME}/views"
     end
   end
 end

@@ -1,6 +1,6 @@
 module WulinMaster
   class ScreenController < ApplicationController
-    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
+    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(Rails.root, 'app', WulinMaster::FOLDER_NAME, 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
 
     def self.controller_for_screen(klass)
       @screen = klass

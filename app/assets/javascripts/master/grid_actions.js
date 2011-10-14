@@ -3,7 +3,7 @@ var Ui = {
   // Select record id attribute form grid
   selectIds: function(grid){
     var selectedIndexs = grid.getSelectedRows();
-    ids, item;
+    var ids, item;
     if (grid == null) return false;
     if (selectedIndexs.length > 0) {
       ids = $.map(selectedIndexs,function(n, i) { 
