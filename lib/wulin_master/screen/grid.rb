@@ -8,7 +8,11 @@ module WulinMaster
     attr_accessor :columns, :base_model, :controller_class, :toolbar, :create_win_height, :create_win_width, :styles
 
     @@grids = []
-    @@default_toolbar_items = []
+    @@default_toolbar_items = [
+      ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search'),
+      ToolbarItem.new("Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'),
+      ToolbarItem.new("Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);')
+    ]
 
     # Class methods
     # -------------------
@@ -165,14 +169,20 @@ module WulinMaster
     def fill_window?
       @fill_window==true
     end
+
+    # def remove_toolbar(args)
+    #   args.to_a.each do |toolbar_title|
+    #     @@default_toolbar_items.delete_if { |t| t.title.downcase == toolbar_title.downcase}
+    #   end
+    # end
   end
 end
 
 # Search action botton
-WulinMaster::Grid.add_to_default_toolbar "Filter", :class => 'filter_toggle', :icon => 'search'
-
-# Delete action button
-WulinMaster::Grid.add_to_default_toolbar "Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'
-
-# Create action button
-WulinMaster::Grid.add_to_default_toolbar "Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);'
+# WulinMaster::Grid.add_to_default_toolbar "Filter", :class => 'filter_toggle', :icon => 'search'
+# 
+# # Delete action button
+# WulinMaster::Grid.add_to_default_toolbar "Delete", :class => 'delete_button', :icon => 'delete_trash', :href => 'javascript: void(0);'
+# 
+# # Create action button
+# WulinMaster::Grid.add_to_default_toolbar "Add", :class => 'create_button', :icon => 'create', :href => 'javascript: void(0);'
