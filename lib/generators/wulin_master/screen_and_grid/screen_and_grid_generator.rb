@@ -32,6 +32,10 @@ module WulinMaster
     def add_route
       route "resources :#{table_name}"
     end
+    
+    def create_view_directory
+      empty_directory "app/#{WulinMaster::FOLDER_NAME}/views"
+    end
 
     private
 
