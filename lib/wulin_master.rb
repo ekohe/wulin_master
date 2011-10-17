@@ -1,8 +1,6 @@
 require 'wulin_master/engine' if defined?(Rails)
 
 module WulinMaster
-  # The folder name with files belongs to wulin_master under Rails app's app directory
-  FOLDER_NAME = 'terra_nova'
   
   @javascripts = ['application']
   @stylesheets = ['application']

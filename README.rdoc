@@ -17,8 +17,20 @@ features.
 2. Run bundler command to install the gem:
 
     bundle install --path bundler
+    
+3. After you install wulin_master gem, you need run the generator to install the base building:
 
-3. After you install wulin_master gem, you need run the generator:
+    bundle exec rails g wulin_master:install
+
+   This will create:
+
+    create  app/controllers/homepage_controller.rb
+    create  config/initializers/wulin_master.rb
+    route  root :to => 'homepage#index'
+  
+   Now, you can config wulin_master in *config/initializers/wulin_master.rb*
+
+4. Then you need run the generator:
 
     bundle exec rails g wulin_master:grid_states
    
@@ -27,20 +39,23 @@ features.
 
    Run with <em>bundle exec rails g</em> for get generator list.
 
-4. Assume generator a new grid called *grid_test*, run the generator:
+5. Assume generator a new grid called *grid_test*, run the generator:
     bundle exec rails g wulin_master:screen_and_grid grid_test name:string age:integer
 
    This will create:
    
     create  db/migrate/20110919093453_create_grid_tests.rb
-    create  app/controllers/grid_tests_controller.rb
-    create  app/screens/grid_test_screen.rb
-    create  app/grids/grid_test_grid.rb
-    create  app/models/grid_test.rb
+    create  app/<asset_folder_name>/controllers/grid_tests_controller.rb
+    create  app/<asset_folder_name>/screens/grid_test_screen.rb
+    create  app/<asset_folder_name>/grids/grid_test_grid.rb
+    create  app/<asset_folder_name>/models/grid_test.rb
+    create  app/<asset_folder_name>/views/grid_tests
     route  resources :grid_tests
 
    <em>name:string age:integer</em> are the columns of the grid, same as the <b><em>[field:type field:type]</em></b> 
    option of *scaffold* generator.
+   You can configurate *<asset_folder_name>* in *config/initializers/wulin_master.rb*
+   
    You can configre your gird:
 
     # app/grids/grid_test_grid.rb
@@ -68,6 +83,15 @@ features.
 
      grid GridTestGrid
     end
+   
+   Also, the will add some autoload_paths for the generated assets in application.rb:
+   
+    # app/config/application.rb
+    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/models)
+    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/controllers)
+    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/screens)
+    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/grids)
+   
 
 5. Don't forget to run the db:migrate rake command:
 

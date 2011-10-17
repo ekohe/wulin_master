@@ -43,12 +43,5 @@ module WulinMaster
 
       @grid_context = nil
     end
-
-    # Not used if you have the autoload_paths setup in application.rb to %W(#{config.root}/app/screens)
-    # def self.load_all
-    #   Dir.glob("#{Rails.root}/app/#{FOLDER_NAME}/screens/*.rb").each do |file|
-    #     require file
-    #   end
-    # end
   end
 end
