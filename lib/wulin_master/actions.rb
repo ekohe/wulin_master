@@ -81,7 +81,7 @@ module WulinMaster
       attrs = get_create_attributes(params[grid.name.to_sym])
       @record = grid.model.new(attrs)
       message = if @record.save
-        {:success => true, id: @record.id }
+        {:success => true, :id => @record.id }
       else
         {:success => false, :error_message => @record.errors}
       end
