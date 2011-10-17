@@ -1,0 +1,10 @@
+Description:
+    Generate the base files: homepage_controller.rb and and "root :to => 'homepage#index'" to routes
+
+Example:
+    rails generate wulin_master:install
+
+    This will create:
+        what/will/it/create
+        create  app/terra_nova/controllers/homepage_controller.rb
+        route   root :to => 'homepage#index'
