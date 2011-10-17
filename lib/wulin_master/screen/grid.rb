@@ -6,7 +6,7 @@ module WulinMaster
   class Grid
     attr_reader :name
     attr_accessor :columns, :base_model, :controller_class, :toolbar, :create_win_height, :create_win_width, :styles
-
+    CONFIGURABLE_ACTIONS = %w(add delete)
     @@grids = []
     @@default_toolbar_items = [
       ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search'),
@@ -170,11 +170,16 @@ module WulinMaster
       @fill_window==true
     end
 
-    # def remove_toolbar(args)
-    #   args.to_a.each do |toolbar_title|
-    #     @@default_toolbar_items.delete_if { |t| t.title.downcase == toolbar_title.downcase}
-    #   end
-    # end
+    def actions(*args)
+      actions_str = args.map(&:to_s) & CONFIGURABLE_ACTIONS
+      @toolbar.delete_if{ |t| t.title.downcase == 'add' } unless actions_str.include?('add')
+      @toolbar.delete_if{ |t| t.title.downcase == 'delete' } unless actions_str.include?('delete')
+    end
+    
+    def get_actions
+      (@toolbar.map(&:title).map(&:downcase) & CONFIGURABLE_ACTIONS).to_json
+    end
+    
   end
 end
 

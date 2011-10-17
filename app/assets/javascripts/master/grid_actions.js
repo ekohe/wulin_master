@@ -144,7 +144,27 @@ var Ui = {
             }
           }
           return currentGrid;
-        }
+        },
+        
+        addAble: function(grid) {
+          var i, flag = false;
+          $.each(grid.actions, function(i, action){
+            if ( action === 'add' ) {
+              flag = true;
+            }
+          });
+          return flag;
+        },
+        
+        deleteAble: function(grid) {
+          var i, flag = false;
+          $.each(grid.actions, function(i, action){
+            if ( action === 'delete' ) {
+              flag = true;
+            }
+          });
+          return flag;
+  			}
 
       };
 
@@ -163,13 +183,13 @@ var Ui = {
             if (isOpen || isEditing) {
               return true;
             } else {
-              if (e.which == 100 || e.which == 68) {  // keypress 'D' for delete
+              if (Ui.deleteAble(grid) && (e.which == 100 || e.which == 68)) {  // keypress 'D' for delete
               if (ids) {
                 Ui.deleteGrids(ids);
                 return false;
               }
               return false;
-              } else if (e.which == 99 || e.which == 67) {  // keypress 'C' for show dialog
+              } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
               if (gridSize > 0 && grid) {
                 Ui.openDialog(grid.name);
                 return false;

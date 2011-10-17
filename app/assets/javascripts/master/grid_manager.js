@@ -57,7 +57,7 @@
 			}
 		}
 
-		function createNewGrid(name, path, columns, states) {
+		function createNewGrid(name, path, columns, states, actions) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
 		  
@@ -107,7 +107,7 @@
 			grid.onViewportChanged.notify();		
 					
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel};
+			gridAttrs = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel, actions: actions};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
