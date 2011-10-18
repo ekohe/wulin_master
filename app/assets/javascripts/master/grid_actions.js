@@ -56,8 +56,8 @@ var Ui = {
         show: "blind",
         modal: true,
         open: function(event, ui) {
-          // The latest jqueryui had fixed the open event's bug,so the below will be works fine 
-					$( '#' + name + '-form input:text' ).first().focus();
+        // The latest jqueryui had fixed the open event's bug,so the below will be works fine 
+        $( '#' + name + '-form input:text' ).first().focus();
 				},
         close: function(event, ui) { 
           $(this).find("input:text").val("");
@@ -147,23 +147,11 @@ var Ui = {
         },
         
         addAble: function(grid) {
-          var i, flag = false;
-          $.each(grid.actions, function(i, action){
-            if ( action === 'add' ) {
-              flag = true;
-            }
-          });
-          return flag;
+          return grid.actions.indexOf('add') != -1;
         },
         
         deleteAble: function(grid) {
-          var i, flag = false;
-          $.each(grid.actions, function(i, action){
-            if ( action === 'delete' ) {
-              flag = true;
-            }
-          });
-          return flag;
+          return grid.actions.indexOf('delete') != -1;
   			}
 
       };
