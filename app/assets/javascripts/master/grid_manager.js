@@ -49,10 +49,9 @@
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
 					}
-
-					if(columns[i].type == "belongs_to" || columns[i].type == "has_and_belongs_to_many" ) {
-						columns[i].formatter = BelongsToFormatter;
-					}
+				}
+				if(columns[i].type == "belongs_to" || columns[i].type == "has_and_belongs_to_many" ) {
+					columns[i].formatter = BelongsToFormatter;
 				}
 			}
 		}
