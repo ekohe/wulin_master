@@ -18,9 +18,6 @@ module WulinMaster
 
           fire_callbacks :query_filters_ready
 
-          # Getting to total count of the dataset
-          @count = @query.count
-
           # Add limit and offset
           parse_pagination
 
@@ -36,10 +33,16 @@ module WulinMaster
           # Add joins (INNER JOIN)
           add_joins
 
+          #Add where
+          add_where(params)
+          
           fire_callbacks :query_ready
 
           # Get all the objects
           @objects = @query.all
+          
+          # Getting to total count of the dataset
+          @count = @objects.size
 
           # Render json response
           render :json => render_json
@@ -128,6 +131,12 @@ module WulinMaster
 
     def add_joins
       @query = @query.joins(grid.joins)
+    end
+    
+    def add_where(params)
+      fields = grid.model.column_names
+      where_hash = params.dup.delete_if{|x| !fields.include?(x.to_s)}
+      @query = @query.where(where_hash)
     end
 
     def render_json

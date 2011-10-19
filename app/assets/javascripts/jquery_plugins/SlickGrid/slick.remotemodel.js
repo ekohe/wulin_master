@@ -98,7 +98,7 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
-      var url = path+".json?offset="+offset+"&count="+count;
+      var url = path + "&offset=" + offset + "&count=" + count;
       
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI();
