@@ -38,7 +38,7 @@
         },
 
         BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='../images/tick.png'>" : "";
+            return value ? "<img src='/assets/tick.png'>" : "";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
@@ -447,7 +447,7 @@
             var scope = this;
 
             this.init = function() {
-                $select = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
+                $select = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
                 $select.appendTo(args.container);
                 $select.focus();
             };
@@ -462,14 +462,15 @@
 
             this.loadValue = function(item) {
                 defaultValue = item[args.column.field];
-                if (defaultValue)
-                    $select.attr("checked", "checked");
-                else
-                    $select.removeAttr("checked");
+                if (defaultValue) {
+                  $select.attr("checked", "checked");
+                } else {
+                  $select.removeAttr("checked");
+                }
             };
 
             this.serializeValue = function() {
-                return $select.attr("checked");
+                return $select[0].checked;
             };
 
             this.applyValue = function(item,state) {
@@ -477,7 +478,8 @@
             };
 
             this.isValueChanged = function() {
-                return ($select.attr("checked") != defaultValue);
+                var currentValue = $select[0].checked;
+                return (currentValue != defaultValue);
             };
 
             this.validate = function() {
