@@ -68,7 +68,7 @@ module WulinMaster
     end
     
     def reflection_options
-      {:choices => self.choices.collect{|k| {:id => k.id, option_text_attribute => k.read_attribute(option_text_attribute)}},
+      {:choices => (@options[:choices].present? ? @options[:choices].to_json : nil) || self.choices.collect{|k| {:id => k.id, option_text_attribute => k.read_attribute(option_text_attribute)}},
        :optionTextAttribute => self.option_text_attribute}
     end
     

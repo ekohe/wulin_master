@@ -20,7 +20,11 @@ datepicker_str = ''
           <%= select_tag "#{model_name}[#{column.reflection.name.to_s}]", 
           options_from_collection_for_select(column.choices, "id", column.option_text_attribute), 
           {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px"} %>
-        
+          
+        <%- elsif column.options[:choices].present? %>
+          <%= select_tag "#{model_name}[#{column_name}]", raw(column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}), 
+          {:class => 'chzn-select', :style => "width:250px"} %>
+          
         <%- else %>
           <%- if column.sql_type.to_s == 'boolean' %>
             <input type="checkbox" id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" value="1" />

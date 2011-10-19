@@ -46,7 +46,11 @@
 		  var i;
 		  for(i in columns){
 				if(columns[i].editable == true) {
-					columns[i].editor = getEditorForType(columns[i].type);
+				  if (columns[i].editor) {
+				    columns[i].editor = eval(columns[i].editor);
+  				} else {
+  					columns[i].editor = getEditorForType(columns[i].type);
+  				}
 					if(columns[i].type == "datetime") {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
@@ -111,9 +115,10 @@
 
 			// Load the first page
 			grid.onViewportChanged.notify();		
-					
+			
+			pathWithoutQuery = path.split(".json")[0]
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, loader: loader, path: path, pager: pager, filterPanel: filterPanel, actions: actions};
+			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, pager: pager, filterPanel: filterPanel, actions: actions};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
