@@ -58,7 +58,12 @@ module WulinMaster
 
     # Grid definition methods  
     def column(name, options={})
+      remove_column(name)
       @columns << Column.new(name, self, options)
+    end
+    
+    def remove_column(name)
+      @columns.delete_if {|column| column.name == name}
     end
 
     def add_to_toolbar(item, options={})
@@ -112,7 +117,7 @@ module WulinMaster
     end
 
     def javascript_column_model
-      @javascript_column_model ||= @columns.collect(&:to_column_model).to_json
+      @javascript_column_model = @columns.collect(&:to_column_model).to_json
     end
 
     # State

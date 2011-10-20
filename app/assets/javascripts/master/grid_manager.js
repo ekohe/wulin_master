@@ -24,7 +24,7 @@
 		}
 
 		function getEditorForType(type){
-			switch(type){
+			switch(type.toLowerCase()){
 				case "string":
 				return TextCellEditor;
 				case "text":

@@ -56,7 +56,7 @@ module WulinMaster
     def sql_type
       return :unknown if @grid.try(:model).blank?
       column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || association_type || :unknown
+      column.try(:type) || association_type || column.try(:options).try(:type) || :unknown
     end
     
     def reflection
@@ -68,7 +68,7 @@ module WulinMaster
     end
     
     def reflection_options
-      {:choices => (@options[:choices].present? ? @options[:choices].to_json : nil) || self.choices.collect{|k| {:id => k.id, option_text_attribute => k.read_attribute(option_text_attribute)}},
+      {:choices => (@options[:choices].present? ? @options[:choices].to_json : nil) || self.choices.collect{|k| {:id => k.id, option_text_attribute => k.send(option_text_attribute)}},
        :optionTextAttribute => self.option_text_attribute}
     end
     
@@ -115,13 +115,13 @@ module WulinMaster
     # Returns the json for the object in argument
     def json(object)
       if association_type.to_s == 'belongs_to'
-        {:id => object.read_attribute(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:read_attribute,option_text_attribute).to_s}
+        {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
       elsif association_type.to_s == 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.read_attribute(option_text_attribute)}.join(',')
+        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
         {id: ids, option_text_attribute => op_attribute}
       else
-        self.format(object.read_attribute(self.name.to_s))
+        self.format(object.send(self.name.to_s))
       end
     end
     

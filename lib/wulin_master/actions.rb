@@ -35,12 +35,12 @@ module WulinMaster
 
           #Add where
           add_where(params)
-          
+
           fire_callbacks :query_ready
 
           # Get all the objects
           @objects = @query.all
-          
+
           # Getting to total count of the dataset
           @count = @objects.size
 
@@ -65,14 +65,14 @@ module WulinMaster
 
     def destroy
       ids = params[:id].to_s.split(',')
-      @records = grid.model.find(ids) 
-      message = begin 
-        grid.model.transaction do
-          @records.each {|record| record.destroy }
-        end
-        {:success => true }
+      @records = grid.model.find(ids)
+      begin 
+        # grid.model.transaction do
+        @records.each {|record| record.destroy }
+        # end
+        message = {:success => true }
       rescue Exception => e
-        {:success => false, :error_message => e.message}
+        message = {:success => false, :error_message => e.message}
       end
       respond_to do |format|
         format.json { render :json => message }
@@ -126,13 +126,13 @@ module WulinMaster
     end
 
     def add_includes
-      @query = @query.includes(grid.includes)
+      @query = @query.includes(grid.includes) if ActiveRecord::Relation === @query
     end
 
     def add_joins
-      @query = @query.joins(grid.joins)
+      @query = @query.joins(grid.joins) if ActiveRecord::Relation === @query
     end
-    
+
     def add_where(params)
       fields = grid.model.column_names
       where_hash = params.dup.delete_if{|x| !fields.include?(x.to_s)}
@@ -149,7 +149,7 @@ module WulinMaster
         :rows =>   @object_array})
         json
       end
-      
+
       def get_create_attributes(attrs)
         associations = grid.model.reflections
         new_attributes = {}
