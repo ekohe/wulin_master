@@ -863,7 +863,7 @@
             $select.focus();
   					var options = "";
   					$.each(choices, function() {
-  						options += "<option value='"+this.id+"'>" + this.id + "</option>";
+  						options += "<option value='"+this.id+"'>" + this.name + "</option>";
   					});
   					$select.html(options);
 
@@ -889,7 +889,7 @@
 
   		    this.serializeValue = function() {
   						var obj = {id: $select.val()};
-  				    obj.id = $('option:selected', $select).text();
+  				    obj.id = $('option:selected', $select).val();
   		        return obj;
   		    };
 
