@@ -6,5 +6,5 @@ Example:
 
     This will create:
         what/will/it/create
-        create  app/terra_nova/controllers/homepage_controller.rb
+        create  app/controllers/homepage_controller.rb
         route   root :to => 'homepage#index'
