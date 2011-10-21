@@ -117,6 +117,7 @@ module WulinMaster
     end
 
     def javascript_column_model
+      Rails.logger.info "*********************#{@columns.map(&:name)}*******************"
       @javascript_column_model = @columns.collect(&:to_column_model).to_json
     end
 
