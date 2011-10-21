@@ -159,6 +159,8 @@ module WulinMaster
             if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
               new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
             end
+          elsif !grid.model.column_names.include?(k.to_s)
+            attrs.delete(k)
           end
         end
         attrs.merge!(new_attributes)
@@ -177,6 +179,8 @@ module WulinMaster
             elsif associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes['id'] != 'null'
               new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
             end
+          elsif !grid.model.column_names.include?(k.to_s)
+            attrs.delete(k)
           end
         end
         attrs.merge!(new_attributes)
