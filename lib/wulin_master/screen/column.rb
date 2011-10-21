@@ -39,8 +39,8 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
 
-      case sql_type
-      when :datetime
+      case sql_type.to_s
+      when "datetime"
         return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
       else
         filtering_value = filtering_value.gsub(/'/, "''")
@@ -56,7 +56,7 @@ module WulinMaster
     def sql_type
       return :unknown if @grid.try(:model).blank?
       column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || association_type || column.try(:options).try(:type) || :unknown
+      column.try(:type) || association_type || column.try(:options).try([],:type) || :unknown
     end
     
     def reflection

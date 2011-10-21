@@ -26,7 +26,7 @@ datepicker_str = ''
           {:class => 'chzn-select', :style => "width:250px"} %>
           
         <%- else %>
-          <%- if column.sql_type.to_s == 'boolean' %>
+          <%- if column.sql_type.to_s.downcase == 'boolean' %>
             <input type="checkbox" id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" value="1" />
           <% else %>
             <input id="<%= model_name %>_<%= column_name %>" name="<%= model_name %>[<%= column_name %>]" type="text" style="width:250px" />
