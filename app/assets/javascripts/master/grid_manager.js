@@ -31,6 +31,8 @@
 				return LongTextCellEditor;
 				case "datetime":
 				return StandardDateCellEditor;
+				case "integer":
+				return IntegerCellEditor;
 				case "boolean":
 				return YesNoCheckboxCellEditor;
 				case "belongs_to":
@@ -54,14 +56,14 @@
 					if(columns[i].type == "datetime") {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
-					} else if (columns[i].type === "boolean") {
+					} else if (columns[i].type == "boolean" || columns[i].type == "Boolean") {
 						columns[i].formatter = BoolCellFormatter;
 					}
 				}
 				if(columns[i].type == "belongs_to" || columns[i].type == "has_and_belongs_to_many" ) {
 					columns[i].formatter = BelongsToFormatter;
 				}
-				if(columns[i].type == "boolean" ) {
+				if(columns[i].type == "boolean" || columns[i].type == "Boolean") {
 					columns[i].cssClass = 'cell-effort-driven';
 				}
 			}
