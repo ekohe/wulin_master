@@ -2,7 +2,7 @@
 var Requests = {
   // Record create along ajax
 	createByAjax: function(grid, continue_on) {
-		var createFormElement = $('#new_' + grid.name);
+		var createFormElement = $('div#'+grid.name+'-form form');
 		// clear all the error messages
 		createFormElement.find(".field_error").text("");
 		$.ajax({

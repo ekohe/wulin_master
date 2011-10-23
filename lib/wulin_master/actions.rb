@@ -81,7 +81,7 @@ module WulinMaster
 
 
     def create
-      attrs = get_create_attributes(params[grid.name.to_sym])
+      attrs = get_create_attributes(params[grid.model.to_s.underscore.gsub('/', '_')])
       @record = grid.model.new(attrs)
       message = if @record.save
         {:success => true, :id => @record.id }
@@ -150,7 +150,7 @@ module WulinMaster
         json
       end
 
-      def get_create_attributes(attrs)
+      def get_create_attributes(attrs={})
         associations = grid.model.reflections
         new_attributes = {}
         attrs.each do |k,v|
