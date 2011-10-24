@@ -30,6 +30,8 @@ module WulinMaster
     def format(value)
       if value.class == Time || value.class == ActiveSupport::TimeWithZone
         value.to_formatted_s(datetime_format)
+      elsif value.class.name == 'BSON::ObjectId'
+        value.to_s
       else
         value
       end

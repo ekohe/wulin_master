@@ -1,4 +1,3 @@
-require "wulin_master"
 require "rails"
 
 module WulinMaster
