@@ -16,7 +16,7 @@ features.
 
 2. Run bundler command to install the gem:
 
-    bundle install --path bundler
+    bundle install
     
 3. After you install wulin_master gem, you need run the generator to install the base building:
 
