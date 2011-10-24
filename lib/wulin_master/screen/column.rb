@@ -136,7 +136,6 @@ module WulinMaster
         @options[:option_text_attribute] || :name
       end
 
-
       private
 
       def association_type

@@ -90,7 +90,7 @@ var Ui = {
                 Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
                 $( this ).dialog( "close" );
               },
-              Cancle: function() {
+              Cancel: function() {
                 $( this ).dialog( "close" );
               }
             }

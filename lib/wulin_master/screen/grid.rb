@@ -125,12 +125,17 @@ module WulinMaster
     def states_for_user(user)
       return "false" if user.nil?
       result = {}
-      states = GridState.where(:user_id => user.id, :grid_name => self.name)
-      ["width", "sort", "order", "visibility"].each do |t|
-        value = states.where(:state_type => t).first.try(:state_value)
-        result.merge!(t => ActiveSupport::JSON.decode(value)) if value
+      begin
+        states = GridState.where(:user_id => user.id, :grid_name => self.name)
+        ["width", "sort", "order", "visibility"].each do |t|
+          value = states.where(:state_type => t).first.try(:state_value)
+          result.merge!(t => ActiveSupport::JSON.decode(value)) if value
+        end
+        result.to_json
+      rescue Exception => e
+        Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
+        {}.to_json
       end
-      result.to_json
     end
 
     # Return the base model

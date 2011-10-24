@@ -4,3 +4,4 @@ pkg/*
 *.log
 spec/tmp/*
 doc
+.DS_Store
