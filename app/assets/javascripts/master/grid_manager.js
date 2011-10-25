@@ -31,6 +31,8 @@
 				return LongTextCellEditor;
 				case "datetime":
 				return StandardDateCellEditor;
+				case "date":
+				return StandardDateCellEditor;
 				case "integer":
 				return IntegerCellEditor;
 				case "boolean":
@@ -53,7 +55,7 @@
   				} else {
   					columns[i].editor = getEditorForType(columns[i].type);
   				}
-					if(columns[i].type == "datetime") {
+					if(columns[i].type == "datetime" ) {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
 					} else if (columns[i].type == "boolean" || columns[i].type == "Boolean") {

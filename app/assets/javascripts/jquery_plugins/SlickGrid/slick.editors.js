@@ -865,7 +865,7 @@
   					$.each(choices, function() {
   						options += "<option value='"+this.id+"'>" + this.name + "</option>";
   					});
-  					$select.html(options);
+  					$select.html(options);  
 
   					// FIXME
   					// Fix keyboard enter bug stupidly, find a better way please.
@@ -916,8 +916,91 @@
           }
 
   				this.init();
-  			}
+  			},
 
+        DoubleSelectEditor: function(args) {
+            var $from, $to;
+            var scope = this;
+            var originValue = args.item[args.column.field].split('-');
+            var staticValue = originValue[2] + '-' + originValue[3]
+    				var from_choices = args.column.from_choices;
+    				var to_choices = args.column.to_choices;
+    				var from_field = args.column.from_field;
+    				var to_field = args.column.to_field;
+    				var width = args.position.width;
+    				var horizontalMargin = 60;
+    				var defaultValue;
+            this.init = function() {
+                $from = $("<select class='chzn-select'></select>")
+                            .appendTo(args.container);
+
+                $(args.container).append("&nbsp; <span>-</span> &nbsp;");
+
+                $to = $("<select class='chzn-select'></select>")
+                            .appendTo(args.container);
+                $(args.container).append(' <span>-' + staticValue + '</span>');
+      					$from.css('width', (width-horizontalMargin)/2);		
+            		$to.css('width', (width-horizontalMargin)/2);
+                var from_options = "", to_options = '';
+      					$.each(from_choices, function() {
+      						from_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
+      					});
+      					$.each(to_choices, function() {
+      						to_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
+      					});
+      					$from.html(from_options);
+      					$to.html(to_options);
+                scope.focus();
+            };
+
+            this.destroy = function() {
+                $(args.container).empty();
+            };
+
+            this.focus = function() {
+                $from.focus();
+            };
+
+            this.serializeValue = function() {
+                var stateH = {};
+                stateH[from_field + '_value'] = $from.val();
+                stateH[to_field + '_value'] = $to.val();
+                stateH[from_field + '_code'] = $('option:selected', $from).attr('code');
+                stateH[to_field + '_code'] = $('option:selected', $to).attr('code');
+                stateH[from_field + '_text'] = $('option:selected', $from).text();
+                stateH[to_field + '_text'] = $('option:selected', $to).text();
+                return stateH;
+            };
+
+            this.applyValue = function(item,state) {
+                item[from_field] = state[from_field + '_value'];
+                item[to_field] = state[to_field + '_value'];
+                item[args.column.field] = state[from_field + '_code'] + '-' + state[to_field + '_code'] + '-' + staticValue;
+            };
+
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field].split('-');
+                $('option[code="' + defaultValue[0] + '"]', $from).attr("selected","selected");
+                $('option[code="' + defaultValue[1] + '"]', $to).attr("selected","selected");
+                $to.chosen().trigger("chzn:open");
+                $from.chosen().trigger("chzn:open");
+            };
+
+            this.isValueChanged = function() {
+                return args.item.from != $from.val() || args.item.to != $to.val();
+            };
+
+            this.validate = function() {
+                return {valid: true, msg: null};
+            };
+            
+            this.getCell = function(){
+              return $from.parent();
+            }
+
+            this.init();
+        }
+        
 
     };
 
