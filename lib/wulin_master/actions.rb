@@ -1,5 +1,6 @@
 module WulinMaster
   module Actions
+    IGNORE_PARAMS = %w(offset count sort_col sort_dir)
     def index
       respond_to do |format|
         format.html do
@@ -39,7 +40,7 @@ module WulinMaster
           fire_callbacks :query_ready
 
           # Get all the objects
-          @objects = @query.all
+          @objects = (ActiveRecord::Relation === @query ? @query.all : @query)
 
           # Getting to total count of the dataset
           @count = @objects.size
@@ -135,8 +136,22 @@ module WulinMaster
 
     def add_where(params)
       fields = grid.model.column_names
-      where_hash = params.dup.delete_if{|x| !fields.include?(x.to_s)}
+      where_hash, scope_hash = {}, {}
+      params.each do |k,v|
+        if !IGNORE_PARAMS.include?(k.to_s)
+          fields.include?(k.to_s) ? (where_hash[k] = v) : (scope_hash[k] = v)
+        end
+      end
+
       @query = @query.where(where_hash)
+      scope_hash.each do |method_name, method_args|
+        method_args = method_args.split(WulinMaster.config.param_value_split_pattern)
+        @query = if @query.respond_to?(method_name)
+          method_args.present? ? (@query.send(method_name,method_args) rescue @query) : (@query.send(method_name) rescue @query)
+        else
+          @query
+        end
+      end
     end
 
     def render_json
@@ -146,7 +161,7 @@ module WulinMaster
       json = JSON({:offset => @offset,
         :total =>  @count,
         :count =>  @per_page,
-        :rows =>   @object_array})
+        :rows  =>  @object_array})
         json
       end
 

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module WulinMaster  
   def self.configure(configuration=WulinMaster::Configuration.new)
     yield configuration if block_given?
@@ -9,11 +10,12 @@ module WulinMaster
   end
   
   class Configuration
-    attr_accessor :app_title, :asset_folder_name
+    attr_accessor :app_title, :asset_folder_name, :param_value_split_pattern
     
     def initialize
-      self.app_title = "Empty App"
+      self.app_title = 'Empty App'
       self.asset_folder_name = 'wulin_master'
+      self.param_value_split_pattern = /,|，/
     end
   end
 end
