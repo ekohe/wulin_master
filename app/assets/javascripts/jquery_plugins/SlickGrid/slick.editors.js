@@ -982,7 +982,7 @@
                 defaultValue = item[args.column.field].split('-');
                 $('option[code="' + defaultValue[0] + '"]', $from).attr("selected","selected");
                 $('option[code="' + defaultValue[1] + '"]', $to).attr("selected","selected");
-                $to.chosen().trigger("chzn:open");
+                $to.chosen().trigger("chzn:update");
                 $from.chosen().trigger("chzn:open");
             };
 
