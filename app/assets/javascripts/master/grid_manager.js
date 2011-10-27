@@ -164,7 +164,7 @@
 				  Ui.deleteGrids(ids);
   			  return false;
 				} else {
-					alert("Please select more than one row first!");
+				  displayErrorMessage("Please select a record.");
 				}
 			});
 
