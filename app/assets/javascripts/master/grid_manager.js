@@ -55,9 +55,12 @@
   				} else {
   					columns[i].editor = getEditorForType(columns[i].type);
   				}
-					if(columns[i].type == "datetime" ) {
+					if(columns[i].type == "date" || columns[i].type == "Date" ) {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
+					} else if(columns[i].type == "datetime" || columns[i].type == "DateTime" ) {
+						columns[i].formatter = StandardDateCellFormatter;
+						columns[i].DateShowFormat = "yy-mm-dd hh:mm";
 					} else if (columns[i].type == "boolean" || columns[i].type == "Boolean") {
 						columns[i].formatter = BoolCellFormatter;
 					}
