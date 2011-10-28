@@ -62,7 +62,6 @@ var Ui = {
         close: function(event, ui) { 
           $(this).find("input:text").val("");
           $(this).find(".field_error").text(""); 
-          Ui.flashNotice(gridManager.createdIds, 'create');
           setTimeout(function(){
             Ui.highlightCreatedRows(name);
             gridManager.createdIds = [];
@@ -74,7 +73,6 @@ var Ui = {
       // Close dialog
       closeDialog: function(name) {
         $( '#' + name + '-form' ).dialog( "close" );
-        Ui.flashNotice(gridManager.createdIds, 'create');
         setTimeout(function(){
           Ui.highlightCreatedRows(name);
           gridManager.createdIds = [];

@@ -15,6 +15,7 @@ var Requests = {
 					Ui.resetForm(grid.name);
 					grid.loader.reloadData();
 					if (!continue_on) { Ui.closeDialog(grid.name); }
+					displayNewNotification('Record successfully created!');
 				} else {
 					for(key in request.error_message){
 					  createFormElement.find(".field[name=" + key + "]").find(".field_error").text(request.error_message[key].join());
@@ -34,7 +35,11 @@ var Requests = {
 				if(msg.success == true) {
 					grid.setSelectedRows([]);
 					grid.loader.reloadData();
-					Ui.flashNotice(ids, 'delete');
+				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
+				  var message;
+				  if (recordSize > 1) {  message = recordSize+" records have been deleted."; }
+				    else { message = "One record has been deleted."; }
+				  displayNewNotification(message);
 				} else {
 					alert(msg.error_message);
 				}
