@@ -359,7 +359,7 @@
             };
             
             this.loadValue = function(item) {
-                defaultValue = item[args.column.field];
+                defaultValue = item[args.column.field].split(/\s+/)[0];
                 var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
                 defaultValue = $.datepicker.formatDate(showFormat, thedate);
                 $input.val(defaultValue);
