@@ -69,6 +69,7 @@
             if (value == null || value === "") {
               return "";
             }
+            value = value.split(/\s+/)[0];
             var thedate = $.datepicker.parseDate("yy-mm-dd", value);
             return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
         },

@@ -47,28 +47,26 @@
 		}
 		
 		function appendEditor(columns){
-		  var i;
+		  var i, type_str;
 		  for(i in columns){
+		    type_str = columns[i].type.toLowerCase();
 				if(columns[i].editable == true) {
 				  if (columns[i].editor) {
 				    columns[i].editor = eval(columns[i].editor);
   				} else {
   					columns[i].editor = getEditorForType(columns[i].type);
   				}
-					if(columns[i].type == "date" || columns[i].type == "Date" ) {
+					if(type_str == "date" || type_str == "datetime" ) {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
-					} else if(columns[i].type == "datetime" || columns[i].type == "DateTime" ) {
-						columns[i].formatter = StandardDateCellFormatter;
-						columns[i].DateShowFormat = "yy-mm-dd hh:mm";
-					} else if (columns[i].type == "boolean" || columns[i].type == "Boolean") {
+					} else if (type_str == "boolean") {
 						columns[i].formatter = BoolCellFormatter;
 					}
 				}
-				if(columns[i].type == "belongs_to" || columns[i].type == "has_and_belongs_to_many" ) {
+				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many" ) {
 					columns[i].formatter = BelongsToFormatter;
 				}
-				if(columns[i].type == "boolean" || columns[i].type == "Boolean") {
+				if(type_str == "boolean") {
 					columns[i].cssClass = 'cell-effort-driven';
 				}
 			}
