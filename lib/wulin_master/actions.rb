@@ -55,7 +55,7 @@ module WulinMaster
       updated_attributes = get_updated_attributes(params[:item])
       @record = grid.model.find(params[:id]) 
       message = if @record.update_attributes(updated_attributes)
-        {:success => true }
+        {:success => true, :attrs => @record.reload.attributes }
       else
         {:success => false, :error_message => @record.errors.full_messages.join("\n")}
       end

@@ -101,7 +101,7 @@ var Ui = {
           createdRows = [];
 
           $.each(gridManager.createdIds, function(){
-            createdRows.push(grid.getRowByRecordId(this));
+            createdRows.push(grid.getRowByRecordId(this).row);
           });
           $.each(createdRows, function(){
             $(this).effect( 'highlight', {}, 5000 );
