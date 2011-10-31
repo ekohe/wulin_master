@@ -1,6 +1,10 @@
 class HomepageController < WulinMaster::HomeController
-  menu do
-    submenu 'Default' do
+  
+  def self.set_menu
+    menu do
+      submenu 'Default' do
+      end
     end
   end
+  
 end
