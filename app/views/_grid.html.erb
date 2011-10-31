@@ -6,12 +6,7 @@
   </div>
   <div class='grid'></div>
   <div class='pager'></div>
-  <% 
-  if controller.respond_to?(:before_render_grid)
-    before_render_grid = controller.before_render_grid(grid, params) 
-    before_render_grid.call(grid, params)
-  end 
-  -%>
+  <% controller.before_render_grid(grid, params) if controller.respond_to?(:before_render_grid) -%>
   <script type='text/javascript'>
     gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', '<%= grid.path.html_safe + ".json?" + request.query_parameters.to_query %>', <%= grid.javascript_column_model.html_safe %>, <%= grid.states_for_user(current_user).html_safe %>, <%= grid.get_actions.to_s.html_safe -%>);
   </script>
