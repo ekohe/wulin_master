@@ -161,19 +161,22 @@ module WulinMaster
 
     def height(new_height=nil)
       @height = new_height if new_height
-      @styles << "height: #{@height};"
+      style_str = "height: #{@height};"
+      @styles << style_str unless @styles.include?(style_str)
       @height
     end
 
     def width(new_width=nil)
       @width = new_width if new_width
-      @styles << "width: #{@width};"
+      style_str = "width: #{@width};"
+      @styles << style_str unless @styles.include?(style_str)
       @width
     end
 
     def fill_window
       @fill_window = true
-      @styles << "height: 100%; width: 100%; position: absolute; left:0; right:0;"
+      style_str = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
+      @styles << style_str unless @styles.include?(style_str)
     end
 
     def fill_window?
