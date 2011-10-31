@@ -27,7 +27,7 @@ object = grid.model.new
           
         <%- else %>
           <%- if column.sql_type.to_s.downcase == 'boolean' %>
-            <%= form.check_box(column_name) %>
+            <%#= form.check_box(column_name) %>
           <% else %>
             <%= form.text_field column_name, :style => 'width: 250px' %>
           <% end -%>
