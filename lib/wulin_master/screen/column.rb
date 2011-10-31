@@ -62,7 +62,8 @@ module WulinMaster
     def sql_type
       return :unknown if @grid.try(:model).blank?
       column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || association_type || column.try(:options).try(:[],:type) || :unknown
+      un_active_record_type = (column.respond_to?(:options) ? column.options[:type] : nil)
+      column.try(:type) || association_type || un_active_record_type || :unknown
     end
 
     def reflection
