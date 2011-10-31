@@ -12,7 +12,9 @@
   </script>
 </div>
 
+<%- if grid.get_actions.include?('add') %>
 <!-- Create form -->
 <%= render '/grid_form', :grid => grid %>
+<% end -%>
 
 
