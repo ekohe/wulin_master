@@ -70,8 +70,13 @@
               return "";
             }
             value = value.split(/\s+/)[0];
-            var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-            return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
+            
+            if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
+              var thedate = $.datepicker.parseDate("yy-mm-dd", value);
+              return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
+            } else {
+              return value;
+            }
         },
         
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
@@ -360,11 +365,13 @@
             
             this.loadValue = function(item) {
                 defaultValue = item[args.column.field].split(/\s+/)[0];
-                var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
-                defaultValue = $.datepicker.formatDate(showFormat, thedate);
-                $input.val(defaultValue);
-                $input[0].defaultValue = defaultValue;
-                $input.select();
+                if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
+                  var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
+                  defaultValue = $.datepicker.formatDate(showFormat, thedate);
+                  $input.val(defaultValue);
+                  $input[0].defaultValue = defaultValue;
+                  $input.select();
+                }
             };
             
             this.serializeValue = function() {
