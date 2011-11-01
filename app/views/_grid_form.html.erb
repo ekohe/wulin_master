@@ -22,12 +22,13 @@ object = grid.model.new
           {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px"} %>
           
         <%- elsif column.options[:choices].present? %>
-          <%= select_tag "#{model_name}[#{column_name}]", raw(column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}), 
+          <%= select_tag "#{model_name}[#{column_name}]",
+          column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe, 
           :class => 'chzn-select', :style => "width:250px" %>
           
         <%- else %>
           <%- if column.sql_type.to_s.downcase == 'boolean' %>
-            <%#= form.check_box(column_name) %>
+            <%= form.check_box(column_name) %>
           <% else %>
             <%= form.text_field column_name, :style => 'width: 250px' %>
           <% end -%>
