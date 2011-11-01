@@ -364,14 +364,20 @@
             };
             
             this.loadValue = function(item) {
+              if (item[args.column.field]) {
                 defaultValue = item[args.column.field].split(/\s+/)[0];
-                if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
+                if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(defaultValue)) {
                   var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
                   defaultValue = $.datepicker.formatDate(showFormat, thedate);
-                  $input.val(defaultValue);
-                  $input[0].defaultValue = defaultValue;
-                  $input.select();
+                } else {
+                  defaultValue = null;
                 }
+              } else {
+                defaultValue = null;
+              }
+              $input.val(defaultValue);
+              $input[0].defaultValue = defaultValue;
+              $input.select();
             };
             
             this.serializeValue = function() {
