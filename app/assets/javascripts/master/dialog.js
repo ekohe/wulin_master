@@ -13,7 +13,11 @@ function displayErrorMessage(message, title, width) {
   dialogHtml = $("<div/>").
                   attr('id', dialogId).
                   attr('title', title).
-                  html(message).
+                  append("<h4>").
+                  append('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>').
+                  append(message).
+                  append("</h4>").
+                  addClass('ui-state-highlight').
                   css('display', 'none');
   
   $('body').append(dialogHtml);
@@ -26,7 +30,7 @@ function displayErrorMessage(message, title, width) {
 				$(this).dialog("close"); 
 			} 
 		},
-		modal: true
+    modal: true
 	});
 	
   dialogIndex++;
