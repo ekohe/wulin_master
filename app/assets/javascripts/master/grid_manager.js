@@ -143,6 +143,14 @@
 			  Requests.updateByAjax(this, args.item);
 			});
 			
+			// when editor validate return false
+			grid.onValidationError.subscribe(function(e,args){
+			  var rs = args.validationResults;
+			  if (rs.msg) {
+			    displayErrorMessage(rs.msg);
+			  }
+			});
+			
 			// handle multiple grids: select one,release previou one
       grid.onClick.subscribe(function(e, args){
         $.each(grids, function(){
