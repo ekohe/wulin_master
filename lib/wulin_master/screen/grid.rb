@@ -132,7 +132,7 @@ module WulinMaster
           result.merge!(t => ActiveSupport::JSON.decode(value)) if value
         end
         result.to_json
-      rescue Exception => e
+      rescue e
         Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
         {}.to_json
       end
