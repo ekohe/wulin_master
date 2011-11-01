@@ -40,8 +40,7 @@ module WulinMaster
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
-
-      if ActiveRecord::Relation === query # For the relation database
+      if ActiveRecord::Relation === query or (query.respond_to?(:superclass) and query.superclass == ActiveRecord::Base) # For the relation database
         case sql_type.to_s
         when "datetime"
           return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
@@ -49,8 +48,10 @@ module WulinMaster
           filtering_value = filtering_value.gsub(/'/, "''")
           return query.where("UPPER(#{self.name}) LIKE UPPER('#{filtering_value}%')")
         end
-      else # Fro collection database
+      elsif query.class.name =~ /Mongoid::Criteria|Class/ # Fro collection database
         return query.where("#{self.name}" => /#{filtering_value}/i)
+      else
+        query
       end
     end
 

@@ -1,6 +1,6 @@
 module WulinMaster
   module Actions
-    IGNORE_PARAMS = %w(offset count sort_col sort_dir)
+    IGNORE_PARAMS = %w(offset count sort_col sort_dir filters)
     def index
       respond_to do |format|
         format.html do
@@ -40,8 +40,7 @@ module WulinMaster
           fire_callbacks :query_ready
 
           # Get all the objects
-          @objects = (ActiveRecord::Relation === @query ? @query.all : @query)
-
+          @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
           # Getting to total count of the dataset
           @count = @objects.size
 
@@ -127,11 +126,11 @@ module WulinMaster
     end
 
     def add_includes
-      @query = @query.includes(grid.includes) if ActiveRecord::Relation === @query
+      @query = @query.includes(grid.includes) if ActiveRecord::Relation === @query or @query == grid.model
     end
 
     def add_joins
-      @query = @query.joins(grid.joins) if ActiveRecord::Relation === @query
+      @query = @query.joins(grid.joins) if ActiveRecord::Relation === @query or @query == grid.model
     end
 
     def add_where(params)
