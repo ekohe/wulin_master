@@ -129,6 +129,7 @@ module WulinMaster
           op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
           {id: ids, option_text_attribute => op_attribute}
         else
+          puts "***************#{self.name.to_s}: #{object.class}**********************"
           self.format(object.send(self.name.to_s))
         end
       end
