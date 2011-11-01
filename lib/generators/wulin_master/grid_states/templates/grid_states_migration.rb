@@ -7,5 +7,6 @@ class CreateGridStates < ActiveRecord::Migration
       t.string  :state_value
       t.timestamps
     end
+    add_index :grid_states, :user_id
   end
 end
