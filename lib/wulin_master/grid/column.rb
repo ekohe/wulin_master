@@ -2,9 +2,9 @@ module WulinMaster
   class Column
     attr_accessor :name, :options
 
-    def initialize(name, grid, opts={})
+    def initialize(name, grid_class, opts={})
       @name = name
-      @grid = grid
+      @grid_class = grid_class
       @options = {:width => 80, :sortable => true, :editable => true}.merge(opts)
     end
 
@@ -40,31 +40,25 @@ module WulinMaster
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
-      if ActiveRecord::Relation === query or (query.respond_to?(:superclass) and query.superclass == ActiveRecord::Base) # For the relation database
-        case sql_type.to_s
-        when "datetime"
-          return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
-        else
-          filtering_value = filtering_value.gsub(/'/, "''")
-          return query.where("UPPER(#{self.name}) LIKE UPPER('#{filtering_value}%')")
-        end
-      elsif query.class.name =~ /Mongoid::Criteria|Class/ # Fro collection database
-        return query.where("#{self.name}" => /#{filtering_value}/i)
+
+      case sql_type.to_s
+      when "datetime"
+        return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
       else
-        query
+        filtering_value = filtering_value.gsub(/'/, "''")
+        return query.where("UPPER(#{self.name}) LIKE UPPER('#{filtering_value}%')")
       end
     end
 
     def model
-      @grid.model
+      @grid_class.model
     end
 
     # Function name isn't good
     def sql_type
-      return :unknown if @grid.try(:model).blank?
+      return :unknown if self.model.blank?
       column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      un_active_record_type = (column.respond_to?(:options) ? column.options[:type] : nil)
-      column.try(:type) || association_type || un_active_record_type || :unknown
+      column.try(:type) || association_type || column.try(:options).try(:[],:type) || :unknown
     end
 
     def reflection
@@ -98,50 +92,50 @@ module WulinMaster
     end
 
     def presence_required?
-      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
-        validator.attributes.include?(@name.to_sym)}
-      end
+    self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
+      validator.attributes.include?(@name.to_sym)}
+    end
 
-      # Returns the´includes to add to the query 
-      def includes
-        if self.reflection
-          [@name.to_sym]
-        else
-          []
-        end
-      end
-
-      # Returns the´joins to add to the query 
-      def joins
-        if self.reflection && presence_required?
-          [@name.to_sym]
-        else
-          []
-        end
-      end
-
-      # Returns the json for the object in argument
-      def json(object)
-        if association_type.to_s == 'belongs_to'
-          {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
-        elsif association_type.to_s == 'has_and_belongs_to_many'
-          ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-          op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-          {id: ids, option_text_attribute => op_attribute}
-        else
-          self.format(object.send(self.name.to_s))
-        end
-      end
-
-      # For belongs_to association, the name of the attribute to display
-      def option_text_attribute
-        @options[:option_text_attribute] || :name
-      end
-
-      private
-
-      def association_type
-        self.reflection.try(:macro)
+    # Returns the´includes to add to the query 
+    def includes
+      if self.reflection
+        [@name.to_sym]
+      else
+        []
       end
     end
+
+    # Returns the´joins to add to the query 
+    def joins
+      if self.reflection && presence_required?
+        [@name.to_sym]
+      else
+        []
+      end
+    end
+
+    # Returns the json for the object in argument
+    def json(object)
+      if association_type.to_s == 'belongs_to'
+        {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
+      elsif association_type.to_s == 'has_and_belongs_to_many'
+        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
+        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
+        {id: ids, option_text_attribute => op_attribute}
+      else
+        self.format(object.send(self.name.to_s))
+      end
+    end
+
+    # For belongs_to association, the name of the attribute to display
+    def option_text_attribute
+      @options[:option_text_attribute] || :name
+    end
+
+    private
+
+    def association_type
+      self.reflection.try(:macro)
+    end
   end
+end

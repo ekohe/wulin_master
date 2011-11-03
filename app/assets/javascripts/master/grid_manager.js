@@ -121,9 +121,10 @@
 			// Load the first page
 			grid.onViewportChanged.notify();		
 			
-			pathWithoutQuery = path.split(".json")[0]
+			pathWithoutQuery = path.split(".json")[0];
+			query = path.split(".json")[1];
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, pager: pager, filterPanel: filterPanel, actions: actions};
+			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }

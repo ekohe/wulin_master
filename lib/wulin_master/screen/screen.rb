@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'grid')
-
 module WulinMaster
   class Screen
     cattr_reader :screens
@@ -29,19 +27,29 @@ module WulinMaster
       @path
     end
 
-    def self.grids
-      @grids
+    def self.grid_classes
+      @grid_classes
     end
 
     def self.grid(klass)
-      @grid_context = klass.grid_context
-      @grids ||= []
-      @grids << @grid_context
+      #@grid_context = klass.grid_context
+      @grid_classes ||= []
+      @grid_classes << klass
 
       # magic here
-      klass.config_block.call if klass.config_block
+      #klass.config_block.call if klass.config_block
 
-      @grid_context = nil
+      #@grid_context = nil
     end
+    
+    def initialize(controller_instance)
+      self.controller = controller_instance
+      @grids = []
+      self.class.grid_classes.each do |grid_class|
+        @grids << grid_class.new(controller_instance)
+      end
+    end
+    
+    attr_accessor :grids, :controller
   end
 end

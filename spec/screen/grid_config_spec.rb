@@ -24,8 +24,8 @@ describe WulinMaster::GridConfig do
     TestGrid.grid_context.should_receive(:send).with(:title, "Test Grid")
     TestGrid.title "Test Grid"
     
-    TestGrid.grid_context.should_receive(:send).with(:base_model, TestModel)
-    TestGrid.base_model TestModel
+    TestGrid.grid_context.should_receive(:send).with(: model, TestModel)
+    TestGrid. model TestModel
     
     TestGrid.grid_context.should_receive(:send).with(:path, "/tests")
     TestGrid.path "/tests"

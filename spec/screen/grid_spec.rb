@@ -104,15 +104,15 @@ describe WulinMaster::Grid do
   end
   
   it "should assign a base model to grid" do
-    @grid.should respond_to(:base_model)
+    @grid.should respond_to(: model)
     @grid.should respond_to(:model)
     # default 
-    @grid.base_model.should == nil
+    @grid. model.should == nil
     @grid.model.should == nil
     
-    # customize base_model
-    @grid.base_model("city")
-    @grid.base_model.should == "city"
+    # customize  model
+    @grid. model("city")
+    @grid. model.should == "city"
     @grid.model.should == "city"
   end
   

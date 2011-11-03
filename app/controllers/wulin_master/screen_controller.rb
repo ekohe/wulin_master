@@ -2,36 +2,54 @@ module WulinMaster
   class ScreenController < ApplicationController
     self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(Rails.root, 'app', WulinMaster.config.asset_folder_name, 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
 
-    def self.controller_for_screen(klass)
-      @screen = klass
-      load_actions
+    class << self
+      def controller_for_screen(klass)
+        self.screen_class = klass
+        load_actions
+      end
+
+      def controller_for_grid(klass)
+        self.grid_class = klass
+        self.grid_class.controller_class = self
+        @callbacks = {}
+        load_actions
+      end
+      
+      # Where is this used?
+      def index_path
+        "/#{self.to_s.underscore.downcase.gsub(/_controller/, '')}"
+      end
+
+      attr_accessor :screen_class, :grid_class
+
+      # Callbacks
+      #
+
+      def add_callback(name, method_name=nil)
+        @callbacks ||= {}
+        @callbacks[name] ||= []
+        if block_given?
+          @callbacks[name] << lambda { yield }
+        else
+          @callbacks[name] << method_name
+        end
+      end
+
+      def callbacks(name=nil)
+        name ? @callbacks[name] : @callbacks
+      end
     end
 
-    def self.controller_for_grid(name)
-      @grid = Grid.get(name)
-      @grid.controller_class = self if @grid
-      @callbacks = {}
-      load_actions
-    end
-
-    def self.index_path
-      "/#{self.to_s.underscore.downcase.gsub(/_controller/, '')}"
-    end
-
-    def self.screen
-      @screen
-    end
-
+    # Returns and initializes if necessary a screen object
     def screen
-      self.class.screen
+      return @screen if defined?(@screen)
+      @screen = self.class.screen_class.new(self)
     end
 
-    def self.grid
-      @grid
-    end
-
+    # Returns and initializes if necessary a grid object
     def grid
-      self.class.grid
+      return @grid if defined?(@grid)
+      @grid = self.class.grid_class.new(self)
     end
     
     def self.current_user
@@ -43,23 +61,17 @@ module WulinMaster
       grid = screen.grids.find {|grid| grid.name == grid_name}
       grid.render
     end
+    
+    private
 
-    # Callbacks
-    #
-
-    def add_callback(name, method_name=nil)
-      @callbacks ||= {}
-      @callbacks[name] ||= []
-      if block_given?
-        @callbacks[name] << lambda { yield }
-      else
-        @callbacks[name] << method_name
-      end
+    # Load actions
+    def self.load_actions
+      self.send(:include, WulinMaster::Actions)
     end
-
+    
     def fire_callbacks(name)
-      return unless callbacks
-      cbs = callbacks(name)
+      return unless self.class.callbacks
+      cbs = self.class.callbacks(name)
 
       return if cbs.blank?
       cbs.each do |cb|
@@ -69,17 +81,6 @@ module WulinMaster
           self.send(cb) if self.respond_to?(cb)
         end
       end
-    end
-
-    def callbacks(name=nil)
-      name ? @callbacks[name] : @callbacks
-    end
-    
-    private
-
-    # Load actions
-    def self.load_actions
-      self.send(:include, WulinMaster::Actions)
     end
   end
 end

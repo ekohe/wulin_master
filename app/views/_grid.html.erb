@@ -1,5 +1,5 @@
 <% current_user = (controller.respond_to?(:current_user) ? controller.current_user : nil) -%>
-<div id='grid_<%= grid.name %>' class='grid_container' style='<%= grid.styles %>'>
+<div id='grid_<%= grid.name %>' class='grid_container' style='<%= grid.style %>'>
   <div class='grid-header'>
     <%= grid.toolbar.render %>
     <h2><%= grid.title %></h2>
@@ -8,7 +8,11 @@
   <div class='pager'></div>
   <% controller.before_render_grid(grid, params) if controller.respond_to?(:before_render_grid) -%>
   <script type='text/javascript'>
-    gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>', '<%= grid.path.html_safe + ".json?" + request.query_parameters.to_query %>', <%= grid.javascript_column_model.html_safe %>, <%= grid.states_for_user(current_user).html_safe %>, <%= grid.get_actions.to_s.html_safe -%>);
+    gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>',
+                              '<%= grid.path.to_s.html_safe + ".json?" + request.query_parameters.to_query %>',
+                              <%= grid.javascript_column_model.html_safe %>,
+                              <%= grid.states_for_user(current_user).html_safe %>,
+                              <%= grid.get_actions.to_s.html_safe -%>);
   </script>
 </div>
 

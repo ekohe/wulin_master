@@ -19,7 +19,7 @@ describe CountriesController, :type => :controller do
     before :each do
       WulinMaster::ScreenController.load_actions
       @grid = WulinMaster::Grid.new("country")
-      @grid.base_model(Country)
+      @grid. model(Country)
       @grid.stub!(:model) { Country }
       controller.stub!(:grid) { @grid }
     end

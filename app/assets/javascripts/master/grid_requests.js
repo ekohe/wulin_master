@@ -56,7 +56,7 @@ var Requests = {
 		$.ajax({
 			type: "POST",
 			dateType: 'json',
-			url: grid.path + "/" + item.id + ".json",
+			url: grid.path + "/" + item.id + ".json"+grid.query,
 			data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {

@@ -63,7 +63,7 @@ features.
      config do
        title 'Grid test'
 
-       base_model GridTest
+        model GridTest
 
        path '/grid_tests'    
 

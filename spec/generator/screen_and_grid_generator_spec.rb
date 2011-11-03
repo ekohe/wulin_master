@@ -66,7 +66,7 @@ describe WulinMaster::ScreenAndGridGenerator do
             contains "class CityGrid < WulinMaster::GridConfig"
             contains "config do"
             contains "title 'City'"
-            contains "base_model City"
+            contains " model City"
             contains "path '/cities'"
             contains "column :name"
             contains "column :country"

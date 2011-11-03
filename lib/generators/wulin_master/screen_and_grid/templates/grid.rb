@@ -2,7 +2,7 @@ class <%= class_name %>Grid < WulinMaster::GridConfig
   config do
     title '<%= human_name %>'
 
-    base_model <%= class_name %>
+     model <%= class_name %>
 
     path '/<%= table_name %>'    
 
