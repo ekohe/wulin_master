@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'jquery-rails'
+  s.add_dependency 'compass', '~> 0.12.alpha'
   s.add_development_dependency "rspec-rails", "~> 2.6"
   s.add_development_dependency "ZenTest"
   s.add_development_dependency "autotest-rails"
