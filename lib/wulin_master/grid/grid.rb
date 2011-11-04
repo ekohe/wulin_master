@@ -10,7 +10,7 @@ module WulinMaster
     include GridStyling
     include GridColumns
     include GridToolbar
-    
+
     CONFIGURABLE_ACTIONS = %w(add delete)
     cattr_accessor :grids
     @@grids = []
@@ -29,9 +29,9 @@ module WulinMaster
         initialize_columns
         initialize_toolbar
       end
-      
+
       attr_accessor :controller_class
-      
+
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
           (new_attr.size > 0) ? self.instance_variable_set("@#{attr}".to_sym, new_attr.first) : self.instance_variable_get("@#{attr}".to_sym)
@@ -48,20 +48,20 @@ module WulinMaster
     # Instance methods
     # --------------------
     attr_accessor :controller
-    
+
     def initialize(controller_instance)
       self.controller = controller_instance
     end
-    
+
     # Grid Properties that can be overriden
     def title
       self.class.title || self.class.to_s.humanize
     end
-    
+
     def model
       self.class.model
     end
-    
+
     def path
       self.class.path
     end
@@ -98,7 +98,7 @@ module WulinMaster
     end
 
     def javascript_column_model
-      @javascript_column_model ||= self.columns.collect(&:to_column_model).to_json
+      @javascript_column_model = self.columns.collect(&:to_column_model).to_json
     end
 
     # State

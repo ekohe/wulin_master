@@ -20,7 +20,9 @@ module WulinMaster
       field_name = self.reflection ? self.reflection.foreign_key.to_s : @name.to_s
       sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
       table_name = self.reflection ? self.reflection.klass.table_name.to_s : self.model.table_name.to_s
-      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(options)
+      new_options = @options.dup
+      @options.each {|k,v| new_options.merge!(k => v.call) if v.class == Proc }
+      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -92,50 +94,50 @@ module WulinMaster
     end
 
     def presence_required?
-    self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
-      validator.attributes.include?(@name.to_sym)}
-    end
-
-    # Returns the´includes to add to the query 
-    def includes
-      if self.reflection
-        [@name.to_sym]
-      else
-        []
+      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
+        validator.attributes.include?(@name.to_sym)}
       end
-    end
 
-    # Returns the´joins to add to the query 
-    def joins
-      if self.reflection && presence_required?
-        [@name.to_sym]
-      else
-        []
+      # Returns the´includes to add to the query 
+      def includes
+        if self.reflection
+          [@name.to_sym]
+        else
+          []
+        end
       end
-    end
 
-    # Returns the json for the object in argument
-    def json(object)
-      if association_type.to_s == 'belongs_to'
-        {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
-      elsif association_type.to_s == 'has_and_belongs_to_many'
-        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-        {id: ids, option_text_attribute => op_attribute}
-      else
-        self.format(object.send(self.name.to_s))
+      # Returns the´joins to add to the query 
+      def joins
+        if self.reflection && presence_required?
+          [@name.to_sym]
+        else
+          []
+        end
       end
-    end
 
-    # For belongs_to association, the name of the attribute to display
-    def option_text_attribute
-      @options[:option_text_attribute] || :name
-    end
+      # Returns the json for the object in argument
+      def json(object)
+        if association_type.to_s == 'belongs_to'
+          {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
+        elsif association_type.to_s == 'has_and_belongs_to_many'
+          ids = object.send("#{self.reflection.klass.name.underscore}_ids")
+          op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
+          {id: ids, option_text_attribute => op_attribute}
+        else
+          self.format(object.send(self.name.to_s))
+        end
+      end
 
-    private
+      # For belongs_to association, the name of the attribute to display
+      def option_text_attribute
+        @options[:option_text_attribute] || :name
+      end
 
-    def association_type
-      self.reflection.try(:macro)
+      private
+
+      def association_type
+        self.reflection.try(:macro)
+      end
     end
   end
-end
