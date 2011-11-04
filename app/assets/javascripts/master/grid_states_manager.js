@@ -74,6 +74,18 @@ var GridStatesManager = {
 		    }
 		  }
 		}
+		// push columns that are not in the state in abritrary order
+		for(i in columns) {
+	    var found = false;
+	    for(j in new_columns) {
+	      if (columns[i].id == new_columns[j].id) {
+	        found = true;
+	      }
+	    } 
+	    if (found==false) {
+	      new_columns.push(columns[i]);
+	    }
+	  }
 		return new_columns;
 	},
 	
