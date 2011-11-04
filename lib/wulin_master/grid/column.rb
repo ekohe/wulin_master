@@ -59,8 +59,8 @@ module WulinMaster
     # Function name isn't good
     def sql_type
       return :unknown if self.model.blank?
-      column = self.model.columns.find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || association_type || column.try(:options).try(:[],:type) || :unknown
+      column = (self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns).find {|col| col.name.to_s == self.name.to_s}
+      column.try(:type) || association_type || :unknown
     end
 
     def reflection
