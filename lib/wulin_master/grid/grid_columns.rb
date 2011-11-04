@@ -4,25 +4,25 @@ module WulinMaster
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
-        @_columns = []
-        @_columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
+        @columns = []
+        @columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
       end
       
       # Add a column
       def column(name, options={})
-        @_columns << Column.new(name, self, options)
+        @columns << Column.new(name, self, options)
       end
 
       # Returns columns
       def columns
-        @_columns
+        @columns
       end
     end
     
     module InstanceMethods
       # Returns columns
       def columns
-        self.class.columns
+        self.class.columns.clone
       end
     end
   end
