@@ -45,7 +45,7 @@ module WulinMaster
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
           
           # Getting to total count of the dataset
-          @count = @objects.count
+          @count = @query.count
 
           # Render json response
           render :json => render_json
@@ -57,7 +57,7 @@ module WulinMaster
       updated_attributes = get_updated_attributes(params[:item])
       @record = grid.model.find(params[:id]) 
       message = if @record.update_attributes(updated_attributes)
-        attributes = grid.arraify([@record.reload]).first.inject({}) {|a,hash|  hash.merge(a) }.merge(:id => @record.id)
+        attributes = grid.arraify([@record.reload]).first.inject({}) {|a,b|  a.merge(b) }.merge(:id => @record.id)
         {:success => true, :attrs => attributes}
       else
         {:success => false, :error_message => @record.errors.full_messages.join("\n")}
