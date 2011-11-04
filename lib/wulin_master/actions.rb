@@ -24,9 +24,6 @@ module WulinMaster
 
           fire_callbacks :query_filters_ready
 
-          # Add limit and offset
-          parse_pagination
-
           # Add order
           parse_ordering
 
@@ -41,11 +38,24 @@ module WulinMaster
 
           fire_callbacks :query_ready
 
+          # Getting to total count of the dataset if we aren't on the first page
+          @offset = params[:offset].present? ? params[:offset].to_i : 0
+          if @offset == 0
+            @count_query = @query.clone
+          else
+            @count = @query.count
+          end
+
+          # Add limit and offset
+          parse_pagination
+
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
-          
-          # Getting to total count of the dataset
-          @count = @query.count
+
+          # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
+          if @count_query
+            @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
+          end
 
           # Render json response
           render :json => render_json
@@ -118,7 +128,7 @@ module WulinMaster
     def parse_pagination
       # The slick.remotemodel's loadingSize is 200, so here we'd better set 200 too.
       @per_page = params[:count].to_i.zero? ? 200 : params[:count].to_i
-      @offset = params[:offset] ? params[:offset].to_i : 0
+      # @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
 
       @query = @query.limit(@per_page).offset((@page-1) * @per_page)
