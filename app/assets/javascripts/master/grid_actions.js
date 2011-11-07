@@ -65,10 +65,11 @@ var Ui = {
           setTimeout(function(){
             Ui.highlightCreatedRows(name);
             gridManager.createdIds = [];
-            }, 300);
-          }
-        });
-      },
+          }, 300);
+          window._focused = {};
+        }
+      });
+    },
 
       // Close dialog
       closeDialog: function(name) {
