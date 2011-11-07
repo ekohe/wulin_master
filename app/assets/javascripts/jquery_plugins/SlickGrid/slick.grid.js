@@ -1585,7 +1585,7 @@ if (typeof Slick === "undefined") {
         function handleDragEnd(e,dd) {
             trigger(self.onDragEnd, dd, e);
         }
-
+        
         function handleKeyDown(e) {
             trigger(self.onKeyDown, {}, e);
             var handled = e.isImmediatePropagationStopped();
@@ -1604,10 +1604,10 @@ if (typeof Slick === "undefined") {
                     else if (e.which == 39) {
                         navigateRight();
                     }
-                    else if (e.which == 38) {
+                    else if (e.which == 38 && !currentEditor) {
                         navigateUp();
                     }
-                    else if (e.which == 40) {
+                    else if (e.which == 40 && !currentEditor) {
                         navigateDown();
                     }
                     else if (e.which == 9) {
@@ -1616,11 +1616,13 @@ if (typeof Slick === "undefined") {
                     else if (e.which == 13) {
                         if (options.editable) {
                             if (currentEditor) {
+                                var multiChosenExist = $('.slick-cell .chzn-select~.chzn-container-multi').size() > 0;
+                                var chosenFull = $('.slick-cell .chzn-select~.chzn-container-multi .chzn-results li.active-result').size() == 0;
                                 // adding new row
                                 if (activeRow === getDataLength()) {
                                     navigateDown();
-                                }
-                                else {
+                                } 
+                                else if (!multiChosenExist || chosenFull) {
                                     commitEditAndSetFocus();
                                 }
                             } else {

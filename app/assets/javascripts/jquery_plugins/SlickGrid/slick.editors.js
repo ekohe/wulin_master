@@ -833,7 +833,11 @@
               defaultValue = item[args.column.id].id;
   						$select.val(defaultValue);
               $select.select();
-  						$select.chosen().trigger("chzn:open");
+  						$select.chosen();
+  						setTimeout(function(){
+                $('.slick-cell .chzn-select~.chzn-container').trigger('mousedown');
+              }, 100);
+              
   		    };
 
   		    this.applyValue = function(item,state) {
@@ -908,10 +912,11 @@
   		    };
 
   		    this.loadValue = function(item) {
-              defaultValue = item[args.column.id].id;
+  		        defaultValue = item[args.column.id] ? item[args.column.id].id : null;
   						$select.val(defaultValue);
               $select.select();
-  						$select.chosen().trigger("chzn:open");
+  						$select.chosen();
+  						$('.slick-cell .chzn-select~.chzn-container').trigger('mousedown');
   		    };
 
   		    this.applyValue = function(item,state) {
@@ -996,8 +1001,8 @@
                 defaultValue = item[args.column.field].split('-');
                 $('option[code="' + defaultValue[0] + '"]', $from).attr("selected","selected");
                 $('option[code="' + defaultValue[1] + '"]', $to).attr("selected","selected");
-                $to.chosen().trigger("chzn:update");
-                $from.chosen().trigger("chzn:open");
+                $to.chosen();
+                $from.chosen();
             };
 
             this.isValueChanged = function() {
