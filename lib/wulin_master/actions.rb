@@ -18,7 +18,7 @@ module WulinMaster
           # We had issues where it's not initialized through the relation method when using
           #  the where method
           grid.model.relation if grid.model.respond_to?(:relation)
-          
+
           # Add the necessary where statements to the query
           construct_filters
 
@@ -154,45 +154,49 @@ module WulinMaster
         :total =>  @count,
         :count =>  @per_page,
         :rows  =>  @object_array})
-      json
-    end
-
-    def get_create_attributes(attrs={})
-      associations = grid.model.reflections
-      new_attributes = {}
-      attrs.each do |k,v|
-        if associations.keys.include?(k.to_sym)
-          association_attributes = attrs.delete(k)
-          if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
-            new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
-          end
-        elsif !grid.model.column_names.include?(k.to_s)
-          attrs.delete(k)
-        end
+        json
       end
-      attrs.merge!(new_attributes)
-      attrs
-    end
 
-    def get_updated_attributes(attrs)
-      attrs.delete_if {|k,v| v == "null" || k == "id" }
-      associations = grid.model.reflections
-      new_attributes = {}
-      attrs.each do |k,v|
-        if associations.keys.include?(k.to_sym)
-          association_attributes = attrs.delete(k)
-          if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
-            new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-          elsif associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes['id'] != 'null'
-            new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+      def get_create_attributes(attrs={})
+        associations = grid.model.reflections
+        new_attributes = {}
+        attrs.each do |k,v|
+          if associations.keys.include?(k.to_sym)
+            association_attributes = attrs.delete(k)
+            if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
+              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+            end
+          elsif !grid.model.column_names.include?(k.to_s)
+            attrs.delete(k)
           end
-      #  elsif !grid.model.column_names.include?(k.to_s)
-      #    attrs.delete(k)
         end
+        attrs.merge!(new_attributes)
+        attrs
       end
-      attrs.merge!(new_attributes)
-      attrs
-    end
 
+      def get_updated_attributes(attrs)
+        attrs.delete_if {|k,v| v == "null" || k == "id" }
+        associations = grid.model.reflections
+        new_attributes = {}
+        attrs.each do |k,v|
+          if associations.keys.include?(k.to_sym)
+            association_attributes = attrs.delete(k)
+            if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
+              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+            elsif associations[k.to_sym].macro == :has_and_belongs_to_many
+              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
+                new_attributes[k.to_sym] = []
+              else
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+              end
+            end
+            #  elsif !grid.model.column_names.include?(k.to_s)
+            #    attrs.delete(k)
+          end
+        end
+        attrs.merge!(new_attributes)
+        attrs
+      end
+
+    end
   end
-end
