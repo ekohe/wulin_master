@@ -20,14 +20,14 @@ describe WulinMaster::Menu do
   end
   
   it "should render a the right view template" do
-    WulinMaster.stub_chain(:configuration, :app_title) {"Terra Nova"}
+    WulinMaster.stub_chain(:configuration, :app_title) {"Undefined App"}
     sub_menu_1 = WulinMaster::SubMenu.new("sports")
     sub_menu_2 = WulinMaster::SubMenu.new("life")
     @menu << sub_menu_1
     @menu << sub_menu_2
     
     view = @menu.render
-    view.should match(/Terra Nova/)
+    view.should match(/Undefined App/)
     view.should match(/div id=\"navigation\"/)
     view.should match(/div id=\"activity\"/)
     view.should match(/div id=\"menu\"/)
