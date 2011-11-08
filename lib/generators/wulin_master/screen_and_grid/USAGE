@@ -2,7 +2,17 @@ Description:
     Generates a screen with one basic grid.
 
 Example:
-    rails generate wulin_master:screen_and_grid
+    rails generate wulin_master:screen_and_grid Wulin name:string age:integer
 
     This will create:
-        db/migrate/create_china_region_tables.rb
+        create  db/migrate/20110919093453_create_wulins.rb
+        create  app/<asset_folder_name>/controllers/wulins_controller.rb
+        create  app/<asset_folder_name>/screens/wulin_screen.rb
+        create  app/<asset_folder_name>/grids/wulin_grid.rb
+        create  app/<asset_folder_name>/models/wulin.rb
+        create  app/<asset_folder_name>/views/wulins
+        route  resources :wulins
+        
+    More info please run "rails generate wulin_master:screen_and_grid --help"  
+        
+        
