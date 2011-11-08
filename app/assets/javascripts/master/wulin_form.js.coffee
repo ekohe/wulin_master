@@ -32,7 +32,7 @@ formSubmitted = ->
   clearErrors()
   ajaxOptions =
     type: 'POST'
-    url: form.attr('action')
+    url: form.attr('action')+".json"
     data: form.serializeArray()
     dataType: 'json'
     success: (data) ->

@@ -1,12 +1,12 @@
 // ------------------------------------ UI tools -----------------------------------------
 var Ui = {	
-  // Select record id attribute form grid
+  // Select record id attribute form grid - shouldn't this be an extension of Grid ? Why in Ui? Ui == User interface?
   selectIds: function(grid){
-    var selectedIndexs = grid.getSelectedRows();
+    var selectedIndexes = grid.getSelectedRows();
     var ids, item;
     if (grid == null) return false;
-    if (selectedIndexs.length > 0) {
-      ids = $.map(selectedIndexs,function(n, i) { 
+    if (selectedIndexes.length > 0) {
+      ids = $.map(selectedIndexes,function(n, i) { 
         item = grid.loader.data[n];
         return item['id']; 
         }).join();

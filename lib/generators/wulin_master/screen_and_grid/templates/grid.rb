@@ -1,15 +1,13 @@
-class <%= class_name %>Grid < WulinMaster::GridConfig
-  config do
-    title '<%= human_name %>'
+class <%= class_name %>Grid < WulinMaster::Grid
+  title '<%= human_name %>'
 
-     model <%= class_name %>
+  model <%= class_name %>
 
-    path '/<%= table_name %>'    
+  path '/<%= table_name %>'    
 
-    fill_window
+  fill_window
 
 <% attributes.each do |column| -%>
-    column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
+  column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
 <% end -%>
-  end
 end
