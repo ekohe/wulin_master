@@ -89,8 +89,10 @@
             var scope = this;
 
             this.init = function() {
-                $input = $("<INPUT type=text class='editor-text' />")
-                    .appendTo(args.container)
+                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                .appendTo(args.container);
+                $input = $("<INPUT type=text class='editor-text' style='width:250px;border:0' />")
+                    .appendTo($wrapper)
                     .bind("keydown.nav", function(e) {
                         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                             e.stopImmediatePropagation();
@@ -161,7 +163,9 @@
             var scope = this;
 
             this.init = function() {
-                $input = $("<INPUT type=text class='editor-text' />");
+                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                  .appendTo(args.container);
+                $input = $("<INPUT type=text class='editor-text' style='width:150px;border:none;' />");
 
                 $input.bind("keydown.nav", function(e) {
                     if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
@@ -169,7 +173,7 @@
                     }
                 });
 
-                $input.appendTo(args.container);
+                $input.appendTo($wrapper);
                 $input.focus().select();
             };
 
@@ -769,18 +773,17 @@
   				var $select;
   				var choices = args.column.choices;
   				var optionTextAttribute = args.column.optionTextAttribute || 'name';
-  				var width = args.position.width;
-  				var horizontalMargin = 4;
   				var defaultValue;
 
   				this.init = function() {
+  				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                .appendTo(args.container);
   				  if (args.column.type === 'has_and_belongs_to_many') {
-  				    $select = $("<select class='chzn-select' multiple></select>");
+  				    $select = $("<select class='chzn-select' multiple style='width:200px'></select>");
   				  } else {
-  				    $select = $("<select class='chzn-select'></select>");
+  				    $select = $("<select class='chzn-select' style='width:200px'></select>");
   				  }
-  					$select.css('width', width-horizontalMargin);
-            $select.appendTo(args.container);
+            $select.appendTo($wrapper);
             $select.focus();
   					var options = "";
   					$.each(choices, function() {
@@ -870,14 +873,13 @@
         SelectEditor : function(args) {
   				var $select;
   				var choices = args.column.choices;
-  				var width = args.position.width;
-  				var horizontalMargin = 4;
   				var defaultValue;
 
   				this.init = function() {
-				    $select = $("<select class='chzn-select'></select>");
-  					$select.css('width', width-horizontalMargin);
-            $select.appendTo(args.container);
+  				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                .appendTo(args.container);
+				    $select = $("<select class='chzn-select' style='width:200px'></select>")
+				        .appendTo($wrapper);
             $select.focus();
   					var options = "";
   					$.each(choices, function() {
@@ -946,20 +948,20 @@
     				var to_choices = args.column.to_choices;
     				var from_field = args.column.from_field;
     				var to_field = args.column.to_field;
-    				var width = args.position.width;
-    				var horizontalMargin = 60;
     				var defaultValue;
             this.init = function() {
-                $from = $("<select class='chzn-select'></select>")
-                            .appendTo(args.container);
 
-                $(args.container).append("&nbsp; <span>-</span> &nbsp;");
+                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                    .appendTo(args.container);
+                  
+                $from = $("<select class='chzn-select' style='width: 200px;'></select>")
+                            .appendTo($wrapper);
 
-                $to = $("<select class='chzn-select'></select>")
-                            .appendTo(args.container);
-                $(args.container).append(' <span>-' + staticValue + '</span>');
-      					$from.css('width', (width-horizontalMargin)/2);		
-            		$to.css('width', (width-horizontalMargin)/2);
+                $wrapper.append("&nbsp; <span>-</span> &nbsp;");
+
+                $to = $("<select class='chzn-select' style='width: 200px;'></select>")
+                            .appendTo($wrapper);
+                $wrapper.append(' <span>-' + staticValue + '</span>');
                 var from_options = "", to_options = '';
       					$.each(from_choices, function() {
       						from_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
