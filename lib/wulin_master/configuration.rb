@@ -10,12 +10,11 @@ module WulinMaster
   end
   
   class Configuration
-    attr_accessor :app_title, :asset_folder_name, :param_value_split_pattern
+    attr_accessor :app_title, :asset_folder_name
     
     def initialize
-      self.app_title = 'Empty App'
+      self.app_title = 'Undefined App'
       self.asset_folder_name = 'wulin_master'
-      self.param_value_split_pattern = /,|，/
     end
   end
 end
