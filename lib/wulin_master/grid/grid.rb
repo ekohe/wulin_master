@@ -123,7 +123,6 @@ module WulinMaster
     end
 
     def get_actions
-      puts "****************#{self.class.name}**************"
       self.class.actions.to_json
     end
   end
