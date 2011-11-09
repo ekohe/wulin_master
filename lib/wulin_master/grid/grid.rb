@@ -12,6 +12,7 @@ module WulinMaster
     include GridToolbar
     
     cattr_accessor :grids
+    class_attribute :controller_class, :_actions , :_title, :_model, :_path
     @@grids = []
 
     # Grid has been subclassed
@@ -28,25 +29,22 @@ module WulinMaster
         initialize_columns
         initialize_toolbar
       end
-
-      attr_accessor :controller_class
-      attr_accessor :actions
       
       def actions
-        @actions ||= %w(add delete edit)
+        self._actions ||= %w(add delete edit)
       end
 
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
-          (new_attr.size > 0) ? self.instance_variable_set("@#{attr}".to_sym, new_attr.first) : self.instance_variable_get("@#{attr}".to_sym)
+          (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
         end
       end
 
       def set_actions(*args)
-        actions_str = args.map(&:to_s) & self.actions
+        actions_str = args.map(&:to_s)
         self.toolbar.delete_if{ |t| t.title.downcase == 'add' } unless actions_str.include?('add')
         self.toolbar.delete_if{ |t| t.title.downcase == 'delete' } unless actions_str.include?('delete')
-        self.actions = actions_str
+        self._actions = actions_str
       end
     end
 
@@ -125,6 +123,7 @@ module WulinMaster
     end
 
     def get_actions
+      puts "****************#{self.class.name}**************"
       self.class.actions.to_json
     end
   end

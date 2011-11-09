@@ -1,21 +1,23 @@
 module WulinMaster
   module GridColumns
     extend ActiveSupport::Concern
+    
+    included do
+      class_eval do
+        class_attribute :columns
+      end
+    end
+    
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
-        @columns = []
-        @columns << Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})
+        self.columns ||= []
+        self.columns += [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       end
       
       # Add a column
       def column(name, options={})
-        @columns << Column.new(name, self, options)
-      end
-
-      # Returns columns
-      def columns
-        @columns
+        self.columns += [Column.new(name, self, options)]
       end
     end
     

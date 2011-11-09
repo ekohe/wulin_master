@@ -1,19 +1,24 @@
 module WulinMaster
   module GridToolbar
     extend ActiveSupport::Concern
+    
+    included do
+      class_eval do
+        class_attribute :toolbar
+      end
+    end
+    
     module ClassMethods
       def initialize_toolbar
-        @toolbar = Toolbar.new
+        self.toolbar ||= Toolbar.new
       end
-
-      attr_accessor :toolbar
 
       # Add an item to the toolbar
       def add_to_toolbar(item, options={})
         if item.class == ToolbarItem
-          @toolbar << item
+          self.toolbar +=[item]
         elsif item.class == String
-          @toolbar << ToolbarItem.new(item, options)
+          self.toolbar += [ToolbarItem.new(item, options)]
         end
       end
     end
