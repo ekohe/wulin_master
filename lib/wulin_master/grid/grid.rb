@@ -10,8 +10,7 @@ module WulinMaster
     include GridStyling
     include GridColumns
     include GridToolbar
-
-    CONFIGURABLE_ACTIONS = %w(add delete)
+    
     cattr_accessor :grids
     @@grids = []
 
@@ -31,6 +30,11 @@ module WulinMaster
       end
 
       attr_accessor :controller_class
+      attr_accessor :actions
+      
+      def actions
+        @actions ||= %w(add delete edit)
+      end
 
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
@@ -38,10 +42,11 @@ module WulinMaster
         end
       end
 
-      def actions(*args)
-        actions_str = args.map(&:to_s) & CONFIGURABLE_ACTIONS
+      def set_actions(*args)
+        actions_str = args.map(&:to_s) & self.actions
         self.toolbar.delete_if{ |t| t.title.downcase == 'add' } unless actions_str.include?('add')
         self.toolbar.delete_if{ |t| t.title.downcase == 'delete' } unless actions_str.include?('delete')
+        self.actions = actions_str
       end
     end
 
@@ -120,7 +125,7 @@ module WulinMaster
     end
 
     def get_actions
-      (self.toolbar.map(&:title).map(&:downcase) & CONFIGURABLE_ACTIONS).to_json
+      self.class.actions.to_json
     end
   end
 end

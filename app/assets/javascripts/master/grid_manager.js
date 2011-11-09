@@ -71,6 +71,14 @@
 				}
 			}
 		}
+		
+		function resetOptions(actions) {
+		  if (actions.indexOf('edit') == -1) {
+		    options['editable'] = false;
+		  } else {
+		    options['editable'] = true;
+		  }
+		}
 
 		function createNewGrid(name, path, columns, states, actions) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
@@ -84,9 +92,12 @@
 			// restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
 			// restore the visibility states to columns
-		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"])
+		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
 		  // restore the width states to columns
-      GridStatesManager.restoreWidthStates(columns, states["width"])
+      GridStatesManager.restoreWidthStates(columns, states["width"]);
+      
+      // Set options along with actions
+      resetOptions(actions);
       
       // Set Loader
 			loader = new Slick.Data.RemoteModel(path, columns);
