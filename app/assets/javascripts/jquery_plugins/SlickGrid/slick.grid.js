@@ -1623,7 +1623,9 @@ if (typeof Slick === "undefined") {
                                     navigateDown();
                                 } 
                                 else if (!multiChosenExist || chosenFull) {
-                                    commitEditAndSetFocus();
+                                    setTimeout(function(){
+                                      commitEditAndSetFocus();
+                                    }, 100);
                                 }
                             } else {
                                 if (getEditorLock().commitCurrentEdit()) {
