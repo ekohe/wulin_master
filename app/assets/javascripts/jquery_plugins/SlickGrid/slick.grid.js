@@ -1625,7 +1625,7 @@ if (typeof Slick === "undefined") {
                                 else if (!multiChosenExist || chosenFull) {
                                     setTimeout(function(){
                                       commitEditAndSetFocus();
-                                    }, 100);
+                                    }, 150);
                                 }
                             } else {
                                 if (getEditorLock().commitCurrentEdit()) {
