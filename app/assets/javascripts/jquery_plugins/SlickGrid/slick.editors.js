@@ -87,19 +87,26 @@
             var $input;
             var defaultValue;
             var scope = this;
+            var boxWidth = 250;
+            var offsetWith = boxWidth + 18;
 
             this.init = function() {
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                 .appendTo(args.container);
-                $input = $("<INPUT type=text class='editor-text' style='width:250px;border:0' />")
+                $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
                     .appendTo($wrapper)
                     .bind("keydown.nav", function(e) {
                         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                             e.stopImmediatePropagation();
                         }
                     })
+                    .scrollLeft(0)
                     .focus()
                     .select();
+                var winWith = $(window).width(),
+                offsetLeft = $wrapper.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $wrapper.offset({left: winWith - offsetWith})
             };
 
             this.destroy = function() {
@@ -161,11 +168,13 @@
             var $input;
             var defaultValue;
             var scope = this;
+            var boxWidth = 150;
+            var offsetWith = boxWith + 28;
 
             this.init = function() {
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                   .appendTo(args.container);
-                $input = $("<INPUT type=text class='editor-text' style='width:150px;border:none;' />");
+                $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
 
                 $input.bind("keydown.nav", function(e) {
                     if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
@@ -175,6 +184,10 @@
 
                 $input.appendTo($wrapper);
                 $input.focus().select();
+                var winWith = $(window).width(),
+                offsetLeft = $wrapper.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $wrapper.offset({left: winWith - offsetWith})
             };
 
             this.destroy = function() {
@@ -666,23 +679,25 @@
             var $input, $wrapper;
             var defaultValue;
             var scope = this;
+            var boxWidth = 250;
+            var offsetWith = boxWidth + 18;
 
             this.init = function() {
                 var $container = $("body");
-
+                
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                     .appendTo($container);
-
-                $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:250px;height:80px;border:0;outline:0'>")
+                
+                $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + boxWidth + "px;height:80px;border:0;outline:0'>")
                     .appendTo($wrapper);
-
+                
                 $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
                     .appendTo($wrapper);
-
+                
                 $wrapper.find("button:first").bind("click", this.save);
                 $wrapper.find("button:last").bind("click", this.cancel);
                 $input.bind("keydown", this.handleKeyDown);
-
+                
                 scope.position(args.position);
                 $input.focus().select();
             };
@@ -723,9 +738,13 @@
             };
 
             this.position = function(position) {
+                var winWith = $(window).width(),
+                offsetLeft = $wrapper.offset().left;
                 $wrapper
                     .css("top", position.top - 5)
                     .css("left", position.left - 5)
+                if(winWith - offsetLeft < offsetWith)
+                  $wrapper.offset({left: winWith - offsetWith});
             };
 
             this.destroy = function() {
@@ -737,19 +756,23 @@
             };
 
             this.loadValue = function(item) {
+                console.log("loadValue");
                 $input.val(defaultValue = item[args.column.field]);
                 $input.select();
             };
 
             this.serializeValue = function() {
+                console.log("serializeValue");
                 return $input.val();
             };
 
             this.applyValue = function(item,state) {
+                console.log("applyValue");
                 item[args.column.field] = state;
             };
 
             this.isValueChanged = function() {
+                console.log("isValueChanged");
                 return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
             };
 
@@ -774,17 +797,24 @@
   				var choices = args.column.choices;
   				var optionTextAttribute = args.column.optionTextAttribute || 'name';
   				var defaultValue;
+  				var boxWidth = 200;
+  				var offsetWith = boxWidth + 28;
 
   				this.init = function() {
   				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                 .appendTo(args.container);
   				  if (args.column.type === 'has_and_belongs_to_many') {
-  				    $select = $("<select class='chzn-select' multiple style='width:200px'></select>");
+  				    $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px'></select>");
   				  } else {
-  				    $select = $("<select class='chzn-select' style='width:200px'></select>");
+  				    $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
   				  }
             $select.appendTo($wrapper);
             $select.focus();
+            var winWith = $(window).width(),
+            offsetLeft = $wrapper.offset().left;
+            if(winWith - offsetLeft < offsetWith)
+              $wrapper.offset({left: winWith - offsetWith})
+              
   					var options = "";
   					$.each(choices, function() {
   						options += "<option value='"+this.id+"'>"+this[optionTextAttribute]+"</option>";
@@ -874,13 +904,19 @@
   				var $select;
   				var choices = args.column.choices;
   				var defaultValue;
+  				var boxWidth = 200;
+  				var offsetWith = boxWidth + 28;
 
   				this.init = function() {
   				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                 .appendTo(args.container);
-				    $select = $("<select class='chzn-select' style='width:200px'></select>")
+				    $select = $("<select class='chzn-select' style='width:" +  boxWidth + "px'></select>")
 				        .appendTo($wrapper);
             $select.focus();
+            var winWith = $(window).width(),
+            offsetLeft = $wrapper.offset().left;
+            if(winWith - offsetLeft < offsetWith)
+              $wrapper.offset({left: winWith - offsetWith})
   					var options = "";
   					$.each(choices, function() {
   						options += "<option value='"+this.id+"'>" + this.name + "</option>";
@@ -949,17 +985,19 @@
     				var from_field = args.column.from_field;
     				var to_field = args.column.to_field;
     				var defaultValue;
+    				var boxWidth = 200;
+    				var offsetWith = boxWidth * 2 + 70;
             this.init = function() {
 
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                     .appendTo(args.container);
                   
-                $from = $("<select class='chzn-select' style='width: 200px;'></select>")
+                $from = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>")
                             .appendTo($wrapper);
 
                 $wrapper.append("&nbsp; <span>-</span> &nbsp;");
 
-                $to = $("<select class='chzn-select' style='width: 200px;'></select>")
+                $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>")
                             .appendTo($wrapper);
                 $wrapper.append(' <span>-' + staticValue + '</span>');
                 var from_options = "", to_options = '';
@@ -972,6 +1010,10 @@
       					$from.html(from_options);
       					$to.html(to_options);
                 scope.focus();
+                var winWith = $(window).width(),
+                offsetLeft = $wrapper.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $wrapper.offset({left: winWith - offsetWith})
             };
 
             this.destroy = function() {
