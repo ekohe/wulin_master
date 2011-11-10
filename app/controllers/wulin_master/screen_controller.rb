@@ -11,7 +11,7 @@ module WulinMaster
       def controller_for_grid(klass)
         self.grid_class = klass
         self.grid_class.controller_class = self
-        @callbacks = {}
+        @callbacks ||= {}
         load_actions
       end
       
@@ -20,7 +20,7 @@ module WulinMaster
         "/#{self.to_s.underscore.downcase.gsub(/_controller/, '')}"
       end
 
-      attr_accessor :screen_class, :grid_class
+      attr_accessor :screen_class, :grid_class, :callbacks
 
       # Callbacks
       #
@@ -35,8 +35,17 @@ module WulinMaster
         end
       end
 
-      def callbacks(name=nil)
-        name ? @callbacks[name] : @callbacks
+      def find_callbacks(name)
+        @callbacks[name] 
+      end
+      
+      def callbacks
+        @callbacks
+      end
+      
+      # Load actions
+      def load_actions
+        self.send(:include, WulinMaster::Actions)
       end
     end
 
@@ -63,15 +72,10 @@ module WulinMaster
     end
     
     private
-
-    # Load actions
-    def self.load_actions
-      self.send(:include, WulinMaster::Actions)
-    end
     
     def fire_callbacks(name)
       return unless self.class.callbacks
-      cbs = self.class.callbacks(name)
+      cbs = self.class.find_callbacks(name)
 
       return if cbs.blank?
       cbs.each do |cb|
