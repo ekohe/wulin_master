@@ -24,7 +24,7 @@ module WulinMaster
     module InstanceMethods
       # Returns columns
       def columns
-        self.class.columns.clone
+        self.class.columns
       end
     end
   end
