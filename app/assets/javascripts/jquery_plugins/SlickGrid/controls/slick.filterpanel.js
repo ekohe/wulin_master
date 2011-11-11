@@ -60,7 +60,8 @@
         if (i==(totalColumnsCount-1)) {
           cssClass = "lastColumn";
         }
-        html += "<input type=\"text\" id=\""+field+"\" style=\"width:"+(parseInt(this.width)+filterWidthOffset)+"px\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
+        html += "<input type=\"text\" id=\""+field+"\" style=\"width:"+(parseInt(this.width)+filterWidthOffset) +
+        "px; border-style: solid none solid solid;border-width: 1px 0 1px 1px;border-color:#AAA;height:20px\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
       });
       
       // Empty the current filters applied array
