@@ -1,6 +1,8 @@
 module WulinMaster
   class ScreenController < ApplicationController
-    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(Rails.root, 'app', WulinMaster.config.asset_folder_name, 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
+    self.view_paths = [File.join(Rails.root, 'app', 'views'),
+                       File.join(Rails.root, 'app', WulinMaster.config.asset_folder_name, 'views'),
+                       File.join(File.dirname(__FILE__), '..', '..', 'views')]
 
     class << self
       def controller_for_screen(klass)
@@ -10,14 +12,8 @@ module WulinMaster
 
       def controller_for_grid(klass)
         self.grid_class = klass
-        self.grid_class.controller_class = self
-        @callbacks ||= {}
+        @callbacks = {}
         load_actions
-      end
-      
-      # Where is this used?
-      def index_path
-        "/#{self.to_s.underscore.downcase.gsub(/_controller/, '')}"
       end
 
       attr_accessor :screen_class, :grid_class, :callbacks
@@ -52,13 +48,13 @@ module WulinMaster
     # Returns and initializes if necessary a screen object
     def screen
       return @screen if defined?(@screen)
-      @screen = self.class.screen_class.new(self)
+      @screen = self.class.screen_class.new(params, self)
     end
 
     # Returns and initializes if necessary a grid object
     def grid
       return @grid if defined?(@grid)
-      @grid = self.class.grid_class.new(self)
+      @grid = self.class.grid_class.new(params, self)
     end
     
     def self.current_user
