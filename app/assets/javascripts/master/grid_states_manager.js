@@ -10,8 +10,7 @@ var GridStatesManager = {
   
   // grid events
   onStateEvents: function(grid) {
-    var _self = this,
-    originalColumnsResized, originalSort, originalColumnsReordered;
+    var self = this;
     
     // save columns width when columns resized
     grid.onColumnsResized.subscribe(function(){
@@ -19,7 +18,7 @@ var GridStatesManager = {
       $.each(this.getColumns(), function(index, column){
         widthJson[column.id] = column.width;
       }); 
-      _self.saveStates(grid.name, "width", widthJson);
+      self.saveStates(grid.name, "width", widthJson);
     });
     
     // save columns sorting info when columns sorted
@@ -27,7 +26,7 @@ var GridStatesManager = {
       var loader = grid.loader, sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();
-      _self.saveStates(grid.name, "sort", sortJson);
+      self.saveStates(grid.name, "sort", sortJson);
     });
     
     // save columns order when columns re-ordered
@@ -37,7 +36,16 @@ var GridStatesManager = {
         orderJson[index] = column.id;
       });
       
-      _self.saveStates(grid.name, "order", orderJson);
+      self.saveStates(grid.name, "order", orderJson);
+    });
+    
+    // save filter states when input filter value
+    grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
+      var filterJson = {};
+      $.each(args.filterData, function(index,data){
+        filterJson[data['id']] = data['value'];
+      });
+      self.saveStates(grid.name, "filter", filterJson);
     });
     
     // save columns visibility when pick columns
@@ -48,7 +56,7 @@ var GridStatesManager = {
           visibilityJson[index] = column.id;
         });
         
-        _self.saveStates(grid.name, "visibility", visibilityJson);
+        self.saveStates(grid.name, "visibility", visibilityJson);
       })
     }
   },
@@ -126,6 +134,12 @@ var GridStatesManager = {
 	  if(sortingStates){
 	    loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
 	  }    
+	},
+	
+	// Apply current filters
+	applayFilters: function(filterPanel, filterStates) {
+    // filterPanel.setCurrentFilters(filterStates);
+    filterPanel.applyCurrentFilters(filterStates);
 	}
 	
 }

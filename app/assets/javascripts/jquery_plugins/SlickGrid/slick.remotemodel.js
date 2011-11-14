@@ -265,8 +265,13 @@
     function getSortDirection() {
       return sortdir;
     }
+    
+    function setFilter(filterFn) {
+      filters = filterFn;
+      refresh(); 
+    }
 
-		function setFilter(column, string) {
+		function addFilter(column, string) {
 		  // If the string is an empty string, then removing the filter if existing
 			if (string=='') {
 			  var newFilters = [];
@@ -398,6 +403,7 @@
 			"getSortDirection": getSortDirection,
 			"getFilters": getFilters,
 			"setFilter": setFilter,
+			"addFilter": addFilter,
 			"getParams": getParams,
 			"setParam": setParam,
 			"setGrid": setGrid,

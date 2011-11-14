@@ -111,7 +111,7 @@ module WulinMaster
       result = {}
       begin
         states = GridState.where(:user_id => user.id, :grid_name => self.name).all
-        ["width", "sort", "order", "visibility"].each do |t|
+        %w(width sort order visibility filter).each do |t|
           value = states.find{|s| s.state_type == t}.try(:state_value)
           result.merge!(t => ActiveSupport::JSON.decode(value)) if value
         end

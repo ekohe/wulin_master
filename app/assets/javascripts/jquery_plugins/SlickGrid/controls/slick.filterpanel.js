@@ -1,18 +1,24 @@
-
 (function($) {
-  function FilterPanel(grid, loader, trigger) {
+  // Slick.FilterPanel
+  $.extend(true, window, {
+      Slick: {
+          FilterPanel: FilterPanel
+      }
+  });
+  function FilterPanel(grid, loader, triggerElement, currentFilters) {
     var filterWidthOffset = -3; // 2 pixels padding on the left and one pixel for the border on the left
     
     // private
     var $grid;
     var $loader;
-    var $trigger;
+    var $triggerElement;
+    var self = this;
     var currentFiltersApplied;
     
     function init() {
       $grid = grid;
       $loader = loader;
-      $trigger = trigger;
+      $triggerElement = triggerElement;
       
       generateFilters();
       
@@ -23,13 +29,12 @@
         generateFilters();
       });
       
-      trigger.click(function() {
+      triggerElement.click(function() {
         if ($($grid.getHeaderRow()).is(":visible"))
             $grid.hideHeaderRowColumns();
         else
-        {
+        {   
             $grid.showHeaderRowColumns();
-            
             // This corrects the scrollLeft of the filter secondary header row.
             // The problem is that if the user scrolls on the left then click on filter, the
             //   filters wouldn't have scrolled while there were hidden so they appear shifted.
@@ -42,13 +47,24 @@
       });
 		}
 		
+		function trigger(evt, args, e) {
+        e = e || new Slick.EventData();
+        args = args || {};
+        args.filterPanel = self;
+        return evt.notify(args, e, self);
+    }
+		
 		function generateFilters() {
-		  var inputWidth;
-		  storeCurrentFilters();
-		  
+		  var inputWidth, columns, inputElement;
+      // storeCurrentFilters();
+
       html = "";
-      totalColumnsCount = $grid.getColumns().length;
-      $.each($grid.getColumns(), function(i, value) {
+      columns = $grid.getColumns();
+      totalColumnsCount = columns.length;
+      
+      setCurrentFilters(currentFilters);
+      
+      $.each(columns, function(i, value) {
         value = '';
         field = this.field;
         // Try to get the value of this filter if any
@@ -63,18 +79,17 @@
         }
         inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1
         html += "<input type=\"text\" id=\""+field+"\" style=\"width:"+ inputWidth +
-        "px;border-width: 1px;height:20px\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
+        "px;border-width: 1px;height:20px;border-bottom-color:black;\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
       });
-      
-      // Empty the current filters applied array
-      currentFiltersApplied = [];
       
       // Fills up and display the secondary row
       $($grid.getHeaderRow()).html(html).show();
-
+      if (currentFiltersApplied.length != 0) setFilter();
       // Hook between the filter input box and the data loader setFilter
       $("input", $($grid.getHeaderRow())).keyup(function(e) {
-        $loader.setFilter($(this).attr('id'), $(this).val());
+        $loader.addFilter($(this).attr('id'), $(this).val());
+        storeCurrentFilters();
+        trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
       });
 		}
 
@@ -82,18 +97,48 @@
 		// We store the filters value so that after resizing or reordering of the columns, we can 
 		//  generate the filters boxes with the same values
 		function storeCurrentFilters() {
-		  currentFiltersApplied = [];
+      currentFiltersApplied = [];
 		  $.each($("input", $($grid.getHeaderRow())), function() {
         if ($(this).val()!='')
 		      currentFiltersApplied.push({id:$(this).attr('id'), value:$(this).val()});
 		  });
 		}
 		
+		function setFilter() {
+      var newFilters = [];
+      if (currentFiltersApplied.length != 0) {
+        $.each(currentFiltersApplied, function() {
+          newFilters.push([this['id'], this['value']]);
+        });
+        $loader.setFilter(newFilters);
+	    }
+		}
+		
+		function setCurrentFilters(filters) {
+		  currentFiltersApplied = [];
+		  if (filters) {
+  		  $.each(filters, function(k, v) {
+          if (v !='')
+  		      currentFiltersApplied.push({id: k, value: v});
+  		  });
+	    }
+		}
+		
+		function applyCurrentFilters(currentFilters) {
+		  if (currentFilters) {
+		    grid.showHeaderRowColumns();
+		  }
+		}
+		
+		$.extend(this, {
+        // Events
+        "onFilterLoaded":                     new Slick.Event(),
+        
+        // Methods
+        "applyCurrentFilters":                applyCurrentFilters,
+        "setCurrentFilters":                  setCurrentFilters
+    });
+		
 		init();
-
-		return {};
 	}
-
-	// Slick.FilterPanel
-	$.extend(true, window, { Slick: { FilterPanel: FilterPanel }});
-})(jQuery);
+}(jQuery));

@@ -120,8 +120,10 @@
       
       // Set Filter
 			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
-			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement);
-			
+			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement, states["filter"]);
+			// Apply current filters
+      GridStatesManager.applayFilters(filterPanel, states["filter"]);
+      
 			// Set ColumnPicker
 			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 			
