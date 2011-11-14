@@ -15,7 +15,7 @@ module WulinMaster
     end
     
     class << self
-      attr_accessor :menu_block, :menu
+      attr_accessor :menu_block, :menu, :context
 
       # Menu definition
       def menu(&block)
@@ -27,16 +27,33 @@ module WulinMaster
         if block_given?
           @submenu = SubMenu.new(title)
           yield
-          @menu << @submenu
+          @menu << @submenu if @submenu.size > 0
           @submenu = nil
         end 
         return @submenu   
       end
 
-      def item(title_or_screen_class, path=nil)
+      def item(title_or_screen_class, options={})
         return unless @menu
-        title = title_or_screen_class.respond_to?(:title) ? title_or_screen_class.title : title_or_screen_class
-        path = path.to_s.presence || (title_or_screen_class.respond_to?(:path) ? title_or_screen_class.path : '/')
+        title = options[:label] ||
+                (title_or_screen_class.respond_to?(:title) ? title_or_screen_class.title : title_or_screen_class.to_s)
+        path = options[:url] ||
+               (title_or_screen_class.respond_to?(:path) ? title_or_screen_class.path : '/')
+        if options[:authorized?]
+          if options[:authorized?].kind_of?(Proc)
+            is_authorized = (context && context.respond_to?(:current_user)) ? options[:authorized?].call(context.current_user) : options[:authorized?].call(nil)
+            return unless is_authorized
+          else
+            return unless (is_authorized == true)
+          end
+        elsif title_or_screen_class.kind_of?(Class)
+          screen_instance = title_or_screen_class.new(options, context) if title_or_screen_class.kind_of?(Class)
+          path = screen_instance.path
+          if screen_instance.respond_to?(:authorized?)
+            is_authorized = (context && context.respond_to?(:current_user)) ? screen_instance.authorized?(context.current_user) : screen_instance.authorized?(nil)
+            return unless is_authorized
+          end
+        end
         if @submenu
           @submenu << MenuEntry.new(title, path)
         else
@@ -52,7 +69,9 @@ module WulinMaster
     # Generate menu
     def menu
       self.class.menu = Menu.new
+      self.class.context = self
       self.class.menu_block.call(self) unless self.class.menu_block.nil?
+      self.class.context = nil
       self.class.get_menu
     end
   end

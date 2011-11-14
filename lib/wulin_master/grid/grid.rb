@@ -50,9 +50,10 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :controller
+    attr_accessor :controller, :params
 
-    def initialize(controller_instance)
+    def initialize(params, controller_instance)
+      self.params = params
       self.controller = controller_instance
     end
 

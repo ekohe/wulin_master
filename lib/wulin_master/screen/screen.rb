@@ -1,5 +1,6 @@
 module WulinMaster
   class Screen
+    
     cattr_reader :screens
     class << self
       alias_method :all, :screens
@@ -12,44 +13,50 @@ module WulinMaster
       subclass.title = nil
       subclass.path = "/" + subclass.name.sub(/Screen$/, "").tableize
       @@screens << subclass unless @@screens.include?(subclass)
-
+      subclass.send :include, Rails.application.routes.url_helpers
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
-    # Sets or return a title for the grid or the screen depending on the context
-    def self.title(new_title=nil)
-      @title = new_title if new_title # sets the new title if there's any
-      @title || self.to_s.gsub(/Screen/, "")
-    end
+    class_attribute :_title, :_path, :_grid_classes
 
-    def self.path(new_path=nil)
-      @path = new_path if new_path
-      @path
-    end
+    class << self
 
-    def self.grid_classes
-      @grid_classes
-    end
+      # Sets or return a title for the grid or the screen depending on the context
+      def title(new_title=nil)
+        self._title = new_title if new_title # sets the new title if there's any
+        self._title || self.to_s.gsub(/Screen/, "")
+      end
 
-    def self.grid(klass)
-      #@grid_context = klass.grid_context
-      @grid_classes ||= []
-      @grid_classes << klass
+      def path(new_path=nil)
+        self._path = new_path if new_path
+        self._path
+      end
 
-      # magic here
-      #klass.config_block.call if klass.config_block
+      def grid_classes
+        self._grid_classes
+      end
 
-      #@grid_context = nil
-    end
-    
-    def initialize(controller_instance)
-      self.controller = controller_instance
-      @grids = []
-      self.class.grid_classes.each do |grid_class|
-        @grids << grid_class.new(controller_instance)
+      # Add a grid to a screen
+      def grid(klass)
+        self._grid_classes ||= []
+        self._grid_classes << klass
       end
     end
     
-    attr_accessor :grids, :controller
+    
+    def initialize(params, controller_instance)
+      self.controller = controller_instance
+      self.params = params
+      @grids = []
+      self.class.grid_classes.each do |grid_class|
+        @grids << grid_class.new(params, controller_instance)
+      end
+    end
+    
+    def path
+      self.class.path
+    end
+    
+    attr_accessor :grids, :controller, :params
   end
 end
