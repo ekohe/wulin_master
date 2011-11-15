@@ -110,7 +110,12 @@
         $.each(currentFiltersApplied, function() {
           newFilters.push([this['id'], this['value']]);
         });
-        if ($loader.isDataLoaded()) $loader.setFilter(newFilters);
+        if ($loader.isDataLoaded()) {
+          $loader.setFilter(newFilters);
+        } else {
+          setTimeout(function(){
+            $loader.setFilter(newFilters);}, 50)
+        }
 	    }
 		}
 		
