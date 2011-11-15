@@ -110,7 +110,7 @@
         $.each(currentFiltersApplied, function() {
           newFilters.push([this['id'], this['value']]);
         });
-        $loader.setFilter(newFilters);
+        if ($loader.isDataLoaded()) $loader.setFilter(newFilters);
 	    }
 		}
 		
