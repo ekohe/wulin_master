@@ -29,6 +29,10 @@
         generateFilters();
       });
       
+      if (currentFilters) {
+        $grid.showHeaderRowColumns();
+      }
+      
       triggerElement.click(function() {
         if ($($grid.getHeaderRow()).is(":visible"))
             $grid.hideHeaderRowColumns();
@@ -63,7 +67,6 @@
       totalColumnsCount = columns.length;
       
       setCurrentFilters(currentFilters);
-      
       $.each(columns, function(i, value) {
         value = '';
         field = this.field;
@@ -84,7 +87,6 @@
       
       // Fills up and display the secondary row
       $($grid.getHeaderRow()).html(html).show();
-      if (currentFiltersApplied.length != 0) setFilter();
       // Hook between the filter input box and the data loader setFilter
       $("input", $($grid.getHeaderRow())).keyup(function(e) {
         $loader.addFilter($(this).attr('id'), $(this).val());

@@ -137,9 +137,13 @@ var GridStatesManager = {
 	},
 	
 	// Apply current filters
-	applayFilters: function(filterPanel, filterStates) {
-    // filterPanel.setCurrentFilters(filterStates);
-    filterPanel.applyCurrentFilters(filterStates);
+	applayFilters: function(path, filterStates) {
+	  if (filterStates) {
+  	  $.each(filterStates, function(k, v){
+  	    path += "&filters[][column]=" + k + "&filters[][value]=" + v;
+  	  })
+    }
+	  return path;
 	}
 	
 }
