@@ -14,7 +14,7 @@ module WulinMaster
       def height(new_height)
         self._height = new_height
         self.styles ||= []
-        self.styles << "height: #{@height};"
+        self.styles << "height: #{self._height};"
         self._height
       end
 
@@ -22,7 +22,7 @@ module WulinMaster
       def width(new_width)
         self._width = new_width
         self.styles ||= []
-        self.styles << "width: #{@width};"
+        self.styles << "width: #{self._width};"
         self._width
       end
 
