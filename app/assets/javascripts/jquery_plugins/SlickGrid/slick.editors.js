@@ -756,23 +756,19 @@
             };
 
             this.loadValue = function(item) {
-                console.log("loadValue");
                 $input.val(defaultValue = item[args.column.field]);
                 $input.select();
             };
 
             this.serializeValue = function() {
-                console.log("serializeValue");
                 return $input.val();
             };
 
             this.applyValue = function(item,state) {
-                console.log("applyValue");
                 item[args.column.field] = state;
             };
 
             this.isValueChanged = function() {
-                console.log("isValueChanged");
                 return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
             };
 
