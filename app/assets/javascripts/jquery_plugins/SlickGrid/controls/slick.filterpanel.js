@@ -82,7 +82,7 @@
         }
         inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1
         html += "<input type=\"text\" id=\""+field+"\" style=\"width:"+ inputWidth +
-        "px;border-width: 1px;height:20px;border-bottom-color:black;\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
+        "px;border-width: 1px;height:20px;border-bottom-color:#DDD;\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
       });
       
       // Fills up and display the secondary row
