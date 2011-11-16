@@ -4,6 +4,8 @@ module WulinMaster
     def index
       respond_to do |format|
         format.html do
+          @grid_model = grid.model
+          fire_callbacks :before_setup_grid
           begin
             render 'index', :layout => (request.xhr? ? false : 'application')
           rescue ActionView::MissingTemplate
