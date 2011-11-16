@@ -130,8 +130,9 @@ var GridStatesManager = {
 	},
 	
 	// Restore columns sorting states
-	restoreSortingStates: function(loader, sortingStates) {
+	restoreSortingStates: function(grid, loader, sortingStates) {
 	  if(sortingStates){
+      grid.setSortColumn(sortingStates["sortCol"], sortingStates["sortDir"] == 1);
 	    loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
 	  }    
 	},

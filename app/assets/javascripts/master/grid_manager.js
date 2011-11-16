@@ -114,7 +114,7 @@
 			loader.setLoadingIndicator(createLoadingIndicator(gridElement));
 			
 			// restore the sorting states to grid
-      GridStatesManager.restoreSortingStates(loader, states["sort"]);
+      GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 			
 			// Set Pager
 			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
