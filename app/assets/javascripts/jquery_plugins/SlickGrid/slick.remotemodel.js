@@ -20,6 +20,7 @@
     var grid;
     var loadingIndicator = null;
     var mainIndicator = null;
+    var initedFilter = false;
     
     // Connection manager
     var connectionManager = new ConnectionManager();
@@ -98,6 +99,11 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
+      if (initedFilter) {
+        path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
+      } else {
+        initedFilter = true;
+      }
       var url = path + "&offset=" + offset + "&count=" + count;
       
       // filters, ordering, extra parameters - not specific to the viewport
@@ -118,7 +124,6 @@
       } else {
         url += "&sort_dir=DESC";
       }
-
       // Filters
       $.each(filters, function(index, value) {
         url += "&filters[][column]="+value[0]+"&filters[][value]="+value[1];
