@@ -29,6 +29,11 @@ var Ui = {
       });
       return editing;
     },
+    
+    //check if filter panel is open
+    filterPanelOpen: function() {
+      return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
+    },
 
     // Select grid names
     selectGridNames: function() {
@@ -162,12 +167,13 @@ var Ui = {
         $(document).keypress(function(e){
           var isEditing = Ui.isEditing(), 
           isOpen = Ui.isOpen(),
+          filterPanelOpen = Ui.filterPanelOpen(),
           grid = Ui.findCurrentGrid();
           if (grid) {
             var ids = Ui.selectIds(grid),
             gridSize = gridManager.grids.length;
 
-            if (isOpen || isEditing) {
+            if (isOpen || isEditing || filterPanelOpen) {
               return true;
             } else {
               if (Ui.deleteAble(grid) && (e.which == 100 || e.which == 68)) {  // keypress 'D' for delete
