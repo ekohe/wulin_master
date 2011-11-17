@@ -89,8 +89,8 @@
       $($grid.getHeaderRow()).html(html).show();
       // Hook between the filter input box and the data loader setFilter
       $("input", $($grid.getHeaderRow())).keyup(function(e) {
-        $loader.addFilter($(this).attr('id'), $(this).val());
         storeCurrentFilters();
+        $loader.addFilter($(this).attr('id'), $(this).val());
         trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
       });
 		}
