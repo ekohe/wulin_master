@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'toolbar_item')
 module WulinMaster
   class Toolbar < Array
     def initialize
-      self.class.default_items.each {|item| self << item }
+      self.class.default_items.each {|item| self.unshift(item) }
     end
     
     # Renders the toolbar as HTML snippet
@@ -16,9 +16,9 @@ module WulinMaster
     
     # Default toolbar
     @@default_items = [
-      ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search'),
+      ToolbarItem.new("Add",    :class => 'create_button', :icon => 'create'),
       ToolbarItem.new("Delete", :class => 'delete_button', :icon => 'delete_trash'),
-      ToolbarItem.new("Add",    :class => 'create_button', :icon => 'create')
+      ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search')
     ]
     
     # Add to default toolbar

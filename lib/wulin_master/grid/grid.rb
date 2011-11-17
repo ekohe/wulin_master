@@ -12,7 +12,7 @@ module WulinMaster
     include GridToolbar
     
     cattr_accessor :grids
-    class_attribute :controller_class, :_actions , :_title, :_model, :_path
+    class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header
     @@grids = []
 
     # Grid has been subclassed
@@ -39,11 +39,16 @@ module WulinMaster
           (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
         end
       end
+      
+      def hide_header
+        self._hide_header = true
+      end
 
       def set_actions(*args)
         actions_str = args.map(&:to_s)
         self.toolbar.delete_if{ |t| t.title.downcase == 'add' } unless actions_str.include?('add')
         self.toolbar.delete_if{ |t| t.title.downcase == 'delete' } unless actions_str.include?('delete')
+        self.toolbar.delete_if{ |t| t.title.downcase == 'filter' } unless actions_str.include?('filter')
         self._actions = actions_str
       end
     end
@@ -126,5 +131,10 @@ module WulinMaster
     def get_actions
       self.class.actions.to_json
     end
+    
+    def hide_header?
+      self.class._hide_header
+    end
+    
   end
 end

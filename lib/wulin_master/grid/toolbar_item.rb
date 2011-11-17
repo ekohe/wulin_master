@@ -23,9 +23,9 @@ module WulinMaster
 
     def anchor_tag_options
       if icon?
-        css_class = self.options[:class] || ''
-        css_class += " toolbar_icon_#{self.icon}" unless css_class.include?("toolbar_icon_#{self.icon}")
-        self.options.merge!(:class => css_class)
+        css_classes = [self.options[:class]] || []
+        css_classes << "toolbar_icon_#{self.icon}" unless css_classes.include?("toolbar_icon_#{self.icon}")
+        self.options.merge!(:class => css_classes.join(' '))
       else
         self.options[:class] = self.options[:class].split(" ").delete_if{|e| e.include?('toolbar_icon')}.join(" ")
       end

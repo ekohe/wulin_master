@@ -1,12 +1,13 @@
 <% current_user = (controller.respond_to?(:current_user) ? controller.current_user : nil) -%>
 <div id='grid_<%= grid.name %>' class='grid_container' style='<%= grid.style %>'>
-  <div class='grid-header'>
-    <%= grid.toolbar.render %>
-    <h2><%= grid.title %></h2>
-  </div>
+  <%- unless grid.hide_header? %>
+    <div class='grid-header'>
+      <%= grid.toolbar.render %>
+      <h2><%= grid.title %></h2>
+    </div>
+  <% end -%>
   <div class='grid'></div>
   <div class='pager'></div>
-  <% controller.before_render_grid(grid, params) if controller.respond_to?(:before_render_grid) -%>
   <script type='text/javascript'>
     gridManager.createNewGrid('<%= grid.name.to_s.html_safe %>',
                               '<%= grid.path.to_s.html_safe + ".json?" + request.query_parameters.to_query %>',
