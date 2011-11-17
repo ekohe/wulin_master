@@ -48,7 +48,7 @@ module WulinMaster
         return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
       else
         filtering_value = filtering_value.gsub(/'/, "''")
-        return query.where("UPPER(#{self.name}) LIKE UPPER('#{filtering_value}%')")
+        return query.where("UPPER(#{model.table_name}.#{self.name}) LIKE UPPER('#{filtering_value}%')")
       end
     end
 
