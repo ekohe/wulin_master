@@ -17,7 +17,7 @@ module WulinMaster
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
-    class_attribute :_title, :_path, :_grid_classes
+    class_attribute :_title, :_path, :_grid_classes, :controller_class
 
     class << self
 
@@ -54,9 +54,18 @@ module WulinMaster
     end
     
     def path
-      self.class.path
+      self.class.path + "?screen=#{self.class.to_s}"
     end
     
     attr_accessor :grids, :controller, :params
+    
+    # Security
+    def authorized?(user)
+      true
+    end
+    
+    alias_method :authorize_create?, :authorized?
+    alias_method :authorize_update?, :authorized?
+    alias_method :authorize_destroy?, :authorized?
   end
 end

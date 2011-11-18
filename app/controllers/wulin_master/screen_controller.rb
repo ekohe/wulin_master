@@ -7,11 +7,13 @@ module WulinMaster
     class << self
       def controller_for_screen(klass)
         self.screen_class = klass
+        klass.controller_class = self
         load_actions
       end
 
       def controller_for_grid(klass)
         self.grid_class = klass
+        klass.controller_class = self
         @callbacks = {}
         load_actions
       end
@@ -48,7 +50,17 @@ module WulinMaster
     # Returns and initializes if necessary a screen object
     def screen
       return @screen if defined?(@screen)
-      @screen = self.class.screen_class.new(params, self)
+      screen_class = self.class.screen_class
+      if params[:screen]
+        begin
+          if params[:screen].constantize <= self.class.screen_class  # Check if subclass or class itself.
+            screen_class = params[:screen].constantize
+          end
+        rescue Exception => e
+        end
+      end
+      
+      @screen = screen_class.new(params, self)
     end
 
     # Returns and initializes if necessary a grid object
