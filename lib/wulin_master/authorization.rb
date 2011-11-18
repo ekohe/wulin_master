@@ -19,7 +19,7 @@ module WulinMaster
     end
     
     def unauthorized
-      Rails.logger.info "Unauthorized request to screen #{screen.class}"
+      Rails.logger.info "Unauthorized #{params[:action].inspect} request to screen #{screen.class}"
       respond_to do |format|
         format.html { render :text => "Unauthorized", :status => 401}
         format.json { render :json => {:status => :unauthorized}, :status => 401 }
@@ -28,7 +28,7 @@ module WulinMaster
     end
 
     def authorized
-      Rails.logger.info "Authorized request to screen #{screen.class}"
+      Rails.logger.info "Authorized #{params[:action].inspect} request to screen #{screen.class}"
       true
     end
   end
