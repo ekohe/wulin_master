@@ -42,13 +42,16 @@ module WulinMaster
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
-
-      case sql_type.to_s
-      when "datetime"
-        return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
+      if self.reflection
+        return query.where("UPPER(#{self.reflection.plural_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
       else
-        filtering_value = filtering_value.gsub(/'/, "''")
-        return query.where("UPPER(#{model.table_name}.#{self.name}) LIKE UPPER('#{filtering_value}%')")
+        case sql_type.to_s
+        when "datetime"
+          return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
+        else
+          filtering_value = filtering_value.gsub(/'/, "''")
+          return query.where("UPPER(#{model.table_name}.#{self.name}) LIKE UPPER('#{filtering_value}%')")
+        end
       end
     end
 
