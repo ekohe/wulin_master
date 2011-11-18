@@ -14,6 +14,7 @@ module WulinMaster
     cattr_accessor :grids
     class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header
     @@grids = []
+    ORIGINAl_ACTIONS = %w(add delete edit filter audit sort order)
 
     # Grid has been subclassed
     def self.inherited(klass)
@@ -31,7 +32,7 @@ module WulinMaster
       end
       
       def actions
-        self._actions ||= %w(add delete edit)
+        self._actions ||= ORIGINAl_ACTIONS
       end
 
       [:title, :model, :path].each do |attr|
@@ -42,6 +43,14 @@ module WulinMaster
       
       def hide_header
         self._hide_header = true
+      end
+      
+      def remove_actions(*args)
+        actions_str = args.map(&:to_s)
+        self.toolbar.each do |t|
+          self.toolbar.delete_if{ |t| actions_str.include?(t.title.downcase) }
+        end
+        self._actions = ORIGINAl_ACTIONS - actions_str
       end
 
       def set_actions(*args)
