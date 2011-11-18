@@ -46,9 +46,9 @@ module WulinMaster
 
       def set_actions(*args)
         actions_str = args.map(&:to_s)
-        self.toolbar.delete_if{ |t| t.title.downcase == 'add' } unless actions_str.include?('add')
-        self.toolbar.delete_if{ |t| t.title.downcase == 'delete' } unless actions_str.include?('delete')
-        self.toolbar.delete_if{ |t| t.title.downcase == 'filter' } unless actions_str.include?('filter')
+        self.toolbar.each do |t|
+          self.toolbar.delete_if{ |t| !actions_str.include?(t.title.downcase) }
+        end
         self._actions = actions_str
       end
     end
