@@ -105,9 +105,10 @@ var Ui = {
         highlightCreatedRows: function(name) {
           var grid = gridManager.getGrid(name),
           createdRows = [];
-
           $.each(gridManager.createdIds, function(){
-            createdRows.push(grid.getRowByRecordId(this).row);
+            if (grid.getRowByRecordId(this).row) {
+              createdRows.push(grid.getRowByRecordId(this).row);
+            }
           });
           $.each(createdRows, function(){
             $(this).effect( 'highlight', {}, 5000 );
