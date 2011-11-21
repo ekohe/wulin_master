@@ -43,8 +43,7 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
       if self.reflection
-        # return query.where("UPPER(#{self.reflection.plural_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
-        puts "fucked off"
+        return query.where("UPPER(#{self.reflection.plural_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
       else
         case sql_type.to_s
         when "datetime"
