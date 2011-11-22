@@ -78,7 +78,7 @@ module WulinMaster
       updated_attributes = get_updated_attributes(params[:item])
       @record = grid.model.find(params[:id]) 
       message = if @record.update_attributes(updated_attributes)
-        attributes = grid.arraify([@record.reload]).first.inject({}) {|a,b|  a.merge(b) }.merge(:id => @record.id)
+        attributes = grid.arraify([@record.reload]).first.unshift(@record.id)
         {:success => true, :attrs => attributes}
       else
         {:success => false, :error_message => @record.errors.full_messages.join("\n")}

@@ -111,7 +111,7 @@ module WulinMaster
 
     def arraify(objects)
       objects.collect do |object|
-        self.columns.collect {|col| {col.name => col.json(object)} }
+        self.columns.collect {|col| col.json(object) }
       end
     end
 

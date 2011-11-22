@@ -221,18 +221,11 @@
 			  var object = {};
 			  $.each(columns, function(index, value) {
 			    // match the column and the response data (compare column name and response data key)
-			    for(k in resp.rows[i]){
-			      var key = getKeys(resp.rows[i][k])[0];
-			      if(value.id == key){
-			        object[value.id] = resp.rows[i][k][key]
-		          break;
-		        }
-			    }          
+			    object[value.id] = resp.rows[i][index];         
 			  });
 				data[j] = object;
 				data[j].slick_index = j;
 			}
-      
 			req = null;
 			
       // Loading data
@@ -240,6 +233,10 @@
 
 			// Updating pager
 			onPagingInfoChanged.notify(getPagingInfo());			
+		}
+		
+		function getColumns() {
+		  return columns;
 		}
 		
 	  function getKeys(h) {
@@ -413,6 +410,7 @@
 			"setParam": setParam,
 			"setGrid": setGrid,
       "conditionalURI": conditionalURI,
+      'getColumns': getColumns,
       
 			// events
 			"onDataLoading": onDataLoading,
