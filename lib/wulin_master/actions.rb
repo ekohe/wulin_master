@@ -129,7 +129,9 @@ module WulinMaster
 
     def parse_ordering
       @order_column = grid.sql_columns.first
-      @order_column = params[:sort_col] if params[:sort_col].present?
+      if params[:sort_col].present? and (grid.joins.present? or grid.model.column_names.include?(params[:sort_col]) or grid.sql_columns.include?(params[:sort_col]))
+        @order_column = params[:sort_col] 
+      end
       @order_direction = "ASC"
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
 

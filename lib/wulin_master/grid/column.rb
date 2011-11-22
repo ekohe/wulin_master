@@ -97,50 +97,49 @@ module WulinMaster
     end
 
     def presence_required?
-      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator && 
-        validator.attributes.include?(@name.to_sym)}
-      end
+      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator &&validator.attributes.include?(@name.to_sym)}
+    end
 
-      # Returns the´includes to add to the query 
-      def includes
-        if self.reflection
-          [@name.to_sym]
-        else
-          []
-        end
-      end
-
-      # Returns the´joins to add to the query 
-      def joins
-        if self.reflection && presence_required?
-          [@name.to_sym]
-        else
-          []
-        end
-      end
-
-      # Returns the json for the object in argument
-      def json(object)
-        if association_type.to_s == 'belongs_to'
-          {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
-        elsif association_type.to_s == 'has_and_belongs_to_many'
-          ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-          op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-          {id: ids, option_text_attribute => op_attribute}
-        else
-          self.format(object.send(self.name.to_s))
-        end
-      end
-
-      # For belongs_to association, the name of the attribute to display
-      def option_text_attribute
-        @options[:option_text_attribute] || :name
-      end
-
-      private
-
-      def association_type
-        self.reflection.try(:macro)
+    # Returns the´includes to add to the query 
+    def includes
+      if self.reflection
+        [@name.to_sym]
+      else
+        []
       end
     end
+
+    # Returns the´joins to add to the query
+    def joins
+      if self.reflection && presence_required?
+        [@name.to_sym]
+      else
+        []
+      end
+    end
+
+    # Returns the json for the object in argument
+    def json(object)
+      if association_type.to_s == 'belongs_to'
+        {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
+      elsif association_type.to_s == 'has_and_belongs_to_many'
+        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
+        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
+        {id: ids, option_text_attribute => op_attribute}
+      else
+        self.format(object.send(self.name.to_s))
+      end
+    end
+
+    # For belongs_to association, the name of the attribute to display
+    def option_text_attribute
+      @options[:option_text_attribute] || :name
+    end
+
+    private
+
+    def association_type
+      self.reflection.try(:macro)
+    end
   end
+end
