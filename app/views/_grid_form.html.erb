@@ -7,34 +7,36 @@ object = grid.model.new
 <div id="<%= grid.name %>-form" title="Create new <%= model_name.titleize %>" class="create_form">
   <%= form_for object, :url => grid.path do |form| %>
     <%- columns.each do |column| %>
-      <%- column_name = column.form_name %>
-      <%- datepicker_str << %!$('##{model_name}_#{column_name}').datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s.downcase == 'datetime'  %>
-      <div class="field" name="<%= column_name %>">
-        <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
-        <%- if column.sql_type.to_s == 'belongs_to' %>
-          <%= form.select column_name, 
-          options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
-          {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px"} %>
+      <%- if column.options[:formable] != false %>
+        <%- column_name = column.form_name %>
+        <%- datepicker_str << %!$('##{model_name}_#{column_name}').datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s.downcase == 'datetime'  %>
+        <div class="field" name="<%= column_name %>">
+          <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
+          <%- if column.sql_type.to_s == 'belongs_to' %>
+            <%= form.select column_name, 
+            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
+            {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
           
-        <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
-          <%= form.select column.reflection.name.to_s, 
-          options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
-          {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px"} %>
+          <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
+            <%= form.select column.reflection.name.to_s, 
+            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
+            {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
           
-        <%- elsif column.options[:choices].present? %>
-          <%= select_tag "#{model_name}[#{column_name}]",
-          column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe, 
-          :class => 'chzn-select', :style => "width:250px" %>
+          <%- elsif column.options[:choices].present? %>
+            <%= select_tag "#{model_name}[#{column_name}]",
+            column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe, 
+            :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] %>
           
-        <%- else %>
-          <%- if column.sql_type.to_s.downcase == 'boolean' %>
-            <%= form.check_box(column_name) %>
-          <% else %>
-            <%= form.text_field column_name, :style => 'width: 250px' %>
-          <% end -%>
-        <%- end %>
-        <div class='field_error'></div>
-      </div>
+          <%- else %>
+            <%- if column.sql_type.to_s.downcase == 'boolean' %>
+              <%= form.check_box column_name, :readonly => column.options[:auto_fill] %>
+            <% else %>
+              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill] %>
+            <% end -%>
+          <%- end %>
+          <div class='field_error'></div>
+        </div>
+      <% end -%>
     <% end -%>
     <div class="submit"> 
       <input id="<%= grid.name %>_submit" name="commit" type="submit" value=" Create " /> 
