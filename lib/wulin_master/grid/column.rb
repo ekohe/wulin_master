@@ -63,7 +63,7 @@ module WulinMaster
     def sql_type
       return :unknown if self.model.blank?
       column = (self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns).find {|col| col.name.to_s == self.name.to_s}
-      column.try(:type) || association_type || :unknown
+      (column.try(:type) || association_type || :unknown).to_s.to_sym
     end
 
     def reflection
