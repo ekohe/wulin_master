@@ -50,11 +50,12 @@ module WulinMaster
       @grids = []
       self.class.grid_classes.each do |grid_class|
         @grids << grid_class.new(params, controller_instance)
-      end
+      end if self.class.grid_classes
     end
     
     def path
-      self.class.path + "?screen=#{self.class.to_s}"
+      # This should be better put together. What if there's already a parameter in the path? that would break
+      self.class.path + "?screen=#{self.class.to_s}" 
     end
     
     attr_accessor :grids, :controller, :params

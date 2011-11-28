@@ -81,7 +81,15 @@ module WulinMaster
     end
 
     def path
-      self.class.path
+      # This should be better put together. What if there's already a parameter in the path? that would break
+      self.class.path + "?grid=#{self.class.to_s}" 
+    end           
+    
+    def path_for_json(params)                
+      # This is also pretty fragile.          
+      path = self.class.path + ".json?grid=#{self.class.to_s}"
+      params.each_pair {|k,v| path += "&#{CGI.escape(k)}=#{CGI.escape(v)}"}
+      path
     end
 
     def name

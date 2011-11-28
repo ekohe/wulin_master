@@ -65,7 +65,18 @@ module WulinMaster
     # Returns and initializes if necessary a grid object
     def grid
       return @grid if defined?(@grid)
-      @grid = self.class.grid_class.new(params, self)
+      grid_class = self.class.grid_class
+
+      if params[:grid]
+        begin
+          if params[:grid].constantize <= self.class.grid_class  # Check if subclass or class itself.
+            grid_class = params[:grid].constantize
+          end
+        rescue Exception => e
+        end
+      end
+      Rails.logger.info "Grid is a #{grid_class}"
+      @grid = grid_class.new(params, self)
     end
     
     def self.current_user
