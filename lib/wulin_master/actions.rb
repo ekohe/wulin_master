@@ -36,12 +36,9 @@ module WulinMaster
           # Add order
           parse_ordering
 
-          # Add select
-          add_select
-
           # Add includes (OUTER JOIN)
           add_includes
-
+          
           # Add joins (INNER JOIN)
           add_joins
 
@@ -148,16 +145,14 @@ module WulinMaster
       @query = @query.limit(@per_page).offset((@page-1) * @per_page)
     end
 
-    def add_select
-      #@query = @query.select(grid.sql_select)
-    end
-
     def add_includes
-      @query = @query.includes(grid.includes) if ActiveRecord::Relation === @query or @query == grid.model
+      includes = grid.includes
+      @query = @query.includes(includes) if includes.size > 0 && @query.respond_to?(:includes)
     end
 
     def add_joins
-      @query = @query.joins(grid.joins) if ActiveRecord::Relation === @query or @query == grid.model
+      joins = grid.joins
+      @query = @query.joins(joins) if joins.size > 0 && @query.respond_to?(:joins)
     end
 
     def render_json
