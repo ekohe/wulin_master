@@ -128,7 +128,7 @@ module WulinMaster
 
     def parse_ordering
       @order_column = grid.sql_columns.first
-      if params[:sort_col].present? and (grid.columns.map(&:name).include?(params[:sort_col]))
+      if params[:sort_col].present? and (grid.columns.map(&:name).map(&:to_s).include?(params[:sort_col]))
         @order_column = params[:sort_col]
       elsif params[:sort_col].present?
         Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:name).inspect}" 
@@ -136,7 +136,7 @@ module WulinMaster
       @order_direction = "ASC"
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
 
-      @query = @query.order("#{@order_column} #{@order_direction}")
+      @query = grid.apply_order(@query, @order_column, @order_direction)
     end
 
     def parse_pagination
@@ -161,13 +161,15 @@ module WulinMaster
     end
 
     def render_json
-    # Render ruby objects
-    @object_array = grid.arraify(@objects)
+      # Render ruby objects
+      t = Time.now
+      @object_array = grid.arraify(@objects)
 
-    json = JSON({:offset => @offset,
-      :total =>  @count,
-      :count =>  @per_page,
-      :rows  =>  @object_array})
+      json = JSON({:offset => @offset,
+        :total =>  @count,
+        :count =>  @per_page,
+        :rows  =>  @object_array})
+      Rails.logger.info "Rendered JSON in #{Time.now-t} sec."
       json
     end
 

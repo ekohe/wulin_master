@@ -107,6 +107,11 @@ module WulinMaster
       column.nil? ? query : column.apply_filter(query, filtering_value)
     end
 
+    def apply_order(query, column_name, order_direction)
+      column = self.columns.find{|c| c.name.to_s == column_name.to_s or c.foreign_key == column_name.to_s }
+      column.nil? ? query : column.apply_order(query, order_direction)
+    end
+
     # Returns the includes to add to the query
     def includes
       self.columns.map{|col| col.includes}.flatten.uniq

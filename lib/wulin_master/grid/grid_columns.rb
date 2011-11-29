@@ -11,8 +11,9 @@ module WulinMaster
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
-        self.columns ||= []
-        self.columns += [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+        if self.columns.nil?
+          self.columns = [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+        end
       end
       
       # Add a column

@@ -5,7 +5,7 @@ module WulinMaster
     def initialize(name, grid_class, opts={})
       @name = name
       @grid_class = grid_class
-      @options = {:width => 80, :sortable => true, :editable => true}.merge(opts)
+      @options = {:width => 150, :sortable => true, :editable => true}.merge(opts)
     end
 
     def label
@@ -17,7 +17,7 @@ module WulinMaster
     end
 
     def to_column_model
-      field_name = self.reflection ? self.reflection.foreign_key.to_s : @name.to_s
+      field_name = @name.to_s
       sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
       table_name = self.reflection ? self.reflection.klass.table_name.to_s : self.model.table_name.to_s
       new_options = @options.dup
@@ -43,7 +43,8 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
       if self.reflection
-        return query.where("UPPER(#{self.reflection.plural_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
+        table_name = options[:join_aliased_as] || self.reflection.klass.table_name
+        return query.where("UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
       else
         case sql_type.to_s
         when "datetime"
@@ -52,6 +53,16 @@ module WulinMaster
           filtering_value = filtering_value.gsub(/'/, "''")
           return query.where("UPPER(#{model.table_name}.#{self.name}) LIKE UPPER('#{filtering_value}%')")
         end
+      end
+    end
+    
+    def apply_order(query, direction)
+      return query unless ["ASC", "DESC"].include?(direction)
+      if self.reflection
+        table_name = options[:join_aliased_as] || self.reflection.klass.table_name
+        query.order("#{table_name}.#{self.option_text_attribute} #{direction}")
+      else
+        query.order("#{@name} #{direction}")
       end
     end
 
