@@ -44,14 +44,19 @@ module WulinMaster
       return query if filtering_value.blank?
       if self.reflection
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
-        return query.where("UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER('#{filtering_value}%')")
+        return query.where("UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%")
       else
         case sql_type.to_s
         when "datetime"
-          return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER('#{filtering_value}%')")
+          return query.where("to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%")
         else
           filtering_value = filtering_value.gsub(/'/, "''")
-          return query.where("UPPER(#{model.table_name}.#{self.name}) LIKE UPPER('#{filtering_value}%')")
+          if self.model.columns.map(&:name).map(&:to_s).include?(self.name)
+            complete_column_name = "#{model.table_name}.#{self.name}"
+          else
+            complete_column_name = self.name
+          end
+          return query.where("UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%")
         end
       end
     end
