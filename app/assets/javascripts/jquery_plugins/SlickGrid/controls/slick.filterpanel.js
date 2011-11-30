@@ -88,11 +88,24 @@
       
       // Fills up and display the secondary row
       $($grid.getHeaderRow()).html(html).show();
+      
+      var delay = (function(){
+        var timer = 0;
+        return function(callback, ms){
+          clearTimeout (timer);
+          timer = setTimeout(callback, ms);
+        };
+      })();
+      
       // Hook between the filter input box and the data loader setFilter
+      // Applay filter after 1000ms
       $("input", $($grid.getHeaderRow())).keyup(function(e) {
-        storeCurrentFilters();
-        $loader.addFilter($(this).attr('id'), $(this).val());
-        trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+        var inputE = this;
+        delay(function(){
+          storeCurrentFilters();
+          $loader.addFilter($(inputE).attr('id'), $(inputE).val());
+          trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+        }, 1000 );
       });
 		}
 
