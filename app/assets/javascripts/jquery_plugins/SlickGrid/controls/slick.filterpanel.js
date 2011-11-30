@@ -67,6 +67,7 @@
       totalColumnsCount = columns.length;
       
       setCurrentFilters(currentFilters);
+      setFilter();
       $.each(columns, function(i, value) {
         value = '';
         field = this.field;
@@ -112,12 +113,7 @@
         $.each(currentFiltersApplied, function() {
           newFilters.push([this['id'], this['value']]);
         });
-        if ($loader.isDataLoaded()) {
-          $loader.setFilter(newFilters);
-        } else {
-          setTimeout(function(){
-            $loader.setFilter(newFilters);}, 50)
-        }
+        $loader.setFilterWithoutRefresh(newFilters);
 	    }
 		}
 		

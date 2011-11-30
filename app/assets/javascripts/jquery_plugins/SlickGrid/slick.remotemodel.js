@@ -272,6 +272,10 @@
       filters = filterFn;
       refresh(); 
     }
+    
+    function setFilterWithoutRefresh(filterFn) {
+      filters = filterFn;
+    }
 
 		function addFilter(column, string) {
 		  // If the string is an empty string, then removing the filter if existing
@@ -405,6 +409,7 @@
 			"getSortDirection": getSortDirection,
 			"getFilters": getFilters,
 			"setFilter": setFilter,
+			"setFilterWithoutRefresh": setFilterWithoutRefresh,
 			"addFilter": addFilter,
 			"getParams": getParams,
 			"setParam": setParam,
