@@ -59,12 +59,19 @@ module WulinMaster
           if model < ActiveRecord::Base
             return query.where(["UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%"])
           else
-            return query.where(self.name => Regexp.new("#{Regexp.escape(filtering_value)}.*", true))
+            if options[:type] == 'Datetime' and format_datetime(filtering_value).present? # Datetime filter for Mongodb
+              return query.where(
+              self.name.to_sym.gte => format_datetime(filtering_value)[:from], 
+              self.name.to_sym.lte => format_datetime(filtering_value)[:to]
+              )
+            else
+              return query.where(self.name => Regexp.new("#{Regexp.escape(filtering_value)}.*", true))
+            end
           end
         end
       end
     end
-    
+
     def apply_order(query, direction)
       return query unless ["ASC", "DESC"].include?(direction)
       if self.reflection
@@ -154,6 +161,54 @@ module WulinMaster
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
       @options[:option_text_attribute] || :name
+    end
+
+    # == Generate the datetime rang filter for mongodb
+    # === Date part 
+    # TODO: Finish the time part
+    def format_datetime(datetime)
+      if datetime =~ /^\d{1,4}-?$/ # 20 2011 2011-
+        year = datetime.first(4)
+        from_year = year.size <=3 ? (year + '0' * (4 - 1 - year.size) + '1') : year
+        to_year = year + '9' * (4 - year.size)
+        { from: build_datetime(from_year.to_i), to: build_datetime(to_year.to_i, 12, 31, 23, 59, 59) } # 2011-01-01 - 2011-12-31  2001-01-01 - 2099-12-31
+      elsif datetime =~ /^\d{1,4}-[0-1]$/ # 2011-0 - 2011-1
+        year, month = datetime.split('-').map(&:to_i)
+        if month == 0
+          { from: build_datetime(year), to: build_datetime(year, 9, 30, 23, 59, 59) } # 2011-01-01 - 2011-09-31
+        elsif month == 1
+          { from: build_datetime(year, 10), to: build_datetime(year, 12, 31, 23, 59, 59) } # 2011-10-01 - 2011-12-31
+        end
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-1])-?$/ # 2011-01 - 2011-09  or  2011-10 - 2011-11
+        year, month = datetime.first(7).split('-').map(&:to_i)
+        if [1,3,5,7,8,10,12].include? month
+          { from: build_datetime(year, month), to: build_datetime(year, month, 31, 23, 59, 59) } # 2011-01-01 - 2011-01-31
+        else
+          { from: build_datetime(year, month), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-02-01 - 2011-02-30
+        end
+      elsif datetime =~ /^\d{1,4}-12-?$/ # 2011-12
+        year = datetime.first(4).to_i
+        { from: build_datetime(year, 12), to: build_datetime(year, 12, 31, 23, 59, 59) } # 2011-12-01 - 2011-12-31
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-0$/ # 2011-12-0
+        year, month, date = datetime.split('-').map(&:to_i)
+        { from: build_datetime(year, month, 1), to: build_datetime(year, month, 9, 23, 59, 59)} # 2011-12-01 - 2011-12-09
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-[1-2]$/ # 2011-12-1 2011-12-2
+        year, month, date = datetime.split('-').map(&:to_i)
+        { from: build_datetime(year, month, date * 10), to: build_datetime(year, month, (date * 10) + 9, 23, 59, 59) } # 2011-12-01 - 2011-12-09
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-[3]$/ # 2011-12-3
+        year, month, date = datetime.split('-').map(&:to_i)
+        if [1,3,5,7,8,10,12].include? month
+          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 31, 23, 59, 59) } # 2011-12-30 - 2011-12-31
+        else
+          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
+        end
+      else
+        {}
+      end
+    end
+
+    def build_datetime(*args)
+      DateTime.new(*args) rescue nil
     end
 
     private
