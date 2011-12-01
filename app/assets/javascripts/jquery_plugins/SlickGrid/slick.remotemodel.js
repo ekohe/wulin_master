@@ -118,7 +118,7 @@
         sortcol = "";
       } 
       
-      var url = "&sort_col="+sortcol;
+      var url = "&sort_col="+encodeURIComponent(sortcol);
       if (sortdir>0) {
         url += "&sort_dir=ASC";
       } else {
@@ -126,12 +126,12 @@
       }
       // Filters
       $.each(filters, function(index, value) {
-        url += "&filters[][column]="+value[0]+"&filters[][value]="+value[1];
+        url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1]);
       });
 
       // Parameters
       $.each(params, function(index, value) {
-        url += "&"+value[0]+"="+value[1];
+        url += "&"+encodeURIComponent(value[0])+"="+encodeURIComponent(value[1]);
       });
       
       return url;
