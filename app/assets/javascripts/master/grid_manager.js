@@ -56,7 +56,7 @@
   				} else {
   					columns[i].editor = getEditorForType(columns[i].type);
   				}
-					if(type_str == "date" || type_str == "datetime" ) {
+					if(type_str == "date") {
 						columns[i].formatter = StandardDateCellFormatter;
 						columns[i].DateShowFormat = "yy-mm-dd";
 					} else if (type_str == "boolean") {
