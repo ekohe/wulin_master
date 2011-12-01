@@ -62,7 +62,11 @@ module WulinMaster
           if model < ActiveRecord::Base
             return query.where(complete_column_name => true_or_false)
           else
-            return query.where(self.name => true_or_false)
+            if true_or_false
+              return query.where(self.name => true)
+            else
+              return query.any_in(self.name => [nil, false])
+            end
           end
         else
           filtering_value = filtering_value.gsub(/'/, "''")
