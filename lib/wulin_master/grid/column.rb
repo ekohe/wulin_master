@@ -202,6 +202,16 @@ module WulinMaster
         else
           { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
         end
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-3[0-1]\s?$/ # 2011-12-31  2011-11-30
+        year, month, date = datetime.split('-').map(&:to_i)
+        if [1,3,5,7,8,10,12].include? month
+          { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-12-30 - 2011-12-31
+        elsif date == 30
+          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
+        end
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s?$/ # 2011-12-01 - 2011-12-29
+        year, month, date = datetime.split('-').map(&:to_i)
+        { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-11-11 00:00:00 - 2011-11-11 23:59:59
       else
         {}
       end
