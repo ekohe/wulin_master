@@ -42,6 +42,13 @@ module WulinMaster
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
+
+      if self.model.columns.map(&:name).map(&:to_s).include?(self.name)
+        complete_column_name = "#{model.table_name}.#{self.name}"
+      else
+        complete_column_name = self.name
+      end
+
       if self.reflection
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
         return query.where(["UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
@@ -49,13 +56,16 @@ module WulinMaster
         case sql_type.to_s
         when "datetime"
           return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
+        when "boolean"
+          true_values = ["y", "yes", "ye", "t", "true"]
+          true_or_false = true_values.include?(filtering_value.downcase)
+          if model < ActiveRecord::Base
+            return query.where(complete_column_name => true_or_false)
+          else
+            return query.where(self.name => true_or_false)
+          end
         else
           filtering_value = filtering_value.gsub(/'/, "''")
-          if self.model.columns.map(&:name).map(&:to_s).include?(self.name)
-            complete_column_name = "#{model.table_name}.#{self.name}"
-          else
-            complete_column_name = self.name
-          end
           if model < ActiveRecord::Base
             return query.where(["UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%"])
           else
@@ -70,6 +80,7 @@ module WulinMaster
           end
         end
       end
+      query
     end
 
     def apply_order(query, direction)
