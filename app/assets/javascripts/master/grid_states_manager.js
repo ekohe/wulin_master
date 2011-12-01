@@ -2,7 +2,9 @@ var GridStatesManager = {
   // do ajax save
   saveStates: function(gridName, type, value){
     var url = "/wulin_master/grid_states/save",
-    data = decodeURIComponent($.param({ grid_name: gridName, state_type: type, state_value: value, 
+    data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
+                                        state_type: encodeURIComponent(type),
+                                        state_value: encodeURIComponent(value), 
                                         authenticity_token: window._token }));
     $.post(url, data, function(response){
     });
