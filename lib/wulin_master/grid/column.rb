@@ -227,6 +227,35 @@ module WulinMaster
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s?$/ # 2011-12-01 - 2011-12-29
         year, month, date = datetime.split('-').map(&:to_i)
         { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-11-11 00:00:00 - 2011-11-11 23:59:59
+        # Time part
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s[0-1]$/ # 2011-11-11 0   2011-11-11 1
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour =  datetime.split(/\s/)[1]
+        { from: build_datetime(year, month, date, (hour + '0').to_i), to: build_datetime(year, month, date, (hour + '9').to_i, 59, 59) } # 2011-11-11 00:00:00 - 2011-11-11 09:59:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s2$/ # 2011-11-11 2
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        { from: build_datetime(year, month, date, 20), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-11-11 20:00:00 - 2011-11-11 23:59:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):?$/ # 2011-11-11 23   2011-11-11 23:
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour = datetime.split(/\s/)[1].first(2).to_i
+        { from: build_datetime(year, month, date, hour), to: build_datetime(year, month, date, hour, 59, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5]$/ # 2011-11-11 23:0   2011-11-11 23:5
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour, minute = datetime.split(/\s/)[1].split(':')
+        { from: build_datetime(year, month, date, hour.to_i, (minute + '0').to_i), to: build_datetime(year, month, date, hour.to_i, (minute + '9').to_i, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:?$/ # 2011-11-11 23:00   2011-11-11 23:59
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour, minute = datetime.split(/\s/)[1].split(':').map(&:to_i)
+        { from: build_datetime(year, month, date, hour, minute), to: build_datetime(year, month, date, hour, minute, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5]$/ # 2011-11-11 23:24:0    2011-11-11 23:24:5
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
+        { from: build_datetime(year, month, date, hour, minute, (second.to_s + '0').to_i), to: build_datetime(year, month, date, hour, minute, (second.to_s + '9').to_i) } # 2011-11-11 20:00:00 - 2011-11-11 20:00:59
+      elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9].*$/ # 2011-11-11 23:24:04    2011-11-11 23:24:54
+        datetime = datetime.first(19)
+        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
+        { from: build_datetime(year, month, date, hour, minute, second), to: build_datetime(year, month, date, hour, minute, second) } # 2011-11-11 20:22:22 - 2011-11-11 20:22:22
       else
         {}
       end
