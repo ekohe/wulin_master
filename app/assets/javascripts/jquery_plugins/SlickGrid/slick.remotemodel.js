@@ -99,16 +99,20 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
+      console.log("initedFilter: " +　initedFilter);
       if (initedFilter) {
+        console.log("initedFilter: " +　initedFilter);
+        console.log("path before replace: " +　path);
         path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
       } else {
         initedFilter = true;
       }
+      console.log("path after replace: " +　path);
       var url = path + "&offset=" + offset + "&count=" + count;
       
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI();
-      
+      console.log("latest url: " +　url);
       return [url, normalLoadingMode];
     }
     
