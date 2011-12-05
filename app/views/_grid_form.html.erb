@@ -47,14 +47,5 @@ object = grid.model.new
 
 <%= javascript_tag do -%>
   $(".chzn-select").chosen();
-  window._focused = {};
-  $('.chzn-container:visible').focusin(function(){
-    var id = $(this).attr("id");
-    if(!window._focused[id]) {
-      $(this).trigger('mousedown');
-      window._focused[id] = true;
-    }
-  });
-  
   <%= datepicker_str -%>
 <% end -%>
