@@ -88,6 +88,12 @@
 			
 			// Append editor attribute to columns
 			appendEditor(columns);
+      
+      // Apply current filters
+      path = GridStatesManager.applayFilters(path, states["filter"]);
+
+      // Set Loader
+			loader = new Slick.Data.RemoteModel(path, columns);
 		
 			// restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
@@ -95,14 +101,9 @@
 		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
 		  // restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
-      // Apply current filters
-      path = GridStatesManager.applayFilters(path, states["filter"]);
       
       // Set options along with actions
       resetOptions(actions);
-      
-      // Set Loader
-			loader = new Slick.Data.RemoteModel(path, columns);
 
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
