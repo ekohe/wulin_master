@@ -122,7 +122,7 @@
       
       // Set Filter
 			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
-			filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement, states["filter"]);
+      filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement, states["filter"]);
       
 			// Set ColumnPicker
 			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);

@@ -101,7 +101,6 @@
       }
       console.log("initedFilter: " +　initedFilter);
       if (initedFilter) {
-        console.log("initedFilter: " +　initedFilter);
         console.log("path before replace: " +　path);
         path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
       } else {
@@ -128,6 +127,7 @@
       } else {
         url += "&sort_dir=DESC";
       }
+      console.log("Filters: " + filters);
       // Filters
       $.each(filters, function(index, value) {
         url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1]);
