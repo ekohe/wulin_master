@@ -100,7 +100,7 @@
         normalLoadingMode = false;
       }
       console.log("initedFilter: " +　initedFilter);
-      if (initedFilter) {
+      if (initedFilter || filters.length > 0) {
         console.log("path before replace: " +　path);
         path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
       } else {
