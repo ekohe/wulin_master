@@ -4,10 +4,9 @@ var GridStatesManager = {
     var url = "/wulin_master/grid_states/save",
     data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
                                         state_type: encodeURIComponent(type),
-                                        state_value: encodeURIComponent(value), 
+                                        state_value: value, 
                                         authenticity_token: window._token }));
-    $.post(url, data, function(response){
-    });
+    $.post(url, data, function(response){});
   },
   
   // grid events
