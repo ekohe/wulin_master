@@ -78,7 +78,7 @@ var Ui = {
 
   // Close dialog
   closeDialog: function(name) {
-    $( '#' + name + '-form' ).dialog( "close" );
+    $( '#' + name + '-form' ).dialog('destroy');
     setTimeout(function(){
       Ui.highlightCreatedRows(name);
       gridManager.createdIds = [];
