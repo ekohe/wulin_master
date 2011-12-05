@@ -106,7 +106,7 @@ var Ui = {
     var grid = gridManager.getGrid(name),
     createdRows = [];
     $.each(gridManager.createdIds, function(){
-      if (grid.getRowByRecordId(this).row) {
+      if (grid.getRowByRecordId(this) && grid.getRowByRecordId(this).row) {
         createdRows.push(grid.getRowByRecordId(this).row);
       }
     });

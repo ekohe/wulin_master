@@ -14,7 +14,11 @@ var Requests = {
 					gridManager.createdIds.push(request.id);
 					Ui.resetForm(grid.name);
 					grid.loader.reloadData();
-					if (!continue_on) { Ui.closeDialog(grid.name); }
+					if (!continue_on && grid.loader.isDataLoaded()) { 
+					  setTimeout(function(){
+  					  Ui.closeDialog(grid.name);
+  					}, 100);
+					}
 					displayNewNotification('Record successfully created!');
 				} else {
 					for(key in request.error_message){
