@@ -93,7 +93,7 @@
       path = GridStatesManager.applayFilters(path, states["filter"]);
 
       // Set Loader
-			loader = new Slick.Data.RemoteModel(path, columns.clone());
+			loader = new Slick.Data.RemoteModel(path, columns);
 		
 			// restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
