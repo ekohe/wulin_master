@@ -43,7 +43,7 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
 
-      if self.model.columns.map(&:name).map(&:to_s).include?(self.name)
+      if self.model.column_names.include?(self.name.to_s)
         complete_column_name = "#{model.table_name}.#{self.name}"
       else
         complete_column_name = self.name
@@ -179,8 +179,6 @@ module WulinMaster
     end
 
     # == Generate the datetime rang filter for mongodb
-    # === Date part 
-    # TODO: Finish the time part
     def format_datetime(datetime)
       if datetime =~ /^\d{1,4}-?$/ # 20 2011 2011-
         year = datetime.first(4)
