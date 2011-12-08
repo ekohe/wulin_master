@@ -93,4 +93,16 @@ function initialize_menu() {
     $(this).siblings("ul").toggle();
     return false;
   });
+  
+  // Click to go back to dashboard
+  $("#navigation h1 a").click(function() {
+    $("#menu .active").removeClass("active");
+    // State management
+    var state = {};
+    currentUrl = "/";
+    state['url'] = currentUrl;
+    $.bbq.pushState(state);
+    load_page(currentUrl);
+    return false;
+  });
 }

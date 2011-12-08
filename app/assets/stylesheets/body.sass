@@ -9,12 +9,22 @@ body
   :font-size                  62.5%
   :margin                     0
   
+h1
+  :font-size              16px
+  :font-weight            bold
+  :color                  #555
+  :display                block
+  :padding-left           $margin
+  +text-shadow(#efefef 1px 1px 0)
+
+  
 .grid_container
   :float left
   .grid-header
     :height                   59px
     :background               image-url('ui/top_bar_bg.png')
     h2
+      :padding-top            $margin
       :padding-left           $margin
       :font-size              16px
       :font-weight            bold
