@@ -946,7 +946,7 @@
   		    };
 
   		    this.loadValue = function(item) {
-  		        defaultValue = item[args.column.id] ? item[args.column.id].id : null;
+  		        defaultValue = item[args.column.id];
   						$select.val(defaultValue);
               $select.select();
   						$select.chosen();
