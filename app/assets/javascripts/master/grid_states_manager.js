@@ -44,7 +44,7 @@ var GridStatesManager = {
     grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
       var filterJson = {};
       $.each(args.filterData, function(index,data){
-        filterJson[data['id']] = data['value'];
+        filterJson[data['id']] = encodeURIComponent(data['value']);
       });
       self.saveStates(grid.name, "filter", filterJson);
     });

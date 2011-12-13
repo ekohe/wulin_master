@@ -1,6 +1,10 @@
 <%= controller.menu.render %>
 <div id="content">
-  <div id="screen_content"></div>
+  <div id="screen_content">
+    <%- begin %>
+      <%= render :template => 'homepage/dashboard' %>
+    <%- rescue; end %>
+  </div>
   <div id="confirm_dialog" class='ui-state-highlight' style="display: none;" title="Delete Confirmation">
   <h4><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>Are you sure to do this ?</h4>
   </div>

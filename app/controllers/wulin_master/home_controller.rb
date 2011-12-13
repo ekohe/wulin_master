@@ -3,12 +3,21 @@ module WulinMaster
     self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
 
     def index
+      dashboard if self.respond_to?(:dashboard)
       respond_to do |format|
         format.html do
-          begin
-            render 'index'
-          rescue ActionView::MissingTemplate
-            render '/home'
+          if request.xhr?
+            begin
+              render :template => 'homepage/dashboard', :layout => false
+            rescue
+              render :text => ''
+            end
+          else
+            begin
+              render 'index'
+            rescue ActionView::MissingTemplate
+              render '/home'
+            end
           end
         end
       end

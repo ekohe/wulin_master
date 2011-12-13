@@ -21,8 +21,14 @@ $menu_width:  199px
     :margin-bottom            $margin*2
     :margin-left              $margin
     :padding-top              $margin
-    :color                    $app_title_color
-    +text-shadow(#fff, 1px, 1px, 0)
+    
+    a
+      :color                  $app_title_color
+      +text-shadow(#fff, 1px, 1px, 0)
+      :text-decoration        none
+    
+    a:hover
+      :text-decoration        underline
 
   h2
     :font-size                1em

@@ -1,11 +1,5 @@
 <div id="navigation">
-  <h1><%= WulinMaster.config.app_title %></h1>
-  
-  <div id="activity">
-    <h2>Activity</h2>
-    <div id="indicators"></div>
-  </div>
-  
+  <h1><%= link_to WulinMaster.config.app_title, '/' %></h1>  
   <div id="menu">
     <ul>
       <%- menu.each do |menu_entry| %>
@@ -26,6 +20,11 @@
         <% end -%>
       <% end -%>
     </ul>
+  </div>
+  
+  <div id="activity">
+    <h2>Activity</h2>
+    <div id="indicators"></div>
   </div>
 </div>
           

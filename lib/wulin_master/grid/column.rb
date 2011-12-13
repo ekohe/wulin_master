@@ -113,7 +113,7 @@ module WulinMaster
     end
 
     def choices
-      @choices ||= (self.reflection ? self.reflection.klass.all : [])
+      @choices ||= (self.reflection ? self.reflection.klass.all.sort{|x,y| x.send(option_text_attribute).to_s.downcase <=> y.send(option_text_attribute).to_s.downcase} : [])
     end
 
     def reflection_options
