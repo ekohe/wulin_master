@@ -55,7 +55,7 @@ module WulinMaster
     private
 
     def underscored_name
-      name.underscore
+      name.underscore.singularize
     end
 
     def class_name
