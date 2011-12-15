@@ -337,7 +337,7 @@
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
                     dateFormat: "yy-mm-dd",
-                    timeFormat: 'hh:mm:ss:'
+                    timeFormat: 'hh:mm:ss'
                 });
                 $input.width($input.width() - 18);
             };
