@@ -30,7 +30,7 @@
 				case "text":
 				return LongTextCellEditor;
 				case "datetime":
-				return StandardDateCellEditor;
+				return DateTimeCellEditor;
 				case "date":
 				return StandardDateCellEditor;
 				case "integer":
