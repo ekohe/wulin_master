@@ -336,7 +336,8 @@
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
-                    dateFormat: "yy-mm-dd"
+                    dateFormat: "yy-mm-dd",
+                    timeFormat: 'hh:mm:ss:'
                 });
                 $input.width($input.width() - 18);
             };
