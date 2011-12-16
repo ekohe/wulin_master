@@ -351,7 +351,7 @@
 
             this.show = function() {
                 if (calendarOpen) {
-                    $.datetimepicker.dpDiv.stop(true,true).show();
+                    $.datepicker.dpDiv.stop(true,true).show();
                 }
             };
 
