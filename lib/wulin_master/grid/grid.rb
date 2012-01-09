@@ -12,7 +12,7 @@ module WulinMaster
     include GridToolbar
     
     cattr_accessor :grids
-    class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header
+    class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header, :_options
     @@grids = []
     ORIGINAl_ACTIONS = %w(add delete edit filter audit sort order)
 
@@ -43,6 +43,10 @@ module WulinMaster
       
       def hide_header
         self._hide_header = true
+      end
+      
+      def options(option = {})
+        self._options = option
       end
       
       def remove_actions(*args)
@@ -161,6 +165,10 @@ module WulinMaster
     
     def hide_header?
       self.class._hide_header
+    end
+    
+    def options
+      self.class._options.to_json
     end
     
   end

@@ -80,7 +80,7 @@
 		  }
 		}
 
-		function createNewGrid(name, path, columns, states, actions) {
+		function createNewGrid(name, path, columns, states, actions, options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
 		  
@@ -138,7 +138,7 @@
 			pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions};
+			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions, options: options};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
@@ -196,7 +196,7 @@
 			// Create action
 			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
 			createButtonElement.click(function() {
-				Ui.openDialog(name);
+				Ui.openDialog(name, grid.options);
 			});
 			// Click 'Create' button
 			$('#' + name + '_submit').click(function() {

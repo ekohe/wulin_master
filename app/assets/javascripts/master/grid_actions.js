@@ -54,15 +54,23 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function(name) {
+  openDialog: function(name,options) {
+    var width, height;
+    if (options) {
+      width = options.form_dialog_width;
+      height = options.form_dialog_height;
+    } else {
+      width = 500;
+      height = 300;
+    }
     $( '#' + name + '-form' ).dialog({
-      height: 300,
-      width: 500,
+      height: height,
+      width: width,
       show: "blind",
       modal: true,
       open: function(event, ui) {
-      // The latest jqueryui had fixed the open event's bug,so the below will be works fine 
-      $( '#' + name + '-form input:text' ).first().focus();
+        // The latest jqueryui had fixed the open event's bug,so the below will be works fine 
+        $( '#' + name + '-form input:text' ).first().focus();
 			},
       close: function(event, ui) { 
         $(this).find("input:text").val("");
@@ -194,7 +202,7 @@ var Ui = {
           return false;
         } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
           if (gridSize > 0 && grid) {
-            Ui.openDialog(grid.name);
+            Ui.openDialog(grid.name, grid.options);
             return false;
           }
           return false;
