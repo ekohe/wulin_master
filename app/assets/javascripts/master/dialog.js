@@ -27,7 +27,7 @@ function displayErrorMessage(message, title, width) {
 		width: width,
 		buttons: {
 			"Ok": function() { 
-				$(this).dialog("close"); 
+				$(this).dialog("destroy"); 
 			} 
 		},
     modal: true
@@ -64,11 +64,11 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
 		buttons: {
 			Yes: function() {
 			  confirmCallback();
-        $(this).dialog( "close" );
+        $(this).dialog( "destroy" );
       },
       Cancel: function() {
 			  cancelCallback();
-        $(this).dialog( "close" );
+        $(this).dialog( "destroy" );
       }
 		},
     modal: true

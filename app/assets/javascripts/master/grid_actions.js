@@ -74,7 +74,8 @@ var Ui = {
 			},
       close: function(event, ui) { 
         $(this).find("input:text").val("");
-        $(this).find(".field_error").text(""); 
+        $(this).find(".field_error").text("");
+        $(this).dialog("destroy");
         setTimeout(function(){
           Ui.highlightCreatedRows(name);
           gridManager.createdIds = [];
@@ -100,11 +101,14 @@ var Ui = {
       buttons: {
         Yes: function() {
           Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
-          $( this ).dialog( "close" );
+          $( this ).dialog( "destroy" );
         },
         Cancel: function() {
-          $( this ).dialog( "close" );
+          $( this ).dialog( "destroy" );
         }
+      },
+      close: function() { 
+        $(this).dialog("destroy"); 
       }
     });
   },
