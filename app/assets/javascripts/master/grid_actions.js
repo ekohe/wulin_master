@@ -57,8 +57,8 @@ var Ui = {
   openDialog: function(name,options) {
     var width, height;
     if (options) {
-      width = options.form_dialog_width;
-      height = options.form_dialog_height;
+      width = options.form_dialog_width || 500;
+      height = options.form_dialog_height || 300;
     } else {
       width = 500;
       height = 300;
