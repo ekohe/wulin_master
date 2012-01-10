@@ -206,7 +206,7 @@ var Ui = {
           return false;
         } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
           if (gridSize > 0 && grid) {
-            Ui.openDialog(grid.name, grid.options);
+            Ui.openDialog(grid.name, grid.extend_options);
             return false;
           }
           return false;
