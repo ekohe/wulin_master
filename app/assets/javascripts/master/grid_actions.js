@@ -75,12 +75,14 @@ var Ui = {
       close: function(event, ui) { 
         $(this).find("input:text").val("");
         $(this).find(".field_error").text("");
-        $(this).dialog("destroy");
         setTimeout(function(){
           Ui.highlightCreatedRows(name);
           gridManager.createdIds = [];
         }, 300);
         window._focused = {};
+        
+        $(this).html('');
+        $(this).dialog("destroy");
       }
     });
   },
@@ -101,14 +103,17 @@ var Ui = {
       buttons: {
         Yes: function() {
           Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
+          $(this).html('');
           $( this ).dialog( "destroy" );
         },
         Cancel: function() {
+          $(this).html('');
           $( this ).dialog( "destroy" );
         }
       },
-      close: function() { 
-        $(this).dialog("destroy"); 
+      close: function() {  
+        $(this).html('');
+        $(this).dialog("destroy");
       }
     });
   },
