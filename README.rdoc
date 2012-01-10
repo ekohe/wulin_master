@@ -120,7 +120,7 @@ features.
 
       protected
       
-      # transfer params
+      # pass params
       # +@query+ now is a ActiveRecord class
       def add_scope
         @query = (params[:add_scope] == 'true' ? @query.scope : @query) 
