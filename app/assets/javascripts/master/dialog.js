@@ -27,7 +27,6 @@ function displayErrorMessage(message, title, width) {
 		width: width,
 		buttons: {
 			"Ok": function() {
-			  $(this).html('');
 				$(this).dialog("destroy");
 			} 
 		},
@@ -65,12 +64,10 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
 		buttons: {
 			Yes: function() {
 			  confirmCallback();
-        $(this).html('');
         $(this).dialog( "destroy" );
       },
       Cancel: function() {
 			  cancelCallback();
-        $(this).html('');
         $(this).dialog( "destroy" );
       }
 		},

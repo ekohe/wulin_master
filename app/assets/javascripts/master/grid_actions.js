@@ -80,8 +80,6 @@ var Ui = {
           gridManager.createdIds = [];
         }, 300);
         window._focused = {};
-        
-        $(this).html('');
         $(this).dialog("destroy");
       }
     });
@@ -103,16 +101,13 @@ var Ui = {
       buttons: {
         Yes: function() {
           Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
-          $(this).html('');
           $( this ).dialog( "destroy" );
         },
         Cancel: function() {
-          $(this).html('');
           $( this ).dialog( "destroy" );
         }
       },
-      close: function() {  
-        $(this).html('');
+      close: function() { 
         $(this).dialog("destroy");
       }
     });
