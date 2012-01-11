@@ -159,11 +159,10 @@ module WulinMaster
       # Render ruby objects
       t = Time.now
       @object_array = grid.arraify(@objects)
-
-      json = JSON({:offset => @offset,
+      json = {:offset => @offset,
         :total =>  @count,
         :count =>  @per_page,
-        :rows  =>  @object_array})
+        :rows  =>  @object_array}.to_json
       Rails.logger.info "Rendered JSON in #{Time.now-t} sec."
       json
     end
