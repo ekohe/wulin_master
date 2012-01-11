@@ -63,8 +63,11 @@
 						columns[i].formatter = BoolCellFormatter;
 					}
 				}
-				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many" ) {
+				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
 					columns[i].formatter = BelongsToFormatter;
+				}
+				if(type_str == 'has_one' ) {
+					columns[i].formatter = HasOneFormatter;
 				}
 				if(type_str == "boolean") {
 					columns[i].cssClass = 'cell-effort-driven';

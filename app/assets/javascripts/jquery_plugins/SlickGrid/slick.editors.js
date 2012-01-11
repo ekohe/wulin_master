@@ -82,6 +82,10 @@
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
   					return dataContext[columnDef.id][columnDef.optionTextAttribute];
   			},
+  			
+  		  HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
+  					return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
+  			},	
         
         TextCellEditor : function(args) {
             var $input;
