@@ -48,7 +48,13 @@ formSubmitted = ->
   
 handleInviteResponse = (data) ->
   if data.success
-    displayNewNotification 'Successfully created!'
+    if data.count
+      if data.count==1
+        displayNewNotification 'One record successfully created!'
+      else
+        displayNewNotification data.count + ' records created!'
+    else
+      displayNewNotification 'Successfully created!'
     enableForm()
     successCallback(data)
   else

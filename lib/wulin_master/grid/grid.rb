@@ -14,7 +14,7 @@ module WulinMaster
     cattr_accessor :grids
     class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header, :_options
     @@grids = []
-    ORIGINAl_ACTIONS = %w(add delete edit filter audit sort order)
+    ORIGINAL_ACTIONS = %w(add delete edit filter audit sort order)
 
     # Grid has been subclassed
     def self.inherited(klass)
@@ -32,7 +32,7 @@ module WulinMaster
       end
       
       def actions
-        self._actions ||= ORIGINAl_ACTIONS
+        self._actions ||= ORIGINAL_ACTIONS
       end
 
       [:title, :model, :path].each do |attr|
@@ -54,7 +54,7 @@ module WulinMaster
         self.toolbar.each do |t|
           self.toolbar.delete_if{ |t| actions_str.include?(t.title.downcase) }
         end
-        self._actions = ORIGINAl_ACTIONS - actions_str
+        self._actions = ORIGINAL_ACTIONS - actions_str
       end
 
       def set_actions(*args)

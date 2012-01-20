@@ -10,7 +10,7 @@
 		
 		grids = [],
 		createdIds = [],
-		options = {
+		defaultOptions = {
 			editable: true,
 			enableAddRow: false,
 			enableCellNavigation: true,
@@ -71,19 +71,12 @@
 				}
 			}
 		}
-		
-		function resetOptions(actions) {
-		  if (actions.indexOf('edit') == -1) {
-		    options['editable'] = false;
-		  } else {
-		    options['editable'] = true;
-		  }
-		}
 
 		function createNewGrid(name, path, columns, states, actions, options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
-		  
+		  options = $.extend(defaultOptions, options);
+
 			gridElement = $(gridElementPrefix + name + gridElementSuffix);
 			
 			// Append editor attribute to columns
@@ -103,8 +96,11 @@
       GridStatesManager.restoreWidthStates(columns, states["width"]);
       
       // Set options along with actions
-      resetOptions(actions);
-
+		  if (actions.indexOf('edit') == -1) {
+		    options['editable'] = false;
+		  } else {
+		    options['editable'] = true;
+		  }
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			grid.setSelectionModel(new Slick.RowSelectionModel());
