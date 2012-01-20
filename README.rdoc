@@ -1,14 +1,12 @@
 = WulinMaster
 
-WulinMaster is a grid plugin base on ruby on rails.It provide powerfull generator 
+WulinMaster is a grid plugin base on ruby on rails and {SlickGrid}[https://github.com/mleibman/SlickGrid].It provide powerfull generator 
 and other tools to make grids easy to build,it also provides flexible configuration, 
 you can easily configure your grid,a beautiful ui base on jqueryui and other good 
 features.
        
 
 == Getting Started
-
-=== User WulinMaster in Rails 3.1
 
 1. Put 'gem wulin_master' to your Gemfile:
 
@@ -35,53 +33,104 @@ features.
     bundle exec rails g wulin_master:grid_states
    
    It will generator <em>db/migrate/<timestamp>_create_grid_states.rb</em> migrate file to your app,
-   *_grid_states_* table is used for store the grid states for each user.
+   *_grid_states_* table is used for store the grid states for each user. 
+   It will store <em>column width</em>,<em>sort column</em>,<em>column order</em>,<em>visibility columns</em>,
+   <em>filter states</em> for each user.
 
    Run with <em>bundle exec rails g</em> for get generator list.
 
-5. Assume generator a new grid called *grid_test*, run the generator:
-    bundle exec rails g wulin_master:screen_and_grid grid_test name:string age:integer
+5. Assume generator a new grid called *post*, run the generator:
+    bundle exec rails g wulin_master:screen_and_grid post name:string age:integer
 
    This will create:
    
-    create  db/migrate/20110919093453_create_grid_tests.rb
-    create  app/<asset_folder_name>/controllers/grid_tests_controller.rb
-    create  app/<asset_folder_name>/screens/grid_test_screen.rb
-    create  app/<asset_folder_name>/grids/grid_test_grid.rb
-    create  app/<asset_folder_name>/models/grid_test.rb
-    create  app/<asset_folder_name>/views/grid_tests
-    route  resources :grid_tests
+    create  db/migrate/20110919093453_create_posts.rb
+    create  app/<asset_folder_name>/controllers/posts_controller.rb
+    create  app/<asset_folder_name>/screens/post_screen.rb
+    create  app/<asset_folder_name>/grids/post_grid.rb
+    create  app/<asset_folder_name>/models/post.rb
+    create  app/<asset_folder_name>/views/posts
+    route  resources :posts
 
    <em>name:string age:integer</em> are the columns of the grid, same as the <b><em>[field:type field:type]</em></b> 
    option of *scaffold* generator.
-   You can configurate *<asset_folder_name>* in *config/initializers/wulin_master.rb*
+   You can configurate <b><asset_folder_name></b> in *config/initializers/wulin_master.rb*
    
    You can configre your gird:
 
-    # app/grids/grid_test_grid.rb
-    class GridTestGrid < WulinMaster::GridConfig
-     config do
-       title 'Grid test'
+    # app/<asset_folder_name>/grids/post_grid.rb
+    class PostGrid < WulinMaster::Grid
+      title 'Posts'   # Title for this grid
 
-        model GridTest
+      model Post      # ActiveRecord model for this grid
 
-       path '/grid_tests'    
+      path '/hotels'  # Url path for this grid, correspond to <code>resources :posts</code> in routes.rb
 
-       column :name
-       column :age
-     end
+      options form_dialog_width: 500, form_dialog_height: 500 # Some options,like the width and height for the create from dialog
+
+      fill_window # Call this method in grid class, the grid will fill the whole window.
+      
+      hide_header # Call this method in grid class, will hide the header,then the toolbar will not appear any more.
+      
+      set_actions :audit, :add, :edit # Set actions for grid, Current there seven actions can be seted, they are <b><code>add delete edit filter audit sort order</code></b>, they are all be seted by default.
+      
+      remove_actions :audit, :add     # Remove actions for grid,is similar to <code>set_actions</code>  
+
+      column :title sortable: true, visible: true, editable: true # Define column for grid,and control it like {SlickGrid}[https://github.com/mleibman/SlickGrid], support all options from SlickGrid.
+      column :content, formable: false, visible: false # <code>formable</code> option control the column whether appear in dialog form. 
+      column :category, autoHeight: true
+
     end
+    
+   Grid Also can be inherited, all the settings will be inherited,and you can define defferent setting for subclass.
+   
+    class SubPostGrid < PostGrid
+      title 'Sub Posts'
+      
+      path '/sub_posts'
+      
+      def column
+        super.clone.delete_if { |c| c.name == 'category' }
+      end
+    end
+    
+   Screen and controller for the grid can be inherited too.
    
    Grid is located in one screen, one screen has one or a few grids,you can put any grid to one
    screen with *grid* method, and config the *title* and the *path* method.
    
-    # app/screens/grid_test_screen.rb
+    # app/<asset_folder_name>/screens/post_screen.rb:
     class GridTestScreen < WulinMaster::Screen
      title 'Grid test'
 
-     path '/grid_tests'
+     path '/posts'
 
      grid GridTestGrid
+    end
+    
+   Controller for grid paste grid and screen, it's a subclass for <code>ApplicationController</code>.
+   
+    # app/<asset_folder_name>/controllers/posts_controller.rb
+    class PostsController < WulinMaster::ScreenController
+      controller_for_screen PostScreen
+      controller_for_grid PostGrid
+      add_callback :query_filters_ready, :add_scope
+      add_callback :query_ready, :state_filter
+      
+
+      protected
+      
+      # pass params
+      # +@query+ now is a ActiveRecord class
+      def add_scope
+        @query = (params[:add_scope] == 'true' ? @query.scope : @query) 
+      end
+
+      # Set filter for grid source
+      # +@query+ is a ActiveRecord::Relation object
+      def state_filter
+        @query = @query.where(state: params[:state] || 'ok')
+      end
     end
    
    Also, the will add some autoload_paths for the generated assets in application.rb:

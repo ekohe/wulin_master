@@ -26,8 +26,8 @@ function displayErrorMessage(message, title, width) {
 		autoOpen: true,
 		width: width,
 		buttons: {
-			"Ok": function() { 
-				$(this).dialog("destroy"); 
+			"Ok": function() {
+				$(this).dialog("destroy");
 			} 
 		},
     modal: true

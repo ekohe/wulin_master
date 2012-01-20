@@ -75,12 +75,12 @@ var Ui = {
       close: function(event, ui) { 
         $(this).find("input:text").val("");
         $(this).find(".field_error").text("");
-        $(this).dialog("destroy");
         setTimeout(function(){
           Ui.highlightCreatedRows(name);
           gridManager.createdIds = [];
         }, 300);
         window._focused = {};
+        $(this).dialog("destroy");
       }
     });
   },
@@ -108,7 +108,7 @@ var Ui = {
         }
       },
       close: function() { 
-        $(this).dialog("destroy"); 
+        $(this).dialog("destroy");
       }
     });
   },
@@ -206,7 +206,7 @@ var Ui = {
           return false;
         } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
           if (gridSize > 0 && grid) {
-            Ui.openDialog(grid.name, grid.options);
+            Ui.openDialog(grid.name, grid.extend_options);
             return false;
           }
           return false;
