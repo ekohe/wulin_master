@@ -78,7 +78,7 @@
 		function createNewGrid(name, path, columns, states, actions, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
-		  options = $.extend(defaultOptions, options);
+		  options = $.extend(defaultOptions, extend_options);
 
 			gridElement = $(gridElementPrefix + name + gridElementSuffix);
 			
