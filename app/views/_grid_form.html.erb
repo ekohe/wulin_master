@@ -14,12 +14,12 @@ object = grid.model.new
           <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
           <%- if column.sql_type.to_s == 'belongs_to' %>
             <%= form.select column_name, 
-            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
+            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), { prompt: "Select #{column.label}" },
             {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
           
           <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
             <%= form.select column.reflection.name.to_s, 
-            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), {},
+            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), { prompt: "Select #{column.label}" },
             {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
           
           <%- elsif column.options[:choices].present? %>
