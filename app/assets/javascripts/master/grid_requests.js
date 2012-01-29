@@ -64,8 +64,9 @@ var Requests = {
 			data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
-					grid.loader.data[currentRow] = Ui.formatData(grid, msg["attrs"]);
-					grid.updateRow(currentRow);
+					grid.loader.reloadData();
+          // grid.loader.data[currentRow] = Ui.formatData(grid, msg["attrs"]);
+          // grid.updateRow(currentRow);
 				} else {
 					alert(msg.error_message);
 					grid.loader.reloadData();
