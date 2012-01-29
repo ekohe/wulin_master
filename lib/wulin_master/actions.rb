@@ -92,7 +92,7 @@ module WulinMaster
         @records.each {|record| record.destroy }
         # end
         message = {:success => true }
-      rescue e
+      rescue => e
         message = {:success => false, :error_message => e.message}
       end
       respond_to do |format|
