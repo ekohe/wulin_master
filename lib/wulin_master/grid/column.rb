@@ -93,7 +93,7 @@ module WulinMaster
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
         query.order("#{table_name}.#{self.option_text_attribute} #{direction}")
       else
-        query.order("#{@name} #{direction}")
+        query.order("#{model.table_name}.#{@name} #{direction}")
       end
     end
 
