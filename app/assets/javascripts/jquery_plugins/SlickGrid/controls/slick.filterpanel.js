@@ -151,6 +151,7 @@
         "onFilterLoaded":                     new Slick.Event(),
         
         // Methods
+        'generateFilters':                    generateFilters, 
         "applyCurrentFilters":                applyCurrentFilters,
         "setCurrentFilters":                  setCurrentFilters
     });
