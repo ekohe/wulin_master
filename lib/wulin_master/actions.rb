@@ -62,6 +62,8 @@ module WulinMaster
           if @count_query
             @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
           end
+          
+          fire_callbacks :objects_ready
 
           # Render json response
           render :json => render_json
