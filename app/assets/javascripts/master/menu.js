@@ -66,16 +66,12 @@ function deselectMenuItems() { $(".active").removeClass("active"); }
 
 function selectMenuItem(url) {
   deselectMenuItems();
-  $.each($("#menu li.item a"), function(i,item) {
-    if ($(item).attr('href')==url) {
-      $(item).parent().addClass("active");
-    }
-  });
+  $('#menu li.item a[href="' + url + '"]').parent().addClass('active');
 }
 
 function initialize_menu() {
   // Click to load screen page
-  $("#menu li.item a").click(function() {
+  $("#menu li.item a").on('click', function() {
     $("#menu .active").removeClass("active");
     $(this).parent().addClass("active");
     // State management
