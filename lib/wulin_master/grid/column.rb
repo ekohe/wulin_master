@@ -54,6 +54,8 @@ module WulinMaster
         return query.where(["UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
       else
         case sql_type.to_s
+        when 'date'
+          return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
         when "datetime"
           return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
         when "boolean"
