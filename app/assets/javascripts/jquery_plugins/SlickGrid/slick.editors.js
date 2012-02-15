@@ -901,7 +901,7 @@
             if(winWith - offsetLeft < offsetWith)
               $wrapper.offset({left: winWith - offsetWith})
               
-  					var options = "";
+  					var options = "<option>Select one option</option>";
   					$.each(choices, function() {
   						options += "<option value='"+this.id+"'>"+this[optionTextAttribute]+"</option>";
   					});
@@ -1003,7 +1003,7 @@
             offsetLeft = $wrapper.offset().left;
             if(winWith - offsetLeft < offsetWith)
               $wrapper.offset({left: winWith - offsetWith})
-  					var options = "";
+  					var options = "<option>Select one option</option>";
   					$.each(choices, function() {
   						options += "<option value='"+this.id+"'>" + this.name + "</option>";
   					});
@@ -1086,7 +1086,7 @@
                 $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>")
                             .appendTo($wrapper);
                 $wrapper.append(' <span>-' + staticValue + '</span>');
-                var from_options = "", to_options = '';
+                var from_options = "<option>Select one option</option>", to_options = '<option>Select one option</option>';
       					$.each(from_choices, function() {
       						from_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
       					});
