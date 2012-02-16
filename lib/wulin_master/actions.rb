@@ -202,8 +202,8 @@ module WulinMaster
               new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
             end
           end
-          #  elsif !grid.model.column_names.include?(k.to_s)
-          #    attrs.delete(k)
+        elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
+         attrs.delete(k)
         end
       end
       attrs.merge!(new_attributes)
