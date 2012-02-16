@@ -879,8 +879,8 @@
         
         // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
         BelongsToEditor : function(args) {
-  				var $select;
-  				var choices = args.column.choices;
+  				var $select, $wrapper;
+  				var choicesFetchPath = args.column.choices;
   				var optionTextAttribute = args.column.optionTextAttribute || 'name';
   				var defaultValue;
   				var boxWidth = 200;
@@ -898,20 +898,28 @@
             $select.focus();
             var winWith = $(window).width(),
             offsetLeft = $wrapper.offset().left;
-            if(winWith - offsetLeft < offsetWith)
+            if(winWith - offsetLeft < offsetWith) {
               $wrapper.offset({left: winWith - offsetWith})
-              
-  					var options = "<option>Select one option</option>";
-  					$.each(choices, function() {
-  						options += "<option value='"+this.id+"'>"+this[optionTextAttribute]+"</option>";
-  					});
-  					$select.html(options);
-
-  					// FIXME
+            }
+  					$select.append($("<option />"));
+  					if ($.isArray(choicesFetchPath)) {
+  					  $.each(choicesFetchPath, function(index, value) {
+                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+              });
+              $select.val(args.item[args.column.id].id);
+              $select.chosen();
+  					} else {
+              $.getJSON(choicesFetchPath, function(itemdata){
+                $.each(itemdata, function(index, value) {
+                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                });
+                $select.val(args.item[args.column.id].id);
+    						$select.chosen();
+              });
+            }
+            // FIXME
   					// Fix keyboard enter bug stupidly, find a better way please.
-            setTimeout(function(){
-                        $(".grid_container .chzn-drop").css('left', '0');
-                        }, 100);
+            setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
   				};
 
   				this.destroy = function() {
@@ -952,11 +960,6 @@
               defaultValue = item[args.column.id].id;
   						$select.val(defaultValue);
               $select.select();
-  						$select.chosen();
-  						setTimeout(function(){
-                $('.slick-cell .chzn-select~.chzn-container').trigger('mousedown');
-              }, 100);
-              
   		    };
 
   		    this.applyValue = function(item,state) {
@@ -987,8 +990,8 @@
   			
         // The editor which use jquery.chosen to allow you choose the value as select
         SelectEditor : function(args) {
-  				var $select;
-  				var choices = args.column.choices;
+  				var $select, $wrapper;
+  				var choicesFetchPath = args.column.choices;
   				var defaultValue;
   				var boxWidth = 200;
   				var offsetWith = boxWidth + 28;
@@ -1001,19 +1004,27 @@
             $select.focus();
             var winWith = $(window).width(),
             offsetLeft = $wrapper.offset().left;
-            if(winWith - offsetLeft < offsetWith)
+            if(winWith - offsetLeft < offsetWith) {
               $wrapper.offset({left: winWith - offsetWith})
-  					var options = "<option>Select one option</option>";
-  					$.each(choices, function() {
-  						options += "<option value='"+this.id+"'>" + this.name + "</option>";
-  					});
-  					$select.html(options);  
-
-  					// FIXME
-  					// Fix keyboard enter bug stupidly, find a better way please.
-            setTimeout(function(){
-                        $(".grid_container .chzn-drop").css('left', '0');
-                        }, 100);
+            }
+            
+  					$select.append($("<option />"));
+  					if ($.isArray(choicesFetchPath)) {
+  					  $.each(choicesFetchPath, function(index, value) {
+                $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+              });
+              $select.val(args.item[args.column.id]);
+              $select.chosen();
+  					} else {
+              $.getJSON(choicesFetchPath, function(itemdata){
+                $.each(itemdata, function(index, value) {
+                  $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+                });
+                $select.val(args.item[args.column.id]);
+    						$select.chosen();
+              });
+            }
+            setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 100);
   				};
 
   				this.destroy = function() {
@@ -1039,8 +1050,6 @@
   		        defaultValue = item[args.column.id];
   						$select.val(defaultValue);
               $select.select();
-  						$select.chosen();
-  						$('.slick-cell .chzn-select~.chzn-container').trigger('mousedown');
   		    };
 
   		    this.applyValue = function(item,state) {
@@ -1066,36 +1075,59 @@
             var scope = this;
             var originValue = args.item[args.column.field].split('-');
             var staticValue = originValue[2] + '-' + originValue[3]
-    				var from_choices = args.column.from_choices;
-    				var to_choices = args.column.to_choices;
+    				var from_choices = args.column.from_choices_path;
+    				var to_choices = args.column.to_choices_path;
     				var from_field = args.column.from_field;
     				var to_field = args.column.to_field;
     				var defaultValue;
     				var boxWidth = 200;
     				var offsetWith = boxWidth * 2 + 70;
             this.init = function() {
-
+                var $wrapper, values = args.item[args.column.field].split('-');
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                     .appendTo(args.container);
                   
-                $from = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>")
-                            .appendTo($wrapper);
-
+                $from = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>").appendTo($wrapper);
                 $wrapper.append("&nbsp; <span>-</span> &nbsp;");
-
-                $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>")
-                            .appendTo($wrapper);
+                $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>").appendTo($wrapper);
                 $wrapper.append(' <span>-' + staticValue + '</span>');
-                var from_options = "<option>Select one option</option>", to_options = '<option>Select one option</option>';
-      					$.each(from_choices, function() {
-      						from_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
-      					});
-      					$.each(to_choices, function() {
-      						to_options += "<option value='" + this.id + "' code='" + this.code + "'>" + this.name + "</option>";
-      					});
-      					$from.html(from_options);
-      					$to.html(to_options);
+                $from.append($("<option />"));
+                $to.append($("<option />"));
+                // Append from select options
+      					if ($.isArray(from_choices)) {
+      					  $.each(from_choices, function(index, value) {
+                    $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                  });
+                  $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
+                  $from.chosen();
+      					} else {
+                  $.getJSON(from_choices, function(itemdata){
+                    $.each(itemdata, function(index, value) {
+                      $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                    });
+                    $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
+        						$from.chosen();
+                  });
+                }
+                // Append to select options
+                if ($.isArray(to_choices)) {
+      					  $.each(to_choices, function(index, value) {
+                    $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                  });
+                  $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
+                  $to.chosen();
+      					} else {
+                  $.getJSON(to_choices, function(itemdata){
+                    $.each(itemdata, function(index, value) {
+                      $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                    });
+                    $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
+        						$to.chosen();
+                  });
+                }
                 scope.focus();
+                setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
+                
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
                 if(winWith - offsetLeft < offsetWith)
@@ -1131,8 +1163,6 @@
                 defaultValue = item[args.column.field].split('-');
                 $('option[code="' + defaultValue[0] + '"]', $from).attr("selected","selected");
                 $('option[code="' + defaultValue[1] + '"]', $to).attr("selected","selected");
-                $to.chosen();
-                $from.chosen();
             };
 
             this.isValueChanged = function() {

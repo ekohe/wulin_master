@@ -69,7 +69,18 @@ var Ui = {
       show: "blind",
       modal: true,
       open: function(event, ui) {
-        // The latest jqueryui had fixed the open event's bug,so the below will be works fine 
+        // Fetch options of select box by ajax 
+        var remotePath = $('#remote_paths').val().split(',');
+        $.each(remotePath, function(i,path){
+          $.getJSON(path, function(itemdata){
+            $.each(itemdata, function(index, value) {
+              var target = $("select[data-remote-path='" + path + "']");
+              target.append("<option value='" + value.id + "'>" + value[target.attr('data-text-attr')] + "</option>");
+            });
+           $("select[data-remote-path='" + path + "']").chosen();
+          });
+        })
+        
         $( '#' + name + '-form input:text' ).first().focus();
 			},
       close: function(event, ui) { 

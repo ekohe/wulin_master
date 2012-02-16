@@ -3,6 +3,7 @@ model_name = grid.model.name.underscore
 columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
 datepicker_str = ''
 object = grid.model.new
+remote_paths = []
 %>
 <div id="<%= grid.name %>-form" title="Create new <%= model_name.titleize %>" class="create_form">
   <%= form_for object, :url => grid.path do |form| %>
@@ -13,19 +14,42 @@ object = grid.model.new
         <div class="field" name="<%= column_name %>">
           <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
           <%- if column.sql_type.to_s == 'belongs_to' %>
+            <%- remote_paths << fetch_path(column) %>
             <%= form.select column_name, 
-            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), { prompt: "Select #{column.label}" },
-            {:include_blank => !column.presence_required?, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
+              select_options(column), 
+              { prompt: "Select #{column.label}" },
+              { :include_blank => !column.presence_required?, 
+                :class => 'chzn-select', 
+                :style => "width:250px", 
+                "data-remote-path" => fetch_path(column), 
+                "data-text-attr"   => column.option_text_attribute,
+                :disabled => column.options[:auto_fill] } 
+            %>
           
           <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
+            <%- remote_paths << fetch_path(column) %>
             <%= form.select column.reflection.name.to_s, 
-            options_from_collection_for_select(column.choices, "id", column.option_text_attribute), { prompt: "Select #{column.label}" },
-            {:include_blank => !column.presence_required?, :multiple => true, :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] } %>
+              select_options(column), 
+              { prompt: "Select #{column.label}" },
+              { :include_blank => !column.presence_required?, 
+                :multiple => true, 
+                :class => 'chzn-select', 
+                :style => "width:250px", 
+                "data-remote-path" => fetch_path(column),
+                "data-text-attr"   => column.option_text_attribute,
+                :disabled => column.options[:auto_fill] } 
+            %>
           
           <%- elsif column.options[:choices].present? %>
-            <%= select_tag "#{model_name}[#{column_name}]",
-            column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe, 
-            :class => 'chzn-select', :style => "width:250px", :disabled => column.options[:auto_fill] %>
+            <%- remote_paths << select_tag_fetch_path(column) %>
+            <%= select_tag "#{model_name}[#{column_name}]", 
+              select_tag_options(column), 
+              "data-remote-path" => select_tag_fetch_path(column), 
+              "data-text-attr"   => column.option_text_attribute,
+              :class => 'chzn-select', 
+              :style => "width:250px", 
+              :disabled => column.options[:auto_fill] 
+            %>
           
           <%- else %>
             <%- if column.sql_type.to_s.downcase == 'boolean' %>
@@ -42,10 +66,10 @@ object = grid.model.new
       <input id="<%= grid.name %>_submit" name="commit" type="submit" value=" Create " /> 
       <input id="<%= grid.name %>_submit_continue" name="commit" type="submit" value=" Create and Continue " /> 
     </div>
+    <%= hidden_field_tag 'remote_paths', remote_paths.uniq.compact.join(',') %>
   <% end -%>
 </div>
 
 <%= javascript_tag do -%>
-  $(".chzn-select").chosen();
   <%= datepicker_str -%>
 <% end -%>

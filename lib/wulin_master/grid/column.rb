@@ -21,7 +21,6 @@ module WulinMaster
       sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
       table_name = self.reflection ? self.reflection.klass.table_name.to_s : self.model.table_name.to_s
       new_options = @options.dup
-      @options.each {|k,v| new_options.merge!(k => v.call) if v.class == Proc }
       h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
@@ -115,12 +114,27 @@ module WulinMaster
     end
 
     def choices
-      @choices ||= (self.reflection ? self.reflection.klass.all.sort{|x,y| x.send(option_text_attribute).to_s.downcase <=> y.send(option_text_attribute).to_s.downcase} : [])
+      @choices ||= if self.reflection
+        params_hash = { :klass => self.reflection.klass.name, :text_attr => option_text_attribute }
+        "/wulin_master/fetch_options?#{params_hash.to_param}"
+      else
+        []
+      end
     end
 
     def reflection_options
-      {:choices => (@options[:choices].present? ? @options[:choices].to_json : nil) || self.choices.collect{|k| {:id => k.id, option_text_attribute => k.send(option_text_attribute)}},
-      :optionTextAttribute => self.option_text_attribute}
+      if @options[:choices].present?
+        choices = @options[:choices].to_json
+      else
+        choices = self.choices
+      end
+      
+      { :choices => choices, :optionTextAttribute => self.option_text_attribute }
+    end
+    
+    # For belongs_to association, the name of the attribute to display
+    def option_text_attribute
+      @options[:option_text_attribute] || :name
     end
 
     def foreign_key
@@ -175,10 +189,6 @@ module WulinMaster
       end
     end
 
-    # For belongs_to association, the name of the attribute to display
-    def option_text_attribute
-      @options[:option_text_attribute] || :name
-    end
 
     # == Generate the datetime rang filter for mongodb
     def format_datetime(datetime)
