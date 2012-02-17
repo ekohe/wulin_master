@@ -1167,7 +1167,7 @@
                   }
                 }
                 scope.focus();
-                setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
+                setTimeout(function(){ $(".grid_container .chzn-drop:first").css('left', '0');}, 300);
                 
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
@@ -1207,7 +1207,9 @@
             };
 
             this.isValueChanged = function() {
-                return args.item.from != $from.val() || args.item.to != $to.val();
+                var currentFromValue = $('option:selected', $from).attr('code'),
+                currentToValue = $('option:selected', $to).attr('code');
+                return defaultValue[0] != currentFromValue || defaultValue[1] != currentToValue;
             };
 
             this.validate = function() {
