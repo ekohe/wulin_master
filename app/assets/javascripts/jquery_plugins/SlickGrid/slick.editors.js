@@ -901,6 +901,8 @@
             if(winWith - offsetLeft < offsetWith) {
               $wrapper.offset({left: winWith - offsetWith})
             }
+            
+    				window._jsonData = window._jsonData || {};
   					$select.append($("<option />"));
   					if ($.isArray(choicesFetchPath)) {
   					  $.each(choicesFetchPath, function(index, value) {
@@ -909,13 +911,22 @@
               $select.val(args.item[args.column.id].id);
               $select.chosen();
   					} else {
-              $.getJSON(choicesFetchPath, function(itemdata){
-                $.each(itemdata, function(index, value) {
+  					  if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
+                $.getJSON(choicesFetchPath, function(itemdata){
+                  window._jsonData[choicesFetchPath] = itemdata;
+                  $.each(itemdata, function(index, value) {
+                    $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  });
+                  $select.val(args.item[args.column.id].id);
+      						$select.chosen();
+                });
+              } else {
+                $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
                 $select.val(args.item[args.column.id].id);
     						$select.chosen();
-              });
+              }
             }
             // FIXME
   					// Fix keyboard enter bug stupidly, find a better way please.
@@ -1008,6 +1019,7 @@
               $wrapper.offset({left: winWith - offsetWith})
             }
             
+            window._jsonData = window._jsonData || {};
   					$select.append($("<option />"));
   					if ($.isArray(choicesFetchPath)) {
   					  $.each(choicesFetchPath, function(index, value) {
@@ -1016,13 +1028,22 @@
               $select.val(args.item[args.column.id]);
               $select.chosen();
   					} else {
-              $.getJSON(choicesFetchPath, function(itemdata){
-                $.each(itemdata, function(index, value) {
+  					  if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
+                $.getJSON(choicesFetchPath, function(itemdata){
+                  window._jsonData[choicesFetchPath] = itemdata;
+                  $.each(itemdata, function(index, value) {
+                    $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+                  });
+                  $select.val(args.item[args.column.id]);
+      						$select.chosen();
+                });
+              } else {
+                $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
                 $select.val(args.item[args.column.id]);
     						$select.chosen();
-              });
+              }
             }
             setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 100);
   				};
@@ -1091,6 +1112,8 @@
                 $wrapper.append("&nbsp; <span>-</span> &nbsp;");
                 $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>").appendTo($wrapper);
                 $wrapper.append(' <span>-' + staticValue + '</span>');
+                
+                window._jsonData = window._jsonData || {};
                 $from.append($("<option />"));
                 $to.append($("<option />"));
                 // Append from select options
@@ -1101,13 +1124,22 @@
                   $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
                   $from.chosen();
       					} else {
-                  $.getJSON(from_choices, function(itemdata){
-                    $.each(itemdata, function(index, value) {
+      					  if ($.isEmptyObject(window._jsonData[from_choices])) {
+                    $.getJSON(from_choices, function(itemdata){
+                      window._jsonData[from_choices] = itemdata;
+                      $.each(itemdata, function(index, value) {
+                        $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                      });
+                      $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
+          						$from.chosen();
+                    });
+                  } else {
+                    $.each(window._jsonData[from_choices], function(index, value) {
                       $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                     });
                     $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
         						$from.chosen();
-                  });
+                  }
                 }
                 // Append to select options
                 if ($.isArray(to_choices)) {
@@ -1117,13 +1149,22 @@
                   $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
                   $to.chosen();
       					} else {
-                  $.getJSON(to_choices, function(itemdata){
-                    $.each(itemdata, function(index, value) {
+      					  if ($.isEmptyObject(window._jsonData[to_choices])) {
+                    $.getJSON(to_choices, function(itemdata){
+                      window._jsonData[to_choices] = itemdata;
+                      $.each(itemdata, function(index, value) {
+                        $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
+                      });
+                      $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
+          						$to.chosen();
+                    });
+                  } else {
+                    $.each(window._jsonData[to_choices], function(index, value) {
                       $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                     });
                     $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
         						$to.chosen();
-                  });
+                  }
                 }
                 scope.focus();
                 setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
