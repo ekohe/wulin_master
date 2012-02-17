@@ -71,14 +71,24 @@ var Ui = {
       open: function(event, ui) {
         // Fetch options of select box by ajax 
         var remotePath = $('#remote_paths').val().split(',');
+        window._jsonData = window._jsonData || {};
         $.each(remotePath, function(i,path){
-          $.getJSON(path, function(itemdata){
-            $.each(itemdata, function(index, value) {
+          if ($.isEmptyObject(window._jsonData[path])) {
+            $.getJSON(path, function(itemdata){
+              window._jsonData[path] = itemdata;
+              $.each(itemdata, function(index, value) {
+                var target = $("select[data-remote-path='" + path + "']");
+                target.append("<option value='" + value.id + "'>" + value[target.attr('data-text-attr')] + "</option>");
+              });
+             $("select[data-remote-path='" + path + "']").chosen();
+            });
+          } else {
+            $.each(window._jsonData[path], function(index, value) {
               var target = $("select[data-remote-path='" + path + "']");
               target.append("<option value='" + value.id + "'>" + value[target.attr('data-text-attr')] + "</option>");
             });
-           $("select[data-remote-path='" + path + "']").chosen();
-          });
+            $("select[data-remote-path='" + path + "']").chosen();
+          }
         })
         
         $( '#' + name + '-form input:text' ).first().focus();
