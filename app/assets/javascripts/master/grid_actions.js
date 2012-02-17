@@ -73,19 +73,20 @@ var Ui = {
         var remotePath = $('#remote_paths').val().split(',');
         window._jsonData = window._jsonData || {};
         $.each(remotePath, function(i,path){
+          var target = $("select[data-remote-path='" + path + "']"),
+          textAttr = target.attr('data-text-attr');
+          
           if ($.isEmptyObject(window._jsonData[path])) {
             $.getJSON(path, function(itemdata){
               window._jsonData[path] = itemdata;
               $.each(itemdata, function(index, value) {
-                var target = $("select[data-remote-path='" + path + "']");
-                target.append("<option value='" + value.id + "'>" + value[target.attr('data-text-attr')] + "</option>");
+                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
               });
              $("select[data-remote-path='" + path + "']").chosen();
             });
           } else {
             $.each(window._jsonData[path], function(index, value) {
-              var target = $("select[data-remote-path='" + path + "']");
-              target.append("<option value='" + value.id + "'>" + value[target.attr('data-text-attr')] + "</option>");
+              target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
             });
             $("select[data-remote-path='" + path + "']").chosen();
           }
