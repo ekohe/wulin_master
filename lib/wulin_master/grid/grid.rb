@@ -14,7 +14,7 @@ module WulinMaster
     cattr_accessor :grids
     class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header, :_options
     @@grids = []
-    ORIGINAL_ACTIONS = %w(add delete edit filter audit sort order)
+    ORIGINAL_ACTIONS = %w(add delete edit filter audit sort order update)
 
     # Grid has been subclassed
     def self.inherited(klass)

@@ -7,6 +7,7 @@
 		filterTriggerElementSuffix = " .grid-header .filter_toggle",
 		deleteElementSuffix = ' .grid-header .delete_button',
 		createElementSuffix = ' .grid-header .create_button',
+		updateElementSuffix = ' .grid-header .batch_update_button'
 		
 		grids = [],
 		createdIds = [],
@@ -181,7 +182,7 @@
 			
 			// Delete along delete button
 			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
-			deleteElement.click(function() {
+			deleteElement.on('click', function() {
 				var ids = Ui.selectIds(grid);
 				if (ids) {
 				  Ui.deleteGrids(ids);
@@ -194,19 +195,27 @@
 			
 			// Create action
 			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
-			createButtonElement.click(function() {
+			createButtonElement.on('click', function() {
 				Ui.openDialog(name, grid.extend_options);
 			});
 			// Click 'Create' button
-			$('#' + name + '_submit').click(function() {
+			$('#' + name + '_submit').on('click', function() {
 				Requests.createByAjax(grid, false);
 			  return false;
 			});
 			// Click 'Create and Continue' button
-			$('#' + name + '_submit_continue').click(function() {
+			$('#' + name + '_submit_continue').on('click', function() {
 				Requests.createByAjax(grid, true);
 			  return false;
 			});
+			
+			// Batch update action
+			updateButtonElement = $(gridElementPrefix + name + updateElementSuffix);
+			updateButtonElement.on('click', function(){
+			  Requests.batchUpdateByAjax(grid, true);
+			  return false;
+			});
+			
 		
 		} // createNewGrid
 		

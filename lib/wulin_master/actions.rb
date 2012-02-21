@@ -3,13 +3,13 @@ require File.join(File.dirname(__FILE__), 'authorization')
 module WulinMaster
   module Actions
     include Authorization
-    
+
     def self.included(base)
       base.class_eval do
         before_filter :require_authorization # Defined in Authorization module
       end
     end
-    
+
     def index
       respond_to do |format|
         format.html do
@@ -38,7 +38,7 @@ module WulinMaster
 
           # Add includes (OUTER JOIN)
           add_includes
-          
+
           # Add joins (INNER JOIN)
           add_joins
 
@@ -62,7 +62,7 @@ module WulinMaster
           if @count_query
             @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
           end
-          
+
           fire_callbacks :objects_ready
 
           # Render json response
@@ -73,33 +73,27 @@ module WulinMaster
 
     def update
       updated_attributes = get_updated_attributes(params[:item])
-      @record = grid.model.find(params[:id]) 
-      message = if @record.update_attributes(updated_attributes)
-        attributes = grid.arraify([@record.reload]).first
-        attributes.unshift(@record.id) if attributes.first != @record.id
-        {:success => true, :attrs => attributes}
-      else
-        {:success => false, :error_message => @record.errors.full_messages.join("\n")}
+      ids = params[:id].to_s.split(',')
+      @records = grid.model.find(ids)
+      grid.model.transaction do
+        @records.each do |record|
+          record.update_attributes!(updated_attributes)
+        end
       end
-      respond_to do |format|
-        format.json { render :json => message }
-      end
+      render json: {:success => true}
+    rescue
+      render json: {:success => false, :error_message => $!.message }
     end
 
     def destroy
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      begin 
-        # grid.model.transaction do
+      grid.model.transaction do
         @records.each {|record| record.destroy }
-        # end
-        message = {:success => true }
-      rescue => e
-        message = {:success => false, :error_message => e.message}
       end
-      respond_to do |format|
-        format.json { render :json => message }
-      end
+      render json: {:success => true }
+    rescue
+      render json: {:success => false, :error_message => $!.message}
     end
 
 
@@ -165,49 +159,49 @@ module WulinMaster
         :total =>  @count,
         :count =>  @per_page,
         :rows  =>  @object_array}.to_json
-      Rails.logger.info "Rendered JSON in #{Time.now-t} sec."
-      json
-    end
-
-    def get_create_attributes(attrs={})
-      associations = grid.model.reflections
-      new_attributes = {}
-      attrs.each do |k,v|
-        if associations.keys.include?(k.to_sym)
-          association_attributes = attrs.delete(k)
-          if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
-            new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
-          end
-        elsif !grid.model.column_names.include?(k.to_s)
-          attrs.delete(k)
-        end
+        Rails.logger.info "Rendered JSON in #{Time.now-t} sec."
+        json
       end
-      attrs.merge!(new_attributes)
-      attrs
-    end
 
-    def get_updated_attributes(attrs)
-      attrs.delete_if {|k,v| v == "null" || k == "id" }
-      associations = grid.model.reflections
-      new_attributes = {}
-      attrs.each do |k,v|
-        if associations.keys.include?(k.to_sym)
-          association_attributes = attrs.delete(k)
-          if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
-            new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-          elsif associations[k.to_sym].macro == :has_and_belongs_to_many
-            if association_attributes['id'] == 'null' or association_attributes['id'].blank?
-              new_attributes[k.to_sym] = []
-            else
-              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+      def get_create_attributes(attrs={})
+        associations = grid.model.reflections
+        new_attributes = {}
+        attrs.each do |k,v|
+          if associations.keys.include?(k.to_sym)
+            association_attributes = attrs.delete(k)
+            if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
+              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
             end
+          elsif !grid.model.column_names.include?(k.to_s)
+            attrs.delete(k)
           end
-        elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
-         attrs.delete(k)
         end
+        attrs.merge!(new_attributes)
+        attrs
       end
-      attrs.merge!(new_attributes)
-      attrs
+
+      def get_updated_attributes(attrs)
+        attrs.delete_if {|k,v| v == "null" || k == "id" }
+        associations = grid.model.reflections
+        new_attributes = {}
+        attrs.each do |k,v|
+          if associations.keys.include?(k.to_sym)
+            association_attributes = attrs.delete(k)
+            if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
+              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+            elsif associations[k.to_sym].macro == :has_and_belongs_to_many
+              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
+                new_attributes[k.to_sym] = []
+              else
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+              end
+            end
+          elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
+            attrs.delete(k)
+          end
+        end
+        attrs.merge!(new_attributes)
+        attrs
+      end
     end
   end
-end

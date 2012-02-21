@@ -63,8 +63,8 @@ remote_paths = []
       <% end -%>
     <% end -%>
     <div class="submit"> 
-      <input id="<%= grid.name %>_submit" name="commit" type="submit" value=" Create " /> 
-      <input id="<%= grid.name %>_submit_continue" name="commit" type="submit" value=" Create and Continue " /> 
+      <input id="<%= grid.name %>_submit" name="commit" type="submit" value=" Create " class="btn success" /> 
+      <input id="<%= grid.name %>_submit_continue" name="commit" type="submit" value=" Create and Continue " class="btn" /> 
     </div>
     <%= hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(',')) %>
   <% end -%>

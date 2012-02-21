@@ -57,10 +57,10 @@ var Ui = {
   openDialog: function(name,options) {
     var width, height;
     if (options) {
-      width = options.form_dialog_width || 500;
+      width = options.form_dialog_width || 600;
       height = options.form_dialog_height || 300;
     } else {
-      width = 500;
+      width = 600;
       height = 300;
     }
     $( '#' + name + '-form' ).dialog({
@@ -69,30 +69,7 @@ var Ui = {
       show: "blind",
       modal: true,
       open: function(event, ui) {
-        // Fetch options of select box by ajax 
-        var remotePath = $('#remote_paths').val().split(',');
-        window._jsonData = window._jsonData || {};
-        $.each(remotePath, function(i,path){
-          var target = $("select[data-remote-path='" + path + "']"),
-          textAttr = target.attr('data-text-attr');
-          
-          if ($.isEmptyObject(window._jsonData[path])) {
-            $.getJSON(path, function(itemdata){
-              window._jsonData[path] = itemdata;
-              $.each(itemdata, function(index, value) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
-              });
-             $("select[data-remote-path='" + path + "']").chosen();
-            });
-          } else {
-            $.each(window._jsonData[path], function(index, value) {
-              target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
-            });
-            $("select[data-remote-path='" + path + "']").chosen();
-          }
-        })
-        
-        $( '#' + name + '-form input:text' ).first().focus();
+        Ui.setupForm(name, false);
 			},
       close: function(event, ui) { 
         $(this).find("input:text").val("");
@@ -105,6 +82,45 @@ var Ui = {
         $(this).dialog("destroy");
       }
     });
+  },
+
+  setupForm: function(name, monitor) {
+    // Fetch options of select box by ajax 
+    var remotePath = $('#remote_paths').val().split(',');
+    window._jsonData = window._jsonData || {};
+    $.each(remotePath, function(i,path){
+      var target = $("select[data-remote-path='" + path + "']"),
+      textAttr = target.attr('data-text-attr');
+      
+      if ($.isEmptyObject(window._jsonData[path])) {
+        $.getJSON(path, function(itemdata){
+          window._jsonData[path] = itemdata;
+          $.each(itemdata, function(index, value) {
+            target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+          });
+          if (monitor) {
+            $("select[data-remote-path='" + path + "']").chosen().change(function(){
+              $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
+            });
+          } else {
+            $("select[data-remote-path='" + path + "']").chosen();
+          }
+        });
+      } else {
+        $.each(window._jsonData[path], function(index, value) {
+          target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+        });
+        if (monitor) {
+          $("select[data-remote-path='" + path + "']").chosen().change(function(){
+            $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
+          });
+        } else {
+          $("select[data-remote-path='" + path + "']").chosen();
+        }
+      }
+    })
+    
+    $( '#' + name + '-form input:text' ).first().focus();
   },
 
   // Close dialog
