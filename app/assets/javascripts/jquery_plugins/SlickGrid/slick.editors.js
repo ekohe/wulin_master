@@ -80,7 +80,7 @@
         },
         
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
-  					return dataContext[columnDef.id][columnDef.optionTextAttribute];
+            return value[columnDef.optionTextAttribute];
   			},
   			
   		  HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
