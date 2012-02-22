@@ -10,7 +10,6 @@ remote_paths = []
     <%- columns.each do |column| %>
       <%- if column.options[:formable] != false %>
         <%- column_name = column.form_name %>
-        <%- datepicker_str << %!$('##{model_name}_#{column_name}').datepicker({ dateFormat: 'yy-mm-dd' });! if column.sql_type.to_s.downcase.include? 'date'  %>
         <div class="field" name="<%= column_name %>">
           <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
           <%- if column.sql_type.to_s == 'belongs_to' %>
@@ -23,7 +22,8 @@ remote_paths = []
                 :style => "width:250px", 
                 "data-remote-path" => fetch_path(column), 
                 "data-text-attr"   => column.option_text_attribute,
-                :disabled => column.options[:auto_fill] } 
+                :disabled => column.options[:auto_fill]
+              } 
             %>
           
           <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
@@ -37,7 +37,8 @@ remote_paths = []
                 :style => "width:250px", 
                 "data-remote-path" => fetch_path(column),
                 "data-text-attr"   => column.option_text_attribute,
-                :disabled => column.options[:auto_fill] } 
+                :disabled => column.options[:auto_fill]
+               } 
             %>
           
           <%- elsif column.options[:choices].present? %>
@@ -48,14 +49,14 @@ remote_paths = []
               "data-text-attr"   => column.option_text_attribute,
               :class => 'chzn-select', 
               :style => "width:250px", 
-              :disabled => column.options[:auto_fill] 
+              :disabled => column.options[:auto_fill]
             %>
           
           <%- else %>
             <%- if column.sql_type.to_s.downcase == 'boolean' %>
               <%= form.check_box column_name, :readonly => column.options[:auto_fill] %>
             <% else %>
-              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill] %>
+              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill], 'data-date' => date_column?(column) %>
             <% end -%>
           <%- end %>
           <div class='field_error'></div>
@@ -71,5 +72,5 @@ remote_paths = []
 </div>
 
 <%= javascript_tag do -%>
-  <%= datepicker_str -%>
+  $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
 <% end -%>

@@ -14,4 +14,8 @@ module WulinMasterGridHelper
   def select_tag_fetch_path(column)
     column.options[:choices].is_a?(Array) ? nil : column.options[:choices]
   end
+  
+  def date_column?(column)
+    'true' if column.sql_type.to_s.downcase.include?('date')
+  end
 end
