@@ -110,7 +110,7 @@ module WulinMaster
     end
 
     def reflection
-      @reflection ||= self.model.reflections[@name.to_sym]
+      @reflection ||= self.model.reflections[(@options[:through] || @name).to_sym]
     end
 
     def choices
@@ -134,7 +134,11 @@ module WulinMaster
     
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
-      @options[:option_text_attribute] || :name
+      if @options[:through]
+        return self.name
+      else
+        return @options[:option_text_attribute] || :name
+      end
     end
 
     def foreign_key
@@ -161,7 +165,7 @@ module WulinMaster
     # Returns the´includes to add to the query 
     def includes
       if self.reflection
-        [@name.to_sym]
+        [(@options[:through] || @name).to_sym]
       else
         []
       end
@@ -170,7 +174,7 @@ module WulinMaster
     # Returns the´joins to add to the query
     def joins
       if self.reflection && presence_required?
-        [@name.to_sym]
+        [(@options[:through] || @name).to_sym]
       else
         []
       end
@@ -179,9 +183,10 @@ module WulinMaster
     # Returns the json for the object in argument
     def json(object) 
       if association_type.to_s == 'belongs_to'
-        {:id => object.send(self.reflection.foreign_key.to_s), option_text_attribute => object.send(self.name.to_sym).try(:send,option_text_attribute).to_s}
+        {:id => object.send(self.reflection.foreign_key.to_s),
+          option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}
       elsif association_type.to_s == 'has_one'
-        association_object = object.send(self.name.to_sym)
+        association_object = object.send(@options[:through] || self.name)
         {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}
       elsif association_type.to_s == 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
