@@ -89,7 +89,7 @@ var Ui = {
     var remotePath = $('#remote_paths').val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
-      var target = $("select[data-remote-path='" + path + "']"),
+      var first_input, target = $("select[data-remote-path='" + path + "']"),
       textAttr = target.attr('data-text-attr');
       
       if ($.isEmptyObject(window._jsonData[path])) {
@@ -118,9 +118,12 @@ var Ui = {
           $("select[data-remote-path='" + path + "']").chosen();
         }
       }
-    })
+    });
     
-    $( '#' + name + '-form input:text' ).first().focus();
+    first_input = $( '#' + name + '-form input:text' ).first();
+    if ($.isEmptyObject(first_input.attr('data-date'))) {
+      first_input.focus();
+    }
   },
 
   // Close dialog
