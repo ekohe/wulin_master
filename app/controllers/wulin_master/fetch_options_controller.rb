@@ -10,10 +10,10 @@ module WulinMaster
         end
         self.response_body = objects.to_json
       else
-        self.response_body = nil.to_json
+        self.response_body = [].to_json
       end
     rescue
-      self.response_body = nil.to_json
+      self.response_body = [].to_json
     end
     
     
@@ -26,10 +26,10 @@ module WulinMaster
         end
         self.response_body = objects.to_json
       else
-        self.response_body = nil.to_json
+        self.response_body = [].to_json
       end
     rescue
-      self.response_body = nil.to_json
+      self.response_body = [].to_json
     end
     
     
