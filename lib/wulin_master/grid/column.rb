@@ -71,7 +71,9 @@ module WulinMaster
           end
         else
           filtering_value = filtering_value.gsub(/'/, "''")
-          if model < ActiveRecord::Base
+          if sql_type.to_s == 'integer' and self.name.to_s =~ /_id$/ and self.model.column_names.include?(self.name.to_s)
+            return query.where(self.name => filtering_value)
+          elsif model < ActiveRecord::Base
             return query.where(["UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%"])
           else
             if options[:type] == 'Datetime' and format_datetime(filtering_value).present? # Datetime filter for Mongodb
