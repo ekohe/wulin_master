@@ -78,12 +78,12 @@ var Ui = {
     });
   },
 
-  setupForm: function(name, scope, monitor) {
+  setupForm: function(name, monitor) {
     // Fetch options of select box by ajax 
-    var  remotePath = $('#remote_paths', scope).val().split(',');
+    var  remotePath = $('#remote_paths').val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
-      var first_input, target = $("select[data-remote-path='" + path + "']", scope),
+      var first_input, target = $("select[data-remote-path='" + path + "']"),
       textAttr = target.attr('data-text-attr');
       
       if ($.isEmptyObject(window._jsonData[path])) {
@@ -92,13 +92,13 @@ var Ui = {
           $.each(itemdata, function(index, value) {
             target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
           });
-          Ui.setupChosen(path, scope, monitor);
+          Ui.setupChosen(path, monitor);
         });
       } else {
         $.each(window._jsonData[path], function(index, value) {
           target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
         });
-        Ui.setupChosen(path, scope, monitor);
+        Ui.setupChosen(path, monitor);
       }
     });
     
@@ -108,14 +108,14 @@ var Ui = {
     }
   },
   
-  setupChosen: function(path, scope, monitor) {
+  setupChosen: function(path, monitor) {
     setTimeout(function(){
       if (monitor) {
-        $("select[data-remote-path='" + path + "']", scope).chosen().change(function(){
-          $('input:checkbox[date-target="' + $(this).attr('name') + '"]', scope).attr('checked', 'checked');
+        $("select[data-remote-path='" + path + "']").chosen().change(function(){
+          $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
         });
       } else {
-        $("select[data-remote-path='" + path + "']", scope).chosen();
+        $("select[data-remote-path='" + path + "']").chosen();
       }
     }, 100);
   },
