@@ -63,33 +63,27 @@ var Ui = {
       width = 600;
       height = 300;
     }
-    $( '#' + name + '-form' ).dialog({
+    
+    $( '#' + name + '-form:first' ).dialog({
       height: height,
       width: width,
       show: "blind",
       modal: true,
-      open: function(event, ui) {
-        Ui.setupForm(name, false);
+      create: function(event, ui) {
+        Ui.setupForm(name, $(this), false);
 			},
-      close: function(event, ui) { 
-        $(this).find("input:text").val("");
-        $(this).find(".field_error").text("");
-        setTimeout(function(){
-          Ui.highlightCreatedRows(name);
-          gridManager.createdIds = [];
-        }, 300);
-        window._focused = {};
-        $(this).dialog("destroy");
+      close: function(event, ui) {
+        Ui.closeDialog(name);
       }
     });
   },
 
-  setupForm: function(name, monitor) {
+  setupForm: function(name, scope, monitor) {
     // Fetch options of select box by ajax 
-    var remotePath = $('#remote_paths').val().split(',');
+    var  remotePath = $('#remote_paths', scope).val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
-      var first_input, target = $("select[data-remote-path='" + path + "']"),
+      var first_input, target = $("select[data-remote-path='" + path + "']", scope),
       textAttr = target.attr('data-text-attr');
       
       if ($.isEmptyObject(window._jsonData[path])) {
@@ -98,25 +92,13 @@ var Ui = {
           $.each(itemdata, function(index, value) {
             target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
           });
-          if (monitor) {
-            $("select[data-remote-path='" + path + "']").chosen().change(function(){
-              $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
-            });
-          } else {
-            $("select[data-remote-path='" + path + "']").chosen();
-          }
+          Ui.setupChosen(path, scope, monitor);
         });
       } else {
         $.each(window._jsonData[path], function(index, value) {
           target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
         });
-        if (monitor) {
-          $("select[data-remote-path='" + path + "']").chosen().change(function(){
-            $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
-          });
-        } else {
-          $("select[data-remote-path='" + path + "']").chosen();
-        }
+        Ui.setupChosen(path, scope, monitor);
       }
     });
     
@@ -125,14 +107,35 @@ var Ui = {
       first_input.focus();
     }
   },
+  
+  setupChosen: function(path, scope, monitor) {
+    setTimeout(function(){
+      if (monitor) {
+        $("select[data-remote-path='" + path + "']", scope).chosen().change(function(){
+          $('input:checkbox[date-target="' + $(this).attr('name') + '"]', scope).attr('checked', 'checked');
+        });
+      } else {
+        $("select[data-remote-path='" + path + "']", scope).chosen();
+      }
+    }, 100);
+  },
 
   // Close dialog
   closeDialog: function(name) {
-    $( '#' + name + '-form' ).dialog('destroy');
+    var $form = $( '#' + name + '-form' );
+    
+    $form.find("input:text").val("");
+    $form.find(".field_error").text("");
     setTimeout(function(){
       Ui.highlightCreatedRows(name);
       gridManager.createdIds = [];
-      }, 300);
+    }, 300);
+    window._focused = {};
+    $form.dialog("destroy");
+    if ($('#screen_content #' + name + '-form').size() == 0) {
+      $('body > #' + name + '-form:first').prependTo($('#screen_content'));
+      $('body > #' + name + '-form').remove();
+    }
   },
 
   // Handle delete confirm with dialog

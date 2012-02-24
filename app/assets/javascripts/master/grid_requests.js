@@ -12,12 +12,14 @@ var Requests = {
    		success: function(request) { 		  
 				if (request.success) {
 					gridManager.createdIds.push(request.id);
-					Ui.resetForm(grid.name);
 					grid.loader.reloadData();
-					if (!continue_on && grid.loader.isDataLoaded()) { 
-					  setTimeout(function(){
-  					  Ui.closeDialog(grid.name);
-  					}, 100);
+					if (!continue_on) { 
+					  Ui.resetForm(grid.name);
+            if (grid.loader.isDataLoaded()) {
+					    setTimeout(function(){
+    					  Ui.closeDialog(grid.name);
+    					}, 100);
+					  }
 					}
 					displayNewNotification('Record successfully created!');
 				} else {
@@ -93,7 +95,7 @@ var Requests = {
         width: width,
         show: "blind",
         modal: true,
-        open: function(event, ui) {
+        create: function(event, ui) {
           Ui.setupForm(grid.name, true);
           $('#new_' + grid.name + ' label').each(function(){
             if ($('input:checkbox[date-target="' + $(this).attr('for') + '"]').size() == 0) {
