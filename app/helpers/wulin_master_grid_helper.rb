@@ -16,6 +16,10 @@ module WulinMasterGridHelper
   end
   
   def date_column?(column)
-    'true' if column.sql_type.to_s.downcase.include?('date')
+    'true' if column.sql_type.to_s.downcase == 'date'
+  end
+  
+  def datetime_column?(column)
+    'true' if column.sql_type.to_s.downcase == 'datetime'
   end
 end

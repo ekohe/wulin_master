@@ -56,7 +56,7 @@ remote_paths = []
             <%- if column.sql_type.to_s.downcase == 'boolean' %>
               <%= form.check_box column_name, :readonly => column.options[:auto_fill] %>
             <% else %>
-              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill], 'data-date' => date_column?(column) %>
+              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill], 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column) %>
             <% end -%>
           <%- end %>
           <div class='field_error'></div>
@@ -73,4 +73,8 @@ remote_paths = []
 
 <%= javascript_tag do -%>
   $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+  $('input[data-datetime]').datetimepicker({
+      dateFormat: "yy-mm-dd",
+      timeFormat: 'hh:mm:ss'
+  });
 <% end -%>
