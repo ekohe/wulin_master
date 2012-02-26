@@ -2,6 +2,7 @@ module WulinMaster
   module Authorization
     # Called as before_filter
     def require_authorization
+      return true unless self.respond_to?(:current_user)
       is_authorized = case params[:action]
       when 'index'
         screen.authorized?(current_user)
