@@ -71,6 +71,8 @@ var Ui = {
       modal: true,
       create: function(event, ui) {
         Ui.setupForm(name, $(this), false);
+        $(' .btn', $(this)).show();
+        $('.target_flag', $(this)).remove();
 			},
       close: function(event, ui) {
         Ui.closeDialog(name);
