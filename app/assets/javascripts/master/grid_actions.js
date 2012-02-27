@@ -80,7 +80,7 @@ var Ui = {
 
   setupForm: function(name, monitor) {
     // Fetch options of select box by ajax 
-    var  remotePath = $('#remote_paths').val().split(',');
+    var  remotePath = $('#' + name + '-form #remote_paths').val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
       var first_input, target = $("select[data-remote-path='" + path + "']"),
