@@ -81,11 +81,15 @@
         
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
             return value[columnDef.optionTextAttribute];
-  			},
-  			
-  		  HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-  					return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
-  			},	
+        },
+
+        HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
+            return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
+        },
+        
+      HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
+      return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
+    },  
         
         TextCellEditor : function(args) {
             var $input;
@@ -879,21 +883,21 @@
         
         // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
         BelongsToEditor : function(args) {
-  				var $select, $wrapper;
-  				var choicesFetchPath = args.column.choices;
-  				var optionTextAttribute = args.column.optionTextAttribute || 'name';
-  				var defaultValue;
-  				var boxWidth = 200;
-  				var offsetWith = boxWidth + 28;
+          var $select, $wrapper;
+          var choicesFetchPath = args.column.choices;
+          var optionTextAttribute = args.column.optionTextAttribute || 'name';
+          var defaultValue;
+          var boxWidth = 200;
+          var offsetWith = boxWidth + 28;
 
-  				this.init = function() {
-  				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+          this.init = function() {
+            $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                 .appendTo(args.container);
-  				  if (args.column.type === 'has_and_belongs_to_many') {
-  				    $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px'></select>");
-  				  } else {
-  				    $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
-  				  }
+            if ((args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many')) {
+              $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px'></select>");
+            } else {
+              $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
+            }
             $select.appendTo($wrapper);
             $select.focus();
             var winWith = $(window).width(),
@@ -902,116 +906,242 @@
               $wrapper.offset({left: winWith - offsetWith})
             }
             
-    				window._jsonData = window._jsonData || {};
-  					$select.append($("<option />"));
-  					if ($.isArray(choicesFetchPath)) {
-  					  $.each(choicesFetchPath, function(index, value) {
+            window._jsonData = window._jsonData || {};
+            $select.append($("<option />"));
+            if ($.isArray(choicesFetchPath)) {
+              $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
               $select.val(args.item[args.column.id].id);
               $select.chosen();
-  					} else {
-  					  if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
+            } else {
+              if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
                 $.getJSON(choicesFetchPath, function(itemdata){
                   window._jsonData[choicesFetchPath] = itemdata;
                   $.each(itemdata, function(index, value) {
                     $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                   });
                   $select.val(args.item[args.column.id].id);
-      						$select.chosen();
+                  $select.chosen();
                 });
               } else {
                 $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
                 $select.val(args.item[args.column.id].id);
-    						$select.chosen();
+                $select.chosen();
               }
             }
             // FIXME
-  					// Fix keyboard enter bug stupidly, find a better way please.
+            // Fix keyboard enter bug stupidly, find a better way please.
             setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
-  				};
+          };
 
-  				this.destroy = function() {
-  		        // remove all data, events & dom elements created in the constructor
+          this.destroy = function() {
+              // remove all data, events & dom elements created in the constructor
               $select.remove();
-  		    };
+          };
 
-  		    this.focus = function() {
-  		        // set the focus on the main input control (if any)
+          this.focus = function() {
+              // set the focus on the main input control (if any)
               $select.focus();
-  		    };
+          };
 
-  		    this.isValueChanged = function() {
-  		        // return true if the value(s) being edited by the user has/have been changed
-  						return ($select.val() != defaultValue);
-  		    };
+          this.isValueChanged = function() {
+              // return true if the value(s) being edited by the user has/have been changed
+              return ($select.val() != defaultValue);
+          };
 
-  		    this.serializeValue = function() {
-  		        // return the value(s) being edited by the user in a serialized form
-  		        // can be an arbitrary object
-  		        // the only restriction is that it must be a simple object that can be passed around even
-  		        // when the editor itself has been destroyed
-  						var obj = {id: $select.val()};
-  						if (args.column.type === 'has_and_belongs_to_many') {
-    				    obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){
+          this.serializeValue = function() {
+              // return the value(s) being edited by the user in a serialized form
+              // can be an arbitrary object
+              // the only restriction is that it must be a simple object that can be passed around even
+              // when the editor itself has been destroyed
+              var obj = {id: $select.val()};
+              if (args.column.type === 'has_and_belongs_to_many') {
+                obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){
                   return $(n).text();
                 }).join();
-    				  } else {
-    				    obj[optionTextAttribute] = $('option:selected', $select).text();
-    				  }
-  		        return obj;
-  		    };
+              } else {
+                obj[optionTextAttribute] = $('option:selected', $select).text();
+              }
+              return obj;
+          };
 
-  		    this.loadValue = function(item) {
-  		        // load the value(s) from the data item and update the UI
-  		        // this method will be called immediately after the editor is initialized
-  		        // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
+          this.loadValue = function(item) {
+              // load the value(s) from the data item and update the UI
+              // this method will be called immediately after the editor is initialized
+              // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
               defaultValue = item[args.column.id].id;
-  						$select.val(defaultValue);
+              $select.val(defaultValue);
               $select.select();
-  		    };
+          };
 
-  		    this.applyValue = function(item,state) {
-  		        // deserialize the value(s) saved to "state" and apply them to the data item
-  		        // this method may get called after the editor itself has been destroyed
-  		        // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+          this.applyValue = function(item,state) {
+              // deserialize the value(s) saved to "state" and apply them to the data item
+              // this method may get called after the editor itself has been destroyed
+              // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
               
               item[args.column.id].id = state.id;
               item[args.column.id][optionTextAttribute] = state[optionTextAttribute];
-  		    };
+          };
 
-  		    this.validate = function() {
-  		        // validate user input and return the result along with the validation message, if any
-  		        // if the input is valid, return {valid:true,msg:null}
+          this.validate = function() {
+              // validate user input and return the result along with the validation message, if any
+              // if the input is valid, return {valid:true,msg:null}
               return {
                   valid: true,
                   msg: null
               };
-  		    };
+          };
 
-  				this.getCell = function(){
+          this.getCell = function(){
             return $select.parent();
           }
 
-  				this.init();
-  			},
-  			
-  			
+          this.init();
+        },
+        
+
+
+        // This editor is a copy of BelongsToEditor but loads up the initial value differently; eventually this should be all cleaned up
+        HasManyEditor : function(args) {
+            var $select, $wrapper;
+            var choicesFetchPath = args.column.choices;
+            var optionTextAttribute = args.column.optionTextAttribute || 'name';
+            var defaultValue;
+            var boxWidth = 200;
+            var offsetWith = boxWidth + 28;
+
+            this.init = function() {
+
+              $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+              .appendTo(args.container);
+              if ((args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many')) {
+                $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px'></select>");
+              } else {
+                $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
+              }
+
+              $select.appendTo($wrapper);
+              $select.focus();
+              
+              var winWith = $(window).width(),
+              offsetLeft = $wrapper.offset().left;
+              if(winWith - offsetLeft < offsetWith) {
+                $wrapper.offset({left: winWith - offsetWith})
+              }
+            
+              window._jsonData = window._jsonData || {};
+              $select.append($("<option />"));
+              if ($.isArray(choicesFetchPath)) {
+                $.each(choicesFetchPath, function(index, value) {
+                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                });
+                $select.val(args.item[args.column.id].id);
+                $select.chosen();
+              } else {
+                if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
+                  $.getJSON(choicesFetchPath, function(itemdata){
+                    window._jsonData[choicesFetchPath] = itemdata;
+                    $.each(itemdata, function(index, value) {
+                      $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                    });
+                    defaultValue = $.map(args.item[args.column.id], function(val,i) { return val.id; } );
+                    $select.val(defaultValue);
+                    $select.chosen();
+                  });
+                } else {
+                  $.each(window._jsonData[choicesFetchPath], function(index, value) {
+                    $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  });
+                  defaultValue = $.map(args.item[args.column.id], function(val,i) { return val.id; } );
+                  $select.val(defaultValue);
+                  $select.chosen();
+                }
+              }
+
+
+
+                // FIXME
+                // Fix keyboard enter bug stupidly, find a better way please.
+                setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
+            };
+
+            this.destroy = function() {
+                // remove all data, events & dom elements created in the constructor
+              $select.remove();
+            };
+
+            this.focus = function() {
+                // set the focus on the main input control (if any)
+              $select.focus();
+            };
+
+            this.isValueChanged = function() {
+                // return true if the value(s) being edited by the user has/have been changed
+                return ($select.val() != defaultValue);
+            };
+
+            this.serializeValue = function() {
+                // return the value(s) being edited by the user in a serialized form
+                // can be an arbitrary object
+                // the only restriction is that it must be a simple object that can be passed around even
+                // when the editor itself has been destroyed
+                var obj = {id: $select.val()};
+                obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){ return $(n).text(); }).join();
+                return obj;
+            };
+
+            this.loadValue = function(item) {
+                // load the value(s) from the data item and update the UI
+                // this method will be called immediately after the editor is initialized
+                // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
+              defaultValue = $.map(item[args.column.id], function(val,i) { return val.id; } );
+              $select.val(defaultValue);
+              $select.select();
+            };
+
+            this.applyValue = function(item,state) {
+                // deserialize the value(s) saved to "state" and apply them to the data item
+                // this method may get called after the editor itself has been destroyed
+                // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+              if (state.id==null) {
+                item[args.column.id] = 'null';
+              } else {
+                item[args.column.id] = state.id;
+              }
+            };
+
+            this.validate = function() {
+                // validate user input and return the result along with the validation message, if any
+                // if the input is valid, return {valid:true,msg:null}
+              return {
+                  valid: true,
+                  msg: null
+              };
+            };
+
+                this.getCell = function(){
+            return $select.parent();
+          }
+
+                this.init();
+            },
+        
         // The editor which use jquery.chosen to allow you choose the value as select
         SelectEditor : function(args) {
-  				var $select, $wrapper;
-  				var choicesFetchPath = args.column.choices;
-  				var defaultValue;
-  				var boxWidth = 200;
-  				var offsetWith = boxWidth + 28;
+          var $select, $wrapper;
+          var choicesFetchPath = args.column.choices;
+          var defaultValue;
+          var boxWidth = 200;
+          var offsetWith = boxWidth + 28;
 
-  				this.init = function() {
-  				  $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+          this.init = function() {
+            $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                 .appendTo(args.container);
-				    $select = $("<select class='chzn-select' style='width:" +  boxWidth + "px'></select>")
-				        .appendTo($wrapper);
+            $select = $("<select class='chzn-select' style='width:" +  boxWidth + "px'></select>")
+                .appendTo($wrapper);
             $select.focus();
             var winWith = $(window).width(),
             offsetLeft = $wrapper.offset().left;
@@ -1020,89 +1150,89 @@
             }
             
             window._jsonData = window._jsonData || {};
-  					$select.append($("<option />"));
-  					if ($.isArray(choicesFetchPath)) {
-  					  $.each(choicesFetchPath, function(index, value) {
+            $select.append($("<option />"));
+            if ($.isArray(choicesFetchPath)) {
+              $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
               });
               $select.val(args.item[args.column.id]);
               $select.chosen();
-  					} else {
-  					  if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
+            } else {
+              if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
                 $.getJSON(choicesFetchPath, function(itemdata){
                   window._jsonData[choicesFetchPath] = itemdata;
                   $.each(itemdata, function(index, value) {
                     $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
                   });
                   $select.val(args.item[args.column.id]);
-      						$select.chosen();
+                  $select.chosen();
                 });
               } else {
                 $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
                 $select.val(args.item[args.column.id]);
-    						$select.chosen();
+                $select.chosen();
               }
             }
             setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 100);
-  				};
+          };
 
-  				this.destroy = function() {
+          this.destroy = function() {
               $select.remove();
-  		    };
+          };
 
-  		    this.focus = function() {
+          this.focus = function() {
               $select.focus();
-  		    };
+          };
 
-  		    this.isValueChanged = function() {
-  		        // return true if the value(s) being edited by the user has/have been changed
-  						return ($select.val() != defaultValue);
-  		    };
+          this.isValueChanged = function() {
+              // return true if the value(s) being edited by the user has/have been changed
+              return ($select.val() != defaultValue);
+          };
 
-  		    this.serializeValue = function() {
-  						var obj = {id: $select.val()};
-  				    obj.id = $('option:selected', $select).val();
-  		        return obj;
-  		    };
+          this.serializeValue = function() {
+              var obj = {id: $select.val()};
+              obj.id = $('option:selected', $select).val();
+              return obj;
+          };
 
-  		    this.loadValue = function(item) {
-  		        defaultValue = item[args.column.id];
-  						$select.val(defaultValue);
+          this.loadValue = function(item) {
+              defaultValue = item[args.column.id];
+              $select.val(defaultValue);
               $select.select();
-  		    };
+          };
 
-  		    this.applyValue = function(item,state) {
+          this.applyValue = function(item,state) {
               item[args.column.id] = state.id;
-  		    };
+          };
 
-  		    this.validate = function() {
+          this.validate = function() {
               return {
                   valid: true,
                   msg: null
               };
-  		    };
+          };
 
-  				this.getCell = function(){
+          this.getCell = function(){
             return $select.parent();
           }
 
-  				this.init();
-  			},
+          this.init();
+        },
 
         DoubleSelectEditor: function(args) {
             var $from, $to;
             var scope = this;
             var originValue = args.item[args.column.field].split('-');
             var staticValue = originValue[2] + '-' + originValue[3]
-    				var from_choices = args.column.from_choices_path;
-    				var to_choices = args.column.to_choices_path;
-    				var from_field = args.column.from_field;
-    				var to_field = args.column.to_field;
-    				var defaultValue;
-    				var boxWidth = 200;
-    				var offsetWith = boxWidth * 2 + 70;
+            var from_choices = args.column.from_choices_path;
+            var to_choices = args.column.to_choices_path;
+            var from_field = args.column.from_field;
+            var to_field = args.column.to_field;
+            var defaultValue;
+            var boxWidth = 200;
+            var offsetWith = boxWidth * 2 + 70;
             this.init = function() {
                 var $wrapper, values = args.item[args.column.field].split('-');
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
@@ -1117,53 +1247,53 @@
                 $from.append($("<option />"));
                 $to.append($("<option />"));
                 // Append from select options
-      					if ($.isArray(from_choices)) {
-      					  $.each(from_choices, function(index, value) {
+                if ($.isArray(from_choices)) {
+                  $.each(from_choices, function(index, value) {
                     $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                   });
                   $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
                   $from.chosen();
-      					} else {
-      					  if ($.isEmptyObject(window._jsonData[from_choices])) {
+                } else {
+                  if ($.isEmptyObject(window._jsonData[from_choices])) {
                     $.getJSON(from_choices, function(itemdata){
                       window._jsonData[from_choices] = itemdata;
                       $.each(itemdata, function(index, value) {
                         $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                       });
                       $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
-          						$from.chosen();
+                      $from.chosen();
                     });
                   } else {
                     $.each(window._jsonData[from_choices], function(index, value) {
                       $from.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                     });
                     $('option[code="' + values[0] + '"]', $from).attr("selected","selected");
-        						$from.chosen();
+                    $from.chosen();
                   }
                 }
                 // Append to select options
                 if ($.isArray(to_choices)) {
-      					  $.each(to_choices, function(index, value) {
+                  $.each(to_choices, function(index, value) {
                     $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                   });
                   $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
                   $to.chosen();
-      					} else {
-      					  if ($.isEmptyObject(window._jsonData[to_choices])) {
+                } else {
+                  if ($.isEmptyObject(window._jsonData[to_choices])) {
                     $.getJSON(to_choices, function(itemdata){
                       window._jsonData[to_choices] = itemdata;
                       $.each(itemdata, function(index, value) {
                         $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                       });
                       $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
-          						$to.chosen();
+                      $to.chosen();
                     });
                   } else {
                     $.each(window._jsonData[to_choices], function(index, value) {
                       $to.append("<option value='" + value.id + "' code='" + value.code + "'>" + value.name + "</option>");
                     });
                     $('option[code="' + values[1] + '"]', $to).attr("selected","selected");
-        						$to.chosen();
+                    $to.chosen();
                   }
                 }
                 scope.focus();

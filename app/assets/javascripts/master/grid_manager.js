@@ -42,6 +42,8 @@
 				return BelongsToEditor;
 				case "has_and_belongs_to_many":
 				return BelongsToEditor;
+				case "has_many":
+				return HasManyEditor;
 				default:
 				return TextCellEditor;
 			}
@@ -66,6 +68,9 @@
 				}
 				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
 					columns[i].formatter = BelongsToFormatter;
+				}
+				if (type_str == "has_many") {
+					columns[i].formatter = HasManyFormatter;
 				}
 				if(type_str == 'has_one' ) {
 					columns[i].formatter = HasOneFormatter;

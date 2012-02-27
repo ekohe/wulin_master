@@ -8,8 +8,9 @@ module WulinMaster
         else
           objects = klass.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
         end
-        self.response_body = objects.to_json
+        self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
+        # Should reply something different here, at least status code should be 403
         self.response_body = [].to_json
       end
     rescue
