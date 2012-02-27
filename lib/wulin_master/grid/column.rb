@@ -195,6 +195,8 @@ module WulinMaster
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
         {id: ids, option_text_attribute => op_attribute}
+      elsif association_type.to_s == 'has_many'
+        object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}
       else
         self.format(object.send(self.name.to_s))
       end

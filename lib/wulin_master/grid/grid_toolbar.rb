@@ -23,11 +23,11 @@ module WulinMaster
       end
     end
 
-    module InstanceMethods
-      # Returns the toolbar
-      def toolbar
-        self.class.toolbar
-      end
+    # Instance methods
+
+    # Returns the toolbar
+    def toolbar
+      self.class.toolbar
     end
   end
 end

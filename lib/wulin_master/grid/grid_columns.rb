@@ -22,11 +22,11 @@ module WulinMaster
       end
     end
     
-    module InstanceMethods
-      # Returns columns
-      def columns
-        self.class.columns
-      end
+    # Instance Methods
+
+    # Returns columns
+    def columns
+      self.class.columns
     end
   end
 end

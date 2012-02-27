@@ -26,7 +26,7 @@ remote_paths = []
               } 
             %>
           
-          <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' %>
+          <%- elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many' %>
             <%- remote_paths << fetch_path(column) %>
             <%= form.select column.reflection.name.to_s, 
               select_options(column), 

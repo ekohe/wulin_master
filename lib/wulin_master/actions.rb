@@ -195,6 +195,12 @@ module WulinMaster
               else
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
               end
+            elsif associations[k.to_sym].macro == :has_many
+              if association_attributes == 'null'
+                new_attributes[k.to_sym] = []
+              else
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+              end
             end
           elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
             attrs.delete(k)

@@ -50,17 +50,16 @@ module WulinMaster
       end
     end
     
-    module InstanceMethods
-      # Return style to apply to the grid container
-      def style
-        self.class.style
-      end
-      
-      # Returns true if set to fill window. The template will just render the first grid of the screen.
-      def fill_window?
-        self.class.fill_window?
-      end
-    end
+    # Instance Methods
 
+    # Return style to apply to the grid container
+    def style
+      self.class.style
+    end
+    
+    # Returns true if set to fill window. The template will just render the first grid of the screen.
+    def fill_window?
+      self.class.fill_window?
+    end
   end
 end
