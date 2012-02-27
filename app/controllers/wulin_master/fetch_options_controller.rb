@@ -35,11 +35,8 @@ module WulinMaster
     
     private
     
-    def current_user
-      session[:user] || session[:current_user] || User.find_by_id(session[:user_id] || session[:current_user_id]) || (User.respond_to?(:current_user) && User.current_user) 
-    end
-    
     def authorized?
+      return true unless self.respond_to?(:current_user)
       current_user && 
       (controller_class = (params[:controller_name].classify.constantize rescue nil)) && 
       (controller = controller_class.new) && 
