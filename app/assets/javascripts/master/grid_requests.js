@@ -84,8 +84,8 @@ var Requests = {
 	  } else {
 	    ids = Ui.selectIds(grid);
 	    if (grid.extend_options) {
-        width = (options.form_dialog_width) || 600;
-        height = options.form_dialog_height || 300;
+        width = grid.extend_options.form_dialog_width || 600;
+        height = grid.extend_options.form_dialog_height || 300;
       } else {
         width = 600;
         height = 300;
