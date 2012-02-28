@@ -117,8 +117,7 @@ module WulinMaster
 
     def choices
       @choices ||= if self.reflection
-        reflection_class = self.reflection.klass
-        params_hash = { :controller_name => "#{reflection_class.name.pluralize}Controller", :klass => reflection_class.name, :text_attr => option_text_attribute }
+        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute }
         "/wulin_master/fetch_options?#{params_hash.to_param}"
       else
         []

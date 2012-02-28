@@ -2,7 +2,7 @@ module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
     
     def index
-      if authorized? and params[:klass].present? and params[:text_attr].present? and klass = params[:klass].classify.constantize
+      if authorized? and params[:text_attr].present?
         if klass.column_names.include? params[:text_attr]
           objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
         else
@@ -19,7 +19,7 @@ module WulinMaster
     
     
     def specify_fetch
-      if authorized? and params[:klass].present? and params[:name_attr].present? and params[:code_attr].present? and klass = params[:klass].classify.constantize
+      if authorized? and params[:name_attr].present? and params[:code_attr].present?
         if klass.column_names.include?(params[:name_attr]) and klass.column_names.include?(params[:code_attr])
           objects = klass.select("id, #{params[:name_attr]}, #{params[:code_attr]}").order("#{params[:name_attr]} ASC").all
         else
@@ -38,10 +38,37 @@ module WulinMaster
     
     def authorized?
       return true unless self.respond_to?(:current_user)
-      current_user && 
-      (controller_class = (params[:controller_name].classify.constantize rescue nil)) && 
-      (controller = controller_class.new) && 
-      (!controller.respond_to?(:authorized?) || (controller.respond_to?(:authorized?) && controller.authorized?(current_user)))
+      current_user && column_belongs_to_grid? && column_screen && authorized_for_user?
+    end
+    
+    def authorized_for_user?
+      controller = column_controller_class.new
+      screen = column_screen.new({}, controller)
+      !screen.respond_to?(:authorized?) || (screen.respond_to?(:authorized?) && screen.authorized?(current_user))
+    end
+    
+    def column_belongs_to_grid?
+      !!column
+    end
+    
+    def column_screen
+      "#{klass.name}Screen".constantize
+    end
+
+    def column_controller_class
+      "#{klass.name.pluralize}Controller".constantize
+    end
+    
+    def klass
+      column.reflection.klass
+    end
+    
+    def column
+      grid_class.columns.find {|x| x.name.to_s == params[:column]}
+    end
+    
+    def grid_class
+      params[:grid].classify.constantize
     end
     
   end
