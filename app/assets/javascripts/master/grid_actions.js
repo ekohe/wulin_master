@@ -70,7 +70,7 @@ var Ui = {
       show: "blind",
       modal: true,
       create: function(event, ui) {
-        Ui.setupForm(name, $(this), false);
+        Ui.setupForm(name, false);
         $(' .btn', $(this)).show();
         $('.target_flag', $(this)).remove();
 			},
@@ -112,12 +112,17 @@ var Ui = {
   
   setupChosen: function(path, monitor) {
     setTimeout(function(){
+      var afterSetupChosen = $("select[data-remote-path='" + path + "']").data('afterSetupChosen');
       if (monitor) {
         $("select[data-remote-path='" + path + "']").chosen().change(function(){
           $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
         });
       } else {
         $("select[data-remote-path='" + path + "']").chosen();
+      }
+      
+      if( afterSetupChosen ) {
+        afterSetupChosen();
       }
     }, 100);
   },
