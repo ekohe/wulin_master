@@ -144,11 +144,11 @@ module WulinMaster
     end
 
     def foreign_key
-      self.reflection.try(:foreign_key)
+      self.reflection.try(:foreign_key).to_s
     end
 
     def form_name
-      self.reflection ? self.foreign_key : self.name
+      foreign_key.presence || self.name
     end
 
     # Returns the sql names used to generate the select
@@ -156,7 +156,7 @@ module WulinMaster
       if self.reflection.nil?
         [self.model.table_name+"."+name.to_s]
       else
-        [self.model.table_name+"."+self.reflection.foreign_key.to_s, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
+        [self.model.table_name+"."+foreign_key, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
       end
     end
 
@@ -185,7 +185,7 @@ module WulinMaster
     # Returns the json for the object in argument
     def json(object) 
       if association_type.to_s == 'belongs_to'
-        {:id => object.send(self.reflection.foreign_key.to_s),
+        {:id => object.send(foreign_key),
           option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}
       elsif association_type.to_s == 'has_one'
         association_object = object.send(@options[:through] || self.name)
