@@ -18,7 +18,7 @@
   </script>
 </div>
 
-<%- if grid.get_actions.include?('add') %>
+<%- if grid.get_actions.include?('add') or grid.get_actions.include?('update') %>
 <!-- Create form -->
 <%= render '/grid_form', :grid => grid %>
 <% end -%>
