@@ -72,6 +72,7 @@ remote_paths = []
 </div>
 
 <%= javascript_tag do -%>
+  $('.chzn-select:not([data-remote-path])').chosen();
   $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
   $('input[data-datetime]').datetimepicker({
       dateFormat: "yy-mm-dd",

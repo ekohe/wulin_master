@@ -85,6 +85,8 @@ var Ui = {
     var  remotePath = $('#' + name + '-form #remote_paths').val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
+      if ($.isEmptyObject(path)) return
+      
       var first_input, target = $("select[data-remote-path='" + path + "']"),
       textAttr = target.attr('data-text-attr');
       
