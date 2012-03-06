@@ -91,7 +91,7 @@ var Requests = {
         width = 600;
         height = 300;
       }
-	    $( '#' + grid.name + '-form' ).dialog({
+	    scope.dialog({
         height: height,
         width: width,
         show: "blind",
@@ -110,7 +110,7 @@ var Requests = {
           $('.submit', scope).prepend($('<input />').addClass('btn success update_btn').attr({value: ' Update ', type: 'submit', name: 'commit'}));
           
           $('.update_btn', scope).off('click', '**').on('click', function() {
-    				var originArr = $('#new_' + grid.name).serializeArray(), newHash = {};
+    				var originArr = $('form', scope).serializeArray(), newHash = {};
     				// Collect valid form attrbutes
             $.each(originArr, function(i, v) {
               if (!$.isEmptyObject(v.value) && $('input:checkbox[date-target="' + v.name + '"]', scope).attr('checked') == 'checked') {
