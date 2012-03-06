@@ -78,7 +78,8 @@ var Requests = {
 	},
 	
 	batchUpdateByAjax: function(grid) {
-	  var ids, width, height, selectedIndexes = grid.getSelectedRows();
+	  var ids, width, height, selectedIndexes = grid.getSelectedRows(),
+    scope = $('#' + grid.name + '-form');
 	  if ($.isEmptyObject(selectedIndexes)) {
 	    displayErrorMessage('Please select a record');
 	  } else {
@@ -98,21 +99,21 @@ var Requests = {
         create: function(event, ui) {
           Ui.setupForm(grid.name, true);
           $('.target_flag').remove();
-          $('#new_' + grid.name + ' label').each(function(){
+          $('label', scope).each(function(){
             $(this).after($('<input />').attr({type: 'checkbox', class: 'target_flag', 'date-target': $('#' + $(this).attr('for')).attr('name') }));
           });
-          $('#new_' + grid.name + ' input').on('change', function() {
-            $('#new_' + grid.name + ' input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
+          $('input', scope).on('change', function() {
+            $('input:checkbox[date-target="' + $(this).attr('name') + '"]', scope).attr('checked', 'checked');
           });
           
-          $('#new_' + grid.name + ' .btn').hide();
-          $('#new_' + grid.name + ' .submit').prepend($('<input />').addClass('btn success update_btn').attr({value: ' Update ', type: 'submit', name: 'commit'}));
+          $('.btn', scope).hide();
+          $('.submit', scope).prepend($('<input />').addClass('btn success update_btn').attr({value: ' Update ', type: 'submit', name: 'commit'}));
           
-          $('#new_' + grid.name + ' .update_btn').off('click', '**').on('click', function() {
+          $('.update_btn', scope).off('click', '**').on('click', function() {
     				var originArr = $('#new_' + grid.name).serializeArray(), newHash = {};
     				// Collect valid form attrbutes
             $.each(originArr, function(i, v) {
-              if (!$.isEmptyObject(v.value) && $('#new_' + grid.name + ' input:checkbox[date-target="' + v.name + '"]').attr('checked') == 'checked') {
+              if (!$.isEmptyObject(v.value) && $('input:checkbox[date-target="' + v.name + '"]', scope).attr('checked') == 'checked') {
                 var attrName = v.name.replace(/.*?\[/, '').replace(/\].*?/, '');
                 newHash[attrName] = v.value;
               }
@@ -131,8 +132,8 @@ var Requests = {
                   displayErrorMessage(msg.error_message);
                   grid.loader.reloadData();
                 }
-                $('#new_' + grid.name + ' .update_btn').remove();
-                $( '#' + grid.name + '-form' ).dialog("destroy"); 
+                $('.update_btn', scope).remove();
+                scope.dialog("destroy"); 
               }
             });
     			  return false;
@@ -142,8 +143,8 @@ var Requests = {
           $(this).find("input:text").val("");
           $(this).find(".field_error").text("");
           $(this).dialog("destroy");  
-          $('#new_' + grid.name + ' .btn').show();
-          $('#new_' + grid.name + ' .update_btn').remove();
+          $('.btn', scope).show();
+          $('.update_btn', scope).remove();
           $('.target_flag').remove();
         }
       });
