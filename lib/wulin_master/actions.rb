@@ -169,8 +169,20 @@ module WulinMaster
         attrs.each do |k,v|
           if associations.keys.include?(k.to_sym)
             association_attributes = attrs.delete(k)
-            if associations[k.to_sym].macro == :has_and_belongs_to_many and association_attributes != 'null'
-              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+            if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
+              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+            elsif associations[k.to_sym].macro == :has_and_belongs_to_many
+              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
+                new_attributes[k.to_sym] = []
+              else
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+              end
+            elsif associations[k.to_sym].macro == :has_many
+              if association_attributes == 'null'
+                new_attributes[k.to_sym] = []
+              else
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+              end
             end
           elsif !grid.model.column_names.include?(k.to_s)
             attrs.delete(k)
