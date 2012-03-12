@@ -95,8 +95,10 @@ module WulinMaster
       if self.reflection
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
         query.order("#{table_name}.#{self.option_text_attribute} #{direction}")
-      else
+      elsif model.column_names.include?(@name.to_s)
         query.order("#{model.table_name}.#{@name} #{direction}")
+      else    
+        query.order("#{@name} #{direction}")
       end
     end
 
