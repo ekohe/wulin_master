@@ -98,31 +98,61 @@ var Requests = {
         modal: true,
         create: function(event, ui) {
           Ui.setupForm(grid.name, true);
-          $('.target_flag').remove();
-          $('label', scope).each(function(){
-            $(this).after($('<input />').attr({type: 'checkbox', class: 'target_flag', 'date-target': $('#' + $(this).attr('for')).attr('name') }));
-          });
-          $('input', scope).on('change', function() {
-            $('input:checkbox[date-target="' + $(this).attr('name') + '"]', scope).attr('checked', 'checked');
-          });
           
+          // Switch to update button
           $('.btn', scope).hide();
-          $('.submit', scope).prepend($('<input />').addClass('btn success update_btn').attr({value: ' Update ', type: 'submit', name: 'commit'}));
+          $('.update_btn', scope).show();
           
+          // Show flag checkbox
+          $('input.target_flag', scope).show();
+          
+          // Check flag when change value of the box
+          scope.off('keyup', 'input:text').on('keyup', 'input', function(e) {
+            $('input:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
+          });
+          
+          // Empty input box when flag change to unchecked
+          scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
+            if ($.isEmptyObject($(this).attr('checked'))) {
+              $('input[data-target="' + $(this).attr('data-target') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
+              $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("liszt:updated");
+            }
+          });
+          
+          // Submit the form
           $('.update_btn', scope).off('click', '**').on('click', function() {
-    				var originArr = $('form', scope).serializeArray(), newHash = {};
-    				// Collect valid form attrbutes
+    				var originArr = $('form', scope).serializeArray(),
+    				checkedArr,
+    				objectName = $('form', scope).attr('class').replace(/new_/,'');
+    				
+    				// Collect attrs along with checked flag
+    				checkedArr = $.map($('input.target_flag:visible:checked'), function(v) {
+    				  var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
+    				  name = targetInput.attr('name').replace(/.*?\[/,'item[');
+    				  return { name: name, value: (targetInput.val() || null)};
+    				});
+    				
+            // Collect valid form attrbutes
+            originArr = $.grep(originArr, function(v, i) {
+              return $('input:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope).attr('checked') == 'checked'
+            });
+            
+            // Replace objectName to item, like user[posts][] => item[posts][]
             $.each(originArr, function(i, v) {
-              if (!$.isEmptyObject(v.value) && $('input:checkbox[date-target="' + v.name + '"]', scope).attr('checked') == 'checked') {
-                var attrName = v.name.replace(/.*?\[/, '').replace(/\].*?/, '');
-                newHash[attrName] = v.value;
+              if (originArr[i].name.indexOf(objectName + "[") != -1) {
+                originArr[i].name = v.name.replace(/.*?\[/,'item[');
               }
             });
+            
+            // Merge the attrs
+            checkedArr = $.extend(checkedArr, originArr);
+            
+            // Update ajax request
             $.ajax({
               type: "POST",
               dateType: 'json',
               url: grid.path + "/" + ids + ".json"+grid.query,
-              data: decodeURIComponent($.param({_method: 'PUT', item: newHash, authenticity_token: window._token})),
+              data: decodeURIComponent($.param({_method: 'PUT', authenticity_token: window._token}) + '&' + $.param(checkedArr)),
               success: function(msg) {
                 if(msg.success) {
                   grid.setSelectedRows([]);
@@ -132,20 +162,28 @@ var Requests = {
                   displayErrorMessage(msg.error_message);
                   grid.loader.reloadData();
                 }
-                $('.update_btn', scope).remove();
                 scope.dialog("destroy"); 
               }
             });
     			  return false;
     			});
   			},
+  			open: function(event, ui) {
+  			  // Switch to update button
+          $('.btn', scope).hide();
+          $('.update_btn', scope).show();
+          
+          // Show flag checkbox
+          $('input.target_flag', scope).show();
+  			},
         close: function(event, ui) { 
           $(this).find("input:text").val("");
           $(this).find(".field_error").text("");
           $(this).dialog("destroy");  
+          
           $('.btn', scope).show();
-          $('.update_btn', scope).remove();
-          $('.target_flag').remove();
+          $('.update_btn', scope).hide();
+          $('.target_flag').hide();
         }
       });
 	  }

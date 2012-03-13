@@ -71,8 +71,11 @@ var Ui = {
       modal: true,
       create: function(event, ui) {
         Ui.setupForm(name, false);
-        $(' .btn', $(this)).show();
-        $('.target_flag', $(this)).remove();
+			},
+			open: function(event, ui) {
+			  $('.btn', $(this)).show();
+        $('.update_btn', $(this)).hide();
+        $('.target_flag', $(this)).hide();
 			},
       close: function(event, ui) {
         Ui.closeDialog(name);
@@ -117,7 +120,7 @@ var Ui = {
       var afterSetupChosen = $("select[data-remote-path='" + path + "']").data('afterSetupChosen');
       if (monitor) {
         $("select[data-remote-path='" + path + "']").chosen().change(function(){
-          $('input:checkbox[date-target="' + $(this).attr('name') + '"]').attr('checked', 'checked');
+          $('input:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
         });
       } else {
         $("select[data-remote-path='" + path + "']").chosen();
