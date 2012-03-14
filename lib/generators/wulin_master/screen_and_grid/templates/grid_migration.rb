@@ -4,7 +4,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
 <% attributes.each do |attribute| -%>
       t.<%= attribute.type %> :<%= attribute.name %>
 <% end -%>
-<% if options[:timestamps] %>
+<% unless options[:no_timestamps] %>
       t.timestamps
 <% end -%>
     end
