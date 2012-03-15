@@ -69,21 +69,27 @@
       setCurrentFilters(currentFilters);
       setFilter();
       $.each(columns, function(i, value) {
-        value = '';
-        field = this.field;
+        var value = '', field = this.field, inputHtml = '', inputWidth, cssClass = "";
         // Try to get the value of this filter if any
         $.each(currentFiltersApplied, function() {
           if (this.id==field)
             value = this.value;
         });
 
-        cssClass = "";
         if (i==(totalColumnsCount-1)) {
           cssClass = "lastColumn";
         }
-        inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1
-        html += "<input type=\"text\" id=\""+field+"\" style=\"width:"+ inputWidth +
-        "px;border-width: 1px;height:20px;border-bottom-color:#DDD;\" value=\""+value+"\" class=\""+cssClass+"\"></input>";
+        
+        inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1;
+        
+        inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
+        
+        if (this.filterable == false) {
+          inputHtml += ' disabled="disabled"';
+        }
+        
+        inputHtml += '></input>';
+        html += inputHtml;
       });
       
       // Fills up and display the secondary row

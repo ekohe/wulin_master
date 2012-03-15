@@ -108,11 +108,11 @@ module WulinMaster
 
     def apply_filter(query, column_name, filtering_value)
       column = self.columns.find{|c| c.name.to_s == column_name.to_s or c.foreign_key == column_name.to_s }
-      if column.nil?
+      if column and column.options[:filterable]
+        column.apply_filter(query, filtering_value)
+      else
         Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
         query
-      else
-        column.apply_filter(query, filtering_value)
       end
     end
 
