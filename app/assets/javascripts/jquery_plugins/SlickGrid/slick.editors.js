@@ -338,15 +338,6 @@
                 $input = $("<INPUT type=text class='editor-text' />");
                 $input.appendTo(args.container);
                 $input.focus().select();
-                $input.datetimepicker({
-                    showOn: "button",
-                    buttonImageOnly: true,
-                    buttonImage: "/assets/calendar.gif",
-                    beforeShow: function() { calendarOpen = true },
-                    onClose: function() { calendarOpen = false },
-                    dateFormat: "yy-mm-dd",
-                    timeFormat: 'hh:mm:ss'
-                });
                 $input.width($input.width() - 18);
             };
 
@@ -385,6 +376,15 @@
                 $input.val(defaultValue);
                 $input[0].defaultValue = defaultValue;
                 $input.select();
+                $input.datetimepicker({
+                    showOn: "button",
+                    buttonImageOnly: true,
+                    buttonImage: "/assets/calendar.gif",
+                    beforeShow: function() { calendarOpen = true },
+                    onClose: function() { calendarOpen = false },
+                    dateFormat: "yy-mm-dd",
+                    timeFormat: 'hh:mm'
+                });
             };
 
             this.serializeValue = function() {
