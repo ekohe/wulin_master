@@ -47,6 +47,19 @@ module WulinMaster
       else
         complete_column_name = self.name
       end
+      
+      # Search by NULL
+      if filtering_value.to_s.downcase == 'null'
+        if self.reflection
+          return query.where("#{table_name}.#{self.option_text_attribute} IS NULL")
+        else
+          if model < ActiveRecord::Base
+            return query.where("#{complete_column_name} IS NULL")
+          else
+            return query.where(self.name => nil)
+          end
+        end
+      end
 
       if self.reflection
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
