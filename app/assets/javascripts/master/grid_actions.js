@@ -242,7 +242,7 @@ var Ui = {
 
 // ------------------------- keypress action --------------------------------------
 (function($) {
-  $(document).keypress(function(e){
+  $(document).on('keypress', function(e){
     var isEditing = Ui.isEditing(), 
     isOpen = Ui.isOpen(),
     filterPanelOpen = Ui.filterPanelOpen(),
