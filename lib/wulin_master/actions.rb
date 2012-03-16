@@ -206,7 +206,7 @@ module WulinMaster
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
               end
             elsif associations[k.to_sym].macro == :has_and_belongs_to_many
-              if association_attributes['id'] == 'null'# or association_attributes['id'].blank?
+              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
                 new_attributes[k.to_sym] = []
               else
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
