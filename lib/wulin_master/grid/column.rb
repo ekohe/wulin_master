@@ -63,7 +63,11 @@ module WulinMaster
 
       if self.reflection
         table_name = options[:join_aliased_as] || self.reflection.klass.table_name
-        return query.where(["UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
+        if option_text_attribute =~ /(_)?id$/
+          return query.where("#{table_name}.#{self.option_text_attribute} = ?", filtering_value)
+        else
+          return query.where(["UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
+        end
       else
         case sql_type.to_s
         when 'date'
