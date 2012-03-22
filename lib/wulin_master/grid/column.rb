@@ -38,6 +38,11 @@ module WulinMaster
       end
     end
 
+    # Dynamically add some new options to the column
+    def add_options(new_options={})
+      @options.merge!(new_options)
+    end
+
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
