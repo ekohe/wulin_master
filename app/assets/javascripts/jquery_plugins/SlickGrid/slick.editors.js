@@ -38,7 +38,8 @@
         },
 
         BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='/assets/tick.png'>" : "";
+            // return value ? "<img src='/assets/tick.png'>" : "";
+            return value == null ? "" : (value ? 'Yes' : 'No');
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
