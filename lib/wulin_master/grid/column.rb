@@ -51,7 +51,7 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
 
-      if self.model.column_names.include?(self.name.to_s)
+      if is_table_column?
         complete_column_name = "#{model.table_name}.#{self.name}"
       else
         complete_column_name = self.name
@@ -78,9 +78,7 @@ module WulinMaster
         end
       else
         case sql_type.to_s
-        when 'date'
-          return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
-        when "datetime"
+        when 'date', 'datetime'
           return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
         when "boolean"
           true_values = ["y", "yes", "ye", "t", "true"]
@@ -96,7 +94,7 @@ module WulinMaster
           end
         else
           filtering_value = filtering_value.gsub(/'/, "''")
-          if sql_type.to_s == 'integer' and self.model.column_names.include?(self.name.to_s)
+          if sql_type.to_s == 'integer' and is_table_column?
             return query.where(self.name => filtering_value)
           elsif model < ActiveRecord::Base
             return query.where(["UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%"])
@@ -119,7 +117,7 @@ module WulinMaster
       return query unless ["ASC", "DESC"].include?(direction)
       if self.reflection
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}")
-      elsif model.column_names.include?(@name.to_s)
+      elsif is_table_column?
         query.order("#{model.table_name}.#{@name} #{direction}")
       else    
         query.order("#{@name} #{direction}")
@@ -230,90 +228,113 @@ module WulinMaster
 
     # == Generate the datetime rang filter for mongodb
     def format_datetime(datetime)
-      if datetime =~ /^\d{1,4}-?$/ # 20 2011 2011-
+      from, to = if datetime =~ /^\d{1,4}-?$/ # 20 2011 2011-
         year = datetime.first(4)
         from_year = year.size <=3 ? (year + '0' * (4 - 1 - year.size) + '1') : year
         to_year = year + '9' * (4 - year.size)
-        { from: build_datetime(from_year.to_i), to: build_datetime(to_year.to_i, 12, 31, 23, 59, 59) } # 2011-01-01 - 2011-12-31  2001-01-01 - 2099-12-31
+        [[from_year.to_i], [to_year.to_i, 12, 31, 23, 59, 59]] # 2011-01-01 - 2011-12-31  2001-01-01 - 2099-12-31
       elsif datetime =~ /^\d{1,4}-[0-1]$/ # 2011-0 - 2011-1
-        year, month = datetime.split('-').map(&:to_i)
+        year, month = extract_data(datetime)
         if month == 0
-          { from: build_datetime(year), to: build_datetime(year, 9, 30, 23, 59, 59) } # 2011-01-01 - 2011-09-31
+          [[year], [year, 9, 30, 23, 59, 59]] # 2011-01-01 - 2011-09-31
         elsif month == 1
-          { from: build_datetime(year, 10), to: build_datetime(year, 12, 31, 23, 59, 59) } # 2011-10-01 - 2011-12-31
+          [[year, 10], [year, 12, 31, 23, 59, 59]] # 2011-10-01 - 2011-12-31
         end
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-1])-?$/ # 2011-01 - 2011-09  or  2011-10 - 2011-11
         year, month = datetime.first(7).split('-').map(&:to_i)
         if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month), to: build_datetime(year, month, 31, 23, 59, 59) } # 2011-01-01 - 2011-01-31
+          [[year, month], [year, month, 31, 23, 59, 59]] # 2011-01-01 - 2011-01-31
         else
-          { from: build_datetime(year, month), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-02-01 - 2011-02-30
+          [[year, month], [year, month, 30, 23, 59, 59]] # 2011-02-01 - 2011-02-30
         end
       elsif datetime =~ /^\d{1,4}-12-?$/ # 2011-12
         year = datetime.first(4).to_i
-        { from: build_datetime(year, 12), to: build_datetime(year, 12, 31, 23, 59, 59) } # 2011-12-01 - 2011-12-31
+        [[year, 12], [year, 12, 31, 23, 59, 59]] # 2011-12-01 - 2011-12-31
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-0$/ # 2011-12-0
-        year, month, date = datetime.split('-').map(&:to_i)
-        { from: build_datetime(year, month, 1), to: build_datetime(year, month, 9, 23, 59, 59)} # 2011-12-01 - 2011-12-09
+        year, month, date = extract_data(datetime)
+        [[year, month, 1], [year, month, 9, 23, 59, 59]] # 2011-12-01 - 2011-12-09
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-[1-2]$/ # 2011-12-1 2011-12-2
-        year, month, date = datetime.split('-').map(&:to_i)
-        { from: build_datetime(year, month, date * 10), to: build_datetime(year, month, (date * 10) + 9, 23, 59, 59) } # 2011-12-01 - 2011-12-09
+        year, month, date = extract_data(datetime)
+        [[year, month, date * 10], [year, month, (date * 10) + 9, 23, 59, 59]] # 2011-12-01 - 2011-12-09
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-[3]$/ # 2011-12-3
-        year, month, date = datetime.split('-').map(&:to_i)
+        year, month, date = extract_data(datetime)
         if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 31, 23, 59, 59) } # 2011-12-30 - 2011-12-31
+          [[year, month, 30], [year, month, 31, 23, 59, 59]] # 2011-12-30 - 2011-12-31
         else
-          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
+          [[year, month, 30], [year, month, 30, 23, 59, 59]] # 2011-12-30 - 2011-12-30
         end
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-3[0-1]\s?$/ # 2011-12-31  2011-11-30
-        year, month, date = datetime.split('-').map(&:to_i)
+        year, month, date = extract_data(datetime)
         if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-12-30 - 2011-12-31
+          [[year, month, date], [year, month, date, 23, 59, 59]] # 2011-12-30 - 2011-12-31
         elsif date == 30
           { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
         end
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s?$/ # 2011-12-01 - 2011-12-29
-        year, month, date = datetime.split('-').map(&:to_i)
-        { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-11-11 00:00:00 - 2011-11-11 23:59:59
+        year, month, date = extract_data(datetime)
+        [[year, month, date], [year, month, date, 23, 59, 59]] # 2011-11-11 00:00:00 - 2011-11-11 23:59:59
         # Time part
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s[0-1]$/ # 2011-11-11 0   2011-11-11 1
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour =  datetime.split(/\s/)[1]
-        { from: build_datetime(year, month, date, (hour + '0').to_i), to: build_datetime(year, month, date, (hour + '9').to_i, 59, 59) } # 2011-11-11 00:00:00 - 2011-11-11 09:59:59
+        [[year, month, date, (hour + '0').to_i], [year, month, date, (hour + '9').to_i, 59, 59]] # 2011-11-11 00:00:00 - 2011-11-11 09:59:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s2$/ # 2011-11-11 2
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
-        { from: build_datetime(year, month, date, 20), to: build_datetime(year, month, date, 23, 59, 59) } # 2011-11-11 20:00:00 - 2011-11-11 23:59:59
+        year, month, date = extract_data(datetime, 0)
+        [[year, month, date, 20], [year, month, date, 23, 59, 59]] # 2011-11-11 20:00:00 - 2011-11-11 23:59:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):?$/ # 2011-11-11 23   2011-11-11 23:
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour = datetime.split(/\s/)[1].first(2).to_i
-        { from: build_datetime(year, month, date, hour), to: build_datetime(year, month, date, hour, 59, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+        [[year, month, date, hour], [year, month, date, hour, 59, 59]] # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5]$/ # 2011-11-11 23:0   2011-11-11 23:5
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour, minute = datetime.split(/\s/)[1].split(':')
-        { from: build_datetime(year, month, date, hour.to_i, (minute + '0').to_i), to: build_datetime(year, month, date, hour.to_i, (minute + '9').to_i, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+        [[year, month, date, hour.to_i, (minute + '0').to_i], [year, month, date, hour.to_i, (minute + '9').to_i, 59]] # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:?$/ # 2011-11-11 23:00   2011-11-11 23:59
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour, minute = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute), to: build_datetime(year, month, date, hour, minute, 59) } # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
+        [[year, month, date, hour, minute], [year, month, date, hour, minute, 59]] # 2011-11-11 20:00:00 - 2011-11-11 20:59:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5]$/ # 2011-11-11 23:24:0    2011-11-11 23:24:5
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute, (second.to_s + '0').to_i), to: build_datetime(year, month, date, hour, minute, (second.to_s + '9').to_i) } # 2011-11-11 20:00:00 - 2011-11-11 20:00:59
+        [[year, month, date, hour, minute, (second.to_s + '0').to_i], [year, month, date, hour, minute, (second.to_s + '9').to_i]] # 2011-11-11 20:00:00 - 2011-11-11 20:00:59
       elsif datetime =~ /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9].*$/ # 2011-11-11 23:24:04    2011-11-11 23:24:54
         datetime = datetime.first(19)
-        year, month, date = datetime.split(/\s/)[0].split('-').map(&:to_i)
+        year, month, date = extract_data(datetime, 0)
         hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute, second), to: build_datetime(year, month, date, hour, minute, second) } # 2011-11-11 20:22:22 - 2011-11-11 20:22:22
+        [[year, month, date, hour, minute, second], [year, month, date, hour, minute, second]] # 2011-11-11 20:22:22 - 2011-11-11 20:22:22
+      else
+        []
+      end
+      
+      if from.present? and to.present?
+        build_range(form, to)
       else
         {}
       end
     end
 
+
+    private
+    
+    def extract_data(datetime, index=nil)
+      if index
+        datetime.split(/\s/)[index.to_i].split('-').map(&:to_i)
+      else
+        datetime.split('-').map(&:to_i)
+      end
+    end
+    
+    def build_range(form, to)
+      { from: build_datetime(form), to: build_datetime(to) }
+    end
+    
     def build_datetime(*args)
       DateTime.new(*args) rescue nil
     end
-
-    private
+    
+    def is_table_column?
+      self.model.column_names.include?(self.name.to_s)
+    end
 
     def association_type
       self.reflection.try(:macro)
