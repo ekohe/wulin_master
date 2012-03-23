@@ -72,7 +72,7 @@ module WulinMaster
 
       if self.reflection
         if option_text_attribute =~ /(_)?id$/
-          return query.where("#{table_name}.#{self.option_text_attribute} = ?", filtering_value)
+          return query.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value)
         else
           return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
         end
