@@ -15,11 +15,15 @@ module WulinMaster
     def datetime_format
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
+    
+    def relation_table_name
+      options[:join_aliased_as] || self.reflection.klass.table_name
+    end
 
     def to_column_model
       field_name = @name.to_s
       sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
-      table_name = self.reflection ? self.reflection.klass.table_name.to_s : self.model.table_name.to_s
+      table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
       new_options = @options.dup
       h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
@@ -51,7 +55,7 @@ module WulinMaster
       # Search by NULL
       if filtering_value.to_s.downcase == 'null'
         if self.reflection
-          return query.where("#{table_name}.#{self.option_text_attribute} IS NULL")
+          return query.where("#{relation_table_name}.#{self.option_text_attribute} IS NULL")
         else
           if model < ActiveRecord::Base
             return query.where("#{complete_column_name} IS NULL")
@@ -62,8 +66,7 @@ module WulinMaster
       end
 
       if self.reflection
-        table_name = options[:join_aliased_as] || self.reflection.klass.table_name
-        return query.where(["UPPER(#{table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
+        return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
       else
         case sql_type.to_s
         when 'date'
@@ -106,8 +109,7 @@ module WulinMaster
     def apply_order(query, direction)
       return query unless ["ASC", "DESC"].include?(direction)
       if self.reflection
-        table_name = options[:join_aliased_as] || self.reflection.klass.table_name
-        query.order("#{table_name}.#{self.option_text_attribute} #{direction}")
+        query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}")
       elsif model.column_names.include?(@name.to_s)
         query.order("#{model.table_name}.#{@name} #{direction}")
       else    
