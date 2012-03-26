@@ -171,14 +171,9 @@ module WulinMaster
             association_attributes = attrs.delete(k)
             if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
               new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-            elsif associations[k.to_sym].macro == :has_and_belongs_to_many
-              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
-                new_attributes[k.to_sym] = []
-              else
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
-              end
-            elsif associations[k.to_sym].macro == :has_many
-              if association_attributes == 'null'
+            elsif associations[k.to_sym].macro.to_s =~ /^has_many$|^has_and_belongs_to_many$/
+              association_attributes = association_attributes.uniq.compact.delete_if{|x| x.blank? }
+              if association_attributes == 'null' or association_attributes.blank?
                 new_attributes[k.to_sym] = []
               else
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
@@ -206,10 +201,11 @@ module WulinMaster
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
               end
             elsif associations[k.to_sym].macro == :has_and_belongs_to_many
-              if association_attributes['id'] == 'null' or association_attributes['id'].blank?
+              the_ids = association_attributes['id'].uniq.compact.delete_if{|x| x.blank? }
+              if association_attributes['id'] == 'null' or the_ids.blank?
                 new_attributes[k.to_sym] = []
               else
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes['id']).to_a
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a
               end
             elsif associations[k.to_sym].macro == :has_many
               if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
