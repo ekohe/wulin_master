@@ -1,9 +1,7 @@
 module WulinMaster 
   class GridState < ::ActiveRecord::Base
     default_scope :order => 'created_at DESC'
-    if const_defined?('WulinAudit')
-      REJECT_AUDIT = true
-    end
+    reject_audit if defined? ::WulinAudit
 
     def self.update_or_create(attrs)
       attrs_dup = attrs.dup
