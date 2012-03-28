@@ -13,6 +13,7 @@ module WulinMaster
         self.toolbar ||= Toolbar.new
       end
 
+      # ! This method is wrong, can be deleted
       # Add an item to the toolbar
       def add_to_toolbar(item, options={})
         if item.class == ToolbarItem
