@@ -182,6 +182,7 @@ module WulinMaster
           elsif !grid.model.column_names.include?(k.to_s)
             attrs.delete(k)
           end
+          new_attributes[k.to_sym] = nil if v == 'null'
         end
         attrs.merge!(new_attributes)
         attrs
@@ -217,6 +218,7 @@ module WulinMaster
           elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
             attrs.delete(k)
           end
+          new_attributes[k.to_sym] = nil if v == 'null'
         end
         attrs.merge!(new_attributes)
         attrs
