@@ -11,7 +11,7 @@ remote_paths = []
       <%- if column.options[:formable] != false %>
         <%- column_name = column.form_name %>
         <div class="field" name="<%= column_name %>">
-          <label for="<%= model_name %>_<%= column_name %>"><%= column.label %></label>
+          <label for="<%= model_name %>_<%= column_name %>"><%= column.options[:form_label] || column.label %></label>
           <input type='checkbox' class='target_flag' data-target="<%= column_name %>_target_flag" />
           <%- if column.sql_type.to_s == 'belongs_to' %>
             <%- remote_paths << fetch_path(column) %>
