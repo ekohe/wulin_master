@@ -52,15 +52,15 @@ module WulinMaster
     end
     
     def column_screen
-      "#{klass.name}Screen".constantize
+      "#{klass.name}Screen".safe_constantize
     end
 
     def column_controller_class
-      "#{klass.name.pluralize}Controller".constantize
+      "#{klass.name.pluralize}Controller".safe_constantize
     end
     
     def klass
-      column.reflection.klass
+      column.reflection.try(:klass) || params[:klass].safe_constantize
     end
     
     def column
@@ -68,7 +68,7 @@ module WulinMaster
     end
     
     def grid_class
-      params[:grid].classify.constantize
+      params[:grid].classify.safe_constantize
     end
     
   end
