@@ -112,7 +112,7 @@ var Requests = {
           });
           scope.off('change', 'input:checkbox').on('change', 'input:checkbox', function(e) {
             $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
-          })
+          });
           
           // Empty input box when flag change to unchecked
           scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
@@ -123,7 +123,8 @@ var Requests = {
           });
           
           // Submit the form
-          $('.update_btn', scope).off('click', '**').on('click', function() {
+          // $('.update_btn', scope).off('click', '**').on('click', function() {
+          scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     				var originArr = $('form', scope).serializeArray(),
     				checkedArr,
     				objectName = $('form', scope).attr('class').replace(/new_/,'');
