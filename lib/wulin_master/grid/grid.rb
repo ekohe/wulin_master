@@ -73,6 +73,18 @@ module WulinMaster
         end
         self._actions = actions_str
       end
+
+      # behaviors accessor
+      def behaviors=(behaviors)
+        puts "========================================="
+        puts self
+        puts behaviors.inspect
+        @behaviors = behaviors
+      end
+
+      def behaviors
+        @behaviors
+      end
     end
 
     # Instance methods
@@ -170,6 +182,11 @@ module WulinMaster
 
     def get_actions
       self.class.actions.to_json
+    end
+
+    # Behaviors
+    def get_behaviors
+      self.class.behaviors.to_json
     end
     
     def hide_header?

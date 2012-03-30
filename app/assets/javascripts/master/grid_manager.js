@@ -81,7 +81,7 @@
 			}
 		}
 
-		function createNewGrid(name, path, columns, states, actions, extend_options) {
+		function createNewGrid(name, path, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
 		  options = $.extend(defaultOptions, extend_options);
@@ -137,6 +137,7 @@
 			setGridBodyHeight(gridElement);
 			grid.resizeCanvas();
 
+
 			// Load the first page
 			grid.onViewportChanged.notify();		
 			
@@ -147,6 +148,9 @@
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
+
+      // dispatch behaviors
+			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
       // delete old grid if exsisting, then add grid
 			for(var i in grids){
