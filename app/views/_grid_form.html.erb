@@ -58,7 +58,7 @@ remote_paths = []
             <%- if column.sql_type.to_s.downcase == 'boolean' %>
               <%= form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag" %>
             <% else %>
-              <%= form.text_field column_name, :style => 'width: 250px', :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column) %>
+              <%= form.text_field column_name, :style => 'width: 250px', :value => object.send(column_name), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column) %>
             <% end -%>
           <%- end %>
           <div class='field_error'></div>
