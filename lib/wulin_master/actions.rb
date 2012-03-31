@@ -202,8 +202,16 @@ module WulinMaster
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
               end
             elsif associations[k.to_sym].macro == :has_and_belongs_to_many
-              the_ids = association_attributes['id'].uniq.compact.delete_if{|x| x.blank? }
-              if association_attributes['id'] == 'null' or the_ids.blank?
+              # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
+              if Array === association_attributes
+                the_ids = association_attributes.first.split(',')
+              elsif Hash === association_attributes
+                the_ids = ((association_attributes['id'] == 'null' or association_attributes['id'].blank?) ? [] : association_attributes['id'])
+              else
+                the_ids = []
+              end
+              the_ids = the_ids.uniq.compact.delete_if{|x| x.blank? }
+              if the_ids.blank?
                 new_attributes[k.to_sym] = []
               else
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a

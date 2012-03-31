@@ -120,7 +120,7 @@ var Ui = {
       var afterSetupChosen = $("select[data-remote-path='" + path + "']").data('afterSetupChosen');
       if (monitor) {
         $("select[data-remote-path='" + path + "']").chosen().change(function(){
-          $('input:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
+          $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
         });
       } else {
         $("select[data-remote-path='" + path + "']").chosen();

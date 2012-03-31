@@ -108,7 +108,7 @@ var Requests = {
           
           // Check flag when change value of the box
           scope.off('keyup', 'input:text').on('keyup', 'input', function(e) {
-            $('input:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
+            $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
           });
           scope.off('change', 'input:checkbox').on('change', 'input:checkbox', function(e) {
             $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
@@ -138,7 +138,7 @@ var Requests = {
     				
             // Collect valid form attrbutes
             originArr = $.grep(originArr, function(v, i) {
-              return $('input:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope).attr('checked') == 'checked'
+              return $('input.target_flag:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope).attr('checked') == 'checked'
             });
             
             // Replace objectName to item, like user[posts][] => item[posts][]
