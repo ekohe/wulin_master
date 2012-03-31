@@ -73,6 +73,11 @@
     color: #333;
     text-decoration: none;
   }
+  &:active {
+    background-position: 0 -30px;
+    color: #333;
+    text-decoration: none;
+  }
   &:focus {
     outline: 1px dotted #666;
   }
