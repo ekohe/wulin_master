@@ -12,7 +12,8 @@ module WulinMaster
     include GridToolbar
     
     cattr_accessor :grids
-    class_attribute :controller_class, :_actions , :_title, :_model, :_path, :_hide_header, :_options
+    # !!! Warning !!!, when use class_attribute, the subclass assign operation may change the super class attribute if it is mutable type (Array, Hash)  
+    class_attribute :controller_class, :_actions, :_title, :_model, :_path, :_hide_header, :_options  
     @@grids = []
     ORIGINAL_ACTIONS = %w(add delete edit filter audit sort order update)
 
@@ -39,7 +40,8 @@ module WulinMaster
       def action(name, options={})
         self._actions ||= ORIGINAL_ACTIONS
 
-        self._actions.push({name: name}.merge(options)).uniq!
+        # self._actions.push().uniq!, Can't use push here, will polution super class!
+        self._actions += [{name: name}.merge(options)]
       end
 
       [:title, :model, :path].each do |attr|
