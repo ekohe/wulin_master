@@ -65,6 +65,11 @@ remote_paths = []
         </div>
       <% end -%>
     <% end -%>
+    <div class="actions">
+      <%- grid.class.actions.select{|a| a.is_a?(Hash) and a[:on] == "create" }.each do |i| %>
+        <input id="<%= i[:name] %>_on_<%= model_name %>_create" name="<%= i[:name] %>" type="button" value="<%= i[:label] || i[:name].titleize %>" class="btn" />
+      <% end -%>
+    </div>
     <div class="submit"> 
       <input id="<%= grid.name %>_submit" name="commit" type="submit" value=" Create " class="btn success" /> 
       <input id="<%= grid.name %>_submit_continue" name="commit" type="submit" value=" Create and Continue " class="btn" />

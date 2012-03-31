@@ -35,6 +35,13 @@ module WulinMaster
         self._actions ||= ORIGINAL_ACTIONS
       end
 
+      # dynamically define an action
+      def action(name, options={})
+        self._actions ||= ORIGINAL_ACTIONS
+
+        self._actions.push({name: name}.merge(options)).uniq!
+      end
+
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
           (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
