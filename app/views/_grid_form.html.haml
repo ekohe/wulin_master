@@ -1,0 +1,82 @@
+:ruby
+  model_name = grid.model.name.underscore
+  columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+  datepicker_str = ''
+  object = grid.model.new
+  remote_paths = []
+.create_form{:id => "#{grid.name}-form", :title => "Create new #{model_name.titleize}"}
+  = form_for object, :url => grid.path do |form|
+    - columns.each do |column|
+      - if column.options[:formable] != false
+        :ruby
+          if column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
+            column_name = column.reflection.name.to_s
+          else
+            column_name = column.form_name
+          end
+        .field{:name => column_name}
+          %label{:for => "#{model_name}_#{column_name}"}= column.options[:form_label] || column.label
+          %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
+          
+          - if column.sql_type.to_s == 'belongs_to'
+            - remote_paths << fetch_path(column)
+            = form.select column_name,                            |
+              select_options(column),                             |
+              { include_blank: true },                            |
+              :include_blank     => !column.presence_required?,   |
+              :class             => 'chzn-select',                |
+              :style             => "width:250px",                |
+              :disabled          => column.options[:auto_fill],   |
+              "data-remote-path" => fetch_path(column),           |
+              "data-text-attr"   => column.option_text_attribute, |
+              "data-target"      => "#{column_name}_target_flag"  |
+              
+          - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
+            - remote_paths << fetch_path(column)
+            = form.select column.reflection.name.to_s,            |
+              select_options(column),                             |
+              { include_blank: true },                            |
+              :include_blank     => !column.presence_required?,   |
+              :multiple          => true,                         |
+              :class             => 'chzn-select',                |
+              :style             => "width:250px",                |
+              "data-remote-path" => fetch_path(column),           |
+              "data-text-attr"   => column.option_text_attribute, |
+              "data-target"      => "#{column_name}_target_flag", |
+              :disabled          => column.options[:auto_fill]    |
+              
+          - elsif column.options[:choices].present?
+            - remote_paths << select_tag_fetch_path(column)
+            = select_tag "#{model_name}[#{column_name}]",          |
+              select_tag_options(column),                          |
+              :class             => 'chzn-select',                 |
+              :style             => "width:250px",                 |
+              :disabled          => column.options[:auto_fill],    |
+              "data-target"      => "#{column_name}_target_flag",  |
+              "data-remote-path" => select_tag_fetch_path(column), |
+              "data-text-attr"   => column.option_text_attribute   |
+              
+          - else
+            - if column.sql_type.to_s.downcase == 'boolean'
+              = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag"
+            - else
+              = form.text_field column_name, :style => 'width: 250px', :value => object.send(column_name), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column)
+          .field_error
+    .actions
+      - grid.class.actions.select{|a| a.is_a?(Hash) and a[:on] == "create" }.each do |i|
+        %input.btn{:id => "#{i[:name]}_on_#{model_name}_create", :name => i[:name], :type => "button", :value => i[:label] || i[:name].titleize}/
+    .submit
+      %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
+      %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+      %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+    = hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(','))
+
+:javascript
+  $('.chzn-select:not([data-remote-path])').chosen().change(function(){
+    $('.target_flag[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
+  });
+  $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+  $('input[data-datetime]').datetimepicker({
+    dateFormat: "yy-mm-dd",
+    timeFormat: 'hh:mm'
+  });
