@@ -78,7 +78,7 @@ var Requests = {
 	},
 	
 	batchUpdateByAjax: function(grid) {
-	  var ids, width, height, selectedIndexes = grid.getSelectedRows(),
+	  var ids, width, height, selectedIndexes = grid.getSelectedRows(), originTitle, newTitle,
     scope = $('#' + grid.name + '-form');
 	  if ($.isEmptyObject(selectedIndexes)) {
 	    displayErrorMessage('Please select a record');
@@ -91,6 +91,9 @@ var Requests = {
         width = 600;
         height = 300;
       }
+      originTitle = scope.attr('title');
+      newTitle = originTitle.replace('Create new', 'Update');
+      scope.attr('title', newTitle);
 	    scope.dialog({
         height: height,
         width: width,
@@ -123,7 +126,6 @@ var Requests = {
           });
           
           // Submit the form
-          // $('.update_btn', scope).off('click', '**').on('click', function() {
           scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     				var originArr = $('form', scope).serializeArray(),
     				checkedArr,
@@ -185,6 +187,7 @@ var Requests = {
           $(this).find(".field_error").text("");
           $(this).dialog("destroy");  
           
+          scope.attr('title', originTitle);
           $('.btn', scope).show();
           $('.update_btn', scope).hide();
           $('.target_flag').hide();
