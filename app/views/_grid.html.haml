@@ -1,0 +1,21 @@
+- current_user = (controller.respond_to?(:current_user) ? controller.current_user : nil)
+.grid_container{:id => "grid_#{grid.name}", :style => grid.style}
+  - unless grid.hide_header?
+    .grid-header
+      = grid.toolbar.render
+      %h2= grid.title
+  .grid
+  .pager
+
+  :javascript
+    gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
+                              '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
+                               #{grid.javascript_column_model.html_safe},
+                               #{grid.states_for_user(current_user).html_safe},
+                               #{grid.get_actions.to_s.html_safe},
+                               #{grid.options.html_safe});
+                               
+- if grid.get_actions.include?('add') or grid.get_actions.include?('update')
+  / Create form
+  = render '/grid_form', :grid => grid
+

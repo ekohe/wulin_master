@@ -1,0 +1,12 @@
+#debug_info_link{:style => "margin-top: 25px"}
+  %a{:href => "#"} Debug information
+#debug_info{:style => "display: none"}
+  %p
+    Columns:
+    %ul
+      - @grid.columns.each do |column|
+        %li= column.name
+:javascript
+  $(document).ready(function() {
+    $("#debug_info_link").click(function() { $("#debug_info").toggle(); return false; });
+  });
