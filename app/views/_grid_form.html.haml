@@ -63,8 +63,6 @@
               = form.text_field column_name, :style => 'width: 250px', :value => object.send(column_name), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column)
           .field_error
     .actions
-      - p "======================================"
-      - p grid.get_actions
       - grid.class.actions.select{|a| a.is_a?(Hash) and a[:on] == "create" }.each do |i|
         %input.btn{:id => "#{i[:name]}_on_#{model_name}_create", :class => i[:name], :name => i[:name], :type => "button", :value => i[:label] || i[:name].titleize}/
     .submit

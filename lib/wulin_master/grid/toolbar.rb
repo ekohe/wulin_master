@@ -32,6 +32,16 @@ module WulinMaster
         raise "Invalid type #{item.class}"
       end
     end
+
+    # Add new toolbar_item to start
+    def add_toolbar_item(item_title, options)
+      self.push(ToolbarItem.new(item_title, options))
+    end
+
+    # Add new toolbar_item to end
+    def append_toolbar_item(item_title, options)
+      self.unshift(ToolbarItem.new(item_title, options))
+    end
     
     # Returns the default toolbar items
     def self.default_items
