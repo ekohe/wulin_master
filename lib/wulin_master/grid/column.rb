@@ -51,8 +51,8 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
 
-      if is_table_column?
-        complete_column_name = "#{model.table_name}.#{self.name}"
+      if is_table_column? || self.reflection
+        complete_column_name = self.reflection ? "#{self.reflection.klass.table_name}.#{self.name}" : "#{model.table_name}.#{self.name}"
       else
         complete_column_name = self.name
       end
@@ -191,7 +191,7 @@ module WulinMaster
     # Returns the´includes to add to the query 
     def includes
       if self.reflection
-        [(@options[:through] || @name).to_sym]
+        [(@options[:through] || @name).to_sym, association_through ? association_through.to_sym : nil].compact
       else
         []
       end
@@ -205,6 +205,24 @@ module WulinMaster
         []
       end
     end
+
+    # Returns the value for the object in argument
+    def value(object)
+      if association_type.to_s == 'belongs_to'
+        object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s
+      elsif association_type.to_s == 'has_one'
+        association_object = object.send(@options[:through] || self.name)
+        association_object.try(:send,option_text_attribute).to_s
+      elsif association_type.to_s == 'has_and_belongs_to_many'
+        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
+        object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
+      elsif association_type.to_s == 'has_many'
+        object.send(self.name.to_s).collect{|obj| obj.send(option_text_attribute)}
+      else
+        self.format(object.send(self.name.to_s))
+      end
+    end
+
 
     # Returns the json for the object in argument
     def json(object) 
@@ -338,6 +356,10 @@ module WulinMaster
 
     def association_type
       self.reflection.try(:macro)
+    end
+
+    def association_through
+      self.reflection ? self.reflection.try(:options)[:through] : nil
     end
   end
 end
