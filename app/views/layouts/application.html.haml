@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    %title= WulinMaster.config.app_title
+    = stylesheet_link_tag    *WulinMaster.stylesheets
+    = javascript_include_tag *WulinMaster.javascripts
+    = csrf_meta_tags
+    :javascript
+      window._token = encodeURIComponent('#{form_authenticity_token}');
+  %body
+    = yield
