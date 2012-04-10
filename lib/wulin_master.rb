@@ -1,5 +1,8 @@
 require 'wulin_master/engine' if defined?(Rails)
 
+require 'haml'
+require 'haml-rails'
+
 module WulinMaster
   
   @javascripts = ['application']
