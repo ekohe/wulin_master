@@ -17,9 +17,9 @@ module WulinMaster
     # Default toolbar
     @@default_items = [
       ToolbarItem.new("Add",    :class => 'create_button', :icon => 'create'),
-      ToolbarItem.new("Update", :class => 'batch_update_button', :icon => 'batch_update')
+      ToolbarItem.new("Update", :class => 'batch_update_button', :icon => 'batch_update'),
       ToolbarItem.new("Delete", :class => 'delete_button', :icon => 'delete_trash'),
-      ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search'),
+      ToolbarItem.new("Filter", :class => 'filter_toggle', :icon => 'search')
     ]
     
     # Add to default toolbar
