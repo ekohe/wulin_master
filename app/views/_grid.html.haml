@@ -19,5 +19,5 @@
   / Create form, try to first use the overidden form, otherwise render the default form
   - begin
     = render 'grid_form', :grid => grid
- - rescue ActionView::MissingTemplate
+  - rescue ActionView::MissingTemplate
     = render '/grid_form', :grid => grid
