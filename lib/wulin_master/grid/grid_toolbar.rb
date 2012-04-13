@@ -17,9 +17,9 @@ module WulinMaster
       # Add an item to the toolbar
       def add_to_toolbar(item, options={})
         if item.class == ToolbarItem
-          self.toolbar +=[item]
+          self.toolbar << item
         elsif item.class == String
-          self.toolbar += [ToolbarItem.new(item, options)]
+          self.toolbar << ToolbarItem.new(item, options)
         end
       end
     end
