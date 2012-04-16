@@ -201,9 +201,9 @@
 		}
 
 		function onSuccess(resp, textStatus, request) {
+      var originLength = data.length;
 		  var from;
 		  var to;
-		  
 			if (pageSize==0) {
 			  from = resp.offset;
 			  to = resp.offset + resp.count;
@@ -213,7 +213,12 @@
 			  to = parseInt(resp.count);
 	      data.length = to;
 	    }
-	    
+
+      // clear original data items
+      for (var i = 0; i < originLength; i++) {
+        delete data[i];
+      }
+
 	    totalRows = parseInt(resp.total);
 			for (var i = 0; i < resp.rows.length; i++) {
 			  var j = parseInt(from)+parseInt(i);
