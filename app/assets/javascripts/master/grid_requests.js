@@ -32,15 +32,18 @@ var Requests = {
 	},
 	
 	// Delete rows along ajax 
-	deleteByAjax: function(grid, ids) {
+	deleteByAjax: function(grid_or_model, ids) {
+    var model = typeof(grid_or_model) == 'object' ? grid_or_model.path : grid_or_model;
 		$.ajax({
 			type: 'POST',
-			url: grid.path + '/' + ids + '.json',
+			url: model + '/' + ids + '.json',
 			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
-					grid.setSelectedRows([]);
-					grid.loader.reloadData();
+          if(typeof(grid_or_model) == 'object'){
+					 grid_or_model.setSelectedRows([]);
+					 grid_or_model.loader.reloadData();
+          }
 				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
 				  var message;
 				  if (recordSize > 1) {  message = recordSize+" records have been deleted."; }
