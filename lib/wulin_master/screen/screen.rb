@@ -58,6 +58,10 @@ module WulinMaster
       self.class.path + "?screen=#{self.class.to_s}" 
     end
     
+    def name
+      self.class.name.sub(/Screen$/, "").underscore
+    end
+    
     attr_accessor :grids, :controller, :params
     
     # Security
