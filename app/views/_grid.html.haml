@@ -9,10 +9,12 @@
 
   :javascript
     gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
+                              '#{grid.params["screen"].to_s.html_safe}',
                               '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
                                #{grid.javascript_column_model.html_safe},
                                #{grid.states_for_user(current_user).html_safe},
                                #{grid.get_actions.to_s.html_safe},
+                               #{grid.get_behaviors.to_s.html_safe},
                                #{grid.options.html_safe});
                                
 - if grid.get_actions.include?('add') or grid.get_actions.include?('update')

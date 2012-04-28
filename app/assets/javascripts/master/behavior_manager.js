@@ -7,7 +7,7 @@ WulinMaster.BehaviorManager = function(){
 
   return {
     register: function(b_name, b_obj) {
-      console.log(b_name + " registered!")
+      //console.log(b_name + " registered!")
       behaviors[b_name] = b_obj;
     },
 
@@ -25,7 +25,10 @@ WulinMaster.BehaviorManager = function(){
         var behavior = this.getBehavior(behaviors_config[i].name);
         if(behavior){
           $.extend(behavior, behaviors_config[i]);
-          behavior.subscribe(target);
+          // if the behavior defined in the grid on a particular screen, or on all screen (no screens defined)
+          if(behavior.screens == undefined || behavior.screens.indexOf(target.screen) >= 0){ 
+            behavior.subscribe(target);
+          }
         }
       }
     }

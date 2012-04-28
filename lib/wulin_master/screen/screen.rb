@@ -38,9 +38,7 @@ module WulinMaster
       end
 
       # Add a grid to a screen
-      def grid(klass, &block)
-        yield klass if block_given?
-        
+      def grid(klass)        
         self._grid_classes ||= []
         self._grid_classes << klass
       end

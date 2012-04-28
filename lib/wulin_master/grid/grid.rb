@@ -74,12 +74,9 @@ module WulinMaster
         self._actions = actions_str
       end
 
-      # behaviors accessor
-      def behaviors=(behaviors)
-        puts "========================================="
-        puts self
-        puts behaviors.inspect
-        @behaviors = behaviors
+      def behavior(b_name, options={})
+        @behaviors ||= []
+        @behaviors << {name: b_name}.merge(options)
       end
 
       def behaviors
