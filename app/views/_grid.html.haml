@@ -2,6 +2,8 @@
 .grid_container{:id => "grid_#{grid.name}", :style => grid.style}
   - unless grid.hide_header?
     .grid-header
+      - p "======================================"
+      - p grid.actions
       = grid.toolbar.render
       %h2= grid.title
   .grid
@@ -13,13 +15,13 @@
                               '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
                                #{grid.javascript_column_model.html_safe},
                                #{grid.states_for_user(current_user).html_safe},
-                               #{grid.get_actions.to_json.to_s.html_safe},
+                               #{grid.action_names.to_s.html_safe},
                                #{grid.get_behaviors.to_s.html_safe},
                                #{grid.options.html_safe});
                                
-- if (grid.get_actions.include?('add') or grid.get_actions.include?('update')) and controller.screen.authorize_create?(current_user)
-  / Create form, try to first use the overidden form, otherwise render the default form
-  - begin
-    = render 'grid_form', :grid => grid
-  - rescue ActionView::MissingTemplate
-    = render '/grid_form', :grid => grid
+/ - if grid.get_actions.include?('add') or grid.get_actions.include?('update')
+/   / Create form, try to first use the overidden form, otherwise render the default form
+/   - begin
+/     = render 'grid_form', :grid => grid
+/   - rescue ActionView::MissingTemplate
+/     = render '/grid_form', :grid => grid

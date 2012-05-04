@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'wulin_master/controllers/home_controller'
+require 'app/controllers/wulin_master/home_controller'
 
 class HomepageController < WulinMaster::HomeController
 end

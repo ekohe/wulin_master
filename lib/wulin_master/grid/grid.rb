@@ -3,23 +3,23 @@ require File.join(File.dirname(__FILE__), 'toolbar_item')
 require File.join(File.dirname(__FILE__), 'column')
 require File.join(File.dirname(__FILE__), 'grid_styling')
 require File.join(File.dirname(__FILE__), 'grid_columns')
-require File.join(File.dirname(__FILE__), 'grid_toolbar')
+require File.join(File.dirname(__FILE__), 'grid_actions')
 
 module WulinMaster
   class Grid
     include GridStyling
     include GridColumns
-    include GridToolbar
+    include GridActions
     
     cattr_accessor :grids
+
     # !!! Warning !!!, when use class_attribute, the subclass assign operation may change the super class attribute if it is mutable type (Array, Hash)  
     class_attribute :controller_class, :_actions, :_title, :_model, :_path, :_hide_header, :_options  
-    @@grids = []
-    ORIGINAL_ACTIONS = %w(add delete edit filter audit sort order update)
 
     # Grid has been subclassed
     def self.inherited(klass)
-      @@grids << klass
+      self.grids ||= []
+      self.grids << klass
       klass.init
     end
 
@@ -29,19 +29,13 @@ module WulinMaster
       # Called when the grid is subclassed
       def init
         initialize_columns
-        initialize_toolbar
-      end
-      
-      def actions
-        self._actions ||= ORIGINAL_ACTIONS
+        #initialize_toolbar
+        initialize_actions_pool
       end
 
-      # dynamically define an action
-      def action(name, options={})
-        self._actions ||= ORIGINAL_ACTIONS
-
-        # self._actions.push().uniq!, Can't use push here, will polution super class!
-        self._actions += [{name: name}.merge(options)]
+      # return actions on toolbar
+      def toolbar_actions
+        @actions.reject {|a| a[:toolbar_item] == false}
       end
 
       [:title, :model, :path].each do |attr|
@@ -58,22 +52,8 @@ module WulinMaster
         self._options = option
       end
       
-      def remove_actions(*args)
-        actions_str = args.map(&:to_s)
-        self.toolbar.each do |t|
-          self.toolbar.delete_if{ |t| actions_str.include?(t.title.downcase) }
-        end
-        self._actions = ORIGINAL_ACTIONS - actions_str
-      end
 
-      def set_actions(*args)
-        actions_str = args.map(&:to_s)
-        self.toolbar.each do |t|
-          self.toolbar.delete_if{ |t| !actions_str.include?(t.title.downcase) }
-        end
-        self._actions = actions_str
-      end
-
+      # behavior DSL
       def behavior(b_name, options={})
         @behaviors ||= []
         @behaviors << {name: b_name}.merge(options)
@@ -86,11 +66,16 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :controller, :params
+    attr_accessor :controller, :params, :toolbar
 
     def initialize(params, controller_instance)
       self.params = params
       self.controller = controller_instance
+      initialize_toolbar
+    end
+
+    def initialize_toolbar
+      self.toolbar ||= Toolbar.new(self.toolbar_actions)
     end
 
     # Grid Properties that can be overriden
@@ -180,6 +165,7 @@ module WulinMaster
       end
     end
 
+    # to be deprecated
     def get_actions
       @get_actions ||= if controller.respond_to?(:current_user) and !controller.screen.authorize_create?(controller.current_user)
         self.class.actions.dup.delete_if {|x| %w(add edit delete update).include?(x) }
