@@ -38,13 +38,16 @@ WulinMaster.actions.BaseAction = {
   _isAction: true,
   name: null,
   event: "click", 
-  triggerElement: null,
+  triggerElementIdentifier: null,
   target: null,
 
   // in most case, don't need to override
   init : function() {
-    // get the trigger element, can be overrided
-    this.triggerElement = this.triggerElement || $("." + this.name + "_action");
+    // get the trigger element, you can override triggerElementIdentifier
+    this.triggerElement = $("#content").find(this.triggerElementIdentifier);
+    if(this.triggerElement.length == 0){
+      this.triggerElement = $("." + this.name + "_action");
+    }
 
     // activate the action
     this.activate();
@@ -64,7 +67,9 @@ WulinMaster.actions.BaseAction = {
   // can be overrided
   activate: function(){
     var self = this;
-    this.triggerElement.on(self.event, function(){
+    console.log("activate")
+    console.log(this.triggerElement);
+    this.triggerElement.bind(self.event, function(){
       self.handler();
     })
   },
