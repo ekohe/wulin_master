@@ -67,8 +67,6 @@ WulinMaster.actions.BaseAction = {
   // can be overrided
   activate: function(){
     var self = this;
-    console.log("activate")
-    console.log(this.triggerElement);
     this.triggerElement.bind(self.event, function(){
       self.handler();
     })
