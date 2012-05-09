@@ -1,94 +1,26 @@
-// ------------------------------ CRUD -------------------------------------
-var Requests = {
-<<<<<<< HEAD
-  // Record create along ajax
-	createByAjax: function(grid, continue_on) {
-		var createFormElement = $('div#'+grid.name+'-form form');
-		// clear all the error messages
-		createFormElement.find(".field_error").text("");
-		$.ajax({
-   		type:'POST',
-   		url: grid.path + '.json',
-   		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
-   		success: function(request) { 		  
-				if (request.success) {
-					grid.operatedIds = request.id;
-					grid.loader.reloadData();
-					if (!continue_on) { 
-					  Ui.resetForm(grid.name);
-            if (grid.loader.isDataLoaded()) {
-					    setTimeout(function(){
-    					  Ui.closeDialog(grid.name);
-    					}, 100);
-					  }
-					}
-					displayNewNotification('Record successfully created!');
-				} else {
-					for(key in request.error_message){
-					  createFormElement.find(".field[name=" + key + "]").find(".field_error").text(request.error_message[key].join());
-					}
-				}
-			}
- 		});
-	},
-	
-=======
->>>>>>> Refactor wulin master actions, introduced ActionManager, defined add, delete, edit, filter as default actions
-	// Delete rows along ajax 
-	deleteByAjax: function(grid, ids) {
-		$.ajax({
-			type: 'POST',
-			url: grid.path + '/' + ids + '.json',
-			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
-			success: function(msg) {
-				if(msg.success) {
-					grid.setSelectedRows([]);
-					grid.loader.reloadData();
-				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
-				  var message;
-				  if (recordSize > 1) {  message = recordSize+" records have been deleted."; }
-				    else { message = "One record has been deleted."; }
-				  displayNewNotification(message);
-				} else {
-					displayErrorMessage(msg.error_message);
-				}
-			}
-		});
-	},
-	
-	updateByAjax: function(grid, item) {
-		delete item.slick_index;
-		var currentRow = grid.getRowByRecordId(item.id).index;
-		// format item data like time, date
-		// format_data(item);
-		// put ajax
-		$.ajax({
-			type: "POST",
-			dateType: 'json',
-			url: grid.path + "/" + item.id + ".json"+grid.query,
-			data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
-			success: function(msg) {
-				if(msg.success) {
-					grid.loader.reloadData();
-          // grid.loader.data[currentRow] = Ui.formatData(grid, msg["attrs"]);
-          // grid.updateRow(currentRow);
-				} else {
-					displayErrorMessage(msg.error_message);
-					grid.loader.reloadData();
-				}
-			}
-		});
-<<<<<<< HEAD
-	},
-	
-	batchUpdateByAjax: function(grid) {
-	  var ids, width, height, selectedIndexes = grid.getSelectedRows(), originTitle, newTitle,
+// Toolbar Item: 'Edit'
+
+WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
+  name: 'edit',
+
+  handler: function() {
+    var grid = this.getGrid();
+
+    // Batch update action
+    batchUpdateByAjax(grid);
+    return false;
+  }
+});
+
+
+var batchUpdateByAjax = function(grid) {
+    var ids, width, height, selectedIndexes = grid.getSelectedRows(), originTitle, newTitle,
     scope = $('#' + grid.name + '-form');
-	  if ($.isEmptyObject(selectedIndexes)) {
-	    displayErrorMessage('Please select a record');
-	  } else {
-	    ids = Ui.selectIds(grid);
-	    if (grid.extend_options) {
+    if ($.isEmptyObject(selectedIndexes)) {
+      displayErrorMessage('Please select a record');
+    } else {
+      ids = grid.getSelectedIds();
+      if (grid.extend_options) {
         width = grid.extend_options.form_dialog_width || 600;
         height = grid.extend_options.form_dialog_height || 300;
       } else {
@@ -98,7 +30,7 @@ var Requests = {
       originTitle = scope.attr('title');
       newTitle = originTitle.replace('Create new', 'Update');
       scope.attr('title', newTitle);
-	    scope.dialog({
+      scope.dialog({
         height: height,
         width: width,
         show: "blind",
@@ -131,17 +63,17 @@ var Requests = {
           
           // Submit the form
           scope.off('click', '.update_btn').on('click', '.update_btn', function() {
-    				var originArr = $('form', scope).serializeArray(),
-    				checkedArr,
-    				objectName = $('form', scope).attr('class').replace(/new_/,'');
-    				
-    				// Collect attrs along with checked flag
-    				checkedArr = $.map($('input.target_flag:visible:checked'), function(v) {
-    				  var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
-    				  name = targetInput.attr('name').replace(/.*?\[/,'item[');
-    				  return { name: name, value: (targetInput.val() || null)};
-    				});
-    				
+            var originArr = $('form', scope).serializeArray(),
+            checkedArr,
+            objectName = $('form', scope).attr('class').replace(/new_/,'');
+            
+            // Collect attrs along with checked flag
+            checkedArr = $.map($('input.target_flag:visible:checked'), function(v) {
+              var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
+              name = targetInput.attr('name').replace(/.*?\[/,'item[');
+              return { name: name, value: (targetInput.val() || null)};
+            });
+            
             // Collect valid form attrbutes
             originArr = $.grep(originArr, function(v, i) {
               return $('input.target_flag:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope).attr('checked') == 'checked'
@@ -165,6 +97,7 @@ var Requests = {
               data: decodeURIComponent($.param({_method: 'PUT', authenticity_token: window._token}) + '&' + $.param(checkedArr)),
               success: function(msg) {
                 if(msg.success) {
+                  grid.setSelectedRows([]);
                   grid.loader.reloadData();
                   displayNewNotification(selectedIndexes.length + ' records been updated!');
                 } else {
@@ -174,17 +107,17 @@ var Requests = {
                 scope.dialog("destroy"); 
               }
             });
-    			  return false;
-    			});
-  			},
-  			open: function(event, ui) {
-  			  // Switch to update button
+            return false;
+          });
+        },
+        open: function(event, ui) {
+          // Switch to update button
           $('.btn', scope).hide();
           $('.update_btn', scope).show();
           
           // Show flag checkbox
           $('input.target_flag', scope).show();
-  			},
+        },
         close: function(event, ui) { 
           $(this).find("input:text").val("");
           $(this).find(".field_error").text("");
@@ -196,9 +129,7 @@ var Requests = {
           $('.target_flag').hide();
         }
       });
-	  }
-	},
-=======
-	}
->>>>>>> Refactor wulin master actions, introduced ActionManager, defined add, delete, edit, filter as default actions
-}; // Requests
+    }
+  }
+
+  WulinMaster.ActionManager.register(WulinMaster.actions.Edit);

@@ -2529,6 +2529,20 @@ if (typeof Slick === "undefined") {
             return [];
           }
         }
+
+        // get ids of selected rows
+        function getSelectedIds(){
+          var selectedIndexes = getSelectedRows();
+          var ids;
+          if (selectedIndexes.length > 0) {
+            ids = $.map(selectedIndexes,function(n, i) { 
+              return getDataItem(n)['id'];
+            });
+            return ids;
+          } else {
+            return [];
+          }
+        }
         
         //////////////////////////////////////////////////////////////////////////////////////////////
         // Debug

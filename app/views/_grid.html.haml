@@ -2,8 +2,6 @@
 .grid_container{:id => "grid_#{grid.name}", :style => grid.style}
   - unless grid.hide_header?
     .grid-header
-      - p "======================================"
-      - p grid.actions
       = grid.toolbar.render
       %h2= grid.title
   .grid
@@ -19,9 +17,9 @@
                                #{grid.get_behaviors.to_s.html_safe},
                                #{grid.options.html_safe});
                                
-/ - if grid.get_actions.include?('add') or grid.get_actions.include?('update')
-/   / Create form, try to first use the overidden form, otherwise render the default form
-/   - begin
-/     = render 'grid_form', :grid => grid
-/   - rescue ActionView::MissingTemplate
-/     = render '/grid_form', :grid => grid
+- if grid.action_names.include?('add') or grid.action_names.include?('edit')
+  / Create form, try to first use the overidden form, otherwise render the default form
+  - begin
+    = render 'grid_form', :grid => grid
+  - rescue ActionView::MissingTemplate
+    = render '/grid_form', :grid => grid

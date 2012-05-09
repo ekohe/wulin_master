@@ -11,14 +11,12 @@
     // private
     var $grid;
     var $loader;
-    var $triggerElement;
     var self = this;
     var currentFiltersApplied;
     
     function init() {
       $grid = grid;
       $loader = loader;
-      $triggerElement = triggerElement;
       
       generateFilters();
       

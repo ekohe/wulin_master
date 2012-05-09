@@ -33,11 +33,6 @@ module WulinMaster
         initialize_actions_pool
       end
 
-      # return actions on toolbar
-      def toolbar_actions
-        @actions.reject {|a| a[:toolbar_item] == false}
-      end
-
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
           (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
@@ -75,7 +70,7 @@ module WulinMaster
     end
 
     def initialize_toolbar
-      self.toolbar ||= Toolbar.new(self.toolbar_actions)
+      self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
     end
 
     # Grid Properties that can be overriden

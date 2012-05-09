@@ -2,13 +2,14 @@ require File.join(File.dirname(__FILE__), 'toolbar_item')
 
 module WulinMaster
   class Toolbar #< Array
-    attr_reader :items
+    attr_reader :grid_name, :items
 
-    def initialize(actions=[])
+    def initialize(grid_name, actions=[])
       #self.class.default_items.each {|item| self.unshift(item) }
+      @grid_name = grid_name
       @items ||= []
       actions.each do |action|
-        @items << ToolbarItem.new(action[:name], :class => "#{action[:name]}", :icon => "#{action[:name]}_icon")
+        @items << ToolbarItem.new(action[:name].capitalize, :class => "#{action[:name]}_action", :icon => "#{action[:name]}")
       end
     end
     
@@ -17,7 +18,7 @@ module WulinMaster
       e = @items.collect do |item|
         item.render
       end.join("").html_safe
-      "<div id=\"toolbar\">#{e}</div>".html_safe
+      "<div class=\"toolbar\" data-grid=#{@grid_name}>#{e}</div>".html_safe
     end
     
     # # Default toolbar, to be deprecated

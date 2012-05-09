@@ -1,22 +1,6 @@
 // ------------------------------------ UI tools -----------------------------------------
 var Ui = {	
-  // Select record id attribute form grid - shouldn't this be an extension of Grid ? Why in Ui? Ui == User interface?
-  selectIds: function(grid){
-    var selectedIndexes = grid.getSelectedRows();
-    var ids, item;
-    if (grid == null) return false;
-    if (selectedIndexes.length > 0) {
-      ids = $.map(selectedIndexes,function(n, i) { 
-        item = grid.loader.data[n];
-        return item['id']; 
-        }).join();
-        return ids;
-    } else {
-        return false;
-    }
-  },
-
-    // return true if the dialog of grid with "name" is open, unless return false 
+  // return true if the dialog of grid with "name" is open, unless return false 
   isOpen: function() {
     return ($(".ui-dialog:visible").size() > 0);
   },
@@ -150,24 +134,6 @@ var Ui = {
     }
   },
 
-  // Handle delete confirm with dialog
-  deleteGrids: function(ids) {
-    $( "#confirm_dialog" ).dialog({
-      modal: true,
-      buttons: {
-        Yes: function() {
-          Requests.deleteByAjax(Ui.findCurrentGrid(), ids);
-          $( this ).dialog( "destroy" );
-        },
-        Cancel: function() {
-          $( this ).dialog( "destroy" );
-        }
-      },
-      close: function() { 
-        $(this).dialog("destroy");
-      }
-    });
-  },
 
   // Highlight the created rows after close the dialog
   highlightCreatedRows: function(name) {
@@ -243,32 +209,33 @@ var Ui = {
 // ------------------------- keypress action --------------------------------------
 (function($) {
   $(document).on('keypress', function(e){
-    var isEditing = Ui.isEditing(), 
+    var isEditing = Ui.isEditing(),
     isOpen = Ui.isOpen(),
     filterPanelOpen = Ui.filterPanelOpen(),
     grid = Ui.findCurrentGrid();
+
+    if (isOpen || isEditing || filterPanelOpen) {
+      return true;
+    }
+
     if (grid) {
-      var ids = Ui.selectIds(grid),
+      var ids = grid.getSelectedIds(),
       gridSize = gridManager.grids.length;
 
-      if (isOpen || isEditing || filterPanelOpen) {
-        return true;
-      } else {
-        if (Ui.deleteAble(grid) && (e.which == 100 || e.which == 68)) {  // keypress 'D' for delete
-          if (ids) {
-            Ui.deleteGrids(ids);
-            return false;
-          }
+      if (Ui.deleteAble(grid) && (e.which == 100 || e.which == 68)) {  // keypress 'D' for delete
+        if (ids) {
+          Ui.deleteGrids(ids);
           return false;
-        } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
-          if (gridSize > 0 && grid) {
-            Ui.openDialog(grid.name, grid.extend_options);
-            return false;
-          }
-          return false;
-        } else {
-          return true;
         }
+        return false;
+      } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
+        if (gridSize > 0 && grid) {
+          Ui.openDialog(grid.name, grid.extend_options);
+          return false;
+        }
+        return false;
+      } else {
+        return true;
       }
     }	
   });

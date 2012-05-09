@@ -4,10 +4,6 @@
 		var gridElementPrefix = "#grid_",
 		gridElementSuffix = " .grid",
 		pagerElementSuffix = " .pager",
-		filterTriggerElementSuffix = " .grid-header .filter_toggle",
-		deleteElementSuffix = ' .grid-header .delete_button',
-		createElementSuffix = ' .grid-header .create_button',
-		updateElementSuffix = ' .grid-header .batch_update_button'
 		
 		grids = [],
     // operatedIds = [],
@@ -129,9 +125,6 @@
 			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
 			pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       
-      // Set Filter
-			filterTriggerElement = $(gridElementPrefix + name + filterTriggerElementSuffix);
-      filterPanel = new Slick.FilterPanel(grid, loader, filterTriggerElement, states["filter"]);
       
 			// Set ColumnPicker
 			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
@@ -146,12 +139,16 @@
 			
 			pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
+			
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, operatedIds: operatedIds, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, operatedIds: operatedIds, states: states, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
       
+      // dispatch actions
+      WulinMaster.ActionManager.dispatchActions(grid, actions);
       // dispatch behaviors
 			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
@@ -206,46 +203,7 @@
 			// ------------------------------ register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);
-			
-			// ------------------------------ button events -----------------------------------------
-			
-			// Delete along delete button
-			deleteElement = $(gridElementPrefix + name + deleteElementSuffix);
-			deleteElement.on('click', function() {
-				var ids = Ui.selectIds(grid);
-				if (ids) {
-				  Ui.deleteGrids(ids);
-  			  return false;
-				} else {
-				  displayErrorMessage("Please select a record.");
-				}
-			});
-
-			
-			// Create action
-			createButtonElement = $(gridElementPrefix + name + createElementSuffix);
-			createButtonElement.on('click', function() {
-				Ui.openDialog(name, grid.extend_options);
-			});
-			// Click 'Create' button
-			$('#' + name + '_submit').on('click', function() {
-				Requests.createByAjax(grid, false);
-			  return false;
-			});
-			// Click 'Create and Continue' button
-			$('#' + name + '_submit_continue').on('click', function() {
-				Requests.createByAjax(grid, true);
-			  return false;
-			});
-			
-			// Batch update action
-			updateButtonElement = $(gridElementPrefix + name + updateElementSuffix);
-			updateButtonElement.on('click', function(){
-			  Requests.batchUpdateByAjax(grid, true);
-			  return false;
-			});
-			
-		
+        
 		} // createNewGrid
 		
 
