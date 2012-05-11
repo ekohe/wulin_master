@@ -4,7 +4,10 @@ module WulinMaster
     
     included do
       class_eval do
-        class_attribute :toolbar
+        # class_attribute :toolbar
+        class <<self
+          attr_accessor :toolbar
+        end
       end
     end
     
@@ -28,7 +31,12 @@ module WulinMaster
 
     # Returns the toolbar
     def toolbar
-      self.class.toolbar
+      if self.controller.respond_to?(:current_user) and !self.controller.screen.authorize_create?(self.controller.current_user)
+        self.class.toolbar.dup.delete_if {|item| %w(add edit delete).include?(item.title.downcase)}
+      else
+        self.class.toolbar
+      end
     end
+    
   end
 end

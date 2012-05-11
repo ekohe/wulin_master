@@ -169,7 +169,12 @@ module WulinMaster
     end
 
     def get_actions
-      self.class.actions.to_json
+      @get_actions ||= if controller.respond_to?(:current_user) and !controller.screen.authorize_create?(controller.current_user)
+        self.class.actions.dup.delete_if {|x| %w(add edit delete update).include?(x) }
+      else
+        self.class.actions
+      end
+      
     end
     
     def hide_header?
