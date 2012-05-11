@@ -22,7 +22,7 @@ module WulinMaster
 
     def to_column_model
       field_name = @name.to_s
-      sort_col_name = self.reflection ? self.option_text_attribute : @name.to_s
+      sort_col_name = @options[:sort_column] || (self.reflection ? self.option_text_attribute : @name.to_s)
       table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
       new_options = @options.dup
       h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
