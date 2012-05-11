@@ -73,6 +73,15 @@ module WulinMaster
         end
         self._actions = actions_str
       end
+
+      def behavior(b_name, options={})
+        @behaviors ||= []
+        @behaviors << {name: b_name}.merge(options)
+      end
+
+      def behaviors
+        @behaviors
+      end
     end
 
     # Instance methods
@@ -175,6 +184,11 @@ module WulinMaster
         self.class.actions
       end
       
+    end
+
+    # Behaviors
+    def get_behaviors
+      self.class.behaviors.to_json
     end
     
     def hide_header?

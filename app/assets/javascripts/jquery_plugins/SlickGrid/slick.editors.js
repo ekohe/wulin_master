@@ -1134,6 +1134,7 @@
         SelectEditor : function(args) {
           var $select, $wrapper;
           var choicesFetchPath = args.column.choices;
+          var dependColumn = args.column.depend_column;
           var defaultValue;
           var boxWidth = 200;
           var offsetWith = boxWidth + 28;
@@ -1152,6 +1153,17 @@
             
             window._jsonData = window._jsonData || {};
             $select.append($("<option />"));
+
+            // if it depend on other column's value, filter the choices
+            if(dependColumn){
+              var dependValue = args.item[dependColumn];
+              choicesFetchPath = choicesFetchPath[dependValue];
+              if(!$.isArray(choicesFetchPath) || choicesFetchPath.length == 0) {
+                // TODO: maybe need to disable the editor?
+                //return false;
+              }
+            }
+
             if ($.isArray(choicesFetchPath)) {
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value.name + "</option>");

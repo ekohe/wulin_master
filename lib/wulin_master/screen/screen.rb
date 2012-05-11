@@ -17,6 +17,7 @@ module WulinMaster
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
+
     class_attribute :_title, :_path, :_grid_classes, :controller_class
 
     class << self
@@ -37,7 +38,7 @@ module WulinMaster
       end
 
       # Add a grid to a screen
-      def grid(klass)
+      def grid(klass)        
         self._grid_classes ||= []
         self._grid_classes << klass
       end

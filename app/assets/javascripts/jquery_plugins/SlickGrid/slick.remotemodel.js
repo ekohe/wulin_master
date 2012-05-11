@@ -41,7 +41,7 @@
       });
       
       grid.onSort.subscribe(function(e, args){
-        setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+        setSort(args.sortCol.sortColumn, args.sortAsc ? 1 : -1);
       });
     }
     
@@ -116,7 +116,6 @@
       if (sortcol==null) {
         sortcol = "";
       } 
-      
       var url = "&sort_col="+encodeURIComponent(sortcol);
       if (sortdir>0) {
         url += "&sort_dir=ASC";

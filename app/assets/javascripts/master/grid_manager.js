@@ -81,7 +81,7 @@
 			}
 		}
 
-		function createNewGrid(name, path, columns, states, actions, extend_options) {
+		function createNewGrid(name, screen, path, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
 		  gridAttrs, deleteElement, createButtonElement;
 		  options = $.extend(defaultOptions, extend_options);
@@ -137,16 +137,20 @@
 			setGridBodyHeight(gridElement);
 			grid.resizeCanvas();
 
+
 			// Load the first page
 			grid.onViewportChanged.notify();		
 			
 			pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
+      
+      // dispatch behaviors
+			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
       // delete old grid if exsisting, then add grid
 			for(var i in grids){
