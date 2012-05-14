@@ -44,7 +44,8 @@
 
         MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
             // TODO: make the unit configurable
-            return (value) ? "$" + value.toMoney(2, '.', ',') : "";
+            var currency = columnDef.currency || "$";
+            return (value) ? currency + value.toMoney(2, '.', ',') : "";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
