@@ -10,7 +10,7 @@
 		updateElementSuffix = ' .grid-header .batch_update_button'
 		
 		grids = [],
-		createdIds = [],
+		operatedIds = [],
 		defaultOptions = {
 			editable: true,
 			enableAddRow: false,
@@ -182,6 +182,29 @@
             this.setSelectedRows([]);
         });
       });
+      
+      // push selected IDs to operatedIds when selected row changed
+      grid.onSelectedRowsChanged.subscribe(function(e, args) {
+        gridManager.operatedIds = grid.getSelectedIds();
+      });
+      
+      // highlight the selected rows then empty operatedIds when grid re-rendered
+      grid.loader.onDataLoaded.subscribe(function(e, args){
+        var data = grid.getData(), selectedIndexes = [];
+        for (var i in data) {
+          if (gridManager.operatedIds.indexOf(data[i].id) != -1) {
+            selectedIndexes.push(data[i].slick_index);
+          }
+        }
+        grid.setSelectedRows(selectedIndexes);
+        //Empty operatedIds when grid re-rendered
+        gridManager.operatedIds = [];
+      });
+      
+      // Empty the operatedIds when switch grid
+      grid.onViewportChanged.subscribe(function(e, args){
+        gridManager.operatedIds = [];
+      });
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
       if(states)
@@ -295,7 +318,7 @@
 		return {
 			// properties
 			"grids": grids,
-			'createdIds': createdIds,
+			'operatedIds': operatedIds,
 
 			// methods
 			"createNewGrid": createNewGrid,

@@ -140,7 +140,7 @@ var Ui = {
     $form.find(".field_error").text("");
     setTimeout(function(){
       Ui.highlightCreatedRows(name);
-      gridManager.createdIds = [];
+      // gridManager.operatedIds = [];
     }, 300);
     window._focused = {};
     $form.dialog("destroy");
@@ -173,7 +173,7 @@ var Ui = {
   highlightCreatedRows: function(name) {
     var grid = gridManager.getGrid(name),
     createdRows = [];
-    $.each(gridManager.createdIds, function(){
+    $.each(gridManager.operatedIds, function(){
       if (grid.getRowByRecordId(this) && grid.getRowByRecordId(this).row) {
         createdRows.push(grid.getRowByRecordId(this).row);
       }

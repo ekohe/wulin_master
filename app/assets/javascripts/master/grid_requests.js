@@ -11,7 +11,7 @@ var Requests = {
    		data: createFormElement.serialize() + "&authenticity_token=" + window._token,
    		success: function(request) { 		  
 				if (request.success) {
-					gridManager.createdIds.push(request.id);
+					gridManager.operatedIds = request.id;
 					grid.loader.reloadData();
 					if (!continue_on) { 
 					  Ui.resetForm(grid.name);
@@ -161,7 +161,6 @@ var Requests = {
               data: decodeURIComponent($.param({_method: 'PUT', authenticity_token: window._token}) + '&' + $.param(checkedArr)),
               success: function(msg) {
                 if(msg.success) {
-                  grid.setSelectedRows([]);
                   grid.loader.reloadData();
                   displayNewNotification(selectedIndexes.length + ' records been updated!');
                 } else {
