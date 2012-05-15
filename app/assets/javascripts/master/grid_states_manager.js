@@ -41,13 +41,15 @@ var GridStatesManager = {
     });
     
     // save filter states when input filter value
-    grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
-      var filterJson = {};
-      $.each(args.filterData, function(index,data){
-        filterJson[data['id']] = encodeURIComponent(data['value']);
+    if(grid.filterPanel) {
+      grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
+        var filterJson = {};
+        $.each(args.filterData, function(index,data){
+          filterJson[data['id']] = encodeURIComponent(data['value']);
+        });
+        self.saveStates(grid.name, "filter", filterJson);
       });
-      self.saveStates(grid.name, "filter", filterJson);
-    });
+    }
     
     // save columns visibility when pick columns
     if(grid.picker){
