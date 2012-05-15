@@ -195,7 +195,7 @@
       grid.loader.onDataLoaded.subscribe(function(e, args){
         var data = grid.getData(), selectedIndexes = [];
         for (var i in data) {
-          if (gridManager.operatedIds.indexOf(data[i].id) != -1) {
+          if (data[i] && gridManager.operatedIds.indexOf(data[i].id) != -1) {
             selectedIndexes.push(data[i].slick_index);
           }
         }
