@@ -32,7 +32,7 @@ var createByAjax = function(grid, continue_on) {
     data: createFormElement.serialize() + "&authenticity_token=" + window._token,
     success: function(request) {      
       if (request.success) {
-        gridManager.createdIds.push(request.id);
+        gridManager.operatedIds = request.id;
         grid.loader.reloadData();
         if (!continue_on) { 
           Ui.resetForm(grid.name);
