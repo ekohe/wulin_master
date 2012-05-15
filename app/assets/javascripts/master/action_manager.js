@@ -7,7 +7,6 @@ WulinMaster.ActionManager = function(){
 
   return {
     register: function(a_obj) {
-      //console.log("Action: " + b_name + " registered!")
       actions[a_obj.name] = a_obj;
     },
 

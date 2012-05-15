@@ -2,6 +2,8 @@
 .grid_container{:id => "grid_#{grid.name}", :style => grid.style}
   - unless grid.hide_header?
     .grid-header
+      - grid.header_actions.each do |a|
+        = render "action_partials/#{a[:name]}" rescue nil
       = grid.toolbar.render
       %h2= grid.title
   .grid

@@ -68,8 +68,14 @@ module WulinMaster
       actions.map{|a| a[:name]}
     end
 
+    # the actions on the toolbar
     def toolbar_actions
       actions.reject {|action| action[:toolbar_item] == false}
+    end
+
+    # the actions on the grid header (not on the toolbar)
+    def header_actions
+      actions.select {|action| action[:toolbar_item] == false}
     end
 
     def action_names
