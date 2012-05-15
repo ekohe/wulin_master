@@ -42,6 +42,12 @@
             return value == null ? "" : (value ? 'Yes' : 'No');
         },
 
+        MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
+            // TODO: make the unit configurable
+            var currency = columnDef.currency || "$";
+            return (value) ? currency + value.toMoney(2, '.', ',') : "";
+        },
+
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
             // todo:  html encode
             var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
