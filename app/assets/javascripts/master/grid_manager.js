@@ -191,7 +191,7 @@
         gridManager.operatedIds = grid.getSelectedIds();
       });
       
-      // highlight the selected rows then empty operatedIds when grid re-rendered
+      // highlight the selected rows
       grid.loader.onDataLoaded.subscribe(function(e, args){
         var data = grid.getData(), selectedIndexes = [];
         for (var i in data) {
@@ -199,9 +199,8 @@
             selectedIndexes.push(data[i].slick_index);
           }
         }
+        // highlight selected rows, at this moment, the onSelectedRowsChanged event will be triggered so don't need to handly assign gridManager.operatedIds
         grid.setSelectedRows(selectedIndexes);
-        //Empty operatedIds when grid re-rendered
-        gridManager.operatedIds = [];
       });
       
       // Empty the operatedIds when switch grid
