@@ -173,7 +173,7 @@ var Ui = {
   highlightCreatedRows: function(name) {
     var grid = gridManager.getGrid(name),
     createdRows = [];
-    $.each(gridManager.operatedIds, function(){
+    $.each(grid.operatedIds, function(){
       if (grid.getRowByRecordId(this) && grid.getRowByRecordId(this).row) {
         createdRows.push(grid.getRowByRecordId(this).row);
       }
