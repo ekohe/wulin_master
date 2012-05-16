@@ -135,8 +135,11 @@ module WulinMaster
     end
 
     def apply_order(query, column_name, order_direction)
-      column = self.columns.find{|c| c.name.to_s == column_name.to_s or c.foreign_key == column_name.to_s }
-      column.nil? ? query : column.apply_order(query, order_direction)
+      column_name = column_name.split(".").last if column_name.include?(".")
+
+      column = self.columns.find{|c| c.name.to_s == column_name or c.foreign_key == column_name }
+      column ? column.apply_order(query, order_direction) : query
+      
     end
 
     # Returns the includes to add to the query
