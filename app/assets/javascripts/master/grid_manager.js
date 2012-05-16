@@ -10,7 +10,7 @@
 		updateElementSuffix = ' .grid-header .batch_update_button'
 		
 		grids = [],
-		operatedIds = [],
+    // operatedIds = [],
 		defaultOptions = {
 			editable: true,
 			enableAddRow: false,
@@ -85,7 +85,7 @@
 		}
 
 		function createNewGrid(name, screen, path, columns, states, actions, behaviors, extend_options) {
-		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, 
+		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
 		  gridAttrs, deleteElement, createButtonElement;
 		  options = $.extend(defaultOptions, extend_options);
 
@@ -147,7 +147,7 @@
 			pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, operatedIds: operatedIds, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
@@ -188,24 +188,19 @@
       
       // push selected IDs to operatedIds when selected row changed
       grid.onSelectedRowsChanged.subscribe(function(e, args) {
-        gridManager.operatedIds = grid.getSelectedIds();
+        grid.operatedIds = grid.getSelectedIds();
       });
       
       // highlight the selected rows
       grid.loader.onDataLoaded.subscribe(function(e, args){
         var data = grid.getData(), selectedIndexes = [];
         for (var i in data) {
-          if (data[i] && gridManager.operatedIds.indexOf(data[i].id) != -1) {
+          if (data[i] && grid.operatedIds.indexOf(data[i].id) != -1) {
             selectedIndexes.push(data[i].slick_index);
           }
         }
         // highlight selected rows, at this moment, the onSelectedRowsChanged event will be triggered so don't need to handly assign gridManager.operatedIds
         grid.setSelectedRows(selectedIndexes);
-      });
-      
-      // Empty the operatedIds when switch grid
-      grid.onViewportChanged.subscribe(function(e, args){
-        gridManager.operatedIds = [];
       });
 			
 			// ------------------------------ register callbacks for handling grid states ------------------------
@@ -320,7 +315,6 @@
 		return {
 			// properties
 			"grids": grids,
-			'operatedIds': operatedIds,
 
 			// methods
 			"createNewGrid": createNewGrid,
