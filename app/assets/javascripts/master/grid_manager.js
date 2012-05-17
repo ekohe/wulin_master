@@ -174,14 +174,6 @@
 			    displayErrorMessage(rs.msg);
 			  }
 			});
-			
-			// handle multiple grids: select one,release previou one
-      grid.onClick.subscribe(function(e, args){
-        $.each(grids, function(){
-          if (this.name != grid.name)
-            this.setSelectedRows([]);
-        });
-      });
       
       // push selected IDs to operatedIds when selected row changed
       grid.onSelectedRowsChanged.subscribe(function(e, args) {
