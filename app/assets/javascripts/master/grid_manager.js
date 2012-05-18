@@ -104,7 +104,7 @@
       GridStatesManager.restoreWidthStates(columns, states["width"]);
       
       // Set options along with actions
-		  if (actions.indexOf('edit') == -1) {
+		  if (actions.indexOf('edit') == -1 && actions.indexOf('editable') == -1) {  // temp fix for some grid which has no 'edit' action but still want to be editable
 		    options['editable'] = false;
 		  } else {
 		    options['editable'] = true;
