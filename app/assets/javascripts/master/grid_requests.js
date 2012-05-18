@@ -22,5 +22,27 @@ var Requests = {
 				}
 			}
 		});
+	},
+
+	// Delete rows along ajax 
+	deleteByAjax: function(grid, ids) {
+		$.ajax({
+			type: 'POST',
+			url: grid.path + '/' + ids + '.json',
+			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
+			success: function(msg) {
+				if(msg.success) {
+					grid.setSelectedRows([]);
+					grid.loader.reloadData();
+				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
+				  var message;
+				  if (recordSize > 1) {  message = recordSize+" records have been deleted."; }
+				    else { message = "One record has been deleted."; }
+				  displayNewNotification(message);
+				} else {
+					displayErrorMessage(msg.error_message);
+				}
+			}
+		});
 	}
 }; // Requests
