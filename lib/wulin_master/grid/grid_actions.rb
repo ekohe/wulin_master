@@ -46,9 +46,8 @@ module WulinMaster
       end
 
       # interface open to other plugins
-      def add_to_default_action(action, options={})
-        self.initialize_actions_pool
-        self.action(action, options)
+      def add_default_action(action)
+        ORIGINAL_ACTIONS << action
       end
     end
 
