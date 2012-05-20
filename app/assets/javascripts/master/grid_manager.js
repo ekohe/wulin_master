@@ -55,15 +55,15 @@
   				} else {
   					columns[i].editor = getEditorForType(columns[i].type);
   				}
-  				if (columns[i].formatter) {
-  					columns[i].formatter = eval(columns[i].formatter);
-  				} 
-					if(type_str == "date") {
-						columns[i].formatter = StandardDateCellFormatter;
-						columns[i].DateShowFormat = "yy-mm-dd";
-					} else if (type_str == "boolean") {
-						columns[i].formatter = BoolCellFormatter;
-					}
+				}
+				if (columns[i].formatter) {
+					columns[i].formatter = eval(columns[i].formatter);
+				} 
+				if(type_str == "date") {
+					columns[i].formatter = StandardDateCellFormatter;
+					columns[i].DateShowFormat = "yy-mm-dd";
+				} else if (type_str == "boolean") {
+					columns[i].formatter = BoolCellFormatter;
 				}
 				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
 					columns[i].formatter = BelongsToFormatter;
