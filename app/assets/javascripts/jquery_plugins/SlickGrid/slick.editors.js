@@ -1032,7 +1032,7 @@
             }
             // FIXME
             // Fix keyboard enter bug stupidly, find a better way please.
-            setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
+            setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
           };
 
           this.destroy = function() {
@@ -1163,7 +1163,7 @@
 
                 // FIXME
                 // Fix keyboard enter bug stupidly, find a better way please.
-                setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 200);
+                setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
             };
 
             this.destroy = function() {
@@ -1285,7 +1285,7 @@
                 $select.chosen();
               }
             }
-            setTimeout(function(){ $(".grid_container .chzn-drop").css('left', '0');}, 100);
+            setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
           };
 
           this.destroy = function() {
@@ -1407,7 +1407,7 @@
                   }
                 }
                 scope.focus();
-                setTimeout(function(){ $(".grid_container .chzn-drop:first").css('left', '0');}, 300);
+                setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
                 
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
