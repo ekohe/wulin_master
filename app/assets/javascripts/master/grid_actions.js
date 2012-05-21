@@ -13,6 +13,18 @@ var Ui = {
     });
     return editing;
   },
+  
+  // Resize grid
+  resizeGrid: function(grid) {
+    grid.resizeCanvas();
+    grid.autosizeColumns();
+    grid.filterPanel.generateFilters();
+    $(window).resize(function() { 
+      grid.resizeCanvas(); 
+      grid.autosizeColumns(); 
+      grid.filterPanel.generateFilters();
+    });
+  },
     
   //check if filter panel is open
   filterPanelOpen: function() {
