@@ -39,9 +39,9 @@ module WulinMaster
         end
       end
 
-      def load_default_actions
+      def load_default_actions(screens=nil)
         ORIGINAL_ACTIONS.reverse.each do |oa|
-          self.action(oa)
+          self.action(oa, {screens: screens})
         end
       end
 
