@@ -45,7 +45,7 @@ WulinMaster.actions.BaseAction = {
     // get the trigger element, you can override triggerElementIdentifier
     this.triggerElement = $("#content").find(this.triggerElementIdentifier);
     if(this.triggerElement.length == 0){
-      this.triggerElement = $("." + this.name + "_action");
+      this.triggerElement = $("#" + this.name + "_action_on_" + this.target.name);
     }
 
     // activate the action
