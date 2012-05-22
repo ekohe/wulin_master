@@ -52,19 +52,10 @@ module WulinMaster
     end
 
     # ----------------------- Instance Methods ------------------------------
-    
-    # return the toolbar
-    # def toolbar
-    #   self.class.toolbar
-    # end
 
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions
       self.class.actions_pool.select {|action| action[:screens].nil? or (self.params["screen"] and action[:screens].include?(self.params["screen"].intern)) }
-    end
-
-    def action_names
-      actions.map{|a| a[:name]}
     end
 
     # the actions on the toolbar
