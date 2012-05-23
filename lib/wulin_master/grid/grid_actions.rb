@@ -7,7 +7,6 @@ module WulinMaster
     included do
       class_eval do
         ORIGINAL_ACTIONS = %w(add delete edit filter)
-        #ORIGINAL_BEHAVIOR = %(update filter sort order)
 
         class << self
           attr_reader :actions_pool

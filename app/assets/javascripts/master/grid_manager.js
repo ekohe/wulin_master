@@ -160,38 +160,6 @@
 			}
 			grids.push(grid);
 			
-			
-			// ------------------------------- register events on the grid ----------------------------------------			
-			// cell update events
-			grid.onCellChange.subscribe(function(e, args){
-			  Requests.updateByAjax(this, args.item);
-			});
-			
-			// when editor validate return false
-			grid.onValidationError.subscribe(function(e,args){
-			  var rs = args.validationResults;
-			  if (rs.msg) {
-			    displayErrorMessage(rs.msg);
-			  }
-			});
-      
-      // push selected IDs to operatedIds when selected row changed
-      grid.onSelectedRowsChanged.subscribe(function(e, args) {
-        grid.operatedIds = grid.getSelectedIds();
-      });
-      
-      // highlight the selected rows
-      grid.loader.onDataLoaded.subscribe(function(e, args){
-        var data = grid.getData(), selectedIndexes = [];
-        for (var i in data) {
-          if (data[i] && grid.operatedIds.indexOf(data[i].id) != -1) {
-            selectedIndexes.push(data[i].slick_index);
-          }
-        }
-        // highlight selected rows, at this moment, the onSelectedRowsChanged event will be triggered so don't need to handly assign gridManager.operatedIds
-        grid.setSelectedRows(selectedIndexes);
-      });
-			
 			// ------------------------------ register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);

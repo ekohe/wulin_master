@@ -36,20 +36,10 @@ WulinMaster.BehaviorManager = function(){
 }();
 
 // base behavior
-WulinMaster.behaviors.BaseBehavior = function(){
-  this._isBehavior = true;
-}
-
-WulinMaster.behaviors.BaseBehavior.prototype = {
-  init : function(target) {
-    // console.log("initialize")
-    // this.target = target;
-    // this.subscribe(target);
-  }
-
-  // a behavior needs at least these two methods
-  ,subscribe : $.noop
-
-  ,unsubscribe : $.noop
+WulinMaster.behaviors.BaseBehavior = {
+  _isBehavior: true,
+  
+  subscribe : $.noop,
+  unsubscribe : $.noop
 }
 

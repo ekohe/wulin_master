@@ -4,12 +4,14 @@ require File.join(File.dirname(__FILE__), 'column')
 require File.join(File.dirname(__FILE__), 'grid_styling')
 require File.join(File.dirname(__FILE__), 'grid_columns')
 require File.join(File.dirname(__FILE__), 'grid_actions')
+require File.join(File.dirname(__FILE__), 'grid_behaviors')
 
 module WulinMaster
   class Grid
     include GridStyling
     include GridColumns
     include GridActions
+    include GridBehaviors
     
     cattr_accessor :grids
 
@@ -29,8 +31,10 @@ module WulinMaster
       # Called when the grid is subclassed
       def init
         initialize_columns
-        #initialize_toolbar
         initialize_actions_pool
+
+        initialize_behaviors_pool
+        load_default_behaviors  # load default behaviors here rather than in application code
       end
 
       [:title, :model, :path].each do |attr|
@@ -45,17 +49,6 @@ module WulinMaster
       
       def options(option = {})
         self._options = option
-      end
-      
-
-      # behavior DSL
-      def behavior(b_name, options={})
-        @behaviors ||= []
-        @behaviors << {name: b_name}.merge(options)
-      end
-
-      def behaviors
-        @behaviors
       end
     end
 
@@ -143,7 +136,6 @@ module WulinMaster
     end
 
     # State
-
     def states_for_user(user)
       return "false" if user.nil?
       result = {}
@@ -158,21 +150,6 @@ module WulinMaster
         Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
         {}.to_json
       end
-    end
-
-    # to be deprecated
-    def get_actions
-      @get_actions ||= if controller.respond_to?(:current_user) and !controller.screen.authorize_create?(controller.current_user)
-        self.class.actions.dup.delete_if {|x| %w(add edit delete update).include?(x) }
-      else
-        self.class.actions
-      end
-      
-    end
-
-    # Behaviors
-    def get_behaviors
-      self.class.behaviors.to_json
     end
     
     def hide_header?

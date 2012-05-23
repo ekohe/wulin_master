@@ -1,9 +1,11 @@
+// two columns, has_many relationship
+
 WulinMaster.behaviors.ColumnFilter = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
   event: "onDataLoaded",
 
   subscribe: function(target) {
-    var that = this;
-    target.loader[this.event].subscribe(function(){ that.handler() });
+    var self = this;
+    target.loader[this.event].subscribe(function(){ self.handler() });
   },
 
   unsubscribe: function() {
