@@ -31,9 +31,9 @@ module WulinMaster
       # Called when the grid is subclassed
       def init
         initialize_columns
-        initialize_actions_pool
+        initialize_actions
 
-        initialize_behaviors_pool
+        initialize_behaviors
         load_default_behaviors  # load default behaviors here rather than in application code
       end
 

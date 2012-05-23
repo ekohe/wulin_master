@@ -16,7 +16,7 @@ module WulinMaster
     
     # --------------------- Class Methods ----------------------------
     module ClassMethods
-      def initialize_behaviors_pool
+      def initialize_behaviors
         @behaviors_pool ||= []
       end
 
