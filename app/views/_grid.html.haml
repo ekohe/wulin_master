@@ -17,7 +17,7 @@
                                #{grid.states_for_user(current_user).html_safe},
                                #{grid.action_names.to_s.html_safe},
                                #{grid.behaviors.to_json.html_safe},
-                               #{grid.options.html_safe});
+                               #{grid.options.to_json.html_safe});
                                
 - if grid.action_names.include?('add') or grid.action_names.include?('edit')
   / Create form, try to first use the overidden form, otherwise render the default form
