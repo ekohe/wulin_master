@@ -1,6 +1,10 @@
 #navigation
-  %h1= link_to WulinMaster.config.app_title, '/'
-  #menu
+  #app_title.ui-helper-clearfix
+    - begin
+      = render file: File.join(Rails.root, 'app', 'views', 'wulin_master', '_app_title')
+    - rescue ActionView::MissingTemplate
+      = render '/app_title'
+  #menu{style: "top: #{WulinMaster.config.app_title_height}"}
     %ul
       - menu.each do |menu_entry|
         - if menu_entry.is_submenu?
