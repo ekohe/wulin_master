@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), 'toolbar')
 require File.join(File.dirname(__FILE__), 'toolbar_item')
 require File.join(File.dirname(__FILE__), 'column')
+require File.join(File.dirname(__FILE__), 'grid_options')
 require File.join(File.dirname(__FILE__), 'grid_styling')
 require File.join(File.dirname(__FILE__), 'grid_columns')
 require File.join(File.dirname(__FILE__), 'grid_actions')
@@ -8,6 +9,7 @@ require File.join(File.dirname(__FILE__), 'grid_behaviors')
 
 module WulinMaster
   class Grid
+    include GridOptions
     include GridStyling
     include GridColumns
     include GridActions
@@ -16,7 +18,7 @@ module WulinMaster
     cattr_accessor :grids
 
     # !!! Warning !!!, when use class_attribute, the subclass assign operation may change the super class attribute if it is mutable type (Array, Hash)  
-    class_attribute :controller_class, :_actions, :_title, :_model, :_path, :_hide_header, :_options  
+    class_attribute :controller_class, :_title, :_model, :_path 
 
     # Grid has been subclassed
     def self.inherited(klass)
@@ -35,20 +37,17 @@ module WulinMaster
 
         initialize_behaviors
         load_default_behaviors  # load default behaviors here rather than in application code
+
+        initialize_options
+        # default options
+        cell_editable
+        column_sortable
       end
 
       [:title, :model, :path].each do |attr|
         define_method attr do |*new_attr|
           (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
         end
-      end
-      
-      def hide_header
-        self._hide_header = true
-      end
-      
-      def options(option = {})
-        self._options = option
       end
     end
 
@@ -151,14 +150,6 @@ module WulinMaster
         {}.to_json
       end
     end
-    
-    def hide_header?
-      self.class._hide_header
-    end
-    
-    def options
-      self.class._options.to_json
-    end
-    
+
   end
 end

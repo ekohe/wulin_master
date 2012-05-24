@@ -6,9 +6,8 @@
 		pagerElementSuffix = " .pager",
 		
 		grids = [],
-    // operatedIds = [],
+
 		defaultOptions = {
-			editable: true,
 			enableAddRow: false,
 			enableCellNavigation: true,
 			asyncEditorLoading: false,
@@ -83,10 +82,11 @@
 		function createNewGrid(name, screen, path, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
 		  gridAttrs, deleteElement, createButtonElement;
+
 		  options = $.extend(defaultOptions, extend_options);
 
 			gridElement = $(gridElementPrefix + name + gridElementSuffix);
-			
+
 			// Append editor attribute to columns
 			appendEditor(columns);
       
@@ -102,13 +102,7 @@
 		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
 		  // restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
-      
-      // Set options along with actions
-		  if (actions.indexOf('edit') == -1 && actions.indexOf('editable') == -1) {  // temp fix for some grid which has no 'edit' action but still want to be editable
-		    options['editable'] = false;
-		  } else {
-		    options['editable'] = true;
-		  }
+
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
 			grid.setSelectionModel(new Slick.RowSelectionModel());
