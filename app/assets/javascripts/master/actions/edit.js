@@ -49,7 +49,7 @@ var batchUpdateByAjax = function(grid) {
         scope.off('keyup', 'input:text').on('keyup', 'input', function(e) {
           $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
         });
-        scope.off('change', 'input:checkbox').on('change', 'input:checkbox', function(e) {
+        scope.off('change', 'input:checkbox').on('change', 'input:checkbox:not(.target_flag)', function(e) {
           $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
         });
         
