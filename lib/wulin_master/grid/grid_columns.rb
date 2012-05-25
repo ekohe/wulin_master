@@ -1,12 +1,10 @@
 module WulinMaster
   module GridColumns
     extend ActiveSupport::Concern
-    
+
     included do
       class_eval do
-        class << self
-          attr_accessor :columns
-        end
+        class_attribute :columns
       end
     end
     
