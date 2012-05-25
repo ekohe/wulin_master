@@ -16,16 +16,16 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
 var batchUpdateByAjax = function(grid) {
   var ids, width, height, selectedIndexes = grid.getSelectedRows(), originTitle, newTitle,
   scope = $('#' + grid.name + '-form');
-  if ($.isEmptyObject(selectedIndexes)) {
+  if (!selectedIndexes || selectedIndexes.length == 0) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
     if (grid.extend_options) {
       width = grid.extend_options.form_dialog_width || 600;
-      height = grid.extend_options.form_dialog_height || 300;
+      height = grid.extend_options.form_dialog_height || (scope.outerHeight() + 40);
     } else {
       width = 600;
-      height = 300;
+      height = (scope.outerHeight() + 40);
     }
     originTitle = scope.attr('title');
     newTitle = originTitle.replace('Create new', 'Update');

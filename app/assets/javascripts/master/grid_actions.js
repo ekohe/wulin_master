@@ -51,16 +51,17 @@ var Ui = {
 
   // Create and open dialog
   openDialog: function(name,options) {
-    var width, height;
+    var scope, width, height;
+    scope = $( '#' + name + '-form:first' );
     if (options) {
       width = options.form_dialog_width || 600;
-      height = options.form_dialog_height || 300;
+      height = options.form_dialog_height || (scope.outerHeight() + 40);
     } else {
       width = 600;
-      height = 300;
+      height = (scope.outerHeight() + 40);
     }
     
-    $( '#' + name + '-form:first' ).dialog({
+    scope.dialog({
       height: height,
       width: width,
       show: "blind",
