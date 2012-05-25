@@ -72,9 +72,9 @@ module WulinMaster
     end
 
     def update
-      updated_attributes = get_updated_attributes(params[:item])
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
+      updated_attributes = get_updated_attributes(params[:item])
       grid.model.transaction do
         @records.each do |record|
           record.update_attributes!(updated_attributes)
@@ -223,7 +223,7 @@ module WulinMaster
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
               end
             end
-          elsif grid.model.column_names.exclude?(k.to_s) and !@record.respond_to?("#{k.to_s}=")
+          elsif grid.model.column_names.exclude?(k.to_s) and !@records.first.respond_to?("#{k.to_s}=")
             attrs.delete(k)
           end
           new_attributes[k.to_sym] = nil if v == 'null'
