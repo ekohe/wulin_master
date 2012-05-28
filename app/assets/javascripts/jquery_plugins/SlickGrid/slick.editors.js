@@ -95,9 +95,9 @@
             return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
         },
         
-      HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-      return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
-    },  
+        HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
+            return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
+        },  
         
         TextCellEditor : function(args) {
             var $input;
@@ -276,7 +276,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datepicker("hide");
-                $input.datepicker("destroy");
                 $input.remove();
             };
 
@@ -352,7 +351,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datetimepicker("hide");
-                $input.datetimepicker("destroy");
                 $input.remove();
             };
 
@@ -387,6 +385,9 @@
                 $input.datetimepicker({
                     showOn: "button",
                     buttonImageOnly: true,
+                    timeOnly: false,
+                    stepMinute: 0,
+                    minuteGrid: 0,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
@@ -438,7 +439,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datetimepicker("hide");
-                $input.datetimepicker("destroy");
                 $input.remove();
             };
 
