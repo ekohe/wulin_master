@@ -64,7 +64,7 @@
             - if column.sql_type.to_s.downcase == 'boolean'
               = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name
             - else
-              = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), "data-column" => column.name
+              = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
           .field_error
     / .actions
     /   - grid.class.actions.select{|a| a.is_a?(Hash) and a[:on] == "create" }.each do |i|
@@ -81,6 +81,8 @@
   });
   $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
   $('input[data-datetime]').datetimepicker({
+    onlyTime: false,
     dateFormat: "yy-mm-dd",
     timeFormat: 'hh:mm'
   });
+  $('input[data-time]').timepicker({});
