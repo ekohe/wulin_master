@@ -40,4 +40,12 @@ module WulinMasterGridHelper
   def time_column?(column)
     'true' if column.options[:editor] == 'TimeCellEditor'
   end
+
+  def default_hour(column)
+    column.options[:default_hour]
+  end
+
+  def default_minute(column)
+    column.options[:default_minute]
+  end
 end
