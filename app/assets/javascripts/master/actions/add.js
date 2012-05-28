@@ -9,12 +9,12 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
     Ui.openDialog(grid.name, grid.extend_options);
 
     // register 'Create' button click event, need to remove to dialog action later
-    $('#' + grid.name + '_submit').on('click', function() {
+    $('#' + grid.name + '_submit').off("click").on('click', function() {
       createByAjax(grid, false);
       return false;
     });
     // register 'Create and Continue' button click event, need to remove to dialog action later
-    $('#' + grid.name + '_submit_continue').on('click', function() {
+    $('#' + grid.name + '_submit_continue').off("click").on('click', function() {
       createByAjax(grid, true);
       return false;
     });
