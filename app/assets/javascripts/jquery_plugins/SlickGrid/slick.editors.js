@@ -95,9 +95,9 @@
             return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
         },
         
-      HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-      return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
-    },  
+        HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
+            return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
+        },  
         
         TextCellEditor : function(args) {
             var $input;
