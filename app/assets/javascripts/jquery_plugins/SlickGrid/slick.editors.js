@@ -387,6 +387,9 @@
                 $input.datetimepicker({
                     showOn: "button",
                     buttonImageOnly: true,
+                    timeOnly: false,
+                    stepMinute: 0,
+                    minuteGrid: 0,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
