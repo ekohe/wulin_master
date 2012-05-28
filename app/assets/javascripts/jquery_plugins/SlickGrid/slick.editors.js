@@ -276,7 +276,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datepicker("hide");
-                $input.datepicker("destroy");
                 $input.remove();
             };
 
@@ -352,7 +351,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datetimepicker("hide");
-                $input.datetimepicker("destroy");
                 $input.remove();
             };
 
@@ -441,7 +439,6 @@
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true,true);
                 $input.datetimepicker("hide");
-                $input.datetimepicker("destroy");
                 $input.remove();
             };
 
