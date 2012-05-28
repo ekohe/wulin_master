@@ -1,10 +1,7 @@
 module WulinMasterGridHelper
   def select_options(column)
-    # column.choices.is_a?(Array) ? column.choices : [] 
     if column.choices.is_a?(Array)
-      column.choices
-    elsif column.choices.is_a?(Hash) # TODO: support hash options
-      []
+      column.choices.map{|o| {:id => o, :name => o}}
     else
       []
     end
@@ -15,11 +12,10 @@ module WulinMasterGridHelper
   end
   
   def select_tag_options(column)
-    # column.options[:choices].is_a?(Array) ? column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe : []
     if column.options[:choices].is_a?(Array)
-      column.options[:choices].inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
+      column.options[:choices].map{|o| {:id => o, :name => o}}.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
     elsif column.options[:choices].is_a?(Hash) # TODO: support hash options
-      []
+      column.options[:choices].map{|k,v| v.inject("<option value=''></option>"){|str, e| str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"}}.inject(""){|options, x| options << x}.html_safe
     else
       []
     end

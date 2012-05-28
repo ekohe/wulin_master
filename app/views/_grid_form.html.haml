@@ -59,6 +59,21 @@
               "data-remote-path" => select_tag_fetch_path(column), |
               "data-text-attr"   => column.option_text_attribute,  |
               "data-column"      => column.name                    |
+            - if column.options[:depend_column].present?
+              :javascript
+                $(function(){
+                  var current_select_id = "#{model_name}_#{column_name}";
+                  var current_select = $("select#" + current_select_id);
+                  var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
+                  var depend_select = $("select#" + depend_select_id);
+
+                  depend_select.change(function(){
+                    var key = $(this).val();
+                    current_select.find("option").hide().trigger("liszt:updated");
+                    current_select.val("").trigger("liszt:updated");
+                    current_select.find("option[data-key=" + key + "]").show().trigger("liszt:updated");
+                  });
+                });
               
           - else
             - if column.sql_type.to_s.downcase == 'boolean'

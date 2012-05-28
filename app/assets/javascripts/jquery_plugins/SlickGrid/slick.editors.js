@@ -1230,7 +1230,28 @@
         // The editor which use jquery.chosen to allow you choose the value as select
         SelectEditor : function(args) {
           var $select, $wrapper;
-          var choicesFetchPath = args.column.choices;
+          var choicesFetchPath;
+          var choices = args.column.choices;
+
+          // if the choices option is an array, construce an select option for each element
+          if($.isArray(choices)) {
+            choicesFetchPath = $.map(choices, function(e, index){
+              return {id: e, name: e};
+            });
+          } else if($.isPlainObject(choices)) {   // else if it is an object, construct a more complex object containing select options
+            choicesFetchPath = {};
+            for(var i in choices) {
+              if($.isEmptyObject(choices[i])) {
+                choicesFetchPath[i] = [];
+              } else {
+                var option = $.map(choices[i], function(e, index) {
+                  return {id: e, name: e};
+                });
+                choicesFetchPath[i] = option;
+              }
+            }
+          }
+
           var dependColumn = args.column.depend_column;
           var defaultValue;
           var boxWidth = 200;
