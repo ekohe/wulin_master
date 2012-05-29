@@ -38,9 +38,9 @@ module WulinMaster
         end
       end
 
-      def load_default_behaviors(screens=nil)
+      def load_default_behaviors(options={})
         ORIGINAL_BEHAVIORS.each do |ob|
-          self.behavior(ob, {screens: screens})
+          self.behavior(ob, options)
         end
       end
 
@@ -54,7 +54,15 @@ module WulinMaster
 
     # the behaviors of a grid instance, filtered by screen param from class's behaviors_pool 
     def behaviors
-      self.class.behaviors_pool.select {|behavior| behavior[:screens].nil? or (self.params["screen"] and behavior[:screens].include?(self.params["screen"].intern)) }
+      self.class.behaviors_pool.select {|behavior| valid_behavior?(behavior, self.params["screen"])}
+    end
+
+    private
+
+    def valid_behavior?(behavior, screen_name)
+      (behavior[:only].blank? and behavior[:except].blank?) ||
+      (behavior[:only].present? and screen_name and behavior[:only].include?(screen_name.intern)) ||
+      (behavior[:except].present? and screen_name and behavior[:except].exclude?(screen_name.intern))
     end
     
   end
