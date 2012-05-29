@@ -53,6 +53,10 @@
             return "<span style='text-align:right;display:block'>" + text + "</span>";
         },
 
+        RightFormatter: function(row, cell, value, columnDef, dataContext) {
+            return "<span style='text-align:right;display:block'>" + value + "</span>";
+        },
+
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
             // todo:  html encode
             var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
