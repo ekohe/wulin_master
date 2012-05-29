@@ -49,12 +49,16 @@
         MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
             // TODO: make the unit configurable
             var currency = columnDef.currency || "$";
-            var text = (value) ? value.toMoney(2, '.', ',') + currency: "";
+            var text = (value) ? value.toMoney(2, '.', ',') + ' ' +currency: "";
             return "<span style='text-align:right;display:block'>" + text + "</span>";
         },
 
         RightFormatter: function(row, cell, value, columnDef, dataContext) {
             return "<span style='text-align:right;display:block'>" + value + "</span>";
+        },
+
+        CenterFormatter: function(row, cell, value, columnDef, dataContext) {
+            return "<span style='text-align:center;display:block'>" + value + "</span>";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
