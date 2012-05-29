@@ -135,7 +135,7 @@
 			query = path.split(".json")[1];
 			
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, pager: pager, operatedIds: operatedIds, states: states, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, query: query, container: gridElement.parent(), pager: pager, operatedIds: operatedIds, states: states, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
 
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
