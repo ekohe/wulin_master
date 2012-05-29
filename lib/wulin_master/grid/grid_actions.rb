@@ -38,9 +38,9 @@ module WulinMaster
         end
       end
 
-      def load_default_actions(screens=nil)
+      def load_default_actions(options={})
         ORIGINAL_ACTIONS.each do |oa|
-          self.action(oa, {screens: screens})
+          self.action(oa, options)
         end
       end
 
@@ -54,7 +54,7 @@ module WulinMaster
 
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions
-      self.class.actions_pool.select {|action| action[:screens].nil? or (self.params["screen"] and action[:screens].include?(self.params["screen"].intern)) }
+      self.class.actions_pool.select {|action| valid_actions?(action, self.params["screen"]) }  
     end
 
     # the actions on the toolbar
@@ -69,6 +69,14 @@ module WulinMaster
 
     def action_names
       actions.map {|a| a[:name].to_s}
+    end
+
+    private
+
+    def valid_actions?(action, screen_name)
+      (action[:only].blank? and action[:except].blank?) ||
+      (action[:only].present? and screen_name and action[:only].include?(screen_name.intern)) ||
+      (action[:except].present? and screen_name and action[:except].exclude?(screen_name.intern))
     end
 
   end
