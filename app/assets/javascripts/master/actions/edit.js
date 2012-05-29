@@ -67,6 +67,7 @@ var batchUpdateByAjax = function(grid) {
         }
       },
       close: function(event, ui) { 
+        Ui.resetForm(grid.name);
         $(this).find("input:text").val("");
         $(this).find(".field_error").text("");
         $(this).dialog("destroy");  
@@ -118,10 +119,15 @@ var loadValue = function(scope, data) {
       }
     } else if ($('select[data-column="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-column="' + i + '"]', scope);
+      inputBox.find('option').removeAttr('selected');
       if ($.type(data[i]) === 'string') {
         $('option[value="' + data[i] + '"]', inputBox).attr('selected', 'selected');
       } else if ($.type(data[i]) === 'object') {
         $('select[data-column="' + i + '"] option[value=' + data[i]['id'] + ']').attr('selected', 'selected');
+      } else if ($.type(data[i]) === 'array') {
+        $.each(data[i], function(index, n) {
+          $('select[data-column="' + i + '"] option[value=' + data[i][index]['id'] + ']').attr('selected', 'selected');
+        })
       }
       
       inputBox.trigger("liszt:updated");
@@ -159,11 +165,11 @@ var checkTheBox = function(scope) {
 var submitForm = function(scope, grid, ids, selectedIndexes) {
   scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     var originArr = $('form', scope).serializeArray(),
-    checkedArr,
+    checkedArr, checkedHash = {},
     objectName = $('form', scope).attr('class').replace(/new_/,'');
     
     // Collect attrs along with checked flag
-    checkedArr = $.map($('input.target_flag:visible:checked'), function(v) {
+    checkedArr = $.map($('input.target_flag:checked'), function(v) {
       var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
       name = targetInput.attr('name').replace(/.*?\[/,'item[');
       return { name: name, value: (targetInput.val() || null)};
@@ -184,14 +190,20 @@ var submitForm = function(scope, grid, ids, selectedIndexes) {
     // Merge the attrs
     checkedArr = $.extend(checkedArr, originArr);
     
+    // Convert array to object
+    $.each(checkedArr, function(index, n){
+      checkedHash[n.name] = n.value;
+    })
+    
     // Update ajax request
     $.ajax({
       type: "POST",
       dateType: 'json',
       url: grid.path + "/" + ids + ".json"+grid.query,
-      data: decodeURIComponent($.param({_method: 'PUT', authenticity_token: window._token}) + '&' + $.param(checkedArr)),
+      data: $.extend({}, {_method: 'PUT', authenticity_token: window._token}, checkedHash),
       success: function(msg) {
         if(msg.success) {
+          Ui.resetForm(grid.name);
           grid.loader.reloadData();
           displayNewNotification(selectedIndexes.length + ' records been updated!');
         } else {
