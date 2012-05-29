@@ -54,7 +54,7 @@ module WulinMaster
 
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions
-      self.class.actions_pool.select {|action| valid_actions?(action, self.params["screen"]) }  
+      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"]) }  
     end
 
     # the actions on the toolbar
@@ -73,7 +73,7 @@ module WulinMaster
 
     private
 
-    def valid_actions?(action, screen_name)
+    def valid_action?(action, screen_name)
       (action[:only].blank? and action[:except].blank?) ||
       (action[:only].present? and screen_name and action[:only].include?(screen_name.intern)) ||
       (action[:except].present? and screen_name and action[:except].exclude?(screen_name.intern))
