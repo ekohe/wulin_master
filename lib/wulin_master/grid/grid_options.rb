@@ -45,7 +45,7 @@ module WulinMaster
     # ----------------------- Instance Methods ------------------------------
     def options
       self.class.options_pool
-      .select {|option| option[:screens].nil? or (self.params["screen"] and option[:screens].include?(self.params["screen"].intern)) }
+      .select {|option| valid_option?(option, self.params["screen"])}
       .inject({}) {|h, e| h.merge(e)}
     end
 
@@ -60,6 +60,14 @@ module WulinMaster
 
     def hide_header?
       options[:hide_header] == true
+    end
+
+    private
+
+    def valid_option?(option, screen_name)
+      (option[:only].blank? and option[:except].blank?) ||
+      (option[:only].present? and screen_name and option[:only].include?(screen_name.intern)) ||
+      (option[:except].present? and screen_name and option[:except].exclude?(screen_name.intern))
     end
 
   end
