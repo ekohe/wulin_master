@@ -3,6 +3,10 @@
 (function($) {
 
     var SlickEditor = {
+      
+        TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
+            return "<div title='" + columnDef.tooltips[value] + "'>" + value + "</div>"
+        },
 
         SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
             return (!dataContext ? "" : row);
