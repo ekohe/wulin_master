@@ -1,0 +1,48 @@
+=== 0.5.2 / 2012-05-29
+
+Improvements:
+
+* Edit action enhancement, show common value when editing multiple records.
+* Enabled the virtual attribute default value load into create form. 
+* Enabled the depend columns association in create form.
+* Simplified the configuration for choices option of column.
+
+Bug fixes:
+
+* Fixed the timepicker input time parsing problem by fixing the regexp checking in timepicker plugin.
+* Fixed the column definition inheritance bug by using class attribute instead of meta class attr_accessor.
+* Fixed the datetimepicker and timepicker option polution problem.
+* Fixed the datetimepicker editor destroy problem.
+* Fixed the duplicated create requests bug in create form.
+
+
+=== 0.5.1 / 2012-05-24
+
+Improvements:
+
+* Defined default behaviors for all grids: get_operate_ids, highlight, update, validate.
+* Create GridOption module, add editable DSL method which can controll the whole grid editable or not.
+* Refactor grid columns definition, add only and except option which can controll the column apprear in which screen or not.
+* Add application title partial 
+
+=== 0.5.0 / 2012-05-22
+
+New features:
+
+* Grid action and ActionManager -- the toolbar item can be written as an action DSL in grid configuration, action logic should be written in a js file, the ActionManager will dispatch the actions to the grid in different screens.
+* The widgets on grid header can also be written as a customized action.
+* Defined default actions for all grids: add, delete, edit and filter, the load_default_actions method will load the 4 actions to a grid.
+* Grid behavior and BehaviorManager -- the grid events can be written as a behavior DSL in grid configuration, behavior logic should be written in a js file, the BehaviorManager will dispatch the behaviors to the grid in different screens.
+
+Improvements:
+
+* The toolbar is not belongs to WulinMaster::Grid class anymore, it belongs to a grid instance.
+* Enable select multiple grids in one screen.
+* Define grid.getSelectedIds() instead of UI.getSelectedIds(grid)
+* Add MoneyFormatter
+* Add TimeCellEditor
+
+Bug fix:
+
+* Fixed the bug that multiple chosen in one screen will affect each others.
+
