@@ -115,7 +115,7 @@
             var $input;
             var defaultValue;
             var scope = this;
-            var boxWidth = 250;
+            var boxWidth = args.column.width;
             var offsetWith = boxWidth + 18;
 
             this.init = function() {
@@ -196,7 +196,7 @@
             var $input;
             var defaultValue;
             var scope = this;
-            var boxWidth = 150;
+            var boxWidth = args.column.width;
             var offsetWith = boxWidth + 28;
 
             this.init = function() {
