@@ -1,0 +1,5 @@
+en:
+  activerecord:
+    errors:
+      messages:
+        restrict_dependent_destroy: "Can't delete this record because dependent %{record} exists"

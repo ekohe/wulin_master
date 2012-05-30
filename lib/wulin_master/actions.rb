@@ -88,10 +88,22 @@ module WulinMaster
     def destroy
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
+      success = true
+      error_message = ""
       grid.model.transaction do
-        @records.each {|record| record.destroy }
+        @records.each do |record| 
+          unless record.destroy
+            success = false
+            error_message << record.errors.full_messages.join("\n")
+            break
+          end
+        end
       end
-      render json: {:success => true }
+      if success
+        render json: {:success => true }
+      else
+        render json: {:success => false, :error_message => error_message}
+      end
     rescue
       render json: {:success => false, :error_message => $!.message}
     end
