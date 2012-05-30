@@ -58,6 +58,7 @@
 		
 		function generateFilters() {
 		  var inputWidth, columns, inputElement;
+		  var ua = navigator.userAgent.toLowerCase();
       // storeCurrentFilters();
 
       html = "";
@@ -79,6 +80,10 @@
         }
         
         inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1;
+        
+        if (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1) {
+          inputWidth += 2;
+        }
         
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
         
