@@ -54,12 +54,23 @@ var GridStatesManager = {
     // save columns visibility when pick columns
     if(grid.picker){
       grid.picker.onColumnsPick.subscribe(function(e, args){
-        var visibilityJson = {};
-        $.each(grid.getColumns(), function(index, column){
-          visibilityJson[index] = column.id;
+        var hiddenArr = [], hiddenJson = {}, visibilityColumns = grid.getColumns();
+        
+        visibilityColumns = $.map(visibilityColumns, function(n, i){
+            return n.id;
+        });
+        allColumns = $.map(grid.columns, function(n, i){
+            return n.id;
         });
         
-        self.saveStates(grid.name, "visibility", visibilityJson);
+        hiddenArr = $.grep(allColumns, function(n, i){
+            return visibilityColumns.indexOf(n) < 0;
+        });
+
+        $.each(hiddenArr, function(index, column){
+            hiddenJson[index] = column;
+        });
+        self.saveStates(grid.name, "visibility", hiddenArr);
       })
     }
   },
@@ -106,10 +117,10 @@ var GridStatesManager = {
 	  
 	  // push visible columns according to states
 	  for(var i in columns){
-	    var visible = false;
+	    var visible = true;
 	    for(var j in visibilityStates){
 	      if(columns[i].id == visibilityStates[j]){
-	        visible = true;
+	        visible = false;
 	        break;
 	      }
 	    }
