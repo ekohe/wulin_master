@@ -54,11 +54,11 @@
         },
 
         RightFormatter: function(row, cell, value, columnDef, dataContext) {
-            return "<span style='text-align:right;display:block'>" + value + "</span>";
+            return value == null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
         },
 
         CenterFormatter: function(row, cell, value, columnDef, dataContext) {
-            return "<span style='text-align:center;display:block'>" + value + "</span>";
+            return value == null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
