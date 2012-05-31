@@ -200,8 +200,6 @@
             var offsetWith = boxWidth + 28;
 
             this.init = function() {
-                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
-                  .appendTo(args.container);
                 $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
 
                 $input.bind("keydown.nav", function(e) {
@@ -210,12 +208,12 @@
                     }
                 });
 
-                $input.appendTo($wrapper);
+                $input.appendTo(args.container);
                 $input.focus().select();
                 var winWith = $(window).width(),
-                offsetLeft = $wrapper.offset().left;
+                offsetLeft = $input.offset().left;
                 if(winWith - offsetLeft < offsetWith)
-                  $wrapper.offset({left: winWith - offsetWith})
+                  $input.offset({left: winWith - offsetWith})
             };
 
             this.destroy = function() {
