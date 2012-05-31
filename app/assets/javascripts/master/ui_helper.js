@@ -26,9 +26,14 @@ var Ui = {
     });
   },
     
-  //check if filter panel is open
+  // Check if filter panel is open
   filterPanelOpen: function() {
     return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
+  },
+
+  // Check if can add or delete records
+  addOrDeleteLocked: function() {
+    return this.isEditing() || this.isOpen() || this.filterPanelOpen();
   },
 
   // Select grid names
@@ -197,14 +202,6 @@ var Ui = {
     }
     return currentGrid;
   },
-  
-  addAble: function(grid) {
-    return grid.actions.indexOf('add') != -1;
-  },
-  
-  deleteAble: function(grid) {
-    return grid.actions.indexOf('delete') != -1;
-	},
 	
 	formatData: function(grid, arrayData) {
 	  var data = {}, columns;
@@ -216,40 +213,3 @@ var Ui = {
 	}
 
 };
-
-
-
-// ------------------------- keypress action --------------------------------------
-(function($) {
-  $(document).on('keypress', function(e){
-    var isEditing = Ui.isEditing(),
-    isOpen = Ui.isOpen(),
-    filterPanelOpen = Ui.filterPanelOpen(),
-    grid = Ui.findCurrentGrid();
-
-    if (isOpen || isEditing || filterPanelOpen) {
-      return true;
-    }
-
-    if (grid) {
-      var ids = grid.getSelectedIds(),
-      gridSize = gridManager.grids.length;
-
-      if (Ui.deleteAble(grid) && (e.which == 100 || e.which == 68)) {  // keypress 'D' for delete
-        if (ids) {
-          Ui.deleteGrids(ids);
-          return false;
-        }
-        return false;
-      } else if (Ui.addAble(grid) && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
-        if (gridSize > 0 && grid) {
-          Ui.openDialog(grid.name, grid.extend_options);
-          return false;
-        }
-        return false;
-      } else {
-        return true;
-      }
-    }	
-  });
-})(jQuery);

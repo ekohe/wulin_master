@@ -1,11 +1,40 @@
 // ------------------------------ CRUD -------------------------------------
-var Requests = {	
+var Requests = {
+	// Record create by ajax
+	createByAjax: function(grid, continue_on) {
+	  var createFormElement = $('div#'+grid.name+'-form form');
+	  // clear all the error messages
+	  createFormElement.find(".field_error").text("");
+	  $.ajax({
+	    type:'POST',
+	    url: grid.path + '.json',
+	    data: createFormElement.serialize() + "&authenticity_token=" + window._token,
+	    success: function(request) {      
+	      if (request.success) {
+	        gridManager.operatedIds = request.id;
+	        grid.loader.reloadData();
+	        if (!continue_on) { 
+	          Ui.resetForm(grid.name);
+	          if (grid.loader.isDataLoaded()) {
+	            setTimeout(function(){
+	              Ui.closeDialog(grid.name);
+	            }, 100);
+	          }
+	        }
+	        displayNewNotification('Record successfully created!');
+	      } else {
+	        for(key in request.error_message){
+	          createFormElement.find(".field[name=" + key + "]").find(".field_error").text(request.error_message[key].join());
+	        }
+	      }
+	    }
+	  });
+	},
+
+	// Record update by ajax
 	updateByAjax: function(grid, item) {
 		delete item.slick_index;
 		var currentRow = grid.getRowByRecordId(item.id).index;
-		// format item data like time, date
-		// format_data(item);
-		// put ajax
 		$.ajax({
 			type: "POST",
 			dateType: 'json',
@@ -14,8 +43,6 @@ var Requests = {
 			success: function(msg) {
 				if(msg.success) {
 					grid.loader.reloadData();
-          // grid.loader.data[currentRow] = Ui.formatData(grid, msg["attrs"]);
-          // grid.updateRow(currentRow);
 				} else {
 					displayErrorMessage(msg.error_message);
 					grid.loader.reloadData();

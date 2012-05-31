@@ -42,6 +42,9 @@ module WulinMaster
         ORIGINAL_ACTIONS.each do |oa|
           self.action(oa, options)
         end
+        # special actions needed to be load as default
+        action :hotkey_add, visible: false
+        action :hotkey_delete, visible: false
       end
 
       # interface open to other plugins
@@ -59,7 +62,7 @@ module WulinMaster
 
     # the actions on the toolbar
     def toolbar_actions
-      actions.reject {|action| action[:toolbar_item] == false}
+      actions.reject {|action| action[:toolbar_item] == false || action[:visible] == false}
     end
 
     # the actions on the grid header (not on the toolbar)
