@@ -18,10 +18,10 @@ WulinMaster.ActionManager = function(){
       return actions[a_name];
     },
 
-    dispatchActions: function(target, actions) {
+    dispatchActions: function(target, action_names) {
       // try to find target's behaviors, and subsribe for target
-      for(var i in actions) {
-        var action = this.getAction(actions[i]);
+      for(var i in action_names) {
+        var action = this.getAction(action_names[i]);
         if(action){
           $.extend(action, {target: target});
           action.init();
@@ -66,11 +66,8 @@ WulinMaster.actions.BaseAction = {
   // can be overrided
   activate: function(){
     var self = this;
-    // this.triggerElement.bind(self.event, function(){
-    //   self.handler();
-    // })
-    this.triggerElement.off(self.event).on(self.event, function(){
-      self.handler();
+    this.triggerElement.off(self.event).on(self.event, function(e, args){
+      self.handler(e, args);
     })
   },
 
