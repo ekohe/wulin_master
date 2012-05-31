@@ -229,6 +229,11 @@ module WulinMaster
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a
               end
             elsif associations[k.to_sym].macro == :has_many
+              # Should convert association_attributes for grid cell editor ajax request.
+              if Hash === association_attributes
+                 association_attributes = association_attributes.values.map{|x| x['id']}
+              end
+              
               if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
                 new_attributes[k.to_sym] = []
               else
