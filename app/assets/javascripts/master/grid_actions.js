@@ -73,6 +73,7 @@ var Ui = {
 			  $('.btn', $(this)).show();
         $('.update_btn', $(this)).hide();
         $('.target_flag', $(this)).hide();
+        Ui.resetForm(name);
 			},
       close: function(event, ui) {
         Ui.closeDialog(name);

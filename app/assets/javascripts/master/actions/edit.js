@@ -52,7 +52,7 @@ var batchUpdateByAjax = function(grid) {
         // Switch to update button
         $('.btn', scope).hide();
         $('.update_btn', scope).show();
-        
+        Ui.resetForm(grid.name);
 
         // Fill values
         setTimeout(function(){
