@@ -17,9 +17,6 @@ module WulinMaster
     
     cattr_accessor :grids
 
-    # !!! Warning !!!, when use class_attribute, the subclass assign operation may change the super class attribute if it is mutable type (Array, Hash)  
-    class_attribute :controller_class, :_title, :_model, :_path 
-
     # Grid has been subclassed
     def self.inherited(klass)
       self.grids ||= []
@@ -30,6 +27,9 @@ module WulinMaster
     # Class methods
     # -------------------
     class << self
+      attr_reader :title, :model, :path
+      attr_accessor :controller_class
+
       # Called when the grid is subclassed
       def init
         initialize_columns
@@ -44,10 +44,16 @@ module WulinMaster
         column_sortable
       end
 
-      [:title, :model, :path].each do |attr|
-        define_method attr do |*new_attr|
-          (new_attr.size > 0) ? self.send("_#{attr}=".to_sym, new_attr.first) : self.send("_#{attr}".to_sym)
-        end
+      def title(new_title=nil)
+        new_title ? @title = new_title : @title || self.to_s.gsub(/Grid/, "")
+      end
+
+      def model(new_model=nil)
+        new_model ? @model = new_model : @model || self.title.singularize.try(:constantize)
+      end
+
+      def path(new_path=nil)
+        new_path ? @path = new_path : @path || "/#{self.title.pluralize}"
       end
     end
 
