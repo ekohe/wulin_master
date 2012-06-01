@@ -93,7 +93,7 @@ module WulinMaster
     # Helpers for SQL and Javascript generation
     # ----------
     def sql_columns
-      self.columns.map(&:sql_names).flatten.uniq.map(&:to_s)
+      self.columns.map(&:sql_names).compact.flatten.uniq.map(&:to_s)
     end
 
     def apply_filter(query, column_name, filtering_value)

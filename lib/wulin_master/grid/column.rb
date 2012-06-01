@@ -178,10 +178,14 @@ module WulinMaster
 
     # Returns the sql names used to generate the select
     def sql_names
-      if self.reflection.nil?
-        [self.model.table_name+"."+name.to_s]
+      if is_table_column?
+        if self.reflection.nil?
+          [self.model.table_name+"."+name.to_s]
+        else
+          [self.model.table_name+"."+foreign_key, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
+        end
       else
-        [self.model.table_name+"."+foreign_key, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
+        nil
       end
     end
 
