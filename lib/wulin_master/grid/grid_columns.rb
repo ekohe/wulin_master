@@ -4,19 +4,19 @@ module WulinMaster
 
     included do
       class_eval do
-        class_attribute :columns
+        class_attribute :columns_pool
       end
     end
     
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
-        self.columns ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+        self.columns_pool ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       end
       
       # Add a column
       def column(name, options={})
-        self.columns += [Column.new(name, self, options)]
+        self.columns_pool += [Column.new(name, self, options)]
       end
       
       # Remove columns for exactly screens
@@ -24,7 +24,7 @@ module WulinMaster
         return unless scope[:screen].present?
         
         r_columns = r_columns.map(&:to_s)
-        self.columns.each do |column|
+        self.columns_pool.each do |column|
           if r_columns.include? column.name.to_s
             column.options[:except] = scope[:screen]
           end
@@ -37,9 +37,9 @@ module WulinMaster
     # Returns columns
     def columns
       screen_name = params[:screen]
-      columns_pool = self.class.columns.dup
+      all_columns = self.class.columns_pool.dup
       
-      columns_pool.select do |column|
+      all_columns.select do |column|
         valid_column?(column, screen_name)
       end
     end
