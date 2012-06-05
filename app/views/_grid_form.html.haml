@@ -4,7 +4,7 @@
   datepicker_str = ''
   object = grid.model.new
   remote_paths = []
-.create_form{:id => "#{grid.name}-form", :title => "Create new #{model_name.titleize}"}
+.create_form{:id => "#{grid.name}_form", :title => "Create new #{model_name.titleize}"}
   = form_for object, :url => grid.path do |form|
     - columns.each do |column|
       - if column.options[:formable] != false

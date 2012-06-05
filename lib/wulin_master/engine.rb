@@ -1,5 +1,5 @@
 require "rails"
-
+require 'wulin_master/mapper'
 module WulinMaster
 
   class Engine < Rails::Engine

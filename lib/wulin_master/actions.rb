@@ -122,6 +122,18 @@ module WulinMaster
       end
     end
 
+    def wulin_master_new_form
+      render 'new_form', layout: false
+    rescue ActionView::MissingTemplate
+      render '/new_form', layout: false
+    end
+    
+    def wulin_master_edit_form
+      render 'edit_form', layout: false
+    rescue ActionView::MissingTemplate
+      render '/edit_form', layout: false
+    end
+
     protected
 
     def construct_filters

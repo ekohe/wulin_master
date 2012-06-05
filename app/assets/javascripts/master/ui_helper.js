@@ -55,40 +55,41 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function(name,options) {
-    var scope, width, height;
-    scope = $( '#' + name + '-form:first' );
-    if (options) {
-      width = options.form_dialog_width || 600;
-      height = options.form_dialog_height || (scope.outerHeight() + 40);
-    } else {
-      width = 600;
-      height = (scope.outerHeight() + 40);
-    }
+  openDialog: function(grid,options) {
+    var scope, width, height, name;
+    name = grid.name;
     
-    scope.dialog({
-      height: height,
-      width: width,
-      show: "blind",
-      modal: true,
-      create: function(event, ui) {
-        Ui.setupForm(name, false);
-			},
-			open: function(event, ui) {
-			  $('.btn', $(this)).show();
-        $('.update_btn', $(this)).hide();
-        $('.target_flag', $(this)).hide();
-        Ui.resetForm(name);
-			},
-      close: function(event, ui) {
-        Ui.closeDialog(name);
+    $.get(grid.path + '/wulin_master_new_form', function(data){
+      $('body').append(data);
+      
+      scope = $( '#' + name + '_form');
+      
+      if (options) {
+        width = options.form_dialog_width || 600;
+        height = options.form_dialog_height || (scope.outerHeight() + 40);
+      } else {
+        width = 600;
+        height = (scope.outerHeight() + 40);
       }
+      
+      scope.dialog({
+        height: height,
+        width: width,
+        show: "blind",
+        modal: true,
+        create: function(event, ui) {
+          Ui.setupForm(name, false);
+  			},
+        close: function(event, ui) {
+          scope.remove();
+        }
+      });
     });
   },
 
   setupForm: function(name, monitor) {
     // Fetch options of select box by ajax 
-    var  remotePath = $('#' + name + '-form #remote_paths').val().split(',');
+    var  remotePath = $('#' + name + '_form #remote_paths').val().split(',');
     window._jsonData = window._jsonData || {};
     $.each(remotePath, function(i,path){
       if ($.isEmptyObject(path)) return
@@ -112,7 +113,7 @@ var Ui = {
       }
     });
     
-    first_input = $( '#' + name + '-form input:text' ).first();
+    first_input = $( '#' + name + '_form input:text' ).first();
     if ($.isEmptyObject(first_input.attr('data-date'))) {
       first_input.focus();
     }
@@ -137,20 +138,15 @@ var Ui = {
 
   // Close dialog
   closeDialog: function(name) {
-    var $form = $( '#' + name + '-form' );
+    var $form = $( '#' + name + '_form' );
     
-    $form.find("input:text").val("");
-    $form.find(".field_error").text("");
     setTimeout(function(){
       Ui.highlightCreatedRows(name);
-      // gridManager.operatedIds = [];
     }, 300);
     window._focused = {};
+    
     $form.dialog("destroy");
-    if ($('#screen_content #' + name + '-form').size() == 0) {
-      $('body > #' + name + '-form:first').prependTo($('#screen_content'));
-      $('body > #' + name + '-form').remove();
-    }
+    $form.remove();
   },
 
 

@@ -14,70 +14,55 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
 
 
 var batchUpdateByAjax = function(grid) {
-  var ids, width, height, selectedIndexes = grid.getSelectedRows(), originTitle, newTitle,
-  scope = $('#' + grid.name + '-form');
+  var ids, name, width, height, selectedIndexes;
+  selectedIndexes = grid.getSelectedRows();
+  name = grid.name;
   if (!selectedIndexes || selectedIndexes.length == 0) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
-    if (grid.extend_options) {
-      width = grid.extend_options.form_dialog_width || 600;
-      height = grid.extend_options.form_dialog_height || (scope.outerHeight() + 40);
-    } else {
-      width = 600;
-      height = (scope.outerHeight() + 40);
-    }
-    originTitle = scope.attr('title');
-    newTitle = originTitle.replace('Create new', 'Update');
-    scope.attr('title', newTitle);
-    scope.dialog({
-      height: height,
-      width: width,
-      show: "blind",
-      modal: true,
-      create: function(event, ui) {
-        Ui.setupForm(grid.name, true);
-        
-        // Switch to update button
-        $('.btn', scope).hide();
-        $('.update_btn', scope).show();
-        
-        // Check the checkbox when update the file
-        checkTheBox(scope);
-        
-        // Submit the form
-        submitForm(scope, grid, ids, selectedIndexes);
-      },
-      open: function(event, ui) {
-        // Switch to update button
-        $('.btn', scope).hide();
-        $('.update_btn', scope).show();
-        Ui.resetForm(grid.name);
-
-        // Fill values
-        setTimeout(function(){
-          fillValues(scope, grid, selectedIndexes);
-        }, 1000)
-        
-        // Show flag checkbox
-        if (ids.length > 1) {
-          $('input.target_flag', scope).show();
-        } else {
-          $('input.target_flag', scope).hide();
-        }
-      },
-      close: function(event, ui) { 
-        Ui.resetForm(grid.name);
-        $(this).find("input:text").val("");
-        $(this).find(".field_error").text("");
-        $(this).dialog("destroy");  
-        
-        scope.attr('title', originTitle);
-        $('.btn', scope).show();
-        $('.update_btn', scope).hide();
-        $('.target_flag').hide();
+    $.get(grid.path + '/wulin_master_edit_form', function(data){
+      $('body').append(data);
+      scope = $( '#' + name + '_form');
+      
+      if (grid.extend_options) {
+        width = grid.extend_options.form_dialog_width || 600;
+        height = grid.extend_options.form_dialog_height || (scope.outerHeight() + 40);
+      } else {
+        width = 600;
+        height = (scope.outerHeight() + 40);
       }
+      
+      scope.dialog({
+        height: height,
+        width: width,
+        show: "blind",
+        modal: true,
+        create: function(event, ui) {
+          Ui.setupForm(name, true);
+
+          // Check the checkbox when update the file
+          checkTheBox(name);
+
+          // Submit the form
+          submitForm(grid, ids, selectedIndexes);
+  			},
+        open: function(event, ui) {
+
+          // Fill values
+          setTimeout(function(){
+            fillValues(scope, grid, selectedIndexes);
+          }, 1000)
+          
+          showFlagCheckBox(scope, ids)
+        },
+        close: function(event, ui) {
+          scope.dialog('destroy');
+          scope.remove();
+        }
+      });
     });
+
   }
 };
 
@@ -144,13 +129,14 @@ var showFlagCheckBox = function(scope, ids) {
   }
 };
 
-var checkTheBox = function(scope) {
+var checkTheBox = function(name) {
+  var scope = $( '#' + name + '_form');
   // Check flag when change value of the box
-  scope.off('keyup', 'input:text').on('keyup', 'input', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
+  scope.off('keyup', 'input:text').on('keyup', 'input:text', function(e) {
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
   scope.off('change', 'input:checkbox').on('change', 'input:checkbox:not(.target_flag)', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]', scope).attr('checked', 'checked');
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
   
   // Empty input box when flag change to unchecked
@@ -162,10 +148,11 @@ var checkTheBox = function(scope) {
   });
 };
 
-var submitForm = function(scope, grid, ids, selectedIndexes) {
+var submitForm = function(grid, ids, selectedIndexes) {
+  var name = grid.name, scope = $( '#' + name + '_form');
   scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     var originArr = $('form', scope).serializeArray(),
-    checkedArr, checkedHash = {},
+    checkedArr = [], checkedHash = {},
     objectName = $('form', scope).attr('class').replace(/new_/,'');
     
     // Collect attrs along with checked flag
@@ -204,6 +191,7 @@ var submitForm = function(scope, grid, ids, selectedIndexes) {
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
+          
           grid.loader.reloadData();
           displayNewNotification(selectedIndexes.length + ' records been updated!');
         } else {
@@ -211,6 +199,7 @@ var submitForm = function(scope, grid, ids, selectedIndexes) {
           grid.loader.reloadData();
         }
         scope.dialog("destroy"); 
+        scope.remove();
       }
     });
     return false;

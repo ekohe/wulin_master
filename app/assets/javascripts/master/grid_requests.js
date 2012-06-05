@@ -2,7 +2,7 @@
 var Requests = {
 	// Record create by ajax
 	createByAjax: function(grid, continue_on) {
-	  var createFormElement = $('div#'+grid.name+'-form form');
+	  var createFormElement = $('div#'+grid.name+'_form form');
 	  // clear all the error messages
 	  createFormElement.find(".field_error").text("");
 	  $.ajax({
@@ -14,7 +14,7 @@ var Requests = {
 	        gridManager.operatedIds = request.id;
 	        grid.loader.reloadData();
 	        if (!continue_on) { 
-	          Ui.resetForm(grid.name);
+	          // Ui.resetForm(grid.name);
 	          if (grid.loader.isDataLoaded()) {
 	            setTimeout(function(){
 	              Ui.closeDialog(grid.name);
