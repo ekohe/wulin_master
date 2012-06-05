@@ -5,7 +5,7 @@
     var SlickEditor = {
       
         TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-            return "<div title='" + columnDef.tooltips[value] + "'>" + value + "</div>"
+            return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>"
         },
 
         SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
