@@ -100,6 +100,8 @@ var Ui = {
 
   setupForm: function(name, monitor) {
     var  remotePath;
+    $('#' + name + '_form .chzn-select:not([data-remote-path])').chosen();
+    
     if ($('#' + name + '_form #remote_paths').val()) {
       // Fetch options of select box by ajax 
       remotePath = $('#' + name + '_form #remote_paths').val().split(',');
@@ -125,11 +127,11 @@ var Ui = {
           Ui.setupChosen(path, monitor);
         }
       });
+    }
     
-      first_input = $( '#' + name + '_form input:text' ).first();
-      if ($.isEmptyObject(first_input.attr('data-date'))) {
-        first_input.focus();
-      }
+    first_input = $( '#' + name + '_form input:text' ).first();
+    if ($.isEmptyObject(first_input.attr('data-date'))) {
+      first_input.focus();
     }
   },
   
