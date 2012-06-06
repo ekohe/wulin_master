@@ -1,57 +1,53 @@
 module WulinMaster
   class Screen
-    
-    cattr_reader :screens
-    class << self
-      alias_method :all, :screens
-      attr_accessor :grids, :title, :path
-    end
-    @@screens = []
 
+    cattr_accessor :screens
+
+    # subclass inherited
     def self.inherited(subclass)
-      subclass.grids = []
-      subclass.title = nil
-      subclass.path = "/" + subclass.name.sub(/Screen$/, "").tableize
-      @@screens << subclass unless @@screens.include?(subclass)
+      # add new subclass screen to screens pool
+      self.screens ||= []
+      self.screens << subclass unless self.screens.include?(subclass)
+
+      # ???
       subclass.send :include, Rails.application.routes.url_helpers
+
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
-
-    class_attribute :_title, :_path, :_grid_classes, :controller_class
-
+    # ---------------------- metaclass, define some DSL methods -------------------------------
     class << self
+      #alias_method :all, :screens
+      attr_reader :title, :path, :grid_configs
+      attr_accessor :controller_class
 
-      # Sets or return a title for the grid or the screen depending on the context
       def title(new_title=nil)
-        self._title = new_title if new_title # sets the new title if there's any
-        self._title || self.to_s.gsub(/Screen/, "")
+        new_title ? @title = new_title : @title || self.to_s.gsub(/Screen/, "")
       end
 
       def path(new_path=nil)
-        self._path = new_path if new_path
-        self._path
+        new_path ? @path = new_path : @path || self.title.tableize
+        # TODO
+        # in last circle of refactoring, the screen path can be the same-named action path of screens_controller
       end
 
-      def grid_classes
-        self._grid_classes
-      end
-
-      # Add a grid to a screen
-      def grid(klass)        
-        self._grid_classes ||= []
-        self._grid_classes << klass
+      # Add a grid config to a screen
+      def grid(klass, options={})        
+        @grid_configs ||= []
+        @grid_configs << {class: klass}.merge(options) if klass
       end
     end
-    
+
+    # -------------------------------- Instance methods ---------------------------------------
+    attr_accessor :grids, :controller, :params
     
     def initialize(params, controller_instance)
-      self.controller = controller_instance
-      self.params = params
+      @controller = controller_instance
+      @params = params
       @grids = []
-      self.class.grid_classes.each do |grid_class|
-        @grids << grid_class.new(params, controller_instance)
-      end if self.class.grid_classes
+      self.class.grid_configs.each do |grid_config|
+        @grids << grid_config[:class].new(params, controller_instance, grid_config)
+      end unless self.class.grid_configs.blank?
     end
     
     def path
@@ -62,8 +58,6 @@ module WulinMaster
     def name
       self.class.name.sub(/Screen$/, "").underscore
     end
-    
-    attr_accessor :grids, :controller, :params
     
     # Security
     def authorized?(user)

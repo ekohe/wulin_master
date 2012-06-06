@@ -5,21 +5,23 @@ module WulinMaster
 
     respond_to :html, :json
 
+    # ----------------------------- Meta Class Methods ----------------------------------
     class << self
+      attr_accessor :screen_class, :grid_class, :callbacks
+      
       def controller_for_screen(klass)
         self.screen_class = klass
         klass.controller_class = self
-        load_actions
+        #@callbacks = {}
+        include_actions
       end
 
       def controller_for_grid(klass)
-        self.grid_class = klass
-        klass.controller_class = self
-        @callbacks = {}
-        load_actions
+        # self.grid_class = klass
+        # klass.controller_class = self
+        # @callbacks = {}
+        # include_actions
       end
-
-      attr_accessor :screen_class, :grid_class, :callbacks
 
       # Callbacks
       #
@@ -43,11 +45,17 @@ module WulinMaster
       end
       
       # Load actions
-      def load_actions
+      def include_actions
         self.send(:include, WulinMaster::Actions)
       end
     end
 
+    # ???
+    def self.current_user
+      current_user
+    end
+
+    # -------------------------------- Instance Methods -------------------------------
     # Returns and initializes if necessary a screen object
     def screen
       return @screen if defined?(@screen)
@@ -60,29 +68,17 @@ module WulinMaster
         rescue Exception => e
         end
       end
-      
+
       @screen = screen_class.new(params, self)
     end
 
     # Returns and initializes if necessary a grid object
     def grid
-      return @grid if defined?(@grid)
-      grid_class = self.class.grid_class
-
       if params[:grid]
-        begin
-          if params[:grid].constantize <= self.class.grid_class  # Check if subclass or class itself.
-            grid_class = params[:grid].constantize
-          end
-        rescue Exception => e
-        end
+        screen.grids.select {|grid| grid.class.to_s == params[:grid]}.first
+      else
+        screen.grids.first
       end
-      Rails.logger.info "Grid is a #{grid_class}"
-      @grid = grid_class.new(params, self)
-    end
-    
-    def self.current_user
-      current_user
     end
 
     def render_grid(grid_name)

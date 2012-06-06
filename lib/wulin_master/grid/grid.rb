@@ -61,7 +61,7 @@ module WulinMaster
     # --------------------
     attr_accessor :controller, :params, :toolbar
 
-    def initialize(params, controller_instance)
+    def initialize(params, controller_instance, config)
       self.params = params
       self.controller = controller_instance
       initialize_toolbar
