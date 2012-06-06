@@ -1,3 +1,27 @@
+=== 0.5.3 / 2012-06-06
+
+Improvements:
+
+* Edit action enhancement - implemented has_many column.
+* Grid action and behavior - use :only and :except instead of :screens option.
+* Add container attribute to grid, represent the dom element of the grid container.
+* Grid state - save hidden columns in the grid state instead of visible columns, so that the new added columns can be shown.
+* Provide meaningful error message for deleting things which has has_many :dependent => :restrict relationship.
+* Make the integerCellEditor as wide as the column width
+* Creation form, loaded from remote instead of a hidden div showing, so that can prefill default values.
+* Improved the findCurrentGrid function for the case of multiple grids in one screen.
+* Add 'Synchronize' icon.
+
+Bug fixes:
+
+* Fixed the Editor width bug, the width should always be at least the width of the column itself.
+* Fixed the filter panel input width bug on Window and Unix.
+* Fixed the error when updating column within has_many association.
+* Fixed the add and delete action triggered by hotkey. ('C' for add, 'D' for delete)
+* Fixed the bug of new created record not showing in the bottom of grid.
+* Fixed a common bug of grid columns, grid actions, grid behaviors - when given no screen params, should load all columns & actions & behaviors
+
+
 === 0.5.2 / 2012-05-29
 
 Improvements:
@@ -24,6 +48,7 @@ Improvements:
 * Create GridOption module, add editable DSL method which can controll the whole grid editable or not.
 * Refactor grid columns definition, add only and except option which can controll the column apprear in which screen or not.
 * Add application title partial 
+
 
 === 0.5.0 / 2012-05-22
 
