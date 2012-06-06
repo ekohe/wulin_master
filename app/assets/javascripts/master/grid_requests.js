@@ -13,12 +13,11 @@ var Requests = {
 	      if (request.success) {
 	        grid.operatedIds = [request.id];
 	        grid.loader.reloadData();
-	        if (!continue_on) { 
-	          // Ui.resetForm(grid.name);
+	        if (continue_on) {
+	          Ui.refreshCreateForm(grid);
+	        } else {
 	          if (grid.loader.isDataLoaded()) {
-	            setTimeout(function(){
-	              Ui.closeDialog(grid.name);
-	            }, 100);
+	            setTimeout(function(){ Ui.closeDialog(grid.name); }, 100);
 	          }
 	        }
 	        displayNewNotification('Record successfully created!');

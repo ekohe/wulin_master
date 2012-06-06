@@ -46,6 +46,16 @@ var Ui = {
       }
     });
   },
+  
+  // Refresh create form when continue create new record
+  refreshCreateForm: function(grid) {
+    var name = grid.name;
+    $.get(grid.path + '/wulin_master_new_form', function(data){
+      newFormDom = $(data);
+      $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
+      setTimeout(function(){ Ui.setupForm(name, false); }, 350)
+    });
+  },
 
   // Reset form
   resetForm: function(name) {
@@ -89,34 +99,37 @@ var Ui = {
   },
 
   setupForm: function(name, monitor) {
-    // Fetch options of select box by ajax 
-    var  remotePath = $('#' + name + '_form #remote_paths').val().split(',');
-    window._jsonData = window._jsonData || {};
-    $.each(remotePath, function(i,path){
-      if ($.isEmptyObject(path)) return
+    var  remotePath;
+    if ($('#' + name + '_form #remote_paths').val()) {
+      // Fetch options of select box by ajax 
+      remotePath = $('#' + name + '_form #remote_paths').val().split(',');
+      window._jsonData = window._jsonData || {};
+      $.each(remotePath, function(i,path){
+        if ($.isEmptyObject(path)) return
       
-      var first_input, target = $("select[data-remote-path='" + path + "']"),
-      textAttr = target.attr('data-text-attr');
-      target.empty();
-      if ($.isEmptyObject(window._jsonData[path])) {
-        $.getJSON(path, function(itemdata){
-          window._jsonData[path] = itemdata;
-          $.each(itemdata, function(index, value) {
+        var first_input, target = $("select[data-remote-path='" + path + "']"),
+        textAttr = target.attr('data-text-attr');
+        target.empty();
+        if ($.isEmptyObject(window._jsonData[path])) {
+          $.getJSON(path, function(itemdata){
+            window._jsonData[path] = itemdata;
+            $.each(itemdata, function(index, value) {
+              target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+            });
+            Ui.setupChosen(path, monitor);
+          });
+        } else {
+          $.each(window._jsonData[path], function(index, value) {
             target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
           });
           Ui.setupChosen(path, monitor);
-        });
-      } else {
-        $.each(window._jsonData[path], function(index, value) {
-          target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
-        });
-        Ui.setupChosen(path, monitor);
-      }
-    });
+        }
+      });
     
-    first_input = $( '#' + name + '_form input:text' ).first();
-    if ($.isEmptyObject(first_input.attr('data-date'))) {
-      first_input.focus();
+      first_input = $( '#' + name + '_form input:text' ).first();
+      if ($.isEmptyObject(first_input.attr('data-date'))) {
+        first_input.focus();
+      }
     }
   },
   
