@@ -182,7 +182,7 @@ var Ui = {
   // Find the selected grid
   findCurrentGrid: function() {
     var currentGrid = null;
-    currentGridContainer = $('.grid_container:visible');
+    currentGridContainer = $( document.activeElement ).parents('.grid_container');
     if (currentGridContainer.size() == 0) {
       return null;
     }
