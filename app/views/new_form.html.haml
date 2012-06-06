@@ -1,5 +1,5 @@
 - grid = controller.screen.grids.first
-- if grid.action_names.include?('add')
+- if grid.action_names.include?('add') || grid.action_names.include?('hotkey_add') 
   :ruby
     model_name = grid.model.name.underscore
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }

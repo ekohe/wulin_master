@@ -54,6 +54,7 @@ module WulinMaster
 
     # the behaviors of a grid instance, filtered by screen param from class's behaviors_pool 
     def behaviors
+      return self.class.behaviors_pool if self.params["screen"].blank?
       self.class.behaviors_pool.select {|behavior| valid_behavior?(behavior, self.params["screen"])}
     end
 
