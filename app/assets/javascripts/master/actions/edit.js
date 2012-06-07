@@ -139,6 +139,11 @@ var checkTheBox = function(name) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
   
+  // Date picker \ datetime picker \ time picker
+  scope.off('change', 'input.hasDatepicker').on('change', 'input.hasDatepicker', function(e) {
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
+  });
+  
   // Empty input box when flag change to unchecked
   scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
     if ($.isEmptyObject($(this).attr('checked'))) {
