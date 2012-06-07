@@ -105,7 +105,12 @@ var Ui = {
     $('#' + name + '_form input[data-datetime]').datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
-      timeFormat: 'hh:mm'
+      timeFormat: 'hh:mm',
+      timeOnly: false,
+      stepMinute: 0,
+      minuteGrid: 0,
+      beforeShow: function() { calendarOpen = true },
+      onClose: function() { calendarOpen = false }
     });
     $('#' + name + '_form input[data-time]').timepicker({});
     
