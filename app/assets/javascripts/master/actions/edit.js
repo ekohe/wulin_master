@@ -164,12 +164,22 @@ var submitForm = function(grid, ids, selectedIndexes) {
     checkedArr = $.map($('input.target_flag:checked'), function(v) {
       var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
       name = targetInput.attr('name').replace(/.*?\[/,'item[');
-      return { name: name, value: (targetInput.val() || null)};
+      if (targetInput.attr('type') == 'checkbox')  {// Handle for checkbox(blooean column)
+        if (targetInput.attr('checked') == 'checked') {
+          return { name: name, value: '1'};
+        } else {
+          return { name: name, value: '0'};
+        }
+      } else {
+        return { name: name, value: (targetInput.val() || null)};
+      }
     });
     
     // Collect valid form attrbutes
     originArr = $.grep(originArr, function(v, i) {
-      return $('input.target_flag:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope).attr('checked') == 'checked'
+      var flagDom;
+      flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope);
+      return (flagDom.size() < 0)  || flagDom.attr('checked') == 'checked';
     });
     
     // Replace objectName to item, like user[posts][] => item[posts][]
