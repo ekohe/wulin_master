@@ -45,9 +45,12 @@ module WulinMaster
       @controller = controller_instance
       @params = params
       @grids = []
+
       self.class.grid_configs.each do |grid_config|
-        @grids << grid_config[:class].new(params, controller_instance, grid_config)
-      end unless self.class.grid_configs.blank?
+        grid_class = grid_config[:class]
+        config = grid_config.reject{|k,v| k == :class}
+        @grids << grid_class.new(params, controller_instance, config) if grid_class
+      end
     end
     
     def path

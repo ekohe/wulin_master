@@ -17,6 +17,8 @@ module WulinMaster
     
     cattr_accessor :grids
 
+    DEFAULT_CONFIG = {fill_window: true}
+
     # Grid has been subclassed
     def self.inherited(klass)
       self.grids ||= []
@@ -59,16 +61,34 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :controller, :params, :toolbar
+    attr_accessor :controller, :params, :toolbar, :custom_config
 
     def initialize(params, controller_instance, config)
       self.params = params
       self.controller = controller_instance
+      self.custom_config = config
+      
       initialize_toolbar
+      apply_default_config
+      apply_custom_config
     end
 
     def initialize_toolbar
       self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
+    end
+
+    def apply_default_config
+      DEFAULT_CONFIG.each do |k,v|
+        self.class.send(k,v) if self.class.respond_to?(k)
+      end
+    end
+
+    def apply_custom_config
+      self.custom_config.each do |k,v|
+        if self.class.respond_to?(k) and self.class.method(k).arity != 0    # if grid class respond to the config method and it is a writter method
+          self.class.send(k, v)
+        end
+      end
     end
 
     # Grid Properties that can be overriden
