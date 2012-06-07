@@ -16,7 +16,7 @@
                                #{grid.javascript_column_model.html_safe},
                                #{grid.states_for_user(current_user).html_safe},
                                #{grid.action_names.to_s.html_safe},
-                               #{grid.behaviors.to_json.html_safe},
+                               #{grid.behavior_names.to_json.html_safe},
                                #{grid.options.to_json.html_safe});
                                
 / - if grid.action_names.include?('add') or grid.action_names.include?('edit')

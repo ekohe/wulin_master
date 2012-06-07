@@ -19,16 +19,12 @@ WulinMaster.BehaviorManager = function(){
       return behaviors[b_name];
     },
 
-    dispatchBehaviors: function(target, behaviors_config) {
+    dispatchBehaviors: function(target, behavior_names) {
       // try to find target's behaviors, and subsribe for target
-      for(var i in behaviors_config) {
-        var behavior = this.getBehavior(behaviors_config[i].name);
+      for(var i in behavior_names) {
+        var behavior = this.getBehavior(behavior_names[i]);
         if(behavior){
-          $.extend(behavior, behaviors_config[i]);
-          // if the behavior defined in the grid on a particular screen, or on all screen (no screens defined)
-          if(behavior.screens == undefined || behavior.screens.indexOf(target.screen) >= 0){ 
-            behavior.subscribe(target);
-          }
+          behavior.subscribe(target);
         }
       }
     }

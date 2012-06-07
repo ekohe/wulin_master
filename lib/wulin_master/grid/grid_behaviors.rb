@@ -23,7 +23,7 @@ module WulinMaster
       # behavior DSL, add a behavior to the behaviors_pool
       def behavior(b_name, options={})
         new_behavior = {name: b_name}.merge(options)
-        @behaviors_pool << new_behavior
+        @behaviors_pool << new_behavior unless @behaviors_pool.include?(new_behavior)
       end
 
       def add_behaviors(*args)
@@ -56,6 +56,10 @@ module WulinMaster
     def behaviors
       return self.class.behaviors_pool if self.params["screen"].blank?
       self.class.behaviors_pool.select {|behavior| valid_behavior?(behavior, self.params["screen"])}
+    end
+
+    def behavior_names
+      behaviors.map {|b| b[:name].to_s}
     end
 
     private
