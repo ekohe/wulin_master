@@ -87,9 +87,7 @@
       = hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(','))
 
   :javascript
-    $('.chzn-select:not([data-remote-path])').chosen().change(function(){
-      $('.target_flag[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
-    });
+    $('.chzn-select:not([data-remote-path])').chosen();
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

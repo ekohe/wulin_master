@@ -101,6 +101,13 @@ var Ui = {
   setupForm: function(name, monitor) {
     var  remotePath;
     $('#' + name + '_form .chzn-select:not([data-remote-path])').chosen();
+    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#' + name + '_form input[data-datetime]').datetimepicker({
+      onlyTime: false,
+      dateFormat: "yy-mm-dd",
+      timeFormat: 'hh:mm'
+    });
+    $('#' + name + '_form input[data-time]').timepicker({});
     
     if ($('#' + name + '_form #remote_paths').val()) {
       // Fetch options of select box by ajax 
