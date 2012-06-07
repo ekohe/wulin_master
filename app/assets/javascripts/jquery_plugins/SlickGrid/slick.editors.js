@@ -396,7 +396,7 @@
                     showOn: "button",
                     buttonImageOnly: true,
                     timeOnly: false,
-                    stepMinute: 0,
+                    stepMinute: 1,
                     minuteGrid: 0,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true },

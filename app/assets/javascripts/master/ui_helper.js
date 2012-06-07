@@ -107,7 +107,7 @@ var Ui = {
       dateFormat: "yy-mm-dd",
       timeFormat: 'hh:mm',
       timeOnly: false,
-      stepMinute: 0,
+      stepMinute: 1,
       minuteGrid: 0,
       beforeShow: function() { calendarOpen = true },
       onClose: function() { calendarOpen = false }
