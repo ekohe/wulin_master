@@ -118,7 +118,8 @@ var Ui = {
       
         var first_input, target = $("select[data-remote-path='" + path + "']"),
         textAttr = target.attr('data-text-attr');
-        target.empty();
+        // target.empty();
+        $('option[value!=""]', target).remove();
         if ($.isEmptyObject(window._jsonData[path])) {
           $.getJSON(path, function(itemdata){
             window._jsonData[path] = itemdata;
