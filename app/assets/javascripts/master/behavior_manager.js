@@ -21,11 +21,12 @@ WulinMaster.BehaviorManager = function(){
       return $.extend({}, behavior_proto);
     },
 
-    dispatchBehaviors: function(target, behavior_names) {
+    dispatchBehaviors: function(target, behavior_configs) {
       // try to find target's behaviors, and subsribe for target
-      for(var i in behavior_names) {
-        var behavior = this.getBehavior(behavior_names[i]);
+      for(var i in behavior_configs) {
+        var behavior = this.getBehavior(behavior_configs[i].name);
         if(behavior){
+          $.extend(behavior, behavior_configs[i]);
           behavior.subscribe(target);
         }
       }

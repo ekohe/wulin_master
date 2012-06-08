@@ -58,6 +58,11 @@ module WulinMaster
       self.class.behaviors_pool.select {|behavior| valid_behavior?(behavior, self.params["screen"])}
     end
 
+    # return the behavior with options, except the :only or :except option
+    def behavior_configs
+      behaviors.map {|b| b.reject{|k,v| k == :only or k == :except} }
+    end
+
     def behavior_names
       behaviors.map {|b| b[:name].to_s}
     end
