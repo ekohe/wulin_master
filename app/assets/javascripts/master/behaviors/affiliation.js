@@ -4,11 +4,11 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
   event: "onSelectedRowsChanged",
 
   subscribe: function(target) {
-    this.detail_grid = target;
     var self = this;
-    var master_grid = gridManager.getGrid(self.master_grid_name);
+    this.detail_grid = target;
+    this.master_grid = gridManager.getGrid(self.master_grid_name);
 
-    master_grid[this.event].subscribe(function(){ self.handler() });
+    this.master_grid[this.event].subscribe(function(){ self.handler() });
   },
 
   unsubscribe: function() {
@@ -17,7 +17,11 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
 
   handler: function() {
     // get the selected id, then filter the detail grid
-    
+    var masterIds = this.master_grid.getSelectedIds();
+    if(masterIds.length != 1) return false;
+
+    var association_key = this.through;
+    this.detail_grid.loader.addFilter(association_key, masterIds[0]);
   }
 
 });
