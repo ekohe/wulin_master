@@ -6,6 +6,7 @@ require File.join(File.dirname(__FILE__), 'grid_styling')
 require File.join(File.dirname(__FILE__), 'grid_columns')
 require File.join(File.dirname(__FILE__), 'grid_actions')
 require File.join(File.dirname(__FILE__), 'grid_behaviors')
+require File.join(File.dirname(__FILE__), 'grid_relation')
 
 module WulinMaster
   class Grid
@@ -14,6 +15,7 @@ module WulinMaster
     include GridColumns
     include GridActions
     include GridBehaviors
+    include GridRelation
     
     cattr_accessor :grids
 
@@ -85,8 +87,13 @@ module WulinMaster
 
     def apply_custom_config
       self.custom_config.each do |k,v|
-        if self.class.respond_to?(k) and self.class.method(k).arity != 0    # if grid class respond to the config method and it is a writter method
-          self.class.send(k, v)
+        arguments_count = self.class.method(k).arity
+        if self.class.respond_to?(k) and arguments_count != 0    # if grid class respond to the config method and it is a writter method
+          if arguments_count == 1
+            self.class.send(k, v)
+          elsif arguments_count == -2   # if this method accept options, pass the grid's params as options
+            self.class.send(k, v, self.params)
+          end
         end
       end
     end
