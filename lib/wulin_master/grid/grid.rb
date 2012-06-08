@@ -63,7 +63,7 @@ module WulinMaster
     # --------------------
     attr_accessor :controller, :params, :toolbar, :custom_config
 
-    def initialize(params, controller_instance, config)
+    def initialize(params={}, controller_instance=nil, config={})
       self.params = params
       self.controller = controller_instance
       self.custom_config = config
@@ -113,7 +113,13 @@ module WulinMaster
     end
 
     def name
-      self.class.to_s.sub('Grid', '').underscore
+      grid_name = self.class.to_s.sub('Grid', '').underscore
+      screen_name = self.params[:screen].constantize.new.name if self.params[:screen]
+      if screen_name.nil? or screen_name == grid_name
+        grid_name
+      else
+        "#{grid_name}_in_#{screen_name}"
+      end
     end
 
     # Helpers for SQL and Javascript generation

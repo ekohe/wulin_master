@@ -41,7 +41,7 @@ module WulinMaster
     # -------------------------------- Instance methods ---------------------------------------
     attr_accessor :grids, :controller, :params
     
-    def initialize(params, controller_instance)
+    def initialize(params={}, controller_instance=nil)
       @controller = controller_instance
       @params = params
       @grids = []
