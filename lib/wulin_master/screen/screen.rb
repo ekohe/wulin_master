@@ -26,7 +26,7 @@ module WulinMaster
       end
 
       def path(new_path=nil)
-        new_path ? @path = new_path : @path || self.title.tableize
+        new_path ? @path = new_path : @path || self.to_s.gsub(/Screen/, "").underscore.pluralize
         # TODO
         # in last circle of refactoring, the screen path can be the same-named action path of screens_controller
       end
