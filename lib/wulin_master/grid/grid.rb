@@ -59,7 +59,7 @@ module WulinMaster
       end
 
       def path(new_path=nil)
-        new_path ? @path = new_path : @path || "/#{self.title.pluralize}"
+        new_path ? @path = new_path : @path || self.to_s.gsub(/Grid/, "").underscore.pluralize
       end
     end
 
