@@ -8,7 +8,7 @@ module WulinMaster
         if options[:screen]
           detail_model = self.model
           master_grid = grid_klass.constantize.new({screen: options[:screen]})
-          through = options[:through] || detail_model.reflections[master_grid.model.to_s.downcase.intern].foreign_key
+          through = options[:through] || detail_model.reflections[master_grid.model.to_s.underscore.intern].foreign_key
 
           # call affiliation behavior
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through
