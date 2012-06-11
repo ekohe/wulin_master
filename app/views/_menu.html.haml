@@ -6,7 +6,7 @@
       = render '/app_title'
   #menu{style: "top: #{WulinMaster.config.app_title_height}"}
     %ul
-      - menu.each do |menu_entry|
+      - controller.menu.each do |menu_entry|
         - if menu_entry.is_submenu?
           %li.submenu
             %a{:href => "#"}
@@ -17,6 +17,17 @@
                 %li.item= link_to submenu_entry.title, submenu_entry.path
         - else
           %li.itme= link_to menu_entry.title, menu_entry.path
+  
+  - if defined?(WulinOAuth)
+    #user_nav
+      #user_email 
+        User: 
+        %span.email= User.current_user.email
+      #user_action
+        = link_to 'Change Password', WulinOAuth.configuration['change_password_uri'] || 'javascript: alert("Set change_password_uri in config/wulin_oauth.yml");', class: 'left btn action'
+        = link_to 'Logout', logout_path, class: 'btn action'
+
+  
   #activity
     %h2 Activity
     #indicators
