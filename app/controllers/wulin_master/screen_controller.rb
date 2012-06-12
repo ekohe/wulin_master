@@ -5,14 +5,17 @@ module WulinMaster
 
     respond_to :html, :json
 
+    # When the controller has been subclassed
+    # def self.inherited(klass)
+
+    # end
+
     # ----------------------------- Meta Class Methods ----------------------------------
     class << self
-      attr_accessor :screen_class, :grid_class, :callbacks
+      attr_accessor :screen_classes, :grid_class, :callbacks
       
-      def controller_for_screen(klass)
-        self.screen_class = klass
-        klass.controller_class = self
-        #@callbacks = {}
+      def controller_for_screen(*args)
+        self.screen_classes = args
         include_actions
       end
 
@@ -24,8 +27,6 @@ module WulinMaster
       end
 
       # Callbacks
-      #
-
       def add_callback(name, method_name=nil)
         @callbacks ||= {}
         @callbacks[name] ||= []
@@ -58,18 +59,17 @@ module WulinMaster
     # -------------------------------- Instance Methods -------------------------------
     # Returns and initializes if necessary a screen object
     def screen
-      return @screen if defined?(@screen)
-      screen_class = self.class.screen_class
-      if params[:screen]
-        begin
-          if params[:screen].constantize <= self.class.screen_class  # Check if subclass or class itself.
-            screen_class = params[:screen].constantize
-          end
-        rescue Exception => e
-        end
+      screen_class = if params[:screen]
+        #if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
+          params[:screen].constantize
+        # else
+        #   raise "Can't find a proper screen for the controller"
+        # end
+      else
+        self.class.screen_classes.first
       end
 
-      @screen = screen_class.new(params, self)
+      screen_class.new(params, self)
     end
 
     # Returns and initializes if necessary a grid object
