@@ -113,7 +113,7 @@ features.
     # app/<asset_folder_name>/controllers/posts_controller.rb
     class PostsController < WulinMaster::ScreenController
       controller_for_screen PostScreen
-      controller_for_grid PostGrid
+
       add_callback :query_filters_ready, :add_scope
       add_callback :query_ready, :state_filter
       

@@ -19,13 +19,6 @@ module WulinMaster
         include_actions
       end
 
-      def controller_for_grid(klass)
-        # self.grid_class = klass
-        # klass.controller_class = self
-        # @callbacks = {}
-        # include_actions
-      end
-
       # Callbacks
       def add_callback(name, method_name=nil)
         @callbacks ||= {}
