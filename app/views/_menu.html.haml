@@ -31,3 +31,5 @@
   #activity
     %h2 Activity
     #indicators
+    #db_info
+      = Rails.configuration.database_configuration[Rails.env]["database"]
