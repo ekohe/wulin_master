@@ -70,9 +70,9 @@ module WulinMaster
           end
         end
       end
-
+      
       if self.reflection
-        if option_text_attribute =~ /(_)?id$/
+        if option_text_attribute =~ /(_)?id$/ or column_type(self.reflection.klass, self.option_text_attribute) == :integer
           return query.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value)
         else
           return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
@@ -332,6 +332,12 @@ module WulinMaster
 
 
     private
+    
+    def column_type(model, column_name)
+      all_columns = model.respond_to?(:all_columns) ? model.all_columns : model.columns
+      column = all_columns.find {|col| col.name.to_s == column_name.to_s}
+      (column.try(:type) || :unknown).to_s.to_sym
+    end
     
     def extract_data(datetime, index=nil)
       if index
