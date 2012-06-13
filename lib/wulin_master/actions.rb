@@ -253,9 +253,10 @@ module WulinMaster
               end
             end
           elsif grid.model.column_names.exclude?(k.to_s) and !@records.first.respond_to?("#{k.to_s}=")
-            attrs.delete(k)
+            attrs.delete_if {|key, value| key.to_s == k.to_s }
+          elsif v == 'null'
+            new_attributes[k.to_sym] = nil
           end
-          new_attributes[k.to_sym] = nil if v == 'null'
         end
         attrs.merge!(new_attributes)
         attrs
