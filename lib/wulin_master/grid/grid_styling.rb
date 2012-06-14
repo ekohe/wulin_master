@@ -7,47 +7,60 @@ module WulinMaster
         FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
 
         class << self
-          attr_reader :_height, :_width, :_styles, :_fill_window
+          attr_reader :styles_pool
         end
       end
     end
     
     module ClassMethods
+      def initialize_styles
+        @styles_pool = {}
+      end  
+
       # Set new grid height
-      def height(new_height)
-        fill_window false
-        @_height = new_height
-        @_styles << "height: #{@_height};"
+      def height(new_height, options={})
+        fill_window(false, options)
+        height_str = "height: #{new_height};"
+
+        add_style(height_str, options[:screen])
       end
 
       # Set new grid width
-      def width(new_width)
-        fill_window false
-        @_width = new_width
-        @_styles << "width: #{@_width};"
+      def width(new_width, options={})
+        fill_window(false, options)
+        width_str = "width: #{new_width};"
+
+        add_style(width_str, options[:screen])
       end
 
       # Set fill window mode
-      def fill_window(value=true)
-        @_fill_window = value
-        @_styles ||= []
-        value ? (@_styles << FILL_WINDOW_CSS unless @_styles.include?(FILL_WINDOW_CSS)) : @_styles.delete(FILL_WINDOW_CSS)
-      end
-      
-      # Returns true if set to fill window. The template will just render the first grid of the screen.
-      def fill_window?
-        @_fill_window == true
+      def fill_window(value=true, options={})
+        value ? add_style(FILL_WINDOW_CSS, options[:screen]) : remove_style(FILL_WINDOW_CSS, options[:screen])
       end
       
       # Set custom CSS
-      def css(style)
-        @_styles ||= []
-        @_styles << style.to_s
+      def css(style, options={})
+        add_style(style.to_s, options[:screen])
       end
-      
-      # Return style to apply to the grid container
-      def style
-        @_styles.join(' ')
+
+      # Add a style into grid of different screens
+      def add_style(style_str, screen)
+        if screen
+          @styles_pool[screen] ||= []
+          @styles_pool[screen] << style_str unless @styles_pool[screen].include?(style_str)
+        else
+          @styles_pool[:_common] ||= []
+          @styles_pool[:_common] << style_str unless @styles_pool.include?(style_str)
+        end
+      end
+
+      # Remove a style from a grid
+      def remove_style(style_str, screen)
+        if screen and @styles_pool[screen]
+          @styles_pool[screen].delete(style_str)
+        elsif @styles_pool[:_common]
+          @styles_pool[:_common].delete(style_str)
+        end
       end
     end
     
@@ -55,12 +68,26 @@ module WulinMaster
 
     # Return style to apply to the grid container
     def style
-      self.class.style
+      return "" if self.class.styles_pool.blank?
+
+      common_style = self.class.styles_pool[:_common] || []
+      if screen = self.params.try(:[], :screen)
+        (self.class.styles_pool[screen] + common_style).uniq.join(" ")
+      else
+        common_style.join(" ")
+      end
     end
     
     # Returns true if set to fill window. The template will just render the first grid of the screen.
     def fill_window?
-      self.class.fill_window?
+      return true if self.class.styles_pool.blank?
+
+      common_style = self.class.styles_pool[:_common] || []
+      if screen = self.params.try(:[], :screen)
+        (self.class.styles_pool[screen] + common_style).include? FILL_WINDOW_CSS
+      else
+        common_style.include? FILL_WINDOW_CSS
+      end
     end
   end
 end
