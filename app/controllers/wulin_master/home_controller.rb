@@ -10,7 +10,7 @@ module WulinMaster
             begin
               render :template => 'homepage/dashboard', :layout => false
             rescue
-              render :text => ''
+              render '/blank', :layout => false
             end
           else
             begin
