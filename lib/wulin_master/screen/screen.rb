@@ -39,18 +39,23 @@ module WulinMaster
     end
 
     # -------------------------------- Instance methods ---------------------------------------
-    attr_accessor :grids, :controller, :params
+    attr_accessor :controller, :params
     
     def initialize(params={}, controller_instance=nil)
       @controller = controller_instance
       @params = params
-      @grids = []
+    end
 
+    def grids
+      return @grids if defined?(@grids)
+      
+      @grids = []
       self.class.grid_configs.each do |grid_config|
         grid_class = grid_config[:class]
         config = grid_config.reject{|k,v| k == :class}
-        @grids << grid_class.new(params, controller_instance, config) if grid_class
+        @grids << grid_class.new(true, @params, @controller_instance, config) if grid_class
       end
+      @grids
     end
     
     def path
