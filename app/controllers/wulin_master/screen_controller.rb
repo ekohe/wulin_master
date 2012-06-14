@@ -52,6 +52,8 @@ module WulinMaster
     # -------------------------------- Instance Methods -------------------------------
     # Returns and initializes if necessary a screen object
     def screen
+      return @screen if defined?(@screen)
+
       screen_class = if params[:screen]
         #if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
           params[:screen].constantize
@@ -62,7 +64,7 @@ module WulinMaster
         self.class.screen_classes.first
       end
 
-      screen_class.new(params, self)
+      @screen = screen_class.new(params, self)
     end
 
     # Returns and initializes if necessary a grid object
@@ -72,12 +74,6 @@ module WulinMaster
       else
         screen.grids.first
       end
-    end
-
-    def render_grid(grid_name)
-      return "Grid not found '#{grid_name}'" unless screen.grids.map(&:name).include?(grid_name.to_sym)
-      grid = screen.grids.find {|grid| grid.name == grid_name}
-      grid.render
     end
     
     private
