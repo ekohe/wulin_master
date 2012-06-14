@@ -25,7 +25,7 @@
         %span.email= User.current_user.email
       #user_action
         = link_to 'Change Password', WulinOAuth.configuration['change_password_uri'] || 'javascript: alert("Set change_password_uri in config/wulin_oauth.yml");', class: 'left btn action'
-        = link_to 'Logout', logout_path, class: 'btn action'
+        = link_to 'Logout', logout_path, class: 'btn action', id: 'logout_btn'
 
   
   #activity
@@ -33,3 +33,10 @@
     #indicators
     #db_info
       = Rails.configuration.database_configuration[Rails.env]["database"]
+      
+:javascript
+  $(function(){
+    $('#logout_btn').on('click', function(){
+      window.open('#{WulinOAuth.configuration['logout_uri']}');
+    })
+  })
