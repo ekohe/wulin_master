@@ -18,10 +18,4 @@
                                #{grid.action_names.to_s.html_safe},
                                #{grid.behavior_configs.to_json.html_safe},
                                #{grid.options.to_json.html_safe});
-                               
-/ - if grid.action_names.include?('add') or grid.action_names.include?('edit')
-/   / Create form, try to first use the overidden form, otherwise render the default form
-/   - begin
-/     = render 'grid_form', :grid => grid
-/   - rescue ActionView::MissingTemplate
-/     = render '/grid_form', :grid => grid
+
