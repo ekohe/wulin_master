@@ -69,13 +69,13 @@ module WulinMaster
     # --------------------
     attr_accessor :controller, :params, :custom_config, :toolbar
 
-    def initialize(render, params={}, controller_instance=nil, config={})
+    def initialize(params={}, controller_instance=nil, config={})
       self.params = params
       self.controller = controller_instance
       self.custom_config = config
 
-      # if render the grid, need to initialize toolbar or configs, else, just assign the attributes like above
-      if render
+      # if not json request, it needs to initialize toolbar and configs, else, just assign the attributes like above
+      if params[:format] != "json"
         # first apply default configs, then apply custom configs
         apply_default_config
         apply_custom_config unless self.custom_config.blank?

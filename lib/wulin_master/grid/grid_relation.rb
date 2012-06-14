@@ -7,7 +7,7 @@ module WulinMaster
       def master_grid(grid_klass, options={})
         if options[:screen]
           detail_model = self.model
-          master_grid = grid_klass.constantize.new(false, {screen: options[:screen]})
+          master_grid = grid_klass.constantize.new({screen: options[:screen], format:'json'})   # format as json to skip the toolbar and styling initialize
           through = options[:through] || detail_model.reflections[master_grid.model.to_s.underscore.intern].foreign_key
 
           # call affiliation behavior
