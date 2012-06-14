@@ -48,6 +48,8 @@ module WulinMaster
         # default options
         cell_editable
         column_sortable
+
+        initialize_styles
       end
 
       def title(new_title=nil)
@@ -65,38 +67,20 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :controller, :params, :toolbar, :custom_config
+    attr_accessor :controller, :params, :custom_config, :toolbar
 
-    def initialize(params={}, controller_instance=nil, config={})
+    def initialize(render, params={}, controller_instance=nil, config={})
       self.params = params
       self.controller = controller_instance
       self.custom_config = config
-      
-      initialize_toolbar
-      apply_default_config
-      apply_custom_config
-    end
 
-    def initialize_toolbar
-      self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
-    end
+      # if render the grid, need to initialize toolbar or configs, else, just assign the attributes like above
+      if render
+        # first apply default configs, then apply custom configs
+        apply_default_config
+        apply_custom_config unless self.custom_config.blank?
 
-    def apply_default_config
-      DEFAULT_CONFIG.each do |k,v|
-        self.class.send(k,v) if self.class.respond_to?(k)
-      end
-    end
-
-    def apply_custom_config
-      self.custom_config.each do |k,v|
-        arguments_count = self.class.method(k).arity
-        if self.class.respond_to?(k) and arguments_count != 0    # if grid class respond to the config method and it is a writter method
-          if arguments_count == 1
-            self.class.send(k, v)
-          elsif arguments_count == -2   # if this method accept options, pass the grid's params as options
-            self.class.send(k, v, self.params)
-          end
-        end
+        initialize_toolbar
       end
     end
 
@@ -174,6 +158,35 @@ module WulinMaster
     def javascript_column_model
       @javascript_column_model = self.columns.collect(&:to_column_model).to_json
     end
-    
+
+
+    private
+
+    def initialize_toolbar
+      self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
+    end
+
+    def apply_default_config
+      DEFAULT_CONFIG.each do |k,v|
+        apply_config(k,v)
+      end
+    end
+
+    def apply_custom_config
+      self.custom_config.each do |k,v|
+        apply_config(k,v)
+      end
+    end
+
+    # calling a config
+    def apply_config(key, value)
+      if self.class.respond_to?(key) and (arguments_count = self.class.method(key).arity) != 0    # if grid class respond to the config method and it is a writter method
+        if arguments_count == 1
+          self.class.send(key, value)
+        elsif arguments_count == -1 or arguments_count == -2  # if this method accept options, pass the grid's params as options
+          self.class.send(key, value, self.params)
+        end
+      end
+    end
   end
 end
