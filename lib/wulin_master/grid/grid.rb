@@ -94,15 +94,16 @@ module WulinMaster
     end
 
     def path
-      # This should be better put together. What if there's already a parameter in the path? that would break
-      self.class.path + "?grid=#{self.class.to_s}" 
+      uri = URI.parse(self.class.path)
+      uri.query = [uri.query, "grid=#{self.class.to_s}"].compact.join('&')
+      uri.to_s
     end           
     
-    def path_for_json(params)                
-      # This is also pretty fragile.          
-      path = self.class.path + ".json?grid=#{self.class.to_s}"
-      params.each_pair {|k,v| path += "&#{CGI.escape(k)}=#{CGI.escape(v)}"}
-      path
+    def path_for_json(params)
+      uri = URI.parse(self.path).dup
+      uri.path << ".json"
+      uri.query = [uri.query, CGI.unescape(params.to_query)].compact.join('&')
+      uri.to_s
     end
 
     def name
