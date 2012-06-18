@@ -32,10 +32,10 @@
       }
       
       triggerElement.click(function() {
-        if ($($grid.getHeaderRow()).is(":visible"))
+        if ($($grid.getHeaderRow()).is(":visible")) {
             $grid.hideHeaderRowColumns();
-        else
-        {   
+            trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
+        } else {   
             $grid.showHeaderRowColumns();
             // This corrects the scrollLeft of the filter secondary header row.
             // The problem is that if the user scrolls on the left then click on filter, the
@@ -158,6 +158,7 @@
 		$.extend(this, {
         // Events
         "onFilterLoaded":                     new Slick.Event(),
+        'onFilterPanelClosed':                new Slick.Event(),
         
         // Methods
         'generateFilters':                    generateFilters, 

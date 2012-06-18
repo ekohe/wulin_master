@@ -49,6 +49,12 @@ var GridStatesManager = {
         });
         self.saveStates(grid.name, "filter", filterJson);
       });
+      
+      grid.filterPanel.onFilterPanelClosed.subscribe(function(e, args){
+        $(grid.getHeaderRow()).find('input[type="text"]').val('');
+        self.saveStates(grid.name, "filter", {});
+        grid.loader.setFilter([]);
+      });
     }
     
     // save columns visibility when pick columns
