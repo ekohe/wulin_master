@@ -81,7 +81,9 @@
 
 		function createNewGrid(name, screen, path, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
-		  gridAttrs, deleteElement, createButtonElement;
+		  gridAttrs, deleteElement, createButtonElement, originColumns;
+		  
+      originColumns = clone(columns);
 
 		  options = $.extend(defaultOptions, extend_options);
 
@@ -135,7 +137,22 @@
 			query = path.split(".json")[1];
 			
 			// Append necessary attributes to the grid
-			gridAttrs = {name: name, screen: screen, loader: loader, path: pathWithoutQuery, columns: columns, query: query, container: gridElement.parent(), pager: pager, operatedIds: operatedIds, states: states, filterPanel: filterPanel, actions: actions, extend_options: extend_options};
+			gridAttrs = {
+			  name: name, 
+			  screen: screen, 
+			  loader: loader, 
+			  path: pathWithoutQuery, 
+			  columns: columns, 
+			  query: query, 
+			  container: gridElement.parent(), 
+			  pager: pager, 
+			  operatedIds: operatedIds, 
+			  states: states, 
+			  filterPanel: filterPanel, 
+			  actions: actions, 
+			  extend_options: extend_options,
+			  originColumns: originColumns
+			};
 
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
@@ -159,6 +176,18 @@
         GridStatesManager.onStateEvents(grid);
         
 		} // createNewGrid
+		
+		function clone(myObj){
+      if(typeof(myObj) != 'object') return myObj;
+      if(myObj == null) return myObj;
+
+      var myNewObj = new Object();
+
+      for(var i in myObj)
+         myNewObj[i] = clone(myObj[i]);
+
+      return myNewObj;
+    }
 		
 
 		function createLoadingIndicator(gridElement) {
