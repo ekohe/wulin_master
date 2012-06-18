@@ -19,7 +19,12 @@ module WulinMaster
       end  
 
       def option(option)
-        @options_pool << option
+        # turn option["screen"] to option[:only]
+        option[:only] = [option["screen"].intern] if option["screen"]
+        # simplify options by removing useless options
+        ["action", "controller", "screen"].each {|o| option.delete(o)}
+
+        @options_pool << option unless @options_pool.include?(option)
       end 
       
       def options(*args)
@@ -40,18 +45,22 @@ module WulinMaster
       def hide_header(value=true, options={})
         option({hide_header: value}.merge options)
       end
+
+      def eager_loading(value=true, options={})
+        option({eagerLoading: value}.merge options)
+      end
     end
 
     # ----------------------- Instance Methods ------------------------------
     def options
       self.class.options_pool
       .select {|option| valid_option?(option, self.params["screen"])}
-      .inject({}) {|h, e| h.merge(e)}
+      .inject({}) {|h, e| h.merge(e.reject{|k,v| k == :only or k == :except})}
     end
 
     # helpers
     def cell_editable?
-      options[:editabled] == true
+      options[:editable] == true
     end
 
     def column_sortable?

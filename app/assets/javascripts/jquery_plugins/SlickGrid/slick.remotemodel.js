@@ -37,7 +37,8 @@
       //  Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
-        ensureData(vp.top, vp.bottom);
+        if(grid.options.eagerLoading != false)
+          ensureData(vp.top, vp.bottom);
       });
       
       grid.onSort.subscribe(function(e, args){
@@ -188,7 +189,7 @@
 		  
       var url = urlData[0];      
       var normalLoading = urlData[1];
-            
+      
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
       loadingIndicator.loadingSize = pageSize == 0 ? loadingSize : pageSize;
       connectionManager.createConnection(url, loadingIndicator, onSuccess, onError);

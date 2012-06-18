@@ -25,9 +25,9 @@ var batchUpdateByAjax = function(grid) {
       $('body').append(data);
       scope = $( '#' + name + '_form');
       
-      if (grid.extend_options) {
-        width = grid.extend_options.form_dialog_width || 600;
-        height = grid.extend_options.form_dialog_height || (scope.outerHeight() + 40);
+      if (grid.options) {
+        width = grid.options.form_dialog_width || 600;
+        height = grid.options.form_dialog_height || (scope.outerHeight() + 40);
       } else {
         width = 600;
         height = (scope.outerHeight() + 40);

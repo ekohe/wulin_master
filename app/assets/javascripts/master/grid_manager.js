@@ -85,7 +85,7 @@
 		  
       originColumns = clone(columns);
 
-		  options = $.extend(defaultOptions, extend_options);
+		  options = $.extend({}, defaultOptions, extend_options);
 
 			gridElement = $(gridElementPrefix + name + gridElementSuffix);
 
@@ -94,76 +94,76 @@
       
       // Apply current filters
       path = GridStatesManager.applayFilters(path, states["filter"]);
+      pathWithoutQuery = path.split(".json")[0];
+			query = path.split(".json")[1];
 
       // Set Loader
 			loader = new Slick.Data.RemoteModel(path, columns);
-		
-			// restore the order states to columns
+
+			// Set Pager
+			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
+			pager = new Slick.Controls.Pager(loader, grid, pagerElement);
+
+			// Restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
-			// restore the visibility states to columns
+			// Restore the visibility states to columns
 		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
-		  // restore the width states to columns
+		  // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
 			// ------------------------- Create Grid ------------------------------------
 			grid = new Slick.Grid(gridElement, loader.data, columns, options);
-			grid.setSelectionModel(new Slick.RowSelectionModel());
-			
+
+			// Append necessary attributes to the grid
+			gridAttrs = {
+				name: name, 
+				screen: screen, 
+				loader: loader, 
+				path: pathWithoutQuery, 
+				columns: columns,
+				originColumns: originColumns, 
+				query: query, 
+				container: gridElement.parent(), 
+				pager: pager, 
+				operatedIds: operatedIds, 
+				states: states, 
+				filterPanel: filterPanel, 
+				actions: actions, 
+				options: options
+			};
+      for(var attr in gridAttrs) {
+        grid[attr] = gridAttrs[attr];
+      }
+
+      // Set selection model
+      grid.setSelectionModel(new Slick.RowSelectionModel());
+
+      // Set ColumnPicker
+			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+
+			// Load data into grid
 			loader.setGrid(grid);
 		  
-			// create loading indicator on the activity panel
-			loader.setLoadingIndicator(createLoadingIndicator(gridElement));
+			// Create loading indicator on the activity panel, if not eager loading, hide the indicator
+			var isHide = (grid.options.eagerLoading == false);
+			loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
 			
-			// restore the sorting states to grid
+			// Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
-			
-			// Set Pager
-			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-			pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       
-      
-			// Set ColumnPicker
-			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
-			
 			// Set grid body height after rendering
 			setGridBodyHeight(gridElement);
 			grid.resizeCanvas();
 
-
 			// Load the first page
 			grid.onViewportChanged.notify();		
-			
-			pathWithoutQuery = path.split(".json")[0];
-			query = path.split(".json")[1];
-			
-			// Append necessary attributes to the grid
-			gridAttrs = {
-			  name: name, 
-			  screen: screen, 
-			  loader: loader, 
-			  path: pathWithoutQuery, 
-			  columns: columns, 
-			  query: query, 
-			  container: gridElement.parent(), 
-			  pager: pager, 
-			  operatedIds: operatedIds, 
-			  states: states, 
-			  filterPanel: filterPanel, 
-			  actions: actions, 
-			  extend_options: extend_options,
-			  originColumns: originColumns
-			};
-
-      for(var attr in gridAttrs) {
-        grid[attr] = gridAttrs[attr];
-      }
       
-      // dispatch actions
+      // Dispatch actions
       WulinMaster.ActionManager.dispatchActions(grid, actions);
-      // dispatch behaviors
+      // Dispatch behaviors
 			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
-      // delete old grid if exsisting, then add grid
+      // Delete old grid if exsisting, then add grid
 			for(var i in grids){
 				if(grid.name == grids[i].name){
 					grids.splice(i, 1);
@@ -171,7 +171,7 @@
 			}
 			grids.push(grid);
 			
-			// ------------------------------ register callbacks for handling grid states ------------------------
+			// ------------------------------ Register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);
         
@@ -190,7 +190,7 @@
     }
 		
 
-		function createLoadingIndicator(gridElement) {
+		function createLoadingIndicator(gridElement, isHide) {
 			var truncateThreshold = 35,
 			parent = gridElement.parent(".grid_container"),
 			id = parent.attr("id"),
@@ -198,7 +198,6 @@
 			
 			indicators = $("#activity #indicators"), 
 			indicator;
-			
 			
 			if (title.length > truncateThreshold) {
 				title = title.substring(0, truncateThreshold-2) + "..."
@@ -209,7 +208,7 @@
 			indicator = indicators.find(".loading_indicator#" + id);
 
 			if (indicator.length == 0) {
-				indicator = $(buildIndicatorHtml(id, title, "")).appendTo(indicators);
+				indicator = $(buildIndicatorHtml(id, title, isHide)).appendTo(indicators);
 				// Init counter
 				indicator.data("requestCount", 0);
 			}
@@ -217,8 +216,8 @@
 			return indicator;
 		}
 
-		function buildIndicatorHtml(id, title){
-			return "<div class='loading_indicator' id='" + id + "_indicator'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
+		function buildIndicatorHtml(id, title, isHide){
+			return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
 		}
 
 		function getGrid(name) {

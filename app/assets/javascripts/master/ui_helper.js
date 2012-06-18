@@ -65,7 +65,7 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function(grid,options) {
+  openDialog: function(grid, options) {
     var scope, width, height, name;
     name = grid.name;
     

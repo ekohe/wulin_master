@@ -5,7 +5,7 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
 
   handler: function() {
     var grid = this.getGrid();
-    Ui.openDialog(grid, grid.extend_options);
+    Ui.openDialog(grid, grid.options);
 
     // register 'Create' button click event, need to remove to dialog action later
     $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function() {
