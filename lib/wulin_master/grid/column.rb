@@ -151,7 +151,7 @@ module WulinMaster
 
     def reflection_options
       if @options[:choices].present?
-        choices = @options[:choices].to_json
+        choices = @options[:choices]
       else
         choices = self.choices
       end
