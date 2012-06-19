@@ -69,11 +69,13 @@ module WulinMaster
 
     # Returns and initializes if necessary a grid object
     def grid
-      if params[:grid]
-        screen.grids.select {|grid| grid.class.to_s == params[:grid]}.first
+      @grid = if params[:grid]
+        screen.grids.find {|grid| grid.class.to_s == params[:grid]}
       else
-        screen.grids.first
+        screen.grids.find {|grid| grid.model.to_s.underscore.pluralize == controller_name}
       end
+      # if can't find, return the first grid
+      @grid || screen.grids.first
     end
     
     private
