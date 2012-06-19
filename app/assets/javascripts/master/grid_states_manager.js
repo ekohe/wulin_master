@@ -156,7 +156,9 @@ var GridStatesManager = {
 	restoreSortingStates: function(grid, loader, sortingStates) {
 	  if(sortingStates){
       grid.setSortColumn(sortingStates["sortCol"], sortingStates["sortDir"] == 1);
-	    loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
+	    if(grid.options.eagerLoading != false){
+        loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
+      }
 	  }    
 	},
 	

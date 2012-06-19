@@ -37,8 +37,9 @@
       //  Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
-        if(grid.options.eagerLoading != false)
+        if(grid.options.eagerLoading != false){
           ensureData(vp.top, vp.bottom);
+        }
       });
       
       grid.onSort.subscribe(function(e, args){
