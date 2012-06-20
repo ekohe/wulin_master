@@ -5,9 +5,13 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
 
   subscribe: function(target) {
     var self = this;
-    this.detail_grid = target;
-    this.master_grid = gridManager.getGrid(self.master_grid_name);
 
+    this.detail_grids = this.detail_grids || [];
+    if(this.detail_grids.indexOf(target) < 0) {
+      this.detail_grids.push(target);
+    }
+    
+    this.master_grid = gridManager.getGrid(self.master_grid_name);
     this.master_grid[this.event].subscribe(function(){ self.handler() });
   },
 
@@ -21,7 +25,9 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     if(masterIds.length != 1) return false;
 
     var association_key = this.through;
-    this.detail_grid.loader.addFilter(association_key, masterIds[0]);
+    for(var i in this.detail_grids) {
+      this.detail_grids[i].loader.addFilter(association_key, masterIds[0]);
+    }
   }
 
 });
