@@ -52,8 +52,12 @@ module WulinMaster
     def apply_filter(query, filtering_value)
       return query if filtering_value.blank?
 
-      if is_table_column? || self.reflection
-        complete_column_name = self.reflection ? "#{self.reflection.klass.table_name}.#{self.name}" : "#{model.table_name}.#{self.name}"
+      if @options[:sql_expression]
+        complete_column_name = "#{model.table_name}.#{@options[:sql_expression]}"
+      elsif is_table_column?
+        complete_column_name = "#{model.table_name}.#{self.name}"
+      elsif self.reflection
+        complete_column_name = "#{self.reflection.klass.table_name}.#{self.name}"
       else
         complete_column_name = self.name
       end
@@ -72,7 +76,9 @@ module WulinMaster
       end
       
       if self.reflection
-        if option_text_attribute =~ /(_)?id$/ or column_type(self.reflection.klass, self.option_text_attribute) == :integer
+        if @options[:sql_expression]
+          return query.where(["UPPER(#{@options[:sql_expression]}) LIKE UPPER(?)", filtering_value+"%"])
+        elsif option_text_attribute =~ /(_)?id$/ or column_type(self.reflection.klass, self.option_text_attribute) == :integer
           return query.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value)
         else
           return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
@@ -116,7 +122,9 @@ module WulinMaster
 
     def apply_order(query, direction)
       return query unless ["ASC", "DESC"].include?(direction)
-      if self.reflection
+      if @options[:sql_expression]
+        query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
+      elsif self.reflection
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
         query.order("#{model.table_name}.#{@name} #{direction}, #{model.table_name}.id ASC")
