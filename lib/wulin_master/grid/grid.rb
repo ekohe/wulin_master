@@ -185,7 +185,12 @@ module WulinMaster
         if arguments_count == 1
           self.class.send(key, value)
         elsif arguments_count == -1 or arguments_count == -2  # if this method accept options, pass the grid's params as options
-          self.class.send(key, value, self.params)
+          # when argument_count is -1, sometimes it can accept self.params (like :fill_window), sometimes it can't (like :title)
+          begin
+            self.class.send(key, value, self.params)
+          rescue 
+            self.class.send(key, value)
+          end
         end
       end
     end
