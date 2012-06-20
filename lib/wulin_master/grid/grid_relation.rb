@@ -8,7 +8,9 @@ module WulinMaster
         if options[:screen]
           detail_model = self.model
           master_grid = master_grid_klass.constantize.new({screen: options[:screen], format:'json'})   # format as json to skip the toolbar and styling initialize
-          through = options[:through] || detail_model.reflections[master_grid.model.to_s.underscore.intern].foreign_key
+          through = options[:through] || 
+                    detail_model.reflections[master_grid.model.to_s.underscore.intern].try(:foreign_key) ||     # detail_model belongs_to master_model
+                    detail_model.reflections[master_grid.model.to_s.underscore.pluralize.intern].try(:foreign_key)    # detail_model has_many master_model
 
           # disable the multiSelect for master grid
           master_grid_klass.constantize.options_pool << {:multiSelect => false, :only => [options[:screen].intern]}
