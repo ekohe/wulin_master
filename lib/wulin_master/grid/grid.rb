@@ -33,7 +33,7 @@ module WulinMaster
     # Class methods
     # -------------------
     class << self
-      attr_reader :title, :model, :path
+      attr_reader :model, :path, :titles_pool
       attr_accessor :controller_class
 
       # Called when the grid is subclassed
@@ -52,16 +52,23 @@ module WulinMaster
         initialize_styles
       end
 
-      def title(new_title=nil)
-        new_title ? @title = new_title : @title || self.to_s.gsub(/Grid/, "")
-      end
-
       def model(new_model=nil)
         new_model ? @model = new_model : @model || self.title.singularize.try(:constantize)
       end
 
       def path(new_path=nil)
         new_path ? @path = new_path : @path || self.to_s.gsub(/Grid/, "").underscore.pluralize
+      end
+
+      # title setter and getter
+      def title(new_title=nil, options={})
+        @titles_pool ||= {}
+        screen = options[:screen] 
+        if new_title 
+          screen ? @titles_pool[screen] = new_title : @titles_pool[:_common] = new_title
+        else
+          (screen ? @titles_pool[screen] : @titles_pool[:_common]) || self.to_s.gsub(/Grid/, "")
+        end
       end
     end
 
@@ -86,7 +93,7 @@ module WulinMaster
 
     # Grid Properties that can be overriden
     def title
-      self.class.title || self.class.to_s.humanize
+      self.class.title(nil, self.params)
     end
 
     def model
