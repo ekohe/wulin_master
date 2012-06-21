@@ -25,7 +25,7 @@
         %span.email= User.current_user.email
       #user_action
         = link_to 'Change Password', '#', class: 'left btn action', id: 'change_password_btn'
-        = link_to 'Logout', logout_path, class: 'btn action', id: 'logout_btn'
+        = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'
         
       #change_password_dialog(title="Change password" style="display: none;")
         %iframe(frameborder='0' marginheight='0' height='500px' width='500px' src='#{WulinOAuth.configuration['change_password_uri']}' scrolling='no')
@@ -37,10 +37,6 @@
       
 :javascript
   $(function(){
-    $('#logout_btn').on('click', function(){
-      window.open('#{WulinOAuth.configuration['logout_uri']}');
-    });
-    
     $('#change_password_btn').on('click', function(){
       $('#change_password_dialog').dialog({
         autoOpen: true,
