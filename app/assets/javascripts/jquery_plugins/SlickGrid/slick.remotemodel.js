@@ -37,11 +37,20 @@
       //  Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
-        if(grid.options.eagerLoading != false){
+        // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false, we don't load the initial data
+        if(grid.options.eagerLoading != false){ 
           ensureData(vp.top, vp.bottom);
         }
       });
       
+      // This event is similar with onViewportChanged for loading data, the only difference is here we don't consider the eagerLoading,
+      // so whether the eagerLoading true or false, the grid will load data when the scroll exceed the limit row.
+      // Without this event handler (only rely on onViewportChanged), if the grid's eagerLoading is false, the grid will not load data when the scroll exceed the limit row. 
+      grid.onScroll.subscribe(function(e, args) {
+        var vp = grid.getViewport();
+        ensureData(vp.top, vp.bottom);
+      });
+
       grid.onSort.subscribe(function(e, args){
         setSort(args.sortCol.sortColumn, args.sortAsc ? 1 : -1);
       });
@@ -101,6 +110,7 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
+
       if (initedFilter || filters.length > 0) {
         path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
       } else {
@@ -126,7 +136,7 @@
       }
       // Filters
       $.each(filters, function(index, value) {
-        url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1]);
+        url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1])+"&filters[][operator]="+encodeURIComponent(value[2]);
       });
 
       // Parameters
@@ -283,9 +293,11 @@
       filters = filterFn;
     }
 
-		function addFilter(column, string) {
-		  // If the string is an empty string, then removing the filter if existing
-			if (string=='') {
+		function addFilter(column, string, operator) {
+      if(typeof(operator)==='undefined') operator = 'equals';
+
+		  // If the string is an empty string and operator is 'equals', then removing the filter if existing
+			if (string=='' && operator=='equals') {
 			  var newFilters = [];
 			  $.each(filters, function(index,filter) {
 			    if (filter[0]!=column)
@@ -301,6 +313,7 @@
 		  $.map(filters, function(filter) {
 		    if (filter[0]==column) {
 	        filter[1] = string;
+          filter[2] = operator;
 	        updated = 1;
 	        return;
 		    }
@@ -308,7 +321,7 @@
 		  
 		  // Add new filter
 		  if (updated==0)
-  		  filters.push([column, string]);
+  		  filters.push([column, string, operator]);
 		
 			refresh();
   	}
