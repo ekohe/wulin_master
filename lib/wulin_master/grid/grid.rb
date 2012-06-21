@@ -129,10 +129,10 @@ module WulinMaster
       self.columns.map(&:sql_names).compact.flatten.uniq.map(&:to_s)
     end
 
-    def apply_filter(query, column_name, filtering_value)
+    def apply_filter(query, column_name, filtering_value, filtering_operator)
       column = self.columns.find{|c| c.name.to_s == column_name.to_s} || self.columns.find{|c| c.foreign_key == column_name.to_s }
       if column and column.options[:filterable] != false
-        column.apply_filter(query, filtering_value)
+        column.apply_filter(query, filtering_value, filtering_operator)
       else
         Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
         query

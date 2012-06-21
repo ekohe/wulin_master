@@ -141,7 +141,7 @@ module WulinMaster
     def construct_filters
       return unless params[:filters]
       params[:filters].each do |f|
-        @query = grid.apply_filter(@query, f[:column], f[:value])
+        @query = grid.apply_filter(@query, f[:column], f[:value], f[:operator])
       end
     end
 

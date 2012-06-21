@@ -49,7 +49,7 @@ module WulinMaster
     end
 
     # Apply a where condition on the query to filter the result set with the filtering value
-    def apply_filter(query, filtering_value)
+    def apply_filter(query, filtering_value, filtering_operator)
       return query if filtering_value.blank?
 
       if @options[:sql_expression]
@@ -64,13 +64,20 @@ module WulinMaster
       
       # Search by NULL
       if filtering_value.to_s.downcase == 'null'
+        operator = case filtering_operator
+        when 'equals'
+          ''
+        when 'not_equals'
+          'NOT'
+        end
         if self.reflection
-          return query.where("#{relation_table_name}.#{self.option_text_attribute} IS NULL")
+          return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
         else
           if model < ActiveRecord::Base
-            return query.where("#{complete_column_name} IS NULL")
+            return query.where("#{complete_column_name} IS #{operator} NULL")
           else
-            return query.where(self.name => nil)
+            #return query.where(self.name => nil)
+            return query.where("name IS #{operator} NULL")
           end
         end
       end
@@ -79,10 +86,31 @@ module WulinMaster
         if @options[:sql_expression]
           return query.where(["UPPER(#{@options[:sql_expression]}) LIKE UPPER(?)", filtering_value+"%"])
         elsif option_text_attribute =~ /(_)?id$/ or column_type(self.reflection.klass, self.option_text_attribute) == :integer
-          return query.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value)
+          if ['equals', 'not_equals'].include? filtering_operator
+            operator = (filtering_operator == 'equals') ? '=' : '!='
+            return query.where("#{relation_table_name}.#{self.option_text_attribute} #{operator} ?", filtering_value)
+          elsif ['include', 'exclude'].include? filtering_operator
+            ids = relation_table_name.classify.constantize.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value).map do |e|
+              e.send("#{model.table_name}").map(&:id)
+            end.flatten.uniq
+            if ids.blank?
+              operator = (filtering_operator == 'include') ? 'IS' : 'IS NOT'
+              return query.where("#{model.table_name}.id #{operator} NULL")
+            else
+              operator = (filtering_operator == 'include') ? 'IN' : 'NOT IN'
+              return query.where("#{model.table_name}.id #{operator} (?)", ids)
+            end
+          end          
         else
-          return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) LIKE UPPER(?)", filtering_value+"%"])
+          operator = case filtering_operator 
+          when 'equals'
+            'LIKE'
+          when 'not_equals'
+            'NOT LIKE'
+          end
+          return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value+"%"])
         end
+      # ----------- !!! TODO, has not consider the filter operator for following cases, need to add in future ----------
       else
         case sql_type.to_s
         when 'date', 'datetime'

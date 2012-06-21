@@ -1,4 +1,4 @@
-// master
+// master-detail grid relation, detail grid render the records which belongs to the selected row of master grid
 
 WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
   event: "onSelectedRowsChanged",
@@ -26,7 +26,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
 
     var association_key = this.through;
     for(var i in this.detail_grids) {
-      this.detail_grids[i].loader.addFilter(association_key, masterIds[0]);
+      this.detail_grids[i].loader.addFilter(association_key, masterIds[0], this.operator);
     }
   }
 
