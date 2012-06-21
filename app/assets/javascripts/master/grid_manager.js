@@ -79,7 +79,7 @@
 			}
 		}
 
-		function createNewGrid(name, screen, path, columns, states, actions, behaviors, extend_options) {
+		function createNewGrid(name, model, screen, path, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
 		  gridAttrs, deleteElement, createButtonElement, originColumns;
 		  
@@ -116,7 +116,8 @@
 
 			// Append necessary attributes to the grid
 			gridAttrs = {
-				name: name, 
+				name: name,
+				model: model, 
 				screen: screen, 
 				loader: loader, 
 				path: pathWithoutQuery, 
