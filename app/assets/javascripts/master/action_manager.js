@@ -15,7 +15,8 @@ WulinMaster.ActionManager = function(){
     },
 
     getAction: function(a_name) {
-      return actions[a_name];
+      var action_proto = actions[a_name];
+      return $.extend({}, action_proto);
     },
 
     dispatchActions: function(target, action_names) {
