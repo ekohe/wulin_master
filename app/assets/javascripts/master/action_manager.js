@@ -25,7 +25,7 @@ WulinMaster.ActionManager = function(){
         var action = this.getAction(action_names[i]);
         if(action){
           $.extend(action, {target: target});
-          action.init();
+          if(action.init) action.init();
         }
       }
     }
