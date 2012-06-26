@@ -2,7 +2,6 @@ require File.join(File.dirname(__FILE__), 'toolbar')
 require File.join(File.dirname(__FILE__), 'toolbar_item')
 require File.join(File.dirname(__FILE__), 'column')
 require File.join(File.dirname(__FILE__), 'grid_options')
-require File.join(File.dirname(__FILE__), 'grid_styling')
 require File.join(File.dirname(__FILE__), 'grid_columns')
 require File.join(File.dirname(__FILE__), 'grid_actions')
 require File.join(File.dirname(__FILE__), 'grid_behaviors')
@@ -10,9 +9,8 @@ require File.join(File.dirname(__FILE__), 'grid_relation')
 require File.join(File.dirname(__FILE__), 'grid_states')
 
 module WulinMaster
-  class Grid
+  class Grid < Component
     include GridOptions
-    include GridStyling
     include GridColumns
     include GridActions
     include GridBehaviors
@@ -74,18 +72,16 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :controller, :params, :custom_config, :toolbar
+    attr_accessor :toolbar
 
     def initialize(params={}, controller_instance=nil, config={})
-      self.params = params
-      self.controller = controller_instance
-      self.custom_config = config
+      super
 
       # if not json request, it needs to initialize toolbar and configs, else, just assign the attributes like above
       if params[:format] != "json"
         # first apply default configs, then apply custom configs
-        apply_default_config
-        apply_custom_config unless self.custom_config.blank?
+        apply_default_config DEFAULT_CONFIG
+        apply_custom_config
 
         initialize_toolbar
       end
@@ -144,7 +140,6 @@ module WulinMaster
 
       column = self.columns.find{|c| c.name.to_s == column_name or c.foreign_key == column_name }
       column ? column.apply_order(query, order_direction) : query
-      
     end
 
     # Returns the includes to add to the query
@@ -172,34 +167,6 @@ module WulinMaster
 
     def initialize_toolbar
       self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
-    end
-
-    def apply_default_config
-      DEFAULT_CONFIG.each do |k,v|
-        apply_config(k,v)
-      end
-    end
-
-    def apply_custom_config
-      self.custom_config.each do |k,v|
-        apply_config(k,v)
-      end
-    end
-
-    # calling a config
-    def apply_config(key, value)
-      if self.class.respond_to?(key) and (arguments_count = self.class.method(key).arity) != 0    # if grid class respond to the config method and it is a writter method
-        if arguments_count == 1
-          self.class.send(key, value)
-        elsif arguments_count == -1 or arguments_count == -2  # if this method accept options, pass the grid's params as options
-          # when argument_count is -1, sometimes it can accept self.params (like :fill_window), sometimes it can't (like :title)
-          begin
-            self.class.send(key, value, self.params)
-          rescue 
-            self.class.send(key, value)
-          end
-        end
-      end
     end
   end
 end

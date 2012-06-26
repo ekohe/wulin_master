@@ -18,7 +18,7 @@ module WulinMaster
     # ---------------------- metaclass, define some DSL methods -------------------------------
     class << self
       #alias_method :all, :screens
-      attr_reader :title, :path, :grid_configs
+      attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
       attr_accessor :controller_class
 
       def title(new_title=nil)
@@ -32,9 +32,23 @@ module WulinMaster
       end
 
       # Add a grid config to a screen
-      def grid(klass, options={})        
+      def grid(klass, options={})
+        @components_pool ||= []        
         @grid_configs ||= []
-        @grid_configs << {class: klass}.merge(options) if klass
+        if klass
+          @components_pool << klass
+          @grid_configs << {class: klass}.merge(options)
+        end
+      end
+
+      # Add a panel config to a screen
+      def panel(klass, options={})
+        @components_pool ||= []
+        @panel_configs ||= []
+        if klass
+          @components_pool << klass
+          @panel_configs << {class: klass}.merge(options)
+        end
       end
     end
 
@@ -54,8 +68,24 @@ module WulinMaster
         grid_class = grid_config[:class]
         config = grid_config.reject{|k,v| k == :class}
         @grids << grid_class.new(@params, @controller_instance, config) if grid_class
-      end
+      end if self.class.grid_configs
       @grids
+    end
+
+    def panels
+      return @panels if defined?(@panels)
+
+      @panels = []
+      self.class.panel_configs.each do |panel_config|
+        panel_class = panel_config[:class]
+        config = panel_config.reject{|k,v| k == :class}
+        @panels << panel_class.new(@params, nil, config) if panel_class
+      end if self.class.panel_configs
+      @panels
+    end
+
+    def components
+      (grids + panels).sort_by {|e| self.class.components_pool.index(e.class)}
     end
     
     def path

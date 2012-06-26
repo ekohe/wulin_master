@@ -1,5 +1,5 @@
 module WulinMaster
-  module GridStyling
+  module ComponentStyling
     extend ActiveSupport::Concern
     
     included do
@@ -17,7 +17,7 @@ module WulinMaster
         @styles_pool = {}
       end  
 
-      # Set new grid height
+      # Set new component height
       def height(new_height, options={})
         fill_window(false, options)
         height_str = "height: #{new_height};"
@@ -25,7 +25,7 @@ module WulinMaster
         add_style(height_str, options[:screen])
       end
 
-      # Set new grid width
+      # Set new component width
       def width(new_width, options={})
         fill_window(false, options)
         width_str = "width: #{new_width};"
@@ -43,7 +43,7 @@ module WulinMaster
         add_style(style.to_s, options[:screen])
       end
 
-      # Add a style into grid of different screens
+      # Add a style into component of different screens
       def add_style(style_str, screen)
         if screen
           @styles_pool[screen] ||= []
@@ -54,7 +54,7 @@ module WulinMaster
         end
       end
 
-      # Remove a style from a grid
+      # Remove a style from a component
       def remove_style(style_str, screen)
         if screen and @styles_pool[screen]
           @styles_pool[screen].delete(style_str)
@@ -66,7 +66,7 @@ module WulinMaster
     
     # ----------------------------- Instance Methods ------------------------------------
 
-    # Return style to apply to the grid container
+    # Return style to apply to the component container
     def style
       return "" if self.class.styles_pool.blank?
 
@@ -78,9 +78,9 @@ module WulinMaster
       end
     end
     
-    # Returns true if set to fill window. The template will just render the first grid of the screen.
+    # Returns true if one component is set to fill window. The template will just render the previous components of the screen.
     def fill_window?
-      return true if self.class.styles_pool.blank?
+      return false if self.class.styles_pool.blank?
 
       common_style = self.class.styles_pool[:_common] || []
       if screen = self.params.try(:[], :screen)

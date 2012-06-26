@@ -1,3 +1,4 @@
-- controller.screen.grids.each_with_index do |grid, index|
-  = render :partial => '/grid', :locals => {:grid => grid}
-  - break if grid.fill_window?
+- controller.screen.components.each_with_index do |component, index|
+ = render :partial => '/grid', :locals => {:grid => component} if component.is_a?(WulinMaster::Grid)
+ = render :partial => '/panel', :locals => {:panel => component} if component.is_a?(WulinMaster::Panel)
+ - break if component.respond_to?(:fill_window?) and component.fill_window?
