@@ -16,7 +16,9 @@ WulinMaster.BehaviorManager = function(){
     },
 
     getBehavior: function(b_name) {
-      return behaviors[b_name];
+      var behavior_proto = behaviors[b_name];
+      // extend the behavior prototype to create a new behavior, avoid the same behavior conflict in one screen
+      return $.extend({}, behavior_proto);
     },
 
     dispatchBehaviors: function(target, behavior_names) {
