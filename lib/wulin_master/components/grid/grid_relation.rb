@@ -7,7 +7,7 @@ module WulinMaster
       def master_grid(master_grid_klass, options={}, inclusion=true)
         if options[:screen]
           detail_model = self.model
-          master_grid = master_grid_klass.constantize.new({screen: options[:screen], format:'json'})   # format as json to skip the toolbar and styling initialize
+          master_grid = master_grid_klass.constantize.new({screen: options[:screen], format: 'json'})   # format as json to skip the toolbar and styling initialize
           
           # master_model must has_many detail_model, detail_model may belongs_to master_model OR has_many master_model
           reflection = detail_model.reflections[master_grid.model.to_s.underscore.intern] || detail_model.reflections[master_grid.model.to_s.underscore.pluralize.intern]
