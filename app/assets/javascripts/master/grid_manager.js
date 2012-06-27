@@ -129,7 +129,8 @@
 				operatedIds: operatedIds, 
 				states: states, 
 				filterPanel: filterPanel, 
-				actions: actions, 
+				actions: actions,
+				behaviors: behaviors,
 				options: options
 			};
       for(var attr in gridAttrs) {

@@ -1,5 +1,9 @@
+require File.join(File.dirname(__FILE__), 'panel_relation')
+
 module WulinMaster
   class Panel < Component
+    include PanelRelation
+
     cattr_accessor :panels
 
     # Panel has been subclassed
@@ -35,15 +39,17 @@ module WulinMaster
     
     def render
       partial_str = nil
+      error = nil
       view_paths.each do |path|
         begin
-          partial_str = ActionView::Base.new(path).render(:partial => "#{name}")
+          partial_str = ActionView::Base.new(path).render(:partial => "#{name}", :locals => {:panel => self})
           break
-        rescue
+        rescue Exception => e
+          error = e.try(:message)
           next
         end
       end
-      partial_str || (raise "Can't find panel partial #{name} in #{view_paths.join(', ')}")
+      partial_str || (raise error)
     end
 
   end
