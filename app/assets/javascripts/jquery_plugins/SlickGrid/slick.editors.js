@@ -243,17 +243,18 @@
             };
 
             this.validate = function() {
-                if (isNaN($input.val()))
+                if (isNaN($input.val())) {
                     $input.val(defaultValue);
                     return {
                         valid: false,
                         msg: "Please enter a valid integer"
                     };
-
-                return {
-                    valid: true,
-                    msg: null
-                };
+                } else {
+                  return {
+                      valid: true,
+                      msg: null
+                  };
+                }
             };
             
             this.getCell = function(){
@@ -788,17 +789,18 @@
             };
 
             this.validate = function() {
-                if (isNaN(parseInt($input.val(),10)))
+                if (isNaN(parseInt($input.val(),10))) {
                     $input.val(defaultValue);
                     return {
                         valid: false,
                         msg: "Please enter a valid positive number"
                     };
-
-                return {
-                    valid: true,
-                    msg: null
-                };
+                } else {
+                  return {
+                      valid: true,
+                      msg: null
+                  };
+                }
             };
             
             this.getCell = function(){
