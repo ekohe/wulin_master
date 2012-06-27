@@ -1,3 +1,72 @@
-.action_btns
-  = button_tag 'Add ❯❯', type: 'button', class: 'btn success', id: 'add_btn'
-  = button_tag '❮❮ Remove', type: 'button', class: 'btn danger', id: 'remove_btn'
+.action_btns{:"data-inclusion-grid" => panel.params["inclusion_grid"], :"data-exclusion-grid" => panel.params["exclusion_grid"]}
+  = button_tag '❮❮ Add', type: 'button', class: 'btn success', id: 'add_btn'
+  = button_tag 'Remove ❯❯', type: 'button', class: 'btn danger', id: 'remove_btn'
+
+:javascript
+  $(function(){
+    // Include record
+    $(".action_btns #add_btn").off('click').on('click', function(){
+      btnHander('add');
+    });
+    
+    // Exclude record
+    $(".action_btns #remove_btn").off('click').on('click', function(){
+      btnHander('remove');
+    });
+
+    function btnHander(type) {
+      var ids;
+      var inclusionGridName = $(".action_btns").data("inclusion-grid");
+      var exclusionGridName = $(".action_btns").data("exclusion-grid");
+
+      var inclusionGrid = gridManager.getGrid(inclusionGridName);
+      var exclusionGrid = gridManager.getGrid(exclusionGridName);
+
+      if (type == 'add') {
+        ids = exclusionGrid.getSelectedIds(); 
+      } else if (type == 'remove') {
+        ids = inclusionGrid.getSelectedIds();
+      }
+      
+      if (ids.length > 0) {
+        setupRequest(type, ids, inclusionGrid, exclusionGrid);
+      }
+    }
+    
+    function setupRequest(type, ids, inclusionGrid, exclusionGrid) {
+      var groupGrid;
+      for(var i in inclusionGrid.behaviors) {
+        if(inclusionGrid.behaviors[i].name == 'affiliation') {
+          groupGrid = gridManager.getGrid(inclusionGrid.behaviors[i].master_grid_name);
+          break;
+        }
+      }
+      if(!groupGrid) return false;
+
+      var groupId = groupGrid.getSelectedIds()[0];
+      if(!groupId) return false;
+      
+      // Start the request
+      $('.action_btns button').attr('disabled', 'disabled');
+
+      var url;
+      if(type == 'add') {
+        url = '/wulin_master/include';
+      } else {
+        url = '/wulin_master/exclude';
+      }
+      var data = {group_model: groupGrid.model, group_id: groupId, include_model: inclusionGrid.model, exclude_model: exclusionGrid.model,
+                  ids: ids, authenticity_token: window._token};
+
+      $.post(url, data, function(response) {
+        if(response.status == 'OK') {
+          inclusionGrid.loader.reloadData();
+          exclusionGrid.loader.reloadData();
+          displayNewNotification(response.message);
+        } else {
+          displayErrorMessage(response.message);
+        }
+        $('.action_btns button').removeAttr('disabled');
+     });
+    }
+  })
