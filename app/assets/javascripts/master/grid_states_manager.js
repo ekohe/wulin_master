@@ -62,6 +62,9 @@ var GridStatesManager = {
       grid.picker.onColumnsPick.subscribe(function(e, args){
         var hiddenArr = [], hiddenJson = {}, visibilityColumns = grid.getColumns();
         
+        // Regenerate Filter panel
+        grid.filterPanel.generateFilters();
+        
         visibilityColumns = $.map(visibilityColumns, function(n, i){
             return n.id;
         });
