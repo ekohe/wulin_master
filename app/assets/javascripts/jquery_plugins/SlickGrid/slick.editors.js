@@ -244,6 +244,7 @@
 
             this.validate = function() {
                 if (isNaN($input.val()))
+                    $input.val(defaultValue);
                     return {
                         valid: false,
                         msg: "Please enter a valid integer"
@@ -788,6 +789,7 @@
 
             this.validate = function() {
                 if (isNaN(parseInt($input.val(),10)))
+                    $input.val(defaultValue);
                     return {
                         valid: false,
                         msg: "Please enter a valid positive number"
