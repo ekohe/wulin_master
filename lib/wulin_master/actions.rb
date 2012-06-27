@@ -74,10 +74,12 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      updated_attributes = get_updated_attributes(params[:item])
-      grid.model.transaction do
-        @records.each do |record|
-          record.update_attributes!(updated_attributes)
+      if params[:item].present?
+        updated_attributes = get_updated_attributes(params[:item])
+        grid.model.transaction do
+          @records.each do |record|
+            record.update_attributes!(updated_attributes)
+          end
         end
       end
       render json: {:success => true}
