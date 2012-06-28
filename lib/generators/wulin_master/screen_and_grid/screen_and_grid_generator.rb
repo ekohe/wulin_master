@@ -62,6 +62,7 @@ module WulinMaster
       application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/screens)'
       application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/controllers)'
       application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/models)'
+      application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/panels)'
     end
 
     private
