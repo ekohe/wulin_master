@@ -22,6 +22,8 @@
       var inclusionGrid = gridManager.getGrid(inclusionGridName);
       var exclusionGrid = gridManager.getGrid(exclusionGridName);
 
+      if(!inclusionGrid || !exclusionGrid) return false;
+
       if (type == 'add') {
         ids = exclusionGrid.getSelectedIds(); 
       } else if (type == 'remove') {
