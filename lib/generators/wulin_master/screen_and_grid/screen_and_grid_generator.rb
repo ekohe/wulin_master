@@ -45,6 +45,18 @@ module WulinMaster
       empty_directory "app/#{WulinMaster.config.asset_folder_name}/views/#{table_name}"
     end
     
+    def create_panels_directory
+      empty_directory "app/#{WulinMaster.config.asset_folder_name}/panels"
+    end
+    
+    def create_action_partials_directory
+      empty_directory "app/#{WulinMaster.config.asset_folder_name}/views/action_partials"
+    end
+    
+    def create_panel_partials_directory
+      empty_directory "app/#{WulinMaster.config.asset_folder_name}/views/panel_partials"
+    end
+    
     def add_autoload_paths
       application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/grids)'
       application '  config.autoload_paths += %W(#{Rails.root}/app/' + WulinMaster.config.asset_folder_name + '/screens)'
