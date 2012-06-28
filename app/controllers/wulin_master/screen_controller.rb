@@ -5,10 +5,7 @@ module WulinMaster
 
     respond_to :html, :json
 
-    # When the controller has been subclassed
-    # def self.inherited(klass)
-
-    # end
+    include WulinMaster::Actions
 
     # ----------------------------- Meta Class Methods ----------------------------------
     class << self
@@ -16,7 +13,6 @@ module WulinMaster
       
       def controller_for_screen(*args)
         self.screen_classes = args
-        include_actions
       end
 
       # Callbacks
@@ -36,11 +32,6 @@ module WulinMaster
       
       def callbacks
         @callbacks
-      end
-      
-      # Load actions
-      def include_actions
-        self.send(:include, WulinMaster::Actions)
       end
     end
 
