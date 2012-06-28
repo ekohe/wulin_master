@@ -150,6 +150,11 @@
 			var isHide = (grid.options.eagerLoading == false);
 			loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
 			
+			// Hide the scroll if eagerLoading false, otherwise the data will load if you scroll the grid
+			if(isHide) {
+				grid.container.find(".slick-viewport").css("overflow", "hidden");
+			}
+			
 			// Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
       

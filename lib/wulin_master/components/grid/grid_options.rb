@@ -48,6 +48,7 @@ module WulinMaster
 
       def eager_loading(value=true, options={})
         option({eagerLoading: value}.merge options)
+        behavior :show_scroll_after_loading
       end
     end
 
