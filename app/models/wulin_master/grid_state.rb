@@ -12,7 +12,7 @@ module WulinMaster
         else
           state.update_attribute(:state_value, state_value)
         end
-      else
+      elsif state_value !~ /^\s*(null|undefined)\s*$/
         create(attrs)
       end
     end

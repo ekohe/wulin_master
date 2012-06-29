@@ -142,7 +142,7 @@ module WulinMaster
         states = GridState.where(:user_id => user.id, :grid_name => self.name).all
         %w(width sort order visibility filter).each do |t|
           value = states.find{|s| s.state_type == t}.try(:state_value)
-          result.merge!(t => ActiveSupport::JSON.decode(value)) if value
+          result.merge!(t => ActiveSupport::JSON.decode(value)) if (value or value !~ /^\s*(null|undefined)\s*$/)
         end
         result.to_json
       rescue Exception => e
