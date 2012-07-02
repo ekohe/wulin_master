@@ -1246,7 +1246,6 @@ if (typeof Slick === "undefined") {
 
             updateRowCount();
             render();
-            trigger(self.onRendered, {});
         }
 
         function resizeAndRender() {
@@ -1255,6 +1254,7 @@ if (typeof Slick === "undefined") {
             } else {
                 resizeCanvas();
             }
+            trigger(self.onRendered, {});
         }
 
         function updateRowCount() {
@@ -2618,6 +2618,7 @@ if (typeof Slick === "undefined") {
             "updateCell":                   updateCell,
             "updateRow":                    updateRow,
             "getViewport":                  getVisibleRange,
+            "resizeAndRender":              resizeAndRender,
             "resizeCanvas":                 resizeCanvas,
             "updateRowCount":               updateRowCount,
             "scrollRowIntoView":            scrollRowIntoView,
