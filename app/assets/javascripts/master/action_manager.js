@@ -68,6 +68,7 @@ WulinMaster.actions.BaseAction = {
   activate: function(){
     var self = this;
     this.triggerElement.off(self.event).on(self.event, function(e, args){
+      if($(this).hasClass('toolbar_icon_disabled')) return false;
       self.handler(e, args);
     })
   },

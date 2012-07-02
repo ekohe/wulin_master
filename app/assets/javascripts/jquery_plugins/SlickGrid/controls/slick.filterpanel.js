@@ -32,6 +32,8 @@
       }
       
       triggerElement.click(function() {
+        if($(this).hasClass('toolbar_icon_disabled')) return false;
+        
         if ($($grid.getHeaderRow()).is(":visible")) {
             $grid.hideHeaderRowColumns();
             trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
