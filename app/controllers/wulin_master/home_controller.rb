@@ -1,6 +1,28 @@
 module WulinMaster
   class HomeController < ApplicationController  
     self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
+    
+    def change_password
+      if defined?(WulinOAuth) 
+        if request.post?
+          response = HTTParty.post(WulinOAuth.configuration['change_password_uri'], :body => { :user => {
+            :email => User.current_user.email,
+            :current_password => params[:current_password], 
+            :password => params[:password], 
+            :password_confirmation => params[:password_confirmation]}}
+          )
+          render text: response
+        else
+          begin
+            render 'change_password', layout: false
+          rescue ActionView::MissingTemplate
+            render '/change_password', layout: false
+          end
+        end
+      else
+        render text: "WulinOAuth is not install, Install it first!"
+      end
+    end
 
     def index
       dashboard if self.respond_to?(:dashboard)

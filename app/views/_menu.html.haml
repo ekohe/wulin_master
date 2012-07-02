@@ -24,11 +24,10 @@
         User: 
         %span.email= User.current_user.email
       #user_action
-        = link_to 'Change Password', '#', class: 'left btn action', id: 'change_password_btn'
+        = link_to 'Change Password', 'javascript: void(0)', class: 'left btn action', id: 'change_password_btn'
         = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'
         
-      #change_password_dialog(title="Change password" style="display: none;")
-        -#%iframe(frameborder='0' marginheight='0' height='500px' width='500px' src='#{WulinOAuth.configuration['change_password_uri']}' scrolling='no')
+      #change_password_dialog.create_form(title="Change password" style="display: none;")
 
   
   #activity
@@ -38,20 +37,23 @@
 :javascript
   $(function(){
     $('#change_password_btn').on('click', function(){
-      $('#change_password_dialog').append("<iframe frameborder='0' marginheight='0' id='change_password_iframe' name='change_password_iframe' height='500px' width='500px' src='#{WulinOAuth.configuration['change_password_uri']}' scrolling='no'></iframe>");
-      
       $('#change_password_dialog').dialog({
         autoOpen: true,
         width: 540,
-        height: 460,
+        height: 280,
         buttons: {
           Ok: function() {
             $(this).dialog( "destroy" );
           }
         },
+        create: function() {
+          $.get('#{wulin_master_change_password_path}', function(data) {
+            $('#change_password_dialog').html(data);
+          })
+        },
         close: function() { 
           $(this).dialog("destroy");
         }
       })
-    })
+    });
   })
