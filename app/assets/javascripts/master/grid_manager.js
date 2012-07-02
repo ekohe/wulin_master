@@ -157,6 +157,11 @@
 			
 			// Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
+
+      // Dispatch actions
+      WulinMaster.ActionManager.dispatchActions(grid, actions);
+      // Dispatch behaviors, should come first than grid.resizeCanvas, otherwise some event like onRendered can't be triggered
+			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
 			// Set grid body height after rendering
 			setGridBodyHeight(gridElement);
@@ -164,11 +169,6 @@
 
 			// Load the first page
 			grid.onViewportChanged.notify();		
-      
-      // Dispatch actions
-      WulinMaster.ActionManager.dispatchActions(grid, actions);
-      // Dispatch behaviors
-			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
       // Delete old grid if exsisting, then add grid
 			for(var i in grids){
