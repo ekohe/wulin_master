@@ -6,7 +6,7 @@ module WulinMaster
     
     included do
       class_eval do
-        ORIGINAL_BEHAVIORS = %w(update validate highlight get_operate_ids)
+        ORIGINAL_BEHAVIORS = %w(update validate highlight get_operate_ids clear_filters)
 
         class << self
           attr_reader :behaviors_pool

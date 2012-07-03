@@ -53,7 +53,6 @@ var GridStatesManager = {
       grid.filterPanel.onFilterPanelClosed.subscribe(function(e, args){
         $(grid.getHeaderRow()).find('input[type="text"]').val('');
         self.saveStates(grid.name, "filter", {});
-        grid.loader.setFilter([]);
       });
     }
     
