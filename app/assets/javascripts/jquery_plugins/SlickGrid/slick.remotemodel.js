@@ -37,17 +37,9 @@
       //  Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
-        // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false, we don't load the initial data
-        if(grid.options.eagerLoading != false){ 
-          ensureData(vp.top, vp.bottom);
-        }
-      });
-      
-      // This event is similar with onViewportChanged for loading data, the only difference is here we don't consider the eagerLoading,
-      // so whether the eagerLoading true or false, the grid will load data when the scroll exceed the limit row.
-      // Without this event handler (only rely on onViewportChanged), if the grid's eagerLoading is false, the grid will not load data when the scroll exceed the limit row. 
-      grid.onScroll.subscribe(function(e, args) {
-        var vp = grid.getViewport();
+        // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
+        if(grid.options.eagerLoading == false && grid.getData().length == 0) return false;
+
         ensureData(vp.top, vp.bottom);
       });
 
