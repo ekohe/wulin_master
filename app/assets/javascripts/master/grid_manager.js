@@ -160,7 +160,7 @@
       
 			// Set grid body height after rendering
 			setGridBodyHeight(gridElement);
-			grid.resizeAndRender();
+			grid.initialRender();
 
 			// Load the first page
 			grid.onViewportChanged.notify();		

@@ -1254,6 +1254,10 @@ if (typeof Slick === "undefined") {
             } else {
                 resizeCanvas();
             }
+        }
+
+        function initialRender() {
+            resizeAndRender();
             trigger(self.onRendered, {});
         }
 
@@ -2618,7 +2622,7 @@ if (typeof Slick === "undefined") {
             "updateCell":                   updateCell,
             "updateRow":                    updateRow,
             "getViewport":                  getVisibleRange,
-            "resizeAndRender":              resizeAndRender,
+            "initialRender":                initialRender,
             "resizeCanvas":                 resizeCanvas,
             "updateRowCount":               updateRowCount,
             "scrollRowIntoView":            scrollRowIntoView,
