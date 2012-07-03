@@ -58,7 +58,7 @@ var Requests = {
 			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
-					grid.setSelectedRows([]);
+					grid.resetActiveCell();
 					grid.loader.reloadData();
 				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
 				  var message;
