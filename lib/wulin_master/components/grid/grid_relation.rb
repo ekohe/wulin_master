@@ -31,11 +31,13 @@ module WulinMaster
       # Inclusion-Exclusion relation, include of master grid
       def include_of(master_grid_klass, options={})
         self.master_grid(master_grid_klass, options, true)
+        behavior :include_exclude_trivia, only: [options[:screen].intern]
       end
 
       # Inclusion-Exclusion relation, exclude of master grid
       def exclude_of(master_grid_klass, options={})
         self.master_grid(master_grid_klass, options, false)
+        behavior :include_exclude_trivia, only: [options[:screen].intern]
       end
     end
 
