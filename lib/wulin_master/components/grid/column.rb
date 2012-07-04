@@ -50,6 +50,8 @@ module WulinMaster
 
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value, filtering_operator='equals')
+      filtering_operator ||= 'equals'
+      
       return query if filtering_value.blank?
 
       if @options[:sql_expression]
