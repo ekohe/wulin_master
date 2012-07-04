@@ -5,6 +5,8 @@ module WulinMaster
 
     respond_to :html, :json
 
+    rescue_from ActionView::MissingTemplate, with: :render_index
+
     include WulinMaster::Actions
 
     # ----------------------------- Meta Class Methods ----------------------------------
@@ -83,6 +85,10 @@ module WulinMaster
           self.send(cb) if self.respond_to?(cb)
         end
       end
+    end
+
+    def render_index
+      render '/index', :layout => (request.xhr? ? false : 'application')
     end
   end
 end
