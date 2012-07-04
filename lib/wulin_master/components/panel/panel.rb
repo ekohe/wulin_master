@@ -1,6 +1,12 @@
 require File.join(File.dirname(__FILE__), 'panel_relation')
 
 module WulinMaster
+  class PanelView < ::ActionView::Base
+    def protect_against_forgery?
+      false
+    end
+  end
+
   class Panel < Component
     include PanelRelation
 
@@ -49,17 +55,17 @@ module WulinMaster
     
     def render
       partial_str = nil
-      error = nil
+      errors = []
       view_paths.each do |path|
         begin
-          partial_str = ActionView::Base.new(path).render(:partial => "#{partial}", :locals => {:panel => self})
+          partial_str = PanelView.new(path).render(:partial => "#{partial}", :locals => {:panel => self})
           break
         rescue Exception => e
-          error = e.try(:message)
+          errors << e.try(:message)
           next
         end
       end
-      partial_str || (raise error)
+      partial_str || (raise errors.join(", "))
     end
 
   end
