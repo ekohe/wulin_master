@@ -166,7 +166,7 @@ var GridStatesManager = {
 	  if (filterStates) {
 	    path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
   	  $.each(filterStates, function(k, v){
-  	    path += "&filters[][column]=" + k + "&filters[][value]=" + v;
+  	    path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
   	  })
     }
 	  return path;
