@@ -65,6 +65,8 @@
         if(response.status == 'OK') {
           inclusionGrid.loader.reloadData();
           exclusionGrid.loader.reloadData();
+          inclusionGrid.resetActiveCell();
+          exclusionGrid.resetActiveCell();
           displayNewNotification(response.message);
         } else {
           displayErrorMessage(response.message);
