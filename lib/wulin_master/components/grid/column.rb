@@ -1,3 +1,4 @@
+require 'wulin_master/components/grid/sql_adapter'
 module WulinMaster
   class Column
     attr_accessor :name, :options
@@ -50,19 +51,11 @@ module WulinMaster
 
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value, filtering_operator='equals')
+      adapter = WulinMaster::SqlAdapter.new(model, query)
+      
       filtering_operator ||= 'equals'
       
       return query if filtering_value.blank?
-
-      if @options[:sql_expression]
-        complete_column_name = "#{model.table_name}.#{@options[:sql_expression]}"
-      elsif is_table_column?
-        complete_column_name = "#{model.table_name}.#{self.name}"
-      elsif self.reflection
-        complete_column_name = "#{self.reflection.klass.table_name}.#{self.name}"
-      else
-        complete_column_name = self.name
-      end
       
       # Search by NULL
       if filtering_value.to_s.downcase == 'null'
@@ -75,12 +68,7 @@ module WulinMaster
         if self.reflection
           return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
         else
-          if model < ActiveRecord::Base
-            return query.where("#{complete_column_name} IS #{operator} NULL")
-          else
-            #return query.where(self.name => nil)
-            return query.where("name IS #{operator} NULL")
-          end
+          adapter.null_query(complete_column_name, operator)
         end
       end
       
@@ -120,34 +108,17 @@ module WulinMaster
         when "boolean"
           true_values = ["y", "yes", "ye", "t", "true"]
           true_or_false = true_values.include?(filtering_value.downcase)
-          if model < ActiveRecord::Base
-            return query.where(complete_column_name => true_or_false)
-          else
-            if true_or_false
-              return query.where(self.name => true)
-            else
-              return query.any_in(self.name => [nil, false])
-            end
-          end
+          adapter.boolean_query(complete_column_name, true_or_false)
         else
           filtering_value = filtering_value.gsub(/'/, "''")
           if sql_type.to_s == 'integer' and is_table_column?
             return query.where(self.name => filtering_value)
-          elsif model < ActiveRecord::Base
-            return query.where(["UPPER(#{complete_column_name}) LIKE UPPER(?)", filtering_value+"%"])
           else
-            if options[:type] == 'Datetime' and (datetime_range = format_datetime(filtering_value)).present? # Datetime filter for Mongodb
-              return query.where(
-              self.name.to_sym.gte => datetime_range[:from], 
-              self.name.to_sym.lte => datetime_range[:to]
-              )
-            else
-              return query.where(self.name => Regexp.new("#{Regexp.escape(filtering_value)}.*", true))
-            end
+            adapter.string_query(complete_column_name, filtering_value, self)
           end
         end
       end
-      query
+      adapter.query
     end
 
     def apply_order(query, direction)
@@ -288,108 +259,24 @@ module WulinMaster
       end
     end
 
-
-    # == Generate the datetime rang filter for mongodb
-    def format_datetime(datetime)
-      case datetime
-      when /^\d{1,4}-?$/ # 20 2011 2011-
-        year = datetime.first(4)
-        from_year = year.size <=3 ? (year + '0' * (4 - 1 - year.size) + '1') : year
-        to_year = year + '9' * (4 - year.size)
-        { from: build_datetime(from_year.to_i), to: build_datetime(to_year.to_i, 12, 31, 23, 59, 59) }
-      when /^\d{1,4}-[0-1]$/ # 2011-0 - 2011-1
-        year, month = extract_data(datetime)
-        if month == 0
-          { from: build_datetime(year), to: build_datetime(year, 9, 30, 23, 59, 59) }
-        elsif month == 1
-          { from: build_datetime(year, 10), to: build_datetime(year, 12, 31, 23, 59, 59) }
-        end
-      when /^\d{1,4}-(0[1-9]|1[0-1])-?$/ # 2011-01 - 2011-09  or  2011-10 - 2011-11
-        year, month = datetime.first(7).split('-').map(&:to_i)
-        if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month), to: build_datetime(year, month, 31, 23, 59, 59) }
-        else
-          { from: build_datetime(year, month), to: build_datetime(year, month, 30, 23, 59, 59) }
-        end
-      when /^\d{1,4}-12-?$/ # 2011-12
-        year = datetime.first(4).to_i
-        { from: build_datetime(year, 12), to: build_datetime(year, 12, 31, 23, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-0$/ # 2011-12-0
-        year, month, date = extract_data(datetime)
-        { from: build_datetime(year, month, 1), to: build_datetime(year, month, 9, 23, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-[1-2]$/ # 2011-12-1 2011-12-2
-        year, month, date = extract_data(datetime)
-        { from: build_datetime(year, month, date * 10), to: build_datetime(year, month, (date * 10) + 9, 23, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-[3]$/ # 2011-12-3
-        year, month, date = extract_data(datetime)
-        if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 31, 23, 59, 59) }
-        else
-          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) }
-        end
-      when /^\d{1,4}-(0[1-9]|1[0-2])-3[0-1]\s?$/ # 2011-12-31  2011-11-30
-        year, month, date = extract_data(datetime)
-        if [1,3,5,7,8,10,12].include? month
-          { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) }
-        elsif date == 30
-          { from: build_datetime(year, month, 30), to: build_datetime(year, month, 30, 23, 59, 59) } # 2011-12-30 - 2011-12-30
-        end
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s?$/ # 2011-12-01 - 2011-12-29
-        year, month, date = extract_data(datetime)
-        { from: build_datetime(year, month, date), to: build_datetime(year, month, date, 23, 59, 59) }
-        # Time part
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s[0-1]$/ # 2011-11-11 0   2011-11-11 1
-        year, month, date = extract_data(datetime, 0)
-        hour =  datetime.split(/\s/)[1]
-        { from: build_datetime(year, month, date, (hour + '0').to_i), to: build_datetime(year, month, date, (hour + '9').to_i, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s2$/ # 2011-11-11 2
-        year, month, date = extract_data(datetime, 0)
-        { from: build_datetime(year, month, date, 20), to: build_datetime(year, month, date, 23, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):?$/ # 2011-11-11 23   2011-11-11 23:
-        year, month, date = extract_data(datetime, 0)
-        hour = datetime.split(/\s/)[1].first(2).to_i
-        { from: build_datetime(year, month, date, hour), to: build_datetime(year, month, date, hour, 59, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5]$/ # 2011-11-11 23:0   2011-11-11 23:5
-        year, month, date = extract_data(datetime, 0)
-        hour, minute = datetime.split(/\s/)[1].split(':')
-        { from: build_datetime(year, month, date, hour.to_i, (minute + '0').to_i), to: build_datetime(year, month, date, hour.to_i, (minute + '9').to_i, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:?$/ # 2011-11-11 23:00   2011-11-11 23:59
-        year, month, date = extract_data(datetime, 0)
-        hour, minute = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute), to: build_datetime(year, month, date, hour, minute, 59) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5]$/ # 2011-11-11 23:24:0    2011-11-11 23:24:5
-        year, month, date = extract_data(datetime, 0)
-        hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute, (second.to_s + '0').to_i), to: build_datetime(year, month, date, hour, minute, (second.to_s + '9').to_i) }
-      when /^\d{1,4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9])\s([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9].*$/ # 2011-11-11 23:24:04    2011-11-11 23:24:54
-        datetime = datetime.first(19)
-        year, month, date = extract_data(datetime, 0)
-        hour, minute, second = datetime.split(/\s/)[1].split(':').map(&:to_i)
-        { from: build_datetime(year, month, date, hour, minute, second), to: build_datetime(year, month, date, hour, minute, second) }
+    private
+    
+    def complete_column_name
+      if @options[:sql_expression]
+        "#{model.table_name}.#{@options[:sql_expression]}"
+      elsif is_table_column?
+        "#{model.table_name}.#{self.name}"
+      elsif self.reflection
+        "#{self.reflection.klass.table_name}.#{self.name}"
       else
-        {}
+        self.name
       end
     end
-
-
-    private
     
     def column_type(model, column_name)
       all_columns = model.respond_to?(:all_columns) ? model.all_columns : model.columns
       column = all_columns.find {|col| col.name.to_s == column_name.to_s}
       (column.try(:type) || :unknown).to_s.to_sym
-    end
-    
-    def extract_data(datetime, index=nil)
-      if index
-        datetime.split(/\s/)[index.to_i].split('-').map(&:to_i)
-      else
-        datetime.split('-').map(&:to_i)
-      end
-    end
-    
-    def build_datetime(*args)
-      DateTime.new(*args) rescue nil
     end
     
     def is_table_column?
