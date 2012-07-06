@@ -56,6 +56,10 @@ module WulinMaster
           behavior :enable_sorting_after_loading, only: screens
         end
       end
+
+      def multi_select(value=true, options={})
+        option({multiSelect: value}.merge options)
+      end
     end
 
     # ----------------------- Instance Methods ------------------------------

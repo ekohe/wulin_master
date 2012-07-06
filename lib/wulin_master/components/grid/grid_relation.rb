@@ -15,7 +15,7 @@ module WulinMaster
           through = options[:through] || reflection.foreign_key
 
           # disable the multiSelect for master grid
-          master_grid_klass.constantize.options_pool << {:multiSelect => false, :only => [options[:screen].intern]}
+          master_grid_klass.constantize.multi_select false, only: [options[:screen].intern]
 
           # call affiliation or reverse_affiliation behavior for detail grid
           operator = if reflection.macro == :belongs_to
