@@ -1,3 +1,59 @@
+=== 0.6.0 / 2012-07-06
+
+New features:
+
+* A screen can render multiple grids
+* New master-detail grids: can be written with simple configuration, no need to write specific view file and javascripts
+* New inclusion-exclusion grids: can be written with simple configuration, no need to write specific view file and javascripts
+* Can define grid in screen class with options, as an alternative of writting grid options in grid class with screen option
+* Add eager_loading option for grid, controller the grid to load data or not when render initially
+* Add multi_select option for grid, enable/disable the grid being able to select multiple rows
+* Implemented the simple WulinMaster::Panel, which enable you write panel configuration in screen class
+
+Improvements:
+
+* Move grid state to a module
+* Remove controller_for_grid method
+* Refactored controller_for_screen method, wulin_master screen controller can have multiple screens
+* Refactored GridStyling module to enable different styles in different screens for a grid
+* Add GridRelation module, define methods of grid relations like 'master_grid'
+* Add filter_operator into grid filters, like 'equal', 'not_equal', 'include', 'exclude' so that we can easier to implement grid relations
+* Refactored format_datetime method and sql filtering process
+
+Bug fixes:
+
+* Fixed the action polution bug when there are multiple grids in one screen with same action
+* Fixed the behavior polution bug when there are multiple grids in one screen with same behavior
+* Fixed the encode bug of filter value comes from grid state
+
+=== 0.5.4 / 2012-07-02
+
+New features:
+
+* Add 'change password' & 'logout' panel, above the activity panel
+
+Improvements:
+
+* Belongs_to drop-down has a 'Select an option..' blank value when there's is no presence validation associated
+* Improved the width of dropdown editor to fit the column
+* When close filter panel, clear all filters
+* Refactored the routing mapper extension
+* Sorting for vitual attribute
+
+Bug fixes:
+
+* Create and Continue bug: datetime widget doesn't appear after refresh
+* Fixed some bugs of edit form (date column 'change' event handler, hidden field submitting)
+* Fixed some datetimepicker bugs (configuration pollution, stepMinute mistake)
+* Fixed the bug that filter by datetime column to mongid model not working
+* Fixed the bug when filtering integer column
+* Small bug of column choices option
+* Small bug of MoneyFormatter when value is 0
+* Fixed the js validator for editor, revert the old value if failed
+* Fixed the bug of filter panel when visible columns change
+* Small bug of grid state
+
+
 === 0.5.3 / 2012-06-06
 
 Improvements:
