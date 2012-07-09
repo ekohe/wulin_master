@@ -23,8 +23,7 @@ module WulinMaster
 
     def to_column_model
       field_name = @name.to_s
-      # sort_col_name = @options[:sort_column] || (self.reflection ? self.option_text_attribute : @name.to_s)
-      sort_col_name = @options[:sort_column] || @name.to_s
+      sort_col_name = @options[:sort_column] || field_name
       table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
       new_options = @options.dup
       h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
@@ -52,23 +51,19 @@ module WulinMaster
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value, filtering_operator='equals')
       adapter = WulinMaster::SqlAdapter.new(model, query)
-      
       filtering_operator ||= 'equals'
-      
       return query if filtering_value.blank?
       
       # Search by NULL
       if filtering_value.to_s.downcase == 'null'
         operator = case filtering_operator
-        when 'equals'
-          ''
-        when 'not_equals'
-          'NOT'
+        when 'equals' then ''
+        when 'not_equals' then 'NOT'
         end
         if self.reflection
           return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
         else
-          adapter.null_query(complete_column_name, operator)
+          adapter.null_query(complete_column_name, operator, self)
         end
       end
       
@@ -93,10 +88,8 @@ module WulinMaster
           end          
         else
           operator = case filtering_operator 
-          when 'equals'
-            'LIKE'
-          when 'not_equals'
-            'NOT LIKE'
+          when 'equals' then 'LIKE'
+          when 'not_equals' then 'NOT LIKE'
           end
           return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value+"%"])
         end
@@ -108,7 +101,7 @@ module WulinMaster
         when "boolean"
           true_values = ["y", "yes", "ye", "t", "true"]
           true_or_false = true_values.include?(filtering_value.downcase)
-          adapter.boolean_query(complete_column_name, true_or_false)
+          adapter.boolean_query(complete_column_name, true_or_false, self)
         else
           filtering_value = filtering_value.gsub(/'/, "''")
           if sql_type.to_s == 'integer' and is_table_column?
@@ -137,11 +130,15 @@ module WulinMaster
     def model
       @grid_class.model
     end
+    
+    def model_columns
+      return [] unless model
+      self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns
+    end
 
-    # Function name isn't good
     def sql_type
       return :unknown if self.model.blank?
-      column = (self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns).find {|col| col.name.to_s == self.name.to_s}
+      column = model_columns.find {|col| col.name.to_s == self.name.to_s}
       (column.try(:type) || association_type || :unknown).to_s.to_sym
     end
 
@@ -161,22 +158,12 @@ module WulinMaster
     end
 
     def reflection_options
-      if @options[:choices].present?
-        choices = @options[:choices]
-      else
-        choices = self.choices
-      end
-      
-      { :choices => choices, :optionTextAttribute => self.option_text_attribute }
+      { :choices => (@options[:choices].presence || self.choices), :optionTextAttribute => self.option_text_attribute }
     end
     
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
-      if @options[:through]
-        return self.name
-      else
-        return @options[:option_text_attribute] || :name
-      end
+      @options[:through] ? self.name : (@options[:option_text_attribute] || :name)
     end
 
     def foreign_key
@@ -190,10 +177,10 @@ module WulinMaster
     # Returns the sql names used to generate the select
     def sql_names
       if is_table_column?
-        if self.reflection.nil?
-          [self.model.table_name+"."+name.to_s]
+        if self.reflection
+          [self.model.table_name + "."+ foreign_key, self.reflection.klass.table_name + "." + option_text_attribute.to_s]
         else
-          [self.model.table_name+"."+foreign_key, self.reflection.klass.table_name+"."+option_text_attribute.to_s]
+          [self.model.table_name + "." + name.to_s]
         end
       else
         nil
@@ -201,7 +188,7 @@ module WulinMaster
     end
 
     def presence_required?
-      self.model.validators.find{|validator| validator.class == ActiveModel::Validations::PresenceValidator &&validator.attributes.include?(@name.to_sym)}
+      self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(@name.to_sym)}
     end
 
     # Returns the´includes to add to the query 
@@ -224,15 +211,13 @@ module WulinMaster
 
     # Returns the value for the object in argument
     def value(object)
-      if association_type.to_s == 'belongs_to'
+      case association_type.to_s
+      when /^belongs_to$|^has_one$/
         object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s
-      elsif association_type.to_s == 'has_one'
-        association_object = object.send(@options[:through] || self.name)
-        association_object.try(:send,option_text_attribute).to_s
-      elsif association_type.to_s == 'has_and_belongs_to_many'
+      when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-      elsif association_type.to_s == 'has_many'
+      when 'has_many'
         object.send(self.name.to_s).collect{|obj| obj.send(option_text_attribute)}
       else
         self.format(object.send(self.name.to_s))
@@ -242,17 +227,17 @@ module WulinMaster
 
     # Returns the json for the object in argument
     def json(object) 
-      if association_type.to_s == 'belongs_to'
-        {:id => object.send(foreign_key),
-          option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}
-      elsif association_type.to_s == 'has_one'
+      case association_type.to_s
+      when 'belongs_to'
+        {:id => object.send(foreign_key), option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}
+      when 'has_one'
         association_object = object.send(@options[:through] || self.name)
         {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}
-      elsif association_type.to_s == 'has_and_belongs_to_many'
+      when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
         {id: ids, option_text_attribute => op_attribute}
-      elsif association_type.to_s == 'has_many'
+      when 'has_many'
         object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}
       else
         self.format(object.send(self.name.to_s))

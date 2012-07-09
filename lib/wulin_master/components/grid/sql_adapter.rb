@@ -7,45 +7,61 @@ module WulinMaster
       @query = query
     end
     
-    def null_query(column_name, value)
-      if model < ActiveRecord::Base
-        @query = @query.where("#{column_name} IS #{value} NULL")
-      else
-        @query = @query.where("name IS #{value} NULL")
-      end
-    end
-    
-    def boolean_query(column_name, true_or_false)
-      if model < ActiveRecord::Base
-        @query = @query.where(column_name => true_or_false)
-      else
-        if true_or_false
-          @query = @query.where(self.name => true)
-        else
-          @query = @query.any_in(self.name => [nil, false])
+    %w(null_query boolean_query string_query).each do |method_name|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{method_name}(column_name, value, column)
+          if model < ActiveRecord::Base
+            @query = SqlQuery.#{method_name}(@query, column_name, value, column)
+          else
+            @query = NoSqlQuery.#{method_name}(@query, column_name, value, column)
+          end
         end
-      end
+      RUBY
+    end
+  end
+  
+  module SqlQuery
+    def null_query(query, column_name, value, column)
+      query.where("#{column_name} IS #{value} NULL")
     end
     
-    def string_query(column_name, value, column)
-      if model < ActiveRecord::Base
-        @query = @query.where(["UPPER(#{column_name}) LIKE UPPER(?)", value+"%"])
+    def boolean_query(query, column_name, value, column)
+      query.where(column_name => value)
+    end
+    
+    def string_query(query, column_name, value, column)
+      query.where(["UPPER(#{column_name}) LIKE UPPER(?)", value+"%"])
+    end
+    
+    module_function :null_query, :boolean_query, :string_query
+  end
+  
+  module NoSqlQuery
+    def null_query(query, column_name, value, column)
+      query.where("name IS #{value} NULL")
+    end
+    
+    def boolean_query(query, column_name, value, column)
+      if value
+        query.where(column.name => true)
       else
-        if column.options[:type] == 'Datetime' and (datetime_range = format_datetime(value)).present? # Datetime filter for Mongodb
-          @query = @query.where(
-          column.name.to_sym.gte => datetime_range[:from], 
-          column.name.to_sym.lte => datetime_range[:to]
-          )
-        else
-          @query = @query.where(self.name => Regexp.new("#{Regexp.escape(value)}.*", true))
-        end
+        query.any_in(column.name => [nil, false])
       end
     end
     
-    private
+    def string_query(query, column_name, value, column)
+      if column.options[:type] == 'Datetime' and (datetime_range = format_datetime(value)).present?
+        query.where(
+        column.name.to_sym.gte => datetime_range[:from], 
+        column.name.to_sym.lte => datetime_range[:to]
+        )
+      else
+        query.where(column.name => Regexp.new("#{Regexp.escape(value)}.*", true))
+      end
+    end
     
-    # == Generate the datetime rang filter for mongodb
-    def format_datetime(datetime)
+
+    def self.format_datetime(datetime)
       case datetime
       when /^\d{1,4}-?$/ # 20 2011 2011-
         year = datetime.first(4)
@@ -125,18 +141,21 @@ module WulinMaster
         {}
       end
     end
-    
-    def extract_data(datetime, index=nil)
+
+    def self.extract_data(datetime, index=nil)
       if index
         datetime.split(/\s/)[index.to_i].split('-').map(&:to_i)
       else
         datetime.split('-').map(&:to_i)
       end
     end
-    
-    def build_datetime(*args)
+
+    def self.build_datetime(*args)
       DateTime.new(*args) rescue nil
     end
     
+    
+    module_function :null_query, :boolean_query, :string_query
   end
+  
 end
