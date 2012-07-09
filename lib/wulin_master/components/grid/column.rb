@@ -64,6 +64,7 @@ module WulinMaster
           return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
         else
           adapter.null_query(complete_column_name, operator, self)
+          return adapter.query
         end
       end
       
@@ -91,7 +92,7 @@ module WulinMaster
           when 'equals' then 'LIKE'
           when 'not_equals' then 'NOT LIKE'
           end
-          return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value+"%"])
+          return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value + "%"])
         end
       # ----------- !!! TODO, has not consider the filter operator for following cases, need to add in future ----------
       else
@@ -102,12 +103,14 @@ module WulinMaster
           true_values = ["y", "yes", "ye", "t", "true"]
           true_or_false = true_values.include?(filtering_value.downcase)
           adapter.boolean_query(complete_column_name, true_or_false, self)
+          return adapter.query
         else
           filtering_value = filtering_value.gsub(/'/, "''")
           if sql_type.to_s == 'integer' and is_table_column?
             return query.where(self.name => filtering_value)
           else
             adapter.string_query(complete_column_name, filtering_value, self)
+            return adapter.query
           end
         end
       end
