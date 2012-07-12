@@ -1,4 +1,4 @@
-- grid = controller.screen.grids.first
+- grid = controller.screen.grids.find{|g| g.name == params["grid"]} || controller.screen.grids.first
 - if grid.action_names.include?('add') || grid.action_names.include?('hotkey_add') 
   :ruby
     model_name = grid.model.name.underscore

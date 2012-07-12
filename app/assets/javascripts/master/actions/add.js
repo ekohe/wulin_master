@@ -3,7 +3,7 @@
 WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
   name: 'add',
 
-  handler: function() {
+  handler: function(e) {
     var grid = this.getGrid();
     Ui.openDialog(grid, grid.options);
 
