@@ -162,7 +162,7 @@ var GridStatesManager = {
 	},
 	
 	// Apply current filters
-	applayFilters: function(path, filterStates) {
+	applyFilters: function(path, filterStates) {
 	  if (filterStates) {
 	    path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
   	  $.each(filterStates, function(k, v){

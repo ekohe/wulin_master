@@ -135,7 +135,8 @@
       var newFilters = [];
       if (currentFiltersApplied.length != 0) {
         $.each(currentFiltersApplied, function() {
-          newFilters.push([this['id'], this['value']]);
+          if(this['operator'] == undefined) this['operator'] = 'equals'
+          newFilters.push([this['id'], this['value'], this['operator']]);
         });
         $loader.setFilterWithoutRefresh(newFilters);
 	    }

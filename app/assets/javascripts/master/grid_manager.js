@@ -93,7 +93,7 @@
 			appendEditor(columns);
       
       // Apply current filters
-      path = GridStatesManager.applayFilters(path, states["filter"]);
+      path = GridStatesManager.applyFilters(path, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
 
