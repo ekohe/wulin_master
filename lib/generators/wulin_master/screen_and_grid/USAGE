@@ -6,11 +6,11 @@ Example:
 
     This will create:
         create  db/migrate/20110919093453_create_wulins.rb
-        create  app/<asset_folder_name>/controllers/wulins_controller.rb
-        create  app/<asset_folder_name>/screens/wulin_screen.rb
-        create  app/<asset_folder_name>/grids/wulin_grid.rb
-        create  app/<asset_folder_name>/models/wulin.rb
-        create  app/<asset_folder_name>/views/wulins
+        create  app/controllers/wulins_controller.rb
+        create  app/screens/wulin_screen.rb
+        create  app/grids/wulin_grid.rb
+        create  app/models/wulin.rb
+        create  app/views/wulins
         route  resources :wulins
         
     More info please run "rails generate wulin_master:screen_and_grid --help"  

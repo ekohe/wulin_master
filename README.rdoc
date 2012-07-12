@@ -39,16 +39,6 @@ features.
 
    Run with <em>bundle exec rails g</em> for get generator list.
 
-=== 5. Add autoload_paths
-
-    Add add some autoload_paths in application.rb:
-   
-    # app/config/application.rb
-    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/models)
-    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/controllers)
-    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/screens)
-    config.autoload_paths += %W(#{Rails.root}/app/<asset_folder_name>/grids)
-
 
 == Getting Started
 
@@ -61,17 +51,15 @@ features.
   This will create:
    
     create  db/migrate/20110919093453_create_posts.rb
-    create  app/<asset_folder_name>/controllers/posts_controller.rb
-    create  app/<asset_folder_name>/screens/post_screen.rb
-    create  app/<asset_folder_name>/grids/post_grid.rb
-    create  app/<asset_folder_name>/models/post.rb
-    create  app/<asset_folder_name>/views/posts
+    create  app/controllers/posts_controller.rb
+    create  app/screens/post_screen.rb
+    create  app/grids/post_grid.rb
+    create  app/models/post.rb
+    create  app/views/posts
     route  resources :posts
 
    <em>name:string age:integer</em> are the columns of the grid, same as the <b><em>[field:type field:type]</em></b> 
    option of *scaffold* generator.
-   
-   You can configurate <b><asset_folder_name></b> in *config/initializers/wulin_master.rb*
 
 === 2. Run migration
 
@@ -81,7 +69,7 @@ features.
 
    You can configure your grid like following:
 
-    # app/<asset_folder_name>/grids/post_grid.rb
+    # app/grids/post_grid.rb
     class PostGrid < WulinMaster::Grid
       title 'Posts'   # Title for this grid
 
@@ -122,7 +110,7 @@ features.
    Grid is located in screen, one screen can has one or multiple grids,you can put any grid to one
    screen with *grid* method, and config the *title* and the *path* method.
    
-    # app/<asset_folder_name>/screens/post_screen.rb:
+    # app/screens/post_screen.rb:
     class PostScreen < WulinMaster::Screen
      title 'All Posts'
 
@@ -135,7 +123,7 @@ features.
     
    Config resource controller which inherited from WulinMaster::ScreenController, to tell the controller which screens it controls, and you can also write customized callbacks
    
-    # app/<asset_folder_name>/controllers/posts_controller.rb
+    # app/controllers/posts_controller.rb
     class PostsController < WulinMaster::ScreenController
       controller_for_screen PostScreen
 

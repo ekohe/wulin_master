@@ -1,6 +1,5 @@
 module WulinMaster
   class ScreenController < ApplicationController
-    prepend_view_path File.join(Rails.root, 'app', WulinMaster.config.asset_folder_name, 'views')
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
 
     respond_to :html, :json
