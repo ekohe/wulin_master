@@ -70,6 +70,10 @@ module WulinMaster
     def header_actions
       actions.select {|action| action[:toolbar_item] == false}
     end
+    
+    def action_configs
+      actions.map {|a| a.reject{|k,v| k == :only or k == :except} }
+    end
 
     def action_names
       actions.map {|a| a[:name].to_s}

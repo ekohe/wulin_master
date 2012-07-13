@@ -19,11 +19,12 @@ WulinMaster.ActionManager = function(){
       return $.extend({}, action_proto);
     },
 
-    dispatchActions: function(target, action_names) {
+    dispatchActions: function(target, action_configs) {
       // try to find target's behaviors, and subsribe for target
-      for(var i in action_names) {
-        var action = this.getAction(action_names[i]);
+      for(var i in action_configs) {
+        var action = this.getAction(action_configs[i].name);
         if(action){
+          $.extend(action, action_configs[i]);
           $.extend(action, {target: target});
           if(action.init) action.init();
         }

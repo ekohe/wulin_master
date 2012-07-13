@@ -16,7 +16,7 @@
                               '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
                                #{grid.javascript_column_model.html_safe},
                                #{grid.states_for_user(current_user).html_safe},
-                               #{grid.action_names.to_s.html_safe},
+                               #{grid.action_configs.to_json.html_safe},
                                #{grid.behavior_configs.to_json.html_safe},
                                #{grid.options.to_json.html_safe});
 
