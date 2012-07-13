@@ -41,7 +41,8 @@ var Requests = {
 			data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
-					grid.loader.reloadData();
+					var from = parseInt(currentRow / 200) * 200;
+					grid.loader.reloadData(from, currentRow);
 				} else {
 					displayErrorMessage(msg.error_message);
 					grid.loader.reloadData();
