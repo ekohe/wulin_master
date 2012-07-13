@@ -13,7 +13,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       width: 750,
       height: 600,
       buttons: {
-        'Add mrl': function() {
+        Attach: function() {
           self.appendNewRecordToMiddleTable(masterId, $modelDialog);
         },
         Cancel: function() {
