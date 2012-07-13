@@ -19,15 +19,20 @@ module WulinMaster
   end
 
   class MenuEntry
-    attr_reader :title, :path
+    attr_reader :title, :path, :options
   
-    def initialize(title, path)
+    def initialize(title, path, options)
       @title = title
       @path = path
+      @options = options
     end
   
     def is_submenu?
       false
+    end
+    
+    def is_hidden?
+      @options[:hidden]
     end
   end
 

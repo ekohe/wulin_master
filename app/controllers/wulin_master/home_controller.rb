@@ -87,9 +87,9 @@ module WulinMaster
           end
         end
         if @submenu
-          @submenu << MenuEntry.new(title, path)
+          @submenu << MenuEntry.new(title, path, options)
         else
-          @menu << MenuEntry.new(title, path)
+          @menu << MenuEntry.new(title, path, options)
         end
       end
       
