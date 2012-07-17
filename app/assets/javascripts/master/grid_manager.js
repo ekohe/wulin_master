@@ -79,7 +79,7 @@
 			}
 		}
 
-		function createNewGrid(name, model, screen, path, columns, states, actions, behaviors, extend_options) {
+		function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
 		  gridAttrs, deleteElement, createButtonElement, originColumns;
 		  
@@ -98,7 +98,7 @@
 			query = path.split(".json")[1];
 
       // Set Loader
-			loader = new Slick.Data.RemoteModel(path, columns);
+			loader = new Slick.Data.RemoteModel(path, filters, columns);
 
 			// Set Pager
 			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
