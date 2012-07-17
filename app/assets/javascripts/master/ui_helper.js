@@ -168,30 +168,11 @@ var Ui = {
   closeDialog: function(name) {
     var $form = $( '#' + name + '_form' );
     
-    // setTimeout(function(){
-    //   Ui.highlightCreatedRows(name);
-    // }, 300);
     window._focused = {};
     
     $form.dialog("destroy");
     $form.remove();
   },
-
-
-  // Highlight the created rows after close the dialog
-  // highlightCreatedRows: function(name) {
-  //   var grid = gridManager.getGrid(name),
-  //   createdRows = [];
-  //   console.log(grid.operatedIds);
-  //   $.each(grid.operatedIds, function(){
-  //     if (grid.getRowByRecordId(this) && grid.getRowByRecordId(this).row) {
-  //       createdRows.push(grid.getRowByRecordId(this).row);
-  //     }
-  //   });
-  //   $.each(createdRows, function(){
-  //     $(this).effect( 'highlight', {}, 5000 );
-  //   });
-  // },
 
   // Flash the notification
   flashNotice: function(ids, action) {
