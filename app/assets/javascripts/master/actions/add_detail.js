@@ -33,22 +33,30 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
   
   getModelGrid: function(masterId, dialogDom) {
     var master = this.target.master;
-    //var filters = [];
-    //filters.push({column: master.filter_column, value: masterId, operator: 'exclude'});
-    var url = "/" + this.model + "s?screen=" + this.screen + "&filters[][column]=" + master.filter_column + "&filters[][value]=" + masterId + "&filters[][operator]=exclude";
-    $.ajax({
-      type: 'GET',
-      url: url
-    })
-    .success(function(response){
-      dialogDom.html(response);
+    var screen = this.screen;
+    // first get controller of the detail model, then open the dialog fill the detail grid
+    $.get('/wulin_master/get_detail_controller?model=' + this.model, function(data){
+      var url = "/" + data.controller + "?screen=" + screen + "&filters[][column]=" + master.filter_column + "&filters[][value]=" + masterId + "&filters[][operator]=exclude";
+      $.ajax({
+        type: 'GET',
+        url: url
+      })
+      .success(function(response){
+        dialogDom.html(response);
+        // copy the target's master to detail grid, just replace the operator to 'exclude' 
+        var gridName = dialogDom.find(".grid_container").attr("name");
+        var grid = gridManager.getGrid(gridName);
+        grid.master = master;
+        grid.master["filter_operator"] = 'exclude';
+      });
     });
   },
   
+  // Attach
   appendNewRecordToMiddleTable: function(masterId, dialogDom) {
     var self = this;
     var middleModel = this.target.model;
-    var detailGridName = dialogDom.find(".grid_container").attr("id").replace("grid_", "")
+    var detailGridName = dialogDom.find(".grid_container").attr("name");
     var detailGrid = gridManager.getGrid(detailGridName);
     var detailIds = detailGrid.getSelectedIds();
     
