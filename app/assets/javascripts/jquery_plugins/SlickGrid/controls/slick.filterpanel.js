@@ -7,7 +7,6 @@
   });
   function FilterPanel(grid, loader, triggerElement, currentFilters) {
     var filterWidthOffset = -3; // 2 pixels padding on the left and one pixel for the border on the left
-    
     // private
     var $grid;
     var $loader;
@@ -132,13 +131,14 @@
 		}
 		
 		function setFilter() {
-      var newFilters = [];
+      var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length != 0) {
         $.each(currentFiltersApplied, function() {
           if(this['operator'] == undefined) this['operator'] = 'equals'
-          newFilters.push([this['id'], this['value'], this['operator']]);
+          originalFilters.push([this['id'], this['value'], this['operator']]);
         });
-        $loader.setFilterWithoutRefresh(newFilters);
+
+        $loader.setFilterWithoutRefresh(originalFilters);
 	    }
 		}
 		

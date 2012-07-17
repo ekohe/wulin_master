@@ -16,7 +16,7 @@ WulinMaster.behaviors.Highlight = $.extend({}, WulinMaster.behaviors.BaseBehavio
   handler: function() {
     var data = this.grid.getData(), selectedIndexes = [];
     for (var i in data) {
-      if (data[i] && this.grid.operatedIds.indexOf(data[i].id) != -1) {
+      if (data[i] && this.grid.operatedIds && this.grid.operatedIds.indexOf(data[i].id) != -1) {
         selectedIndexes.push(data[i].slick_index);
       }
     }

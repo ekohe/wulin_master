@@ -161,15 +161,16 @@ var GridStatesManager = {
 	  }    
 	},
 	
-	// Apply current filters
-	applyFilters: function(path, filterStates) {
+	// Attach state filters
+	applyFilters: function(originalFilters, filterStates) {
 	  if (filterStates) {
-	    path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
+      originalFilters = originalFilters || [];
   	  $.each(filterStates, function(k, v){
-  	    path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
+        originalFilters.push({column: k, value: v, operator: 'equals'})
+  	    //path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
   	  })
     }
-	  return path;
+	  return originalFilters;
 	}
 	
 }

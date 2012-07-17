@@ -80,8 +80,7 @@
 		}
 
 		function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
-		  var gridElement, loader, grid, pagerElement, pager, filterTriggerElement, filterPanel, operatedIds = [],
-		  gridAttrs, deleteElement, createButtonElement, originColumns;
+		  var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 		  
       originColumns = clone(columns);
 
@@ -93,7 +92,7 @@
 			appendEditor(columns);
       
       // Apply current filters
-      path = GridStatesManager.applyFilters(path, states["filter"]);
+      filters = GridStatesManager.applyFilters(filters, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
 			query = path.split(".json")[1];
 
@@ -126,9 +125,7 @@
 				query: query, 
 				container: gridElement.parent(), 
 				pager: pager, 
-				operatedIds: operatedIds, 
 				states: states, 
-				filterPanel: filterPanel, 
 				actions: actions,
 				behaviors: behaviors,
 				options: options
