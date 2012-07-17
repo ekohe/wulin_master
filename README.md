@@ -1,9 +1,7 @@
 # WulinMaster
 
-WulinMaster is a grid plugin base on ruby on rails and [SlickGrid](https://github.com/mleibman/SlickGrid).It provide powerfull generator 
-and other tools to make grids easy to build,it also provides flexible configuration, 
-you can easily configure your grid,a beautiful ui base on jqueryui and other good 
-features.
+WulinMaster is a grid plugin base on ruby on rails and [SlickGrid](https://github.com/mleibman/SlickGrid). It provide powerfull generator 
+and other tools to make grids easy to build, it also provides flexible configuration, you can easily configure your grid, a beautiful ui base on jqueryui and other good features.
        
 
 ## Installation
@@ -418,7 +416,7 @@ The `:only` and `:except` option can be appended to all methods of grid styles, 
 
 ### 2. Panel configuration
 
-As one kind of WulinMaster component, WulinMaster::Panel can be also rendered in the screen like WulinMaster::Grid, but the configuration is much easier than Panel, let's take an example:
+As one kind of WulinMaster component, `WulinMaster::Panel` can be also rendered in the screen like `WulinMaster::Grid`, but the configuration is much easier, let's take an example:
 
     # app/panels/order_booking_panel.rb
     class OrderBookingPanel < WulinMaster::Panel
@@ -430,7 +428,7 @@ As one kind of WulinMaster component, WulinMaster::Panel can be also rendered in
 
 Panel configuration can use same methods in grid styles, because these methods are defined in `WulinMaster::ComponentStyling` which included both in `WulinMaster::Grid` and `WulinMaster::Panel`.
 
-The special configure option for Panel is partial. By default, the corresponding html partial file for a Panel should be put in *app/views/panel_partials*, and the file name should be the underscore of Panel class name, but if you want to use another partial name, you can set partial option handily.
+The special configure option for Panel is `partial`. By default, the corresponding html partial file for a Panel should be put in *app/views/panel_partials*, and the file name should be the underscore of Panel class name, but if you want to use another partial name, you can set partial option handily.
 
 Btw, we will introduce more options for `WulinMaster::Panel` in future, like header, title, etc.
 
@@ -465,7 +463,7 @@ In many cases, we need to display 2 grids in one screen whose model relationship
       grid PostGrid, height: '50%', master_grid: 'AuthorGrid', eager_loading: false
     end
 
-In above example, eager_loading set to false to make PostGrid not loading until selecting an author.
+In above example, `eager_loading` set to false to make PostGrid not loading until selecting an author.
 
 ####Define inclusion-exclusion grids####
 
