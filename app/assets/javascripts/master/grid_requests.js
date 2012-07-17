@@ -11,6 +11,7 @@ var Requests = {
 	    data: createFormElement.serialize() + "&authenticity_token=" + window._token,
 	    success: function(request) {      
 	      if (request.success) {
+	      	grid.resetActiveCell();
 	        grid.operatedIds = [request.id];
 	        grid.loader.reloadData();
 	        if (continue_on) {
