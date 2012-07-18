@@ -1,7 +1,7 @@
 %fieldset
   .action_btns{:"data-inclusion-grid" => panel.params["inclusion_grid"], :"data-exclusion-grid" => panel.params["exclusion_grid"]}
-    = button_tag '❮❮ Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
-    = button_tag 'Remove ❯❯', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
+    = button_tag '<< Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
+    = button_tag 'Remove >>', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
 
 :javascript
   $(function(){
