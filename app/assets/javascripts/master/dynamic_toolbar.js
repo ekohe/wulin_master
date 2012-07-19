@@ -1,42 +1,62 @@
 // adjust toolbar style, set the toolbar left position and inner ul width
-var dynamicToolbar = function(){
+var dynamicToolbar = function(initial){
   var $headers = $(".grid-header");
   $headers.each(function(){
     var $header = $(this);
     var $toolbar_wrapper = $(this).find(".toolbar-wrapper");
     var $toolbar = $toolbar_wrapper.find(".toolbar");
 
-    // set toolbar left position
-    var left = $(this).find("h2").outerWidth() + 50;
+    // get the current right visible item index before other operation
+    var rightVisibleIndex = findEageItemsOnRight($toolbar_wrapper, $toolbar).visibleItemIndex;
+
+    // set toolbar original left position
+    var left = 0;
+    $toolbar_wrapper.prevAll().each(function(){
+      left += $(this).outerWidth() + parseFloat($(this).css("margin-left")) + parseFloat($(this).css("margin-right"));
+    }) 
+    left += 50;
     $toolbar_wrapper.css("left", left);
 
-    // set inner toolbar fixed width
-    var listWidth = 0;
-    $toolbar.find("li").each(function(){
-      listWidth += parseFloat($(this).outerWidth());
-    });
-    $toolbar.css('width', listWidth);
+    if(initial) {
+      // set inner toolbar fixed width
+      var listWidth = 0;
+      $toolbar.find("li").each(function(){
+        listWidth += parseFloat($(this).outerWidth());
+      });
+      $toolbar.css('width', listWidth);
+    }
 
     //if($toolbar_wrapper.width())
-    adjustToolbarLeftPosition($toolbar_wrapper, $toolbar);
+    adjustToolbarLeftPosition($toolbar_wrapper, $toolbar, rightVisibleIndex, initial);
   });
 }
 
 // Adjust the toolbar left position if the screen if not big enough
-var adjustToolbarLeftPosition = function($toolbar_wrapper, $toolbar){
+var adjustToolbarLeftPosition = function($toolbar_wrapper, $toolbar, rightVisibleIndex, initial){
   // adjust the toolbar left position if the most left item not fully displayed
   var oldLeft = parseFloat($toolbar_wrapper.css("left"));
+  
   var smallEnough = false;
   var newLeft = oldLeft;
-  var remainingWidth = $toolbar_wrapper.width();
-  var rightVisibleIndex = findEageItemsOnRight($toolbar_wrapper, $toolbar).visibleItemIndex;
-  $($toolbar.find("li").get().slice(0, rightVisibleIndex+1).reverse()).each(function(){
+  var remainingWidth = $toolbar_wrapper.outerWidth();
+  var remainingWidthClone = remainingWidth;
+
+  // check small enough
+  $($toolbar.find("li").get().reverse()).each(function(){
     remainingWidth -= $(this).outerWidth();
     var previousItemWidth = $(this).prev().outerWidth();
     if(remainingWidth < previousItemWidth) {
-      newLeft = oldLeft + remainingWidth;
-      $toolbar_wrapper.css("left", newLeft);
       smallEnough = true;
+      return false;
+    }
+  });
+
+  $($toolbar.find("li").get().slice(0, rightVisibleIndex).reverse()).each(function(){
+    remainingWidthClone -= $(this).outerWidth();
+    var previousItemWidth = $(this).prev().outerWidth();
+    if(remainingWidthClone < previousItemWidth) {
+      newLeft = oldLeft + remainingWidthClone;
+      $toolbar_wrapper.css("left", newLeft);
       return false;
     }
   });
@@ -50,7 +70,7 @@ var adjustToolbarLeftPosition = function($toolbar_wrapper, $toolbar){
     if($toolbar.offset().left > $toolbar_wrapper.offset().left) {
       $toolbar.css("left", 0);
     }
-    var prevLeft = newLeft - 15;  // 15 is the prev button width, need to refactor
+    var prevLeft = newLeft - 12;  // 15 is the prev button width, need to refactor
     $toolbar_wrapper.siblings("span.tb_prev").css("left", prevLeft);
     $toolbar_wrapper.siblings("span.tb_prev, span.tb_next").removeClass("hidden");
   }
@@ -60,6 +80,7 @@ var adjustToolbarLeftPosition = function($toolbar_wrapper, $toolbar){
 var findEageItemsOnLeft = function($toolbar_wrapper, $toolbar){
   var visibleItemWidth;
   var invisibleItemWidth;
+  var visibleItemIndex = $toolbar.find(".toolbar_item").length;
   var mostLeft = true;
   var toolbarWrapperLeft = $toolbar_wrapper.offset().left;
   $($toolbar.find(".toolbar_item").get().reverse()).each(function(){
@@ -70,13 +91,14 @@ var findEageItemsOnLeft = function($toolbar_wrapper, $toolbar){
       mostLeft = false;
       return false;
     }
+    visibleItemIndex--;
   });
   // if mostLeft
   if(mostLeft) {
     invisibleItemWidth = 0;
     visibleItemWidth = $toolbar.find(".toolbar_item").first().outerWidth();
   }
-  return {mostLeft: mostLeft, visibleItemWidth: visibleItemWidth, invisibleItemWidth: invisibleItemWidth};
+  return {mostLeft: mostLeft, visibleItemIndex: visibleItemIndex, visibleItemWidth: visibleItemWidth, invisibleItemWidth: invisibleItemWidth};
 }
 
 // find the 2 items on the toolbar right eage (visible one and invisible one)
@@ -131,6 +153,10 @@ $(".grid-header .tb_prev").live('click', function(){
     $toolbar.animate({
       left: '+=' + shiftWidth
     }, 'slow', function(){
+      // $prev.siblings(".tb_next").removeClass("hidden");
+      // if(leftResult.visibleItemIndex == 1) {
+      //   $prev.addClass("hidden");
+      // }
       adjustWrapperPositionAfterShift($toolbar_wrapper, leftPositionOffset);
     }); 
   }
@@ -138,6 +164,7 @@ $(".grid-header .tb_prev").live('click', function(){
 
 // CLick the next button
 $(".grid-header .tb_next").live('click', function(){
+  var $next = $(this);
   var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
   var $toolbar = $toolbar_wrapper.find(".toolbar");
 
@@ -153,6 +180,10 @@ $(".grid-header .tb_next").live('click', function(){
     $toolbar.animate({
       left: '-=' + shiftWidth
     }, 'slow', function(){
+      // $next.siblings(".tb_prev").removeClass("hidden");
+      // if(rightResult.visibleItemIndex == $toolbar.find(".toolbar_item").length - 1) {
+      //   $next.addClass("hidden");
+      // }
       adjustWrapperPositionAfterShift($toolbar_wrapper, leftPositionOffset);
     });
   }
@@ -160,5 +191,5 @@ $(".grid-header .tb_next").live('click', function(){
 
 // Resize window
 $(window).resize(function(){
-  dynamicToolbar();
+  dynamicToolbar(false);
 });
