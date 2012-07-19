@@ -23,7 +23,7 @@ module WulinMaster
       # action DSL, add an action to the actions_pool
       def action(a_name, options={})
         new_action = {name: a_name}.merge(options)
-        @actions_pool.unshift new_action
+        @actions_pool << new_action
       end
 
       def add_actions(*args)
