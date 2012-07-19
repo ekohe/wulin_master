@@ -3,34 +3,51 @@
 $toolbar_button_width:  60px
 $toolbar_button_height:  48px
 
-.toolbar
-  :float              right
-  :display            inline
-  :padding-right      5px
-  :padding-top        5px
-  .toolbar_item
-    :float            right
-    :margin-left      5px
-    :text-align       center
-    a
-      :position           relative
-      :cursor         	  pointer 
-      :display            block
-      :text-decoration    none
-      :width              $toolbar_button_width
-      :height             $toolbar_button_height
-      :text-align         center
-      :color              black
-      :font-size          12px
-      +text-shadow(white, 0px, 1px, 0)
-      span
-        :display          block
-        :float            none
-        :position         absolute
-        :bottom           0px
-        :left             0px
-        :right            0px
-        :height           12px
+.grid-header
+  .toolbar-wrapper
+    :position           absolute
+    :right              15px
+    :padding-top        5px
+    :margin             0
+    :overflow           hidden
+    .toolbar
+      :float            right
+      :position         relative
+      ul
+        :margin     0
+        :padding    0
+        li.toolbar_item
+          :float            left
+          :padding-left     5px
+          :text-align       center
+          :list-style       none
+          a
+            :position           relative
+            :cursor         	  pointer 
+            :display            block
+            :text-decoration    none
+            :width              $toolbar_button_width
+            :height             $toolbar_button_height
+            :text-align         center
+            :color              black
+            :font-size          12px
+            +text-shadow(white, 0px, 1px, 0)
+            span
+              :display          block
+              :float            none
+              :position         absolute
+              :bottom           0px
+              :left             0px
+              :right            0px
+              :height           12px
+  span.tb_prev, span.tb_next
+    :position     absolute
+    :cursor       default
+    :top          20px
+  span.tb_prev
+    :float        left
+  span.tb_next
+    :right        5px
 
         
 .toolbar_icon_filter

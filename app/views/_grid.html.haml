@@ -5,18 +5,25 @@
       %h2= grid.title
       - grid.header_actions.each do |a|
         = render "action_partials/#{a[:name]}" rescue nil
-      = grid.toolbar.render
+      %span.tb_prev.hidden="<<"
+      .toolbar-wrapper
+        = grid.toolbar.render  
+      %span.tb_next.hidden=">>"
   .grid
   .pager
-  :javascript
-    gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
-                              '#{grid.model.to_s.html_safe}',
-                              '#{grid.params["screen"].to_s.html_safe}',
-                              '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
-                               #{grid.params["filters"].to_json.html_safe},
-                               #{grid.javascript_column_model.html_safe},
-                               #{grid.states_for_user(current_user).html_safe},
-                               #{grid.action_configs.to_json.html_safe},
-                               #{grid.behavior_configs.to_json.html_safe},
-                               #{grid.options.to_json.html_safe});
 
+:javascript
+  // create grid
+  gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
+                            '#{grid.model.to_s.html_safe}',
+                            '#{grid.params["screen"].to_s.html_safe}',
+                            '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
+                             #{grid.params["filters"].to_json.html_safe},
+                             #{grid.javascript_column_model.html_safe},
+                             #{grid.states_for_user(current_user).html_safe},
+                             #{grid.action_configs.to_json.html_safe},
+                             #{grid.behavior_configs.to_json.html_safe},
+                             #{grid.options.to_json.html_safe});
+
+  // Initial adjusting toolbar
+  dynamicToolbar();

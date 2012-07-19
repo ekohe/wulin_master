@@ -1,4 +1,4 @@
 - link_attrs = toolbar_item.anchor_tag_options.inject({}){|sum, e| sum.merge!(e.first => e.last)}
-.toolbar_item
+%li.toolbar_item
   =link_to 'javascript:void(0);', link_attrs do
     %span= toolbar_item.title

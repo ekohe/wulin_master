@@ -18,7 +18,7 @@ module WulinMaster
       e = @items.collect do |item|
         item.render
       end.join("").html_safe
-      "<div class=\"toolbar\" data-grid=#{@grid_name}>#{e}</div>".html_safe
+      "<div class='toolbar' data-grid=#{@grid_name}><ul>#{e}</ul></div>".html_safe
     end
     
     # # Default toolbar, to be deprecated
