@@ -15,3 +15,8 @@ module ActiveRecord::Associations::Builder
     end
   end
 end
+
+module Exceptions
+  class JavascriptError < StandardError
+  end
+end
