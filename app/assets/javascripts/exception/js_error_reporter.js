@@ -1,5 +1,5 @@
-window.onerror = function(msg, url, line){
-  var message = "Error: " + msg + "\nurl: " + url + "\nline #: " + line;
+window.onerror = function(msg, file, line){
+  var message = "Error: " + msg + "\nurl: " + window.location + "\nfile: " + file + "\nline #: " + line;
   $.ajax({
     type: 'POST',
     url:  'wulin_master/js_error_report',
