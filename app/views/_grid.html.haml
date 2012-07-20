@@ -5,10 +5,10 @@
       %h2= grid.title
       - grid.header_actions.each do |a|
         = render "action_partials/#{a[:name]}" rescue nil
-      %span.tb_prev.hidden="<<"
+      %span.tb_prev.hidden
       .toolbar-wrapper
         = grid.toolbar.render  
-      %span.tb_next.hidden=">>"
+      %span.tb_next.hidden
   .grid
   .pager
 

@@ -70,7 +70,7 @@ var adjustToolbarLeftPosition = function($toolbar_wrapper, $toolbar, rightVisibl
     if($toolbar.offset().left > $toolbar_wrapper.offset().left) {
       $toolbar.css("left", 0);
     }
-    var prevLeft = newLeft - 12;  // 15 is the prev button width, need to refactor
+    var prevLeft = newLeft - $toolbar_wrapper.siblings("span.tb_prev").outerWidth();
     $toolbar_wrapper.siblings("span.tb_prev").css("left", prevLeft);
     $toolbar_wrapper.siblings("span.tb_prev, span.tb_next").removeClass("hidden");
   }
