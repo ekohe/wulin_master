@@ -151,11 +151,11 @@ var Ui = {
     setTimeout(function(){
       var afterSetupChosen = $("select[data-remote-path='" + path + "']").data('afterSetupChosen');
       if (monitor) {
-        $("select[data-remote-path='" + path + "']").chosen().change(function(){
+        $("select[data-remote-path='" + path + "']").chosen({allow_single_deselect: true}).change(function(){
           $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
         });
       } else {
-        $("select[data-remote-path='" + path + "']").chosen();
+        $("select[data-remote-path='" + path + "']").chosen({allow_single_deselect: true});
       }
       
       if( afterSetupChosen ) {
