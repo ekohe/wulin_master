@@ -217,7 +217,7 @@ module WulinMaster
         attrs.each do |k,v|
           if associations.keys.include?(k.to_sym)
             association_attributes = attrs.delete(k)
-            if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
+            if associations[k.to_sym].macro == :belongs_to
               if association_attributes['id'] == 'null'
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = nil
               else
