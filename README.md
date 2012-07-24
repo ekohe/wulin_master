@@ -77,8 +77,8 @@ and other tools to make grids easy to build, it also provides flexible configura
 
       # Style options
       fill_window false 
-      width: '500px',   
-      height: '500px',  # options for this grid 
+      width: '500px' 
+      height: '500px'  # options for this grid 
 
       # Other options
       cell_editable false
@@ -110,11 +110,11 @@ and other tools to make grids easy to build, it also provides flexible configura
    
     # app/screens/post_screen.rb:
     class PostScreen < WulinMaster::Screen
-     title 'All Posts'
+      title 'All Posts'
 
-     path '/posts'
+      path '/posts'
 
-     grid PostGrid
+      grid PostGrid
     end
 
 ### 5. Configure controller
@@ -149,7 +149,7 @@ and other tools to make grids easy to build, it also provides flexible configura
 
 ### 1. Grid configuration
 
-####Basic grid configuration####
+####Basic grid configuration
       
 A basic grid configuration needs to provide model and columns. Title and path are optional, they will be automatically assigned according to the grid class name and model.
 
@@ -165,7 +165,7 @@ A basic grid configuration needs to provide model and columns. Title and path ar
     end
 
 
-####Column options####
+####Column options
 
 A column can be a real field in the database table of current model, or virtual attribute of the model, even the field of other model. You can attach one or more options to define attributes for the column.
 
@@ -250,7 +250,7 @@ A column can be a real field in the database table of current model, or virtual 
   This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other type of currencies.
 
 
-####Grid styles####
+####Grid styles
 
 The style configuration of grid can controll the css of the grid. Now the style configuration methods are all defined in WulinMaster::ComponentStyling module (grid and panel are both component), you can use these methods in grid class file, or as an option of grid in screen class file, like:
 
@@ -280,7 +280,7 @@ The style configuration of grid can controll the css of the grid. Now the style 
   Set the component fill the whole window or not, the default value is true.
 
 
-####Grid options####
+####Grid options
 
 The option configuration of grid can set some attributes of the grid. These methods can be used in grid class file, or as an option of grid in screen class file, like the usage of grid styles. Followings are the available option methods:
 
@@ -300,7 +300,7 @@ The option configuration of grid can set some attributes of the grid. These meth
   The default is true, means that you can select multiple rows in the grid. If set false, can only select one row.
 
 
-####Grid actions####
+####Grid actions
 
 If you want to set toolbar items on the grid, grid actions provide a convenient way to do that. Let's look an example:
 
@@ -336,7 +336,7 @@ In addition, you can call `load_default_actions` method to add default toolbar i
 'Filter' and 'Audit' (if you have installed **WulinAudit** gem). Also, if you extend WulinMaster gem or create your own gem which include some new actions and you want to make them to be default actions, you can call the api method `add_default_action(YOUR_ACTION)` to do that.
 
 
-####Grid behaviors####
+####Grid behaviors
 
 WulinMaster grid has a lot of events, like OnDataLoaded, onViewportChanged, etc.(see slick.grid.js for details). If you want to bind some event handlers, grid behavior gives you a easy and well-organized way. Let's look an example:
 
@@ -381,7 +381,7 @@ That's all, you have set up a simple behavior.
 In addition, we already provide some behaviors in `wulin_master` gem, you can view them in *wulin_master/app/assets/javascripts/master/behaviors* folder, they are applied to all grids. But if you want to disable some default behaviors for the grid in your application, you can call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the api method `add_default_behavior(YOUR_BEHAVIOR)` to do that. 
 
 
-####Configuration for different screens####
+####Configuration for different screens
 
 In many cases, a grid may appear on different screens for different purpose, so it may have different styles, options, actions or behaviors between screens. It is easy to implement that.
 
@@ -434,7 +434,7 @@ Btw, we will introduce more options for `WulinMaster::Panel` in future, like hea
 
 ### 3. Screen configuration
 
-####Basic screen configuration####
+####Basic screen configuration
 
 A most basic screen configuration needs to provide nothing, it will request the url path which get from the screen class name, like OrderScreen will request path 'orders?screen=OrderScreen' unless you set path option, and will display nothing until you add grids and panels, they will be rendered on the screen one by one.
 
@@ -447,11 +447,11 @@ A most basic screen configuration needs to provide nothing, it will request the 
       grid OrderGrid, height: '50%'
     end
 
-####Grid and Panel options in screen####
+####Grid and Panel options in screen
 
 This has been expained in section 'Grid configuration/Configuration for different screens', the option you set for a panel or a grid in this screen class will be only valid in this screen.
 
-####Define master-detail grids####
+####Define master-detail grids
 
 In many cases, we need to display 2 grids in one screen whose model relationship is `belong_to` and `has_many`, we have build a helper method `master_grid` in wulin_master gem to enable you to easily implement this. Eg, you want to show AuthorGrid and PostGrid in one screen, when select one author in AuthorGrid, the PostGrid will show his/her posts.
 
@@ -465,7 +465,7 @@ In many cases, we need to display 2 grids in one screen whose model relationship
 
 In above example, `eager_loading` set to false to make PostGrid not loading until selecting an author.
 
-####Define inclusion-exclusion grids####
+####Define inclusion-exclusion grids
 
 Inclusion-exclusion grids is also a very common case, there are 3 grids in the screen, the models of 2 grid has relationship `has_and_belongs_to_many` or `has_many` through, the third grid comes from the join table or through model. Let's look at following example:
 
