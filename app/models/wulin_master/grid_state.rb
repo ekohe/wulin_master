@@ -1,5 +1,7 @@
 module WulinMaster 
   class GridState < ::ActiveRecord::Base
+    attr_accessible :user_id, :grid_name, :state_type, :state_value
+    
     default_scope :order => 'created_at DESC'
     reject_audit if defined? ::WulinAudit
 
