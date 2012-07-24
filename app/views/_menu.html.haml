@@ -18,7 +18,7 @@
         - else
           %li.item= link_to menu_entry.title, menu_entry.path
   
-  - if defined?(WulinOAuth)
+  - if defined?(WulinOAuth) and User.current_user
     #user_nav
       #user_email 
         User: 
