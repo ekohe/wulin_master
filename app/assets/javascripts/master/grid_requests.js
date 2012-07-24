@@ -34,7 +34,15 @@ var Requests = {
 	// Record update by ajax
 	updateByAjax: function(grid, item) {
 		delete item.slick_index;
-		var currentRow = grid.getRowByRecordId(item.id).index;
+		var ids = item.id.toString();
+		var currentRow;
+		// multiple records
+		if (ids.indexOf(',') != -1) {
+			ids = ids.split(',');
+			currentRow = grid.getRowByRecordId(ids[ids.length-1]).index;
+		} else {	// one record
+			currentRow = grid.getRowByRecordId(ids).index;
+		}
 		$.ajax({
 			type: "POST",
 			dateType: 'json',
