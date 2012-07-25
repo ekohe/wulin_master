@@ -84,7 +84,7 @@ var findEageItemsOnLeft = function($toolbar_wrapper, $toolbar){
   var mostLeft = true;
   var toolbarWrapperLeft = $toolbar_wrapper.offset().left;
   $($toolbar.find(".toolbar_item").get().reverse()).each(function(){
-    var currentItemLeft = $(this).offset().left;
+    var currentItemLeft = Math.round($(this).offset().left);
     if(currentItemLeft < toolbarWrapperLeft) {
       invisibleItemWidth = $(this).outerWidth();
       visibleItemWidth = $(this).next().outerWidth();
@@ -109,7 +109,7 @@ var findEageItemsOnRight = function($toolbar_wrapper, $toolbar){
   var mostRight = true;
   var toolbarWrapperRight = $toolbar_wrapper.offset().left + $toolbar_wrapper.width();
   $toolbar.find(".toolbar_item").each(function(){
-    var currentItemRight = $(this).offset().left + $(this).outerWidth();
+    var currentItemRight = Math.round($(this).offset().left + $(this).outerWidth());
     if(currentItemRight > toolbarWrapperRight) {
       invisibleItemWidth = $(this).outerWidth();
       visibleItemWidth = $(this).prev().outerWidth();
