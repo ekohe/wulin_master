@@ -1619,7 +1619,8 @@ if (typeof Slick === "undefined") {
                         navigateNext();
                     }
                     else if (e.which == 13) {
-                        if (options.editable) {
+                        // if (options.editable) {
+                          if (columns[activeCell].editable) {
                             if (currentEditor) {
                                 var multiChosenExist = $('.slick-cell .chzn-select~.chzn-container-multi').size() > 0;
                                 var chosenFull = $('.slick-cell .chzn-select~.chzn-container-multi .chzn-results li.active-result').size() == 0;
@@ -1698,7 +1699,8 @@ if (typeof Slick === "undefined") {
                 return;
             }
 
-            if (options.editable) {
+            //if (options.editable) {
+            if(columns[cell.cell].editable) {
                 gotoCell(cell.row, cell.cell, true);
             }
         }
@@ -1837,7 +1839,8 @@ if (typeof Slick === "undefined") {
 
                 $(activeCellNode).addClass("active");
 
-                if (options.editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
+                // if (options.editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
+                  if (columns[activeCell].editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
                     clearTimeout(h_editorLoader);
 
                     if (options.asyncEditorLoading) {
@@ -1917,13 +1920,13 @@ if (typeof Slick === "undefined") {
 
         function makeActiveCellEditable(editor) {
             if (!activeCellNode) { return; }
-            if (!options.editable) {
+            // if (!options.editable) {
+            if (!columns[activeCell].editable) {  
                 throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
             }
 
             // cancel pending async call if there is one
             clearTimeout(h_editorLoader);
-
             if (!isCellPotentiallyEditable(activeRow,activeCell)) {
                 return;
             }
