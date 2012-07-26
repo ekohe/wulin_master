@@ -1076,7 +1076,6 @@ if (typeof Slick === "undefined") {
             if (columnMetadata && columnMetadata[cell] && columnMetadata[cell].editor !== undefined) {
                 return columnMetadata[cell].editor;
             }
-
             return column.editor || (options.editorFactory && options.editorFactory.getEditor(column));
         }
 
@@ -1620,7 +1619,7 @@ if (typeof Slick === "undefined") {
                     }
                     else if (e.which == 13) {
                         // if (options.editable) {
-                          if (columns[activeCell].editable) {
+                        if (isColumnEditable(columns[activeCell])) {
                             if (currentEditor) {
                                 var multiChosenExist = $('.slick-cell .chzn-select~.chzn-container-multi').size() > 0;
                                 var chosenFull = $('.slick-cell .chzn-select~.chzn-container-multi .chzn-results li.active-result').size() == 0;
@@ -1700,7 +1699,7 @@ if (typeof Slick === "undefined") {
             }
 
             //if (options.editable) {
-            if(columns[cell.cell].editable) {
+            if(isColumnEditable(columns[cell.cell])) {
                 gotoCell(cell.row, cell.cell, true);
             }
         }
@@ -1840,7 +1839,7 @@ if (typeof Slick === "undefined") {
                 $(activeCellNode).addClass("active");
 
                 // if (options.editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
-                  if (columns[activeCell].editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
+                if (isColumnEditable(columns[activeCell]) && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
                     clearTimeout(h_editorLoader);
 
                     if (options.asyncEditorLoading) {
@@ -1921,7 +1920,7 @@ if (typeof Slick === "undefined") {
         function makeActiveCellEditable(editor) {
             if (!activeCellNode) { return; }
             // if (!options.editable) {
-            if (!columns[activeCell].editable) {  
+            if (!isColumnEditable(columns[activeCell])) {  
                 throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
             }
 
@@ -2536,6 +2535,15 @@ if (typeof Slick === "undefined") {
           } else {
             return [];
           }
+        }
+
+        // get the editable for a column accoring to self's config and current grid's config
+        function isColumnEditable(column_option) {
+            if(column_option.editable == undefined) {
+                return options.editable;
+            } else {
+                return column_option.editable;
+            }
         }
         
         //////////////////////////////////////////////////////////////////////////////////////////////

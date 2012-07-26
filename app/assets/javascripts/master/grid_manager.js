@@ -48,12 +48,10 @@
 		  var i, type_str;
 		  for(i in columns){
 		    type_str = columns[i].type.toLowerCase();
-				if(columns[i].editable == true) {
-				  if (columns[i].editor) {
-				    columns[i].editor = eval(columns[i].editor);
-  				} else {
-  					columns[i].editor = getEditorForType(columns[i].type);
-  				}
+			  if (columns[i].editor) {
+			    columns[i].editor = eval(columns[i].editor);
+				} else {
+					columns[i].editor = getEditorForType(columns[i].type);
 				}
 				if (columns[i].formatter) {
 					columns[i].formatter = eval(columns[i].formatter);

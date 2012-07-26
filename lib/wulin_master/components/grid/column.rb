@@ -6,7 +6,7 @@ module WulinMaster
     def initialize(name, grid_class, opts={})
       @name = name
       @grid_class = grid_class
-      @options = {:width => 150, :sortable => true, :editable => true}.merge(opts)
+      @options = {:width => 150, :sortable => true}.merge(opts)
     end
 
     def label
