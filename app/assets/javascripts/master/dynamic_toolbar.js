@@ -1,10 +1,17 @@
 // adjust toolbar style, set the toolbar left position and inner ul width
-var dynamicToolbar = function(initial){
-  var $headers = $(".grid-header");
+var dynamicToolbar = function(gridName, initial){
+  var $headers;
+  if(!gridName) {
+    $headers = $(".grid-header");
+  } else {
+    $headers = gridManager.getGrid(gridName).container.find(".grid-header");
+  }
   $headers.each(function(){
     var $header = $(this);
     var $toolbar_wrapper = $(this).find(".toolbar-wrapper");
     var $toolbar = $toolbar_wrapper.find(".toolbar");
+
+    if($toolbar.length == 0) return false;
 
     // get the current right visible item index before other operation
     var rightVisibleIndex = findEageItemsOnRight($toolbar_wrapper, $toolbar).visibleItemIndex;
@@ -190,6 +197,13 @@ $(".grid-header .tb_next").live('click', function(){
 });
 
 // Resize window
-$(window).resize(function(){
-  dynamicToolbar(false);
+$(window).resize(function(e){
+  if(e.target == window) {
+    dynamicToolbar(null, false);
+  } else {
+    $(e.target).find(".grid_container").each(function(){
+      var gridName = $(this).attr("name");
+      dynamicToolbar(gridName, false);
+    });
+  }
 });
