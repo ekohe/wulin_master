@@ -7,7 +7,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
     
-    var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Available " + this.model}).css('display', 'none').appendTo($('body'));
+    var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
     $modelDialog.dialog({
       autoOpen: true,
       width: 750,

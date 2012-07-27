@@ -1,24 +1,24 @@
-%fieldset
-  .action_btns{:"data-inclusion-grid" => panel.params["inclusion_grid"], :"data-exclusion-grid" => panel.params["exclusion_grid"]}
-    = button_tag '<< Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
-    = button_tag 'Remove >>', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
+%fieldset.panel_wrapper
+  .panel_btns{:"data-inclusion-grid" => panel.params["inclusion_grid"], :"data-exclusion-grid" => panel.params["exclusion_grid"]}
+    = button_tag '<- Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
+    = button_tag 'Remove ->', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
 
 :javascript
   $(function(){
     // Include record
-    $(".action_btns #add_btn").off('click').on('click', function(){
+    $(".panel_btns #add_btn").off('click').on('click', function(){
       btnHander('add');
     });
     
     // Exclude record
-    $(".action_btns #remove_btn").off('click').on('click', function(){
+    $(".panel_btns #remove_btn").off('click').on('click', function(){
       btnHander('remove');
     });
 
     function btnHander(type) {
       var ids;
-      var inclusionGridName = $(".action_btns").data("inclusion-grid");
-      var exclusionGridName = $(".action_btns").data("exclusion-grid");
+      var inclusionGridName = $(".panel_btns").data("inclusion-grid");
+      var exclusionGridName = $(".panel_btns").data("exclusion-grid");
 
       var inclusionGrid = gridManager.getGrid(inclusionGridName);
       var exclusionGrid = gridManager.getGrid(exclusionGridName);
@@ -50,7 +50,7 @@
       if(!groupId) return false;
       
       // Start the request
-      $('.action_btns button').attr('disabled', 'disabled');
+      $('.panel_btns button').attr('disabled', 'disabled');
 
       var url;
       if(type == 'add') {

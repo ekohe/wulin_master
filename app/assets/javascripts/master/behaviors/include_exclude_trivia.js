@@ -16,7 +16,7 @@ WulinMaster.behaviors.IncludeExcludeTrivia = $.extend({}, WulinMaster.behaviors.
   },
 
   handler: function() {
-    var panel_buttons = $("#panel_inclusion_exclusion .action_btns");
+    var panel_buttons = $("#panel_inclusion_exclusion .panel_btns");
     var addButton = panel_buttons.find("#add_btn");
     var removeButton = panel_buttons.find("#remove_btn");
     var inclusionGridName = panel_buttons.data('inclusion-grid');
