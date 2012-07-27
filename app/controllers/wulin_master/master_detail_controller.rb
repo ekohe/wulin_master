@@ -1,7 +1,8 @@
 module WulinMaster
   class MasterDetailController < ApplicationController
     def get_detail_controller
-      render :json => {:status => 'OK', :controller => params[:model].tableize}
+      real_class_name = params[:middle_model].classify.constantize.reflections[params[:model].to_sym].class_name rescue params[:model]
+      render :json => {:status => 'OK', :controller => real_class_name.tableize}
     end
 
     def attach_details

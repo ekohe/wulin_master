@@ -76,8 +76,10 @@ module WulinMaster
             operator = (filtering_operator == 'equals') ? '=' : '!='
             return query.where("#{relation_table_name}.#{self.option_text_attribute} #{operator} ?", filtering_value)
           elsif ['include', 'exclude'].include? filtering_operator
-            ids = relation_table_name.classify.constantize.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value).map do |e|
-              e.send("#{model.table_name}").map(&:id)
+            relation_class = relation_table_name.classify.constantize
+            ids = relation_class.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value).map do |e|
+              real_relation_name = options[:detail_relation_name] || model.table_name
+              e.send("#{real_relation_name}").map(&:id)
             end.flatten.uniq
             if ids.blank?
               operator = (filtering_operator == 'include') ? 'IS' : 'IS NOT'
@@ -166,7 +168,7 @@ module WulinMaster
     
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
-      @options[:through] ? self.name : (@options[:option_text_attribute] || :name)
+      @options[:option_text_attribute].presence || (@options[:through] ? self.name : :name)
     end
 
     def foreign_key
