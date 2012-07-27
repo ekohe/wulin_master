@@ -65,7 +65,7 @@ module WulinMaster
         if new_title 
           screen ? @titles_pool[screen] = new_title : @titles_pool[:_common] = new_title
         else
-          (screen ? @titles_pool[screen] : @titles_pool[:_common]) || self.to_s.gsub(/Grid/, "")
+          @titles_pool[screen] || @titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
         end
       end
     end
