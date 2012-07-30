@@ -8,8 +8,10 @@ module WulinMaster
     def attach_details
       middle_model = params[:model].classify.constantize
       detail_column = middle_model.reflections[params[:detail_model].to_sym].foreign_key
-      params[:detail_ids].each do |detail_id|
-        middle_model.create({detail_column => detail_id, params[:master_column] => params[:master_id]})
+      middle_model.transaction do
+        params[:detail_ids].each do |detail_id|
+          middle_model.create!({detail_column => detail_id, params[:master_column] => params[:master_id]})
+        end
       end
       render :json => {:status => 'OK', :message => "Attached #{params[:detail_ids].size} records."}
     end
