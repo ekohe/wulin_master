@@ -61,7 +61,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var detailIds = detailGrid.getSelectedIds();
     
     if(detailIds.length == 0) {
-      displayErrorMessage("Please select at least one " + this.model);
+      displayErrorMessage("Please select at least one item.");
     } else {
       var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel}
       $.post('/wulin_master/attach_details', data, function(response){
