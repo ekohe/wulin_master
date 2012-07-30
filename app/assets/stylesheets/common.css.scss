@@ -147,3 +147,18 @@
     box-shadow: none;
   }
 }
+
+span.switch_btn {
+  background: image-url('ui/switch_icon.png') no-repeat top center;
+  display: block;
+  width: 30px;
+  height: 24px;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  &[disabled] {
+    cursor: default;
+    opacity: 0.4;
+  }
+}
