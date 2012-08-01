@@ -61,10 +61,11 @@ var Requests = {
 	},
 
 	// Delete rows along ajax 
-	deleteByAjax: function(grid, ids) {
+	deleteByAjax: function(grid, ids, force) {
+		if(force == undefined) force = false;
 		$.ajax({
 			type: 'POST',
-			url: grid.path + '/' + ids + '.json?screen=' + grid.screen,
+			url: grid.path + '/' + ids + '.json?screen=' + grid.screen + '&force=' + force,
 			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
@@ -72,9 +73,34 @@ var Requests = {
 					grid.loader.reloadData();
 				  var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
 				  var message;
-				  if (recordSize > 1) {  message = recordSize+" records have been deleted."; }
-				    else { message = "One record has been deleted."; }
+				  if (recordSize > 1) { 
+				  	message = recordSize+" records have been deleted."; 
+				  } else { 
+				  	message = "One record has been deleted."; 
+				  }
 				  displayNewNotification(message);
+				} else if(msg.confirm) {
+					$("#confirm_dialog").dialog({
+            modal: true,
+            open: function() {
+            	if(msg.warning_message) $(this).find('#confirm_content').text(msg.warning_message);
+            },
+            buttons: {
+              Confirm: function() {
+                Requests.deleteByAjax(grid, ids, true);
+                $(this).find('#confirm_content').text("Are you sure to do this ?");
+                $(this).dialog("destroy");
+              },
+              Cancel: function() {
+              	$(this).find('#confirm_content').text("Are you sure to do this ?");
+                $(this).dialog("destroy");
+              }
+            },
+            close: function() { 
+            	$(this).find('#confirm_content').text("Are you sure to do this ?");
+              $(this).dialog("destroy");
+            }
+          });
 				} else {
 					displayErrorMessage(msg.error_message);
 				}
