@@ -489,11 +489,18 @@
                     onClose: function() { calendarOpen = false },
                     timeFormat: 'hh:mm' 
                 };
-                if(item.unit && item.unit.unit == "mn")
-                    $.extend(attrs, {
-                        stepMinute: 5,
-                        minuteGrid: 5
-                    });
+                if(item.unit) {
+                    if(item.unit.unit == "mn")
+                        $.extend(attrs, {
+                            stepMinute: 5,
+                            minuteGrid: 5
+                        });
+                    else if(item.unit.unit == 'slot')
+                        $.extend(attrs, {
+                            stepMinute: 5,
+                            minuteGrid: 10
+                        });
+                }
                 $input.timepicker(attrs);
             };
 
