@@ -465,6 +465,19 @@ In many cases, we need to display 2 grids in one screen whose model relationship
 
 In above example, `eager_loading` set to false to make PostGrid not loading until selecting an author.
 
+For master-detail relationship, wulin_master provides a build-in action `add_detail`. Once you use it on detail grid, you can get a new toolbar item which can help you to add one or more detail records for the selected master record. Let's take an example:    
+    
+    class AuthorPostGrid < WulinMaster::Grid
+      ...
+      action :add_detail, model: 'post', screen: 'AddPostScreen', icon: 'add', title: 'Add Posts'
+    end
+
+    class AddPostScreen < WulinMaster::Screen
+      grid PostGrid, title: 'Available Posts'
+    end
+
+In above code, action :add_detail must have two neccessary option, `model` and `screen`, `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from. 
+
 ####Define inclusion-exclusion grids
 
 Inclusion-exclusion grids is also a very common case, there are 3 grids in the screen, the models of 2 grid has relationship `has_and_belongs_to_many` or `has_many` through, the third grid comes from the join table or through model. Let's look at following example:
