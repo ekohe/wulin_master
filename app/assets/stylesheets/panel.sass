@@ -1,3 +1,5 @@
+@import base
+
 .panel_container
   float: left
   fieldset.panel_wrapper
@@ -12,5 +14,18 @@
       button
         width: 100%
         margin-top: 10px
+
+  .panel-header
+    position:     relative
+    height:       40px
+    background:   image-url('ui/panel_bar_bg.png')
+    h2
+      padding-top:    10px
+      padding-left:   10px
+      font-size:      16px
+      font-weight:    bold
+      color:          #555
+      float:          left
+      +text-shadow(#efefef 1px 1px 0)
 
 

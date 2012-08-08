@@ -22,7 +22,7 @@ module WulinMaster
     # Class methods
     # -------------------
     class << self
-      attr_reader :partial
+      attr_reader :partial, :title
       
       def init
         initialize_styles
@@ -30,6 +30,10 @@ module WulinMaster
 
       def partial(new_partial=nil)
         new_partial ? @partial = new_partial : @partial
+      end
+
+      def title(new_title=nil)
+        new_title ? @title = new_title : @title
       end
     end
 
@@ -46,6 +50,10 @@ module WulinMaster
 
     def partial
       self.class.partial || self.name
+    end
+
+    def title
+      self.class.title
     end
 
     def view_paths

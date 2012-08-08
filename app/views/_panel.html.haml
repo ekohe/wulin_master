@@ -1,4 +1,7 @@
 .panel_container{:id => "panel_#{panel.name}", :style => panel.style}
+  - if panel.title
+    .panel-header
+      %h2=panel.title
   = panel.render
 
 :javascript
