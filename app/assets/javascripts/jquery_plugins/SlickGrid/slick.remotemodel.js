@@ -271,6 +271,11 @@
 			sortdir = dir;
 			refresh();
 		}
+
+    function setSortWithoutRefresh(column, dir) {
+      sortcol = column;
+      sortdir = dir;
+    }
 		
 		function getSortColumn() {
 		  return sortcol;
@@ -420,6 +425,7 @@
 			"ensureData": ensureData,
 			"reloadData": reloadData,
 			"setSort": setSort,
+      "setSortWithoutRefresh": setSortWithoutRefresh,
 			"getSortColumn": getSortColumn,
 			"getSortDirection": getSortDirection,
 			"getFilters": getFilters,
