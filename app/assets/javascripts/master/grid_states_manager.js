@@ -27,6 +27,8 @@ var GridStatesManager = {
       var loader = grid.loader, sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();
+      // update sort state and save it to db
+      grid.states["sort"] = {sortCol: sortJson["sortCol"], sortDir: sortJson["sortDir"]};
       self.saveStates(grid.name, "sort", sortJson);
     });
     
