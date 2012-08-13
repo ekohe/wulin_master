@@ -32,7 +32,7 @@ var Requests = {
 	},
 
 	// Record update by ajax
-	updateByAjax: function(grid, item) {
+	updateByAjax: function(grid, item, editCommand) {
 		delete item.slick_index;
 		var ids = item.id.toString();
 		var currentRow;
@@ -54,7 +54,11 @@ var Requests = {
 					grid.loader.reloadData(from, currentRow);
 				} else {
 					displayErrorMessage(msg.error_message);
-					grid.loader.reloadData();
+					if(editCommand) {
+						editCommand.undo();
+					} else {
+						grid.loader.reloadData();
+					}
 				}
 			}
 		});
