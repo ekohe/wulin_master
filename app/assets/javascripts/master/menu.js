@@ -51,7 +51,7 @@ function load_page(url) {
     },
     error: function() {
       indicators.find("#init_menu_indicator").fadeOut();
-      displayErrorMessage("An error occured while trying to load page. Please try again.");
+      // displayErrorMessage("An error occured while trying to load page. Please try again.");
     }
   });
 }
