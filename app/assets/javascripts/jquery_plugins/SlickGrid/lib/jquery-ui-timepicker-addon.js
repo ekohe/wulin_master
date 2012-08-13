@@ -18,6 +18,12 @@
 * .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 */
 
+/*
+* Fix the picker showing problem when handily input time
+* By: Jimmy Huang
+* Date: 2012-08-13 
+*/
+
 (function($) {
 
 // Prevent "Uncaught RangeError: Maximum call stack size exceeded"
@@ -1020,12 +1026,18 @@ $.datepicker._updateDatepicker = function(inst) {
 	}
 
 	if (typeof(inst.stay_open) !== 'boolean' || inst.stay_open === false) {
-
+		// check picker has content or not, if not, need to hide the picker (eg: handily input time rather than click calender icon) 
+		var pickerVisible = $("#ui-datepicker-div").html();
+		
 		this._base_updateDatepicker(inst);
 
 		// Reload the time control when changing something in the input text field.
 		var tp_inst = this._get(inst, 'timepicker');
 		if(tp_inst) tp_inst._addTimePicker(inst);
+
+		// hide the picker if necessary
+		if(!pickerVisible)
+			$("#ui-datepicker-div").hide();
 	}
 };
 
