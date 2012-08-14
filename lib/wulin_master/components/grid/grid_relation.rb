@@ -25,8 +25,8 @@ module WulinMaster
           end
 
           # add association column to self for filtering
-          if !self.columns_pool.map(&:name).include?(reflection.name)
-            column reflection.name, visible: false, editable: false, option_text_attribute: "id" 
+          unless self.columns_pool.find {|c| c.name == reflection.name and c.options[:only].include?(options[:screen].intern)}
+            column reflection.name, visible: false, editable: false, option_text_attribute: "id", only: [options[:screen].intern]
           end
 
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
@@ -43,6 +43,19 @@ module WulinMaster
       def exclude_of(master_grid_klass, options={})
         self.master_grid(master_grid_klass, options, false)
         behavior :include_exclude_trivia, only: [options[:screen].intern]
+      end
+
+      # when there is no master grid but you want the detail grid can be filtered by a given model
+      def master_model(model_name, options={})
+        if options[:screen]
+          detail_model = self.model
+          reflection = detail_model.reflections[model_name.intern]
+
+          # add association column
+          unless self.columns_pool.find {|c| c.name == reflection.name and c.options[:only].include?(options[:screen].intern)}
+            column reflection.name, visible: false, editable: false, option_text_attribute: "id", only: [options[:screen].intern]
+          end
+        end
       end
     end
 
