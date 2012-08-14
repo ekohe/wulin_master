@@ -35,6 +35,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
         detailGrid.loader.setSortWithoutRefresh(sortingStates["sortCol"], sortingStates["sortDir"]);
       }
       // filter the detail grid
+      detailGrid.resetActiveCell();
       detailGrid.loader.addFilter(association_key, masterIds[0], this.operator);
     }
   }
