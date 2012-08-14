@@ -24,6 +24,11 @@ module WulinMaster
             inclusion ? 'include' : 'exclude'
           end
 
+          # add association column to self for filtering
+          if !self.columns_pool.map(&:name).include?(reflection.name)
+            column reflection.name, visible: false, editable: false, option_text_attribute: "id" 
+          end
+
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
         end
       end
