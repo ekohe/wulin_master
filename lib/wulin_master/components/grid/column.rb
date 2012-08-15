@@ -171,6 +171,10 @@ module WulinMaster
       @options[:option_text_attribute].presence || (@options[:through] ? self.name : :name)
     end
 
+    def full_name
+      @options[:option_text_attribute] ? "#{name}_#{@options[:option_text_attribute].to_s}" : name.to_s
+    end
+
     def foreign_key
       self.reflection.try(:foreign_key).to_s
     end

@@ -126,7 +126,7 @@ module WulinMaster
     end
 
     def apply_filter(query, column_name, filtering_value, filtering_operator)
-      column = self.columns.find{|c| c.name.to_s == column_name.to_s} || self.columns.find{|c| c.foreign_key == column_name.to_s }
+      column = self.columns.find{|c| c.name.to_s == column_name.to_s} || self.columns.find{|c| c.full_name == column_name.to_s} || self.columns.find{|c| c.foreign_key == column_name.to_s }
       if column and column.options[:filterable] != false
         column.apply_filter(query, filtering_value, filtering_operator)
       else
