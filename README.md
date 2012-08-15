@@ -149,7 +149,7 @@ and other tools to make grids easy to build, it also provides flexible configura
 
 ### 1. Grid configuration
 
-####Basic grid configuration
+#### Basic grid configuration
       
 A basic grid configuration needs to provide model and columns. Title and path are optional, they will be automatically assigned according to the grid class name and model.
 
@@ -165,7 +165,7 @@ A basic grid configuration needs to provide model and columns. Title and path ar
     end
 
 
-####Column options
+#### Column options
 
 A column can be a real field in the database table of current model, or virtual attribute of the model, even the field of other model. You can attach one or more options to define attributes for the column.
 
@@ -250,7 +250,7 @@ A column can be a real field in the database table of current model, or virtual 
   This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other type of currencies.
 
 
-####Grid styles
+#### Grid styles
 
 The style configuration of grid can controll the css of the grid. Now the style configuration methods are all defined in WulinMaster::ComponentStyling module (grid and panel are both component), you can use these methods in grid class file, or as an option of grid in screen class file, like:
 
@@ -280,7 +280,7 @@ The style configuration of grid can controll the css of the grid. Now the style 
   Set the component fill the whole window or not, the default value is true.
 
 
-####Grid options
+#### Grid options
 
 The option configuration of grid can set some attributes of the grid. These methods can be used in grid class file, or as an option of grid in screen class file, like the usage of grid styles. Followings are the available option methods:
 
@@ -300,7 +300,7 @@ The option configuration of grid can set some attributes of the grid. These meth
   The default is true, means that you can select multiple rows in the grid. If set false, can only select one row.
 
 
-####Grid actions
+#### Grid actions
 
 If you want to set toolbar items on the grid, grid actions provide a convenient way to do that. Let's look an example:
 
@@ -336,7 +336,7 @@ In addition, you can call `load_default_actions` method to add default toolbar i
 'Filter' and 'Audit' (if you have installed **WulinAudit** gem). Also, if you extend WulinMaster gem or create your own gem which include some new actions and you want to make them to be default actions, you can call the api method `add_default_action(YOUR_ACTION)` to do that.
 
 
-####Grid behaviors
+#### Grid behaviors
 
 WulinMaster grid has a lot of events, like OnDataLoaded, onViewportChanged, etc.(see slick.grid.js for details). If you want to bind some event handlers, grid behavior gives you a easy and well-organized way. Let's look an example:
 
@@ -381,7 +381,7 @@ That's all, you have set up a simple behavior.
 In addition, we already provide some behaviors in `wulin_master` gem, you can view them in *wulin_master/app/assets/javascripts/master/behaviors* folder, they are applied to all grids. But if you want to disable some default behaviors for the grid in your application, you can call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the api method `add_default_behavior(YOUR_BEHAVIOR)` to do that. 
 
 
-####Configuration for different screens
+#### Configuration for different screens
 
 In many cases, a grid may appear on different screens for different purpose, so it may have different styles, options, actions or behaviors between screens. It is easy to implement that.
 
@@ -434,7 +434,7 @@ Btw, we will introduce more options for `WulinMaster::Panel` in future, like hea
 
 ### 3. Screen configuration
 
-####Basic screen configuration
+#### Basic screen configuration
 
 A most basic screen configuration needs to provide nothing, it will request the url path which get from the screen class name, like OrderScreen will request path 'orders?screen=OrderScreen' unless you set path option, and will display nothing until you add grids and panels, they will be rendered on the screen one by one.
 
@@ -447,13 +447,13 @@ A most basic screen configuration needs to provide nothing, it will request the 
       grid OrderGrid, height: '50%'
     end
 
-####Grid and Panel options in screen
+#### Grid and Panel options in screen
 
 This has been expained in section 'Grid configuration/Configuration for different screens', the option you set for a panel or a grid in this screen class will be only valid in this screen.
 
-####Define master-detail grids
+#### Define master-detail grids
 
-In many cases, we need to display 2 grids in one screen whose model relationship is `belong_to` and `has_many`, we have build a helper method `master_grid` in wulin_master gem to enable you to easily implement this. Eg, you want to show AuthorGrid and PostGrid in one screen, when select one author in AuthorGrid, the PostGrid will show his/her posts.
+In many cases, we need to display 2 grids in one screen whose model relationship is `belong_to` and `has_many`, we have built a helper method `master_grid` in wulin_master gem to enable you to easily implement this. Eg, you want to show AuthorGrid and PostGrid in one screen, when select one author in AuthorGrid, the PostGrid will show his/her posts.
 
     class ArticleScreen < WulinMaster::Screen
       title 'All Articles'
@@ -465,6 +465,31 @@ In many cases, we need to display 2 grids in one screen whose model relationship
 
 In above example, `eager_loading` set to false to make PostGrid not loading until selecting an author.
 
+Sometimes, there is no master grid existing, but you still want to had the detail grid filtered by a given master id, in this case you can use `master_model` instead of `master_grid`. In fact, the two options both add a hidden column into detail grid in porpuse of filtering, generally the column name is the foreign key name between the detail grid model and the master model. Let's make a little change of previous example and use `master_model` option:
+    
+    # article_screen.rb
+    class ArticleScreen < WulinMaster::Screen
+      title 'All Articles'
+
+      panel AuthorSelectionPanel
+      grid PostGrid, height: '50%', master_model: 'author', eager_loading: false  
+      # Actually, the master_model option will add a hidden column 'author_id' into PostGrid
+    end
+
+    # author_selection.js (using jQuery)
+    $('.#author_list').change(function(){
+      var postGrid = gridManager.getGrid("post");
+      var author_id = $(this).val();
+
+      postGrid.master = {filter_column: 'author_id', filter_value: author_id};
+      postGrid.loader.addFilter('author_id', author_id, 'equals');
+    });
+
+In above example, there is no Author grid, but supposing a dropdown list #author_list located in AuthorSelectionPanel, when we select one author from the dropdown, the data in PostGrid will be get filtered by invoking the javascript method `addFilter`.
+
+
+##### add_detail action
+
 For master-detail relationship, wulin_master provides a build-in action `add_detail`. Once you use it on detail grid, you can get a new toolbar item which can help you to add one or more detail records for the selected master record. Let's take an example:    
     
     class AuthorPostGrid < WulinMaster::Grid
@@ -473,12 +498,35 @@ For master-detail relationship, wulin_master provides a build-in action `add_det
     end
 
     class AddPostScreen < WulinMaster::Screen
-      grid PostGrid, title: 'Available Posts'
+      grid PostGrid, title: 'Available Posts', master_model: 'author'
     end
 
-In above code, action :add_detail must have two neccessary option, `model` and `screen`, `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from. 
+In above code, action :add_detail must have two neccessary option, `model` and `screen`, `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from.
 
-####Define inclusion-exclusion grids
+
+##### detail_model option
+
+It is very often we meet self-related model when 'add detail', imagine that there is Employee model, and an employee can has many subordinates which are also employees.
+
+    class Employee < ActiveRecord::Base
+      has_many :subordinates, through: :staff_relations    # staff_relations is the middle table
+      has_many :bosses, through: :staff_relations
+    end
+
+Now we can build grids to add subordinates for the selected employee, like following code:
+
+    class EmployeeGrid < WulinMaster::Grid
+      ...
+      action :add_detail, model: 'subordinates', screen: 'AddSubordinateScreen', title: 'Add Subordinates', icon: 'add', only: [:BossScreen]
+    end
+
+    class AddSubordinateScreen < WulinMaster::Screen
+      grid EmployeeGrid, title: 'Available Employees', master_model: 'bosses', detail_model: 'subordinates' 
+    end
+
+In above code, we must specify detail_model as 'subordinates' for EmployeeGrid in AddSubordinateScreen, otherwise the EmployeeGrid will use the defaul model 'employee' to find the relationship which will cause error.
+
+#### Define inclusion-exclusion grids
 
 Inclusion-exclusion grids is also a very common case, there are 3 grids in the screen, the models of 2 grid has relationship `has_and_belongs_to_many` or `has_many` through, the third grid comes from the join table or through model. Let's look at following example:
 
@@ -515,13 +563,11 @@ We have PeopleGroup Model, People Model, they have `has_many` relation with each
     # app/grids/people_grid.rb
     class PeopleGrid < WulinMaster::Grid
       column :name
-      column :people_group, visible: false, editable: false, option_text_attribute: "id"  # necessary hidden field for filtering
     end
 
     # app/grids/people_groups_people_grid.rb
     class PeopleGroupsPeopleGrid < WulinMaster::Grid
       column :people
-      column :people_group, visible: false, editable: false, option_text_attribute: "id" # necessary hidden field for filtering
     end
 
     # app/screens/people_group_screen.rb
