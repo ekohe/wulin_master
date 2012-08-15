@@ -1,10 +1,20 @@
 module WulinMaster
   module GridRelation
     extend ActiveSupport::Concern
+
+    included do
+      class_eval do
+        class << self
+          attr_reader :current_filter_column, :current_detail_model
+        end
+      end
+    end
     
     module ClassMethods
       # Set master grid, invoked from grid.apply_custom_config method
       def master_grid(master_grid_klass, options={}, inclusion=true)
+        @current_filter_column = nil
+
         if options[:screen]
           detail_model = self.model
           master_grid = master_grid_klass.constantize.new({screen: options[:screen], format: 'json'})   # format as json to skip the toolbar and styling initialize
@@ -26,7 +36,8 @@ module WulinMaster
 
           # add association column to self for filtering
           unless self.columns_pool.find {|c| c.name == reflection.name and c.options[:only].include?(options[:screen].intern)}
-            column reflection.name, visible: false, editable: false, option_text_attribute: "id", only: [options[:screen].intern]
+            column reflection.name, visible: false, editable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            @current_filter_column = reflection.name
           end
 
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
@@ -47,13 +58,33 @@ module WulinMaster
 
       # when there is no master grid but you want the detail grid can be filtered by a given model
       def master_model(model_name, options={})
+        @current_filter_column = nil
+
         if options[:screen]
           detail_model = self.model
           reflection = detail_model.reflections[model_name.intern]
 
           # add association column
           unless self.columns_pool.find {|c| c.name == reflection.name and c.options[:only].include?(options[:screen].intern)}
-            column reflection.name, visible: false, editable: false, option_text_attribute: "id", only: [options[:screen].intern]
+            column reflection.name, visible: false, editable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            @current_filter_column = reflection.name
+          end
+        end
+      end
+
+      # when the detail grid data is come from the model which is not the corresponding model of the grid (eg: the self related model)
+      # you can specify it handily 
+      def detail_model(model_name, options={})
+        @current_detail_model = nil
+
+        if options[:screen]
+          @current_detail_model = model_name
+          # if master_model already invoked (the @current_filter_column has been set and added corresponding column)
+          # remove it and re-add it, append @current_detail_model as an option
+          if @current_filter_column and (same_column = self.columns_pool.find {|c| c.name == @current_filter_column and c.options[:only].include?(options[:screen].intern)})
+            self.columns_pool.delete(same_column)
+            column @current_filter_column, visible: false, editable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            @current_detail_model = nil
           end
         end
       end
