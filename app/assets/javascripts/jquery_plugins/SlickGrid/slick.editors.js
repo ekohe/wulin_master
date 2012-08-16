@@ -99,7 +99,17 @@
         },
         
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value[columnDef.optionTextAttribute];
+            value = value[columnDef.optionTextAttribute];
+            if(!columnDef.inner_formatter) return value;
+
+            // if has inner_formatter
+            if (columnDef.inner_formatter == 'boolean') {
+                return BoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+            } else if(typeof(window[columnDef.inner_formatter]) == 'function') {
+                return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
+            } else {
+                return value;
+            }
         },
 
         HasManyFormatter : function(row, cell, value, columnDef, dataContext) {

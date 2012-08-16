@@ -48,31 +48,32 @@
 		  var i, type_str;
 		  for(i in columns){
 		    type_str = columns[i].type.toLowerCase();
+		    // 1. append editor
 			  if (columns[i].editor) {
 			    columns[i].editor = eval(columns[i].editor);
 				} else {
 					columns[i].editor = getEditorForType(columns[i].type);
 				}
+				// 2. append cssClass
+				if(type_str == "boolean") {
+					columns[i].cssClass = 'cell-effort-driven';
+				}
+				// 3. append formatter
 				if (columns[i].formatter) {
 					columns[i].formatter = eval(columns[i].formatter);
-				} 
+					continue;
+				}
 				if(type_str == "date") {
 					columns[i].formatter = StandardDateCellFormatter;
 					columns[i].DateShowFormat = "yy-mm-dd";
 				} else if (type_str == "boolean") {
 					columns[i].formatter = BoolCellFormatter;
-				}
-				if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
+				} else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
 					columns[i].formatter = BelongsToFormatter;
-				}
-				if (type_str == "has_many") {
+				} else if (type_str == "has_many") {
 					columns[i].formatter = HasManyFormatter;
-				}
-				if(type_str == 'has_one' ) {
+				} else if(type_str == 'has_one' ) {
 					columns[i].formatter = HasOneFormatter;
-				}
-				if(type_str == "boolean") {
-					columns[i].cssClass = 'cell-effort-driven';
 				}
 			}
 		}

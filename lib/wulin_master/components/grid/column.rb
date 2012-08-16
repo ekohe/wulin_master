@@ -25,8 +25,9 @@ module WulinMaster
       field_name = @name.to_s
       sort_col_name = @options[:sort_column] || field_name
       table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
+      column_type = sql_type
       new_options = @options.dup
-      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => sql_type, :sortColumn => sort_col_name}.merge(new_options)
+      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -143,6 +144,9 @@ module WulinMaster
 
     def sql_type
       return :unknown if self.model.blank?
+      if reflection
+        options[:inner_formatter] ||= (options.delete(:formatter) || reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type))
+      end
       column = model_columns.find {|col| col.name.to_s == self.name.to_s}
       (column.try(:type) || association_type || :unknown).to_s.to_sym
     end
