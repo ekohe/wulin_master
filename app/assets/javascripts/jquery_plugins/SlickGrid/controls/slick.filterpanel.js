@@ -11,7 +11,7 @@
     var $grid;
     var $loader;
     var self = this;
-    var currentFiltersApplied;
+    var currentFiltersApplied = [];
     
     function init() {
       $grid = grid;
@@ -48,6 +48,26 @@
         }
         return false;
       });
+
+      var delay = (function(){
+        var timer = 0;
+        return function(callback, ms){
+          clearTimeout (timer);
+          timer = setTimeout(callback, ms);
+        };
+      })();
+
+      // Hook between the filter input box and the data loader setFilter
+      // Applay filter after 1000ms
+      $("input", $($grid.getHeaderRow())).live('keyup', function(e) {
+        var inputE = this;
+        delay(function(){
+          updateCurrentFilters();
+          applyCurrentFilters(currentFilters);
+          $loader.addFilter($(inputE).attr('id'), $(inputE).val());
+          trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+        }, 1000);
+      });
 		}
 		
 		function trigger(evt, args, e) {
@@ -60,14 +80,14 @@
 		function generateFilters() {
 		  var inputWidth, columns, inputElement;
 		  var ua = navigator.userAgent.toLowerCase();
-      // storeCurrentFilters();
 
       html = "";
       columns = $grid.getColumns();
       totalColumnsCount = columns.length;
-      
-      setCurrentFilters(currentFilters);
+
+      applyCurrentFilters(currentFilters);
       setFilter();
+
       $.each(columns, function(i, value) {
         var value = '', field = this.field, inputHtml = '', inputWidth, cssClass = "";
         // Try to get the value of this filter if any
@@ -98,35 +118,19 @@
       
       // Fills up and display the secondary row
       $($grid.getHeaderRow()).html(html).show();
-      
-      var delay = (function(){
-        var timer = 0;
-        return function(callback, ms){
-          clearTimeout (timer);
-          timer = setTimeout(callback, ms);
-        };
-      })();
-      
-      // Hook between the filter input box and the data loader setFilter
-      // Applay filter after 1000ms
-      $("input", $($grid.getHeaderRow())).keyup(function(e) {
-        var inputE = this;
-        delay(function(){
-          storeCurrentFilters();
-          $loader.addFilter($(inputE).attr('id'), $(inputE).val());
-          trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
-        }, 1000 );
-      });
 		}
 
-		// This method store the current filters applied to the currentFiltersApplied array
+		// This method update the current filters applied to the currentFiltersApplied array
 		// We store the filters value so that after resizing or reordering of the columns, we can 
 		//  generate the filters boxes with the same values
-		function storeCurrentFilters() {
-      currentFiltersApplied = [];
+		function updateCurrentFilters() {
+      //currentFiltersApplied = [];
+      currentFilters = {};
 		  $.each($("input", $($grid.getHeaderRow())), function() {
-        if ($(this).val()!='')
-		      currentFiltersApplied.push({id:$(this).attr('id'), value:$(this).val()});
+        if ($(this).val()!='') {
+          currentFilters[$(this).attr('id')] = $(this).val();
+		      //currentFiltersApplied.push({id:$(this).attr('id'), value:$(this).val()});
+        }
 		  });
 		}
 		
@@ -142,7 +146,7 @@
 	    }
 		}
 		
-		function setCurrentFilters(filters) {
+		function applyCurrentFilters(filters) {
 		  currentFiltersApplied = [];
 		  if (filters) {
   		  $.each(filters, function(k, v) {
@@ -150,12 +154,6 @@
   		      currentFiltersApplied.push({id: k, value: v});
   		  });
 	    }
-		}
-		
-		function applyCurrentFilters(currentFilters) {
-		  if (currentFilters) {
-		    grid.showHeaderRowColumns();
-		  }
 		}
 		
 		$.extend(this, {
@@ -166,7 +164,7 @@
         // Methods
         'generateFilters':                    generateFilters, 
         "applyCurrentFilters":                applyCurrentFilters,
-        "setCurrentFilters":                  setCurrentFilters
+        "updateCurrentFilters":               updateCurrentFilters
     });
 		
 		init();
