@@ -6,7 +6,7 @@ module WulinMaster
       # Specify the inclusion grid for InclusionExclusionPanel
       def inclusion_grid(grid_klass, options={})
         if options[:screen]
-          inclusion_grid = grid_klass.constantize.new({screen: options[:screen], format: 'json'})
+          inclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
           options.merge!({inclusion_grid: inclusion_grid.name})
         end
       end
@@ -14,7 +14,7 @@ module WulinMaster
       # Specify the exclusion grid for InclusionExclusionPanel
       def exclusion_grid(grid_klass, options={})
         if options[:screen]
-          exclusion_grid = grid_klass.constantize.new({screen: options[:screen], format: 'json'})
+          exclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
           options.merge!({exclusion_grid: exclusion_grid.name})
         end
       end

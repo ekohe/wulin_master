@@ -77,8 +77,8 @@ module WulinMaster
     def initialize(params={}, controller_instance=nil, config={})
       super
 
-      # if not json request, it needs to initialize toolbar and configs, else, just assign the attributes like above
-      if params[:format] != "json"
+      # if not render, it needs to initialize toolbar and configs, else, just assign the attributes like above
+      if !params[:no_render]
         # first apply default configs, then apply custom configs
         apply_default_config DEFAULT_CONFIG
         apply_custom_config
