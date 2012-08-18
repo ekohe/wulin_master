@@ -17,7 +17,7 @@ module WulinMaster
 
         if options[:screen]
           detail_model = self.model
-          master_grid = master_grid_klass.constantize.new({screen: options[:screen], no_render: true})   # format as json to skip the toolbar and styling initialize
+          master_grid = master_grid_klass.constantize.new({screen: options[:screen], no_render: true})   # set no_render true to skip the config applying
           
           # master_model must has_many detail_model, detail_model may belongs_to master_model OR has_many master_model
           reflection = detail_model.reflections[master_grid.model.to_s.underscore.intern] || detail_model.reflections[master_grid.model.to_s.underscore.pluralize.intern]

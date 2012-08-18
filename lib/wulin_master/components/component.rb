@@ -26,6 +26,12 @@ module WulinMaster
       end if self.custom_config.is_a?(Hash)
     end
 
+    def apply_custom_config_without_styling
+      self.custom_config.each do |k,v|
+        apply_config(k,v) unless WulinMaster::ComponentStyling::ClassMethods.method_defined?(k)
+      end if self.custom_config.is_a?(Hash)
+    end
+
     private
 
     # calling a config

@@ -77,13 +77,14 @@ module WulinMaster
     def initialize(params={}, controller_instance=nil, config={})
       super
 
-      # if not render, it needs to initialize toolbar and configs, else, just assign the attributes like above
-      if !params[:no_render]
-        # first apply default configs, then apply custom configs
+      if params[:no_render]     # if no_render, skip the config applying 
+        return true
+      elsif params[:format] != 'json'   # if format not json (screen request) it needs to initialize toolbar and styling configs
         apply_default_config DEFAULT_CONFIG
         apply_custom_config
-
         initialize_toolbar
+      else    # else, only need to apply custom configs without styling (like grid relation configs)
+        apply_custom_config_without_styling
       end
     end
 
