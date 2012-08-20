@@ -35,7 +35,7 @@ module WulinMaster
           end
 
           # add association column to self for filtering
-          unless self.columns_pool.find {|c| c.name == reflection.name and c.options[:only].include?(options[:screen].intern)}
+          unless self.columns_pool.find {|c| c.name == reflection.name and c.valid_in_screen(options[:screen]) }
             column reflection.name, visible: false, editable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_filter_column = reflection.name
           end

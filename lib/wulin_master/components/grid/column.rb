@@ -257,6 +257,13 @@ module WulinMaster
       end
     end
 
+    def valid_in_screen(screen_name)
+      screen_name = screen_name.to_s
+      (@options[:only].blank? and @options[:except].blank?) ||
+      (@options[:only].present? and @options[:only].map(&:to_s).include?(screen_name)) ||
+      (@options[:except].present? and @options[:except].map(&:to_s).exclude?(screen_name))
+    end
+
     private
     
     def complete_column_name

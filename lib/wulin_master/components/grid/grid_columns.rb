@@ -49,18 +49,8 @@ module WulinMaster
       all_columns = self.class.columns_pool.dup
       
       all_columns.select do |column|
-        valid_column?(column, screen_name)
+        column.valid_in_screen(screen_name)
       end
-    end
-    
-    
-    private
-    
-    def valid_column?(column, screen_name)
-      screen_name = screen_name.to_s
-      (column.options[:only].blank? and column.options[:except].blank?) ||
-      (column.options[:only].present? and column.options[:only].map(&:to_s).include?(screen_name)) ||
-      (column.options[:except].present? and column.options[:except].map(&:to_s).exclude?(screen_name))
     end
     
   end
