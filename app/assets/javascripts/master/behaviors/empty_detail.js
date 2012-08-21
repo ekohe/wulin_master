@@ -27,6 +27,7 @@ WulinMaster.behaviors.EmptyDetail = $.extend({}, WulinMaster.behaviors.BaseBehav
         var detailGrid = this.detail_grids[i];
         detailGrid.resetActiveCell();
         detailGrid.loader.clear();
+        detailGrid.pager.resetPager();
         detailGrid.render();
       }
     }

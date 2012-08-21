@@ -135,9 +135,16 @@
                 $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
         }
 
-
+        function resetPager() {
+            updatePager({pageSize:0, pageNum:0, totalRows:0});
+        }
 
         init();
+
+        return {
+            // methods
+            "resetPager": resetPager
+        };
     }
 
     // Slick.Controls.Pager
