@@ -41,6 +41,7 @@ module WulinMaster
           end
 
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
+          behavior :empty_detail, master_grid_name: master_grid.name, only: [options[:screen].intern]
         end
       end
 
