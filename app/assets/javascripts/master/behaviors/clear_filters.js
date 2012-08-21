@@ -24,6 +24,7 @@ WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBeha
       this.grid.loader.setFilterWithoutRefresh([]);
       this.grid.loader.addFilter(master.filter_column, master.filter_value, master.filter_operator);
     }
+    this.grid.resetActiveCell();
   }
 
 });
