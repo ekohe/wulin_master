@@ -72,7 +72,7 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    attr_accessor :toolbar
+    attr_accessor :toolbar, :virtual_sort_column, :virtual_filter_columns
 
     def initialize(params={}, controller_instance=nil, config={})
       super
@@ -86,6 +86,10 @@ module WulinMaster
       else    # else, only need to apply custom configs without styling (like grid relation configs)
         apply_custom_config_without_styling
       end
+    end
+    
+    def virtual_filter_columns
+      @virtual_filter_columns ||= []
     end
 
     # Grid Properties that can be overriden
@@ -127,20 +131,24 @@ module WulinMaster
     end
 
     def apply_filter(query, column_name, filtering_value, filtering_operator)
-      column = self.columns.find{|c| c.name.to_s == column_name.to_s} || self.columns.find{|c| c.full_name == column_name.to_s} || self.columns.find{|c| c.foreign_key == column_name.to_s }
-      if column and column.options[:filterable] != false
+      if column = find_filter_column_by_name(column_name)
         column.apply_filter(query, filtering_value, filtering_operator)
       else
-        Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
+        self.virtual_filter_columns << [column_name, filtering_value, filtering_operator]
+        # Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
         query
       end
     end
 
     def apply_order(query, column_name, order_direction)
       column_name = column_name.split(".").last if column_name.include?(".")
-
-      column = self.columns.find{|c| c.name.to_s == column_name or c.foreign_key == column_name }
-      column ? column.apply_order(query, order_direction) : query
+      
+      if column = find_sort_column_by_name(column_name)
+        column.apply_order(query, order_direction)
+      else
+        self.virtual_sort_column = [column_name, order_direction]
+        query
+      end
     end
 
     # Returns the includes to add to the query
@@ -165,6 +173,22 @@ module WulinMaster
 
 
     private
+    
+    def find_sort_column_by_name(column_name)
+      if column = find_column_by_name(column_name) and column.options[:sortable] != false and column.sortable?
+        column
+      end
+    end
+    
+    def find_filter_column_by_name(column_name)
+      if column = find_column_by_name(column_name) and column.options[:filterable] != false and column.filterable?
+        column
+      end
+    end
+    
+    def find_column_by_name(column_name)
+      self.columns.find{ |c| c.name.to_s == column_name.to_s || c.full_name == column_name.to_s || c.foreign_key == column_name.to_s }
+    end
 
     def initialize_toolbar
       self.toolbar ||= Toolbar.new(name, self.toolbar_actions)

@@ -129,7 +129,7 @@ module WulinMaster
       elsif is_table_column?
         query.order("#{model.table_name}.#{@name} #{direction}, #{model.table_name}.id ASC")
       else    
-        query.order("#{@name} #{direction}, id ASC")
+        Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{self.inspect}" 
       end
     end
 
@@ -263,6 +263,12 @@ module WulinMaster
       (@options[:only].present? and @options[:only].map(&:to_s).include?(screen_name)) ||
       (@options[:except].present? and @options[:except].map(&:to_s).exclude?(screen_name))
     end
+    
+    def sortable?
+      is_table_column? || reflection || @options[:sql_expression]
+    end
+    
+    alias_method :filterable?, :sortable?
 
     private
     

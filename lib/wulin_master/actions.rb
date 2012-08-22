@@ -53,6 +53,12 @@ module WulinMaster
 
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
+          
+          # Apply virtual attribute order
+          apply_virtual_order
+          
+          # Apply virtual attribute filter
+          apply_virtual_filter
 
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
@@ -133,6 +139,30 @@ module WulinMaster
     end
 
     protected
+    
+    def apply_virtual_filter
+      if (filters = grid.virtual_filter_columns).present?
+        filters.each do |filterer|
+          @objects.select! do |x|
+            if filterer[2] == "equals"
+              x.send(filterer[0]).to_s =~ /^#{Regexp.escape(filterer[1])}/
+            elsif filterer[2] == "not_equals"
+              x.send(filterer[0]).to_s !~ /^#{Regexp.escape(filterer[1])}/
+            end
+          end
+        end
+      end
+    end
+    
+    def apply_virtual_order
+      if (sorter = grid.virtual_sort_column).present?
+        if sorter[1] == 'ASC'
+          @objects.sort!{|x, y| x.send(sorter[0]) <=> y.send(sorter[0])}
+        elsif sorter[1] == 'DESC'
+          @objects.sort!{|x, y| y.send(sorter[0]) <=> x.send(sorter[0])}
+        end
+      end
+    end
 
     def construct_filters
       return unless params[:filters]
