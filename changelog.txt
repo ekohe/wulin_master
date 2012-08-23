@@ -2,13 +2,18 @@
 
 New features:
 
-* A screen can render multiple grids
+* Implemented WulinMaster::Panel, which enable you write panel configuration in screen cl
+* Implemented WulinMaster::Component, now WulinMaster::Grid and WulinMaster::Panel are su
+* A screen can render multiple components like grids and panels
 * New master-detail grids: can be written with simple configuration, no need to write specific view file and javascripts
+* A new default grid action 'add_detail', which can be used for adding detail records in
 * New inclusion-exclusion grids: can be written with simple configuration, no need to write specific view file and javascripts
 * Can define grid in screen class with options, as an alternative of writting grid options in grid class with screen option
 * Add eager_loading option for grid, controller the grid to load data or not when render initially
 * Add multi_select option for grid, enable/disable the grid being able to select multiple rows
-* Implemented the simple WulinMaster::Panel, which enable you write panel configuration in screen class
+* The grid toolbar width can dynamically change according to your browser width
+* Create javascript error catcher and mailer
+
 
 Improvements:
 
@@ -19,12 +24,29 @@ Improvements:
 * Add GridRelation module, define methods of grid relations like 'master_grid'
 * Add filter_operator into grid filters, like 'equal', 'not_equal', 'include', 'exclude' so that we can easier to implement grid relations
 * Refactored format_datetime method and sql filtering process
+* Clear grid active cell after some operation (like creating new record, close filter panel, etc)
+* Enable the dropdown list deselection
+* updateByAjax method can support multiple records
+* Column editable configuration has high priority than grid cell_editable configuration
+* Enhanced the ajax delete request to support the confirmation case (pop up the confirm dialog)
+* After grid record updating fail, revert data locally than reload the grid
+* Updated guide document
+* Updated some wulin generators
+
 
 Bug fixes:
 
 * Fixed the action polution bug when there are multiple grids in one screen with same action
 * Fixed the behavior polution bug when there are multiple grids in one screen with same behavior
 * Fixed the encode bug of filter value comes from grid state
+* Fixed the grid data reload bug (offset and count lost) if the current position is exceed 200
+* Fixed the grid column picker z-index bug when the grid is in a pop up dialog
+* Fixed the bug that screen/grid title configuration not working
+* Fixed a bug of grid sorting state
+* Fixed the datetime/time editor rendering bug when inputting handily
+* Fixed the bug that column formatter can't be applied when the column comes from a through model
+* Fixed the bug that old filter appears in the filter panel after moving or resizing other columns
+
 
 === 0.5.4 / 2012-07-02
 
