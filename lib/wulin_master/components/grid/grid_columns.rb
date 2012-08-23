@@ -4,21 +4,19 @@ module WulinMaster
 
     included do
       class_eval do
-        class << self
-          attr_reader :columns_pool
-        end
+        class_attribute :columns_pool
       end
     end
     
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
-        @columns_pool ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+        self.columns_pool ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       end
       
       # Add a column
       def column(name, options={})
-        @columns_pool += [Column.new(name, self, options)]
+        self.columns_pool += [Column.new(name, self, options)]
       end
       
       # Remove columns for exactly screens
@@ -26,7 +24,7 @@ module WulinMaster
         return unless scope[:screen].present?
         
         r_columns = r_columns.map(&:to_s)
-        @columns_pool.each do |column|
+        self.columns_pool.each do |column|
           if r_columns.include? column.name.to_s
             column.options[:except] = scope[:screen]
           end
@@ -35,7 +33,7 @@ module WulinMaster
       
       # For the old caller, in some old code, there some call like: +grid_class.columns+
       def columns
-        @columns_pool
+        self.columns_pool
       end
     end
     
