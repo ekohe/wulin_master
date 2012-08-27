@@ -1,4 +1,11 @@
-=== 0.6.0 / 2012-07-06
+=== 0.6.1 / 2012-08-23
+
+Bug fixes:
+
+* Fixed the grid column inheritance bug
+
+
+=== 0.6.0 / 2012-08-22
 
 New features:
 
@@ -13,7 +20,6 @@ New features:
 * Add multi_select option for grid, enable/disable the grid being able to select multiple rows
 * The grid toolbar width can dynamically change according to your browser width
 * Create javascript error catcher and mailer
-
 
 Improvements:
 
@@ -32,7 +38,6 @@ Improvements:
 * After grid record updating fail, revert data locally than reload the grid
 * Updated guide document
 * Updated some wulin generators
-
 
 Bug fixes:
 
