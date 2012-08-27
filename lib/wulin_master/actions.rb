@@ -148,6 +148,8 @@ module WulinMaster
               x.send(filterer[0]).to_s =~ /^#{Regexp.escape(filterer[1])}/
             elsif filterer[2] == "not_equals"
               x.send(filterer[0]).to_s !~ /^#{Regexp.escape(filterer[1])}/
+            else
+              true
             end
           end
         end
