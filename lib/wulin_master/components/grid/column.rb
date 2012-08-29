@@ -57,7 +57,10 @@ module WulinMaster
       
       # Search by NULL
       if filtering_value.to_s.downcase == 'null'
-        operator = parse_filter_operator(filtering_operator)
+        operator = case filtering_operator
+        when 'equals' then ''
+        when 'not_equals' then 'NOT'
+        end
         if self.reflection
           return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
         else
@@ -88,7 +91,10 @@ module WulinMaster
             end
           end          
         else
-          operator = parse_filter_operator(filtering_operator)
+          operator = case filtering_operator 
+          when 'equals' then 'LIKE'
+          when 'not_equals' then 'NOT LIKE'
+          end
           return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value + "%"])
         end
       # ----------- !!! TODO, has not consider the filter operator for following cases, need to add in future ----------
@@ -265,13 +271,6 @@ module WulinMaster
     alias_method :filterable?, :sortable?
 
     private
-    
-    def parse_filter_operator(human_operator)
-      case human_operator 
-      when 'equals' then 'LIKE'
-      when 'not_equals' then 'NOT LIKE'
-      end
-    end
     
     def complete_column_name
       if @options[:sql_expression]
