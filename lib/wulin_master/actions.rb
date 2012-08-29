@@ -144,10 +144,16 @@ module WulinMaster
       if (filters = grid.virtual_filter_columns).present?
         filters.each do |filterer|
           @objects.select! do |x|
+            re_table, re_column = filterer[0].split(".")
+            value= x.send(re_table)
+            if re_column
+              value = x.send(re_table).try(re_column)
+            end
+            
             if filterer[2] == "equals"
-              x.send(filterer[0]).to_s =~ /^#{Regexp.escape(filterer[1])}/
+              value.to_s =~ /^#{Regexp.escape(filterer[1])}/i
             elsif filterer[2] == "not_equals"
-              x.send(filterer[0]).to_s !~ /^#{Regexp.escape(filterer[1])}/
+              value.to_s !~ /^#{Regexp.escape(filterer[1])}/i
             else
               true
             end
@@ -158,10 +164,17 @@ module WulinMaster
     
     def apply_virtual_order
       if (sorter = grid.virtual_sort_column).present?
-        if sorter[1] == 'ASC'
-          @objects.sort!{|x, y| x.send(sorter[0]) <=> y.send(sorter[0])}
-        elsif sorter[1] == 'DESC'
-          @objects.sort!{|x, y| y.send(sorter[0]) <=> x.send(sorter[0])}
+        @objects.sort! do |x, y|
+          re_table, re_column = sorter[0].split(".")
+          x_value, y_value = x.send(re_table), y.send(re_table)
+          if re_column
+            x_value, y_value = x.send(re_table).try(re_column), y.send(re_table).try(re_column)
+          end
+          if sorter[1] == 'ASC'
+            x_value <=> y_value
+          elsif sorter[1] == 'DESC'
+            y_value <=> x_value
+          end
         end
       end
     end

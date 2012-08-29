@@ -132,7 +132,16 @@ module WulinMaster
 
     def apply_filter(query, column_name, filtering_value, filtering_operator)
       if column = find_filter_column_by_name(column_name)
-        column.apply_filter(query, filtering_value, filtering_operator)
+        if column.filterable?
+          column.apply_filter(query, filtering_value, filtering_operator)
+        else
+          if column.reflection
+            self.virtual_filter_columns << ["#{column_name}.#{column.option_text_attribute}", filtering_value, filtering_operator]
+          else
+            self.virtual_filter_columns << [column_name, filtering_value, filtering_operator]
+          end
+          query
+        end
       else
         self.virtual_filter_columns << [column_name, filtering_value, filtering_operator]
         # Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
@@ -144,7 +153,16 @@ module WulinMaster
       column_name = column_name.split(".").last if column_name.include?(".")
       
       if column = find_sort_column_by_name(column_name)
-        column.apply_order(query, order_direction)
+        if column.sortable?
+          column.apply_order(query, order_direction)
+        else
+          if column.reflection
+            self.virtual_sort_column = ["#{column_name}.#{column.option_text_attribute}", order_direction]
+          else
+            self.virtual_sort_column = [column_name, order_direction]
+          end
+          query
+        end
       else
         self.virtual_sort_column = [column_name, order_direction]
         query
@@ -175,13 +193,13 @@ module WulinMaster
     private
     
     def find_sort_column_by_name(column_name)
-      if column = find_column_by_name(column_name) and column.options[:sortable] != false and column.sortable?
+      if column = find_column_by_name(column_name) and column.options[:sortable] != false
         column
       end
     end
     
     def find_filter_column_by_name(column_name)
-      if column = find_column_by_name(column_name) and column.options[:filterable] != false and column.filterable?
+      if column = find_column_by_name(column_name) and column.options[:filterable] != false
         column
       end
     end

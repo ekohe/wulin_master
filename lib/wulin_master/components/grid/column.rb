@@ -265,12 +265,16 @@ module WulinMaster
     end
     
     def sortable?
-      is_table_column? || reflection || @options[:sql_expression]
+      is_table_column? || related_column_filterable? || @options[:sql_expression]
     end
     
     alias_method :filterable?, :sortable?
 
     private
+    
+    def related_column_filterable?
+      reflection and reflection.klass.column_names.include?(option_text_attribute.to_s)
+    end
     
     def complete_column_name
       if @options[:sql_expression]
