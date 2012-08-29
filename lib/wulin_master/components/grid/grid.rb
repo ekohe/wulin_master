@@ -136,7 +136,7 @@ module WulinMaster
           column.apply_filter(query, filtering_value, filtering_operator)
         else
           if column.reflection
-            self.virtual_filter_columns << ["#{column_name}.#{column.option_text_attribute}", filtering_value, filtering_operator]
+            self.virtual_filter_columns << ["#{column.options[:through] || column.name}.#{column.option_text_attribute}", filtering_value, filtering_operator]
           else
             self.virtual_filter_columns << [column_name, filtering_value, filtering_operator]
           end
@@ -157,7 +157,7 @@ module WulinMaster
           column.apply_order(query, order_direction)
         else
           if column.reflection
-            self.virtual_sort_column = ["#{column_name}.#{column.option_text_attribute}", order_direction]
+            self.virtual_sort_column = ["#{column.options[:through] || column.name}.#{column.option_text_attribute}", order_direction]
           else
             self.virtual_sort_column = [column_name, order_direction]
           end

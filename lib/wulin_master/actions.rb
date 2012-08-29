@@ -145,18 +145,24 @@ module WulinMaster
         filters.each do |filterer|
           @objects.select! do |x|
             re_table, re_column = filterer[0].split(".")
-            value= x.send(re_table)
-            if re_column
-              value = x.send(re_table).try(re_column)
-            end
             
-            if filterer[2] == "equals"
-              value.to_s =~ /^#{Regexp.escape(filterer[1])}/i
-            elsif filterer[2] == "not_equals"
-              value.to_s !~ /^#{Regexp.escape(filterer[1])}/i
+            if x.respond_to?(re_table.to_sym)
+              value = x.send(re_table)
+              if re_column
+                value = x.send(re_table).try(re_column)
+              end
+            
+              if filterer[2] == "equals"
+                value.to_s =~ /^#{Regexp.escape(filterer[1])}/i
+              elsif filterer[2] == "not_equals"
+                value.to_s !~ /^#{Regexp.escape(filterer[1])}/i
+              else
+                true
+              end
             else
               true
             end
+            
           end
         end
       end
@@ -166,14 +172,16 @@ module WulinMaster
       if (sorter = grid.virtual_sort_column).present?
         @objects.sort! do |x, y|
           re_table, re_column = sorter[0].split(".")
-          x_value, y_value = x.send(re_table), y.send(re_table)
-          if re_column
-            x_value, y_value = x.send(re_table).try(re_column), y.send(re_table).try(re_column)
-          end
-          if sorter[1] == 'ASC'
-            x_value <=> y_value
-          elsif sorter[1] == 'DESC'
-            y_value <=> x_value
+          if x.respond_to?(re_table.to_sym) and y.respond_to?(re_table.to_sym)
+            x_value, y_value = x.send(re_table), y.send(re_table)
+            if re_column
+              x_value, y_value = x.send(re_table).try(re_column), y.send(re_table).try(re_column)
+            end
+            if sorter[1] == 'ASC'
+              x_value <=> y_value
+            elsif sorter[1] == 'DESC'
+              y_value <=> x_value
+            end
           end
         end
       end
