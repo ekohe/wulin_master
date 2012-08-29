@@ -10,4 +10,6 @@ class <%= class_name %>Grid < WulinMaster::Grid
 <% attributes.each do |column| -%>
   column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
 <% end -%>
+
+  load_default_actions # Add default toolbar items for this grid
 end
