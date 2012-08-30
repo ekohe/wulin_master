@@ -32,7 +32,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
   },
   
   getModelGrid: function(masterId, dialogDom) {
-    var master = this.target.master;
+    var master = $.extend({}, this.target.master);
     var screen = this.screen;
     // first get controller of the detail model, then open the dialog fill the detail grid
     $.get('/wulin_master/get_detail_controller?model=' + this.model + '&middle_model=' + this.target.model, function(data){
