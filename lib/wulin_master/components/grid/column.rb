@@ -72,7 +72,7 @@ module WulinMaster
       if self.reflection
         if @options[:sql_expression]
           return query.where(["UPPER(#{@options[:sql_expression]}) LIKE UPPER(?)", filtering_value+"%"])
-        elsif option_text_attribute =~ /(_)?id$/ or column_type(self.reflection.klass, self.option_text_attribute) == :integer
+        elsif option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal].include? column_type(self.reflection.klass, self.option_text_attribute)
           if ['equals', 'not_equals'].include? filtering_operator
             operator = (filtering_operator == 'equals') ? '=' : '!='
             return query.where("#{relation_table_name}.#{self.option_text_attribute} #{operator} ?", filtering_value)
@@ -109,7 +109,7 @@ module WulinMaster
           return adapter.query
         else
           filtering_value = filtering_value.gsub(/'/, "''")
-          if sql_type.to_s == 'integer' and is_table_column?
+          if ['integer', 'float', 'decimal'].include? sql_type.to_s and is_table_column?
             return query.where(self.name => filtering_value)
           else
             adapter.string_query(complete_column_name, filtering_value, self)
