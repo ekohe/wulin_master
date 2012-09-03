@@ -120,7 +120,7 @@
 
         function updatePager(pagingInfo)
         {
-            var state = getNavState();
+            //var state = getNavState();
 
             // $container.find(".slick-pager-nav span").removeClass("ui-state-disabled");
             // if (!state.canGotoFirst) $container.find(".ui-icon-seek-first").addClass("ui-state-disabled");
