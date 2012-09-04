@@ -26,6 +26,7 @@ module WulinMaster
       
       def init
         initialize_styles
+        initialize_relations
       end
 
       def partial(new_partial=nil)
@@ -41,7 +42,6 @@ module WulinMaster
     # --------------------
     def initialize(params={}, controller_instance=nil, config={})
       super
-      apply_custom_config
     end
 
     def name

@@ -38,6 +38,9 @@ module WulinMaster
         if klass
           @components_pool << klass
           @grid_configs << {class: klass}.merge(options)
+          options.each do |k, v|
+            klass.apply_config(k, v, {:screen => self.name})
+          end
         end
       end
 
@@ -48,6 +51,9 @@ module WulinMaster
         if klass
           @components_pool << klass
           @panel_configs << {class: klass}.merge(options)
+          options.each do |k, v|
+            klass.apply_config(k, v, {:screen => self.name})
+          end
         end
       end
     end

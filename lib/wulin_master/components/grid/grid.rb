@@ -48,6 +48,15 @@ module WulinMaster
         column_sortable
 
         initialize_styles
+
+        apply_default_config
+      end
+
+      # dispatch some default configs to config pools
+      def apply_default_config
+        DEFAULT_CONFIG.each do |k,v|
+          apply_config(k,v)
+        end if DEFAULT_CONFIG.is_a?(Hash)
       end
 
       def model(new_model=nil)
@@ -80,11 +89,11 @@ module WulinMaster
       if params[:no_render]     # if no_render, skip the config applying 
         return true
       elsif params[:format] != 'json'   # if format not json (screen request) it needs to initialize toolbar and styling configs
-        apply_default_config DEFAULT_CONFIG
-        apply_custom_config
+        # apply_default_config DEFAULT_CONFIG
+        # apply_custom_config
         initialize_toolbar
       else    # else, only need to apply custom configs without styling (like grid relation configs)
-        apply_custom_config_without_styling
+        # apply_custom_config_without_styling
       end
     end
     
