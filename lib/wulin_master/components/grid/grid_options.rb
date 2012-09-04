@@ -20,10 +20,8 @@ module WulinMaster
 
       def option(option)
         # turn option["screen"] to option[:only]
-        option[:only] = [option["screen"].intern] if option["screen"]
-        # simplify options by removing useless options
-        ["action", "controller", "screen"].each {|o| option.delete(o)}
-
+        option[:only] = [option[:screen].intern] if option[:screen]
+        option.delete(:screen)
         @options_pool << option unless @options_pool.include?(option)
       end 
       
@@ -64,7 +62,8 @@ module WulinMaster
 
     # ----------------------- Instance Methods ------------------------------
     def options
-      self.class.options_pool
+      # make sure the common option comes first so that the specific option for a screen can override it when merging
+      self.class.options_pool.sort_by{|s| s[:only] || s[:except] || [] } 
       .select {|option| valid_option?(option, self.params["screen"])}
       .inject({}) {|h, e| h.merge(e.reject{|k,v| k == :only or k == :except})}
     end

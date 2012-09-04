@@ -50,14 +50,14 @@ module WulinMaster
           @styles_pool[screen] << style_str unless @styles_pool[screen].include?(style_str)
         else
           @styles_pool[:_common] ||= []
-          @styles_pool[:_common] << style_str unless @styles_pool.include?(style_str)
+          @styles_pool[:_common] << style_str unless @styles_pool[:_common].include?(style_str)
         end
       end
 
       # Remove a style from a component
       def remove_style(style_str, screen)
-        if screen and @styles_pool[screen]
-          @styles_pool[screen].delete(style_str)
+        if screen 
+          @styles_pool[screen].delete(style_str) if @styles_pool[screen]
         elsif @styles_pool[:_common]
           @styles_pool[:_common].delete(style_str)
         end
@@ -71,8 +71,10 @@ module WulinMaster
       return "" if self.class.styles_pool.blank?
 
       common_style = self.class.styles_pool[:_common] || []
+      common_style_without_fill_window = common_style - [FILL_WINDOW_CSS]
       if screen = self.params.try(:[], :screen)
-        (self.class.styles_pool[screen] + common_style).uniq.join(" ")
+        screen_style = self.class.styles_pool[screen] || []
+        (screen_style.blank? ? common_style : (screen_style + common_style_without_fill_window)).uniq.join(" ")
       else
         common_style.join(" ")
       end
@@ -80,14 +82,7 @@ module WulinMaster
     
     # Returns true if one component is set to fill window. The template will just render the previous components of the screen.
     def fill_window?
-      return false if self.class.styles_pool.blank?
-
-      common_style = self.class.styles_pool[:_common] || []
-      if screen = self.params.try(:[], :screen)
-        (self.class.styles_pool[screen] + common_style).include? FILL_WINDOW_CSS
-      else
-        common_style.include? FILL_WINDOW_CSS
-      end
+      style.include? FILL_WINDOW_CSS
     end
   end
 end
