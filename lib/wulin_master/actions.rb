@@ -76,8 +76,9 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      if params[:item].present?
-        updated_attributes = get_updated_attributes(params[:item])
+      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
+      if param_attrs.present?
+        updated_attributes = get_updated_attributes(param_attrs)
         grid.model.transaction do
           @records.each do |record|
             record.update_attributes!(updated_attributes)
