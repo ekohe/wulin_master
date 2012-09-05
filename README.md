@@ -177,6 +177,19 @@ A column can be a real field in the database table of current model, or virtual 
 
   `:sortable`
   Default is true, if set false, this column can not be sorted.
+  
+  `:formable`
+  Control this column appear in the create and update dialog form or not. You can set it to true or false, either pass an array like [:new, :edit] or one of them.
+  
+    class PostGrid < WulinMaster::Grid
+      ...
+      
+      column :author, formable: true          # author column will appear in both create and update dialog form.
+      column :title, formable: [:new, :edit]  # same as `formable: true`.
+      column :content, formable: [:new]       # content column will appear in only create dialog form.
+      
+      ...
+    end
 
   `:label`
   Controll the text displayed on the column header, if not set, the column label will be same with column name.
@@ -185,7 +198,8 @@ A column can be a real field in the database table of current model, or virtual 
   Controll the column initial width, default is 150.
 
   `:option_text_attribute`
-  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :option_text_attribute to be the column name, eg:
+  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :option_text_attribute to be the column name,         
+  eg:
 
     class PostGrid < WulinMaster::Grid
       ...
@@ -222,6 +236,12 @@ A column can be a real field in the database table of current model, or virtual 
 
   `:choices`
   This option should be used together with 'SelectEditor', it specifies the options of the dropdown. Its value can be an array, a url path which can return a response of array, or a hash in very rare case.
+  
+  `:file`
+  If this column is a file field, like image or any file, you should add this option and set it to true. It will use file_field in the new/edit form.
+  
+  `:password`
+  If this column is a password or password_confirmation, you should add this option and set it to true. It will use password_field in the new/edit form.
 
   `:depend_column`
   This option should be used when the :choices option specifying a hash value. When you choose a value, say 'k1', from the column that :depend_column specifies, then you edit the current column, the dropdown will display options which are the values of key 'k1' in the choices hash. Here is an example:

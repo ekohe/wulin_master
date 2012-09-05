@@ -9,13 +9,9 @@
   .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}"}
     = form_for object, :url => grid.path do |form|
       - columns.each do |column|
-        - if column.options[:formable] != false
+        - if edit_form_able?(column)
           :ruby
-            if column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
-              column_name = column.reflection.name.to_s
-            else
-              column_name = column.form_name
-            end
+            column_name = get_column_name(column)
             label = column.options[:form_label] || column.label
           .field{:name => column_name}
             %label{:for => "#{model_name}_#{column_name}"}= label
@@ -76,7 +72,10 @@
                       current_select.find("option[data-key=" + key + "]").show().trigger("liszt:updated");
                     });
                   });
-
+            - elsif column.options[:file]
+              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
+            - elsif column.options[:password]
+              = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
             - else
               - if column.sql_type.to_s.downcase == 'boolean'
                 = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name
