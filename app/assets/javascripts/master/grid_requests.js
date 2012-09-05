@@ -2,14 +2,13 @@
 var Requests = {
 	// Record create by ajax
 	createByAjax: function(grid, continue_on) {
-	  var createFormElement = $('div#'+grid.name+'_form form');
+	  var createFormElement, ajaxOptions;
+	  createFormElement = $('div#'+grid.name+'_form form');
 	  // clear all the error messages
 	  createFormElement.find(".field_error").text("");
-	  $.ajax({
-	    type:'POST',
+	  ajaxOptions = {
 	    url: grid.path + '.json',
-	    data: createFormElement.serialize() + "&authenticity_token=" + window._token,
-	    success: function(request) {      
+      success: function(request) {   
 	      if (request.success) {
 	      	grid.resetActiveCell();
 	        grid.operatedIds = [request.id];
@@ -28,7 +27,8 @@ var Requests = {
 	        }
 	      }
 	    }
-	  });
+    };
+	  createFormElement.ajaxSubmit(ajaxOptions);
 	},
 
 	// Record update by ajax

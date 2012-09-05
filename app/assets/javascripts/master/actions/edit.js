@@ -132,10 +132,10 @@ var showFlagCheckBox = function(scope, ids) {
 var checkTheBox = function(name) {
   var scope = $( '#' + name + '_form');
   // Check flag when change value of the box
-  scope.off('keyup', 'input:text').on('keyup', 'input:text', function(e) {
+  scope.off('keyup', 'input:text, input:password').on('keyup', 'input:text, input:password', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
-  scope.off('change', 'input:checkbox').on('change', 'input:checkbox:not(.target_flag)', function(e) {
+  scope.off('change', 'input:checkbox, input:file').on('change', 'input:checkbox:not(.target_flag), input:file', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
   
@@ -153,56 +153,25 @@ var checkTheBox = function(name) {
   });
 };
 
+var grepValues = function(formData, jqForm, options) {
+  var flagDom;
+  for(var i = formData.length - 1; i >= 0; i--) {
+    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').attr('data-target') + '"]', scope).not(':checked');
+    if(flagDom.size() > 0) 
+      formData.splice(i, 1);
+  }
+}
+
 var submitForm = function(grid, ids, selectedIndexes) {
-  var name = grid.name, scope = $( '#' + name + '_form');
-  scope.off('click', '.update_btn').on('click', '.update_btn', function() {
-    var originArr = $('form', scope).serializeArray(),
-    checkedArr = [], checkedHash = {},
-    objectName = $('form', scope).attr('class').replace(/new_/,'');
-    
-    // Collect attrs along with checked flag
-    checkedArr = $.map($('input.target_flag:checked'), function(v) {
-      var targetInput = $('[data-target="' + $(v).attr('data-target') + '"]').not(':button, :submit, :reset, .target_flag'),
-      name = targetInput.attr('name').replace(/.*?\[/,'item[');
-      if (targetInput.attr('type') == 'checkbox')  {// Handle for checkbox(blooean column)
-        if (targetInput.attr('checked') == 'checked') {
-          return { name: name, value: '1'};
-        } else {
-          return { name: name, value: '0'};
-        }
-      } else {
-        return { name: name, value: (targetInput.val() || null)};
-      }
-    });
-    
-    // Collect valid form attrbutes
-    originArr = $.grep(originArr, function(v, i) {
-      var flagDom;
-      flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + v.name + '"]').attr('data-target') + '"]', scope);
-      return (flagDom.size() < 0)  || flagDom.attr('checked') == 'checked';
-    });
-    
-    // Replace objectName to item, like user[posts][] => item[posts][]
-    $.each(originArr, function(i, v) {
-      if (originArr[i].name.indexOf(objectName + "[") != -1) {
-        originArr[i].name = v.name.replace(/.*?\[/,'item[');
-      }
-    });
-    
-    // Merge the attrs
-    checkedArr = $.extend(checkedArr, originArr);
-    
-    // Convert array to object
-    $.each(checkedArr, function(index, n){
-      checkedHash[n.name] = n.value;
-    })
-    
-    // Update ajax request
-    $.ajax({
-      type: "POST",
+  var name = grid.name, 
+  $scope = $( '#' + name + '_form'),
+  $form = $('form', $scope);
+  $scope.off('click', '.update_btn').on('click', '.update_btn', function() {
+    var options = {
       dateType: 'json',
       url: grid.path + "/" + ids + ".json"+grid.query,
-      data: $.extend({}, {_method: 'PUT', authenticity_token: window._token}, checkedHash),
+      data: {_method: 'PUT'},
+      beforeSubmit: grepValues,
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
@@ -213,10 +182,11 @@ var submitForm = function(grid, ids, selectedIndexes) {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();
         }
-        scope.dialog("destroy"); 
-        scope.remove();
+        $scope.dialog("destroy"); 
+        $scope.remove();
       }
-    });
+    }
+    $form.ajaxSubmit(options);
     return false;
   });
 };
