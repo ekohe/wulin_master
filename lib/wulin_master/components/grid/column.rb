@@ -79,8 +79,8 @@ module WulinMaster
           elsif ['include', 'exclude'].include? filtering_operator
             relation_class = relation_table_name.classify.constantize
             ids = relation_class.where("#{relation_table_name}.#{self.option_text_attribute} = ?", filtering_value).map do |e|
-              real_relation_name = options[:detail_relation_name] || model.table_name
-              e.send("#{real_relation_name}").map(&:id)
+              real_relation_name = relation_class.reflections.find { |k| k[1].klass.name == model.name }[0]
+              e.send(real_relation_name).map(&:id)
             end.flatten.uniq
             if ids.blank?
               operator = (filtering_operator == 'include') ? 'IS' : 'IS NOT'
