@@ -46,7 +46,7 @@ module WulinMaster
     def screen
       return @screen if defined?(@screen)
 
-      screen_class = params[:screen].classify.safe_constantize.presence || self.class.screen_classes.first.presence
+      screen_class = params[:screen].to_s.classify.safe_constantize.presence || self.class.screen_classes.first.presence
       # if params[:screen]
       #   if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
       #     params[:screen].classify.safe_constantize
