@@ -46,17 +46,18 @@ module WulinMaster
     def screen
       return @screen if defined?(@screen)
 
-      screen_class = if params[:screen]
-        #if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
-          params[:screen].constantize
-        # else
-        #   raise "Can't find a proper screen for the controller"
-        # end
-      else
-        self.class.screen_classes.first
-      end
+      screen_class = params[:screen].classify.safe_constantize.presence || self.class.screen_classes.first.presence
+      # if params[:screen]
+      #   if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
+      #     params[:screen].classify.safe_constantize
+      #   else
+      #     raise "Can't find a proper screen for the controller"
+      #   end
+      # else
+      #   self.class.screen_classes.first
+      # end
 
-      @screen = screen_class.new(params, self)
+      @screen = screen_class.new(params, self) if screen_class
     end
 
     # Returns and initializes if necessary a grid object
