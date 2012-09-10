@@ -1,6 +1,5 @@
 module WulinMaster
-  class HomeController < ApplicationController  
-    self.view_paths = [File.join(Rails.root, 'app', 'views'), File.join(File.dirname(__FILE__), '..', '..', 'views')]
+  class HomeController < ApplicationController
     
     def change_password
       if defined?(WulinOAuth) 
