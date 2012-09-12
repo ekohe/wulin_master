@@ -73,7 +73,7 @@ module WulinMaster
       self.class.grid_configs.each do |grid_config|
         grid_class = grid_config[:class]
         config = grid_config.reject{|k,v| k == :class}
-        @grids << grid_class.new(@params, @controller_instance, config) if grid_class
+        @grids << grid_class.new(@params, @controller, config) if grid_class
       end if self.class.grid_configs
       @grids
     end
