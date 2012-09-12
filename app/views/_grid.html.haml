@@ -7,7 +7,10 @@
         = render "action_partials/#{a[:name]}" rescue nil
       %span.tb_prev.hidden
       .toolbar-wrapper
-        = grid.toolbar.render  
+        .toolbar(data-grid="#{@grid_name}")
+          %ul
+            - grid.toolbar.items.each do |item|
+              = render '/toolbar_item', :toolbar_item => item
       %span.tb_next.hidden
   .grid
   .pager

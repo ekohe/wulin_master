@@ -42,20 +42,10 @@ module WulinMaster
       self.options
     end
 
-    # Rendering
-    # ---------
-    def view_path
-      File.join(File.dirname(__FILE__), "..", '..', '..', '..', 'app', 'views')
-    end
-
     # Satisfy render_to_string
     def action_name
       ""
     end
 
-    # Render the grid
-    def render
-      ActionView::Base.new(view_path).render(:partial => "toolbar_item", :locals => {:toolbar_item => self})
-    end
   end
 end
