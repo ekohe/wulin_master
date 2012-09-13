@@ -65,7 +65,7 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function(grid, options) {
+  openDialog: function(grid, options, callback) {
     var scope, width, height, name;
     name = grid.name;
     
@@ -88,6 +88,7 @@ var Ui = {
         modal: true,
         create: function(event, ui) {
           Ui.setupForm(name, false);
+          if ($.isFunction(callback)) callback();
   			},
         close: function(event, ui) {
           scope.dialog('destroy');
