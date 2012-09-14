@@ -18,6 +18,7 @@ module WulinMaster
     include GridStates
     
     cattr_accessor :grids
+    class_attribute :_model, :_path, :titles_pool
 
     DEFAULT_CONFIG = {fill_window: true}
 
@@ -31,7 +32,6 @@ module WulinMaster
     # Class methods
     # -------------------
     class << self
-      attr_reader :model, :path, :titles_pool
       attr_accessor :controller_class
 
       # Called when the grid is subclassed
@@ -60,21 +60,21 @@ module WulinMaster
       end
 
       def model(new_model=nil)
-        new_model ? @model = new_model : @model || self.title.singularize.try(:constantize)
+        new_model ? self._model = new_model : self._model || self.title.singularize.try(:constantize)
       end
 
       def path(new_path=nil)
-        new_path ? @path = new_path : @path || self.to_s.gsub(/Grid/, "").underscore.pluralize
+        new_path ? self._path = new_path : self._path || self.to_s.gsub(/Grid/, "").underscore.pluralize
       end
 
       # title setter and getter
       def title(new_title=nil, options={})
-        @titles_pool ||= {}
+        self.titles_pool ||= {}
         screen = options[:screen] 
         if new_title 
-          screen ? @titles_pool[screen] = new_title : @titles_pool[:_common] = new_title
+          screen ? self.titles_pool[screen] = new_title : self.titles_pool[:_common] = new_title
         else
-          @titles_pool[screen] || @titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
+          self.titles_pool[screen] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
         end
       end
     end
