@@ -21,7 +21,8 @@ module WulinMaster
       options[:join_aliased_as] || self.reflection.klass.table_name
     end
 
-    def to_column_model
+    def to_column_model(screen_name)
+      @options[:screen] = screen_name
       field_name = @name.to_s
       sort_col_name = @options[:sort_column] || field_name
       table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
@@ -159,7 +160,7 @@ module WulinMaster
       return @options[:choices] if @options[:choices].present?
       
       @choices ||= if self.reflection
-        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute }
+        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
         "/wulin_master/fetch_options?#{params_hash.to_param}"
       else
         []

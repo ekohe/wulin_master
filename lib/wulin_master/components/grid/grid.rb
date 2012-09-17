@@ -195,9 +195,8 @@ module WulinMaster
     end
 
     def javascript_column_model
-      @javascript_column_model = self.columns.collect(&:to_column_model).to_json
+      @javascript_column_model = self.columns.collect {|column| column.to_column_model(params[:screen])}.to_json
     end
-
 
     private
     
