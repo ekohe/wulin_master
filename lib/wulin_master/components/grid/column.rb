@@ -265,7 +265,7 @@ module WulinMaster
     end
     
     def sortable?
-      is_table_column? || related_column_filterable? || @options[:sql_expression]
+      is_table_column? || is_nosql_filed? || related_column_filterable? || @options[:sql_expression]
     end
     
     alias_method :filterable?, :sortable?
@@ -295,7 +295,11 @@ module WulinMaster
     end
     
     def is_table_column?
-      self.model.column_names.include?(self.name.to_s)
+      self.model.respond_to?(:column_names) ? self.model.column_names.include?(self.name.to_s) : false
+    end
+    
+    def is_nosql_filed?
+      self.model.respond_to?(:fields)
     end
 
     def association_type
