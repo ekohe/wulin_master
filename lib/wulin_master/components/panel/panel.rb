@@ -56,25 +56,25 @@ module WulinMaster
       self.class.title
     end
 
-    def view_paths
-      # use application path first, then use wulin_master gem path
-      [File.join(Rails.root, 'app', 'views', 'panel_partials'), File.join(File.dirname(__FILE__), "..", '..', '..', '..', 'app', 'views', 'panel_partials', 'wulin_master')]
-    end
-    
-    def render
-      partial_str = nil
-      errors = []
-      view_paths.each do |path|
-        begin
-          partial_str = PanelView.new(path).render(:partial => "#{partial}", :locals => {:panel => self})
-          break
-        rescue Exception => e
-          errors << e.try(:message)
-          next
-        end
-      end
-      partial_str || (raise errors.join(", "))
-    end
+    # def view_paths
+    #   # use application path first, then use wulin_master gem path
+    #   [File.join(Rails.root, 'app', 'views', 'panel_partials'), File.join(File.dirname(__FILE__), "..", '..', '..', '..', 'app', 'views', 'panel_partials', 'wulin_master')]
+    # end
+    # 
+    # def render
+    #   partial_str = nil
+    #   errors = []
+    #   view_paths.each do |path|
+    #     begin
+    #       partial_str = PanelView.new(path).render(:partial => "#{partial}", :locals => {:panel => self})
+    #       break
+    #     rescue Exception => e
+    #       errors << e.try(:message)
+    #       next
+    #     end
+    #   end
+    #   partial_str || (raise errors.join(", "))
+    # end
 
   end
 end

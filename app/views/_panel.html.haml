@@ -2,7 +2,7 @@
   - if panel.title
     .panel-header
       %h2=panel.title
-  = panel.render
+  = render :partial => "panel_partials/#{panel.partial}", :locals => {:panel => panel}
 
 :javascript
   $(function(){
