@@ -197,6 +197,10 @@ module WulinMaster
     def javascript_column_model
       @javascript_column_model = self.columns.collect {|column| column.to_column_model(params[:screen])}.to_json
     end
+    
+    def toolbar_items
+      self.toolbar.items
+    end
 
     private
     
