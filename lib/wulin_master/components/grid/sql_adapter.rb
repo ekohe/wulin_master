@@ -38,7 +38,12 @@ module WulinMaster
   
   module NoSqlQuery
     def null_query(query, column_name, value, column)
-      query.where("name IS #{value} NULL")
+      # query.where("name IS #{value} NULL")
+      if value == 'NOT'
+        query.where(column_name.to_sym.ne => "", column_name.to_sym.exists => true)
+      else
+        query.where(column_name.to_sym.eq => "", column_name.to_sym.exists => false)
+      end
     end
     
     def boolean_query(query, column_name, value, column)
