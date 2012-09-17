@@ -9,7 +9,7 @@
       .toolbar-wrapper
         .toolbar(data-grid="#{@grid_name}")
           %ul
-            - grid.toolbar.items.each do |item|
+            - grid.toolbar_items.each do |item|
               = render '/toolbar_item', :toolbar_item => item
       %span.tb_next.hidden
   .grid
