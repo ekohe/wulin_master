@@ -139,7 +139,10 @@
       if (currentFiltersApplied.length != 0) {
         $.each(currentFiltersApplied, function() {
           if(this['operator'] == undefined) this['operator'] = 'equals'
-          originalFilters.push([this['id'], this['value'], this['operator']]);
+          var newFilter = [this['id'], this['value'], this['operator']];
+          if(!$(originalFilters).arrayDeepInclude(newFilter)) {
+            originalFilters.push([this['id'], this['value'], this['operator']]);
+          }
         });
 
         $loader.setFilterWithoutRefresh(originalFilters);
