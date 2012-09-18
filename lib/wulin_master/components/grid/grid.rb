@@ -119,7 +119,7 @@ module WulinMaster
     def path_for_json(params)
       uri = URI.parse(self.path).dup
       uri.path << ".json"
-      uri.query = [uri.query, CGI.unescape(params.to_query)].compact.join('&')
+      uri.query = [uri.query, params.to_query].compact.join('&')
       uri.to_s
     end
 
