@@ -266,7 +266,7 @@ module WulinMaster
     end
     
     def sortable?
-      is_table_column? || is_nosql_filed? || related_column_filterable? || @options[:sql_expression]
+      is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
     
     alias_method :filterable?, :sortable?
@@ -299,7 +299,7 @@ module WulinMaster
       self.model.respond_to?(:column_names) ? self.model.column_names.include?(self.name.to_s) : false
     end
     
-    def is_nosql_filed?
+    def is_nosql_field?
       self.model.respond_to?(:fields)
     end
 
