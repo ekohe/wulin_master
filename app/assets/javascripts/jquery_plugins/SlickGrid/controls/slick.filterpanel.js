@@ -60,11 +60,10 @@
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
       $("input", $($grid.getHeaderRow())).live('keyup', function(e) {
-        var inputE = this;
         delay(function(){
           updateCurrentFilters();
           applyCurrentFilters(currentFilters);
-          $loader.addFilter($(inputE).attr('id'), $(inputE).val());
+          setCurrentFilter();
           trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
         }, 1000);
       });
@@ -86,7 +85,7 @@
       totalColumnsCount = columns.length;
 
       applyCurrentFilters(currentFilters);
-      setFilter();
+      setOriginalFilter();
 
       $.each(columns, function(i, value) {
         var value = '', field = this.field, inputHtml = '', inputWidth, cssClass = "";
@@ -134,7 +133,7 @@
 		  });
 		}
 		
-		function setFilter() {
+		function setOriginalFilter() {
       var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length != 0) {
         $.each(currentFiltersApplied, function() {
@@ -147,6 +146,14 @@
 
         $loader.setFilterWithoutRefresh(originalFilters);
 	    }
+		}
+		
+		function setCurrentFilter(){
+		  var filters = [];
+		  $.each(currentFiltersApplied, function(){
+		    filters.push([this['id'], this['value'], 'equals']);
+		  });
+		  $loader.setFilter(filters);
 		}
 		
 		function applyCurrentFilters(filters) {
