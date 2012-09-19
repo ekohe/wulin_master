@@ -72,7 +72,7 @@ module WulinMaster
       
       if self.reflection
         if @options[:sql_expression]
-          return query.where(["UPPER(#{@options[:sql_expression]}) LIKE UPPER(?)", filtering_value+"%"])
+          return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
         elsif option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal].include? column_type(self.reflection.klass, self.option_text_attribute)
           if ['equals', 'not_equals'].include? filtering_operator
             operator = (filtering_operator == 'equals') ? '=' : '!='
@@ -96,7 +96,7 @@ module WulinMaster
           when 'equals' then 'LIKE'
           when 'not_equals' then 'NOT LIKE'
           end
-          return query.where(["UPPER(#{relation_table_name}.#{self.option_text_attribute}) #{operator} UPPER(?)", filtering_value + "%"])
+          return query.where(["UPPER(cast(#{relation_table_name}.#{self.option_text_attribute} as text)) #{operator} UPPER(?)", filtering_value + "%"])
         end
       # ----------- !!! TODO, has not consider the filter operator for following cases, need to add in future ----------
       else
@@ -279,7 +279,7 @@ module WulinMaster
     
     def complete_column_name
       if @options[:sql_expression]
-        "#{model.table_name}.#{@options[:sql_expression]}"
+        "#{@options[:sql_expression]}"
       elsif is_table_column?
         "#{model.table_name}.#{self.name}"
       elsif self.reflection
