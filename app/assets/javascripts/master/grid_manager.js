@@ -35,6 +35,8 @@
 				return YesNoCheckboxCellEditor;
 				case "belongs_to":
 				return BelongsToEditor;
+				case "has_one":
+				return BelongsToEditor;
 				case "has_and_belongs_to_many":
 				return BelongsToEditor;
 				case "has_many":
