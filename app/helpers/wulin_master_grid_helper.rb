@@ -1,7 +1,8 @@
 module WulinMasterGridHelper
   def select_options(column)
     if column.choices.is_a?(Array)
-      column.choices.map{|o| {:id => o, :name => o}}
+      # column.choices.map{|o| {:id => o, :name => o}}
+      column.choices.map{|o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
     else
       []
     end
