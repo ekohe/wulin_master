@@ -128,12 +128,14 @@ module WulinMaster
     end
 
     def wulin_master_new_form
+      @grid = self.screen.grids.find{|g| g.name == params["grid"]}
       render 'new_form', layout: false
     rescue ActionView::MissingTemplate
       render '/new_form', layout: false
     end
     
     def wulin_master_edit_form
+      @grid = self.screen.grids.find{|g| g.name == params["grid"]}
       render 'edit_form', layout: false
     rescue ActionView::MissingTemplate
       render '/edit_form', layout: false
