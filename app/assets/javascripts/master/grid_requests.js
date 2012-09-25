@@ -47,7 +47,7 @@ var Requests = {
 			type: "POST",
 			dateType: 'json',
 			url: grid.path + "/" + item.id + ".json"+grid.query,
-			data: decodeURIComponent($.param({_method: 'PUT', item: item, authenticity_token: window._token})),
+			data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
 			success: function(msg) {
 				if(msg.success) {
 					var from = parseInt(currentRow / 200) * 200;
