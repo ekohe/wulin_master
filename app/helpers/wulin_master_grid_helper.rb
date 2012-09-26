@@ -48,16 +48,6 @@ module WulinMasterGridHelper
     end
   end
   
-  def formable?(column)
-    if params[:action] == 'wulin_master_new_form'
-      new_form_able?(column)
-    elsif params[:action] == 'wulin_master_edit_form'
-      edit_form_able?(column)
-    else
-      false
-    end
-  end
-  
   %w(new edit).each do |form|
     module_eval <<-RUBY, __FILE__, __LINE__ + 1
       def #{form}_form_able?(column)
