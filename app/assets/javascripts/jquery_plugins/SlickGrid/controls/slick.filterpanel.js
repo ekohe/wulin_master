@@ -149,11 +149,12 @@
 		}
 		
 		function setCurrentFilter(){
-		  var filters = [];
-		  $.each(currentFiltersApplied, function(){
-		    filters.push([this['id'], this['value'], 'equals']);
-		  });
-		  $loader.setFilter(filters);
+      // var filters = [];
+      $.each(currentFiltersApplied, function(){
+        // filters.push([this['id'], this['value'], 'equals']);
+        $loader.addFilter(this['id'], this['value'], 'equals');
+      });
+      // $loader.addFilter(filters);
 		}
 		
 		function applyCurrentFilters(filters) {
