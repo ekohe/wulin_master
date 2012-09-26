@@ -150,11 +150,20 @@
 		
 		function setCurrentFilter(){
       // var filters = [];
-      $.each(currentFiltersApplied, function(){
-        // filters.push([this['id'], this['value'], 'equals']);
-        $loader.addFilter(this['id'], this['value'], 'equals');
-      });
-      // $loader.addFilter(filters);
+      if (currentFiltersApplied.length > 0) {
+        $.each(currentFiltersApplied, function(){
+          // filters.push([this['id'], this['value'], 'equals']);
+          $loader.addFilter(this['id'], this['value'], 'equals');
+        });
+      } else {
+        $loader.setFilterWithoutRefresh([]);
+        if ($grid.master) {
+          $loader.addFilter($grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator);
+        } else {
+          $loader.setFilter([]);
+        }
+      }
+      // $loader.setFilter(filters);
 		}
 		
 		function applyCurrentFilters(filters) {
