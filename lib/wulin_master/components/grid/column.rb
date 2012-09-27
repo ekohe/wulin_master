@@ -300,7 +300,7 @@ module WulinMaster
     end
     
     def is_nosql_field?
-      self.model.respond_to?(:fields)
+      self.model.ancestors.exclude?(ActiveModel::Serializers::JSON)
     end
 
     def association_type
