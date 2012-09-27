@@ -181,6 +181,8 @@ module WulinMaster
 
             x_value = format_boolean_to_number(x_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
             y_value = format_boolean_to_number(y_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
+            x_value = x_value.to_s if x_value.blank?
+            y_value = y_value.to_s if y_value.blank?
 
             if sorter[1] == 'ASC'
               x_value <=> y_value
