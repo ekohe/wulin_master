@@ -129,8 +129,9 @@ module WulinMaster
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
         query.order("#{model.table_name}.#{@name} #{direction}, #{model.table_name}.id ASC")
-      else    
+      else
         Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{self.inspect}" 
+        query
       end
     end
 

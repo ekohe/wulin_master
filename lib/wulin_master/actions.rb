@@ -178,6 +178,10 @@ module WulinMaster
             if re_column
               x_value, y_value = x.send(re_table).try(re_column), y.send(re_table).try(re_column)
             end
+
+            x_value = format_boolean_to_number(x_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
+            y_value = format_boolean_to_number(y_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
+
             if sorter[1] == 'ASC'
               x_value <=> y_value
             elsif sorter[1] == 'DESC'
@@ -313,5 +317,10 @@ module WulinMaster
         attrs.merge!(new_attributes)
         attrs
       end
+
+      def format_boolean_to_number(boolean_value)
+        boolean_value ? 1 : 0
+      end
+
     end
   end
