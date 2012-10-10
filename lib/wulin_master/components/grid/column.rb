@@ -147,6 +147,7 @@ module WulinMaster
       return :unknown if self.model.blank?
       if reflection
         options[:inner_formatter] ||= (options.delete(:formatter) || reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type))
+        return association_type
       end
       column = model_columns.find {|col| col.name.to_s == self.name.to_s}
       (column.try(:type) || association_type || :unknown).to_s.to_sym
