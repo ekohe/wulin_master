@@ -16,6 +16,10 @@ module WulinMaster
     @javascripts.unshift script
   end
 
+  def self.prepend_stylesheet(css)
+    @stylesheets.unshift css
+  end
+
   def self.add_stylesheet(css)
     @stylesheets << css
   end
@@ -48,7 +52,7 @@ require 'wulin_master/components/grid/grid'
 require 'wulin_master/components/panel/panel'
 
 WulinMaster::prepend_javascript 'master/master.js'
-WulinMaster::add_stylesheet 'master.css'
+WulinMaster::prepend_stylesheet 'master.css'
 
 Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
 Time::DATE_FORMATS[:date] = "%Y-%m-%d"
