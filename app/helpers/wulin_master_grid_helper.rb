@@ -47,6 +47,13 @@ module WulinMasterGridHelper
       column.form_name
     end
   end
+
+  def grid_states_options(user_id, grid_name)
+    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all
+    current = WulinMaster::GridState.current(user_id, grid_name)
+    states.delete(current)
+    states.unshift(current).compact.map{|x| [x.name, x.id]}
+  end
   
   %w(new edit).each do |form|
     module_eval <<-RUBY, __FILE__, __LINE__ + 1

@@ -1,8 +1,11 @@
 module WulinMaster 
   class GridState < ::ActiveRecord::Base
-    attr_accessible :user_id, :grid_name, :state_type, :state_value
+    attr_accessible :user_id, :grid_name, :name, :current, :state_value
     
     default_scope :order => 'created_at DESC'
+    
+    scope :for_user_and_grid, lambda {|user_id, grid_name| where(:user_id => user_id, :grid_name => grid_name)}
+    
     reject_audit if defined? ::WulinAudit
 
     def self.update_or_create(attrs)
@@ -28,22 +31,15 @@ module WulinMaster
         false
       end
     end
+    
+    def self.current(user_id, grid_name)
+      query = for_user_and_grid(user_id, grid_name)
+      query.where(:current => true).first || query.where(:name => "default").first || query.first
+    end
 
-    # State
-    def states_for_user(user)
-      return "false" if user.nil?
-      result = {}
-      begin
-        states = GridState.where(:user_id => user.id, :grid_name => self.name).all
-        %w(width sort order visibility filter).each do |t|
-          value = states.find{|s| s.state_type == t}.try(:state_value)
-          result.merge!(t => ActiveSupport::JSON.decode(value)) if (value and value !~ /^\s*(null|undefined)\s*$/)
-        end
-        result.to_json
-      rescue Exception => e
-        Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
-        {}.to_json
-      end
+    # ------------------------------ Instance Methods -------------------------------
+    def brother_states
+      self.class.for_user_and_grid(self.user_id, self.grid_name).where("id != ?", self.id)
     end
 
   end
