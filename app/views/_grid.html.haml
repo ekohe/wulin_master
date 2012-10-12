@@ -3,7 +3,7 @@
     .grid-header
       %h2= grid.title
       - grid.header_actions.each do |a|
-        = render("/action_partials/#{a[:name]}", :grid => grid) rescue nil
+        = render("/action_partials/#{a[:name]}", :grid => grid) #rescue nil
       %span.tb_prev.hidden
       .toolbar-wrapper
         .toolbar(data-grid="#{@grid_name}")

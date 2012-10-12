@@ -1,11 +1,32 @@
 .grid_states_switcher {
-  min-width: 235px;
-  width: 20%;
+  min-width: 320px;
+  width: 25%;
   float: left;
   font-size: 14px;
   margin-left: 5%;
   padding-top: 15px;
   select {
     width: 150px;
+  }
+  button {
+    margin-left: 5px;
+  }
+}
+
+.states_manage_form {
+  background-color: #EDEDED !important;
+  form {
+    padding-top: 20px;
+    padding-left: 40px;
+    .state_field {
+      padding: 5px 0;
+    }
+    input[type="text"] {
+      padding: 3px 2px;
+    }
+    .state_submit {
+      margin-left: 55px;
+      margin-top: 10px;
+    }
   }
 }
