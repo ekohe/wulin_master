@@ -282,15 +282,18 @@ module WulinMaster
         attrs.each do |k,v|
           if associations.keys.include?(k.to_sym)
             association_attributes = attrs.delete(k)
-            if associations[k.to_sym].macro == :belongs_to
+
+            case associations[k.to_sym].macro
+            when :belongs_to then
               if association_attributes['id'] == 'null'
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = nil
               elsif association_attributes['id'].present?
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-              else
-                new_attributes[k] = association_attributes
+              elsif has_one_reverse_relation?(associations[k.to_sym].klass, grid.model)
+                nested_attr_key = (k =~ /_attributes$/ ? k : "#{k}_attributes")
+                new_attributes[nested_attr_key] = association_attributes
               end
-            elsif associations[k.to_sym].macro == :has_and_belongs_to_many
+            when :has_and_belongs_to_many then
               # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
               if Array === association_attributes
                 the_ids = association_attributes.first.split(',')
@@ -305,9 +308,9 @@ module WulinMaster
               else
                 new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a
               end
-            elsif associations[k.to_sym].macro == :has_many
+            when :has_many then
               # Should convert association_attributes for grid cell editor ajax request.
-              if Hash === association_attributes
+              if Hash === association_attributes and association_attributes.all? {|value| value.key?('id')}
                  association_attributes = association_attributes.values.map{|x| x['id']}
               end
               
@@ -329,6 +332,10 @@ module WulinMaster
 
       def format_boolean_to_number(boolean_value)
         boolean_value ? 1 : 0
+      end
+
+      def has_one_reverse_relation?(related_klass, klass)
+        (reflect = related_klass.reflections.find{|x| x[1].klass == klass}[1]) and reflect.macro == :has_one
       end
 
     end
