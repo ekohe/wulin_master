@@ -50,6 +50,7 @@ module WulinMasterGridHelper
 
   def grid_states_options(user_id, grid_name)
     states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all
+    return [] if states.blank?
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)
     states.unshift(current).compact.map{|x| [x.name, x.id]}

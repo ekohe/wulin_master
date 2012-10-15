@@ -33,8 +33,10 @@ module WulinMaster
     end
     
     def self.current(user_id, grid_name)
-      query = for_user_and_grid(user_id, grid_name)
-      query.where(:current => true).first || query.where(:name => "default").first || query.first
+      states = for_user_and_grid(user_id, grid_name).all
+      return nil if states.blank?
+      states.find{|x| x.current?} || states.find{|x| x.name.to_s.downcase == 'default'} || states.first
+      # query.where(:current => true).first || query.where(:name => "default").first || query.first
     end
 
     # ------------------------------ Instance Methods -------------------------------
