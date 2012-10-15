@@ -11,11 +11,6 @@ module WulinMaster
     end
 
     def index
-      @current_user = (self.respond_to?(:current_user) ? current_user : nil)
-      @components = self.screen.components
-      if params[:grid].present?
-        @components.select! {|x| x.class.name == params[:grid]}
-      end
       respond_to do |format|
         format.html do
           render 'index', :layout => (request.xhr? ? false : 'application')
