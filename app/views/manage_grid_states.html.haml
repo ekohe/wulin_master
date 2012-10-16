@@ -1,0 +1,40 @@
+.states_manage_form.hidden{:title => "Manage Grid States Configurations"}
+  = form_for :grid_states, :url => "/wulin_master/grid_states/batch_update", :remote => true do |f|
+    = hidden_field_tag "grid_name", @grid_name
+    - default_option = @states_options.find{|x| x.first == 'default'}
+    - @states_options.delete default_option
+    - @states_options.push(["", ""]) if @states_options.empty?
+    .state_field
+      =label_tag "Default Configuration: "
+      =text_field_tag 'default_state', default_option.first, :disabled => true, :readonly => true
+    - @states_options.each_with_index do |state_option, index|
+      .state_field.custom
+        =f.hidden_field "id", :value => state_option.last
+        =f.text_field "name", :value => state_option.first
+    .state_submit
+      %input.btn.success{:id => 'save_states', :name => "commit", :type => "submit", :value => "Save"}
+    %span.error_message
+
+
+:javascript
+  $(function(){
+    $(".state_field.custom").simple_clone({
+      label: "State ",
+      label_colon: true,
+      nested: true
+    });
+
+    var manageForm = $(".states_manage_form form");
+    var grid = gridManager.getGrid("#{@grid_name}");
+    manageForm.bind('ajax:success', function(data, status, xhr) {
+      if(status == "success") {
+        $(".states_manage_form").dialog("destroy").remove();
+        var grid_url = grid.path + grid.query;
+        $.get(grid_url, function(data){
+          grid.container.html(data);
+        });
+      } else {
+        manageForm.find(".error_message").text(status);
+      }
+    });
+  });

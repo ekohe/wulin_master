@@ -1,9 +1,9 @@
 module WulinMaster 
   class GridState < ::ActiveRecord::Base
     attr_accessible :user_id, :grid_name, :name, :current, :state_value
+    validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
     
     default_scope :order => 'created_at DESC'
-    
     scope :for_user_and_grid, lambda {|user_id, grid_name| where(:user_id => user_id, :grid_name => grid_name)}
     
     reject_audit if defined? ::WulinAudit
@@ -23,10 +23,10 @@ module WulinMaster
     end
 
     def self.user_model
-      if Module.const_defined? :User
-        User
-      elsif Module.const_defined? :WulinAuth
+      if Module.const_defined? :WulinAuth
         WulinAuth::User
+      elsif Module.const_defined? :User 
+        User
       else
         false
       end
@@ -36,7 +36,12 @@ module WulinMaster
       states = for_user_and_grid(user_id, grid_name).all
       return nil if states.blank?
       states.find{|x| x.current?} || states.find{|x| x.name.to_s.downcase == 'default'} || states.first
-      # query.where(:current => true).first || query.where(:name => "default").first || query.first
+    end
+
+    def self.create_default(user_id, grid_name)
+      if WulinMaster::GridState.for_user_and_grid(user_id, grid_name).blank?
+        create(grid_name: grid_name, user_id: user_id, current: true)
+      end
     end
 
     # ------------------------------ Instance Methods -------------------------------

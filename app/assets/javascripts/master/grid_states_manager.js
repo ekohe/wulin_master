@@ -1,12 +1,16 @@
 var GridStatesManager = {
   // do ajax save
   saveStates: function(gridName, type, value){
-    var url = "/wulin_master/grid_states/save",
-    data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
+    if(gridName) {
+      type = type || "order";
+      vale = value || {};
+      var url = "/wulin_master/grid_states/save",
+      data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
                                         state_type: encodeURIComponent(type),
                                         state_value: value, 
                                         authenticity_token: window._token }));
-    $.post(url, data, function(response){});
+      $.post(url, data, function(){});
+    }
   },
   
   // grid events

@@ -1,37 +1,28 @@
-.grid_states_switcher
-  =label_tag "grid_states", "Grid States:"
-  =select_tag "grid_states", options_for_select(grid_states_options(@current_user.id, grid.name))
-  =button_tag "manage", class: 'manage btn success'
+- WulinMaster::GridState.create_default(@current_user.id, grid.name)
 
-.states_manage_form.hidden{:title => "Manage Grid States"}
-  = form_for :grid_states, :url => orders_path do |f|
-    - grid_states_options(@current_user.id, grid.name).each_with_index do |state_option, index|
-      .state_field
-        =f.hidden_field :id, :value => state_option.last
-        =f.text_field :name, :value => state_option.first
-    .state_submit
-      %input.btn.success{:id => 'save_states', :name => "commit", :type => "submit", :value => "Save"}
+.grid_states_switcher
+  =label_tag "grid_states", "Configuration:"
+  =select_tag "grid_states", options_for_select(grid_states_options(@current_user.id, grid.name))
+  %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
+
 
 :javascript
   $(function(){
-    $(".state_field").simple_clone({
-      label: "State ",
-      label_colon: true
-    });
+    $("a.manage").click(function(){
+      $.get('wulin_master/grid_states/manage?' + "grid=#{grid.name}", function(data){
+        $('body').append(data);
+        var scope = $(".states_manage_form");
 
-    $("button.manage").click(function(){
-      $(".states_manage_form").dialog({
-        height: 250,
-        width: 400,
-        modal: true
+        scope.dialog({
+          height: 250,
+          width: 400,
+          show: "blind",
+          modal: true,
+          close: function(event, ui) {
+            scope.dialog('destroy');
+            scope.remove();
+          }
+        });
       });
     });
-
-    // register 'Create' button click event, need to remove to dialog action later
-    $('.state_submit#save_states').on('click', function() {
-      // Requests.createByAjax(grid, false);
-      // return false;
-      $(".states_manage_form").dialog('close');
-    });
-
   });

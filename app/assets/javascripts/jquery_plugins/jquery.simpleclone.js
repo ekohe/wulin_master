@@ -45,10 +45,9 @@ $.fn.simple_clone = function(option){
     $(this).attr("id", old_id+'_0');
     if(option.nested == true) {
       var old_name = $(this).attr("name");
-      var reg = /\[\w*\]/;
+      var reg = /\[\w*\]$/;
       var match = reg.exec(old_name);
-      var insert_position = match.index + match[0].length;
-      var new_name = old_name.substr(0, insert_position) + "[0]" + old_name.substr(insert_position);
+      var new_name = old_name.substr(0, match.index) + "[0]" + match[0];
       $(this).attr("name", new_name);
     }
   })
