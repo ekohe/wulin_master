@@ -35,7 +35,11 @@ $.fn.simple_clone = function(option){
   else{
     // wrap wrappers
     e.wrap(out_wrapper).wrap(wrapper);
-    // add an original "+" after the elments
+    // if the list can be empty (all elements can be removed), add an "-" after the first elements
+    if(option.canBeEmpty) {
+      e.after(minus);
+    }
+    // add an original "+" after the elements
     e.after(plus);
   }
 
@@ -167,8 +171,12 @@ $.fn.simple_clone = function(option){
       }
     } else {
       // if only one wrapper remaining
-      last_wrapper.find(".simple_plus").remove();
-      last_wrapper.find(".simple_minus").replaceWith(plus);
+      if(option.canBeEmpty) {
+        last_wrapper.find(".simple_minus").after(plus);
+      } else {
+        last_wrapper.find(".simple_plus").remove();
+        last_wrapper.find(".simple_minus").replaceWith(plus);
+      }
     }
 
     // regenerate ids for all remaining wrapper

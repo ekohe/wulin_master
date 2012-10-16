@@ -40,9 +40,11 @@ module WulinMaster
     end
 
     def batch_update
+      params[:grid_states] ||= {}
       all_states = GridState.for_user_and_grid(current_user.id, params[:grid_name])
       default_state = all_states.find_by_name('default')
       remaining_ids = params[:grid_states].map{|index, state| state["id"].presence}.compact.map(&:to_i)
+
       # delete some states
       GridState.delete(all_states.map(&:id) - remaining_ids - [default_state.id])
       # if only remaining default states, mark it as current
