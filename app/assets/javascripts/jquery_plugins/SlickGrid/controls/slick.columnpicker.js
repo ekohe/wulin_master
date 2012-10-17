@@ -77,8 +77,19 @@
 		  _self.onColumnsPick.notify({});
 		}
 
-		function updateColumn(e)
-		{
+		function updateColumn(e) {
+			var newWidths = {};
+
+			$.each(grid.getColumns(), function(i, column){
+				newWidths[column.id] = column.width;
+			});
+
+			$.each(columns, function(i, column){
+				if (newWidths[column.id]) {
+					columns[i].width = newWidths[column.id];
+				}
+			});
+
 			if (e.target.id == 'autoresize') {
 				if (e.target.checked) {
 					grid.setOptions({forceFitColumns: true});
@@ -104,13 +115,14 @@
 					return;
 				}
 
-                var visibleColumns = [];
-                $menu.find(":checkbox[id^=columnpicker]").each(function(i,e) {
-                    if ($(this).is(":checked")) {
-                        visibleColumns.push(columns[i]);
-                    }
-                });
-                grid.setColumns(visibleColumns);
+        var visibleColumns = [];
+        $menu.find(":checkbox[id^=columnpicker]").each(function(i,e) {
+            if ($(this).is(":checked")) {
+
+                visibleColumns.push(columns[i]);
+            }
+        });
+        grid.setColumns(visibleColumns);
 			}
 		}
 
