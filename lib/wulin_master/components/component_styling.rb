@@ -74,7 +74,7 @@ module WulinMaster
       common_style_without_fill_window = common_style - [FILL_WINDOW_CSS]
       if screen = self.params.try(:[], :screen)
         screen_style = self.class.styles_pool[screen] || []
-        (screen_style.blank? ? common_style : (screen_style + common_style_without_fill_window)).uniq.join(" ")
+        (screen_style.blank? ? common_style : (common_style_without_fill_window + screen_style)).uniq.join(" ")
       else
         common_style.join(" ")
       end
