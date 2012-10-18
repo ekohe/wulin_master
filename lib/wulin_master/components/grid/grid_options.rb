@@ -21,7 +21,6 @@ module WulinMaster
       def option(option)
         # turn option["screen"] to option[:only]
         option[:only] = [option[:screen].intern] if option[:screen]
-        option.delete(:screen)
         @options_pool << option unless @options_pool.include?(option)
       end 
       
