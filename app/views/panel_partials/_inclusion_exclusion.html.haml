@@ -1,7 +1,12 @@
 %fieldset.panel_wrapper
   .panel_btns{:"data-inclusion-grid" => panel.inclusion_grid, :"data-exclusion-grid" => panel.exclusion_grid }
-    = button_tag '<- Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
-    = button_tag 'Remove ->', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
+    - component_names = panel.screen.components.map(&:name)
+    - if component_names.index(panel.inclusion_grid) < component_names.index(panel.exclusion_grid)
+      = button_tag '<- Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
+      = button_tag 'Remove ->', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
+    - else
+      = button_tag 'Add ->', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
+      = button_tag '<- Remove', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
 
 :javascript
   $(function(){
