@@ -305,7 +305,7 @@ module WulinMaster
               end
             when :has_many then
               # Should convert association_attributes for grid cell editor ajax request.
-              if Hash === association_attributes and association_attributes.all? {|value| value.key?('id')}
+              if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
                  association_attributes = association_attributes.values.map{|x| x['id']}
               end
               
