@@ -297,7 +297,7 @@ module WulinMaster
               else
                 the_ids = []
               end
-              the_ids = the_ids.uniq.compact.delete_if{|x| x.blank? }
+              the_ids = the_ids.uniq.delete_if(&:blank?)
               if the_ids.blank?
                 new_attributes[k.to_sym] = []
               else
@@ -306,13 +306,13 @@ module WulinMaster
             when :has_many then
               # Should convert association_attributes for grid cell editor ajax request.
               if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
-                 association_attributes = association_attributes.values.map{|x| x['id']}
+                 association_attributes = association_attributes.values.map{|x| x['id']}.uniq.delete_if(&:blank?)
               end
               
               if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
                 new_attributes[k.to_sym] = []
               else
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes.uniq.delete_if(&:blank?)).to_a
               end
             end
           elsif k.to_s !~ /_attributes$/ and grid.model.column_names.exclude?(k.to_s) and !@records.first.respond_to?("#{k.to_s}=")
