@@ -4,7 +4,7 @@ module WulinMaster
   class Component
     include ComponentStyling
 
-    attr_accessor :params, :controller, :custom_config
+    attr_accessor :params, :screen, :controller, :custom_config
 
     # apply a config, dispatch it to a config pool (like option_pool, styles_pool etc) 
     def self.apply_config(key, value, params={})
@@ -22,8 +22,9 @@ module WulinMaster
       end
     end
 
-    def initialize(params={}, controller_instance=nil, config={})
+    def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
       self.params = params
+      self.screen = screen_instance
       self.controller = controller_instance
       self.custom_config = config
     end

@@ -40,7 +40,7 @@ module WulinMaster
 
     # Instance methods
     # --------------------
-    def initialize(params={}, controller_instance=nil, config={})
+    def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
       super
     end
 

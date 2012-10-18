@@ -83,7 +83,7 @@ module WulinMaster
     # --------------------
     attr_accessor :toolbar, :virtual_sort_column, :virtual_filter_columns
 
-    def initialize(params={}, controller_instance=nil, config={})
+    def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
       super
 
       if params[:no_render]     # if no_render, skip the config applying 
