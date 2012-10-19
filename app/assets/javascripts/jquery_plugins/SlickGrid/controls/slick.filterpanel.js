@@ -158,7 +158,11 @@
       } else {
         $loader.setFilterWithoutRefresh([]);
         if ($grid.master) {
-          $loader.addFilter($grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator);
+          if ($grid.master instanceof Array) {
+            $loader.addFilters($grid.master);
+          } else {
+            $loader.addFilter($grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator);
+          }
         } else {
           $loader.setFilter([]);
         }

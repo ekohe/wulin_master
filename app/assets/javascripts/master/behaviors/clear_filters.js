@@ -22,7 +22,11 @@ WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBeha
       this.grid.loader.setFilter([]);
     } else {
       this.grid.loader.setFilterWithoutRefresh([]);
-      this.grid.loader.addFilter(master.filter_column, master.filter_value, master.filter_operator);
+      if(master instanceof Array) {
+        this.grid.loader.addFilters(master);
+      } else {
+        this.grid.loader.addFilter(master.filter_column, master.filter_value, master.filter_operator);
+      }
     }
     this.grid.resetActiveCell();
   }
