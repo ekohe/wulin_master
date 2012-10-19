@@ -25,9 +25,16 @@
         %span.email= User.current_user.email
       #user_action
         = link_to 'Change Password', 'javascript: void(0)', class: 'left btn action', id: 'change_password_btn'
-        = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'
-        
+        = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'        
       #change_password_dialog.create_form(title="Change password" style="display: none;")
+      
+  - elsif defined?(WulinAuth) and current_user
+    #user_nav
+      #user_email 
+        User: 
+        %span.email= current_user.email
+      #user_action
+        = link_to 'Logout', logout_path, class: 'btn action'
 
   
   #activity
