@@ -174,8 +174,11 @@
 			// ------------------------------ Register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);
-        
+
+      // ------------------------------ Install some plugins -----------------------------------
+      grid.registerPlugin(new Slick.AutoTooltips())
 		} // createNewGrid
+		
 		
 		function clone(myObj){
       if(typeof(myObj) != 'object') return myObj;
