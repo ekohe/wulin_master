@@ -1,0 +1,39 @@
+%fieldset.panel_wrapper
+  .panel_btns
+    %span.copy_btn
+    %span.text="copy"
+    / =button_tag image_tag("copy.png"), type: 'button', class: 'btn copy_btn'
+
+
+:javascript
+  $(function(){
+    var $copyButton = $("#panel_grid_state_user .copy_btn");
+    $copyButton.on("click", function(){
+      if($(this).attr("disabled") == "disabled") return false;
+      
+      $(this).attr("disabled", true);
+      var state_grid = gridManager.getGrid("state_grid_in_grid_states");
+      var user_grid = gridManager.getGrid("user_in_grid_states");
+      var selectedStateIds = state_grid.getSelectedIds();
+      var selectedUserIds = user_grid.getSelectedIds();
+      if(selectedStateIds.length == 0 || selectedUserIds.length == 0) {
+        displayErrorMessage("You must select both grid states and users.");
+        $copyButton.removeAttr("disabled");
+        return false;
+      } else {
+        var url = "#{copy_wulin_master_grid_states_path}";
+        var data = {state_ids: selectedStateIds, user_ids: selectedUserIds}
+        $.post(url, data, function(response) {
+          $copyButton.removeAttr("disabled");
+          state_grid.resetActiveCell();
+          user_grid.resetActiveCell();
+          if(response.success) {
+            state_grid.loader.reloadData();
+            displayNewNotification("Grid states successfully copied to the users.");
+          } else {
+            displayErrorMessage(response.error_message);
+          }
+        });
+      }
+    });
+  });

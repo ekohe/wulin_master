@@ -4,7 +4,7 @@ var GridStatesManager = {
     if(gridName) {
       type = type || "order";
       vale = value || {};
-      var url = "/wulin_master/grid_states/save",
+      var url = "/wulin_master/grid_states_manages/save",
       data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
                                         state_type: encodeURIComponent(type),
                                         state_value: value, 

@@ -3,7 +3,6 @@ module WulinMaster
     attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
     
-    default_scope :order => 'created_at DESC'
     scope :for_user_and_grid, lambda {|user_id, grid_name| where(:user_id => user_id, :grid_name => grid_name)}
     
     reject_audit if defined? ::WulinAudit
@@ -47,6 +46,10 @@ module WulinMaster
     # ------------------------------ Instance Methods -------------------------------
     def brother_states
       self.class.for_user_and_grid(self.user_id, self.grid_name).where("id != ?", self.id)
+    end
+
+    def user
+      User.all.find {|u| u.id == user_id}
     end
 
   end
