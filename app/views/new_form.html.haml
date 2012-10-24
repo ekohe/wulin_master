@@ -1,13 +1,12 @@
-- grid = controller.screen.grids.find{|g| g.name == params["grid"]}
-- if grid.action_names.include?('add') || grid.action_names.include?('hotkey_add') 
+- if @grid.action_names.include?('add') || @grid.action_names.include?('hotkey_add') 
   :ruby
-    model_name = grid.model.name.underscore
-    columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+    model_name = @grid.model.name.underscore
+    columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
-    object = grid.model.new
+    object = @grid.model.new
     remote_paths = []
-  .create_form{:id => "#{grid.name}_form", :title => "Create new #{model_name.titleize}"}
-    = form_for object, :url => grid.path do |form|
+  .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}"}
+    = form_for object, :url => @grid.path do |form|
       - columns.each do |column|
         - if new_form_able?(column)
           :ruby
@@ -82,8 +81,8 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn.success{:id => "#{@grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
+        %input.btn{:id => "#{@grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
       = hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(','))
 
   :javascript

@@ -21,7 +21,7 @@ var batchUpdateByAjax = function(grid) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
-    $.get(grid.path + '/wulin_master_edit_form?screen=' + grid.screen + '&grid=' + name, function(data){
+    $.get(grid.path + '/wulin_master_edit_form' + grid.query, function(data){
       $('body').append(data);
       scope = $( '#' + name + '_form');
       

@@ -50,7 +50,7 @@ var Ui = {
   // Refresh create form when continue create new record
   refreshCreateForm: function(grid) {
     var name = grid.name;
-    $.get(grid.path + '/wulin_master_new_form?screen=' + grid.screen + '&grid=' + name, function(data){
+    $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
       newFormDom = $(data);
       $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
       setTimeout(function(){ Ui.setupForm(name, false); }, 350)
@@ -69,7 +69,7 @@ var Ui = {
     var scope, width, height, name;
     name = grid.name;
     
-    $.get(grid.path + '/wulin_master_new_form?screen=' + grid.screen + '&grid=' + name, function(data){
+    $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
       $('body').append(data);
       
       scope = $( '#' + name + '_form');

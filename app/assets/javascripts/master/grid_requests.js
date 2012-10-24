@@ -46,7 +46,7 @@ var Requests = {
 		$.ajax({
 			type: "POST",
 			dateType: 'json',
-			url: grid.path + "/" + item.id + ".json"+grid.query,
+			url: grid.path + "/" + item.id + ".json" + grid.query,
 			data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
 			success: function(msg) {
 				if(msg.success) {
@@ -69,7 +69,7 @@ var Requests = {
 		if(force == undefined) force = false;
 		$.ajax({
 			type: 'POST',
-			url: grid.path + '/' + ids + '.json?screen=' + grid.screen + '&force=' + force,
+			url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
 			data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
 			success: function(msg) {
 				if(msg.success) {
