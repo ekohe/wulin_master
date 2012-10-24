@@ -18,7 +18,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
       var state_id = $(this).val();
       $.ajax({
         type: 'POST',
-        url:  '/wulin_master/grid_states/update',
+        url:  '/wulin_master/grid_states_manages/update',
         data: decodeURIComponent($.param({id: state_id, authenticity_token: window._token})),
         success: function(msg) {
           if(msg == "success") {

@@ -1,68 +1,55 @@
 module WulinMaster
-  class GridStatesController < ::ActionController::Metal
-    include ActionController::Rendering
-    include ActionController::RequestForgeryProtection
-    include WulinMasterGridHelper
+  class GridStatesController < ScreenController
+    controller_for_screen ::GridStatesScreen
 
-    append_view_path "#{WulinMaster::Engine.root}/app/views"
+    add_callback :query_initialized, :set_user_ids_for_filtering
+    add_callback :query_initialized, :skip_sorting_if_sort_by_user
+    add_callback :query_ready, :set_user_ids_for_sorting
 
-    def save
-      current_state = GridState.current(current_user.id, params[:grid_name])
-      if current_state
-        current_state.state_value = JSON(current_state.state_value.presence || "{}").merge(params[:state_type] => params[:state_value]).to_json
-      else
-        current_state = GridState.new(user_id: current_user.id, grid_name: params[:grid_name], 
-          name: 'default', current: true, state_value: {params[:state_type] => params[:state_value]}.to_json)
-      end
-      if current_state.save
-        self.response_body = {status: "success", data: {id: current_state.id, name: current_state.name}}.to_json
-      else
-        self.response_body = {status: "failed", data: current_state.errors.full_messages.join('\n')}.to_json
-      end
-    end
-    
-    def update
-      new_state = GridState.find(params[:id])
+    def copy
       GridState.transaction do
-        new_state.brother_states.update_all({:current => false})
-        new_state.update_attributes!({:current => true})
-      end
-      self.response_body = "success"
-    rescue
-      self.response_body = $!.message
-    end
-
-    def manage
-      @current_user = current_user
-      @grid_name = params[:grid]
-      @states_options = grid_states_options(@current_user.id, @grid_name)
-      render '/manage_grid_states', layout: nil
-    end
-
-    def batch_update
-      params[:grid_states] ||= {}
-      all_states = GridState.for_user_and_grid(current_user.id, params[:grid_name])
-      default_state = all_states.find_by_name('default')
-      remaining_ids = params[:grid_states].map{|index, state| state["id"].presence}.compact.map(&:to_i)
-
-      # delete some states
-      GridState.delete(all_states.map(&:id) - remaining_ids - [default_state.id])
-      # if only remaining default states, mark it as current
-      default_state.update_attribute(:current, true)
-
-      GridState.transaction do
-        # update or create states
-        params[:grid_states].each do |index, state|
-          if state[:id].present?
-            GridState.find(state[:id]).update_attributes!({:name => state[:name]})
-          else
-            GridState.create!(:name => state[:name], :user_id => current_user.id, :grid_name => params[:grid_name])
+        params[:user_ids].each do |uid|
+          params[:state_ids].each do |sid|
+            state = GridState.find(sid)
+            next if state.user_id == uid
+            new_state = GridState.where(user_id: uid, name: state.name, grid_name: state.grid_name).first
+            if new_state
+              new_state.update_attributes!({state_value: state.state_value})
+            else
+              GridState.create!(state.attributes.delete_if{|k,v| ["id", "created_at", "updated_at"].include? k}.merge(user_id: uid))
+            end
           end
         end
-        self.response_body = "success"
       end
+      render :json => {success: true}
     rescue
-      self.response_body = $!.message
+      render :json => {success: false, error_message: $!.message}
     end
+
+    protected
+
+    def set_user_ids_for_filtering
+      return if params[:filters].blank?
+
+      user_filter = params[:filters].find{|x| x["column"] == "email"}
+      return if user_filter.blank?
+
+      user_ids = User.all.select{|u| u.email.include?(user_filter["value"])}.map(&:id)
+      
+      params[:filters].delete user_filter
+      @query = @query.where(:user_id => user_ids)
+    end
+
+    def skip_sorting_if_sort_by_user
+      return if params[:sort_col].blank? or params[:sort_col] != "email"
+      @skip_order = true
+    end
+
+    def set_user_ids_for_sorting      
+      @query = @query.all.sort do |s1, s2|
+        params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
+      end if @skip_order
+    end
+
   end
 end

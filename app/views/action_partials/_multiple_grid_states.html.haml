@@ -9,7 +9,7 @@
 :javascript
   $(function(){
     $("a.manage").click(function(){
-      $.get('wulin_master/grid_states/manage?' + "grid=#{grid.name}", function(data){
+      $.get('wulin_master/grid_states_manages/manage?' + "grid=#{grid.name}", function(data){
         $('body').append(data);
         var scope = $(".states_manage_form");
 

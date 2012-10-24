@@ -19,6 +19,8 @@ module WulinMaster
           # Create initial query object
           @query = grid.model
 
+          fire_callbacks :query_initialized
+
           # Make sure the relation method is called to correctly initialize it
           # We had issues where it's not initialized through the relation method when using
           #  the where method
@@ -30,7 +32,7 @@ module WulinMaster
           fire_callbacks :query_filters_ready
 
           # Add order
-          parse_ordering
+          parse_ordering unless @skip_order
 
           # Add includes (OUTER JOIN)
           add_includes
@@ -222,7 +224,7 @@ module WulinMaster
       # @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
 
-      @query = @query.limit(@per_page).offset((@page-1) * @per_page)
+      @query = @query.is_a?(Array) ? @query.from((@page-1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page-1) * @per_page)
     end
 
     def add_includes
