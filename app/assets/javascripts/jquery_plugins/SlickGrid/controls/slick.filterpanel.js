@@ -35,6 +35,7 @@
         
         if ($($grid.getHeaderRow()).is(":visible")) {
             $grid.hideHeaderRowColumns();
+            currentFilters = null;
             trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
         } else {   
             $grid.showHeaderRowColumns();
