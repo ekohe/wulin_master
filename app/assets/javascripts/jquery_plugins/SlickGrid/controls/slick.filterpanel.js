@@ -124,12 +124,10 @@
 		// We store the filters value so that after resizing or reordering of the columns, we can 
 		//  generate the filters boxes with the same values
 		function updateCurrentFilters() {
-      //currentFiltersApplied = [];
       currentFilters = {};
 		  $.each($("input", $($grid.getHeaderRow())), function() {
         if ($(this).val()!='') {
           currentFilters[$(this).attr('id')] = $(this).val();
-		      //currentFiltersApplied.push({id:$(this).attr('id'), value:$(this).val()});
         }
 		  });
 		}
@@ -150,12 +148,12 @@
 		}
 		
 		function setCurrentFilter(){
-      // var filters = [];
       if (currentFiltersApplied.length > 0) {
+        var filters = [];
         $.each(currentFiltersApplied, function(){
-          // filters.push([this['id'], this['value'], 'equals']);
-          $loader.addFilter(this['id'], this['value'], 'equals');
+          filters.push([this['id'], this['value'], 'equals']);
         });
+        $loader.setFilter(filters);
       } else {
         $loader.setFilterWithoutRefresh([]);
         if ($grid.master) {
@@ -168,7 +166,6 @@
           $loader.setFilter([]);
         }
       }
-      // $loader.setFilter(filters);
 		}
 		
 		function applyCurrentFilters(filters) {
