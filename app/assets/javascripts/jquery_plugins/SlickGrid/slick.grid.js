@@ -990,12 +990,24 @@ if (typeof Slick === "undefined") {
         }
 
         function getDataItem(i) {
+            var item, newItem = {};
             if (data.getItem) {
-                return data.getItem(i);
+                item = data.getItem(i);
             }
             else {
-                return data[i];
+                item = data[i];
             }
+            for(var i in item) {
+              // flatten the nested objects (eg: {county: {id: 1, name: 'USA'}} will become {country_id: 1, country_name: 'USA'})
+              if(item[i] && typeof(item[i]) == 'object') {
+                for(var j in item[i]) {
+                  newItem[i + "_" + j] = item[i][j];
+                }
+              } else {
+                newItem[i] = item[i];
+              }
+            }
+            return newItem;
         }
 
         function getTopPanel() {

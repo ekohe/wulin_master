@@ -224,12 +224,22 @@
 	    totalRows = parseInt(resp.total);
 			for (var i = 0; i < resp.rows.length; i++) {
 			  var j = parseInt(from)+parseInt(i);
-			  var object = {};
+			  var obj = {};
 			  $.each(columns, function(index, value) {
+			    var item = resp.rows[i][index];
 			    // match the column and the response data (compare column name and response data key)
-			    object[value.id] = resp.rows[i][index];         
+			    if(item && typeof(item) == 'object') {
+			      var itemKey = Object.keys(item)[0];
+			      if(Object.keys(obj).indexOf(itemKey) >= 0) {
+			        $.extend(obj[itemKey], item[itemKey]);
+			      } else {
+			        $.extend(obj, item);
+			      } 
+			    } else {
+			      obj[value.id] = item;    
+			    }     
 			  });
-				data[j] = object;
+				data[j] = obj;
 				data[j].slick_index = j;
 			}
 			req = null;

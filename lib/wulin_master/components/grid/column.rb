@@ -20,12 +20,15 @@ module WulinMaster
     def relation_table_name
       options[:join_aliased_as] || self.reflection.klass.table_name
     end
+    
+    def table_name
+      self.reflection ? relation_table_name : self.model.table_name.to_s
+    end
 
     def to_column_model(screen_name)
       @options[:screen] = screen_name
       field_name = full_name
       sort_col_name = @options[:sort_column] || field_name
-      table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
       column_type = sql_type
       new_options = @options.dup
       h = {:id => full_name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
@@ -253,16 +256,16 @@ module WulinMaster
     def json(object) 
       case association_type.to_s
       when 'belongs_to'
-        {:id => object.send(foreign_key), option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}
+        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}}
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
-        {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}
+        {reflection.name => {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}}
       when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-        {id: ids, option_text_attribute => op_attribute}
+        {reflection.name => {id: ids, option_text_attribute => op_attribute}}
       when 'has_many'
-        object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}
+        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}}
       else
         self.format(object.send(self.name.to_s))
       end
