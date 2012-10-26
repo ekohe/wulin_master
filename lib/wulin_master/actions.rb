@@ -284,7 +284,7 @@ module WulinMaster
 
             case associations[k.to_sym].macro
             when :belongs_to then
-              if association_attributes['id'] == 'null'
+              if association_attributes['id'].blank? or association_attributes['id'] == 'null'
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = nil
               elsif association_attributes['id'].present?
                 new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
