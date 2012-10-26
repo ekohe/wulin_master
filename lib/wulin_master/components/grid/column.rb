@@ -23,12 +23,12 @@ module WulinMaster
 
     def to_column_model(screen_name)
       @options[:screen] = screen_name
-      field_name = @name.to_s
+      field_name = full_name
       sort_col_name = @options[:sort_column] || field_name
       table_name = self.reflection ? relation_table_name : self.model.table_name.to_s
       column_type = sql_type
       new_options = @options.dup
-      h = {:id => @name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
+      h = {:id => full_name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -179,7 +179,15 @@ module WulinMaster
     end
 
     def full_name
-      @options[:option_text_attribute] ? "#{name}_#{@options[:option_text_attribute].to_s}" : name.to_s
+      if @options[:option_text_attribute]
+       "#{name}_#{@options[:option_text_attribute].to_s}" 
+      elsif @options[:through] 
+        "#{@options[:through]}_#{name}"
+      elsif !model.column_names.include?(name.to_s)
+        "#{name}_name"
+      else
+        name.to_s
+      end
     end
 
     def foreign_key
