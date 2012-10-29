@@ -25,9 +25,12 @@ module WulinMaster
       self.reflection ? relation_table_name : self.model.table_name.to_s
     end
 
+    def field_name
+      self.reflection ? reflection.name : name
+    end
+
     def to_column_model(screen_name)
       @options[:screen] = screen_name
-      field_name = full_name
       sort_col_name = @options[:sort_column] || field_name
       column_type = sql_type
       new_options = @options.dup

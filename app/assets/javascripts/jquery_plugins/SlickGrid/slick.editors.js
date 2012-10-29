@@ -117,7 +117,7 @@
         },
         
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-            return dataContext[columnDef.id] ? dataContext[columnDef.id][columnDef.optionTextAttribute] : null;
+            return value[columnDef.optionTextAttribute];
         },  
         
         TextCellEditor : function(args) {
@@ -1047,7 +1047,7 @@
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
-              $select.val(args.item[args.column.id].id);
+              $select.val(args.item[args.column.field].id);
               $select.chosen({allow_single_deselect: true});
             } else {
               if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
@@ -1056,14 +1056,14 @@
                   $.each(itemdata, function(index, value) {
                     $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                   });
-                  $select.val(args.item[args.column.id].id);
+                  $select.val(args.item[args.column.field].id);
                   $select.chosen({allow_single_deselect: true});
                 });
               } else {
                 $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.val(args.item[args.column.id].id);
+                $select.val(args.item[args.column.field].id);
                 $select.chosen({allow_single_deselect: true});
               }
             }
@@ -1107,7 +1107,7 @@
               // load the value(s) from the data item and update the UI
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = item[args.column.id].id;
+              defaultValue = item[args.column.field].id;
               $select.val(defaultValue);
               $select.select();
           };
@@ -1117,8 +1117,8 @@
               // this method may get called after the editor itself has been destroyed
               // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
               
-              item[args.column.id].id = state.id;
-              item[args.column.id][optionTextAttribute] = state[optionTextAttribute];
+              item[args.column.field].id = state.id;
+              item[args.column.field][optionTextAttribute] = state[optionTextAttribute];
           };
 
           this.validate = function() {
@@ -1180,7 +1180,7 @@
                 $.each(choicesFetchPath, function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.val(args.item[args.column.id].id);
+                $select.val(args.item[args.column.field].id);
                 $select.chosen({allow_single_deselect: true});
               } else {
                 if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
@@ -1189,7 +1189,7 @@
                     $.each(itemdata, function(index, value) {
                       $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                     });
-                    defaultValue = $.map(args.item[args.column.id], function(val,i) { return val.id; } );
+                    defaultValue = $.map(args.item[args.column.field], function(val,i) { return val.id; } );
                     $select.val(defaultValue);
                     $select.chosen({allow_single_deselect: true});
                   });
@@ -1197,7 +1197,7 @@
                   $.each(window._jsonData[choicesFetchPath], function(index, value) {
                     $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                   });
-                  defaultValue = $.map(args.item[args.column.id], function(val,i) { return val.id; } );
+                  defaultValue = $.map(args.item[args.column.field], function(val,i) { return val.id; } );
                   $select.val(defaultValue);
                   $select.chosen({allow_single_deselect: true});
                 }
@@ -1239,7 +1239,7 @@
                 // load the value(s) from the data item and update the UI
                 // this method will be called immediately after the editor is initialized
                 // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = $.map(item[args.column.id], function(val,i) { return val.id; } );
+              defaultValue = $.map(item[args.column.field], function(val,i) { return val.id; } );
               $select.val(defaultValue);
               $select.select();
             };
@@ -1249,9 +1249,9 @@
                 // this method may get called after the editor itself has been destroyed
                 // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
               if (state.id==null) {
-                item[args.column.id] = 'null';
+                item[args.column.field] = 'null';
               } else {
-                item[args.column.id] = state.id;
+                item[args.column.field] = state.id;
               }
             };
 
@@ -1341,7 +1341,7 @@
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
               });
-              $select.val(args.item[args.column.id]);
+              $select.val(args.item[args.column.field]);
               $select.chosen({allow_single_deselect: true});
             } else {
               if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
@@ -1350,14 +1350,14 @@
                   $.each(itemdata, function(index, value) {
                     $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
                   });
-                  $select.val(args.item[args.column.id]);
+                  $select.val(args.item[args.column.field]);
                   $select.chosen({allow_single_deselect: true});
                 });
               } else {
                 $.each(window._jsonData[choicesFetchPath], function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
-                $select.val(args.item[args.column.id]);
+                $select.val(args.item[args.column.field]);
                 $select.chosen({allow_single_deselect: true});
               }
             }
@@ -1384,13 +1384,13 @@
           };
 
           this.loadValue = function(item) {
-              defaultValue = item[args.column.id];
+              defaultValue = item[args.column.field];
               $select.val(defaultValue);
               $select.select();
           };
 
           this.applyValue = function(item,state) {
-              item[args.column.id] = state.id;
+              item[args.column.field] = state.id;
           };
 
           this.validate = function() {
