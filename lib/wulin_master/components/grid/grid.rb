@@ -217,7 +217,7 @@ module WulinMaster
     end
     
     def find_column_by_name(column_name)
-      self.columns.find{|c| c.name.to_s == column_name.to_s || c.full_name == column_name.to_s} || self.columns.find{|c| c.foreign_key == column_name.to_s}
+      self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s } || self.columns.find{|c| c.foreign_key == column_name.to_s}
     end
 
     def initialize_toolbar

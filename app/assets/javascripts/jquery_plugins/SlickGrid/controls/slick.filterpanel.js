@@ -89,7 +89,7 @@
       setOriginalFilter();
 
       $.each(columns, function(i, value) {
-        var value = '', field = this.field, inputHtml = '', inputWidth, cssClass = "";
+        var value = '', field = this.id, inputHtml = '', inputWidth, cssClass = "";
         // Try to get the value of this filter if any
         $.each(currentFiltersApplied, function() {
           if (this.id==field)

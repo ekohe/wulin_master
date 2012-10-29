@@ -31,7 +31,7 @@ module WulinMaster
 
     def to_column_model(screen_name)
       @options[:screen] = screen_name
-      sort_col_name = @options[:sort_column] || field_name
+      sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
       h = {:id => full_name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
