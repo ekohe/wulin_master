@@ -229,12 +229,7 @@
 			    var item = resp.rows[i][index];
 			    // match the column and the response data (compare column name and response data key)
 			    if(item && typeof(item) == 'object') {
-			      var itemKey = Object.keys(item)[0];
-			      if(Object.keys(obj).indexOf(itemKey) >= 0) {
-			        $.extend(obj[itemKey], item[itemKey]);
-			      } else {
-			        $.extend(obj, item);
-			      } 
+            $.extend(true, obj, item);
 			    } else {
 			      obj[value.id] = item;    
 			    }     
