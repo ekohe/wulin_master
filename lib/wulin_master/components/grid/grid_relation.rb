@@ -42,6 +42,7 @@ module WulinMaster
             @current_filter_column = reflection.name
           end
 
+          behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
           behavior :empty_detail, master_grid_name: master_grid.name, only: [options[:screen].intern]
         end
@@ -73,6 +74,8 @@ module WulinMaster
             @current_filter_column = reflection.foreign_key
           end
         end
+
+        behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
       end
 
       # when the detail grid data is come from the model which is not the corresponding model of the grid (eg: the self related model)

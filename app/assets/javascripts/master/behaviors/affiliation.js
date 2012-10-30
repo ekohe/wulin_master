@@ -37,7 +37,16 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       }
       // filter the detail grid
       detailGrid.resetActiveCell();
-      detailGrid.loader.addFilter(association_key, masterIds[0], this.operator);
+
+      var existingFilters = $.map(detailGrid.loader.getFilters(), function(e) { return e[0] });
+      var candidateFilters = detailGrid.candidateFilters;
+      var dif = $.difference(existingFilters, candidateFilters);
+      // if the current filter is the last candidate filter, add it and reload the grid, otherwise don't reload the grid
+      if(dif.length == 0 || dif.length == 1 && dif[0] == association_key) {
+        detailGrid.loader.addFilter(association_key, masterIds[0], this.operator);
+      } else {
+        detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);
+      }
     }
   }
 
