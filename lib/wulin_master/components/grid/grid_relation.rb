@@ -73,9 +73,9 @@ module WulinMaster
             column reflection.name, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_filter_column = reflection.foreign_key
           end
-        end
 
-        behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
+          behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
+        end
       end
 
       # when the detail grid data is come from the model which is not the corresponding model of the grid (eg: the self related model)
