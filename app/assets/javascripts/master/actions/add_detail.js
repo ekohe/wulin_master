@@ -46,8 +46,12 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         // copy the target's master to detail grid, just replace the operator to 'exclude' 
         var gridName = dialogDom.find(".grid_container").attr("name");
         var grid = gridManager.getGrid(gridName);
-        grid.master = master;
-        grid.master["filter_operator"] = 'exclude';
+        master["filter_operator"] = 'exclude';
+        if(grid.master && grid.master instanceof Array) {
+          grid.master.push($.map(master, function(o){return o;}));
+        } else {
+          grid.master = master;
+        }
       });
     });
   },
