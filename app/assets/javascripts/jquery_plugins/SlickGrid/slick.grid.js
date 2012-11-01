@@ -2405,8 +2405,6 @@ if (typeof Slick === "undefined") {
             if (currentEditor) {
                 if (currentEditor.isValueChanged()) {
                     var validationResults = currentEditor.validate();
-                    submitItem['id'] = item.id;
-                    submitItem[column.field] = item[column.field];
 
                     if (validationResults.valid) {
                         if (activeRow < getDataLength()) {
@@ -2436,6 +2434,8 @@ if (typeof Slick === "undefined") {
                                 makeActiveCellNormal();
                             }
 
+                            submitItem['id'] = item.id;
+                            submitItem[column.field] = item[column.field];
                             trigger(self.onCellChange, {
                                 row: activeRow,
                                 cell: activeCell,
