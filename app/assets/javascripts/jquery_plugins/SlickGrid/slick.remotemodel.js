@@ -228,7 +228,7 @@
 			  $.each(columns, function(index, value) {
 			    var item = resp.rows[i][index];
 			    // match the column and the response data (compare column name and response data key)
-			    if(item && typeof(item) == 'object') {
+			    if(item && typeof(item) == 'object' && !(item instanceof Array)) {
             $.extend(true, obj, item);
 			    } else {
 			      obj[value.id] = item;    
