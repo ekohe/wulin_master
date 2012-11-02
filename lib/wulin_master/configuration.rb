@@ -10,10 +10,11 @@ module WulinMaster
   end
   
   class Configuration
-    attr_accessor :app_title, :app_title_height
+    attr_accessor :app_title, :app_title_height, :report_title
     
     def initialize
       self.app_title = 'Undefined App'
+      self.report_title = 'Undefined Report'
       self.app_title_height = '42px'
     end
   end
