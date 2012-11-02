@@ -245,7 +245,7 @@ module WulinMaster
         :total =>  @count,
         :count =>  @per_page,
         :rows  =>  @object_array}.to_json
-        Rails.logger.info "Rendered JSON in #{Time.now-t} sec."
+        Rails.logger.info "================== Rendered JSON in #{Time.now-t} sec. ======================"
         json
       end
 

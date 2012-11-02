@@ -259,7 +259,8 @@ module WulinMaster
     def json(object) 
       case association_type.to_s
       when 'belongs_to'
-        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}}
+        value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute).to_s
+        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => value}}
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
         {reflection.name => {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}}
@@ -282,7 +283,7 @@ module WulinMaster
     end
     
     def sortable?
-      is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
+      @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
     
     alias_method :filterable?, :sortable?
