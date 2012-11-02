@@ -189,7 +189,7 @@ module WulinMaster
        "#{name}_#{@options[:option_text_attribute].to_s}" 
       elsif @options[:through] 
         "#{@options[:through]}_#{name}"
-      elsif !model.column_names.include?(name.to_s)
+      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
         "#{name}_name"
       else
         name.to_s
@@ -221,7 +221,7 @@ module WulinMaster
       self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(@name.to_sym)}
     end
 
-    # Returns the´includes to add to the query 
+    # Returns the includes to add to the query 
     def includes
       if self.reflection && (self.reflection.klass < ActiveRecord::Base)
         [(@options[:through] || @name).to_sym, association_through ? association_through.to_sym : nil].compact
@@ -230,7 +230,7 @@ module WulinMaster
       end
     end
 
-    # Returns the´joins to add to the query
+    # Returns the joins to add to the query
     def joins
       if self.reflection && (self.reflection.klass < ActiveRecord::Base) && presence_required?
         [(@options[:through] || @name).to_sym]
@@ -259,7 +259,8 @@ module WulinMaster
     def json(object) 
       case association_type.to_s
       when 'belongs_to'
-        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s}}
+        value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute).to_s
+        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => value}}
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
         {reflection.name => {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}}
@@ -282,7 +283,7 @@ module WulinMaster
     end
     
     def sortable?
-      is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
+      @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
     
     alias_method :filterable?, :sortable?

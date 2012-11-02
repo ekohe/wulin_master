@@ -42,6 +42,7 @@ module WulinMaster
             @current_filter_column = reflection.name
           end
 
+          behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
           behavior :empty_detail, master_grid_name: master_grid.name, only: [options[:screen].intern]
         end
@@ -72,6 +73,8 @@ module WulinMaster
             column reflection.name, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_filter_column = reflection.foreign_key
           end
+
+          behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
         end
       end
 

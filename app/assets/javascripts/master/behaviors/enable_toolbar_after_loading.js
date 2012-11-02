@@ -15,7 +15,9 @@ WulinMaster.behaviors.enableToolbarAfterLoading = $.extend({}, WulinMaster.behav
 
   handler: function() {
     var $toolbar_items = this.grid.container.find(".toolbar_item a");
-    $toolbar_items.removeClass("toolbar_icon_disabled");
+    $.each($toolbar_items, function(){
+      if(!$(this).hasClass('toolbar_manually_enable')) $(this).removeClass("toolbar_icon_disabled");
+    });
   }
 
 });

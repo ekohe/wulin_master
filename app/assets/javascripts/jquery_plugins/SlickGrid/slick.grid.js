@@ -2400,6 +2400,7 @@ if (typeof Slick === "undefined") {
         function commitCurrentEdit() {
             var item = getDataItem(activeRow);
             var column = columns[activeCell];
+            var submitItem = {};
 
             if (currentEditor) {
                 if (currentEditor.isValueChanged()) {
@@ -2433,10 +2434,12 @@ if (typeof Slick === "undefined") {
                                 makeActiveCellNormal();
                             }
 
+                            submitItem['id'] = item.id;
+                            submitItem[column.field] = item[column.field];
                             trigger(self.onCellChange, {
                                 row: activeRow,
                                 cell: activeCell,
-                                item: item,
+                                item: submitItem,
                                 editCommand: editCommand
                             });
                         }
