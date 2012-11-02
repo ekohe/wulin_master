@@ -68,7 +68,9 @@ var GridStatesManager = {
         var hiddenArr = [], hiddenJson = {}, visibilityColumns = grid.getColumns();
         
         // Regenerate Filter panel
-        grid.filterPanel.generateFilters();
+        if(grid.filterPanel) {
+          grid.filterPanel.generateFilters(); 
+        }
         
         visibilityColumns = $.map(visibilityColumns, function(n, i){
             return n.id;
