@@ -189,7 +189,7 @@ module WulinMaster
        "#{name}_#{@options[:option_text_attribute].to_s}" 
       elsif @options[:through] 
         "#{@options[:through]}_#{name}"
-      elsif !model.column_names.include?(name.to_s)
+      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
         "#{name}_name"
       else
         name.to_s
@@ -221,7 +221,7 @@ module WulinMaster
       self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(@name.to_sym)}
     end
 
-    # Returns the´includes to add to the query 
+    # Returns the includes to add to the query 
     def includes
       if self.reflection && (self.reflection.klass < ActiveRecord::Base)
         [(@options[:through] || @name).to_sym, association_through ? association_through.to_sym : nil].compact
@@ -230,7 +230,7 @@ module WulinMaster
       end
     end
 
-    # Returns the´joins to add to the query
+    # Returns the joins to add to the query
     def joins
       if self.reflection && (self.reflection.klass < ActiveRecord::Base) && presence_required?
         [(@options[:through] || @name).to_sym]
