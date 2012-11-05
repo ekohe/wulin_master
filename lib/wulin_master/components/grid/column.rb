@@ -80,6 +80,13 @@ module WulinMaster
         if @options[:sql_expression]
           return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
         elsif option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal].include? column_type(self.reflection.klass, self.option_text_attribute)
+          # filter value converting
+          column_type = column_type(self.reflection.klass, self.option_text_attribute)
+          filtering_value = if column_type == :integer
+            filtering_value.to_i
+          elsif column_type == :float or column_type == :decimal
+            filtering_value.to_f
+          end
           if ['equals', 'not_equals'].include? filtering_operator
             operator = (filtering_operator == 'equals') ? '=' : '!='
             return query.where("#{relation_table_name}.#{self.option_text_attribute} #{operator} ?", filtering_value)
