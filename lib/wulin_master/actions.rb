@@ -16,8 +16,10 @@ module WulinMaster
           render 'index', :layout => (request.xhr? ? false : 'application')
         end
         format.json do
+          fire_callbacks :initialize_query
+          
           # Create initial query object
-          @query = grid.model
+          @query = @query || grid.model
 
           fire_callbacks :query_initialized
 
