@@ -4,6 +4,16 @@ $(document).ready(function () {
   initialize_menu();
 
   $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
+
+  $("#navigation #nav_toggle").toggle(function(){
+    $("#navigation").animate({width:0});
+    $('#content').animate({left:0});
+    $(this).toggleClass("open");
+  },function(){
+    $("#navigation").animate({width:199});
+    $('#content').animate({left:200});
+    $(this).toggleClass("open");
+  });
   
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {

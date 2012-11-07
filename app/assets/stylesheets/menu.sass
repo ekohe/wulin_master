@@ -39,7 +39,18 @@ $menu_width:  199px
     :color                    $app_title_color
     +text-shadow(#fff, 1px, 1px, 0)
     
-    
+  #nav_toggle
+    :position absolute
+    :top 90px
+    :right -12px
+    :width 12px
+    :height 30px
+    :z-index 1020
+    :cursor pointer
+    :background image-url("side_toggle.png") no-repeat 0px -35px
+    &.open
+      :background-position 0px 0px
+      :right -1px
 
   #menu
     :position absolute
