@@ -1,4 +1,4 @@
-// master-detail relation, add candidate filters as a grid attribute, 
+// master-detail relation (when multiple masters - one detail), add candidate filters as a grid attribute, 
 // before doing grid.loader.addFitler, we should check the existing filters and candidate filters,
 // if exsiting filters less than candidate filters (except the current filter), should not referesh the grid,
 // until the current filter is the last candidate filter, we can refresh the grid
