@@ -148,24 +148,24 @@
 		}
 		
 		function setCurrentFilter(){
+      var filters = [];
+      // add current filters
       if (currentFiltersApplied.length > 0) {
-        var filters = [];
         $.each(currentFiltersApplied, function(){
           filters.push([this['id'], this['value'], 'equals']);
         });
-        $loader.setFilter(filters);
-      } else {
-        $loader.setFilterWithoutRefresh([]);
-        if ($grid.master) {
-          if ($grid.master instanceof Array) {
-            $loader.addFilters($grid.master);
-          } else {
-            $loader.addFilter($grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator);
-          }
+      }
+      // add masters
+      if ($grid.master) {
+        if ($grid.master instanceof Array) {
+          $.each($grid.master, function(){
+            filters.push(this);
+          });
         } else {
-          $loader.setFilter([]);
+          filters.push([$grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator]);
         }
       }
+      $loader.setFilter(filters);
 		}
 		
 		function applyCurrentFilters(filters) {
