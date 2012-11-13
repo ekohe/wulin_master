@@ -1,9 +1,9 @@
 (function($) {
-	function ConnectionManager(remoteModel) {
-	  // Keeps all the requests available in an array
+  function ConnectionManager(remoteModel) {
+    // Keeps all the requests available in an array
     var requests = [];
 
-    function createConnection(url, indicator, clientOnSuccess, clientOnError) {
+    function createConnection(grid, url, indicator, clientOnSuccess, clientOnError) {
       var existingRequest = getConnection(url);
       
       // Just return if connection already exists.
@@ -18,6 +18,8 @@
       newRequest.clientOnError = clientOnError;
       newRequest.indicator = indicator;      
       newRequest.url = url;
+      newRequest.loader = grid.loader;
+      newRequest.versionNumber = new Date().getTime(); // Set the version number
       
       showIndicator(indicator);
 
@@ -26,7 +28,10 @@
         
     function onSuccess(data, textStatus, request) {
       hideIndicator(request.indicator);
-      request.clientOnSuccess(data, textStatus, request);
+      if (request.versionNumber > request.loader.lastRequestVersionNumber) {
+        request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
+        request.clientOnSuccess(data, textStatus, request);
+      }
       // Remove request
       var requestIndex = requests.indexOf(request);
       if(requestIndex!=-1) requests.splice(requestIndex, 1);
@@ -89,16 +94,16 @@
       return null;
     }
     
-		return {
-			// properties
-			"requests": requests,
-			"remoteModel": remoteModel,
-			
-			// functions
-			"createConnection": createConnection,
-			"is_empty": is_empty,
-			"removeConnection": removeConnection			
-		}
-	}
-	$.extend(true, window, { ConnectionManager: ConnectionManager})
+    return {
+      // properties
+      "requests": requests,
+      "remoteModel": remoteModel,
+
+      // functions
+      "createConnection": createConnection,
+      "is_empty": is_empty,
+      "removeConnection": removeConnection
+    }
+  }
+  $.extend(true, window, { ConnectionManager: ConnectionManager})
 })(jQuery);

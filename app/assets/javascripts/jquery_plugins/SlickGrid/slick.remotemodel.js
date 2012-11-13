@@ -21,6 +21,7 @@
     var mainIndicator = null;
     var initedFilter = false;
     var filters = [];
+    var lastRequestVersionNumber = 0;
     
     if(initialFilters) {
       for(var i in initialFilters) {
@@ -199,7 +200,7 @@
       
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
       loadingIndicator.loadingSize = pageSize == 0 ? loadingSize : pageSize;
-      connectionManager.createConnection(url, loadingIndicator, onSuccess, onError);
+      connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError);
 		}
 
 
@@ -435,6 +436,7 @@
 			// properties
 			"data": data,
       "connectionManager": connectionManager,
+      "lastRequestVersionNumber": lastRequestVersionNumber,
       
 			// methods
 			"clear": clear,
