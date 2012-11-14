@@ -21,13 +21,18 @@
   
   - if defined?(WulinOAuth) and User.current_user
     #user_nav
-      #user_email 
-        User: 
-        %span.email= User.current_user.email
-      #user_action
-        = link_to 'Change Password', 'javascript: void(0)', class: 'left btn action', id: 'change_password_btn'
-        = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'        
-      #change_password_dialog.create_form(title="Change password" style="display: none;")
+      -# #user_email 
+      -#   User: 
+      -#   %span.email= User.current_user.email
+      -# #user_action
+      -#   = link_to 'Change Password', 'javascript: void(0)', class: 'left btn action', id: 'change_password_btn'
+      -#   = link_to 'Logout', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", class: 'btn action'
+      -# #change_password_dialog.create_form(title="Change password" style="display: none;")
+      #user_email
+        = User.current_user.email
+        [
+        = link_to 'X', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", title: 'Logout'
+        ]
       
   - elsif defined?(WulinAuth) and current_user
     #user_nav
@@ -39,29 +44,28 @@
 
   
   #activity
-    / %h2 Activity
     #indicators
       
-:javascript
-  $(function(){
-    $('#change_password_btn').on('click', function(){
-      $('#change_password_dialog').dialog({
-        autoOpen: true,
-        width: 540,
-        height: 280,
-        buttons: {
-          Ok: function() {
-            $(this).dialog( "destroy" );
-          }
-        },
-        create: function() {
-          $.get('#{wulin_master_change_password_path}', function(data) {
-            $('#change_password_dialog').html(data);
-          })
-        },
-        close: function() { 
-          $(this).dialog("destroy");
-        }
-      })
-    });
-  })
+-# :javascript
+-#   $(function(){
+-#     $('#change_password_btn').on('click', function(){
+-#       $('#change_password_dialog').dialog({
+-#         autoOpen: true,
+-#         width: 540,
+-#         height: 280,
+-#         buttons: {
+-#           Ok: function() {
+-#             $(this).dialog( "destroy" );
+-#           }
+-#         },
+-#         create: function() {
+-#           $.get('#{wulin_master_change_password_path}', function(data) {
+-#             $('#change_password_dialog').html(data);
+-#           })
+-#         },
+-#         close: function() { 
+-#           $(this).dialog("destroy");
+-#         }
+-#       })
+-#     });
+-#   })
