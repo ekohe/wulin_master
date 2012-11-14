@@ -203,6 +203,7 @@ module WulinMaster
     def construct_filters
       return unless params[:filters]
       params[:filters].each do |f|
+        sleep 5 if f[:column] == 'zone_name'
         @query = grid.apply_filter(@query, f[:column], f[:value], f[:operator])
       end
     end
