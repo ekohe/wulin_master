@@ -38,10 +38,10 @@ $menu_width:  199px
     :margin-left              $margin
     :color                    $app_title_color
     +text-shadow(#fff, 1px, 1px, 0)
-    
+  
   #nav_toggle
     :position absolute
-    :top 90px
+    :top 12px
     :right -12px
     :width 12px
     :height 30px
@@ -51,6 +51,8 @@ $menu_width:  199px
     &.open
       :background-position 0px 0px
       :right -1px
+    &.transparent
+      :opacity 0
 
   #menu
     :position absolute
