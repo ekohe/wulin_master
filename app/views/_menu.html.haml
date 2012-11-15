@@ -30,7 +30,7 @@
       -# #change_password_dialog.create_form(title="Change password" style="display: none;")
       #user_email
         = User.current_user.email
-        = link_to 'X', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", title: 'Logout', class: 'btn'
+        = link_to 'X', "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", title: 'Logout', class: 'btn logout-btn'
       
   - elsif defined?(WulinAuth) and current_user
     #user_nav
