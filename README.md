@@ -37,6 +37,14 @@ and other tools to make grids easy to build, it also provides flexible configura
 
    Run with *bundle exec rails g* for get generator list.
 
+### 5. Update some rails default configs
+
+   Remove the rails default application.js, because wulin_master uses its own application.js
+
+   Remove the rails default view layout, because wulin_master users its own layout
+
+   In application.rb, add autoload_paths for screens folder: 
+   config.autoload_paths += Dir[Rails.root.join('app', 'screens', '{**}')]
 
 ## Getting Started
 
