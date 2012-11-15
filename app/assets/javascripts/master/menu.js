@@ -5,15 +5,17 @@ $(document).ready(function () {
 
   $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
 
+  $("#navigation #nav_toggle").hover(function(){
+    $(this).toggleClass("transparent");
+  });
+
   $("#navigation #nav_toggle").toggle(function(){
     var $toggle = $(this);
     $("#navigation").animate({width:0});
     $('#content').animate({left:0}, function(){
       $toggle.toggleClass("open");
       $(window).trigger("resize");
-    });
-
-    
+    });  
   },function(){
     var $toggle = $(this);
     $("#navigation").animate({width:199});
