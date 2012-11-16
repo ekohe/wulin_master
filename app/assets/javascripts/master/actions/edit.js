@@ -108,7 +108,13 @@ var loadValue = function(scope, data) {
       if ($.type(data[i]) === 'string') {
         $('option[value="' + data[i] + '"]', inputBox).attr('selected', 'selected');
       } else if ($.type(data[i]) === 'object') {
-        $('select[data-column="' + i + '"] option[value=' + data[i]['id'] + ']').attr('selected', 'selected');
+        if ($.type(data[i]['id']) === 'array') {
+          $.each(data[i]['id'],function(_i, _v){
+            $('select[data-column="' + i + '"] option[value=' + _v + ']').attr('selected', 'selected');
+          })
+        } else {
+          $('select[data-column="' + i + '"] option[value=' + data[i]['id'] + ']').attr('selected', 'selected');
+        }
       } else if ($.type(data[i]) === 'array') {
         $.each(data[i], function(index, n) {
           $('select[data-column="' + i + '"] option[value=' + data[i][index]['id'] + ']').attr('selected', 'selected');
@@ -156,9 +162,10 @@ var checkTheBox = function(name) {
 var grepValues = function(formData, jqForm, options) {
   var flagDom;
   for(var i = formData.length - 1; i >= 0; i--) {
-    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').attr('data-target') + '"]', scope).not(':checked');
-    if(flagDom.size() > 0) 
+    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', scope);
+    if(flagDom.not(':checked').size() > 0 || formData[i].name === 'remote_paths') {
       formData.splice(i, 1);
+    }
   }
 }
 
