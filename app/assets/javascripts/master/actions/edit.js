@@ -82,7 +82,7 @@ var fillValues = function(scope, grid, selectedIndexes) {
         } else {
           if ($.type(n[k]) != 'object' && !(comm[k] === n[k])) {
             delete comm[k];
-          } else if ($.type(n[k]) === 'object' && $.type(comm[k]) === 'object' && !(comm[k]['id'] === n[k]['id'])) {
+          } else if ($.type(n[k]) === 'object' && $.type(comm[k]) === 'object' && !compare(comm[k]['id'], n[k]['id'])) {
             delete comm[k];
           }
         }
@@ -167,7 +167,7 @@ var grepValues = function(formData, jqForm, options) {
       formData.splice(i, 1);
     }
   }
-}
+};
 
 var submitForm = function(grid, ids, selectedIndexes) {
   var name = grid.name, 
@@ -196,6 +196,21 @@ var submitForm = function(grid, ids, selectedIndexes) {
     $form.ajaxSubmit(options);
     return false;
   });
+};
+
+var compare = function(x, y) {
+  if (x === y) {//For reference types:returns true if x and y points to same object
+    return true;
+  }
+  if (x.length != y.length) {
+    return false;
+  }
+  for (key in x) {
+    if (x[key] !== y[key]) {//!== So that the the values are not converted while comparison
+      return false;
+    }
+  }
+  return true;
 };
 
 
