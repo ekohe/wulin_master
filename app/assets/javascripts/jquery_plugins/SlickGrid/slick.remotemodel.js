@@ -349,7 +349,8 @@
   	  return filters;
   	}
 
-		function setParam(column, string) {
+		function setParam(column, string, _refresh) {
+      if (_refresh === undefined) _refresh = true;
 		  // If the string is an empty string, then removing the param if existing
 			if (string=='') {
 			  var newParams = [];
@@ -358,7 +359,7 @@
 			      newParams.push(param);
 			  });
 			  params = newParams;
-	      refresh(); // Only clear if it was found
+	      if (_refresh) refresh(); // Only clear if it was found
 			  return;
 			}
 						
@@ -376,7 +377,7 @@
 		  if (updated==0)
   		  params.push([column, string]);
 		
-			refresh();
+			if (_refresh) refresh();
   	}
 
   	function getParams() {
