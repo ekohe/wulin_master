@@ -9,7 +9,7 @@ module WulinMaster
       @grid_name = grid_name
       @items ||= []
       actions.each do |action|
-        @items << ToolbarItem.new(action[:title] || action[:name].capitalize, :id => "#{action[:name]}_action_on_#{grid_name}", :class => "#{action[:name]}_action", :icon => "#{action[:icon] || action[:name]}", :manually_enable => action[:manually_enable])
+        @items << ToolbarItem.new(action[:title] || action[:name].capitalize, :id => "#{action[:name]}_action_on_#{grid_name}", :class => ("#{action[:name]}_action " << action[:class].to_s), :icon => "#{action[:icon] || action[:name]}", :manually_enable => action[:manually_enable])
       end
     end
     
