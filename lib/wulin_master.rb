@@ -5,8 +5,8 @@ require 'haml-rails'
 
 module WulinMaster
   
-  @javascripts = ['application']
-  @stylesheets = ['application']
+  @javascripts = ['application.js']
+  @stylesheets = ['application.css']
 
   def self.add_javascript(script)
     @javascripts << script
