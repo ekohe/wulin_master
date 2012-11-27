@@ -55,20 +55,29 @@ module WulinMasterGridHelper
     states.delete(current)
     states.unshift(current).compact.map{|x| [x.name, x.id]}
   end
-  
-  %w(new edit).each do |form|
-    module_eval <<-RUBY, __FILE__, __LINE__ + 1
-      def #{form}_form_able?(column)
-        formable = column.options[:formable]
-        return true if formable.nil?
-        if formable
-          Array === formable ? formable.include?(:#{form}) : !!formable
-        else
-          false
-        end
-      end
-    RUBY
+
+  def new_form_able?(column)
+    formable = column.options[:formable]
+    return true if formable.nil?
+    if formable
+      Array === formable ? formable.include?(:new) : !!formable
+    else
+      false
+    end
   end
   
+  def edit_form_able?(column)
+    formable = column.options[:formable]
+    editable = column.options[:editable]
+    return false if FalseClass === editable
+    if editable or editable.nil?
+      return true if formable.nil?
+      if formable
+        Array === formable ? formable.include?(:edit) : !!formable
+      else
+        false
+      end
+    end
+  end
 
 end
