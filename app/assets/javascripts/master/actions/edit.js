@@ -13,15 +13,18 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
 });
 
 
-var batchUpdateByAjax = function(grid) {
-  var ids, name, width, height, selectedIndexes;
+var batchUpdateByAjax = function(grid, version) {
+  var ids, name, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
   name = grid.name;
   if (!selectedIndexes || selectedIndexes.length == 0) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
-    $.get(grid.path + '/wulin_master_edit_form' + grid.query, function(data){
+    url = grid.path + '/wulin_master_edit_form' + grid.query;
+    if (version) 
+      url = url + "&update_version=" + version;
+    $.get(url, function(data){
       $('body').append(data);
       scope = $( '#' + name + '_form');
       
@@ -32,7 +35,6 @@ var batchUpdateByAjax = function(grid) {
         width = 600;
         height = (scope.outerHeight() + 40);
       }
-      
       scope.dialog({
         height: height,
         width: width,

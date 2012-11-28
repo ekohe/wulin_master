@@ -107,6 +107,25 @@ and other tools to make grids easy to build, it also provides flexible configura
       column :category, width: 100, label: "Category"
       column :created_at, editor: "TimeCellEditor"
       ...
+
+      # Define dynamic edit form
+      edit_form :version1, :version2 do |form|
+        form << :name
+      end
+      
+      edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
+        form << :code
+      end
+
+      # It will define two edit form: version1, version2
+      # form version1 has column [:name],
+      # form version2 has column [:name, :code],
+      #
+      # meanwhile two toolbars was defined: version1, version2.
+      # the options <code>class: 'version2_toolbar', icon: 'add'</code> is same as +action+ method arguments.
+      # click toolbar *version1* will popup form version1 inlucde column [:name]
+      # click toolbar *version2* will popup form version1 inlucde column [:name, :code]
+
     end
    
 ### 4. Configure screen
@@ -405,6 +424,31 @@ You can add this js file anywhere in the application, but we recommend to put it
 That's all, you have set up a simple behavior.
 
 In addition, we already provide some behaviors in `wulin_master` gem, you can view them in *wulin_master/app/assets/javascripts/master/behaviors* folder, they are applied to all grids. But if you want to disable some default behaviors for the grid in your application, you can call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the api method `add_default_behavior(YOUR_BEHAVIOR)` to do that. 
+
+
+#### Dynamic update popup form
+
+Sometimes you need update different columns in different update popup. You can define your action and create a different form template for it to implement this.
+
+Here we provide a simple way to do this fine:
+
+    edit_form :version1, :version2 do |form|
+      form << :name
+    end
+    
+    edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
+      form << :code
+    end
+    
+It will define two edit form: version1, version2. form version1 has column [:name], form version2 has column [:name, :code],
+
+meanwhile two toolbars was defined: version1, version2.
+
+the options <code>class: 'version2_toolbar', icon: 'add'</code> is same as +action+ method arguments.
+
+click toolbar *version1* will popup form version1 inlucde column [:name]
+
+click toolbar *version2* will popup form version1 inlucde column [:name, :code]
 
 
 #### Configuration for different screens

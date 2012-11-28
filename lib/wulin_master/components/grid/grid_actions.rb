@@ -22,8 +22,12 @@ module WulinMaster
 
       # action DSL, add an action to the actions_pool
       def action(a_name, options={})
-        new_action = {name: a_name}.merge(options)
-        @actions_pool << new_action
+        if the_action = @actions_pool.find{|x| x[:name] == a_name}
+          the_action.merge!(options)
+        else
+          new_action = {name: a_name}.merge(options)
+          @actions_pool << new_action
+        end
       end
 
       def add_actions(*args)

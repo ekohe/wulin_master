@@ -7,6 +7,7 @@ require File.join(File.dirname(__FILE__), 'grid_actions')
 require File.join(File.dirname(__FILE__), 'grid_behaviors')
 require File.join(File.dirname(__FILE__), 'grid_relation')
 require File.join(File.dirname(__FILE__), 'grid_states')
+require File.join(File.dirname(__FILE__), 'grid_dynamic_edit_form')
 
 module WulinMaster
   class Grid < Component
@@ -16,6 +17,7 @@ module WulinMaster
     include GridBehaviors
     include GridRelation
     include GridStates
+    include GridDynamicEditForm
     
     cattr_accessor :grids
     class_attribute :_model, :_path, :titles_pool
