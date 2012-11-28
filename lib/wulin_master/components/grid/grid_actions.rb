@@ -27,6 +27,7 @@ module WulinMaster
         else
           new_action = {name: a_name}.merge(options)
           @actions_pool << new_action
+          add_hotkey_action(a_name, options)
         end
       end
 
@@ -47,13 +48,22 @@ module WulinMaster
           self.action(oa, options)
         end
         # special actions needed to be load as default
-        action :hotkey_add, visible: false
-        action :hotkey_delete, visible: false
+        # action :hotkey_add, visible: false
+        # action :hotkey_delete, visible: false
       end
 
       # interface open to other plugins
       def add_default_action(action)
         ORIGINAL_ACTIONS << action
+      end
+
+      def add_hotkey_action(action_name, action_options)
+        action_name = action_name.to_s
+        if action_name == 'add' and !@actions_pool.find{|x| x[:name].to_s == 'hotkey_add'}
+          @actions_pool << {name: :hotkey_add, visible: false}.merge(action_options) 
+        elsif action_name == 'delete' and !@actions_pool.find{|x| x[:name].to_s == 'hotkey_delete'}
+          @actions_pool << {name: :hotkey_delete, visible: false}.merge(action_options) 
+        end
       end
     end
 
@@ -62,7 +72,7 @@ module WulinMaster
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions
       return self.class.actions_pool if self.params["screen"].blank?
-      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"]) }  
+      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"]) }
     end
 
     # the actions on the toolbar
