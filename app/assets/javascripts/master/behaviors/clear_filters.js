@@ -16,18 +16,24 @@ WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBeha
   },
 
   handler: function() {
-    var master = this.grid.master;
-    // if the grid has no master grid, simply clear all filters, otherwise keep the master grid related filters
-    if(!master) {
-      this.grid.loader.setFilter([]);
-    } else {
-      this.grid.loader.setFilterWithoutRefresh([]);
-      if(master instanceof Array) {
-        this.grid.loader.addFilters(master);
+    var master;
+    var fulledInputs = $('input[value!=""]', $(this.grid.getHeaderRow()));
+    
+    if (fulledInputs.size() > 0) {
+      master = this.grid.master;
+      // if the grid has no master grid, simply clear all filters, otherwise keep the master grid related filters
+      if(!master) {
+        this.grid.loader.setFilter([]);
       } else {
-        this.grid.loader.addFilter(master.filter_column, master.filter_value, master.filter_operator);
+        this.grid.loader.setFilterWithoutRefresh([]);
+        if(master instanceof Array) {
+          this.grid.loader.addFilters(master);
+        } else {
+          this.grid.loader.addFilter(master.filter_column, master.filter_value, master.filter_operator);
+        }
       }
     }
+
     this.grid.resetActiveCell();
   }
 
