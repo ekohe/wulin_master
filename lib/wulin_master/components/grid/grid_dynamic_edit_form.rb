@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module WulinMaster
   module GridDynamicEditForm
     extend ActiveSupport::Concern
@@ -31,13 +29,14 @@ module WulinMaster
 
         options = {icon: 'edit'}.merge(args.extract_options!) # Set default icon
         options[:class] ? options[:class] << ' dynamic_toolbar' : options[:class] = 'dynamic_toolbar'  # Set common class
+
         args.each do |group_key|
           options.merge!(data: {version: group_key}) # Add version to the toolbar
           self.action(group_key, options)
-
           self.edit_column_group[group_key] ||= []
           yield self.edit_column_group[group_key]
         end
+        
       end
     end
 
