@@ -100,34 +100,24 @@ var Ui = {
 
   setupForm: function(grid, monitor) {
     var hasRemotePath = false;
-    var remotePath = {};
+    var remotePath = [];
     var path;
     var name = grid.name;
     var columns = grid.getColumns();
     $.each(columns, function(i, n) {
       if (n['choices'] && typeof(n['choices']) == 'string') {
-        remotePath[n.field] = n['choices'];
+        remotePath.push([[n.field], n['choices']]);
         hasRemotePath = true;
       }
     });
-    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('#' + name + '_form input[data-datetime]').datetimepicker({
-      onlyTime: false,
-      dateFormat: "yy-mm-dd",
-      timeFormat: 'hh:mm',
-      timeOnly: false,
-      stepMinute: 1,
-      minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true },
-      onClose: function() { calendarOpen = false }
-    });
-    $('#' + name + '_form input[data-time]').timepicker({});
+
     // Fetch select options from remote
     if (hasRemotePath) {
       window._jsonData = window._jsonData || {};
 
-      for (var field in remotePath) {
-        path = remotePath[field];
+      $.each(remotePath, function(i, n) {
+        var field = n[0];
+        var path = n[1];
         if (!path) return;
       
         var first_input;
@@ -149,7 +139,7 @@ var Ui = {
           });
           Ui.setupChosen(target, monitor);
         }
-      }
+      });
     }
     
     first_input = $( '#' + name + '_form input:text' ).first();
