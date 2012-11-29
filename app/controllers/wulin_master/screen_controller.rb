@@ -46,7 +46,7 @@ module WulinMaster
     def screen
       return @screen if defined?(@screen)
 
-      if screen_class = (params[:screen].constantize rescue nil) || self.class.screen_classes.first
+      if screen_class = (params[:screen].classify.constantize rescue nil) || self.class.screen_classes.first
         # if params[:screen]
         #   if self.class.screen_classes.find {|sc| params[:screen].constantize <= sc }   # Check if subclass or class itself.
         #     params[:screen].classify.safe_constantize
@@ -57,6 +57,8 @@ module WulinMaster
         #   self.class.screen_classes.first
         # end
         @screen = screen_class.new(params, self)
+      else
+        raise "Can't find a proper screen for the controller"
       end
     end
 
