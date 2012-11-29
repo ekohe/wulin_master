@@ -4,7 +4,6 @@
     columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
     object = @grid.model.new
-    remote_paths = []
   .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}"}
     = form_for object, :url => @grid.path do |form|
       - columns.each do |column|
@@ -15,7 +14,6 @@
           .field{:name => column_name}
             %label{:for => "#{model_name}_#{column_name}"}= label
             - if column.sql_type.to_s == 'belongs_to'
-              - remote_paths << fetch_path(column)
               = form.select column_name,                            |
                 select_options(column),                             |
                 { include_blank: true },                            |
@@ -23,13 +21,11 @@
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
                 :disabled          => column.options[:auto_fill],   |
-                "data-remote-path" => fetch_path(column),           |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"       => column.name                  |
 
             - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
-              - remote_paths << fetch_path(column)
               = form.select column.reflection.name.to_s,            |
                 select_options(column),                             |
                 { include_blank: true },                            |
@@ -37,21 +33,18 @@
                 :multiple          => true,                         |
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
-                "data-remote-path" => fetch_path(column),           |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
 
             - elsif column.options[:choices].present?
-              - remote_paths << select_tag_fetch_path(column)
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
                 :style             => "width:250px",                 |
                 :class             => 'chzn-select',                 |
                 :disabled          => column.options[:auto_fill],    |
                 "data-target"      => "#{column_name}_target_flag",  |
-                "data-remote-path" => select_tag_fetch_path(column), |
                 "data-text-attr"   => column.option_text_attribute,  |
                 "data-column"      => column.name                    |
               - if column.options[:depend_column].present?
@@ -83,10 +76,9 @@
       .submit
         %input.btn.success{:id => "#{@grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
         %input.btn{:id => "#{@grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
-      = hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(','))
 
   :javascript
-    $('.chzn-select:not([data-remote-path])').chosen();
+    $('.chzn-select').chosen({allow_single_deselect: true});
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

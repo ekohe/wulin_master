@@ -41,7 +41,7 @@ var batchUpdateByAjax = function(grid, version) {
         show: "blind",
         modal: true,
         create: function(event, ui) {
-          Ui.setupForm(name, true);
+          Ui.setupForm(grid, true);
 
           // Check the checkbox when update the file
           checkTheBox(name);
@@ -165,7 +165,7 @@ var grepValues = function(formData, jqForm, options) {
   var flagDom;
   for(var i = formData.length - 1; i >= 0; i--) {
     flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', scope);
-    if(flagDom.not(':checked').size() > 0 || formData[i].name === 'remote_paths') {
+    if(flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
   }

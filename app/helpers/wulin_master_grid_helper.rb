@@ -8,10 +8,6 @@ module WulinMasterGridHelper
     end
   end
   
-  def fetch_path(column)
-    column.choices.is_a?(String) ? column.choices : nil
-  end
-  
   def select_tag_options(column)
     choices = column.options[:choices]
     if choices.is_a?(Array)
@@ -22,10 +18,6 @@ module WulinMasterGridHelper
     else
       []
     end
-  end
-  
-  def select_tag_fetch_path(column)
-    column.options[:choices].is_a?(String) ? column.options[:choices] : nil 
   end
   
   def date_column?(column)
