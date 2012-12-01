@@ -97,9 +97,7 @@ module WulinMaster
     end
 
     def choices
-      return @options[:choices] if @options[:choices].present?
-      
-      @choices ||= if self.reflection
+      @options[:choices] ||= if self.reflection
         params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
         "/wulin_master/fetch_options?#{params_hash.to_param}"
       else
