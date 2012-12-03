@@ -34,26 +34,38 @@
 
 		function handleHeaderContextMenu(e, args)
 		{
-            e.preventDefault();
+      e.preventDefault();
 			$menu.empty();
 
-			var $li, $input;
+			var $li, $input, $allNoneInput;
+
+			// Append "All/None" checkbox
+			$li = $("<li />").appendTo($menu);
+			$allNoneInput = $("<input type='checkbox' id='all_none' checked='checked' />").appendTo($li);
+			$("<label for='all_none'>All/None</label>").appendTo($li);
+			$("<hr/>").appendTo($menu);
+
+			// Append columns checkbox
 			for (var i=0; i<columns.length; i++) {
 				$li = $("<li />").appendTo($menu);
 
 				$input = $("<input type='checkbox' />")
-                        .attr("id", "columnpicker_" + i)
-                        .data("id", columns[i].id)
-                        .appendTo($li);
+									.attr("id", "columnpicker_" + i)
+                  .data("id", columns[i].id)
+	                .appendTo($li);
 
-                if (grid.getColumnIndex(columns[i].id) != null)
-                    $input.attr("checked","checked");
+        if (grid.getColumnIndex(columns[i].id) != null) {
+          $input.attr("checked","checked");
+        } else {
+        	$allNoneInput.removeAttr("checked");
+        }
 
 				$("<label for='columnpicker_" + i + "' />")
 					.text(columns[i].name)
 					.appendTo($li);
 			}
 
+			// Addpend "Force Fit Columns" checkbox
 			$("<hr/>").appendTo($menu);
 			$li = $("<li />").appendTo($menu);
 			$input = $("<input type='checkbox' id='autoresize' />").appendTo($li);
@@ -61,6 +73,7 @@
 			if (grid.getOptions().forceFitColumns)
 				$input.attr("checked", "checked");
 
+			// Addpend "Synchronous Resizing" checkbox
 			$li = $("<li />").appendTo($menu);
 			$input = $("<input type='checkbox' id='syncresize' />").appendTo($li);
 			$("<label for='syncresize'>Synchronous Resizing</label>").appendTo($li);
@@ -90,6 +103,7 @@
 				}
 			});
 
+			// "Force Fit Columns" checkbox hanlder
 			if (e.target.id == 'autoresize') {
 				if (e.target.checked) {
 					grid.setOptions({forceFitColumns: true});
@@ -100,6 +114,7 @@
 				return;
 			}
 
+			// "Synchronous Resizing" checkbox hanlder
 			if (e.target.id == 'syncresize') {
 				if (e.target.checked) {
 					grid.setOptions({syncColumnCellResize: true});
@@ -109,6 +124,19 @@
 				return;
 			}
 
+			// "All/None" checkbox hanlder
+			if (e.target.id == 'all_none') {
+				if (e.target.checked) {
+					$menu.find(":checkbox[id^=columnpicker]").attr('checked', 'checked');
+					grid.setColumns(columns);
+				} else {
+					$menu.find(":checkbox[id^=columnpicker]").removeAttr('checked');
+					grid.setColumns([]);
+				}
+				return;
+			}
+
+			// Column checkbox handler
 			if ($(e.target).is(":checkbox")) {
 				if ($menu.find(":checkbox:checked").length == 0) {
 					$(e.target).attr("checked","checked");
@@ -117,10 +145,9 @@
 
         var visibleColumns = [];
         $menu.find(":checkbox[id^=columnpicker]").each(function(i,e) {
-            if ($(this).is(":checked")) {
-
-                visibleColumns.push(columns[i]);
-            }
+          if ($(this).is(":checked")) {
+            visibleColumns.push(columns[i]);
+          }
         });
         grid.setColumns(visibleColumns);
 			}
