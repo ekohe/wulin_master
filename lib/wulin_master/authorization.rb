@@ -25,12 +25,10 @@ module WulinMaster
         format.html { render :text => "Unauthorized", :status => 401}
         format.json { render :json => {:status => :unauthorized}, :status => 401 }
       end
-      false
     end
 
     def authorized
       Rails.logger.info "Authorized #{params[:action].inspect} request to screen #{screen.class}"
-      true
     end
   end
 end
