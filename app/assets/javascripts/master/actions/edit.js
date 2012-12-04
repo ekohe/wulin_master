@@ -13,15 +13,18 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
 });
 
 
-var batchUpdateByAjax = function(grid) {
-  var ids, name, width, height, selectedIndexes;
+var batchUpdateByAjax = function(grid, version) {
+  var ids, name, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
   name = grid.name;
   if (!selectedIndexes || selectedIndexes.length == 0) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
-    $.get(grid.path + '/wulin_master_edit_form' + grid.query, function(data){
+    url = grid.path + '/wulin_master_edit_form' + grid.query;
+    if (version) 
+      url = url + "&update_version=" + version;
+    $.get(url, function(data){
       $('body').append(data);
       scope = $( '#' + name + '_form');
       
@@ -32,14 +35,13 @@ var batchUpdateByAjax = function(grid) {
         width = 600;
         height = (scope.outerHeight() + 40);
       }
-      
       scope.dialog({
         height: height,
         width: width,
         show: "blind",
         modal: true,
         create: function(event, ui) {
-          Ui.setupForm(name, true);
+          Ui.setupForm(grid, true);
 
           // Check the checkbox when update the file
           checkTheBox(name);
@@ -163,7 +165,7 @@ var grepValues = function(formData, jqForm, options) {
   var flagDom;
   for(var i = formData.length - 1; i >= 0; i--) {
     flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', scope);
-    if(flagDom.not(':checked').size() > 0 || formData[i].name === 'remote_paths') {
+    if(flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
   }

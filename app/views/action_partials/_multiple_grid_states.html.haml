@@ -1,7 +1,7 @@
 - WulinMaster::GridState.create_default(@current_user.id, grid.name)
 
 .grid_states_switcher
-  =label_tag "grid_states", "Configuration:"
+  =label_tag "grid_states", "Custom Views:"
   =select_tag "grid_states", options_for_select(grid_states_options(@current_user.id, grid.name))
   %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
 

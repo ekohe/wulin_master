@@ -7,6 +7,7 @@ require File.join(File.dirname(__FILE__), 'grid_actions')
 require File.join(File.dirname(__FILE__), 'grid_behaviors')
 require File.join(File.dirname(__FILE__), 'grid_relation')
 require File.join(File.dirname(__FILE__), 'grid_states')
+require File.join(File.dirname(__FILE__), 'grid_dynamic_edit_form')
 
 module WulinMaster
   class Grid < Component
@@ -16,6 +17,7 @@ module WulinMaster
     include GridBehaviors
     include GridRelation
     include GridStates
+    include GridDynamicEditForm
     
     cattr_accessor :grids
     class_attribute :_model, :_path, :titles_pool
@@ -194,8 +196,8 @@ module WulinMaster
       end
     end
 
-    def javascript_column_model
-      @javascript_column_model = self.columns.collect {|column| column.to_column_model(params[:screen])}.to_json
+    def javascript_column_model(screen_in_params)
+      @javascript_column_model = self.columns.collect {|column| column.to_column_model(screen_in_params)}.to_json
     end
     
     def toolbar_items

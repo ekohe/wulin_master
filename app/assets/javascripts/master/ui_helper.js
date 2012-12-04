@@ -53,7 +53,7 @@ var Ui = {
     $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
       newFormDom = $(data);
       $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
-      setTimeout(function(){ Ui.setupForm(name, false); }, 350)
+      setTimeout(function(){ Ui.setupForm(grid, false); }, 350)
     });
   },
 
@@ -87,7 +87,7 @@ var Ui = {
         show: "blind",
         modal: true,
         create: function(event, ui) {
-          Ui.setupForm(name, false);
+          Ui.setupForm(grid, false);
           if ($.isFunction(callback)) callback();
   			},
         close: function(event, ui) {
@@ -98,67 +98,69 @@ var Ui = {
     });
   },
 
-  setupForm: function(name, monitor) {
-    var  remotePath;
-    $('#' + name + '_form .chzn-select:not([data-remote-path])').chosen();
-    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('#' + name + '_form input[data-datetime]').datetimepicker({
-      onlyTime: false,
-      dateFormat: "yy-mm-dd",
-      timeFormat: 'hh:mm',
-      timeOnly: false,
-      stepMinute: 1,
-      minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true },
-      onClose: function() { calendarOpen = false }
+  setupForm: function(grid, monitor) {
+    var hasRemotePath = false;
+    var remotePath = [];
+    var path;
+    var name = grid.name;
+    var columns = grid.getColumns();
+    $.each(columns, function(i, n) {
+      if (n['choices'] && typeof(n['choices']) == 'string') {
+        remotePath.push([[n.field], n['choices']]);
+        hasRemotePath = true;
+      }
     });
-    $('#' + name + '_form input[data-time]').timepicker({});
-    
-    if ($('#' + name + '_form #remote_paths').val()) {
-      // Fetch options of select box by ajax 
-      remotePath = $('#' + name + '_form #remote_paths').val().split(',');
+
+    // Fetch select options from remote
+    if (hasRemotePath) {
       window._jsonData = window._jsonData || {};
-      $.each(remotePath, function(i,path){
-        if ($.isEmptyObject(path)) return
+
+      $.each(remotePath, function(i, n) {
+        var field = n[0];
+        var path = n[1];
+        if (!path) return;
       
-        var first_input, target = $("select[data-remote-path='" + path + "']"),
-        textAttr = target.attr('data-text-attr');
-        // target.empty();
+        var first_input;
+        var target = $("select[data-column='" + field + "']");
+        var textAttr = target.attr('data-text-attr');
+
         $('option[value!=""]', target).remove();
-        if ($.isEmptyObject(window._jsonData[path])) {
+        if (!window._jsonData[path]) {
           $.getJSON(path, function(itemdata){
             window._jsonData[path] = itemdata;
             $.each(itemdata, function(index, value) {
               target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
             });
-            Ui.setupChosen(path, monitor);
+            Ui.setupChosen(target, monitor);
           });
         } else {
           $.each(window._jsonData[path], function(index, value) {
             target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
           });
-          Ui.setupChosen(path, monitor);
+          Ui.setupChosen(target, monitor);
         }
       });
     }
     
     first_input = $( '#' + name + '_form input:text' ).first();
-    if ($.isEmptyObject(first_input.attr('data-date'))) {
+    if (first_input.attr('data-date')) {
       first_input.focus();
     }
   },
   
-  setupChosen: function(path, monitor) {
+  setupChosen: function(dom, monitor) {
     setTimeout(function(){
-      var afterSetupChosen = $("select[data-remote-path='" + path + "']").data('afterSetupChosen');
+      var afterSetupChosen = dom.data('afterSetupChosen');
       if (monitor) {
-        $("select[data-remote-path='" + path + "']").chosen({allow_single_deselect: true}).change(function(){
+        dom.chosen().change(function(){
           $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
         });
       } else {
-        $("select[data-remote-path='" + path + "']").chosen({allow_single_deselect: true});
+        dom.chosen({allow_single_deselect: true});
       }
       
+      dom.trigger("liszt:updated");
+
       if( afterSetupChosen ) {
         afterSetupChosen();
       }

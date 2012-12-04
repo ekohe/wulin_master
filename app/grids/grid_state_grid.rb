@@ -3,7 +3,9 @@ class GridStateGrid < WulinMaster::Grid
 
   path '/wulin_master/grid_states'
 
-  column :email, through: :user, label: 'User'
+  cell_editable false
+
+  column :email, label: 'User'
   column :grid_name
   column :name
 

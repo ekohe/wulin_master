@@ -37,7 +37,7 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
-      h = {:id => full_name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
+      h = {:id => full_name, :column_name => self.name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -97,9 +97,7 @@ module WulinMaster
     end
 
     def choices
-      return @options[:choices] if @options[:choices].present?
-      
-      @choices ||= if self.reflection
+      @options[:choices] ||= if self.reflection
         params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
         "/wulin_master/fetch_options?#{params_hash.to_param}"
       else

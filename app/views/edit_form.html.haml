@@ -1,10 +1,14 @@
-- if @grid.action_names.include?('edit')
+- if @grid.action_names.include?('edit') or @grid.action_names.include?('dynamic_edit')
   :ruby
     model_name = @grid.model.name.underscore
     columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+    
+    if params[:update_version].present? and (version_columns = @grid.find_columns_by_version(params[:update_version])).present?
+      columns.select!{|x| version_columns.include?(x.name)}
+    end
+
     datepicker_str = ''
     object = @grid.model.new
-    remote_paths = []
   .create_form{:id => "#{@grid.name}_form", :title => "Update #{model_name.titleize}"}
     = form_for object, :url => @grid.path do |form|
       - columns.each do |column|
@@ -17,7 +21,6 @@
             %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
 
             - if column.sql_type.to_s == 'belongs_to'
-              - remote_paths << fetch_path(column)
               = form.select column_name,                            |
                 select_options(column),                             |
                 { include_blank: true },                            |
@@ -25,13 +28,11 @@
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
                 :disabled          => column.options[:auto_fill],   |
-                "data-remote-path" => fetch_path(column),           |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"       => column.name                  |
 
             - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
-              - remote_paths << fetch_path(column)
               = form.select column.reflection.name.to_s,            |
                 select_options(column),                             |
                 { include_blank: true },                            |
@@ -39,21 +40,18 @@
                 :multiple          => true,                         |
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
-                "data-remote-path" => fetch_path(column),           |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
 
             - elsif column.options[:choices].present?
-              - remote_paths << select_tag_fetch_path(column)
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
                 :class             => 'chzn-select',                 |
                 :style             => "width:250px",                 |
                 :disabled          => column.options[:auto_fill],    |
                 "data-target"      => "#{column_name}_target_flag",  |
-                "data-remote-path" => select_tag_fetch_path(column), |
                 "data-text-attr"   => column.option_text_attribute,  |
                 "data-column"      => column.name                    |
               - if column.options[:depend_column].present?
@@ -83,12 +81,9 @@
             .field_error
       .submit
         %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
-      = hidden_field_tag 'remote_paths', j(remote_paths.uniq.compact.join(','))
 
   :javascript
-    $('.chzn-select:not([data-remote-path])').chosen().change(function(){
-      $('.target_flag[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
-    });
+    $('.chzn-select').chosen({allow_single_deselect: true});
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

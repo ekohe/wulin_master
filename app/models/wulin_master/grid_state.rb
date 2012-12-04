@@ -52,6 +52,10 @@ module WulinMaster
       User.all.find {|u| u.id == user_id}
     end
 
+    def email
+      user.try(:email)
+    end
+
   end
 end
 
