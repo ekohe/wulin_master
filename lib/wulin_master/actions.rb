@@ -57,12 +57,6 @@ module WulinMaster
 
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
-          
-          # Apply virtual attribute order
-          apply_virtual_order
-          
-          # Apply virtual attribute filter
-          apply_virtual_filter
 
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
@@ -147,59 +141,6 @@ module WulinMaster
 
     protected
     
-    def apply_virtual_filter
-      if (filters = grid.virtual_filter_columns).present?
-        filters.each do |filterer|
-          @objects.select! do |x|
-            re_table, re_column = filterer[0].split(".")
-            
-            if x.respond_to?(re_table.to_sym)
-              value = x.send(re_table)
-              if re_column
-                value = x.send(re_table).try(re_column)
-              end
-            
-              if filterer[2] == "equals"
-                value.to_s =~ /^#{Regexp.escape(filterer[1])}/i
-              elsif filterer[2] == "not_equals"
-                value.to_s !~ /^#{Regexp.escape(filterer[1])}/i
-              else
-                true
-              end
-            else
-              true
-            end
-            
-          end
-        end
-      end
-    end
-    
-    def apply_virtual_order
-      if (sorter = grid.virtual_sort_column).present?
-        @objects.sort! do |x, y|
-          re_table, re_column = sorter[0].split(".")
-          if x.respond_to?(re_table.to_sym) and y.respond_to?(re_table.to_sym)
-            x_value, y_value = x.send(re_table), y.send(re_table)
-            if re_column
-              x_value, y_value = x.send(re_table).try(re_column), y.send(re_table).try(re_column)
-            end
-
-            x_value = format_boolean_to_number(x_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
-            y_value = format_boolean_to_number(y_value) if y_value.is_a?(TrueClass) or y_value.is_a?(FalseClass)
-            x_value = x_value.to_s if x_value.blank?
-            y_value = y_value.to_s if y_value.blank?
-
-            if sorter[1] == 'ASC'
-              x_value <=> y_value
-            elsif sorter[1] == 'DESC'
-              y_value <=> x_value
-            end
-          end
-        end
-      end
-    end
-
     def construct_filters
       return unless params[:filters]
       params[:filters].each do |f|
