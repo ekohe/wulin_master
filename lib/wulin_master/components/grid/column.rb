@@ -33,6 +33,8 @@ module WulinMaster
     end
 
     def to_column_model(screen_name)
+      p '########################'
+      p screen_name
       @options[:screen] = screen_name
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
@@ -97,11 +99,15 @@ module WulinMaster
     end
 
     def choices
-      @options[:choices] ||= if self.reflection
-        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
-        "/wulin_master/fetch_options?#{params_hash.to_param}"
-      else
-        []
+      p '!!!!!!!!!!!!!!!!!!!!!!!'
+      p @options[:screen]
+      @options[:choices] ||= begin
+        if self.reflection
+          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
+          "/wulin_master/fetch_options?#{params_hash.to_param}"
+        else
+          []
+        end
       end
     end
 
