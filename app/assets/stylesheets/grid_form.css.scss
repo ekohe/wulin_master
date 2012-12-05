@@ -35,3 +35,16 @@
     }
   }
 }
+
+.input_clean_up {
+  display: inline-block;
+  vertical-align: middle;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+  background: image-url('chosen-sprite.png') right top no-repeat;
+
+  &:hover {
+    background-position: right -11px;
+  }
+}

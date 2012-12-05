@@ -72,4 +72,8 @@ module WulinMasterGridHelper
     end
   end
 
+  def clean_up_tag(column)
+    content_tag(:abbr, nil, class: 'input_clean_up', id: column.name)
+  end
+
 end
