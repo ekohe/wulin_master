@@ -15,7 +15,7 @@ objectName = ->
     return editRegExp.exec(formId)[1]
 
 submitButton = ->
-  $('#submit input', form)
+  $('#submit input:submit', form)
 
 disableForm = ->
   $('input', form).attr('disabled', 'disabled').css('opacity', 0.5)
@@ -25,7 +25,7 @@ disableForm = ->
 enableForm = ->
   $("input", form).removeAttr('disabled').css('opacity', 1.0)
   # Restore saved submit button text value
-  $('#submit input', form).val(submitButton().data('originalValue'))
+  $('#submit input:submit', form).val(submitButton().data('originalValue'))
   $("input:first", form).focus()
 
 formSubmitted = ->
