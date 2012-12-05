@@ -1244,6 +1244,7 @@ if (typeof Slick === "undefined") {
 
             updateRowCount();
             render();
+            trigger(self.onCanvasResized, {});
         }
 
         function resizeAndRender() {
@@ -2606,7 +2607,8 @@ if (typeof Slick === "undefined") {
             "onDrag":                       new Slick.Event(),
             "onDragEnd":                    new Slick.Event(),
             "onSelectedRowsChanged":        new Slick.Event(),
-            "onRendered":                   new Slick.Event(), 
+            "onRendered":                   new Slick.Event(),
+            "onCanvasResized":              new Slick.Event(),
 
             // Methods
             "registerPlugin":               registerPlugin,
