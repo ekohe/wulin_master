@@ -44,7 +44,7 @@
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
-              = clean_up_tag(column)
+              = clean_up_tag(column_name)
 
             - elsif column.options[:choices].present?
               = select_tag "#{model_name}[#{column_name}]",          |
@@ -72,7 +72,7 @@
                   });
             - elsif column.options[:file]
               = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
-              = clean_up_tag(column)
+              = clean_up_tag(column_name)
             - elsif column.options[:password]
               = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
             - else
@@ -80,7 +80,7 @@
                 = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name
               - else
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
-              = clean_up_tag(column)
+              = clean_up_tag(column_name)
             .field_error
       .submit
         %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
@@ -102,7 +102,9 @@
 
     $(function(){
       $('.input_clean_up').off('click').on('click', function(){
-        var $input = $('[data-column="' + $(this).attr('id') + '"]');
+        var $input = $('[data-target="' + $(this).data('target') + '"]').not('.target_flag');
+        var $flagInput = $('[data-target="' + $(this).data('target') + '"].target_flag');
+        $flagInput.attr('checked', 'checked');
         $input.val('');
         if ($input.is('select')) $input.trigger("liszt:updated");
         if ($input.is(':checkbox')) $input.removeAttr('checked');

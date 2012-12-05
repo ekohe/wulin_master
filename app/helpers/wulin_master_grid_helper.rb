@@ -72,8 +72,8 @@ module WulinMasterGridHelper
     end
   end
 
-  def clean_up_tag(column)
-    content_tag(:abbr, nil, class: 'input_clean_up', id: column.name)
+  def clean_up_tag(column_name)
+    content_tag(:abbr, nil, class: 'input_clean_up', data: {target: "#{column_name}_target_flag"})
   end
 
 end
