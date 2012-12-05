@@ -1,0 +1,30 @@
+#notificationContainer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -250px;
+  width: 500px;
+  z-index: 1002;
+  .notification {
+    margin-bottom: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px;
+    background: #ffe78f;
+    background: -moz-linear-gradient(bottom, #fff3c4, #ffe78f);
+    background: -ms-linear-gradient(bottom, #fff3c4, #ffe78f);
+    background: -o-linear-gradient(bottom, #fff3c4, #ffe78f);
+    background: -webkit-linear-gradient(bottom, #fff3c4, #ffe78f);
+    background: linear-gradient(bottom, #fff3c4, #ffe78f);
+    -moz-box-shadow: 1px 2px 5px black;
+    -webkit-box-shadow: 1px 2px 5px black;
+    box-shadow: 1px 2px 5px black;
+    font-size: 16px;
+    text-align: center;
+    color: #7f5401;
+    text-shadow: white 0px 1px 1px;
+    -webkit-font-smoothing: antialiased;
+    cursor: pointer;
+  }
+}

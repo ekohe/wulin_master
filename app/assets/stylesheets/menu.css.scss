@@ -1,0 +1,186 @@
+@import "base";
+
+$menu_width: 199px;
+
+#navigation {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  bottom: 0;
+  width: $menu_width;
+  background-color: $menu_background_color;
+  //:padding-left               8px
+  font-size: 1.2em;
+  border-right: 1px solid #a5a5a5;
+  line-height: 1.7em;
+  h1 {
+    font-size: 1.3em;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: $margin * 2;
+    margin-left: $margin;
+    padding-top: $margin;
+    a {
+      color: $app_title_color;
+      @include text-shadow(white, 1px, 1px, 0);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+  h2 {
+    font-size: 1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-left: $margin;
+    color: $app_title_color;
+    @include text-shadow(white, 1px, 1px, 0);
+  }
+  #nav_toggle {
+    position: absolute;
+    top: 12px;
+    right: -12px;
+    width: 12px;
+    height: 30px;
+    z-index: 1020;
+    cursor: pointer;
+    background: image-url("side_toggle.png") no-repeat 0px -35px;
+    &.open {
+      background-position: 0px 0px;
+      right: -1px;
+    }
+    &.transparent {
+      opacity: 0;
+    }
+  }
+  #menu {
+    position: absolute;
+    overflow-y: auto;
+    // :top 42px
+    right: 0;
+    left: 10px;
+    bottom: 32px;
+    // :bottom 190px
+    ul {
+      margin-top: 2px;
+      margin-bottom: $margin;
+      margin-left: 0;
+      padding-left: 0;
+      list-style: none;
+      li {
+        position: relative;
+        &.submenu {}
+        font-weight: bold;
+        margin-bottom: 2px;
+        a {
+          .indicator {
+            position: absolute;
+            left: -5px;
+            width: 12px;
+            height: 12px;
+            background: image-url("icon_sprite.png") no-repeat scroll 0px -80px;
+            &.closed {
+              background: image-url("icon_sprite.png") no-repeat scroll -16px -80px;
+              top: 1px;
+            }
+          }
+          color: $menu_header_color;
+          text-decoration: none;
+          @include text-shadow(white, 1px, 1px, 0);
+          text-transform: uppercase;
+          padding-left: $margin;
+        }
+        .item {
+          padding-left: 9px;
+          margin-left: -10px;
+          a {
+            text-transform: none;
+            color: $menu_text_color;
+            font-weight: normal;
+          }
+        }
+        .item.active {
+          background-color: $menu_item_active_background;
+          a {
+            color: $menu_item_active_text;
+            @include text-shadow(black, 1px, 1px, 0);
+          }
+        }
+      }
+    }
+  }
+  #user_nav {
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid #c5c5c5;
+    background-color: #eff3f8;
+    height: 30px;
+    line-height: 30px;
+    width: $menu_width;
+    #user_email {
+      margin: 0 5px;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      color: #336699;
+      .logout-btn {
+        line-height: 0;
+        vertical-align: middle;
+        text-decoration: none;
+      }
+    }
+    #user_action {
+      margin: 0 5px;
+      a {
+        &.action {
+          padding: 4px 5px;
+          text-decoration: none;
+          font-size: 12px;
+        }
+        &.left {
+          margin-right: 7px;
+        }
+      }
+    }
+  }
+  #activity {
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid #c5c5c5;
+    background-color: #ededed;
+    width: $menu_width;
+    h2 {
+      margin-bottom: 0;
+    }
+    #indicators {
+      .loading_indicator {
+        margin-left: 10px;
+        width: 180px;
+        color: #717167;
+        font-size: 11px;
+        .loading_text {
+          margin-top: 5px;
+          margin-left: 6px;
+          //:text-transform uppercase
+          //:font-weight bold
+       
+        }
+        .loading_bar {
+          margin-top: 0px;
+          height: 16px;
+          background: image-url("ui/load_indicator_bar_small.gif") no-repeat;
+          // :margin-left      auto
+          // :margin-right     auto
+       
+        }
+        .loading_stats {
+          font-size: 9px;
+          // :text-align center
+          // :margin-top -3px
+          margin-left: 6px;
+        }
+      }
+    }
+  }
+}

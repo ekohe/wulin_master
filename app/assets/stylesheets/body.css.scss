@@ -1,0 +1,85 @@
+@import "base";
+
+$grid_width: 800px;
+$margin: 10px;
+
+body {
+  background: $background_color;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 62.5%;
+  margin: 0;
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555555;
+  display: block;
+  padding-left: $margin;
+  @include text-shadow(#efefef 1px 1px 0);
+}
+
+.grid_container {
+  float: left;
+  width: 100%;
+  .grid-header {
+    position: relative;
+    height: 59px;
+    background: image-url("ui/top_bar_bg.png");
+    h2 {
+      padding-top: $margin;
+      padding-left: $margin;
+      font-size: 16px;
+      font-weight: bold;
+      color: #555555;
+      float: left;
+      @include text-shadow(#efefef 1px 1px 0);
+    }
+  }
+  .pager {
+    height: 27px;
+  }
+  // .grid-header, .grid, .pager
+  //   border-right: 1px solid #A5A5A5
+}
+
+#content {
+  position: absolute;
+  top: 0px;
+  left: 200px;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+  background: $background_color image-url("ui/content_background.png") repeat-x top left;
+}
+
+#screen_content {
+  text-align: left;
+  height: 100%;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+}
+
+h2 {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.grid-header {
+  h2 {
+    margin-top: 10px;
+  }
+}
+
+form {
+  .field_error {
+    color: red;
+    font-size: 11px;
+    display: inline-block;
+    margin-left: 5px;
+    max-width: 85px;
+  }
+}

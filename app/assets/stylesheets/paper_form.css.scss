@@ -1,0 +1,70 @@
+@import "base";
+
+$paper_form_width: 500px;
+$paper_form_height: 300px;
+$paper_form_background_color: #f8f8f8;
+$paper_form_content_padding: 15px;
+$paper_form_shadow_color: #333333;
+
+$paper_form_title_color: black;
+
+.paper_form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -$paper_form_width / 2;
+  margin-top: -$paper_form_height / 2;
+  width: $paper_form_width;
+  background: $paper_form_background_color;
+  @include box-shadow($paper_form_shadow_color, 1px, 1px, 2px, 0px, false);
+  h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: $margin;
+    margin-top: $paper_form_content_padding;
+    margin-left: $paper_form_content_padding;
+    color: $paper_form_title_color;
+    @include text-shadow(white, 1px, 1px, 0);
+  }
+  #submit {
+    margin-top: $margin;
+    text-align: center;
+  }
+  #loading_indicator {
+    text-align: center;
+    margin-top: $margin;
+    .bar {
+      margin-left: auto;
+      margin-right: auto;
+      width: 220px;
+      height: 19px;
+      background: image-url("ui/load_indicator_bar.gif");
+    }
+  }
+}
+
+.paper_form_content {
+  margin: $paper_form_content_padding;
+  background: image-url("ui/textgrid.png") repeat 50px 0px;
+  label {
+    font-size: 1.4em;
+    @include text-shadow(white, 1px, 1px, 0);
+    width: 100px;
+    display: block;
+    float: left;
+  }
+  select {
+    font-size: 1.4em;
+    width: 200px;
+  }
+  .field_error {
+    color: red;
+    font-size: 11px;
+    display: inline-block;
+    margin-left: 5px;
+    max-width: 85px;
+  }
+  p {
+    font-size: 1.2em;
+  }
+}

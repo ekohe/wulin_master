@@ -1,0 +1,138 @@
+@import "base";
+
+$toolbar_button_width: 60px;
+$toolbar_button_height: 50px;
+
+.grid-header {
+  .toolbar-wrapper {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    padding-top: 5px;
+    margin: 0;
+    overflow: hidden;
+    .toolbar {
+      float: right;
+      position: relative;
+      ul {
+        margin: 0;
+        padding: 0;
+        float: right;
+        li.toolbar_item {
+          float: left;
+          padding-left: 5px;
+          text-align: center;
+          list-style: none;
+          a {
+            position: relative;
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+            width: $toolbar_button_width;
+            height: $toolbar_button_height;
+            text-align: center;
+            color: black;
+            font-size: 12px;
+            @include text-shadow(white, 0px, 1px, 0);
+            span {
+              display: block;
+              float: none;
+              position: absolute;
+              bottom: 0px;
+              left: 0px;
+              right: 0px;
+              height: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+  span.tb_prev, span.tb_next {
+    position: absolute;
+    cursor: default;
+    top: 20px;
+    width: 16px;
+    height: 16px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  span.tb_prev {
+    background: image-url("ui/prev_icon.png") no-repeat top center;
+    float: left;
+  }
+  span.tb_next {
+    background: image-url("ui/next_icon.png") no-repeat top center;
+    right: 5px;
+  }
+}
+
+.toolbar_icon_filter {
+  background: image-url("ui/search_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_refresh {
+  background: image-url("ui/refresh_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_delete_x {
+  background: image-url("ui/delete_icon_x.png") no-repeat top center;
+}
+
+.toolbar_icon_delete {
+  background: image-url("ui/delete_icon_trash.png") no-repeat top center;
+}
+
+.toolbar_icon_add {
+  background: image-url("ui/create_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_edit {
+  background: image-url("ui/batch_update.png") no-repeat top center;
+}
+
+.toolbar_icon_toggle {
+  background: image-url("ui/toggle_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_sync {
+  background: image-url("ui/sync_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_remove {
+  background: image-url("ui/remove_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_disabled {
+  @include opacity(0.4);
+  cursor: default !important;
+}
+
+.toolbar_icon_link {
+  background: image-url("ui/link_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_unlink {
+  background: image-url("ui/unlink_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_wizard {
+  background: image-url("ui/wizard_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_allocation {
+  background: image-url("ui/allocation_icon.png") no-repeat top center;
+}
+
+.toolbar_icon_all {
+  background: image-url("ui/all_icon.png") no-repeat top center;
+}
+
+.add_detail_action {
+  min-width: 75px;
+}
+
+.configure_icon_s {
+  background: image-url("ui/configure_icon_s.png") no-repeat top center;
+}
