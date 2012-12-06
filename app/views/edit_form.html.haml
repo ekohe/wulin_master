@@ -87,7 +87,10 @@
         %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
 
   :javascript
-    $('.chzn-select').chosen({allow_single_deselect: true});
+    $('.chzn-select').chosen({allow_single_deselect: true}).change(function(){
+      var flag = $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+      if (flag.size() > 0) flag.attr('checked', 'checked');
+    });
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

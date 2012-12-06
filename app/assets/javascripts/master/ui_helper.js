@@ -123,21 +123,22 @@ var Ui = {
         var first_input;
         var target = $("select[data-column='" + field + "']");
         var textAttr = target.attr('data-text-attr');
-
-        $('option[value!=""]', target).remove();
-        if (!window._jsonData[path]) {
-          $.getJSON(path, function(itemdata){
-            window._jsonData[path] = itemdata;
-            $.each(itemdata, function(index, value) {
+        if (target.size() == 1) {
+          $('option[value!=""]', target).remove();
+          if (!window._jsonData[path]) {
+            $.getJSON(path, function(itemdata){
+              window._jsonData[path] = itemdata;
+              $.each(itemdata, function(index, value) {
+                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+              });
+              Ui.setupChosen(target, monitor);
+            });
+          } else {
+            $.each(window._jsonData[path], function(index, value) {
               target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
             });
             Ui.setupChosen(target, monitor);
-          });
-        } else {
-          $.each(window._jsonData[path], function(index, value) {
-            target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
-          });
-          Ui.setupChosen(target, monitor);
+          }
         }
       });
     }
@@ -151,13 +152,14 @@ var Ui = {
   setupChosen: function(dom, monitor) {
     setTimeout(function(){
       var afterSetupChosen = dom.data('afterSetupChosen');
-      if (monitor) {
-        dom.chosen().change(function(){
-          $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]').attr('checked', 'checked');
-        });
-      } else {
-        dom.chosen({allow_single_deselect: true});
-      }
+      // if (monitor) {
+      //   dom.chosen().change(function(){
+      //     var flag = $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+      //     if (flag.size() > 0) flag.attr('checked', 'checked');
+      //   });
+      // } else {
+      //   dom.chosen({allow_single_deselect: true});
+      // }
       
       dom.trigger("liszt:updated");
 
