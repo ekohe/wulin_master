@@ -3,6 +3,8 @@ module WulinMasterGridHelper
     if column.choices.is_a?(Array)
       # column.choices.map{|o| {:id => o, :name => o}}
       column.choices.map{|o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
+    elsif column.choices.is_a?(Proc)
+      column.choices.call
     else
       []
     end
@@ -11,8 +13,9 @@ module WulinMasterGridHelper
   def select_tag_options(column)
     choices = column.options[:choices]
     if choices.is_a?(Array)
-      choices.map!{|o| o.is_a?(Hash) ? o : {:id => o, :name => o} }
-      choices.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
+      array_to_options(choices)
+    elsif choices.is_a?(Proc)
+      array_to_options(choices.call)
     elsif choices.is_a?(Hash) # TODO: support hash options
       choices.map{|k,v| v.inject("<option value=''></option>"){|str, e| str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"}}.inject(""){|options, x| options << x}.html_safe
     else
@@ -74,6 +77,11 @@ module WulinMasterGridHelper
 
   def clean_up_tag(column_name)
     content_tag(:abbr, nil, class: 'input_clean_up', data: {target: "#{column_name}_target_flag"})
+  end
+
+  def array_to_options(arr)
+    arr.map!{|o| o.is_a?(Hash) ? o : {:id => o, :name => o} }
+    arr.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
   end
 
 end
