@@ -36,6 +36,7 @@ module WulinMaster
       p '########################'
       p screen_name
       @options[:screen] = screen_name
+      @options[:choices] = @options[:choices].call if @options[:choices].is_a?(Proc)
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
