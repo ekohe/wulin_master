@@ -33,7 +33,7 @@ module WulinMaster
         args.each do |group_key|
           options.merge!(data: {version: group_key}) # Add version to the toolbar
           self.action(group_key, options)
-          self.edit_column_group[group_key] ||= []
+          self.edit_column_group[group_key] = []
           yield self.edit_column_group[group_key]
         end
         
