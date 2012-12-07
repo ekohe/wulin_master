@@ -109,7 +109,7 @@ and other tools to make grids easy to build, it also provides flexible configura
       ...
 
       # Define dynamic edit form
-      edit_form :version1, :version2 do |form|
+      edit_form :version1 do |form|
         form << :name
       end
       
@@ -119,12 +119,12 @@ and other tools to make grids easy to build, it also provides flexible configura
 
       # It will define two edit form: version1, version2
       # form version1 has column [:name],
-      # form version2 has column [:name, :code],
+      # form version2 has column [:code],
       #
       # meanwhile two toolbars was defined: version1, version2.
       # the options <code>class: 'version2_toolbar', icon: 'add'</code> is same as +action+ method arguments.
       # click toolbar *version1* will popup form version1 inlucde column [:name]
-      # click toolbar *version2* will popup form version1 inlucde column [:name, :code]
+      # click toolbar *version2* will popup form version1 inlucde column [:code]
 
     end
    
@@ -432,7 +432,7 @@ Sometimes you need update different columns in different update popup. You can d
 
 Here we provide a simple way to do this fine:
 
-    edit_form :version1, :version2 do |form|
+    edit_form :version1 do |form|
       form << :name
     end
     
@@ -440,7 +440,7 @@ Here we provide a simple way to do this fine:
       form << :code
     end
     
-It will define two edit form: version1, version2. form version1 has column [:name], form version2 has column [:name, :code],
+It will define two edit form: version1, version2. form version1 has column [:name], form version2 has column [:code],
 
 meanwhile two toolbars was defined: version1, version2.
 
@@ -448,7 +448,7 @@ the options <code>class: 'version2_toolbar', icon: 'add'</code> is same as +acti
 
 click toolbar *version1* will popup form version1 inlucde column [:name]
 
-click toolbar *version2* will popup form version1 inlucde column [:name, :code]
+click toolbar *version2* will popup form version1 inlucde column [:code]
 
 
 #### Configuration for different screens
