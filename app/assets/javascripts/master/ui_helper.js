@@ -103,6 +103,7 @@ var Ui = {
     var remotePath = [];
     var path;
     var name = grid.name;
+    var scope = $('#' + name + '_form');
     var columns = grid.getColumns();
     $.each(columns, function(i, n) {
       if (n['choices'] && typeof(n['choices']) == 'string') {
@@ -121,7 +122,7 @@ var Ui = {
         if (!path) return;
       
         var first_input;
-        var target = $("select[data-column='" + field + "']");
+        var target = $("select[data-column='" + field + "']", scope);
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
@@ -143,7 +144,7 @@ var Ui = {
       });
     }
     
-    first_input = $( '#' + name + '_form input:text' ).first();
+    first_input = $( '#' + name + '_form input:text', scope).first();
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
@@ -160,8 +161,12 @@ var Ui = {
       // } else {
       //   dom.chosen({allow_single_deselect: true});
       // }
-      
-      dom.trigger("liszt:updated");
+      if (dom.hasClass("chzn-done")) {
+        dom.trigger("liszt:updated");
+      } else {
+        //console.log(dom);
+        dom.chosen({allow_single_deselect: true});
+      }
 
       if( afterSetupChosen ) {
         afterSetupChosen();

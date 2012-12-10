@@ -112,18 +112,23 @@ var loadValue = function(scope, data) {
       } else if ($.type(data[i]) === 'object') {
         if ($.type(data[i]['id']) === 'array') {
           $.each(data[i]['id'],function(_i, _v){
-            $('select[data-column="' + i + '"] option[value=' + _v + ']').attr('selected', 'selected');
+            $('option[value=' + _v + ']', inputBox).attr('selected', 'selected');
           })
         } else {
-          $('select[data-column="' + i + '"] option[value=' + data[i]['id'] + ']').attr('selected', 'selected');
+          $('option[value=' + data[i]['id'] + ']', inputBox).attr('selected', 'selected');
         }
       } else if ($.type(data[i]) === 'array') {
         $.each(data[i], function(index, n) {
-          $('select[data-column="' + i + '"] option[value=' + data[i][index]['id'] + ']').attr('selected', 'selected');
+          $('option[value=' + data[i][index]['id'] + ']', inputBox).attr('selected', 'selected');
         })
       }
       
-      inputBox.trigger("liszt:updated");
+      //inputBox.trigger("liszt:updated");
+      if (inputBox.hasClass("chzn-done")) {
+        inputBox.trigger("liszt:updated");
+      } else {
+        inputBox.chosen({allow_single_deselect: true});
+      }
     }
   }
 };

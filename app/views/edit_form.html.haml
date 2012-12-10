@@ -87,12 +87,13 @@
         %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
 
   :javascript
-    $('.chzn-select').chosen({allow_single_deselect: true}).change(function(){
-      var flag = $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
-      if (flag.size() > 0) flag.attr('checked', 'checked');
-    });
-    $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('input[data-datetime]').datetimepicker({
+    // $('##{@grid.name}_form .chzn-select').chosen({allow_single_deselect: true}).change(function(){
+    //   var flag = $('##{@grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+    //   if (flag.size() > 0) flag.attr('checked', 'checked');
+    // });
+
+    $('##{@grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('##{@grid.name}_form input[data-datetime]').datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
       timeFormat: 'hh:mm',
@@ -102,18 +103,18 @@
       beforeShow: function() { calendarOpen = true },
       onClose: function() { calendarOpen = false }
     });
-    $('input[data-time]').timepicker({});
+    $('##{@grid.name}_form input[data-time]').timepicker({});
 
     $(function(){
-      $('.input_clean_up').off('click').on('click', function(){
-        var $input = $('[data-target="' + $(this).data('target') + '"]').not('.target_flag');
-        var $flagInput = $('[data-target="' + $(this).data('target') + '"].target_flag');
+      $('##{@grid.name}_form .input_clean_up').off('click').on('click', function(){
+        var $input = $('##{@grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
+        var $flagInput = $('##{@grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
         $flagInput.attr('checked', 'checked');
         $input.val('');
         if ($input.is('select')) $input.trigger("liszt:updated");
         if ($input.is(':checkbox')) {
           $input.removeAttr('checked');
-          $("[name='" + $input.attr('name') + "']:hidden").val('');
+          $("##{@grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');
         }
       });
     });

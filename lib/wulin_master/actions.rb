@@ -113,7 +113,7 @@ module WulinMaster
 
 
     def create
-      attrs = get_create_attributes(params[grid.model.to_s.underscore.gsub('/', '_')])
+      attrs = get_create_attributes(params[ActiveModel::Naming.param_key(grid.model).to_sym].presence || params[:item].presence)
       @record = grid.model.new(attrs)
       message = if @record.save
         {:success => true, :id => @record.id }
