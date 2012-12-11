@@ -187,98 +187,99 @@ module WulinMaster
       json = {:offset => @offset,
         :total =>  @count,
         :count =>  @per_page,
-        :rows  =>  @object_array}.to_json
-        Rails.logger.info "================== Rendered JSON in #{Time.now-t} sec. ======================"
-        json
-      end
-
-      def get_create_attributes(attrs={})
-        associations = grid.model.reflections
-        new_attributes = {}
-        attrs.each do |k,v|
-          if associations.keys.include?(k.to_sym)
-            association_attributes = attrs.delete(k)
-            if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
-              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-            elsif associations[k.to_sym].macro.to_s =~ /^has_many$|^has_and_belongs_to_many$/
-              if association_attributes == 'null' or association_attributes.blank?
-                new_attributes[k.to_sym] = []
-              elsif Array === association_attributes
-                association_attributes = association_attributes.uniq.delete_if(&:blank?)
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
-              end
-            end
-          elsif k.to_s !~ /_attributes$/ and grid.model.column_names.exclude?(k.to_s) and !grid.model.new.respond_to?("#{k.to_s}=")
-            attrs.delete(k)
-          end
-          # new_attributes[k.to_sym] = nil if v == 'null'
-        end
-        attrs.merge!(new_attributes)
-        attrs
-      end
-
-      def get_updated_attributes(attrs)
-        attrs.delete_if {|k,v| k == "id" }
-        associations = grid.model.reflections
-        new_attributes = {}
-        attrs.each do |k,v|
-          if associations.keys.include?(k.to_sym)
-            association_attributes = attrs.delete(k)
-
-            case associations[k.to_sym].macro
-            when :belongs_to then
-              if association_attributes['id'].blank? or association_attributes['id'] == 'null'
-                new_attributes[grid.model.reflections[k.to_sym].foreign_key] = nil
-              elsif association_attributes['id'].present?
-                new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
-              elsif has_one_reverse_relation?(associations[k.to_sym].klass, grid.model)
-                nested_attr_key = (k =~ /_attributes$/ ? k : "#{k}_attributes")
-                new_attributes[nested_attr_key] = association_attributes
-              end
-            when :has_and_belongs_to_many then
-              # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
-              if Array === association_attributes
-                the_ids = association_attributes#.first.split(',')
-              elsif Hash === association_attributes
-                the_ids = ((association_attributes['id'] == 'null' or association_attributes['id'].blank?) ? [] : association_attributes['id'])
-              else
-                the_ids = []
-              end
-              the_ids = the_ids.uniq.delete_if(&:blank?)
-              if the_ids.blank?
-                new_attributes[k.to_sym] = []
-              else
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a
-              end
-            when :has_many then
-              # Should convert association_attributes for grid cell editor ajax request.
-              if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
-                 association_attributes = association_attributes.values.map{|x| x['id']}.uniq.delete_if(&:blank?)
-              end
-              
-              if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
-                new_attributes[k.to_sym] = []
-              else
-                new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes.uniq.delete_if(&:blank?)).to_a
-              end
-            end
-          elsif k.to_s !~ /_attributes$/ and grid.model.column_names.exclude?(k.to_s) and !@records.first.respond_to?("#{k.to_s}=")
-            attrs.delete_if {|key, value| key.to_s == k.to_s }
-          elsif v.blank?#v == 'null'
-            new_attributes[k.to_sym] = nil
-          end
-        end
-        attrs.merge!(new_attributes)
-        attrs
-      end
-
-      def format_boolean_to_number(boolean_value)
-        boolean_value ? 1 : 0
-      end
-
-      def has_one_reverse_relation?(related_klass, klass)
-        (reflect = related_klass.reflections.find{|x| x[1].klass == klass}[1]) and reflect.macro == :has_one
-      end
-
+        :rows  =>  @object_array
+      }.to_json
+      Rails.logger.info "----------------- Rendered JSON in #{Time.now-t} sec. ------------------------"
+      json
     end
+
+    def get_create_attributes(attrs={})
+      associations = grid.model.reflections
+      new_attributes = {}
+      attrs.each do |k,v|
+        if associations.keys.include?(k.to_sym)
+          association_attributes = attrs.delete(k)
+          if associations[k.to_sym].macro == :belongs_to and association_attributes['id'] != 'null'
+            new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+          elsif associations[k.to_sym].macro.to_s =~ /^has_many$|^has_and_belongs_to_many$/
+            if association_attributes == 'null' or association_attributes.blank?
+              new_attributes[k.to_sym] = []
+            elsif Array === association_attributes
+              association_attributes = association_attributes.uniq.delete_if(&:blank?)
+              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes).to_a
+            end
+          end
+        elsif k.to_s !~ /_attributes$/ and grid.model.column_names.exclude?(k.to_s) and !grid.model.new.respond_to?("#{k.to_s}=")
+          attrs.delete(k)
+        end
+        # new_attributes[k.to_sym] = nil if v == 'null'
+      end
+      attrs.merge!(new_attributes)
+      attrs
+    end
+
+    def get_updated_attributes(attrs)
+      attrs.delete_if {|k,v| k == "id" }
+      associations = grid.model.reflections
+      new_attributes = {}
+      attrs.each do |k,v|
+        if associations.keys.include?(k.to_sym)
+          association_attributes = attrs.delete(k)
+
+          case associations[k.to_sym].macro
+          when :belongs_to then
+            if association_attributes['id'].blank? or association_attributes['id'] == 'null'
+              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = nil
+            elsif association_attributes['id'].present?
+              new_attributes[grid.model.reflections[k.to_sym].foreign_key] = association_attributes['id']
+            elsif has_one_reverse_relation?(associations[k.to_sym].klass, grid.model)
+              nested_attr_key = (k =~ /_attributes$/ ? k : "#{k}_attributes")
+              new_attributes[nested_attr_key] = association_attributes
+            end
+          when :has_and_belongs_to_many then
+            # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
+            if Array === association_attributes
+              the_ids = association_attributes#.first.split(',')
+            elsif Hash === association_attributes
+              the_ids = ((association_attributes['id'] == 'null' or association_attributes['id'].blank?) ? [] : association_attributes['id'])
+            else
+              the_ids = []
+            end
+            the_ids = the_ids.uniq.delete_if(&:blank?)
+            if the_ids.blank?
+              new_attributes[k.to_sym] = []
+            else
+              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(the_ids).to_a
+            end
+          when :has_many then
+            # Should convert association_attributes for grid cell editor ajax request.
+            if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
+               association_attributes = association_attributes.values.map{|x| x['id']}.uniq.delete_if(&:blank?)
+            end
+            
+            if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
+              new_attributes[k.to_sym] = []
+            else
+              new_attributes[k.to_sym] = associations[k.to_sym].klass.find(association_attributes.uniq.delete_if(&:blank?)).to_a
+            end
+          end
+        elsif k.to_s !~ /_attributes$/ and grid.model.column_names.exclude?(k.to_s) and !@records.first.respond_to?("#{k.to_s}=")
+          attrs.delete_if {|key, value| key.to_s == k.to_s }
+        elsif v.blank?#v == 'null'
+          new_attributes[k.to_sym] = nil
+        end
+      end
+      attrs.merge!(new_attributes)
+      attrs
+    end
+
+    def format_boolean_to_number(boolean_value)
+      boolean_value ? 1 : 0
+    end
+
+    def has_one_reverse_relation?(related_klass, klass)
+      (reflect = related_klass.reflections.find{|x| x[1].klass == klass}[1]) and reflect.macro == :has_one
+    end
+
   end
+end
