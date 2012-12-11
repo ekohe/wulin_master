@@ -33,8 +33,6 @@ module WulinMaster
     end
 
     def to_column_model(screen_name)
-      p '########################'
-      p screen_name
       @options[:screen] = screen_name
       @options[:choices] = @options[:choices].call if @options[:choices].is_a?(Proc)
       sort_col_name = @options[:sort_column] || full_name
@@ -99,9 +97,7 @@ module WulinMaster
       @reflection ||= self.model.reflections[(@options[:through] || @name).to_sym]
     end
 
-    def choices
-      p '!!!!!!!!!!!!!!!!!!!!!!!'
-      p @options[:screen]
+    def reflection_options
       @options[:choices] ||= begin
         if self.reflection
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
@@ -110,10 +106,7 @@ module WulinMaster
           []
         end
       end
-    end
-
-    def reflection_options
-      { :choices => (@options[:choices].presence || self.choices), :optionTextAttribute => self.option_text_attribute }
+      { :choices => @options[:choices], :optionTextAttribute => self.option_text_attribute }
     end
     
     # For belongs_to association, the name of the attribute to display
@@ -155,7 +148,7 @@ module WulinMaster
     end
 
     def presence_required?
-      self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(@name.to_sym)}
+      !!self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(form_name.to_sym)}
     end
 
     # Returns the includes to add to the query 

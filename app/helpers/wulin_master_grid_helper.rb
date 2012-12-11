@@ -1,10 +1,10 @@
 module WulinMasterGridHelper
   def select_options(column)
-    if column.choices.is_a?(Array)
-      # column.choices.map{|o| {:id => o, :name => o}}
-      column.choices.map{|o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
-    elsif column.choices.is_a?(Proc)
-      column.choices.call
+    choices = column.options[:choices]
+    if choices.is_a?(Array)
+      choices.map{|o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
+    elsif choices.is_a?(Proc)
+      choices.call
     else
       []
     end
@@ -73,6 +73,11 @@ module WulinMasterGridHelper
         false
       end
     end
+  end
+
+  def clean_up_for(column)
+    column_name = get_column_name(column)
+    clean_up_tag(column_name) if column.presence_required?
   end
 
   def clean_up_tag(column_name)

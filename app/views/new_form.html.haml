@@ -16,11 +16,11 @@
             - if column.sql_type.to_s == 'belongs_to'
               = form.select column_name,                            |
                 select_options(column),                             |
-                { include_blank: true },                            |
-                :include_blank     => !column.presence_required?,   |
+                { include_blank: !column.presence_required? },      |
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
                 :disabled          => column.options[:auto_fill],   |
+                "data-required"    => column.presence_required?,    |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"       => column.name                  |
@@ -28,11 +28,11 @@
             - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
               = form.select column.reflection.name.to_s,            |
                 select_options(column),                             |
-                { include_blank: true },                            |
-                :include_blank     => !column.presence_required?,   |
+                { include_blank: !column.presence_required? },      |
                 :multiple          => true,                         |
                 :class             => 'chzn-select',                |
                 :style             => "width:250px",                |
+                "data-required"    => column.presence_required?,    |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"      => column.name,                  |
@@ -44,7 +44,8 @@
                 :style             => "width:250px",                 |
                 :class             => 'chzn-select',                 |
                 :disabled          => column.options[:auto_fill],    |
-                :include_blank     => true,                          |
+                :include_blank     => !column.presence_required?,    |
+                "data-required"    => column.presence_required?,     |
                 "data-target"      => "#{column_name}_target_flag",  |
                 "data-text-attr"   => column.option_text_attribute,  |
                 "data-column"      => column.name                    |
@@ -79,7 +80,8 @@
         %input.btn{:id => "#{@grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
 
   :javascript
-    $('.chzn-select').chosen({allow_single_deselect: true});
+    $('##{@grid.name}_form select[data-required="true"]').chosen();
+    $('##{@grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

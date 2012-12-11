@@ -127,7 +127,8 @@ var loadValue = function(scope, data) {
       if (inputBox.hasClass("chzn-done")) {
         inputBox.trigger("liszt:updated");
       } else {
-        inputBox.chosen({allow_single_deselect: true});
+        inputBox.chosen();
+        // inputBox.chosen({allow_single_deselect: true});
       }
     }
   }

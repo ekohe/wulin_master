@@ -164,8 +164,8 @@ var Ui = {
       if (dom.hasClass("chzn-done")) {
         dom.trigger("liszt:updated");
       } else {
-        //console.log(dom);
-        dom.chosen({allow_single_deselect: true});
+        dom.chosen();
+        // dom.chosen({allow_single_deselect: true});
       }
 
       if( afterSetupChosen ) {
