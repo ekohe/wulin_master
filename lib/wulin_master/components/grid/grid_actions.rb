@@ -22,13 +22,9 @@ module WulinMaster
 
       # action DSL, add an action to the actions_pool
       def action(a_name, options={})
-        if the_action = @actions_pool.find{|x| x[:name] == a_name}
-          the_action.merge!(options)
-        else
-          new_action = {name: a_name}.merge(options)
-          @actions_pool << new_action
-          add_hotkey_action(a_name, options)
-        end
+        new_action = {name: a_name}.merge(options)
+        @actions_pool << new_action
+        add_hotkey_action(a_name, options)
       end
 
       def add_actions(*args)
@@ -72,7 +68,7 @@ module WulinMaster
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions
       return self.class.actions_pool if self.params["screen"].blank?
-      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"]) }
+      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"])}.uniq {|action| action[:name]}
     end
 
     # the actions on the toolbar
