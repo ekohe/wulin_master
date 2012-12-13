@@ -1,5 +1,5 @@
 // ------------------------------------ UI tools -----------------------------------------
-var Ui = {	
+var Ui = {  
   // return true if the dialog of grid with "name" is open, unless return false 
   isOpen: function() {
     return ($(".ui-dialog:visible").size() > 0);
@@ -92,7 +92,7 @@ var Ui = {
         create: function(event, ui) {
           Ui.setupForm(grid, false);
           if ($.isFunction(callback)) callback();
-  			},
+        },
         close: function(event, ui) {
           scope.dialog('destroy');
           scope.remove();
@@ -222,14 +222,14 @@ var Ui = {
     }
     return currentGrid;
   },
-	
-	formatData: function(grid, arrayData) {
-	  var data = {}, columns;
+  
+  formatData: function(grid, arrayData) {
+    var data = {}, columns;
     columns = grid.loader.getColumns();
-	  $.each(columns, function(index, column){
-	    data[column['id']] = arrayData[index];
-	  })
-	  return data;
-	}
+    $.each(columns, function(index, column){
+      data[column['id']] = arrayData[index];
+    })
+    return data;
+  }
 
 };

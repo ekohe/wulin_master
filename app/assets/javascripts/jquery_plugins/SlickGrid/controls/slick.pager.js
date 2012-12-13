@@ -13,19 +13,19 @@
             updatePager(dataView.getPagingInfo());
         }
 
-		function getNavState()
-		{
-			var cannotLeaveEditMode = !Slick.GlobalEditorLock.commitCurrentEdit();
-			var pagingInfo = dataView.getPagingInfo();
-			var lastPage = Math.floor(pagingInfo.totalRows/pagingInfo.pageSize);
+    function getNavState()
+    {
+      var cannotLeaveEditMode = !Slick.GlobalEditorLock.commitCurrentEdit();
+      var pagingInfo = dataView.getPagingInfo();
+      var lastPage = Math.floor(pagingInfo.totalRows/pagingInfo.pageSize);
 
             return {
-                canGotoFirst:	!cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum > 0,
-                canGotoLast:	!cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum != lastPage,
-                canGotoPrev:	!cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum > 0,
-                canGotoNext:	!cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum < lastPage,
-                pagingInfo:		pagingInfo,
-                lastPage:		lastPage
+                canGotoFirst:  !cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum > 0,
+                canGotoLast:  !cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum != lastPage,
+                canGotoPrev:  !cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum > 0,
+                canGotoNext:  !cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum < lastPage,
+                pagingInfo:    pagingInfo,
+                lastPage:    lastPage
             }
         }
 

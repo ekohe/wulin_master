@@ -90,12 +90,12 @@ var GridStatesManager = {
       })
     }
   },
-	
+  
   // Restore columns order states
   restoreOrderStates: function(columns, orderStates){
-	  if(!orderStates) return columns;
-	  
-	  var new_columns = [], i, j, k;
+    if(!orderStates) return columns;
+    
+    var new_columns = [], i, j, k;
     // find id column
     for(i in columns){
       if (columns[i].id == "id"){
@@ -103,51 +103,51 @@ var GridStatesManager = {
         break;
       }
     }
-		// push other columns according to states
-		for(j in orderStates){
-		  for(k in columns) {
-		    if(columns[k].id == orderStates[j]){
-		      new_columns.push(columns[k]);
-		      break;
-		    }
-		  }
-		}
-		// push columns that are not in the state in abritrary order
-		for(i in columns) {
-	    var found = false;
-	    for(j in new_columns) {
-	      if (columns[i].id == new_columns[j].id) {
-	        found = true;
-	      }
-	    } 
-	    if (found==false) {
-	      new_columns.push(columns[i]);
-	    }
-	  }
-		return new_columns;
-	},
-	
-	// Restore columns visibility states
-	restoreVisibilityStates: function(columns, visibilityStates) {
-	  if(!visibilityStates) return false;
-	  
-	  // push visible columns according to states
-	  for(var i in columns){
-	    var visible = true;
-	    for(var j in visibilityStates){
-	      if(columns[i].id == visibilityStates[j]){
-	        visible = false;
-	        break;
-	      }
-	    }
-	    columns[i].visible = visible;
-	  }
-	},
-	
-	// Restore columns width states
-	restoreWidthStates: function(columns, widthStates) {
-	  if(!widthStates) return false;
-	  
+    // push other columns according to states
+    for(j in orderStates){
+      for(k in columns) {
+        if(columns[k].id == orderStates[j]){
+          new_columns.push(columns[k]);
+          break;
+        }
+      }
+    }
+    // push columns that are not in the state in abritrary order
+    for(i in columns) {
+      var found = false;
+      for(j in new_columns) {
+        if (columns[i].id == new_columns[j].id) {
+          found = true;
+        }
+      } 
+      if (found==false) {
+        new_columns.push(columns[i]);
+      }
+    }
+    return new_columns;
+  },
+  
+  // Restore columns visibility states
+  restoreVisibilityStates: function(columns, visibilityStates) {
+    if(!visibilityStates) return false;
+    
+    // push visible columns according to states
+    for(var i in columns){
+      var visible = true;
+      for(var j in visibilityStates){
+        if(columns[i].id == visibilityStates[j]){
+          visible = false;
+          break;
+        }
+      }
+      columns[i].visible = visible;
+    }
+  },
+  
+  // Restore columns width states
+  restoreWidthStates: function(columns, widthStates) {
+    if(!widthStates) return false;
+    
     // restore width
     for(var i in widthStates){
       for(var j in columns){
@@ -157,29 +157,29 @@ var GridStatesManager = {
         }
       }
     }
-	},
-	
-	// Restore columns sorting states
-	restoreSortingStates: function(grid, loader, sortingStates) {
-	  if(sortingStates){
+  },
+  
+  // Restore columns sorting states
+  restoreSortingStates: function(grid, loader, sortingStates) {
+    if(sortingStates){
       grid.setSortColumn(sortingStates["sortCol"], sortingStates["sortDir"] == 1);
-	    if(grid.options.eagerLoading != false){
+      if(grid.options.eagerLoading != false){
         loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
       }
-	  }    
-	},
-	
-	// Attach state filters
-	applyFilters: function(originalFilters, filterStates) {
-	  if (filterStates) {
+    }    
+  },
+  
+  // Attach state filters
+  applyFilters: function(originalFilters, filterStates) {
+    if (filterStates) {
       originalFilters = originalFilters || [];
-  	  $.each(filterStates, function(k, v){
+      $.each(filterStates, function(k, v){
         originalFilters.push({column: k, value: v, operator: 'equals'})
-  	    //path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
-  	  })
+        //path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
+      })
     }
-	  return originalFilters;
-	}
-	
+    return originalFilters;
+  }
+  
 }
 

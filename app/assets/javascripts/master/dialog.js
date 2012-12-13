@@ -23,16 +23,16 @@ function displayErrorMessage(message, title, width) {
   $('body').append(dialogHtml);
 
   $('#'+dialogId).dialog({
-		autoOpen: true,
-		width: width,
-		buttons: {
-			"Ok": function() {
-				$(this).dialog("destroy");
-			} 
-		},
+    autoOpen: true,
+    width: width,
+    buttons: {
+      "Ok": function() {
+        $(this).dialog("destroy");
+      } 
+    },
     modal: true
-	});
-	
+  });
+  
   dialogIndex++;
 }
 
@@ -60,19 +60,19 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
   $('body').append(dialogHtml);
 
   $('#'+dialogId).dialog({
-		autoOpen: true,
-		buttons: {
-			Yes: function() {
-			  confirmCallback();
+    autoOpen: true,
+    buttons: {
+      Yes: function() {
+        confirmCallback();
         $(this).dialog( "destroy" );
       },
       Cancel: function() {
-			  cancelCallback();
+        cancelCallback();
         $(this).dialog( "destroy" );
       }
-		},
+    },
     modal: true
-	});
-	
+  });
+  
   dialogIndex++;
 }

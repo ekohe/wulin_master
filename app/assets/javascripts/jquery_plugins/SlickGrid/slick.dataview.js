@@ -29,13 +29,13 @@
         
         // private
         var idProperty = "id";  // property holding a unique row id
-        var items = [];			// data by index
-        var rows = [];			// data by row
-        var idxById = {};		// indexes by id
-        var rowsById = null;	// rows by id; lazy-calculated
-        var filter = null;		// filter function
-        var updated = null; 	// updated item ids
-        var suspend = false;	// suspends the recalculation
+        var items = [];      // data by index
+        var rows = [];      // data by row
+        var idxById = {};    // indexes by id
+        var rowsById = null;  // rows by id; lazy-calculated
+        var filter = null;    // filter function
+        var updated = null;   // updated item ids
+        var suspend = false;  // suspends the recalculation
         var sortAsc = true;
         var fastSortField;
         var sortComparer;

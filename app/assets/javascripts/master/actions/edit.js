@@ -48,7 +48,7 @@ var batchUpdateByAjax = function(grid, version) {
 
           // Submit the form
           submitForm(grid, ids, selectedIndexes);
-  			},
+        },
         open: function(event, ui) {
 
           // Fill values

@@ -1,136 +1,136 @@
 
 (function($) {
-	function GridManager() {
-		var gridElementPrefix = "#grid_",
-		gridElementSuffix = " .grid",
-		pagerElementSuffix = " .pager",
-		
-		grids = [],
+  function GridManager() {
+    var gridElementPrefix = "#grid_",
+    gridElementSuffix = " .grid",
+    pagerElementSuffix = " .pager",
+    
+    grids = [],
 
-		defaultOptions = {
-			enableAddRow: false,
-			enableCellNavigation: true,
-			asyncEditorLoading: false,
-			autoEdit: false,
-			cellFlashingCssClass: "master_flashing",
-			rowHeight: 25
-		};
+    defaultOptions = {
+      enableAddRow: false,
+      enableCellNavigation: true,
+      asyncEditorLoading: false,
+      autoEdit: false,
+      cellFlashingCssClass: "master_flashing",
+      rowHeight: 25
+    };
 
-		function init() {
-		}
+    function init() {
+    }
 
-		function getEditorForType(type){
-			switch(type.toLowerCase()){
-				case "string":
-				return TextCellEditor;
-				case "text":
-				return LongTextCellEditor;
-				case "datetime":
-				return DateTimeCellEditor;
-				case "date":
-				return StandardDateCellEditor;
-				case "integer":
-				return IntegerCellEditor;
-				case "boolean":
-				return YesNoCheckboxCellEditor;
-				case "belongs_to":
-				return BelongsToEditor;
-				case "has_one":
-				return BelongsToEditor;
-				case "has_and_belongs_to_many":
-				return BelongsToEditor;
-				case "has_many":
-				return HasManyEditor;
-				default:
-				return TextCellEditor;
-			}
-		}
-		
-		function appendEditor(columns){
-		  var i, type_str;
-		  for(i in columns){
-		    type_str = columns[i].type.toLowerCase();
-		    // 1. append editor
-			  if (columns[i].editor) {
-			    columns[i].editor = eval(columns[i].editor);
-				} else {
-					columns[i].editor = getEditorForType(columns[i].type);
-				}
-				// 2. append cssClass
-				if(type_str == "boolean") {
-					columns[i].cssClass = 'cell-effort-driven';
-				}
-				// 3. append formatter
-				if (columns[i].formatter) {
-					columns[i].formatter = eval(columns[i].formatter);
-					continue;
-				}
-				if(type_str == "date") {
-					columns[i].formatter = StandardDateCellFormatter;
-					columns[i].DateShowFormat = "yy-mm-dd";
-				} else if (type_str == "boolean") {
-					columns[i].formatter = BoolCellFormatter;
-				} else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
-					columns[i].formatter = BelongsToFormatter;
-				} else if (type_str == "has_many") {
-					columns[i].formatter = HasManyFormatter;
-				} else if(type_str == 'has_one' ) {
-					columns[i].formatter = HasOneFormatter;
-				}
-			}
-		}
+    function getEditorForType(type){
+      switch(type.toLowerCase()){
+        case "string":
+        return TextCellEditor;
+        case "text":
+        return LongTextCellEditor;
+        case "datetime":
+        return DateTimeCellEditor;
+        case "date":
+        return StandardDateCellEditor;
+        case "integer":
+        return IntegerCellEditor;
+        case "boolean":
+        return YesNoCheckboxCellEditor;
+        case "belongs_to":
+        return BelongsToEditor;
+        case "has_one":
+        return BelongsToEditor;
+        case "has_and_belongs_to_many":
+        return BelongsToEditor;
+        case "has_many":
+        return HasManyEditor;
+        default:
+        return TextCellEditor;
+      }
+    }
+    
+    function appendEditor(columns){
+      var i, type_str;
+      for(i in columns){
+        type_str = columns[i].type.toLowerCase();
+        // 1. append editor
+        if (columns[i].editor) {
+          columns[i].editor = eval(columns[i].editor);
+        } else {
+          columns[i].editor = getEditorForType(columns[i].type);
+        }
+        // 2. append cssClass
+        if(type_str == "boolean") {
+          columns[i].cssClass = 'cell-effort-driven';
+        }
+        // 3. append formatter
+        if (columns[i].formatter) {
+          columns[i].formatter = eval(columns[i].formatter);
+          continue;
+        }
+        if(type_str == "date") {
+          columns[i].formatter = StandardDateCellFormatter;
+          columns[i].DateShowFormat = "yy-mm-dd";
+        } else if (type_str == "boolean") {
+          columns[i].formatter = BoolCellFormatter;
+        } else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
+          columns[i].formatter = BelongsToFormatter;
+        } else if (type_str == "has_many") {
+          columns[i].formatter = HasManyFormatter;
+        } else if(type_str == 'has_one' ) {
+          columns[i].formatter = HasOneFormatter;
+        }
+      }
+    }
 
-		function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
-		  var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
-		  
+    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
+      var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
+      
       originColumns = deep_clone(columns);
 
-		  options = $.extend({}, defaultOptions, extend_options);
+      options = $.extend({}, defaultOptions, extend_options);
 
-			gridElement = $(gridElementPrefix + name + gridElementSuffix);
+      gridElement = $(gridElementPrefix + name + gridElementSuffix);
 
-			// Append editor attribute to columns
-			appendEditor(columns);
+      // Append editor attribute to columns
+      appendEditor(columns);
       
       // Apply current filters
       filters = GridStatesManager.applyFilters(filters, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
-			query = path.split(".json")[1];
+      query = path.split(".json")[1];
 
       // Set Loader
-			loader = new Slick.Data.RemoteModel(path, filters, columns);
+      loader = new Slick.Data.RemoteModel(path, filters, columns);
 
-			// Set Pager
-			pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-			pager = new Slick.Controls.Pager(loader, grid, pagerElement);
+      // Set Pager
+      pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
+      pager = new Slick.Controls.Pager(loader, grid, pagerElement);
 
-			// Restore the order states to columns
+      // Restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
-			// Restore the visibility states to columns
-		  GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
-		  // Restore the width states to columns
+      // Restore the visibility states to columns
+      GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
+      // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
-			// ------------------------- Create Grid ------------------------------------
-			grid = new Slick.Grid(gridElement, loader.data, columns, options);
+      // ------------------------- Create Grid ------------------------------------
+      grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
-			// Append necessary attributes to the grid
-			gridAttrs = {
-				name: name,
-				model: model, 
-				screen: screen, 
-				loader: loader, 
-				path: pathWithoutQuery, 
-				columns: columns,
-				originColumns: originColumns, 
-				query: query, 
-				container: gridElement.parent(), 
-				pager: pager, 
-				states: states, 
-				actions: actions,
-				behaviors: behaviors,
-				options: options
-			};
+      // Append necessary attributes to the grid
+      gridAttrs = {
+        name: name,
+        model: model, 
+        screen: screen, 
+        loader: loader, 
+        path: pathWithoutQuery, 
+        columns: columns,
+        originColumns: originColumns, 
+        query: query, 
+        container: gridElement.parent(), 
+        pager: pager, 
+        states: states, 
+        actions: actions,
+        behaviors: behaviors,
+        options: options
+      };
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
@@ -139,127 +139,127 @@
       grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // Set ColumnPicker
-			var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 
-			// Load data into grid
-			loader.setGrid(grid);
-		  
-			// Create loading indicator on the activity panel, if not eager loading, hide the indicator
-			var isHide = (grid.options.eagerLoading == false);
-			loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
-			
-			// Restore the sorting states to grid
+      // Load data into grid
+      loader.setGrid(grid);
+      
+      // Create loading indicator on the activity panel, if not eager loading, hide the indicator
+      var isHide = (grid.options.eagerLoading == false);
+      loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
+      
+      // Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 
       // Dispatch actions
       WulinMaster.ActionManager.dispatchActions(grid, actions);
       // Dispatch behaviors, should come first than grid.resizeCanvas, otherwise some event like onRendered can't be triggered
-			WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
+      WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
       
-			// Set grid body height after rendering
-			setGridBodyHeight(gridElement);
-			grid.initialRender();
+      // Set grid body height after rendering
+      setGridBodyHeight(gridElement);
+      grid.initialRender();
 
-			// Load the first page
-			grid.onViewportChanged.notify();		
+      // Load the first page
+      grid.onViewportChanged.notify();    
       
       // Delete old grid if exsisting, then add grid
-			for(var i in grids){
-				if(grid.name == grids[i].name){
-					grids.splice(i, 1);
-				}
-			}
-			grids.push(grid);
-			
-			// ------------------------------ Register callbacks for handling grid states ------------------------
+      for(var i in grids){
+        if(grid.name == grids[i].name){
+          grids.splice(i, 1);
+        }
+      }
+      grids.push(grid);
+      
+      // ------------------------------ Register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);
 
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips())
-		} // createNewGrid
-		
+    } // createNewGrid
+    
 
-		function createLoadingIndicator(gridElement, isHide) {
-			var truncateThreshold = 35,
-			parent = gridElement.parent(".grid_container"),
-			id = parent.attr("id"),
-			title = $.trim(parent.find(".grid-header h2").text()),
-			
-			indicators = $("#activity #indicators"), 
-			indicator;
-			
-			if (title.length > truncateThreshold) {
-				title = title.substring(0, truncateThreshold-2) + "..."
-			}
+    function createLoadingIndicator(gridElement, isHide) {
+      var truncateThreshold = 35,
+      parent = gridElement.parent(".grid_container"),
+      id = parent.attr("id"),
+      title = $.trim(parent.find(".grid-header h2").text()),
+      
+      indicators = $("#activity #indicators"), 
+      indicator;
+      
+      if (title.length > truncateThreshold) {
+        title = title.substring(0, truncateThreshold-2) + "..."
+      }
 
-			// Remove init indicator if it exists.
-			indicators.find("#init_menu_indicator").remove();
-			indicator = indicators.find(".loading_indicator#" + id);
+      // Remove init indicator if it exists.
+      indicators.find("#init_menu_indicator").remove();
+      indicator = indicators.find(".loading_indicator#" + id);
 
-			if (indicator.length == 0) {
-				indicator = $(buildIndicatorHtml(id, title, isHide)).appendTo(indicators);
-				// Init counter
-				indicator.data("requestCount", 0);
-			}
+      if (indicator.length == 0) {
+        indicator = $(buildIndicatorHtml(id, title, isHide)).appendTo(indicators);
+        // Init counter
+        indicator.data("requestCount", 0);
+      }
 
-			return indicator;
-		}
+      return indicator;
+    }
 
-		function buildIndicatorHtml(id, title, isHide){
-			return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
-		}
+    function buildIndicatorHtml(id, title, isHide){
+      return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
+    }
 
-		function getGrid(name) {
-			var theGrid = null;
+    function getGrid(name) {
+      var theGrid = null;
 
-			$.each(grids, function() {
-				if (this.name == name)
-				theGrid = this;
-			});
+      $.each(grids, function() {
+        if (this.name == name)
+        theGrid = this;
+      });
 
-			return theGrid;
-		}
-		
-		function setGridBodyHeight(gridElement) {
-		  var container = gridElement.parent(".grid_container"),
-		  ch = container.height(),
-		  hh = container.find(".grid-header").height(),
-		  ph = container.find(".pager").height(),
-	    gh = ch - hh - ph;
-	    
-	    gridElement.css("height", gh - 1);
-		}
+      return theGrid;
+    }
+    
+    function setGridBodyHeight(gridElement) {
+      var container = gridElement.parent(".grid_container"),
+      ch = container.height(),
+      hh = container.find(".grid-header").height(),
+      ph = container.find(".pager").height(),
+      gh = ch - hh - ph;
+      
+      gridElement.css("height", gh - 1);
+    }
 
-		function resizeGrids() {
-		  var gridElement;
-			$.each(grids, function() {
-			  gridElement = $(gridElementPrefix + this.name + gridElementSuffix);
-			  setGridBodyHeight(gridElement);
-				this.resizeCanvas();
-			});
-		}
-		
-		init();
+    function resizeGrids() {
+      var gridElement;
+      $.each(grids, function() {
+        gridElement = $(gridElementPrefix + this.name + gridElementSuffix);
+        setGridBodyHeight(gridElement);
+        this.resizeCanvas();
+      });
+    }
+    
+    init();
 
-		return {
-			// properties
-			"grids": grids,
+    return {
+      // properties
+      "grids": grids,
 
-			// methods
-			"createNewGrid": createNewGrid,
-			"getGrid": getGrid,
-			"resizeGrids": resizeGrids,
-			"buildIndicatorHtml": buildIndicatorHtml
-		};
-	}
-	
-	
-	$.extend(true, window, { GridManager: GridManager});
-	})(jQuery);
+      // methods
+      "createNewGrid": createNewGrid,
+      "getGrid": getGrid,
+      "resizeGrids": resizeGrids,
+      "buildIndicatorHtml": buildIndicatorHtml
+    };
+  }
+  
+  
+  $.extend(true, window, { GridManager: GridManager});
+  })(jQuery);
 
 
-	var gridManager = new GridManager();
+  var gridManager = new GridManager();
 
-	$(window).resize(function() { gridManager.resizeGrids(); });
-	
+  $(window).resize(function() { gridManager.resizeGrids(); });
+  

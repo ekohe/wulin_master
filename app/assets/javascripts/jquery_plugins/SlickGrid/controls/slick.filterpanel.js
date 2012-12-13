@@ -68,18 +68,18 @@
           trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
         }, 1000);
       });
-		}
-		
-		function trigger(evt, args, e) {
+    }
+    
+    function trigger(evt, args, e) {
         e = e || new Slick.EventData();
         args = args || {};
         args.filterPanel = self;
         return evt.notify(args, e, self);
     }
-		
-		function generateFilters() {
-		  var inputWidth, columns, inputElement;
-		  var ua = navigator.userAgent.toLowerCase();
+    
+    function generateFilters() {
+      var inputWidth, columns, inputElement;
+      var ua = navigator.userAgent.toLowerCase();
 
       html = "";
       columns = $grid.getColumns();
@@ -118,21 +118,21 @@
       
       // Fills up and display the secondary row
       $($grid.getHeaderRow()).html(html).show();
-		}
+    }
 
-		// This method update the current filters applied to the currentFiltersApplied array
-		// We store the filters value so that after resizing or reordering of the columns, we can 
-		//  generate the filters boxes with the same values
-		function updateCurrentFilters() {
+    // This method update the current filters applied to the currentFiltersApplied array
+    // We store the filters value so that after resizing or reordering of the columns, we can 
+    //  generate the filters boxes with the same values
+    function updateCurrentFilters() {
       currentFilters = {};
-		  $.each($("input", $($grid.getHeaderRow())), function() {
+      $.each($("input", $($grid.getHeaderRow())), function() {
         if ($(this).val()!='') {
           currentFilters[$(this).attr('id')] = $(this).val();
         }
-		  });
-		}
-		
-		function setOriginalFilter() {
+      });
+    }
+    
+    function setOriginalFilter() {
       var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length != 0) {
         $.each(currentFiltersApplied, function() {
@@ -144,10 +144,10 @@
         });
 
         $loader.setFilterWithoutRefresh(originalFilters);
-	    }
-		}
-		
-		function setCurrentFilter(){
+      }
+    }
+    
+    function setCurrentFilter(){
       var filters = [];
       // add current filters
       if (currentFiltersApplied.length > 0) {
@@ -166,19 +166,19 @@
         }
       }
       $loader.setFilter(filters);
-		}
-		
-		function applyCurrentFilters(filters) {
-		  currentFiltersApplied = [];
-		  if (filters) {
-  		  $.each(filters, function(k, v) {
+    }
+    
+    function applyCurrentFilters(filters) {
+      currentFiltersApplied = [];
+      if (filters) {
+        $.each(filters, function(k, v) {
           if (v !='')
-  		      currentFiltersApplied.push({id: k, value: v});
-  		  });
-	    }
-		}
-		
-		$.extend(this, {
+            currentFiltersApplied.push({id: k, value: v});
+        });
+      }
+    }
+    
+    $.extend(this, {
         // Events
         "onFilterLoaded":                     new Slick.Event(),
         'onFilterPanelClosed':                new Slick.Event(),
@@ -188,7 +188,7 @@
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters
     });
-		
-		init();
-	}
+    
+    init();
+  }
 }(jQuery));
