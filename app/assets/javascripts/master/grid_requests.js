@@ -14,7 +14,9 @@ var Requests = {
 	        grid.operatedIds = [request.id];
 	        grid.loader.reloadData();
 	        if (continue_on) {
-	          //Ui.refreshCreateForm(grid);
+            if (window._always_reset_form) {
+              Ui.refreshCreateForm(grid);
+            }
 	        } else {
 	          if (grid.loader.isDataLoaded()) {
 	            setTimeout(function(){ Ui.closeDialog(grid.name); }, 100);
