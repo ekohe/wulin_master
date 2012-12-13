@@ -9,6 +9,7 @@
 		var pageNum = 0;
 		var totalRows = 0;
 		var data = {length:0};
+    var oldData = {length:0};
 		var sortcol = null;
 		var sortdir = 1;
 		var h_request = null;
@@ -22,6 +23,7 @@
     var initedFilter = false;
     var filters = [];
     var lastRequestVersionNumber = 0;
+    var self = this;
     
     if(initialFilters) {
       for(var i in initialFilters) {
@@ -239,12 +241,15 @@
 				data[j].slick_index = j;
 			}
 			req = null;
-			
+      
+      // keep oldData as a clone of data, never get deleted
+      this.loader.oldData = deep_clone(data);
+
       // Loading data
 			dataIsLoaded({from:from, to:to});
 
 			// Updating pager
-			onPagingInfoChanged.notify(getPagingInfo());			
+			onPagingInfoChanged.notify(getPagingInfo());		
 		}
 		
 		function getColumns() {
@@ -259,7 +264,7 @@
     } 
 
 		function reloadData(from,to) {
-		  var i;
+      var i;
 		  if (from && to) {
   			for (i=from; i<=to; i++)
   				delete data[i];
@@ -270,7 +275,6 @@
 
 			ensureData(from,to);
 		}
-
 
 		function setSort(column,dir) {
 			sortcol = column;
@@ -436,6 +440,7 @@
 		return {
 			// properties
 			"data": data,
+      "oldData": oldData,
       "connectionManager": connectionManager,
       "lastRequestVersionNumber": lastRequestVersionNumber,
       

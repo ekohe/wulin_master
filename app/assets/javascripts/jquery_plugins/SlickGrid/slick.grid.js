@@ -990,11 +990,16 @@ if (typeof Slick === "undefined") {
         }
 
         function getDataItem(i) {
+            var item = null;
             if (data.getItem) {
-                return data.getItem(i);
+                item = data.getItem(i);
             } else {
-                return data[i];
+                item = data[i];
             }
+            if(!item && self.loader && self.loader.oldData) {
+              item = self.loader.oldData[i]
+            }
+            return item;
         }
 
         function getTopPanel() {

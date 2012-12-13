@@ -83,7 +83,7 @@
 		function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
 		  var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 		  
-      originColumns = clone(columns);
+      originColumns = deep_clone(columns);
 
 		  options = $.extend({}, defaultOptions, extend_options);
 
@@ -178,19 +178,6 @@
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips())
 		} // createNewGrid
-		
-		
-		function clone(myObj){
-      if(typeof(myObj) != 'object') return myObj;
-      if(myObj == null) return myObj;
-
-      var myNewObj = new Object();
-
-      for(var i in myObj)
-         myNewObj[i] = clone(myObj[i]);
-
-      return myNewObj;
-    }
 		
 
 		function createLoadingIndicator(gridElement, isHide) {

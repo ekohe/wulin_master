@@ -1,3 +1,22 @@
+$.fn.arrayDeepInclude = function(obj) {
+  var array = this.get();
+  var include = false;
+  if(!(array instanceof Array)) return false;
+  
+  if(obj instanceof Array) {
+    for(var i in array) {
+      if((array[i] instanceof Array) && !(array[i] > obj) && !(array[i] < obj)) {
+        include = true;
+        break;
+      }
+    }
+    return include;
+  } else {
+    return array.indexOf(obj) != -1;
+  }
+};
+
+
 Number.prototype.toMoney = function(decimals, decimal_sep, thousands_sep)
 { 
    var n = this,
@@ -18,4 +37,19 @@ Number.prototype.toMoney = function(decimals, decimal_sep, thousands_sep)
 
    j = ((j = i.length) > 3) ? j % 3 : 0; 
    return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : ''); 
-}
+};
+
+
+var deep_clone = function(myObj){
+  if(typeof(myObj) != 'object' || myObj instanceof Array) return myObj;
+  if(myObj == null) return myObj;
+
+  var myNewObj = new Object();
+
+  for(var i in myObj)
+     myNewObj[i] = deep_clone(myObj[i]);
+
+  return myNewObj;
+};
+
+
