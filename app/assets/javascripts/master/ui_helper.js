@@ -70,6 +70,9 @@ var Ui = {
     name = grid.name;
     
     $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
+
+      $( '#' + name + '_form').remove();
+      
       $('body').append(data);
       
       scope = $( '#' + name + '_form');
