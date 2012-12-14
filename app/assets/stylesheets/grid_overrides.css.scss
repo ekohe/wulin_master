@@ -117,6 +117,11 @@ $pager_background: #eff3f8;
   }
 }
 
+.slick-header-columns, .slick-headerrow-columns {
+  width: auto;
+  overflow: visible;
+}
+
 /* Page styling */
 .pager, .slick-pager {
   background: $pager_background;

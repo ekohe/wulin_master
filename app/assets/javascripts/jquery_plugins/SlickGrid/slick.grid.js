@@ -209,11 +209,13 @@ if (typeof Slick === "undefined") {
             $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
             $headers = $("<div class='slick-header-columns' style='width:10000px; left:-1000px' />").appendTo($headerScroller);
 
-            $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
-            $headerRow = $("<div class='slick-headerrow-columns' style='width:10000px;' />").appendTo($headerRowScroller);
-
             $topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
             $topPanel = $("<div class='slick-top-panel' style='width:10000px' />").appendTo($topPanelScroller);
+
+            $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='width:100%;overflow-x:auto;outline:0;position:relative;overflow-y:auto;'>").appendTo($container);
+            
+            $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:visible;position:relative;' />").appendTo($viewport);
+            $headerRow = $("<div class='slick-headerrow-columns' style='' />").appendTo($headerRowScroller);
 
             if (!options.showTopPanel) {
                 $topPanelScroller.hide();
@@ -223,7 +225,6 @@ if (typeof Slick === "undefined") {
                 $headerRowScroller.hide();
             }
 
-            $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='width:100%;overflow-x:auto;outline:0;position:relative;overflow-y:auto;'>").appendTo($container);
             $canvas = $("<div class='grid-canvas' tabIndex='0' hideFocus />").appendTo($viewport);
 
             // header columns and cells may have different padding/border skewing width calculations (box-sizing, hello?)
@@ -351,6 +352,9 @@ if (typeof Slick === "undefined") {
 
         function setCanvasWidth(width) {
             $canvas.width(width);
+            // In the meantime,set the same width to the header
+            $headerRowScroller.width(width);
+
             viewportHasHScroll = (width > viewportW - scrollbarDimensions.width);
         }
 
@@ -1226,7 +1230,8 @@ if (typeof Slick === "undefined") {
                 options.headerHeight -
                 getVBoxDelta($headers) -
                 (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -
-                (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0);
+                // (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0);
+                (options.showHeaderRow ? getVBoxDelta($headerRowScroller) : 0);
         }
 
         function resizeCanvas() {
