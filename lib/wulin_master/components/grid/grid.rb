@@ -182,12 +182,12 @@ module WulinMaster
 
     # Returns the includes to add to the query
     def includes
-      self.columns.map{|col| col.includes}.flatten.uniq
+      @includes ||= self.columns.map{|col| col.includes}.flatten.uniq
     end
 
     # Returns the joins to add to the query
     def joins
-      self.columns.map{|col| col.joins}.flatten.uniq
+      @joins ||= (self.columns.map{|col| col.joins}.flatten.uniq - includes)
     end
 
     def arraify(objects)
