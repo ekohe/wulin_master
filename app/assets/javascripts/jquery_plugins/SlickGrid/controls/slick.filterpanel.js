@@ -22,7 +22,6 @@
       $grid.onColumnsReordered.subscribe(function(){ 
         generateFilters(); 
       });
-      
       $grid.onColumnsResized.subscribe(function(){
         generateFilters();
       });
@@ -45,8 +44,8 @@
             //   filters wouldn't have scrolled while there were hidden so they appear shifted.
             // This corrects this problem by setting the scrollLeft value of the filters panel
             //   to the scrollLeft of the header row
-            // headerScroller = $($grid.getHeaderRow()).parent()[0];
-            // headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
+            headerScroller = $($grid.getHeaderRow()).parent()[0];
+            headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
         }
         return false;
       });
@@ -61,16 +60,13 @@
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $("input", $($grid.getHeaderRow())).off('keyup').on('keyup', function(e) {
-        var ignoreKeyCodes = [9, 224, 13];
-        if (ignoreKeyCodes.indexOf(e.which) == -1) {
-          delay(function(){
-            updateCurrentFilters();
-            applyCurrentFilters(currentFilters);
-            setCurrentFilter();
-            trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
-          }, 1000);
-        }
+      $("input", $($grid.getHeaderRow())).live('keyup', function(e) {
+        delay(function(){
+          updateCurrentFilters();
+          applyCurrentFilters(currentFilters);
+          setCurrentFilter();
+          trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+        }, 1000);
       });
     }
     
@@ -109,6 +105,7 @@
         if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
           inputWidth += 2;
         }
+        
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
         
         if (this.filterable == false) {
