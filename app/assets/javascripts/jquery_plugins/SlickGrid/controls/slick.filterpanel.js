@@ -60,13 +60,24 @@
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $("input", $($grid.getHeaderRow())).live('keyup', function(e) {
-        delay(function(){
-          updateCurrentFilters();
-          applyCurrentFilters(currentFilters);
-          setCurrentFilter();
-          trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
-        }, 1000);
+      $("input", $($grid.getHeaderRow())).off('keyup').on('keyup', function(e) {
+        var containerWidth = $grid.container.innerWidth();
+        var inputLeft = $(this).position().left + $(this).outerWidth();
+        var $viewPort = $($grid.getCanvasNode()).parent();
+        var ignoreKeyCodes = [9, 224, 13];
+
+        if (containerWidth < inputLeft) {
+          $viewPort.scrollLeft(inputLeft - containerWidth);
+        }
+
+        if (ignoreKeyCodes.indexOf(e.which) == -1) {
+          delay(function(){
+            updateCurrentFilters();
+            applyCurrentFilters(currentFilters);
+            setCurrentFilter();
+            trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+          }, 1000);
+        }
       });
     }
     
