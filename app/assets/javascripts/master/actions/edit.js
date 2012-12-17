@@ -98,6 +98,8 @@ var loadValue = function(scope, data) {
   for ( var i in data) {
     if ($('input:text[data-column="' + i + '"]', scope).size() > 0) {
       $('input[data-column="' + i + '"]', scope).val(data[i]);
+    } else if ($('textarea[data-column="' + i + '"]', scope).size() > 0) {
+      $('textarea[data-column="' + i + '"]', scope).val(data[i]);
     } else if ($('input:checkbox[data-column="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
         $('input:checkbox[data-column="' + i + '"]', scope).attr('checked', 'checked');
@@ -146,7 +148,7 @@ var showFlagCheckBox = function(scope, ids) {
 var checkTheBox = function(name) {
   var scope = $( '#' + name + '_form');
   // Check flag when change value of the box
-  scope.off('keyup', 'input:text, input:password').on('keyup', 'input:text, input:password', function(e) {
+  scope.off('keyup', 'input:text, input:password, textarea').on('keyup', 'input:text, input:password, textarea', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
   scope.off('change', 'input:checkbox, input:file').on('change', 'input:checkbox:not(.target_flag), input:file', function(e) {

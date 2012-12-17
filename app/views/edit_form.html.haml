@@ -79,6 +79,8 @@
               - if column.sql_type.to_s.downcase == 'boolean'
                 = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name
                 = clean_up_for(column)
+              - elsif column.sql_type.to_s.downcase == 'text'
+                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 260px; height: 4em;'
               - else
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
