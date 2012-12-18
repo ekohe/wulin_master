@@ -35,6 +35,7 @@
     var connectionManager = new ConnectionManager();
     
     // events
+    var beforeRemoteRequest = new Slick.Event();
     var onDataLoading = new Slick.Event();
     var onPagingInfoChanged = new Slick.Event();
     var onDataLoaded = new Slick.Event();
@@ -48,6 +49,8 @@
         // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
         if(grid.options.eagerLoading == false && grid.getData().length == 0) return false;
 
+        // Event triggered before the ajax request
+        beforeRemoteRequest.notify();
         ensureData(vp.top, vp.bottom);
       });
 
@@ -467,6 +470,7 @@
       'getColumns': getColumns,
       
       // events
+      "beforeRemoteRequest": beforeRemoteRequest,
       "onDataLoading": onDataLoading,
       "onPagingInfoChanged":  onPagingInfoChanged,
       "onDataLoaded": onDataLoaded,
