@@ -2535,15 +2535,19 @@ if (typeof Slick === "undefined") {
 
         // get ids of selected rows
         function getSelectedIds(){
-          var selectedIndexes = getSelectedRows();
-          var ids;
-          if (selectedIndexes.length > 0) {
-            ids = $.map(selectedIndexes,function(n, i) { 
-              return getDataItem(n)['id'];
-            });
-            return ids;
-          } else {
-            return [];
+          try {
+              var selectedIndexes = getSelectedRows();
+              var ids;
+              if (selectedIndexes.length > 0) {
+                ids = $.map(selectedIndexes,function(n, i) { 
+                  return getDataItem(n)['id'];
+                });
+                return ids;
+              } else {
+                return [];
+              }
+          } catch (e) {
+            alert('You selected too many rows! Please select again.');
           }
         }
 
