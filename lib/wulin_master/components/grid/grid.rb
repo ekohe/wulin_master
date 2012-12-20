@@ -182,7 +182,7 @@ module WulinMaster
 
     # Returns the includes to add to the query
     def includes
-      @includes ||= self.columns.map{|col| col.includes}.flatten.uniq
+      @includes ||= remove_through_model(self.columns.map{|col| col.includes}.flatten.uniq)
     end
 
     # Returns the joins to add to the query
@@ -215,6 +215,14 @@ module WulinMaster
     end
 
     private
+
+    # remove some relations which are the through relations, otherwise the query will includes or joins the model twice
+    # (one from itself, one from the model which related with main model through it)
+    def remove_through_model(relations)
+      relations.each do |relation|
+        relations.delete(model.reflections[relation].options[:through])
+      end
+    end
     
     def find_sort_column_by_name(column_name)
       if column = find_column_by_name(column_name) and column.options[:sortable] != false
