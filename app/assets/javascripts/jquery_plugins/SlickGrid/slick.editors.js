@@ -1276,6 +1276,10 @@
           var $select, $wrapper;
           var choicesFetchPath;
           var choices = args.column.choices;
+          // get choices options from choices_column value
+          if(!choices && args.column.choices_column) {
+            choices = args.item[args.column.choices_column]
+          }
           // if the choices option is an array, construce an select option for each element
           if($.isArray(choices)) {
             choicesFetchPath = $.map(choices, function(e, index){
