@@ -1,8 +1,10 @@
-require 'wulin_master/components/grid/column_filter/column_filter'
+require 'wulin_master/components/grid/column/column_filter'
+require 'wulin_master/components/grid/column/column_attr'
 
 module WulinMaster
   class Column
     include WulinMaster::ColumnFilter
+    include WulinMaster::ColumnAttr
 
     attr_accessor :name, :options
 
@@ -46,12 +48,18 @@ module WulinMaster
     # Format a value 
     # Called during json rendering
     def format(value)
-      if value.class == Time || value.class == ActiveSupport::TimeWithZone
-        value.to_formatted_s(datetime_format)
-      elsif value.class.name == 'BSON::ObjectId'
-        value.to_s
+      if @options[:simple_date]
+        value.strftime('%d %b')
+      elsif @options[:simple_time]
+        value.strftime('%H:%M')
       else
-        value
+        if value.class == Time || value.class == ActiveSupport::TimeWithZone
+          value.to_formatted_s(datetime_format)
+        elsif value.class.name == 'BSON::ObjectId'
+          value.to_s
+        else
+          value
+        end
       end
     end
 
@@ -75,12 +83,14 @@ module WulinMaster
     end
 
     def model
-      @grid_class.model
+      @model ||= @grid_class.model
     end
     
     def model_columns
-      return [] unless model
-      self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns
+      @model_columns ||= begin
+        return [] unless model
+        self.model.respond_to?(:all_columns) ? self.model.all_columns : self.model.columns
+      end
     end
 
     def sql_type

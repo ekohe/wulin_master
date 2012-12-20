@@ -97,6 +97,20 @@
               return value;
             }
         },
+
+        // Simple data formatter,display a date as "dd mmm" format, like "21 dec"
+        SimpleDateFormatter: function(row, cell, value, columnDef, dataContext) {
+            if (value == null || value === "") {
+                return "";
+            }
+
+            if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
+                var thedate = $.datepicker.parseDate("yy-mm-dd", value);
+                return thedate.format("dd mmm");
+            } else {
+                return value;
+            }
+        },
         
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
             value = value[columnDef.optionTextAttribute];
@@ -118,7 +132,102 @@
         
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
             return value[columnDef.optionTextAttribute];
-        },  
+        },
+
+        SimpleDateEditor: function(args) {
+            var $input;
+            var defaultValue;
+            var simpleDefaultValue;
+            var scope = this;
+            var boxWidth = args.column.width;
+            var offsetWith = boxWidth + 18;
+            var monthStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+            this.init = function() {
+                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                .appendTo(args.container);
+                $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
+                    .appendTo($wrapper)
+                    .bind("keydown.nav", function(e) {
+                        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                            e.stopImmediatePropagation();
+                        }
+                    })
+                    .scrollLeft(0)
+                    .focus()
+                    .select();
+                var winWith = $(window).width(),
+                offsetLeft = $wrapper.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $wrapper.offset({left: winWith - offsetWith})
+            };
+
+            this.destroy = function() {
+                $input.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.getValue = function() {
+                return $input.val();
+            };
+
+            this.setValue = function(val) {
+                $input.val(val);
+            };
+
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field] || "";
+                simpleDefaultValue = SlickEditor.SimpleDateFormatter(undefined, undefined, defaultValue, undefined, undefined);
+                $input.val(simpleDefaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                var date = $input.val().split(' ')[0];
+                var month = monthStr.indexOf($input.val().split(' ')[1]);
+                var thedate = $.datepicker.parseDate("yy-mm-dd", defaultValue);
+                thedate.setMonth(month, date);
+                return defaultValue.replace(/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}/, thedate.format("yyyy-mm-dd"));
+            };
+
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != simpleDefaultValue);
+            };
+
+            this.validate = function() {
+                var date, month, currentValue = $input.val();
+                if (currentValue) {
+                    date = parseInt(currentValue.split(' ')[0]);
+                    month = currentValue.split(' ')[1];
+                    if (1 >= date || date >= 31 || monthStr.indexOf(month) == -1) {
+                        $input.val(simpleDefaultValue);
+                        return {
+                            valid: false,
+                            msg: "Please enter a valid Date"
+                        };
+                    }
+                }
+
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.getCell = function(){
+              return $input.parent();
+            };
+
+            this.init();
+        },
         
         TextCellEditor : function(args) {
             var $input;

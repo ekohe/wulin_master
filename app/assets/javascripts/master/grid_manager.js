@@ -77,6 +77,11 @@
         } else if(type_str == 'has_one' ) {
           columns[i].formatter = HasOneFormatter;
         }
+
+        if (columns[i].simple_date || columns[i].simple_time) {
+          columns[i].editor = TextCellEditor;
+          columns[i].formatter = null;
+        }
       }
     }
 

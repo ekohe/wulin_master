@@ -204,6 +204,16 @@ module WulinMaster
       self.toolbar.items
     end
 
+    def map_attrs(attrs, type)
+      new_attrs = {}
+      attrs.each do |column_name, value|
+        if column = self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s }
+          column.assign_attribute(value, new_attrs, attrs, type)
+        end
+      end
+      new_attrs
+    end
+
     private
     
     def find_sort_column_by_name(column_name)

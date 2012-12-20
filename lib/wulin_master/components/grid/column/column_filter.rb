@@ -1,4 +1,4 @@
-require 'wulin_master/components/grid/column_filter/sql_adapter'
+require 'wulin_master/components/grid/column/sql_adapter'
 
 module WulinMaster
   module ColumnFilter

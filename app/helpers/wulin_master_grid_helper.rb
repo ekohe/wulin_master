@@ -9,7 +9,7 @@ module WulinMasterGridHelper
       []
     end
   end
-  
+
   def select_tag_options(column)
     choices = column.options[:choices]
     if choices.is_a?(Array)
@@ -22,17 +22,17 @@ module WulinMasterGridHelper
       []
     end
   end
-  
+
   def date_column?(column)
-    'true' if column.sql_type.to_s.downcase == 'date'
+    'true' if column.sql_type.to_s.downcase == 'date' and !column.options[:simple_date] and !column.options[:simple_time]
   end
-  
+
   def datetime_column?(column)
-    'true' if column.sql_type.to_s.downcase == 'datetime'
+    'true' if column.sql_type.to_s.downcase == 'datetime' and !column.options[:simple_date] and !column.options[:simple_time]
   end
 
   def time_column?(column)
-    'true' if column.options[:editor] == 'TimeCellEditor'
+    'true' if column.options[:editor] == 'TimeCellEditor' and !column.options[:simple_date] and !column.options[:simple_time]
   end
   
   def get_column_name(column)
@@ -60,7 +60,7 @@ module WulinMasterGridHelper
       false
     end
   end
-  
+
   def edit_form_able?(column)
     formable = column.options[:formable]
     editable = column.options[:editable]
