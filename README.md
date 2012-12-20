@@ -294,6 +294,12 @@ A column can be a real field in the database table of current model, or virtual 
   `:currency`
   This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other type of currencies.
 
+  `:simple_date`
+  As default, if the column is date or date_time type, it will use datepicker or datetimepicker in cell editor and popup form, if you just want a text input instead this, you should use this option and set it to `true`
+
+  `:simple_time`
+  As default, if the column is time type, it will use datetimepicker in cell editor and popup form, if you just want a text input instead this, you should use this option and set it to `true`
+
 
 #### Grid styles
 
