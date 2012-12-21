@@ -50,8 +50,8 @@
         $li = $("<li />").appendTo($menu);
 
         $input = $("<input type='checkbox' />")
-                  .attr("id", "columnpicker_" + i)
-                  .data("id", columns[i].id)
+                  .attr({id: "columnpicker_" + i, name: columns[i].field})
+                  //.data("field", columns[i].field)
                   .appendTo($li);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
@@ -92,6 +92,7 @@
 
     function updateColumn(e) {
       var newWidths = {};
+      var idColumns;
 
       $.each(grid.getColumns(), function(i, column){
         newWidths[column.id] = column.width;
@@ -130,8 +131,11 @@
           $menu.find(":checkbox[id^=columnpicker]").attr('checked', 'checked');
           grid.setColumns(columns);
         } else {
-          $menu.find(":checkbox[id^=columnpicker]").removeAttr('checked');
-          grid.setColumns([]);
+          $menu.find(":checkbox[id^=columnpicker]").not("[name='id']").removeAttr('checked');
+          idColumns = $.grep(grid.getColumns(), function(n, i){
+            return (n.field == 'id');
+          });
+          grid.setColumns(idColumns);
         }
         return;
       }
