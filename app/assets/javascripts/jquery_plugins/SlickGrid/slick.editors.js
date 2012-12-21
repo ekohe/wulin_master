@@ -1492,7 +1492,7 @@
 
           this.serializeValue = function() {
               var obj = {id: $select.val()};
-              obj.id = $('option:selected', $select).val();
+              obj.id = $('option:selected', $select).val() || defaultValue;
               return obj;
           };
 
