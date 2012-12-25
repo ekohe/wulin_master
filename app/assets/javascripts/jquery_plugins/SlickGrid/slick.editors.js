@@ -273,6 +273,10 @@
 
             this.loadValue = function(item) {
                 defaultValue = item[args.column.field] || "";
+                // defaultValue = defaultValue.replace(/&amp;/g, '&');
+                // defaultValue = defaultValue.replace(/&gt;/g, '>');
+                // defaultValue = defaultValue.replace(/&lt;/g, '<');
+                // defaultValue = defaultValue.replace(/&quot;/g, '"');
                 $input.val(defaultValue);
                 $input[0].defaultValue = defaultValue;
                 $input.select();
