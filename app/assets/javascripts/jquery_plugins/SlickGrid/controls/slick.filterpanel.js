@@ -173,7 +173,7 @@
             filters.push(this);
           });
         } else {
-          filters.push([$grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator]);
+          filters.push([$grid.master.filter_column, $grid.master.filter_value, $grid.master.filter_operator || "equals"]);
         }
       }
       $loader.setFilter(filters);
