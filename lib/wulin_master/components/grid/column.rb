@@ -58,7 +58,7 @@ module WulinMaster
         elsif value.class.name == 'BSON::ObjectId'
           value.to_s
         else
-          ERB::Util.html_escape(value.to_s)
+          String === value ? HTML::FullSanitizer.new.sanitize(value) : value
         end
       end
     end
