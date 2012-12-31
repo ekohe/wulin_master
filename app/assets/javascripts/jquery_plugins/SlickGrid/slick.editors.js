@@ -1129,6 +1129,14 @@
           var optionTextAttribute = args.column.optionTextAttribute || 'name';
           var defaultValue;
           var originColumn;
+          var addOptionText = 'Add new Option';
+          var relationColumn = (args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many');
+          var self = this;
+          var virtualGrid = {
+            name: args.column.singular_name,
+            path: '/' + args.column.table,
+            query: "?grid=" + args.column.klass_name + "Grid&screen=" + args.column.klass_name + "Screen"
+          };
           for(i in args.grid.originColumns) {
             if (args.grid.originColumns[i].name == args.column.name) {
               originColumn = args.grid.originColumns[i];
@@ -1140,8 +1148,8 @@
           
           this.init = function() {
             $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
-                .appendTo(args.container);
-            if ((args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many')) {
+              .appendTo(args.container);
+            if (relationColumn) {
               $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px' wid></select>");
             } else {
               $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
@@ -1153,8 +1161,8 @@
             if(winWith - offsetLeft < offsetWith) {
               $wrapper.offset({left: winWith - offsetWith})
             }
-            
-            window._jsonData = window._jsonData || {};
+
+            $select.empty();
             $select.append($("<option />"));
             if ($.isArray(choicesFetchPath)) {
               $.each(choicesFetchPath, function(index, value) {
@@ -1163,26 +1171,55 @@
               $select.val(args.item[args.column.field].id);
               $select.chosen({allow_single_deselect: true});
             } else {
-              if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
-                $.getJSON(choicesFetchPath, function(itemdata){
-                  window._jsonData[choicesFetchPath] = itemdata;
-                  $.each(itemdata, function(index, value) {
-                    $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-                  });
-                  $select.val(args.item[args.column.field].id);
-                  $select.chosen({allow_single_deselect: true});
-                });
+              self.getOptions();
+            }
+
+            // Open drop-down
+            setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
+          };
+
+          this.getOptions = function(selectedId, theCurrentValue) {
+            $.getJSON(choicesFetchPath, function(itemdata){
+              $select.empty();
+              $select.append($("<option />"));
+              $.each(itemdata, function(index, value) {
+                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+              });
+              $select.append('<option>' + addOptionText + '</option>');
+
+              if (selectedId) {
+                if (theCurrentValue && relationColumn) {
+                  theCurrentValue.unshift(selectedId)
+                  $select.val(theCurrentValue);
+                } else {
+                  $select.val([selectedId]);
+                }
+                $select.trigger('liszt:updated');
               } else {
-                $.each(window._jsonData[choicesFetchPath], function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-                });
                 $select.val(args.item[args.column.field].id);
                 $select.chosen({allow_single_deselect: true});
               }
-            }
-            // FIXME
-            // Fix keyboard enter bug stupidly, find a better way please.
-            setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
+
+              // Update theCurrentValue
+              $select.chosen().change(function(){ theCurrentValue = $select.val(); });
+              theCurrentValue = $select.val();
+
+              // 'Add new option' option handler
+              $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+                event.preventDefault();
+                Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function(){
+                  // register 'Create' button click event, need to remove to dialog action later
+                  $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    Requests.createByAjax({path: virtualGrid.path, name: virtualGrid.name }, false, function(data){
+                      self.getOptions(data.id, theCurrentValue);
+                      setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
+                    });
+                  })
+                });
+                return false;
+              });
+            });
           };
 
           this.destroy = function() {
@@ -1259,6 +1296,14 @@
             var optionTextAttribute = args.column.optionTextAttribute || 'name';
             var defaultValue;
             var originColumn;
+            var addOptionText = 'Add new Option';
+            var relationColumn = (args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many');
+            var self = this;
+            var virtualGrid = {
+              name: args.column.singular_name,
+              path: '/' + args.column.table,
+              query: "?grid=" + args.column.klass_name + "Grid&screen=" + args.column.klass_name + "Screen"
+            };
             for(i in args.grid.originColumns) {
               if (args.grid.originColumns[i].name == args.column.name) {
                 originColumn = args.grid.originColumns[i];
@@ -1272,7 +1317,7 @@
 
               $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
               .appendTo(args.container);
-              if ((args.column.type === 'has_and_belongs_to_many') || (args.column.type === 'has_many')) {
+              if (relationColumn) {
                 $select = $("<select class='chzn-select' multiple style='width:" + boxWidth + "px'></select>");
               } else {
                 $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
@@ -1286,8 +1331,8 @@
               if(winWith - offsetLeft < offsetWith) {
                 $wrapper.offset({left: winWith - offsetWith})
               }
-            
-              window._jsonData = window._jsonData || {};
+
+              $select.empty();
               $select.append($("<option />"));
               if ($.isArray(choicesFetchPath)) {
                 $.each(choicesFetchPath, function(index, value) {
@@ -1296,31 +1341,55 @@
                 $select.val(args.item[args.column.field].id);
                 $select.chosen({allow_single_deselect: true});
               } else {
-                if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
-                  $.getJSON(choicesFetchPath, function(itemdata){
-                    window._jsonData[choicesFetchPath] = itemdata;
-                    $.each(itemdata, function(index, value) {
-                      $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-                    });
-                    defaultValue = $.map(args.item[args.column.field], function(val,i) { return val.id; } );
-                    $select.val(defaultValue);
-                    $select.chosen({allow_single_deselect: true});
-                  });
-                } else {
-                  $.each(window._jsonData[choicesFetchPath], function(index, value) {
-                    $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-                  });
-                  defaultValue = $.map(args.item[args.column.field], function(val,i) { return val.id; } );
-                  $select.val(defaultValue);
-                  $select.chosen({allow_single_deselect: true});
-                }
+                self.getOptions();
               }
 
+              // Open drop-down
+              setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
+            };
 
-
-                // FIXME
-                // Fix keyboard enter bug stupidly, find a better way please.
-                setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
+            this.getOptions = function(selectedId, theCurrentValue) {
+              $.getJSON(choicesFetchPath, function(itemdata){
+                $select.empty();
+                $select.append($("<option />"));
+                $.each(itemdata, function(index, value) {
+                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                });
+                $select.append('<option>' + addOptionText + '</option>');
+  
+                if (selectedId) {
+                  if (theCurrentValue && relationColumn) {
+                    theCurrentValue.unshift(selectedId)
+                    $select.val(theCurrentValue);
+                  } else {
+                    $select.val([selectedId]);
+                  }
+                  $select.trigger('liszt:updated');
+                } else {
+                  $select.val(args.item[args.column.field].id);
+                  $select.chosen({allow_single_deselect: true});
+                }
+  
+                // Update theCurrentValue
+                $select.chosen().change(function(){ theCurrentValue = $select.val(); });
+                theCurrentValue = $select.val();
+  
+                // 'Add new option' option handler
+                $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+                  event.preventDefault();
+                  Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function(){
+                    // register 'Create' button click event, need to remove to dialog action later
+                    $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
+                      e.preventDefault();
+                      Requests.createByAjax({path: virtualGrid.path, name: virtualGrid.name }, false, function(data){
+                        self.getOptions(data.id, theCurrentValue);
+                        setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
+                      });
+                    })
+                  });
+                  return false;
+                });
+              });
             };
 
             this.destroy = function() {
@@ -1389,6 +1458,13 @@
           var $select, $wrapper;
           var choicesFetchPath;
           var choices = args.column.choices;
+          var addOptionText = 'Add new Option';
+          var self = this;
+          var virtualGrid = {
+            name: args.column.singular_name,
+            path: '/' + args.column.table,
+            query: "?grid=" + args.column.klass_name + "Grid&screen=" + args.column.klass_name + "Screen"
+          };
           // get choices options from choices_column value
           if(!choices && args.column.choices_column) {
             choices = args.item[args.column.choices_column]
@@ -1441,7 +1517,6 @@
               $wrapper.offset({left: winWith - offsetWith})
             }
             
-            window._jsonData = window._jsonData || {};
             $select.append($("<option />"));
 
             // if it depend on other column's value, filter the choices
@@ -1454,6 +1529,8 @@
               }
             }
 
+            $select.empty();
+            $select.append($("<option />"));
             if ($.isArray(choicesFetchPath)) {
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
@@ -1461,24 +1538,52 @@
               $select.val(args.item[args.column.field]);
               $select.chosen({allow_single_deselect: true});
             } else {
-              if ($.isEmptyObject(window._jsonData[choicesFetchPath])) {
-                $.getJSON(choicesFetchPath, function(itemdata){
-                  window._jsonData[choicesFetchPath] = itemdata;
-                  $.each(itemdata, function(index, value) {
-                    $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
-                  });
-                  $select.val(args.item[args.column.field]);
-                  $select.chosen({allow_single_deselect: true});
-                });
-              } else {
-                $.each(window._jsonData[choicesFetchPath], function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
-                });
-                $select.val(args.item[args.column.field]);
-                $select.chosen({allow_single_deselect: true});
-              }
+              self.getOptions();
             }
-            setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
+
+            // Open drop-down
+            setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
+          };
+
+          this.getOptions = function(selectedId, theCurrentValue) {
+            $.getJSON(choicesFetchPath, function(itemdata){
+              $select.empty();
+              $select.append($("<option />"));
+              $.each(itemdata, function(index, value) {
+                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+              });
+              $select.append('<option>' + addOptionText + '</option>');  
+              if (selectedId) {
+                if (theCurrentValue && relationColumn) {
+                  theCurrentValue.unshift(selectedId)
+                  $select.val(theCurrentValue);
+                } else {
+                  $select.val([selectedId]);
+                }
+                $select.trigger('liszt:updated');
+              } else {
+                $select.val(args.item[args.column.field].id);
+                $select.chosen({allow_single_deselect: true});
+              }  
+              // Update theCurrentValue
+              $select.chosen().change(function(){ theCurrentValue = $select.val(); });
+              theCurrentValue = $select.val();  
+              // 'Add new option' option handler
+              $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+                event.preventDefault();
+                Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function(){
+                  // register 'Create' button click event, need to remove to dialog action later
+                  $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    Requests.createByAjax({path: virtualGrid.path, name: virtualGrid.name }, false, function(data){
+                      self.getOptions(data.id, theCurrentValue);
+                      setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
+                    });
+                  })
+                });
+                return false;
+              });
+            });
           };
 
           this.destroy = function() {
@@ -1600,7 +1705,8 @@
                   }
                 }
                 scope.focus();
-                setTimeout(function(){ $("#" + $select.attr('id') + "_chzn .chzn-drop").css('left', '0');}, 200);
+                // Open drop-down
+                setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
                 
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;

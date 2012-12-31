@@ -65,12 +65,11 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function(grid, options, callback) {
+  openDialog: function(grid, action, options, callback) {
     var scope, width, height, name;
     name = grid.name;
-    
-    $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
 
+    $.get(grid.path + '/' + action + grid.query, function(data){
       $( '#' + name + '_form').remove();
       
       $('body').append(data);
@@ -91,7 +90,8 @@ var Ui = {
         modal: true,
         create: function(event, ui) {
           Ui.setupForm(grid, false);
-          if ($.isFunction(callback)) callback();
+          if ($.isFunction(callback))
+            callback();
         },
         close: function(event, ui) {
           scope.dialog('destroy');
@@ -107,7 +107,7 @@ var Ui = {
     var path;
     var name = grid.name;
     var scope = $('#' + name + '_form');
-    var columns = grid.getColumns();
+    var columns = window[name + "_columns"] || grid.getColumns();
     $.each(columns, function(i, n) {
       if (n['choices'] && typeof(n['choices']) == 'string') {
         remotePath.push([[n.field], n['choices']]);

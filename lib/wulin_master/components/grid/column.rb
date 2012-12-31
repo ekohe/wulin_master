@@ -18,6 +18,10 @@ module WulinMaster
       @options[:label] || @name.to_s.underscore.humanize
     end
 
+    def singular_name
+       @singular_name ||= self.reflection ? ActiveModel::Naming.singular(self.reflection.klass) : name.to_s.singularize
+    end
+
     def datetime_format
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
@@ -25,9 +29,17 @@ module WulinMaster
     def relation_table_name
       options[:join_aliased_as] || self.reflection.klass.table_name
     end
+
+    def relation_klass_name
+      @relation_klass_name ||= self.reflection.klass.name
+    end
     
     def table_name
       self.reflection ? relation_table_name : self.model.table_name.to_s
+    end
+
+    def klass_name
+      @class_name ||= self.reflection ? relation_klass_name : self.model.name
     end
 
     def field_name
@@ -40,7 +52,7 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
-      h = {:id => full_name, :column_name => self.name, :name => self.label, :table => table_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
+      h = {:id => full_name, :column_name => self.name, :singular_name => self.singular_name, :name => self.label, :table => table_name, :klass_name => klass_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -110,7 +122,7 @@ module WulinMaster
     def reflection_options
       @options[:choices] ||= begin
         if self.reflection
-          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
+          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen], distinct: @options[:distinct] }
           "/wulin_master/fetch_options?#{params_hash.to_param}"
         else
           []

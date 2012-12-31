@@ -4,7 +4,11 @@ module WulinMaster
     def index
       if authorized? and params[:text_attr].present?
         if klass.column_names.include? params[:text_attr]
-          objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+          if params[:distinct]
+            objects = klass.select("distinct on (#{params[:text_attr]}) id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+          else
+            objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+          end
         else
           objects = klass.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
         end

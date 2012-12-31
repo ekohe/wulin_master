@@ -1,14 +1,17 @@
 // ------------------------------ CRUD -------------------------------------
 var Requests = {
   // Record create by ajax
-  createByAjax: function(grid, continue_on) {
+  createByAjax: function(grid, continue_on, afterCreated) {
     var createFormElement, ajaxOptions;
     createFormElement = $('div#'+grid.name+'_form form');
     // clear all the error messages
     createFormElement.find(".field_error").text("");
     ajaxOptions = {
       url: grid.path + '.json',
-      success: function(request) {   
+      success: function(request) {
+        if (typeof afterCreated == "function") {
+          return afterCreated(request);
+        }
         if (request.success) {
           grid.resetActiveCell();
           grid.operatedIds = [request.id];
