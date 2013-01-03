@@ -70,7 +70,7 @@ module WulinMaster
         elsif value.class.name == 'BSON::ObjectId'
           value.to_s
         else
-          String === value ? HTML::FullSanitizer.new.sanitize(value) : value
+          value
         end
       end
     end
@@ -144,7 +144,7 @@ module WulinMaster
       elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
         "#{name}_name"
       else
-        ERB::Util.html_escape(name.to_s)
+        name.to_s
       end
     end
 
@@ -211,16 +211,16 @@ module WulinMaster
       case association_type.to_s
       when 'belongs_to'
         value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute).to_s
-        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => ERB::Util.html_escape(value)}}
+        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => value}}
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
-        {reflection.name => {:id => association_object.try(:id), option_text_attribute => ERB::Util.html_escape(association_object.try(:send,option_text_attribute).to_s)}}
+        {reflection.name => {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}}
       when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-        {reflection.name => {id: ids, option_text_attribute => ERB::Util.html_escape(op_attribute)}}
+        {reflection.name => {id: ids, option_text_attribute => op_attribute}}
       when 'has_many'
-        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => ERB::Util.html_escape(obj.send(option_text_attribute))}}}
+        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}}
       else
         self.format(object.send(self.name.to_s))
       end
