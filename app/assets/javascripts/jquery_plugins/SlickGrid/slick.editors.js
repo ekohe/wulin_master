@@ -1056,7 +1056,7 @@
 
               if (selectedId) {
                 if (theCurrentValue && relationColumn) {
-                  theCurrentValue.unshift(selectedId)
+                  theCurrentValue.unshift(selectedId);
                   $select.val(theCurrentValue);
                 } else {
                   $select.val([selectedId]);
@@ -1226,7 +1226,7 @@
   
                 if (selectedId) {
                   if (theCurrentValue && relationColumn) {
-                    theCurrentValue.unshift(selectedId)
+                    theCurrentValue.unshift(selectedId);
                     $select.val(theCurrentValue);
                   } else {
                     $select.val([selectedId]);
@@ -1422,7 +1422,7 @@
               $select.append('<option>' + addOptionText + '</option>');  
               if (selectedId) {
                 if (theCurrentValue && relationColumn) {
-                  theCurrentValue.unshift(selectedId)
+                  theCurrentValue.unshift(selectedId);
                   $select.val(theCurrentValue);
                 } else {
                   $select.val([selectedId]);
