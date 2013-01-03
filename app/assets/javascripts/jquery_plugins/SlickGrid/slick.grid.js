@@ -82,7 +82,8 @@ if (typeof Slick === "undefined") {
             cellFlashingCssClass: "flashing",
             selectedCellCssClass: "selected",
             multiSelect: true,
-            enableTextSelectionOnCells: false
+            enableTextSelectionOnCells: false,
+            defaultFormatter: defaultFormatter
         };
 
         var columnDefaults = {
@@ -1051,7 +1052,11 @@ if (typeof Slick === "undefined") {
         }
 
         function defaultFormatter(row, cell, value, columnDef, dataContext) {
-            return (value === null || value === undefined) ? "" : value;
+            if (value == null) {
+                return "";
+            } else {
+                return value.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+            }
         }
 
         function getFormatter(row, column) {
@@ -1066,7 +1071,7 @@ if (typeof Slick === "undefined") {
                     (rowMetadata && rowMetadata.formatter) ||
                     column.formatter ||
                     (options.formatterFactory && options.formatterFactory.getFormatter(column)) ||
-                    defaultFormatter;
+                    options.defaultFormatter;
         }
 
         function getEditor(row, cell) {
