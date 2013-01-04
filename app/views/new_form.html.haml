@@ -81,19 +81,4 @@
         %input.btn.success{:id => "#{@grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
         %input.btn{:id => "#{@grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
 
-  :javascript
-    $('##{@grid.name}_form select[data-required="true"]').chosen();
-    $('##{@grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-    $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('input[data-datetime]').datetimepicker({
-      onlyTime: false,
-      dateFormat: "yy-mm-dd",
-      timeFormat: 'hh:mm',
-      timeOnly: false,
-      stepMinute: 1,
-      minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true },
-      onClose: function() { calendarOpen = false }
-    });
-    $('input[data-time]').timepicker({});
   

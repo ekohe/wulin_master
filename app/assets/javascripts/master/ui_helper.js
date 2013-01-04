@@ -53,6 +53,7 @@ var Ui = {
     $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
       newFormDom = $(data);
       $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
+      Ui.setupComponents(grid);
       setTimeout(function(){ Ui.setupForm(grid, false); }, 350)
     });
   },
@@ -89,6 +90,7 @@ var Ui = {
         show: "blind",
         modal: true,
         create: function(event, ui) {
+          Ui.setupComponents(grid);
           Ui.setupForm(grid, false);
           if ($.isFunction(callback))
             callback();
@@ -101,6 +103,32 @@ var Ui = {
     });
   },
 
+  setupComponents: function(grid) {
+    var name = grid.name;
+    // setup select as chosen
+    $('#' + name + '_form select[data-required="true"]').chosen();
+    $('#' + name + '_form select[data-required="false"]').chosen({allow_single_deselect: true});
+
+    $('#' + name + '_form select').off('change').on('change', function(){
+      var flag = $('#' + name + '_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+      if (flag.size() > 0) flag.attr('checked', 'checked');
+    });
+
+    // setup datepicker
+    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#' + name + '_form input[data-datetime]').datetimepicker({
+      onlyTime: false,
+      dateFormat: "yy-mm-dd",
+      timeFormat: 'hh:mm',
+      timeOnly: false,
+      stepMinute: 1,
+      minuteGrid: 0,
+      beforeShow: function() { calendarOpen = true },
+      onClose: function() { calendarOpen = false }
+    });
+    $('#' + name + '_form input[data-time]').timepicker({});
+  }, 
+
   setupForm: function(grid, monitor) {
     var remotePath = [];
     var choicesColumn = [];
@@ -109,6 +137,7 @@ var Ui = {
     var scope = $('#' + name + '_form');
     var columns = window[name + "_columns"] || grid.getColumns();
     var currentData = grid.loader.data[grid.getSelectedRows()[0]];
+
     // special handling for 'choices' and 'choices_column' options
     $.each(columns, function(i, n) {
       if (n['choices'] && typeof(n['choices']) == 'string') {
