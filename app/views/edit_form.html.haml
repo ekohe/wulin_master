@@ -45,7 +45,7 @@
                 :disabled          => column.options[:auto_fill]    |
               = clean_up_for(column)
 
-            - elsif column.options[:choices].present?
+            - elsif column.options[:choices].present? or column.options[:choices_column].present?
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
                 :style             => "width:250px",                 |

@@ -102,23 +102,24 @@ var Ui = {
   },
 
   setupForm: function(grid, monitor) {
-    var hasRemotePath = false;
     var remotePath = [];
+    var choicesColumn = [];
     var path;
     var name = grid.name;
     var scope = $('#' + name + '_form');
     var columns = window[name + "_columns"] || grid.getColumns();
+    var currentData = grid.loader.data[grid.getSelectedRows()[0]];
+    // special handling for 'choices' and 'choices_column' options
     $.each(columns, function(i, n) {
       if (n['choices'] && typeof(n['choices']) == 'string') {
-        remotePath.push([[n.field], n['choices']]);
-        hasRemotePath = true;
+        remotePath.push([n.field, n['choices']]);
+      } else if (n['choices_column']) {
+        choicesColumn.push([n.field, currentData[n['choices_column']]]);
       }
     });
 
     // Fetch select options from remote
-    if (hasRemotePath) {
-      window._jsonData = window._jsonData || {};
-
+    if (remotePath.length > 0) {
       $.each(remotePath, function(i, n) {
         var field = n[0];
         var path = n[1];
@@ -129,20 +130,30 @@ var Ui = {
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-          if (!window._jsonData[path]) {
-            $.getJSON(path, function(itemdata){
-              window._jsonData[path] = itemdata;
-              $.each(itemdata, function(index, value) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
-              });
-              Ui.setupChosen(target, monitor);
-            });
-          } else {
-            $.each(window._jsonData[path], function(index, value) {
+   
+          $.getJSON(path, function(itemdata){
+            $.each(itemdata, function(index, value) {
               target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
             });
             Ui.setupChosen(target, monitor);
-          }
+          });
+
+        }
+      });
+    }
+
+    // Fetch select options from current data
+    if (choicesColumn.length > 0) {
+        $.each(choicesColumn, function(i, n) {
+        var field = n[0];
+        var first_input;
+        var target = $("select[data-column='" + field + "']", scope);
+        if (target.size() == 1) {
+          $('option[value!=""]', target).remove();
+            $.each(n[1], function(index, value) {
+              target.append("<option value='" + value + "'>" + value + "</option>");
+            });
+            Ui.setupChosen(target, monitor);
         }
       });
     }
