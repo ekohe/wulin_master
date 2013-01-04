@@ -53,8 +53,8 @@ var Ui = {
     $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
       newFormDom = $(data);
       $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
+      setTimeout(function(){ Ui.setupForm(grid, false); }, 350);
       Ui.setupComponents(grid);
-      setTimeout(function(){ Ui.setupForm(grid, false); }, 350)
     });
   },
 
@@ -90,7 +90,6 @@ var Ui = {
         show: "blind",
         modal: true,
         create: function(event, ui) {
-          Ui.setupComponents(grid);
           Ui.setupForm(grid, false);
           if ($.isFunction(callback))
             callback();

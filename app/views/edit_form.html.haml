@@ -88,6 +88,26 @@
         %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
 
   :javascript
+    $('##{@grid.name}_form select[data-required="true"]').chosen();
+    $('##{@grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('##{@grid.name}_form select').off('change').on('change', function(){
+      var flag = $('##{@grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+      if (flag.size() > 0) flag.attr('checked', 'checked');
+    });
+
+    $('##{@grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('##{@grid.name}_form input[data-datetime]').datetimepicker({
+      onlyTime: false,
+      dateFormat: "yy-mm-dd",
+      timeFormat: 'hh:mm',
+      timeOnly: false,
+      stepMinute: 1,
+      minuteGrid: 0,
+      beforeShow: function() { calendarOpen = true },
+      onClose: function() { calendarOpen = false }
+    });
+    $('##{@grid.name}_form input[data-time]').timepicker({});
+
     $(function(){
       $('##{@grid.name}_form .input_clean_up').off('click').on('click', function(){
         var $input = $('##{@grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
