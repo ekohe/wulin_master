@@ -30,6 +30,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       var detailGrid = this.detail_grids[i];
       // save the master relation info into detail grid
       detailGrid.master = {filter_column: association_key, filter_value: masterIds[0], filter_operator: this.operator};
+      detailGrid.master_grid = this.master_grid;
       // apply sorting state if has
       var sortingStates = detailGrid.states["sort"];
       if(sortingStates) {

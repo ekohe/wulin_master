@@ -262,6 +262,9 @@ A column can be a real field in the database table of current model, or virtual 
   `:choices`
   This option should be used together with 'SelectEditor', it specifies the options of the dropdown. Its value can be an array, a url path which can return a response of array, or a hash in very rare case.
   
+  `:choices_columm`
+  This option should be used together with 'SelectEditor', its value should be another column name in the grid, and the value of the column for current record is an array, so that current dropdown will load the array items as options.
+
   `:file`
   If this column is a file field, like image or any file, you should add this option and set it to true. It will use file_field in the new/edit form.
   
@@ -578,6 +581,7 @@ For master-detail relationship, wulin_master provides a build-in action `add_det
     end
 
 In above code, action :add_detail must have two neccessary option, `model` and `screen`, `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from.
+add_detail action can has the option `reload_master`, if set to true, once finish adding the detail records, the master grid will be reloaded automatically. (this option can also be applied to :delete action when it is used as 'remove detail').
 
 
 ##### detail_model option

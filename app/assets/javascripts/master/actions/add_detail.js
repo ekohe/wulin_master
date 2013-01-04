@@ -73,6 +73,10 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         dialogDom.dialog( "destroy" );
         dialogDom.remove();
         self.target.loader.reloadData();
+        // reload master grid (in some cases, attaching a detail will affect the master record's data)
+        if(self.reload_master && self.target.master_grid) {
+          self.target.master_grid.loader.reloadData();
+        }
       });
     }
   }
