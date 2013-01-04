@@ -19,7 +19,7 @@ module WulinMasterGridHelper
     elsif choices.is_a?(Hash) # TODO: support hash options
       choices.map{|k,v| v.inject("<option value=''></option>"){|str, e| str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"}}.inject(""){|options, x| options << x}.html_safe
     else
-      []
+      array_to_options([])
     end
   end
 
