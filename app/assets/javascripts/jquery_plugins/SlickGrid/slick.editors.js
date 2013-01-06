@@ -1003,7 +1003,7 @@
         
         // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
         BelongsToEditor : function(args) {
-            var column = args.column;
+          var column = args.column;
           var $select, $wrapper;
           var choicesFetchPath = column.choices;
           var optionTextAttribute = column.optionTextAttribute || 'name';
@@ -1065,7 +1065,10 @@
               $.each(itemdata, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
-              $select.append('<option>' + addOptionText + '</option>');
+
+              if (column.dynamic_options) {
+                $select.append('<option>' + addOptionText + '</option>');
+              }
 
               if (selectedId) {
                 if (theCurrentValue && relationColumn) {
@@ -1236,7 +1239,10 @@
                 $.each(itemdata, function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.append('<option>' + addOptionText + '</option>');
+                
+                if (column.dynamic_options) {
+                  $select.append('<option>' + addOptionText + '</option>');
+                }
   
                 if (selectedId) {
                   if (theCurrentValue && relationColumn) {
@@ -1434,7 +1440,11 @@
                 $.each(itemdata, function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.append('<option>' + addOptionText + '</option>');
+                
+                if (column.dynamic_options) {
+                  $select.append('<option>' + addOptionText + '</option>');
+                }
+
                 if (selectedId) {
                   if (theCurrentValue && relationColumn) {
                     theCurrentValue.unshift(selectedId);
