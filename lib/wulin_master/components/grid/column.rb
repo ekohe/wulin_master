@@ -61,9 +61,9 @@ module WulinMaster
     # Called during json rendering
     def format(value)
       if @options[:simple_date]
-        value.strftime('%d %b')
+        value.respond_to?(:strftime) ? value.strftime('%d %b') : value
       elsif @options[:simple_time]
-        value.strftime('%H:%M')
+        value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
         if value.class == Time || value.class == ActiveSupport::TimeWithZone
           value.to_formatted_s(datetime_format)

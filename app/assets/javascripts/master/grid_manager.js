@@ -80,7 +80,7 @@
 
         if (columns[i].simple_date || columns[i].simple_time) {
           columns[i].editor = TextCellEditor;
-          columns[i].formatter = defaultFormatter;
+          columns[i].formatter = undefined;
         }
       }
     }
