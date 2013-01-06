@@ -303,6 +303,12 @@ A column can be a real field in the database table of current model, or virtual 
   `:simple_time`
   As default, if the column is time type, it will use datetimepicker in cell editor and popup form, if you just want a text input instead this, you should use this option and set it to `true`
 
+  `:dynamic_options`
+  This option is only useful for some relation column, For examplem Post belongs ot Category, in Post grid category cell editor should be a drop-down, if set `:dynamic_options` to true for category column in Post grid, where will be a 'Add new option' option at botoom of categroy drop-down. When you click 'Add new option' option, category create dialog form will be popuped, you can create a new category in that form and then drop-down will selected the created category automatically.
+
+  `:distinct`
+  This option is only useful for some relation column editor(drop-down).Set this option to true, each options in drop-down will be unique.
+
 
 #### Grid styles
 
