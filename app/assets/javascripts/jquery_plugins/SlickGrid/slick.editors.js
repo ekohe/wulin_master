@@ -1118,22 +1118,27 @@
           };
 
           this.isValueChanged = function() {
-              // return true if the value(s) being edited by the user has/have been changed
-              var selectedValue = $select.val();
+            // return true if the value(s) being edited by the user has/have been changed
+            var selectedValue = $select.val();
 
-              if (relationColumn) {
-                if ($select.val().length != defaultValue.length) {
-                  return true;
-                } else {
-                  $.each(defaultValue, function(i, n) {
-                    if (selectedValue.indexOf(n.toString()) == -1) {
-                      return true;
-                    }
-                  });
-                }
+            if (relationColumn) {
+              if (selectedValue) {
+                  if ($select.val().length != defaultValue.length) {
+                    return true;
+                  } else {
+                    $.each(defaultValue, function(i, n) {
+                      if (selectedValue.indexOf(n.toString()) == -1) {
+                        return true;
+                      }
+                    });
+                  }
               } else {
-                return (selectedValue != defaultValue);
+                  return defaultValue.length > 0;
               }
+              return false;
+            } else {
+              return (selectedValue != defaultValue);
+            }
           };
 
           this.serializeValue = function() {
@@ -1305,19 +1310,24 @@
             };
 
             this.isValueChanged = function() {
-                // return true if the value(s) being edited by the user has/have been changed
+              // return true if the value(s) being edited by the user has/have been changed
               var selectedValue = $select.val();
-
+  
               if (relationColumn) {
-                if ($select.val().length != defaultValue.length) {
-                  return true;
-                } else {
-                  $.each(defaultValue, function(i, n) {
-                    if (selectedValue.indexOf(n.toString()) == -1) {
+                if (selectedValue) {
+                    if ($select.val().length != defaultValue.length) {
                       return true;
+                    } else {
+                      $.each(defaultValue, function(i, n) {
+                        if (selectedValue.indexOf(n.toString()) == -1) {
+                          return true;
+                        }
+                      });
                     }
-                  });
+                } else {
+                    return defaultValue.length > 0;
                 }
+                return false;
               } else {
                 return (selectedValue != defaultValue);
               }
