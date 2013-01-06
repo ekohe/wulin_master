@@ -135,7 +135,10 @@ var Ui = {
     var name = grid.name;
     var scope = $('#' + name + '_form');
     var columns = window[name + "_columns"] || grid.getColumns();
-    var currentData = grid.loader.data[grid.getSelectedRows()[0]];
+    var currentData = {};
+
+    if (grid.loader)
+      currentData = grid.loader.data[grid.getSelectedRows()[0]];
 
     // special handling for 'choices' and 'choices_column' options
     $.each(columns, function(i, n) {
