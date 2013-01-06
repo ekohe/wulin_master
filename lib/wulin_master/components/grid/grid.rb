@@ -180,14 +180,19 @@ module WulinMaster
       end
     end
 
+    def full_includes
+      @full_includes ||= self.columns.map{|col| col.includes}.flatten.uniq
+    end
+
     # Returns the includes to add to the query
     def includes
-      @includes ||= remove_through_model(self.columns.map{|col| col.includes}.flatten.uniq)
+      @includes ||= remove_through_model(full_includes)
     end
 
     # Returns the joins to add to the query
     def joins
-      @joins ||= (self.columns.map{|col| col.joins}.flatten.uniq - includes)
+      full_joins = self.columns.map{|col| col.joins}.flatten.uniq
+      @joins ||= remove_through_model(full_joins - full_includes)
     end
 
     def arraify(objects)
@@ -219,9 +224,11 @@ module WulinMaster
     # remove some relations which are the through relations, otherwise the query will includes or joins the model twice
     # (one from itself, one from the model which related with main model through it)
     def remove_through_model(relations)
-      relations.each do |relation|
-        relations.delete(model.reflections[relation].options[:through])
+      relations_dup = relations.dup
+      relations_dup.each do |relation|
+        relations_dup.delete(model.reflections[relation].options[:through])
       end
+      relations_dup
     end
     
     def find_sort_column_by_name(column_name)
