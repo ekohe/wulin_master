@@ -1109,7 +1109,7 @@
 
           this.destroy = function() {
               // remove all data, events & dom elements created in the constructor
-              $select.remove();
+              $wrapper.remove();
           };
 
           this.focus = function() {
@@ -1119,7 +1119,21 @@
 
           this.isValueChanged = function() {
               // return true if the value(s) being edited by the user has/have been changed
-              return ($select.val() != defaultValue);
+              var selectedValue = $select.val();
+
+              if (relationColumn) {
+                if ($select.val().length != defaultValue.length) {
+                  return true;
+                } else {
+                  $.each(defaultValue, function(i, n) {
+                    if (selectedValue.indexOf(n.toString()) == -1) {
+                      return true;
+                    }
+                  });
+                }
+              } else {
+                return (selectedValue != defaultValue);
+              }
           };
 
           this.serializeValue = function() {
@@ -1200,7 +1214,6 @@
             var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
             var offsetWith = boxWidth + 28;
             this.init = function() {
-
               $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
               .appendTo(args.container);
               if (relationColumn) {
@@ -1283,7 +1296,7 @@
 
             this.destroy = function() {
                 // remove all data, events & dom elements created in the constructor
-              $select.remove();
+              $wrapper.remove();
             };
 
             this.focus = function() {
@@ -1293,7 +1306,21 @@
 
             this.isValueChanged = function() {
                 // return true if the value(s) being edited by the user has/have been changed
-                return ($select.val() != defaultValue);
+              var selectedValue = $select.val();
+
+              if (relationColumn) {
+                if ($select.val().length != defaultValue.length) {
+                  return true;
+                } else {
+                  $.each(defaultValue, function(i, n) {
+                    if (selectedValue.indexOf(n.toString()) == -1) {
+                      return true;
+                    }
+                  });
+                }
+              } else {
+                return (selectedValue != defaultValue);
+              }
             };
 
             this.serializeValue = function() {
@@ -1481,7 +1508,7 @@
             };
 
             this.destroy = function() {
-                $select.remove();
+                $wrapper.remove();
             };
 
             this.focus = function() {
