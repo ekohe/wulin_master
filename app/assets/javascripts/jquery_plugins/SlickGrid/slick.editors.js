@@ -1067,6 +1067,8 @@
               });
 
               if (column.dynamic_options) {
+                console.log(column);
+                console.log(column.dynamic_options);
                 $select.append('<option>' + addOptionText + '</option>');
               }
 
