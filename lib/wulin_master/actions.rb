@@ -76,7 +76,7 @@ module WulinMaster
       @records = grid.model.find(ids)
       param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
       if param_attrs.present?
-        updated_attributes = get_attributes(param_attrs, :update)
+        updated_attributes = get_attributes(param_attrs, :update, @records.first)
         grid.model.transaction do
           @records.each do |record|
             record.update_attributes!(updated_attributes)
@@ -113,7 +113,8 @@ module WulinMaster
 
 
     def create
-      attrs = get_attributes(params[ActiveModel::Naming.param_key(grid.model).to_sym].presence || params[:item].presence, :create)
+      param_key = ActiveModel::Naming.param_key(grid.model).to_sym
+      attrs = get_attributes(params[param_key].presence || params[:item].presence, :create)
       @record = grid.model.new(attrs)
       message = if @record.save
         {:success => true, :id => @record.id }
@@ -200,9 +201,9 @@ module WulinMaster
       json
     end
 
-    def get_attributes(attrs, type)
+    def get_attributes(attrs, type, object = nil)
       attrs.delete_if {|k,v| k == "id" }
-      new_attributes = grid.map_attrs(attrs, type)
+      new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
       attrs
     end

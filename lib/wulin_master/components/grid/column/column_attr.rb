@@ -1,7 +1,7 @@
 module WulinMaster
   module ColumnAttr
 
-    def assign_attribute(value, new_attrs, attrs, type)
+    def assign_attribute(object, value, new_attrs, attrs, type)
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
         if type == :create
@@ -10,9 +10,9 @@ module WulinMaster
           assign_relation_attr_for_update(new_attrs, value)
         end
       elsif options[:simple_date]
-        assign_simple_date_attr(new_attrs, value)
+        assign_simple_date_attr(new_attrs, value, object)
       elsif options[:simple_time]
-        assign_simple_time_attr(new_attrs, value)
+        assign_simple_time_attr(new_attrs, value, object)
       elsif vaild_attr?
         attrs.delete_if {|key, value| key.to_s == field_str }
       elsif value.blank?  #v == 'null'
@@ -26,12 +26,18 @@ module WulinMaster
 
     private
 
-    def assign_simple_date_attr(new_attrs, value)
-      new_attrs[field_sym] = Date.parse("#{value} #{WulinMaster.config.default_year}").to_s
+    def assign_simple_date_attr(new_attrs, value, object)
+      value_was = object.__send__("#{field_str}_was")
+      new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
+      return new_attrs[field_sym] = new_date.to_s  if value_was.blank?
+      new_attrs[field_sym] = value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s
     end
 
-    def assign_simple_time_attr(new_attrs, value)
-      new_attrs[field_sym] = value
+    def assign_simple_time_attr(new_attrs, value, object)
+      value_was = object.__send__("#{field_str}_was")
+      new_time = Time.parse(value)
+      return new_attrs[field_sym] = value if value_was.blank?
+      new_attrs[field_sym] = value_was.change(hour: new_time.hour, min: new_time.min)
     end
 
     def assign_relation_attr_for_create(new_attrs, value)
