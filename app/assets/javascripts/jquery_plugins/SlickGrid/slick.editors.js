@@ -1067,8 +1067,6 @@
               });
 
               if (column.dynamic_options) {
-                console.log(column);
-                console.log(column.dynamic_options);
                 $select.append('<option>' + addOptionText + '</option>');
               }
 
@@ -1673,6 +1671,150 @@
             }
 
             this.init();
+        },
+
+                // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
+        DistinctEditor : function(args) {
+          var column = args.column;
+          var $select, $wrapper;
+          var choicesFetchPath = column.choices;
+          var optionTextAttribute = column.optionTextAttribute || 'name';
+          var defaultValue;
+          var originColumn;
+          var addOptionText = 'Add new Option';
+          var bottomOption = '<option>' + addOptionText + '</option>';
+          var self = this;
+          for(i in args.grid.originColumns) {
+            if (args.grid.originColumns[i].name == column.name) {
+              originColumn = args.grid.originColumns[i];
+              break;
+            }
+          }
+          var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
+          var offsetWith = boxWidth + 28;
+          
+          this.init = function() {
+            $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+              .appendTo(args.container);
+            $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>");
+            $select.appendTo($wrapper);
+            $select.focus();
+            var winWith = $(window).width(),
+            offsetLeft = $wrapper.offset().left;
+            if(winWith - offsetLeft < offsetWith) {
+              $wrapper.offset({left: winWith - offsetWith})
+            }
+
+            $select.empty();
+            $select.append($("<option />"));
+
+            self.getOptions();
+
+            // Open drop-down
+            setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
+          };
+
+          this.getOptions = function() {
+            $.getJSON(choicesFetchPath, function(itemdata){
+              $select.empty();
+              $select.append($("<option />"));
+              $.each(itemdata, function(index, value) {
+                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+              });
+
+              $select.append(bottomOption);
+              $select.val(args.item[column.field]);
+              $select.chosen({allow_single_deselect: true});
+              // 'Add new option' option handler
+              $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+                var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new " + column.name, class: "create_form"}).css('display', 'none').appendTo($('body'));
+                var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
+                var $submitDiv = $("<div />").attr({style: 'padding: 0 30px;'});
+                $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + column.name + '</label>');
+                $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
+                $fieldDiv.appendTo($dialog);
+                $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + column.name + ' " name="commit">');
+                $submitDiv.appendTo($dialog);
+                $dialog.dialog({
+                  autoOpen: true,
+                  width: 450,
+                  height: 180,
+                  modal: true,
+                  buttons: {
+                    "Cancel": function() {
+                      $(this).dialog("destroy");
+                      $(this).remove();
+                    }
+                  },
+                  open: function(event, ui) {
+                    $('#distinct_submit', $(this)).on('click', function(){
+                        var optionText = $('#distinct_dialog #distinct_field').val();
+                        if (optionText) {
+                            $('option:contains("' + addOptionText + '")',$select).before('<option value="' + optionText + '">' + optionText + '</option>');
+                            $select.val(optionText);
+                            $select.trigger('liszt:updated');
+                            $dialog.dialog("destroy");
+                            $dialog.remove();
+                        } else {
+                            alert('New ' + column.name + ' can not be blank!')
+                        }
+                    })
+                  },
+                  close: function(event, ui) {
+                    $(this).dialog("destroy");
+                    $(this).remove();
+                  }
+                });
+
+                return false;
+              });
+            });
+          };
+
+          this.destroy = function() {
+              // remove all data, events & dom elements created in the constructor
+              $wrapper.remove();
+          };
+
+          this.focus = function() {
+              // set the focus on the main input control (if any)
+              $select.focus();
+          };
+
+          this.isValueChanged = function() {
+              // return true if the value(s) being edited by the user has/have been changed
+              return ($select.val() != defaultValue);
+          };
+
+          this.serializeValue = function() {
+              return $select.val() || defaultValue;
+          };
+
+          this.loadValue = function(item) {
+              defaultValue = item[column.field] || "";
+              $select.val(defaultValue);
+              $select[0].defaultValue = defaultValue;
+              $select.select();
+          };
+
+          this.applyValue = function(item,state) {
+              item[column.field] = state;
+          };
+
+          this.validate = function() {
+              // validate user input and return the result along with the validation message, if any
+              // if the input is valid, return {valid:true,msg:null}
+              return {
+                  valid: true,
+                  msg: null
+              };
+          };
+
+          this.getCell = function(){
+            return $select.parent();
+          }
+
+          this.init();
         }
         
 

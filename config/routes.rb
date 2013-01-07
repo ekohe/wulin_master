@@ -11,8 +11,9 @@ Rails.application.routes.draw do
       end
     end
     
-    match 'fetch_options', :to => WulinMaster::FetchOptionsController.action(:index)
-    match 'specify_fetch', :to => WulinMaster::FetchOptionsController.action(:specify_fetch)
+    get 'fetch_options', :to => WulinMaster::FetchOptionsController.action(:index)
+    get 'specify_fetch', :to => WulinMaster::FetchOptionsController.action(:specify_fetch)
+    get 'fetch_distinct_options', :to => WulinMaster::FetchOptionsController.action(:fetch_distinct_options)
     post 'include', :to => WulinMaster::InclusionExclusionController.action(:include)
     post 'exclude', :to => WulinMaster::InclusionExclusionController.action(:exclude)
     get 'get_detail_controller', :to => WulinMaster::MasterDetailController.action(:get_detail_controller)

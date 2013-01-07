@@ -4,11 +4,7 @@ module WulinMaster
     def index
       if authorized? and params[:text_attr].present?
         if klass.column_names.include? params[:text_attr]
-          if params[:distinct]
-            objects = klass.select("distinct on (#{params[:text_attr]}) id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
-          else
-            objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
-          end
+          objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
         else
           objects = klass.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
         end
@@ -30,6 +26,17 @@ module WulinMaster
           objects = klass.all.sort{|x,y| x.send(params[:name_attr]).to_s.downcase <=> y.send(params[:name_attr]).to_s.downcase}
         end
         self.response_body = objects.to_json
+      else
+        self.response_body = [].to_json
+      end
+    rescue
+      self.response_body = [].to_json
+    end
+
+    def fetch_distinct_options
+      if authorized? and params[:text_attr].present?
+        object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr])
+        self.response_body = object_arr.collect{|o| {:id => o, params[:text_attr].to_sym => o} }.to_json
       else
         self.response_body = [].to_json
       end
@@ -64,7 +71,7 @@ module WulinMaster
     end
     
     def klass
-      column.reflection.try(:klass) || params[:klass].safe_constantizepake
+      column.reflection.try(:klass) || params[:klass].safe_constantize
     end
     
     def column

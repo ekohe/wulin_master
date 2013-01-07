@@ -49,6 +49,7 @@ module WulinMaster
     def to_column_model(screen_name)
       @options[:screen] = screen_name
       @options[:choices] = @options[:choices].call if @options[:choices].is_a?(Proc)
+      append_distinct_options if @options[:distinct]
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
@@ -119,11 +120,21 @@ module WulinMaster
       @reflection ||= self.model.reflections[(@options[:through] || @name).to_sym]
     end
 
+    def append_distinct_options
+      @options[:choices] ||= begin
+        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }
+        "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
+      end
+    end
+
     def reflection_options
       @options[:choices] ||= begin
         if self.reflection
-          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen], distinct: @options[:distinct] }
+          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
           "/wulin_master/fetch_options?#{params_hash.to_param}"
+        elsif @options[:distinct]
+          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }
+          "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
         else
           []
         end
@@ -149,11 +160,11 @@ module WulinMaster
     end
 
     def foreign_key
-      self.reflection.try(:foreign_key).to_s
+      @foreign_key ||= self.reflection.try(:foreign_key).to_s
     end
 
     def form_name
-      foreign_key.presence || self.name
+      @form_name ||= foreign_key.presence || self.name
     end
 
     # Returns the sql names used to generate the select
