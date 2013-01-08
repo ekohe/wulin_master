@@ -142,7 +142,7 @@ var Ui = {
 
     // special handling for 'choices' and 'choices_column' options
     $.each(columns, function(i, n) {
-      if (n['choices'] && typeof(n['choices']) == 'string') {
+      if (n['choices'] && typeof(n['choices']) == 'string' && !n['distinct']) {
         remotePath.push([n.field, n['choices']]);
       } else if (n['choices_column']) {
         choicesColumn.push([n.field, currentData[n['choices_column']]]);

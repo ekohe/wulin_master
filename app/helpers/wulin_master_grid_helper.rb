@@ -79,6 +79,10 @@ module WulinMasterGridHelper
     end
   end
 
+  def select_tag_field?(column)
+    (column.options[:choices].present? or column.options[:choices_column].present?) and !column.options[:distinct]
+  end
+
   def clean_up_for(column)
     column_name = get_column_name(column)
     clean_up_tag(column_name) if column.presence_required?

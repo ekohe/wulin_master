@@ -38,7 +38,7 @@
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
 
-            - elsif column.options[:choices].present?
+            - elsif select_tag_field?(column)
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
                 :style             => "width:250px",                 |
