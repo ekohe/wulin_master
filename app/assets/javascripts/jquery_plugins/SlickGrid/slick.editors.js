@@ -1719,7 +1719,7 @@
               $select.empty();
               $select.append($("<option />"));
               $.each(itemdata, function(index, value) {
-                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                $select.append("<option value='" + value + "'>" + value + "</option>");
               });
 
               $select.append(bottomOption);
