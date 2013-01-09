@@ -1787,7 +1787,7 @@
           };
 
           this.serializeValue = function() {
-              return $select.val() || defaultValue;
+              return $select.val();
           };
 
           this.loadValue = function(item) {
