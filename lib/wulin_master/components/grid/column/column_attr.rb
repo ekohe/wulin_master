@@ -27,12 +27,12 @@ module WulinMaster
     private
 
     def assign_simple_date_attr(new_attrs, value, object)
-      new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
       if object
+        new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
         value_was = object.__send__("#{field_str}_was")
         new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
       else
-        new_attrs[field_sym] = new_date.to_s
+        new_attrs[field_sym] = value
       end
     end
 
