@@ -27,17 +27,23 @@ module WulinMaster
     private
 
     def assign_simple_date_attr(new_attrs, value, object)
-      value_was = object.__send__("#{field_str}_was")
       new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
-      return new_attrs[field_sym] = new_date.to_s  if value_was.blank?
-      new_attrs[field_sym] = value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s
+      if object
+        value_was = object.__send__("#{field_str}_was")
+        new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
+      else
+        new_attrs[field_sym] = new_date.to_s
+      end
     end
 
     def assign_simple_time_attr(new_attrs, value, object)
-      value_was = object.__send__("#{field_str}_was")
-      new_time = Time.parse(value)
-      return new_attrs[field_sym] = value if value_was.blank?
-      new_attrs[field_sym] = value_was.change(hour: new_time.hour, min: new_time.min)
+      if object
+        value_was = object.__send__("#{field_str}_was")
+        new_time = Time.parse(value)
+        new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
+      else
+        new_attrs[field_sym] = value
+      end
     end
 
     def assign_relation_attr_for_create(new_attrs, value)
