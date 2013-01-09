@@ -1,6 +1,10 @@
 /* THESE FORMATTERS ARE JUST SAMPLES! */
 (function($) {
     var SlickFormatter = {
+
+        RawFormatter: function(row, cell, value, columnDef, dataContext) {
+            return (value == null) ? "" : value;
+        },
   
         TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
             return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>"
