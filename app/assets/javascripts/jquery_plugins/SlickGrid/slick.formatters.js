@@ -105,11 +105,29 @@
         SimpleDateFormatter: function(row, cell, value, columnDef, dataContext) {
             if (value == null || value === "") {
                 return "";
+            } else if ($.isPlainObject(value)) {
+                return value[columnDef.optionTextAttribute];;
             }
 
             if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
                 var thedate = $.datepicker.parseDate("yy-mm-dd", value);
                 return thedate.format("dd mmm");
+            } else {
+                return value;
+            }
+        },
+
+        SimpleTimeFormatter: function(row, cell, value, columnDef, dataContext) {
+            var timeArr;
+            if (value == null || value === "") {
+                return "";
+            } else if ($.isPlainObject(value)) {
+                return value[columnDef.optionTextAttribute];;
+            }
+
+            if (/^(\d{4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,2}\s)?\d{1,2}:\d{1,2}$/.test(value)) {
+                timeArr = value.split(/\s/);
+                return timeArr[timeArr.length - 1];
             } else {
                 return value;
             }
