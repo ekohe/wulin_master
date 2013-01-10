@@ -24,11 +24,16 @@ module WulinMaster
       @model_associations ||= self.model.reflections
     end
 
+    def simple_date_format(value)
+      Date.parse("#{value} #{WulinMaster.config.default_year}")
+    end
+    module_function :simple_date_format
+
     private
 
     def assign_simple_date_attr(new_attrs, value, object)
       if object and value.present?
-        new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
+        new_date = simple_date_format(value)
         value_was = object.__send__("#{field_str}_was")
         new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
       else
