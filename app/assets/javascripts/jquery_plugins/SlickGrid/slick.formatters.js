@@ -106,7 +106,7 @@
             if (value == null || value === "") {
                 return "";
             } else if ($.isPlainObject(value)) {
-                return value[columnDef.optionTextAttribute];;
+                value = value[columnDef.optionTextAttribute];
             }
 
             if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
@@ -122,7 +122,7 @@
             if (value == null || value === "") {
                 return "";
             } else if ($.isPlainObject(value)) {
-                return value[columnDef.optionTextAttribute];;
+                value = value[columnDef.optionTextAttribute];
             }
 
             if (/^(\d{4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,2}\s)?\d{1,2}:\d{1,2}$/.test(value)) {
