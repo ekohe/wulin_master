@@ -9,7 +9,7 @@
 
     datepicker_str = ''
     object = @grid.model.new
-  .create_form{:id => "#{@grid.name}_form", :title => "Update #{model_name.titleize}"}
+  .create_form{:id => "#{@grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
     = form_for object, :url => @grid.path do |form|
       - columns.each do |column|
         - if edit_form_able?(column)
@@ -50,8 +50,8 @@
                 select_tag_options(column),                          |
                 :style             => "width:250px",                 |
                 :disabled          => column.options[:auto_fill],    |
-                :include_blank     => !column.presence_required?,    |
-                "data-required"    => column.presence_required?,     |
+                :include_blank     => !required?(column),             |
+                "data-required"    => required?(column),             |
                 "data-target"      => "#{column_name}_target_flag",  |
                 "data-text-attr"   => column.option_text_attribute,  |
                 "data-column"      => column.name                    |

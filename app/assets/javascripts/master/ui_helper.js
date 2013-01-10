@@ -131,9 +131,11 @@ var Ui = {
   setupForm: function(grid, monitor) {
     var remotePath = [];
     var choicesColumn = [];
+    var distinctColumn = [];
     var path;
     var name = grid.name;
     var scope = $('#' + name + '_form');
+    var formType = scope.data('action');
     var columns = window[name + "_columns"] || grid.getColumns();
     var currentData = {};
 
@@ -142,8 +144,12 @@ var Ui = {
 
     // special handling for 'choices' and 'choices_column' options
     $.each(columns, function(i, n) {
-      if (n['choices'] && typeof(n['choices']) == 'string' && !n['distinct']) {
-        remotePath.push([n.field, n['choices']]);
+      if (n['choices'] && typeof(n['choices']) == 'string') {
+        if (n['distinct'] && formType != 'create') {
+          distinctColumn.push([n.field, n['choices']]);
+        } else {
+          remotePath.push([n.field, n['choices']]);
+        }
       } else if (n['choices_column']) {
         choicesColumn.push([n.field, currentData[n['choices_column']]]);
       }
@@ -164,9 +170,41 @@ var Ui = {
    
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
-              target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+              if ($.isPlainObject(value)) {
+                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+              } else {
+                target.append("<option value='" + value + "'>" + value + "</option>");
+              }
             });
             Ui.setupChosen(target, monitor);
+          });
+
+        }
+      });
+    }
+
+    // Fetch distinct select options from remote
+    if (distinctColumn.length > 0) {
+      $.each(distinctColumn, function(i, n) {
+        var field = n[0];
+        var path = n[1];
+        if (!path) return;
+      
+        var first_input;
+        var target = $("select[data-column='" + field + "']", scope);
+        var textAttr = target.attr('data-text-attr');
+        if (target.size() == 1) {
+          $('option[value!=""]', target).remove();
+   
+          $.getJSON(path, function(itemdata){
+            $.each(itemdata, function(index, value) {
+              if ($.isPlainObject(value)) {
+                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+              } else {
+                target.append("<option value='" + value + "'>" + value + "</option>");
+              }
+            });
+            target.append("<option>Add new Option</option>");
           });
 
         }
@@ -198,19 +236,10 @@ var Ui = {
   setupChosen: function(dom, monitor) {
     setTimeout(function(){
       var afterSetupChosen = dom.data('afterSetupChosen');
-      // if (monitor) {
-      //   dom.chosen().change(function(){
-      //     var flag = $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
-      //     if (flag.size() > 0) flag.attr('checked', 'checked');
-      //   });
-      // } else {
-      //   dom.chosen({allow_single_deselect: true});
-      // }
       if (dom.hasClass("chzn-done")) {
         dom.trigger("liszt:updated");
       } else {
         dom.chosen();
-        // dom.chosen({allow_single_deselect: true});
       }
 
       if( afterSetupChosen ) {

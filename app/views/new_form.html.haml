@@ -4,7 +4,7 @@
     columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
     object = @grid.model.new
-  .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}"}
+  .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}", data: {action: 'create'}}
     = form_for object, :url => @grid.path do |form|
       - columns.each do |column|
         - if new_form_able?(column)
