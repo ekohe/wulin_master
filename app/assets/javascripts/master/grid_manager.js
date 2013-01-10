@@ -62,11 +62,7 @@
         if(type_str == "boolean") {
           columns[i].cssClass = 'cell-effort-driven';
         }
-        // 3. append formatter
-        if (columns[i].formatter) {
-          columns[i].formatter = eval(columns[i].formatter);
-          continue;
-        }
+
         if(type_str == "date") {
           columns[i].formatter = StandardDateCellFormatter;
           columns[i].DateShowFormat = "yy-mm-dd";
@@ -86,6 +82,12 @@
         } else if (columns[i].simple_time) {
           columns[i].editor = TextCellEditor;
           columns[i].formatter = SimpleTimeFormatter;
+        }
+
+        // 3. append formatter
+        if (columns[i].formatter) {
+          columns[i].formatter = eval(columns[i].formatter);
+          continue;
         }
       }
     }
