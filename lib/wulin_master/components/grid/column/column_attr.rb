@@ -27,7 +27,7 @@ module WulinMaster
     private
 
     def assign_simple_date_attr(new_attrs, value, object)
-      if object
+      if object and value.present?
         new_date = Date.parse("#{value} #{WulinMaster.config.default_year}")
         value_was = object.__send__("#{field_str}_was")
         new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
@@ -37,7 +37,7 @@ module WulinMaster
     end
 
     def assign_simple_time_attr(new_attrs, value, object)
-      if object
+      if object and value.present?
         value_was = object.__send__("#{field_str}_was")
         new_time = Time.parse(value)
         new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
