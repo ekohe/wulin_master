@@ -80,9 +80,12 @@
           columns[i].formatter = HasOneFormatter;
         }
 
-        if (columns[i].simple_date || columns[i].simple_time) {
+        if (columns[i].simple_date) {
           columns[i].editor = TextCellEditor;
-          columns[i].formatter = undefined;
+          columns[i].formatter = SimpleDateFormatter;
+        } else if (columns[i].simple_time) {
+          columns[i].editor = TextCellEditor;
+          columns[i].formatter = SimpleTimeFormatter;
         }
       }
     }
