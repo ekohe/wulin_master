@@ -62,11 +62,12 @@
       // Applay filter after 1000ms
       $("input", $($grid.getHeaderRow())).off('keyup').on('keyup', function(e) {
         var containerWidth = $grid.container.innerWidth();
-        var inputLeft = $(this).position().left + $(this).outerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
+        var inputLeft = $(this).position().left + $(this).outerWidth();
+        var inputRight = $(this).position().left - $viewPort.scrollLeft() + $(this).outerWidth();
         var ignoreKeyCodes = [9, 224, 13];
 
-        if (containerWidth < inputLeft) {
+        if ((containerWidth - inputRight) < 0) {
           $viewPort.scrollLeft(inputLeft - containerWidth);
         }
 
