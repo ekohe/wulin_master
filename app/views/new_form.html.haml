@@ -61,7 +61,7 @@
                       var key = $(this).val();
                       current_select.find("option").hide().trigger("liszt:updated");
                       current_select.val("").trigger("liszt:updated");
-                      current_select.find("option[data-key=" + key + "]").show().trigger("liszt:updated");
+                      current_select.find("option[data-key='" + key + "']").show().trigger("liszt:updated");
                     });
                   });
                   
