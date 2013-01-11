@@ -150,7 +150,7 @@ var Ui = {
         } else {
           remotePath.push([n.field, n['choices']]);
         }
-      } else if (n['choices_column']) {
+      } else if (currentData && n['choices_column']) {
         choicesColumn.push([n.field, currentData[n['choices_column']]]);
       }
     });
