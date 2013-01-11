@@ -51,7 +51,7 @@
         MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
             // TODO: make the unit configurable
             var currency = columnDef.currency || "$";
-            var text = (value == null || value == undefined) ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' +currency;
+            var text = (value == null || value == undefined || value == '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' +currency;
             return "<span style='text-align:right;display:block'>" + text + "</span>";
         },
 
