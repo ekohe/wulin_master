@@ -108,33 +108,25 @@ var loadValue = function(scope, data) {
       }
     } else if ($('select[data-column="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-column="' + i + '"]', scope);
-      inputBox.find('option').removeAttr('selected');
       if ($.type(data[i]) === 'string') {
-        $('option[value="' + data[i] + '"]', inputBox).attr('selected', 'selected');
+        inputBox.val(data[i]);
       } else if ($.type(data[i]) === 'object') {
         if ($.type(data[i]['id']) === 'array') {
-          $.each(data[i]['id'],function(_i, _v){
-            $('option[value=' + _v + ']', inputBox).attr('selected', 'selected');
-          })
+          inputBox.val(data[i]['id']);
         } else {
-          $('option[value=' + data[i]['id'] + ']', inputBox).attr('selected', 'selected');
+          inputBox.val(data[i]['id']);
         }
       } else if ($.type(data[i]) === 'array') {
-        $.each(data[i], function(index, n) {
-          $('option[value=' + data[i][index]['id'] + ']', inputBox).attr('selected', 'selected');
-        })
+        inputBox.val(data[i]);
       }
-      
-      //inputBox.trigger("liszt:updated");
+
+      inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
       if (inputBox.hasClass("chzn-done")) {
         inputBox.trigger("liszt:updated");
       } else {
         inputBox.chosen();
-        // inputBox.chosen({allow_single_deselect: true});
       }
-
       distinctInput(inputBox);
-
     }
   }
 };
