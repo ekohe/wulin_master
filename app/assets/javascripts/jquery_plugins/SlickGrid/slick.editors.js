@@ -398,7 +398,7 @@
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
                     dateFormat: "yy-mm-dd",
-                    timeFormat: 'hh:mm'
+                    timeFormat: 'HH:mm'
                 });
             };
 
@@ -483,7 +483,7 @@
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true },
                     onClose: function() { calendarOpen = false },
-                    timeFormat: 'hh:mm'
+                    timeFormat: 'HH:mm'
                 };
                 if(item.unit) {
                     if(item.unit.unit == "mn")
