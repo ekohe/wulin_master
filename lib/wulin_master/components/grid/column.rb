@@ -64,10 +64,13 @@ module WulinMaster
       if @options[:simple_date]
         value.respond_to?(:strftime) ? value.strftime('%d %b') : value
       elsif @options[:simple_time]
+
         value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
-        if value.class == Time || value.class == ActiveSupport::TimeWithZone
+        if value.class == ActiveSupport::TimeWithZone
           value.to_formatted_s(datetime_format)
+        elsif value.class == Time
+          value.strftime('%H:%M')
         elsif value.class.name == 'BSON::ObjectId'
           value.to_s
         else
@@ -221,17 +224,17 @@ module WulinMaster
     def json(object) 
       case association_type.to_s
       when 'belongs_to'
-        value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute).to_s
-        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => value}}
+        value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute)
+        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => format(value)}}
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
-        {reflection.name => {:id => association_object.try(:id), option_text_attribute => association_object.try(:send,option_text_attribute).to_s}}
+        {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
       when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
         op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
         {reflection.name => {id: ids, option_text_attribute => op_attribute}}
       when 'has_many'
-        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => obj.send(option_text_attribute)}}}
+        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => format(obj.send(option_text_attribute))}}}
       else
         self.format(object.send(self.name.to_s))
       end
