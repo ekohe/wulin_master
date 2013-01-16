@@ -6,9 +6,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
   handler: function(e) {
     var self = this;
     var masterId = this.target.master.filter_value;
-    
-    var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
-    $modelDialog.dialog({
+    var options = {
       autoOpen: true,
       width: 750,
       height: 600,
@@ -28,7 +26,12 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       open: function(event, ui) {
         self.getModelGrid(masterId, $modelDialog);
       }
-    });
+    };
+    var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
+    if (this.dialog_options && $.isPlainObject(this.dialog_options)) {
+      $.extend(options, this.dialog_options);
+    }
+    $modelDialog.dialog(options);
   },
   
   getModelGrid: function(masterId, dialogDom) {
