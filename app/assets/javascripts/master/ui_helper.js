@@ -118,7 +118,7 @@ var Ui = {
     $('#' + name + '_form input[data-datetime]').datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
-      timeFormat: 'hh:mm',
+      timeFormat: 'HH:mm',
       timeOnly: false,
       stepMinute: 1,
       minuteGrid: 0,
