@@ -54,13 +54,13 @@ module WulinMasterGridHelper
   def new_form_able?(column)
     formable = column.options[:formable]
     visible  = column.options[:visible]
-    return false if FalseClass === visible
     return true if formable.nil?
     if formable
-      Array === formable ? formable.include?(:new) : !!formable
+      return Array === formable ? formable.include?(:new) : !!formable
     else
-      false
+      return false
     end
+    return false if FalseClass === visible
   end
 
   def edit_form_able?(column)
@@ -68,15 +68,15 @@ module WulinMasterGridHelper
     editable = column.options[:editable]
     visible  = column.options[:visible]
     return false if FalseClass === editable
-    return false if FalseClass === visible
     if editable or editable.nil?
       return true if formable.nil?
       if formable
-        Array === formable ? formable.include?(:edit) : !!formable
+        return Array === formable ? formable.include?(:edit) : !!formable
       else
-        false
+        return false
       end
     end
+    return false if FalseClass === visible
   end
 
   def select_tag_field?(column)
