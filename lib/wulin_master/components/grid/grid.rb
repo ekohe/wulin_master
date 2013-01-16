@@ -62,11 +62,11 @@ module WulinMaster
       end
 
       def model(new_model=nil)
-        new_model ? self._model = new_model : self._model || self.title.singularize.try(:constantize)
+        new_model ? (self._model = new_model) : (self._model || self.title.singularize.try(:constantize))
       end
 
       def path(new_path=nil)
-        new_path ? self._path = new_path : self._path || model.table_name || self.to_s.gsub(/Grid/, "").underscore.pluralize
+        new_path ? (self._path = new_path) : (self._path || model.table_name || self.to_s.gsub(/Grid/, "").underscore.pluralize)
       end
 
       # title setter and getter
@@ -110,6 +110,10 @@ module WulinMaster
 
     def model
       self.class.model
+    end
+
+    def model_columns
+      @model_columns ||= model.column_names
     end
 
     def path
@@ -216,7 +220,12 @@ module WulinMaster
           column.assign_attribute(object, value, new_attrs, attrs, type)
         end
       end
+      attrs.delete_if {|key, value| invalid_attr?(key.to_s) }
       new_attrs
+    end
+
+    def invalid_attr?(attr_name)
+      attr_name !~ /_attributes$/ and model_columns.exclude?(attr_name) and !model.public_method_defined?("#{attr_name}=")
     end
 
     private
