@@ -35,7 +35,7 @@ module WulinMaster
 
     def fetch_distinct_options
       if authorized? and params[:text_attr].present?
-        object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr])
+        object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
         self.response_body = object_arr.to_json
       else
         self.response_body = [].to_json
