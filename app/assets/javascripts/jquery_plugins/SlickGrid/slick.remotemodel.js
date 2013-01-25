@@ -48,7 +48,6 @@
         var vp = grid.getViewport();
         // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
         if(grid.options.eagerLoading == false && grid.getData().length == 0) return false;
-
         // Event triggered before the ajax request
         beforeRemoteRequest.notify();
         ensureData(vp.top, vp.bottom);
@@ -98,7 +97,6 @@
       var offset = paginationOptions[0];
       var count = paginationOptions[1];
       var normalLoadingMode = true;
-
       if (count==0) {
         // Nothing to load, try to see if there is a need to load data preemptively
         paginationOptions = getPaginationOptions(from-preemptiveLoadingSize, to+preemptiveLoadingSize);
@@ -170,7 +168,8 @@
         while (data[toPage * loadingSize] !== undefined && fromPage < toPage)
           toPage--;
 
-        if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize] !== undefined)) {
+        // if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize] !== undefined)) {
+        if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize])) {
           return [0,0];
         }
       
@@ -199,7 +198,6 @@
 
       // Nothing to load, just return.
       if(urlData == null) { return; }
-      
       var url = urlData[0];      
       var normalLoading = urlData[1];
       

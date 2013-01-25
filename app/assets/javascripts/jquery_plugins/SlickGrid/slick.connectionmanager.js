@@ -27,11 +27,14 @@
     }
         
     function onSuccess(data, textStatus, request) {
+      var forFilter = (request.url.indexOf('filters[]') !== -1);
       hideIndicator(request.indicator);
-      if (request.versionNumber > request.loader.lastRequestVersionNumber) {
-        request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
-        request.clientOnSuccess(data, textStatus, request);
+      // Only if it's request for filter, it will verify the versionNumber
+      if (forFilter && (request.versionNumber < request.loader.lastRequestVersionNumber)) {
+        return;
       }
+      request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
+      request.clientOnSuccess(data, textStatus, request);
       // Remove request
       var requestIndex = requests.indexOf(request);
       if(requestIndex!=-1) requests.splice(requestIndex, 1);
