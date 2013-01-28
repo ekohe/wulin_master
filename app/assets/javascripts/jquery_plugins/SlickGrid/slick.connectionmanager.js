@@ -27,10 +27,10 @@
     }
         
     function onSuccess(data, textStatus, request) {
-      var forFilter = (request.url.indexOf('filters[]') !== -1);
+      var atTop = (request.url.indexOf('offset=0&') !== -1) || (request.url.indexOf('offset=&') !== -1);
       hideIndicator(request.indicator);
-      // Only if it's request for filter, it will verify the versionNumber
-      if (forFilter && (request.versionNumber < request.loader.lastRequestVersionNumber)) {
+      // Only if viewport scroll at the top, it will verify the versionNumber
+      if (atTop && (request.versionNumber < request.loader.lastRequestVersionNumber)) {
         return;
       }
       request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
