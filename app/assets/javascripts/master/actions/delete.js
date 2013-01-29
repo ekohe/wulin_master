@@ -33,7 +33,7 @@ WulinMaster.actions.Delete = $.extend({}, WulinMaster.actions.BaseAction, {
           $(this).dialog("destroy");
         }
       },
-      close: function() { 
+      close: function() {
         $(this).dialog("destroy");
       }
     });

@@ -6,7 +6,7 @@ WulinMaster.behaviors.disableToolbarInitially = $.extend({}, WulinMaster.behavio
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target[this.event].subscribe(function(){ self.handler() });
+    target[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {

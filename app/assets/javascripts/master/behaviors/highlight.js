@@ -6,7 +6,7 @@ WulinMaster.behaviors.Highlight = $.extend({}, WulinMaster.behaviors.BaseBehavio
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target.loader[this.event].subscribe(function(){ self.handler() });
+    target.loader[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {

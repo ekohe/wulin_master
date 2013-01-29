@@ -5,7 +5,7 @@ WulinMaster.behaviors.Validate = $.extend({}, WulinMaster.behaviors.BaseBehavior
 
   subscribe: function(target) {
     var self = this;
-    target[this.event].subscribe(function(e, args){ self.handler(args.validationResults) });
+    target[this.event].subscribe(function(e, args){ self.handler(args.validationResults); });
   },
 
   unsubscribe: function() {

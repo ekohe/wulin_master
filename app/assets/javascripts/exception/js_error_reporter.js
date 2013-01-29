@@ -5,4 +5,4 @@ window.onerror = function(msg, file, line){
     url:  'wulin_master/js_error_report',
     data: {message: message}
   });
-}
+};

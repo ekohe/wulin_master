@@ -9,7 +9,7 @@
             var scope = this;
             var boxWidth = column.width;
             var offsetWith = boxWidth + 18;
-            var monthStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            var monthStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
             this.init = function() {
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
@@ -27,7 +27,7 @@
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
                 if(winWith - offsetLeft < offsetWith)
-                  $wrapper.offset({left: winWith - offsetWith})
+                  $wrapper.offset({left: winWith - offsetWith});
             };
 
             this.destroy = function() {
@@ -67,13 +67,13 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != simpleDefaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != simpleDefaultValue);
             };
 
             this.validate = function() {
                 var date, month, currentValue = $input.val();
                 if (currentValue) {
-                    date = parseInt(currentValue.split(' ')[0]);
+                    date = parseInt(currentValue.split(' ')[0], 10);
                     month = currentValue.split(' ')[1];
                     if (1 >= date || date >= 31 || monthStr.indexOf(month) == -1) {
                         $input.val(simpleDefaultValue);
@@ -121,7 +121,7 @@
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
                 if(winWith - offsetLeft < offsetWith)
-                  $wrapper.offset({left: winWith - offsetWith})
+                  $wrapper.offset({left: winWith - offsetWith});
             };
 
             this.destroy = function() {
@@ -160,7 +160,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -205,7 +205,7 @@
                 var winWith = $(window).width(),
                 offsetLeft = $input.offset().left;
                 if(winWith - offsetLeft < offsetWith)
-                  $input.offset({left: winWith - offsetWith})
+                  $input.offset({left: winWith - offsetWith});
             };
 
             this.destroy = function() {
@@ -232,7 +232,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -272,8 +272,8 @@
                     showOn: "button",
                     buttonImageOnly: true,
                     buttonImage: "/assets/calendar.gif",
-                    beforeShow: function() { calendarOpen = true },
-                    onClose: function() { calendarOpen = false }
+                    beforeShow: function() { calendarOpen = true; },
+                    onClose: function() { calendarOpen = false; }
                 });
                 $input.width($input.width() - 18);
             };
@@ -323,7 +323,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -395,8 +395,8 @@
                     stepMinute: 1,
                     minuteGrid: 0,
                     buttonImage: "/assets/calendar.gif",
-                    beforeShow: function() { calendarOpen = true },
-                    onClose: function() { calendarOpen = false },
+                    beforeShow: function() { calendarOpen = true; },
+                    onClose: function() { calendarOpen = false; },
                     dateFormat: "yy-mm-dd",
                     timeFormat: 'HH:mm'
                 });
@@ -411,7 +411,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -481,8 +481,8 @@
                     showOn: "button",
                     buttonImageOnly: true,
                     buttonImage: "/assets/calendar.gif",
-                    beforeShow: function() { calendarOpen = true },
-                    onClose: function() { calendarOpen = false },
+                    beforeShow: function() { calendarOpen = true; },
+                    onClose: function() { calendarOpen = false; },
                     timeFormat: 'HH:mm'
                 };
                 if(item.unit) {
@@ -509,7 +509,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -537,10 +537,10 @@
             var sourceFormat = "yy-mm-dd";
             
             this.init = function() {
-                if (column.DateSourceFormat != undefined) {
+                if (column.DateSourceFormat !== undefined) {
                     sourceFormat = column.DateSourceFormat;
                 }
-                if (column.DateShowFormat != undefined) {
+                if (column.DateShowFormat !== undefined) {
                     showFormat = column.DateShowFormat;
                 }
                 $input = $("<INPUT type=text class='editor-text' />");
@@ -550,8 +550,8 @@
                   showOn: "button",
                   buttonImageOnly: true,
                   buttonImage: "/assets/calendar.gif",
-                  beforeShow: function() { calendarOpen = true },
-                  onClose: function() { calendarOpen = false },
+                  beforeShow: function() { calendarOpen = true; },
+                  onClose: function() { calendarOpen = false; },
                   dateFormat: showFormat
                 });
                 $input.width($input.width() - 18);
@@ -615,8 +615,7 @@
             };
             
             this.isValueChanged = function() {
-                return (! ($input.val() == "" && defaultValue == null))
-                && ($input.val() != defaultValue);
+                return !($input.val() === "" && defaultValue === null) && ($input.val() != defaultValue);
             };
             
             this.validate = function() {
@@ -759,14 +758,14 @@
                     range: "min",
                     value: defaultValue,
                     slide: function(event, ui) {
-                        $input.val(ui.value)
+                        $input.val(ui.value);
                     }
                 });
 
                 $picker.find(".editor-percentcomplete-buttons button").bind("click", function(e) {
                     $input.val($(this).attr("val"));
                     $picker.find(".editor-percentcomplete-slider").slider("value", $(this).attr("val"));
-                })
+                });
             };
 
             this.destroy = function() {
@@ -792,7 +791,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ((parseInt($input.val(),10) || 0) != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ((parseInt($input.val(), 10) || 0) != defaultValue);
             };
 
             this.validate = function() {
@@ -954,9 +953,7 @@
             this.position = function(position) {
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
-                $wrapper
-                    .css("top", position.top - 5)
-                    .css("left", position.left - 5)
+                $wrapper.css({"top": position.top - 5, "left": position.left - 5});
                 if(winWith - offsetLeft < offsetWith)
                   $wrapper.offset({left: winWith - offsetWith});
             };
@@ -983,7 +980,7 @@
             };
 
             this.isValueChanged = function() {
-                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
             this.validate = function() {
@@ -1017,7 +1014,7 @@
             path: '/' + column.table,
             query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
           };
-          for(i in args.grid.originColumns) {
+          for(var i in args.grid.originColumns) {
             if (args.grid.originColumns[i].name == column.name) {
               originColumn = args.grid.originColumns[i];
               break;
@@ -1039,7 +1036,7 @@
             var winWith = $(window).width(),
             offsetLeft = $wrapper.offset().left;
             if(winWith - offsetLeft < offsetWith) {
-              $wrapper.offset({left: winWith - offsetWith})
+              $wrapper.offset({left: winWith - offsetWith});
             }
 
             $select.empty();
@@ -1098,7 +1095,7 @@
                       self.getOptions(data.id, theCurrentValue);
                       setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
                     });
-                  })
+                  });
                 });
                 return false;
               });
@@ -1184,7 +1181,7 @@
 
           this.getCell = function(){
             return $select.parent();
-          }
+          };
 
           this.init();
         },
@@ -1207,7 +1204,7 @@
               path: '/' + column.table,
               query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
             };
-            for(i in args.grid.originColumns) {
+            for(var i in args.grid.originColumns) {
               if (args.grid.originColumns[i].name == column.name) {
                 originColumn = args.grid.originColumns[i];
                 break;
@@ -1231,7 +1228,7 @@
               var winWith = $(window).width(),
               offsetLeft = $wrapper.offset().left;
               if(winWith - offsetLeft < offsetWith) {
-                $wrapper.offset({left: winWith - offsetWith})
+                $wrapper.offset({left: winWith - offsetWith});
               }
 
               $select.empty();
@@ -1290,7 +1287,7 @@
                         self.getOptions(data.id, theCurrentValue);
                         setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
                       });
-                    })
+                    });
                   });
                   return false;
                 });
@@ -1308,27 +1305,27 @@
             };
 
             this.isValueChanged = function() {
-              // return true if the value(s) being edited by the user has/have been changed
-              var selectedValue = $select.val();
-  
-              if (relationColumn) {
-                if (selectedValue) {
-                    if ($select.val().length != defaultValue.length) {
-                      return true;
-                    } else {
-                      $.each(defaultValue, function(i, n) {
-                        if (selectedValue.indexOf(n.toString()) == -1) {
-                          return true;
-                        }
-                      });
-                    }
+                // return true if the value(s) being edited by the user has/have been changed
+                var selectedValue = $select.val();
+    
+                if (relationColumn) {
+                  if (selectedValue) {
+                      if ($select.val().length != defaultValue.length) {
+                        return true;
+                      } else {
+                        $.each(defaultValue, function(i, n) {
+                          if (selectedValue.indexOf(n.toString()) == -1) {
+                            return true;
+                          }
+                        });
+                      }
+                  } else {
+                      return defaultValue.length > 0;
+                  }
+                  return false;
                 } else {
-                    return defaultValue.length > 0;
+                  return (selectedValue != defaultValue);
                 }
-                return false;
-              } else {
-                return (selectedValue != defaultValue);
-              }
             };
 
             this.serializeValue = function() {
@@ -1345,37 +1342,37 @@
                 // load the value(s) from the data item and update the UI
                 // this method will be called immediately after the editor is initialized
                 // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = $.map(item[column.field], function(val,i) { return val.id; } );
-              $select.val(defaultValue);
-              $select.select();
+                defaultValue = $.map(item[column.field], function(val,i) { return val.id; } );
+                $select.val(defaultValue);
+                $select.select();
             };
 
             this.applyValue = function(item,state) {
                 // deserialize the value(s) saved to "state" and apply them to the data item
                 // this method may get called after the editor itself has been destroyed
                 // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-              if (state.id==null) {
-                item[column.field] = 'null';
-              } else {
-                item[column.field] = state.id;
-              }
+                if (state.id === null) {
+                    item[column.field] = 'null';
+                } else {
+                    item[column.field] = state.id;
+                }
             };
 
             this.validate = function() {
                 // validate user input and return the result along with the validation message, if any
                 // if the input is valid, return {valid:true,msg:null}
-              return {
-                  valid: true,
-                  msg: null
-              };
+                return {
+                    valid: true,
+                    msg: null
+                };
             };
 
-                this.getCell = function(){
-            return $select.parent();
-          }
+            this.getCell = function(){
+                return $select.parent();
+            };
 
-                this.init();
-            },
+            this.init();
+        },
         
         // The editor which use jquery.chosen to allow you choose the value as select
         SelectEditor : function(args) {
@@ -1386,45 +1383,45 @@
             var addOptionText = 'Add new Option';
             var self = this;
             var virtualGrid = {
-              name: column.singular_name,
-              path: '/' + column.table,
-              query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
+                name: column.singular_name,
+                path: '/' + column.table,
+                query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
             };
             // get choices options from choices_column value
             if(!choices && column.choices_column) {
-              choices = args.item[column.choices_column]
+                choices = args.item[column.choices_column];
             }
             // if the choices option is an array, construce an select option for each element
             if($.isArray(choices)) {
-              choicesFetchPath = $.map(choices, function(e, index){
-                if ($.isPlainObject(e)) {
-                  return e;
-                } else {
-                  return {id: e, name: e};
-                }
-              });
+                choicesFetchPath = $.map(choices, function(e, index){
+                    if ($.isPlainObject(e)) {
+                        return e;
+                    } else {
+                        return {id: e, name: e};
+                    }
+                });
             } else if($.isPlainObject(choices)) {   // else if it is an object, construct a more complex object containing select options
               choicesFetchPath = {};
-              for(var i in choices) {
-                if($.isEmptyObject(choices[i])) {
-                  choicesFetchPath[i] = [];
-                } else {
-                  var option = $.map(choices[i], function(e, index) {
-                    return {id: e, name: e};
-                  });
-                  choicesFetchPath[i] = option;
+                for(var i in choices) {
+                    if($.isEmptyObject(choices[i])) {
+                        choicesFetchPath[i] = [];
+                    } else {
+                        var option = $.map(choices[i], function(e, index) {
+                            return {id: e, name: e};
+                        });
+                        choicesFetchPath[i] = option;
+                    }
                 }
-              }
             }
   
             var dependColumn = column.depend_column;
             var defaultValue;
             var originColumn;
-            for(i in args.grid.originColumns) {
-              if (args.grid.originColumns[i].name == column.name) {
-                originColumn = args.grid.originColumns[i];
-                break;
-              }
+            for(var k in args.grid.originColumns) {
+                if (args.grid.originColumns[k].name == column.name) {
+                    originColumn = args.grid.originColumns[k];
+                    break;
+                }
             }
             
             var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
@@ -1439,7 +1436,7 @@
               var winWith = $(window).width(),
               offsetLeft = $wrapper.offset().left;
               if(winWith - offsetLeft < offsetWith) {
-                $wrapper.offset({left: winWith - offsetWith})
+                  $wrapper.offset({left: winWith - offsetWith});
               }
 
               $select.append($("<option />"));
@@ -1448,7 +1445,7 @@
               if(dependColumn){
                 var dependValue = args.item[dependColumn];
                 choicesFetchPath = choicesFetchPath[dependValue];
-                if(!$.isArray(choicesFetchPath) || choicesFetchPath.length == 0) {
+                if(!$.isArray(choicesFetchPath) || choicesFetchPath.length === 0) {
                   // TODO: maybe need to disable the editor?
                   //return false;
                 }
@@ -1508,7 +1505,7 @@
                         self.getOptions(data.id, theCurrentValue);
                         setTimeout(function(){ Ui.closeDialog(virtualGrid.name); }, 100);
                       });
-                    })
+                    });
                   });
                   return false;
                 });
@@ -1553,7 +1550,7 @@
 
             this.getCell = function(){
               return $select.parent();
-            }
+            };
 
             this.init();
         },
@@ -1563,7 +1560,7 @@
             var $from, $to;
             var scope = this;
             var originValue = args.item[column.field].split('-');
-            var staticValue = originValue[2] + '-' + originValue[3]
+            var staticValue = originValue[2] + '-' + originValue[3];
             var from_choices = column.from_choices_path;
             var to_choices = column.to_choices_path;
             var from_field = column.from_field;
@@ -1621,8 +1618,9 @@
                 
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
-                if(winWith - offsetLeft < offsetWith)
-                  $wrapper.offset({left: winWith - offsetWith})
+                if(winWith - offsetLeft < offsetWith) {
+                    $wrapper.offset({left: winWith - offsetWith});
+                }
             };
 
             this.destroy = function() {
@@ -1668,7 +1666,7 @@
             
             this.getCell = function(){
               return $from.parent();
-            }
+            };
 
             this.init();
         },
@@ -1684,7 +1682,7 @@
           var addOptionText = 'Add new Option';
           var bottomOption = '<option>' + addOptionText + '</option>';
           var self = this;
-          for(i in args.grid.originColumns) {
+          for(var i in args.grid.originColumns) {
             if (args.grid.originColumns[i].name == column.name) {
               originColumn = args.grid.originColumns[i];
               break;
@@ -1702,7 +1700,7 @@
             var winWith = $(window).width(),
             offsetLeft = $wrapper.offset().left;
             if(winWith - offsetLeft < offsetWith) {
-              $wrapper.offset({left: winWith - offsetWith})
+                $wrapper.offset({left: winWith - offsetWith});
             }
 
             $select.empty();
@@ -1727,7 +1725,7 @@
               $select.chosen({allow_single_deselect: true});
               // 'Add new option' option handler
               $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-                var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new " + column.name, class: "create_form"}).css('display', 'none').appendTo($('body'));
+                var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new " + column.name, 'class': "create_form"}).css('display', 'none').appendTo($('body'));
                 var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
                 var $submitDiv = $("<div />").attr({style: 'padding: 0 30px;'});
                 $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + column.name + '</label>');
@@ -1756,9 +1754,9 @@
                             $dialog.dialog("destroy");
                             $dialog.remove();
                         } else {
-                            alert('New ' + column.name + ' can not be blank!')
+                            alert('New ' + column.name + ' can not be blank!');
                         }
-                    })
+                    });
                   },
                   close: function(event, ui) {
                     $(this).dialog("destroy");
@@ -1812,7 +1810,7 @@
 
           this.getCell = function(){
             return $select.parent();
-          }
+          };
 
           this.init();
         }

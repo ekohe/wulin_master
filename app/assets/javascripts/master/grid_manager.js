@@ -129,16 +129,16 @@
       // Append necessary attributes to the grid
       gridAttrs = {
         name: name,
-        model: model, 
-        screen: screen, 
-        loader: loader, 
-        path: pathWithoutQuery, 
+        model: model,
+        screen: screen,
+        loader: loader,
+        path: pathWithoutQuery,
         columns: columns,
-        originColumns: originColumns, 
-        query: query, 
-        container: gridElement.parent(), 
-        pager: pager, 
-        states: states, 
+        originColumns: originColumns,
+        query: query,
+        container: gridElement.parent(),
+        pager: pager,
+        states: states,
         actions: actions,
         behaviors: behaviors,
         options: options
@@ -157,7 +157,7 @@
       loader.setGrid(grid);
       
       // Create loading indicator on the activity panel, if not eager loading, hide the indicator
-      var isHide = (grid.options.eagerLoading == false);
+      var isHide = (grid.options.eagerLoading === false);
       loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
       
       // Restore the sorting states to grid
@@ -173,7 +173,7 @@
       grid.initialRender();
 
       // Load the first page
-      grid.onViewportChanged.notify();    
+      grid.onViewportChanged.notify();
       
       // Delete old grid if exsisting, then add grid
       for(var i in grids){
@@ -188,7 +188,7 @@
         GridStatesManager.onStateEvents(grid);
 
       // ------------------------------ Install some plugins -----------------------------------
-      grid.registerPlugin(new Slick.AutoTooltips())
+      grid.registerPlugin(new Slick.AutoTooltips());
     } // createNewGrid
     
 
@@ -198,18 +198,18 @@
       id = parent.attr("id"),
       title = $.trim(parent.find(".grid-header h2").text()),
       
-      indicators = $("#activity #indicators"), 
+      indicators = $("#activity #indicators"),
       indicator;
       
       if (title.length > truncateThreshold) {
-        title = title.substring(0, truncateThreshold-2) + "..."
+        title = title.substring(0, truncateThreshold-2) + "...";
       }
 
       // Remove init indicator if it exists.
       indicators.find("#init_menu_indicator").remove();
       indicator = indicators.find(".loading_indicator#" + id);
 
-      if (indicator.length == 0) {
+      if (indicator.length === 0) {
         indicator = $(buildIndicatorHtml(id, title, isHide)).appendTo(indicators);
         // Init counter
         indicator.data("requestCount", 0);
@@ -219,7 +219,7 @@
     }
 
     function buildIndicatorHtml(id, title, isHide){
-      return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>"
+      return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>";
     }
 
     function getGrid(name) {

@@ -76,7 +76,7 @@
 
     function isDataLoaded(from,to) {
       for (var i=from; i<=to; i++) {
-        if (data[i] == undefined || data[i] == null)
+        if (data[i] === undefined || data[i] === null)
           return false;
       }
 
@@ -97,13 +97,13 @@
       var offset = paginationOptions[0];
       var count = paginationOptions[1];
       var normalLoadingMode = true;
-      if (count==0) {
+      if (count === 0) {
         // Nothing to load, try to see if there is a need to load data preemptively
         paginationOptions = getPaginationOptions(from-preemptiveLoadingSize, to+preemptiveLoadingSize);
         offset = paginationOptions[0];
         count = paginationOptions[1];
 
-        if (count==0) {
+        if (count === 0) {
           // the current data on the view is loaded and no preemptive loading to do
           return null;
         }
@@ -125,9 +125,9 @@
     
     function conditionalURI() {
       // Sorting
-      if (sortcol==null) {
+      if (sortcol === null) {
         sortcol = "";
-      } 
+      }
       var url = "&sort_col="+encodeURIComponent(sortcol);
       if (sortdir>0) {
         url += "&sort_dir=ASC";
@@ -150,7 +150,7 @@
     // Returns offset, count
     function getPaginationOptions(from, to) {
       // 2 cases, whether we are in load-as-scroll mode or the per page mode
-      if (pageSize==0) {
+      if (pageSize === 0) {
         // Load as we scroll
         if (from < 0)
           from = 0;
@@ -179,7 +179,7 @@
         return [(fromPage * loadingSize), (((toPage - fromPage) * loadingSize) + loadingSize)];
       } else {
         // Per page
-        if (pagingOptionsChanged==false) {
+        if (pagingOptionsChanged === false) {
           return [0,0];
         }
         pagingOptionsChanged = false;
@@ -197,12 +197,12 @@
       var urlData = generateUrl(from, to);
 
       // Nothing to load, just return.
-      if(urlData == null) { return; }
-      var url = urlData[0];      
+      if(urlData === null) { return; }
+      var url = urlData[0];
       var normalLoading = urlData[1];
       
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
-      loadingIndicator.loadingSize = pageSize == 0 ? loadingSize : pageSize;
+      loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
       connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError);
     }
 
@@ -215,19 +215,19 @@
       var from;
       var to;
 
-      if (pageSize==0) {
+      if (pageSize === 0) {
         from = resp.offset;
         to = resp.offset + resp.count;
-        data.length = parseInt(resp.total);
+        data.length = parseInt(resp.total, 10);
       } else {
         from = 0;
-        to = parseInt(resp.count);
+        to = parseInt(resp.count, 10);
         data.length = to;
       }
 
-      totalRows = parseInt(resp.total);
+      totalRows = parseInt(resp.total, 10);
       for (var i = 0; i < resp.rows.length; i++) {
-        var j = parseInt(from)+parseInt(i);
+        var j = parseInt(from, 10) + parseInt(i, 10);
         var obj = {};
         $.each(columns, function(index, value) {
           var item = resp.rows[i][index];
@@ -235,8 +235,8 @@
           if(item && typeof(item) == 'object' && !(item instanceof Array)) {
             $.extend(true, obj, item);
           } else {
-            obj[value.id] = item;    
-          }     
+            obj[value.id] = item;
+          }
         });
         data[j] = obj;
         data[j].slick_index = j;
@@ -250,7 +250,7 @@
       dataIsLoaded({from:from, to:to});
 
       // Updating pager
-      onPagingInfoChanged.notify(getPagingInfo());    
+      onPagingInfoChanged.notify(getPagingInfo());
     }
     
     function getColumns() {
@@ -258,11 +258,11 @@
     }
     
     function getKeys(h) {
-      var keys = new Array();
+      var keys = [];
       for (var key in h)
         keys.push(key);
       return keys;
-    } 
+    }
 
     function reloadData(from,to) {
       var i;
@@ -298,7 +298,7 @@
     
     function setFilter(filterFn) {
       filters = filterFn;
-      refresh(); 
+      refresh();
     }
     
     function setFilterWithoutRefresh(filterFn) {
@@ -309,7 +309,7 @@
       if(typeof(operator)==='undefined') operator = 'equals';
 
       // If the string is an empty string and operator is 'equals', then removing the filter if existing
-      if (string=='' && operator=='equals') {
+      if (string === '' && operator == 'equals') {
         var newFilters = [];
         $.each(filters, function(index,filter) {
           if (filter[0]!=column)
@@ -326,9 +326,9 @@
             updated = 1;
             return;
           }
-        });  
+        });
         // Add new filter
-        if (updated==0) {
+        if (updated === 0) {
           filters.push([column, string, operator]);
         }
       }
@@ -357,7 +357,7 @@
     function setParam(column, string, _refresh) {
       if (_refresh === undefined) _refresh = true;
       // If the string is an empty string, then removing the param if existing
-      if (string=='') {
+      if (string === '') {
         var newParams = [];
         $.each(params, function(index,param) {
           if (param[0]!=column)
@@ -379,7 +379,7 @@
       });
       
       // Add new param
-      if (updated==0)
+      if (updated === 0)
         params.push([column, string]);
     
       if (_refresh) refresh();
@@ -405,20 +405,20 @@
 
     function setPagingOptions(args) {
       pagingOptionsChanged = false;
-      if ((args.pageSize != undefined) && (args.pageSize!=pageSize)) {
+      if ((args.pageSize !== undefined) && (args.pageSize!=pageSize)) {
         pageSize = args.pageSize;
         pagingOptionsChanged = true;
       }
       
       var newPageNum = Math.min(args.pageNum, Math.ceil(totalRows / pageSize));
       
-      if ((args.pageNum != undefined) && (pageNum!=newPageNum)) {
+      if ((args.pageNum !== undefined) && (pageNum!=newPageNum)) {
         pageNum = newPageNum;
         pagingOptionsChanged = true;
       }
       
       // If we click "All" on pager, this is where we are
-      if ((args.pageNum == undefined) && (args.pageSize == 0)) {
+      if ((args.pageNum === undefined) && (args.pageSize === 0)) {
         pageNum = 0;
         pageSize = 0;
         pagingOptionsChanged = false;
@@ -426,7 +426,7 @@
       
       // Dirty fix for cases where the numbers don't add up
       if (totalRows / pageSize < pageNum) {
-        pageNum = 0
+        pageNum = 0;
         pagingOptionsChanged = true;
       }
       
@@ -478,7 +478,7 @@
       "setPagingOptions": setPagingOptions,
       
       "setLoadingIndicator": setLoadingIndicator,
-      "setMainIndicator": setMainIndicator      
+      "setMainIndicator": setMainIndicator
     };
   }
 

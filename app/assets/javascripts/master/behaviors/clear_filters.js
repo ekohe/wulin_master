@@ -1,4 +1,4 @@
-// When close the filter panel, clear the grid filters filtered by user (don't clear the default filter like the master filter in detail grid) 
+// When close the filter panel, clear the grid filters filtered by user (don't clear the default filter like the master filter in detail grid)
 
 WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
   event: "onFilterPanelClosed",
@@ -7,7 +7,7 @@ WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBeha
     this.grid = target;
     var self = this;
     if(target.filterPanel) {
-      target.filterPanel[this.event].subscribe(function(){ self.handler() });
+      target.filterPanel[this.event].subscribe(function(){ self.handler(); });
     }
   },
 

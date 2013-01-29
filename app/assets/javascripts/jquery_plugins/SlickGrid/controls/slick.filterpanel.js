@@ -19,8 +19,8 @@
       
       generateFilters();
       
-      $grid.onColumnsReordered.subscribe(function(){ 
-        generateFilters(); 
+      $grid.onColumnsReordered.subscribe(function(){
+        generateFilters();
       });
       $grid.onColumnsResized.subscribe(function(){
         generateFilters();
@@ -37,7 +37,7 @@
             $grid.hideHeaderRowColumns();
             currentFilters = null;
             trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
-        } else {   
+        } else {
             $grid.showHeaderRowColumns();
             // This corrects the scrollLeft of the filter secondary header row.
             // The problem is that if the user scrolls on the left then click on filter, the
@@ -100,8 +100,9 @@
       applyCurrentFilters(currentFilters);
       setOriginalFilter();
 
-      $.each(columns, function(i, value) {
-        var value = '', field = this.id, inputHtml = '', inputWidth, cssClass = "";
+      $.each(columns, function(i, v) {
+        var field = v.id, inputHtml = '', inputWidth, cssClass = "";
+        var value = '';
         // Try to get the value of this filter if any
         $.each(currentFiltersApplied, function() {
           if (this.id==field)
@@ -112,7 +113,7 @@
           cssClass = "lastColumn";
         }
         
-        inputWidth = $.browser.mozilla ? parseInt(this.width)+filterWidthOffset + 1 : parseInt(this.width)+filterWidthOffset - 1;
+        inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
         
         if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
           inputWidth += 2;
@@ -120,7 +121,7 @@
         
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
         
-        if (this.filterable == false) {
+        if (this.filterable === false) {
           inputHtml += ' disabled="disabled"';
         }
         
@@ -133,12 +134,12 @@
     }
 
     // This method update the current filters applied to the currentFiltersApplied array
-    // We store the filters value so that after resizing or reordering of the columns, we can 
+    // We store the filters value so that after resizing or reordering of the columns, we can
     //  generate the filters boxes with the same values
     function updateCurrentFilters() {
       currentFilters = {};
       $.each($("input", $($grid.getHeaderRow())), function() {
-        if ($(this).val()!='') {
+        if ($(this).val() !== '') {
           currentFilters[$(this).attr('id')] = $(this).val();
         }
       });
@@ -146,9 +147,9 @@
     
     function setOriginalFilter() {
       var originalFilters = $loader.getFilters();
-      if (currentFiltersApplied.length != 0) {
+      if (currentFiltersApplied.length !== 0) {
         $.each(currentFiltersApplied, function() {
-          if(this['operator'] == undefined) this['operator'] = 'equals'
+          if(this['operator'] === undefined) this['operator'] = 'equals';
           var newFilter = [this['id'], this['value'], this['operator']];
           if(!$(originalFilters).arrayDeepInclude(newFilter)) {
             originalFilters.push([this['id'], this['value'], this['operator']]);
@@ -184,7 +185,7 @@
       currentFiltersApplied = [];
       if (filters) {
         $.each(filters, function(k, v) {
-          if (v !='')
+          if (v !== '')
             currentFiltersApplied.push({id: k, value: v});
         });
       }
@@ -196,7 +197,7 @@
         'onFilterPanelClosed':                new Slick.Event(),
         
         // Methods
-        'generateFilters':                    generateFilters, 
+        'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters
     });

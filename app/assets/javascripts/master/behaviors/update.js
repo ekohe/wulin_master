@@ -6,7 +6,7 @@ WulinMaster.behaviors.Update = $.extend({}, WulinMaster.behaviors.BaseBehavior, 
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target[this.event].subscribe(function(e, args){ self.handler(args) });
+    target[this.event].subscribe(function(e, args){ self.handler(args); });
   },
 
   unsubscribe: function() {

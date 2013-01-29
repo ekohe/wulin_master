@@ -38,7 +38,7 @@ WulinMaster.ActionManager = function(){
 WulinMaster.actions.BaseAction = {
   _isAction: true,
   name: null,
-  event: "click", 
+  event: "click",
   triggerElementIdentifier: null,
   target: null,
 
@@ -46,7 +46,7 @@ WulinMaster.actions.BaseAction = {
   init : function() {
     // get the trigger element, you can override triggerElementIdentifier
     this.triggerElement = $("#content").find(this.triggerElementIdentifier);
-    if(this.triggerElement.length == 0){
+    if(this.triggerElement.length === 0){
       this.triggerElement = $("#" + this.name + "_action_on_" + this.target.name);
     }
 
@@ -71,11 +71,11 @@ WulinMaster.actions.BaseAction = {
     this.triggerElement.off(self.event).on(self.event, function(e, args){
       if($(this).hasClass('toolbar_icon_disabled')) return false;
       self.handler(e, args);
-    })
+    });
   },
 
   // override this to define what the action to do
   handler: $.noop
-}
+};
 
 

@@ -15,7 +15,7 @@ $(document).ready(function () {
     $('#content').animate({left:0}, function(){
       $toggle.toggleClass("open");
       $(window).trigger("resize");
-    });  
+    });
   },function(){
     var $toggle = $(this);
     $("#navigation").animate({width:199});
@@ -42,7 +42,7 @@ $(document).ready(function () {
 function loadPageForBBQState() {
   var url = $.bbq.getState('url');
   if (url != currentUrl) {
-    if (url==undefined) {
+    if (url === undefined) {
       $("#screen_content").empty();
       deselectMenuItems();
     } else {

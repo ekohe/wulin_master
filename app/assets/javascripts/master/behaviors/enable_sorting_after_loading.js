@@ -6,7 +6,7 @@ WulinMaster.behaviors.enableSortingAfterLoading = $.extend({}, WulinMaster.behav
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target.loader[this.event].subscribe(function(){ self.handler() });
+    target.loader[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {
@@ -16,7 +16,7 @@ WulinMaster.behaviors.enableSortingAfterLoading = $.extend({}, WulinMaster.behav
   handler: function() {
     var columns = this.grid.getColumns();
     for(var i in columns) {
-      if(columns[i]['origin_sortable'] == false) continue;
+      if(columns[i]['origin_sortable'] === false) continue;
       columns[i]['sortable'] = true;
     }
   }

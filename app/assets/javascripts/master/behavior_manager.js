@@ -40,5 +40,5 @@ WulinMaster.behaviors.BaseBehavior = {
   
   subscribe : $.noop,
   unsubscribe : $.noop
-}
+};
 

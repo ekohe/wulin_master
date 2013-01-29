@@ -5,7 +5,7 @@ WulinMaster.behaviors.ColumnFilter = $.extend({}, WulinMaster.behaviors.BaseBeha
 
   subscribe: function(target) {
     var self = this;
-    target.loader[this.event].subscribe(function(){ self.handler() });
+    target.loader[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {

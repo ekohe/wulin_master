@@ -3,11 +3,11 @@
     var SlickFormatter = {
 
         RawFormatter: function(row, cell, value, columnDef, dataContext) {
-            return (value == null) ? "" : value;
+            return (value === null) ? "" : value;
         },
   
         TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-            return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>"
+            return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
         },
 
         SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
@@ -15,7 +15,7 @@
         },
 
         PercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            if (value == null || value === "")
+            if (value === null || value === "")
                 return "-";
             else if (value < 50)
                 return "<span style='color:red;font-weight:bold;'>" + value + "%</span>";
@@ -24,7 +24,7 @@
         },
 
         GraphicalPercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            if (value == null || value === "")
+            if (value === null || value === "")
                 return "";
 
             var color;
@@ -45,7 +45,7 @@
 
         BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
             // return value ? "<img src='/assets/tick.png'>" : "";
-            return value == null ? "" : (value ? 'Yes' : 'No');
+            return value === null ? "" : (value ? 'Yes' : 'No');
         },
 
         MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
@@ -56,11 +56,11 @@
         },
 
         RightFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value == null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
+            return value === null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
         },
 
         CenterFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value == null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
+            return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
         },
 
         TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
@@ -72,7 +72,7 @@
         ResourcesFormatter : function(row, cell, value, columnDef, dataContext) {
             var resources = dataContext["resources"];
 
-            if (!resources || resources.length == 0)
+            if (!resources || resources.length === 0)
                 return "";
 
             if (columnDef.width < 50)
@@ -88,7 +88,7 @@
         
         // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
         StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            if (value == null || value === "") {
+            if (value === null || value === "") {
                 return "";
             }
             value = value.split(/\s+/)[0];
@@ -103,7 +103,7 @@
 
         // Simple data formatter,display a date as "dd mmm" format, like "21 dec"
         SimpleDateFormatter: function(row, cell, value, columnDef, dataContext) {
-            if (value == null || value === "") {
+            if (value === null || value === "") {
                 return "";
             } else if ($.isPlainObject(value)) {
                 value = value[columnDef.optionTextAttribute];
@@ -119,7 +119,7 @@
 
         SimpleTimeFormatter: function(row, cell, value, columnDef, dataContext) {
             var timeArr;
-            if (value == null || value === "") {
+            if (value === null || value === "") {
                 return "";
             } else if ($.isPlainObject(value)) {
                 value = value[columnDef.optionTextAttribute];
@@ -153,7 +153,7 @@
         
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
             return value[columnDef.optionTextAttribute];
-        },
+        }
     
     };
 

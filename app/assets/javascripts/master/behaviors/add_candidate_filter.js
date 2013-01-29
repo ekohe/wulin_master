@@ -1,8 +1,8 @@
-// master-detail relation (when multiple masters - one detail), add candidate filters as a grid attribute, 
+// master-detail relation (when multiple masters - one detail), add candidate filters as a grid attribute,
 // before doing grid.loader.addFitler, we should check the existing filters and candidate filters,
 // if exsiting filters less than candidate filters (except the current filter), should not referesh the grid,
 // until the current filter is the last candidate filter, we can refresh the grid
-// code example see Affilication behavior  
+// code example see Affilication behavior
 
 WulinMaster.behaviors.AddCandidateFilter = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
   event: "onRendered",
@@ -10,7 +10,7 @@ WulinMaster.behaviors.AddCandidateFilter = $.extend({}, WulinMaster.behaviors.Ba
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target[this.event].subscribe(function(){ self.handler() });
+    target[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {

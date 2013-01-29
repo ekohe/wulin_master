@@ -27,8 +27,8 @@ var Requests = {
           }
           displayNewNotification('Record successfully created!');
         } else {
-          for(key in request.error_message){
-            createFormElement.find(".field[name=" + key + "]").find(".field_error").text(request.error_message[key].join());
+          for(var k in request.error_message){
+            createFormElement.find(".field[name=" + k + "]").find(".field_error").text(request.error_message[k].join());
           }
         }
       }
@@ -55,7 +55,7 @@ var Requests = {
       data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
       success: function(msg) {
         if(msg.success) {
-          var from = parseInt(currentRow / 200) * 200;
+          var from = parseInt(currentRow / 200, 10) * 200;
           grid.loader.reloadData(from, currentRow);
         } else {
           displayErrorMessage(msg.error_message);
@@ -69,9 +69,9 @@ var Requests = {
     });
   },
 
-  // Delete rows along ajax 
+  // Delete rows along ajax
   deleteByAjax: function(grid, ids, force) {
-    if(force == undefined) force = false;
+    if(force === undefined) force = false;
     $.ajax({
       type: 'POST',
       url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
@@ -82,10 +82,10 @@ var Requests = {
           grid.loader.reloadData();
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
-          if (recordSize > 1) { 
-            message = recordSize+" records have been deleted."; 
-          } else { 
-            message = "One record has been deleted."; 
+          if (recordSize > 1) {
+            message = recordSize+" records have been deleted.";
+          } else {
+            message = "One record has been deleted.";
           }
           displayNewNotification(message);
         } else if(msg.confirm) {
@@ -105,7 +105,7 @@ var Requests = {
                 $(this).dialog("destroy");
               }
             },
-            close: function() { 
+            close: function() {
               $(this).find('#confirm_content').text("Are you sure to do this ?");
               $(this).dialog("destroy");
             }

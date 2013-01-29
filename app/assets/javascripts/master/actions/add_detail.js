@@ -19,7 +19,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
           $modelDialog.remove();
         }
       },
-      close: function() { 
+      close: function() {
         $(this).dialog("destroy");
         $modelDialog.remove();
       },
@@ -46,7 +46,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       })
       .success(function(response){
         dialogDom.html(response);
-        // copy the target's master to detail grid, just replace the operator to 'exclude' 
+        // copy the target's master to detail grid, just replace the operator to 'exclude'
         var gridName = dialogDom.find(".grid_container").attr("name");
         var grid = gridManager.getGrid(gridName);
         master["filter_operator"] = 'exclude';
@@ -67,10 +67,10 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var detailGrid = gridManager.getGrid(detailGridName);
     var detailIds = detailGrid.getSelectedIds();
     
-    if(detailIds.length == 0) {
+    if(detailIds.length === 0) {
       displayErrorMessage("Please select at least one item.");
     } else {
-      var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel}
+      var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel};
       $.post('/wulin_master/attach_details', data, function(response){
         displayNewNotification(response.message);
         dialogDom.dialog( "destroy" );

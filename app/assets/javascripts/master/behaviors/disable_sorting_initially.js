@@ -6,7 +6,7 @@ WulinMaster.behaviors.disableSortingInitially = $.extend({}, WulinMaster.behavio
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target[this.event].subscribe(function(){ self.handler() });
+    target[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {
@@ -17,8 +17,8 @@ WulinMaster.behaviors.disableSortingInitially = $.extend({}, WulinMaster.behavio
     var columns = this.grid.getColumns();
     for(var i in columns) {
       // remember the column which is initially unsortable
-      if(columns[i]['sortable'] == false) {
-        columns[i]['origin_sortable'] = false
+      if(columns[i]['sortable'] === false) {
+        columns[i]['origin_sortable'] = false;
       }
       columns[i]['sortable'] = false;
     }

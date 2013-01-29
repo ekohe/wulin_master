@@ -1,6 +1,6 @@
 // ------------------------------------ UI tools -----------------------------------------
 var Ui = {  
-  // return true if the dialog of grid with "name" is open, unless return false 
+  // return true if the dialog of grid with "name" is open, unless return false
   isOpen: function() {
     return ($(".ui-dialog:visible").size() > 0);
   },
@@ -19,9 +19,9 @@ var Ui = {
     grid.resizeCanvas();
     grid.autosizeColumns();
     grid.filterPanel.generateFilters();
-    $(window).resize(function() { 
-      grid.resizeCanvas(); 
-      grid.autosizeColumns(); 
+    $(window).resize(function() {
+      grid.resizeCanvas();
+      grid.autosizeColumns();
       grid.filterPanel.generateFilters();
     });
   },
@@ -122,11 +122,11 @@ var Ui = {
       timeOnly: false,
       stepMinute: 1,
       minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true },
-      onClose: function() { calendarOpen = false }
+      beforeShow: function() { calendarOpen = true; },
+      onClose: function() { calendarOpen = false; }
     });
     $('#' + name + '_form input[data-time]').timepicker({});
-  }, 
+  },
 
   setupForm: function(grid, monitor) {
     var remotePath = [];
@@ -275,13 +275,13 @@ var Ui = {
   findCurrentGrid: function() {
     var currentGrid = null;
     currentGridContainer = $( document.activeElement ).parents('.grid_container');
-    if (currentGridContainer.size() == 0) {
+    if (currentGridContainer.size() === 0) {
       return null;
     }
     gridName = currentGridContainer.attr('id').split('grid_')[1];
 
     if (gridManager.grids.length == 1) {
-      currentGrid = gridManager.grids[0]
+      currentGrid = gridManager.grids[0];
     } else {
       if (currentGridContainer.size() == 1) {
         currentGrid = gridManager.getGrid(gridName);
@@ -299,7 +299,7 @@ var Ui = {
     columns = grid.loader.getColumns();
     $.each(columns, function(index, column){
       data[column['id']] = arrayData[index];
-    })
+    });
     return data;
   }
 

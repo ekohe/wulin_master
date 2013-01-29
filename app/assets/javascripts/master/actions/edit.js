@@ -17,12 +17,12 @@ var batchUpdateByAjax = function(grid, version) {
   var ids, name, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
   name = grid.name;
-  if (!selectedIndexes || selectedIndexes.length == 0) {
+  if (!selectedIndexes || selectedIndexes.length === 0) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
     url = grid.path + '/wulin_master_edit_form' + grid.query;
-    if (version) 
+    if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
       $('body').append(data);
@@ -54,9 +54,9 @@ var batchUpdateByAjax = function(grid, version) {
           // Fill values
           setTimeout(function(){
             fillValues(scope, grid, selectedIndexes);
-          }, 1000)
+          }, 1000);
           
-          showFlagCheckBox(scope, ids)
+          showFlagCheckBox(scope, ids);
         },
         close: function(event, ui) {
           scope.dialog('destroy');
@@ -82,14 +82,14 @@ var fillValues = function(scope, grid, selectedIndexes) {
         if (index === 0) {
           if (k != 'id' && k != 'slick_index') comm[k] = n[k];
         } else {
-          if ($.type(n[k]) != 'object' && !(comm[k] === n[k])) {
+          if ($.type(n[k]) != 'object' && comm[k] !== n[k]) {
             delete comm[k];
           } else if ($.type(n[k]) === 'object' && $.type(comm[k]) === 'object' && !compareArray(comm[k]['id'], n[k]['id'])) {
             delete comm[k];
           }
         }
       }
-    })
+    });
     loadValue(scope, comm);
   }
 };
@@ -138,7 +138,7 @@ var distinctInput = function(inputBox) {
     addNewSelect = $('#' + inputBox.attr('id'));
     $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
       var $select = addNewSelect;
-      var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new option", class: "create_form"}).css('display', 'none').appendTo($('body'));
+      var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new option", 'class': "create_form"}).css('display', 'none').appendTo($('body'));
       var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
       var $submitDiv = $("<div />").attr({style: 'padding: 0 30px;'});
       $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
@@ -168,9 +168,9 @@ var distinctInput = function(inputBox) {
                   $dialog.dialog("destroy");
                   $dialog.remove();
               } else {
-                  alert('New option can not be blank!')
+                  alert('New option can not be blank!');
               }
-          })
+          });
         },
         close: function(event, ui) {
           $(this).dialog("destroy");
@@ -181,7 +181,7 @@ var distinctInput = function(inputBox) {
       return false;
     });
   }
-}
+};
 
 var showFlagCheckBox = function(scope, ids) {
   if (ids.length > 1) {
@@ -227,7 +227,7 @@ var grepValues = function(formData, jqForm, options) {
 };
 
 var submitForm = function(grid, ids, selectedIndexes) {
-  var name = grid.name, 
+  var name = grid.name,
   $scope = $( '#' + name + '_form'),
   $form = $('form', $scope);
   $scope.off('click', '.update_btn').on('click', '.update_btn', function() {
@@ -246,10 +246,10 @@ var submitForm = function(grid, ids, selectedIndexes) {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();
         }
-        $scope.dialog("destroy"); 
+        $scope.dialog("destroy");
         $scope.remove();
       }
-    }
+    };
     $form.ajaxSubmit(options);
     return false;
   });
@@ -261,14 +261,14 @@ var compareArray = function(x, y) {
       return false;
     }
 
-    for (key in x) {
-      if (x[key] != y[key]) {//!== So that the the values are not converted while comparison
+    for (var k in x) {
+      if (x[k] != y[k]) {//!== So that the the values are not converted while comparison
         return false;
       }
     }
-    return true
+    return true;
   } else {
-    return x === y
+    return x === y;
   }
 };
 

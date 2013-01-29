@@ -8,7 +8,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
     if(!grid) return false;
 
     var $switcher = $(".grid_states_switcher select");
-    if($switcher.length == 0) return false;
+    if($switcher.length === 0) return false;
 
     // chosen the dropdown
     $switcher.chosen();

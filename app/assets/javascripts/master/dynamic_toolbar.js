@@ -15,7 +15,7 @@
         var $toolbar_wrapper = $(this).find(".toolbar-wrapper");
         var $toolbar = $toolbar_wrapper.find(".toolbar");
 
-        if($toolbar.length == 0) return false;
+        if($toolbar.length === 0) return false;
 
         // get the current right visible item index before other operation
         var rightVisibleIndex = findEageItemsOnRight($toolbar_wrapper, $toolbar).visibleItemIndex;
@@ -24,7 +24,7 @@
         var left = 0;
         $toolbar_wrapper.prevAll().each(function(){
           left += $(this).outerWidth() + parseFloat($(this).css("margin-left")) + parseFloat($(this).css("margin-right"));
-        }) 
+        });
         left += 50;
         $toolbar_wrapper.css("left", left);
 
@@ -137,7 +137,7 @@
       return {mostRight: mostRight, visibleItemIndex: visibleItemIndex, visibleItemWidth: visibleItemWidth, invisibleItemWidth: invisibleItemWidth};
     }
 
-    // After clicking prev or next, if the widths of item appeared and disappeared are different, should adjust the left position of toolbar wrapper 
+    // After clicking prev or next, if the widths of item appeared and disappeared are different, should adjust the left position of toolbar wrapper
     function adjustWrapperPositionAfterShift($toolbar_wrapper, offset){
       var $prev = $toolbar_wrapper.siblings(".tb_prev");
       var newWrapperLeft = parseFloat($toolbar_wrapper.css("left")) + offset;
@@ -157,7 +157,7 @@
 
       var mostLeft = leftResult.mostLeft;
       var shiftWidth = rightResult.visibleItemWidth;
-      var leftPositionOffset = shiftWidth - leftResult.invisibleItemWidth
+      var leftPositionOffset = shiftWidth - leftResult.invisibleItemWidth;
 
       // If not reach the left eage, continue shift
       if(!mostLeft){
@@ -169,7 +169,7 @@
           //   $prev.addClass("hidden");
           // }
           adjustWrapperPositionAfterShift($toolbar_wrapper, leftPositionOffset);
-        }); 
+        });
       }
     });
 

@@ -11,4 +11,4 @@ $.difference = function(ary1, ary2){
   }
 
   return dif;
-}
+};

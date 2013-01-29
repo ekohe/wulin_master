@@ -28,7 +28,7 @@ function displayErrorMessage(message, title, width) {
     buttons: {
       "Ok": function() {
         $(this).dialog("destroy");
-      } 
+      }
     },
     modal: true
   });

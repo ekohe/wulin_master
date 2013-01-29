@@ -12,7 +12,7 @@ WulinMaster.behaviors.EmptyDetail = $.extend({}, WulinMaster.behaviors.BaseBehav
     }
     
     this.master_grid = gridManager.getGrid(self.master_grid_name);
-    this.master_grid.loader[this.event].subscribe(function(){ self.handler() });
+    this.master_grid.loader[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {
@@ -22,7 +22,7 @@ WulinMaster.behaviors.EmptyDetail = $.extend({}, WulinMaster.behaviors.BaseBehav
   handler: function() {
     // get the selected id, then filter the detail grid
     var rows = this.master_grid.getSelectedRows();
-    if(rows.length == 0) {
+    if(rows.length === 0) {
       for(var i in this.detail_grids) {
         var detailGrid = this.detail_grids[i];
         detailGrid.resetActiveCell();

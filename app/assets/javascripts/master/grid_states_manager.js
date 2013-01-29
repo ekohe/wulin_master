@@ -7,7 +7,7 @@ var GridStatesManager = {
       var url = "/wulin_master/grid_states_manages/save",
       data = decodeURIComponent($.param({ grid_name: encodeURIComponent(gridName),
                                         state_type: encodeURIComponent(type),
-                                        state_value: value, 
+                                        state_value: value,
                                         authenticity_token: window._token }));
       $.post(url, data, function(){});
     }
@@ -22,7 +22,7 @@ var GridStatesManager = {
       var widthJson = {};
       $.each(this.getColumns(), function(index, column){
         widthJson[column.id] = column.width;
-      }); 
+      });
       self.saveStates(grid.name, "width", widthJson);
     });
     
@@ -69,7 +69,7 @@ var GridStatesManager = {
         
         // Regenerate Filter panel
         if(grid.filterPanel) {
-          grid.filterPanel.generateFilters(); 
+          grid.filterPanel.generateFilters();
         }
         
         visibilityColumns = $.map(visibilityColumns, function(n, i){
@@ -87,7 +87,7 @@ var GridStatesManager = {
             hiddenJson[index] = column;
         });
         self.saveStates(grid.name, "visibility", hiddenArr);
-      })
+      });
     }
   },
   
@@ -119,8 +119,8 @@ var GridStatesManager = {
         if (columns[i].id == new_columns[j].id) {
           found = true;
         }
-      } 
-      if (found==false) {
+      }
+      if (found === false) {
         new_columns.push(columns[i]);
       }
     }
@@ -152,7 +152,7 @@ var GridStatesManager = {
     for(var i in widthStates){
       for(var j in columns){
         if(columns[j].id == i){
-          columns[j].width = parseInt(widthStates[i]);
+          columns[j].width = parseInt(widthStates[i], 10);
           break;
         }
       }
@@ -163,10 +163,10 @@ var GridStatesManager = {
   restoreSortingStates: function(grid, loader, sortingStates) {
     if(sortingStates){
       grid.setSortColumn(sortingStates["sortCol"], sortingStates["sortDir"] == 1);
-      if(grid.options.eagerLoading != false){
+      if(grid.options.eagerLoading !== false){
         loader.setSort(sortingStates["sortCol"], sortingStates["sortDir"]);
       }
-    }    
+    }
   },
   
   // Attach state filters
@@ -174,12 +174,12 @@ var GridStatesManager = {
     if (filterStates) {
       originalFilters = originalFilters || [];
       $.each(filterStates, function(k, v){
-        originalFilters.push({column: k, value: v, operator: 'equals'})
+        originalFilters.push({column: k, value: v, operator: 'equals'});
         //path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
-      })
+      });
     }
     return originalFilters;
   }
   
-}
+};
 

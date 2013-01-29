@@ -12,7 +12,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     }
     
     this.master_grid = gridManager.getGrid(self.master_grid_name);
-    this.master_grid[this.event].subscribe(function(){ self.handler() });
+    this.master_grid[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {
@@ -23,7 +23,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     // get the selected id, then filter the detail grid
     var masterIds = this.master_grid.getSelectedIds();
     // if (masterIds.length != 1) return false;
-    if (masterIds.length == 0) return false;
+    if (masterIds.length === 0) return false;
 
     var association_key = this.through;
     for(var i in this.detail_grids) {
@@ -39,15 +39,15 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       // filter the detail grid
       detailGrid.resetActiveCell();
 
-      var existingFilters = $.map(detailGrid.loader.getFilters(), function(e) { return e[0] });
+      var existingFilters = $.map(detailGrid.loader.getFilters(), function(e) { return e[0]; });
       var candidateFilters = detailGrid.candidateFilters;
       var dif = $.difference(existingFilters, candidateFilters);
       // if current filters cover  candidate filters
-      // or current filters equals candidate filters  
-      // or the current filter is the last candidate filter, 
-      // add it and reload the grid, 
+      // or current filters equals candidate filters
+      // or the current filter is the last candidate filter,
+      // add it and reload the grid,
       // otherwise don't reload the grid
-      if(existingFilters.length > candidateFilters.length || dif.length == 0 || dif.length == 1 && dif[0] == association_key) {
+      if(existingFilters.length > candidateFilters.length || dif.length === 0 || dif.length === 1 && dif[0] == association_key) {
         detailGrid.loader.addFilter(association_key, masterIds[0], this.operator);
       } else {
         detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);

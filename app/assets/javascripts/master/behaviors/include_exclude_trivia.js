@@ -8,7 +8,7 @@ WulinMaster.behaviors.IncludeExcludeTrivia = $.extend({}, WulinMaster.behaviors.
   subscribe: function(target) {
     this.grid = target;
     var self = this;
-    target[this.event].subscribe(function(){ self.handler() });
+    target[this.event].subscribe(function(){ self.handler(); });
   },
 
   unsubscribe: function() {
@@ -32,7 +32,7 @@ WulinMaster.behaviors.IncludeExcludeTrivia = $.extend({}, WulinMaster.behaviors.
       removeButton.attr('disabled', 'disabled');
       addButton.removeAttr('disabled');
       inclusionGrid.resetActiveCell();   // remove highlight
-    } else if(inclusionGrid.getSelectedRows().length == 0 && exclusionGrid.getSelectedRows().length == 0) {
+    } else if(inclusionGrid.getSelectedRows().length === 0 && exclusionGrid.getSelectedRows().length === 0) {
       addButton.attr('disabled', 'disabled');
       removeButton.attr('disabled', 'disabled');
     }
