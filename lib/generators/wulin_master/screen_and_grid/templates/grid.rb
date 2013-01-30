@@ -3,9 +3,7 @@ class <%= class_name %>Grid < WulinMaster::Grid
 
   model <%= class_name %>
 
-  path '/<%= table_name %>'    
-
-  fill_window
+  path '/<%= table_name %>'
 
 <% attributes.each do |column| -%>
   column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
