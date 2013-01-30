@@ -52,8 +52,12 @@ module WulinMaster
     end
 
     def assign_relation_attr_for_create(new_attrs, value)
-      if relation_macro == :belongs_to and value['id'] != 'null'
-        new_attrs[relation_object.foreign_key] = value['id']
+      if relation_macro == :belongs_to
+        if String === value
+          new_attrs[relation_object.foreign_key] = value
+        elsif Hash === value and value['id'] and value['id'] != 'null'
+          new_attrs[relation_object.foreign_key] = value['id']
+        end
       elsif relation_macro =~ /^has_many$|^has_and_belongs_to_many$/
         if value == 'null' or value.blank?
           new_attrs[field_sym] = []
