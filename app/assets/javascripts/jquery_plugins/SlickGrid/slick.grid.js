@@ -1052,6 +1052,11 @@ if (typeof Slick === "undefined") {
         }
 
         function defaultFormatter(row, cell, value, columnDef, dataContext) {
+            console.log(row)
+            console.log(cell)
+            console.log(value)
+            console.log(columnDef)
+            console.log(dataContext)
             if (value == null) {
                 return "";
             } else {
