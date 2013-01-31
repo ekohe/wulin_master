@@ -43,18 +43,6 @@ module WulinMaster
       return unless options[:views]
       empty_directory "app/views/#{table_name}"
     end
-    
-    def create_panels_directory
-      empty_directory "app/panels"
-    end
-    
-    def create_action_partials_directory
-      empty_directory "app/views/action_partials"
-    end
-    
-    def create_panel_partials_directory
-      empty_directory "app/views/panel_partials"
-    end
 
     private
 
