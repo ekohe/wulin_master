@@ -37,7 +37,7 @@ module WulinMaster
         value_was = object.__send__("#{field_str}_was")
         new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
       else
-        new_attrs[field_sym] = value
+        new_attrs[field_sym] = simple_date_format(value)
       end
     end
 
