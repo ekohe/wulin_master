@@ -48,7 +48,7 @@
     
     function appendEditor(columns){
       var i, type_str;
-      for(i in columns){
+      for(i=0; i<columns.length; i++){
         type_str = columns[i].type.toLowerCase();
         // 1. append editor
         if (columns[i].editor) {

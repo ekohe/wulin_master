@@ -23,7 +23,7 @@ WulinMaster.behaviors.EmptyDetail = $.extend({}, WulinMaster.behaviors.BaseBehav
     // get the selected id, then filter the detail grid
     var rows = this.master_grid.getSelectedRows();
     if(rows.length == 0) {
-      for(var i in this.detail_grids) {
+      for(var i=0; i< this.detail_grids.length; i++) {
         var detailGrid = this.detail_grids[i];
         detailGrid.resetActiveCell();
         detailGrid.loader.clear();

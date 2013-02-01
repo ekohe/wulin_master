@@ -23,7 +23,7 @@ WulinMaster.BehaviorManager = function(){
 
     dispatchBehaviors: function(target, behavior_configs) {
       // try to find target's behaviors, and subsribe for target
-      for(var i in behavior_configs) {
+      for(var i=0;i < behavior_configs.length; i++) {
         var behavior = this.getBehavior(behavior_configs[i].name);
         if(behavior){
           $.extend(behavior, behavior_configs[i]);
