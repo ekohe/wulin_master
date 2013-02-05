@@ -48,7 +48,15 @@ module WulinMaster
 
     def to_column_model(screen_name)
       @options[:screen] = screen_name
-      @options[:choices] = @options[:choices].call if @options[:choices].is_a?(Proc)
+
+      # if the option :choices is a Proc, keep it, and call it when using it
+      if @options[:original_choices].nil? and @options[:choices].is_a?(Proc)
+        @options[:original_choices] = @options[:choices].dup
+        @options[:choices] = @options[:choices].call
+      elsif @options[:original_choices].is_a?(Proc)
+        @options[:choices] = @options[:original_choices].call
+      end
+        
       append_distinct_options if @options[:distinct]
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
