@@ -36,8 +36,12 @@ module WulinMaster
     def assign_simple_date_attr(new_attrs, value, object)
       if object and value.present?
         new_date = simple_date_format(value)
-        value_was = object.__send__("#{field_str}_was")
-        new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
+        if new_date.nil?
+          new_attrs[field_sym] = nil
+        else
+          value_was = object.__send__("#{field_str}_was").try(:to_date)
+          new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
+        end
       else
         new_attrs[field_sym] = simple_date_format(value)
       end
@@ -46,8 +50,12 @@ module WulinMaster
     def assign_simple_time_attr(new_attrs, value, object)
       if object and value.present?
         value_was = object.__send__("#{field_str}_was")
-        new_time = Time.parse(value)
-        new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
+        begin
+          new_time = Time.parse(value)
+          new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
+        rescue Exception => e
+          new_attrs[field_sym] = nil
+        end
       else
         new_attrs[field_sym] = value
       end
