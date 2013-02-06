@@ -26,6 +26,8 @@ module WulinMaster
 
     def simple_date_format(value)
       Date.parse("#{value} #{WulinMaster.config.default_year}")
+    rescue Exception => e
+      nil
     end
     module_function :simple_date_format
 
