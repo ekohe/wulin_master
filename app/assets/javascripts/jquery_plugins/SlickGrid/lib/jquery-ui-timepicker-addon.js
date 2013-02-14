@@ -12,6 +12,12 @@
 
 /*jslint evil: true, white: false, undef: false, nomen: false */
 
+/*
+* Fix the picker minute formatting problem when handily input
+* By: Jimmy Huang
+* Date: 2013-02-14
+*/
+
 (function($) {
 
   /*
@@ -1030,7 +1036,7 @@
           .replace(/([hH]{1,2}|mm?|ss?|[tT]{1,2}|[lz]|'.*?')/g, function (match) {
               switch (match.charAt(0).toLowerCase()) {
                 case 'h': return '(\\d?\\d)';
-                case 'm': return '(\\d?\\d)';
+                case 'm': return '(\\d\\d)';
                 case 's': return '(\\d?\\d)';
                 case 'l': return '(\\d?\\d?\\d)';
                 case 'z': return '(z|[-+]\\d\\d:?\\d\\d|\\S+)?';
