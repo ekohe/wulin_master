@@ -75,7 +75,7 @@ module WulinMaster
 
         value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
-        if value.class == ActiveSupport::TimeWithZone
+        if value.class == ActiveSupport::TimeWithZone or @options[:type] == 'Datetime'
           value.to_formatted_s(datetime_format)
         elsif value.class == Time
           value.strftime('%H:%M')
