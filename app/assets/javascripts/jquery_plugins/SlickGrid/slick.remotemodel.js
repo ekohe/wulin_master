@@ -23,6 +23,7 @@
     var initedFilter = false;
     var filters = [];
     var lastRequestVersionNumber = 0;
+    var currentRequestVersionNumber = 0;
     var self = this;
     
     if(initialFilters) {
@@ -47,7 +48,7 @@
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
         // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
-        if(grid.options.eagerLoading == false && grid.getData().length == 0) return false;
+        if(grid.options.eagerLoading === false && grid.getData().length === 0) return false;
         // Event triggered before the ajax request
         beforeRemoteRequest.notify();
         ensureData(vp.top, vp.bottom);
@@ -203,7 +204,7 @@
       
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
       loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
-      connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError);
+      connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError, currentRequestVersionNumber);
     }
 
 
@@ -278,14 +279,20 @@
     }
 
     function setSort(column,dir) {
-      sortcol = column;
-      sortdir = dir;
+      if (sortcol != column || sortdir != dir) {
+        currentRequestVersionNumber++;
+        sortcol = column;
+        sortdir = dir;
+      }
       refresh();
     }
 
     function setSortWithoutRefresh(column, dir) {
-      sortcol = column;
-      sortdir = dir;
+      if (sortcol != column || sortdir != dir) {
+        currentRequestVersionNumber++;
+        sortcol = column;
+        sortdir = dir;
+      }
     }
     
     function getSortColumn() {
@@ -297,12 +304,18 @@
     }
     
     function setFilter(filterFn) {
-      filters = filterFn;
+      if (filters != filterFn) {
+        currentRequestVersionNumber++;
+        filters = filterFn;
+      }
       refresh();
     }
     
     function setFilterWithoutRefresh(filterFn) {
-      filters = filterFn;
+      if (filters != filterFn) {
+        currentRequestVersionNumber++;
+        filters = filterFn;
+      }
     }
 
     function addFilterWithoutRefresh(column, string, operator) {
@@ -315,7 +328,10 @@
           if (filter[0]!=column)
             newFilters.push(filter);
         });
-        filters = newFilters;
+        if (filters != newFilters) {
+          currentRequestVersionNumber++;
+          filters = newFilters;
+        }
       } else {
         var updated = 0;
         // Try to update existing filter
@@ -330,6 +346,7 @@
         // Add new filter
         if (updated === 0) {
           filters.push([column, string, operator]);
+          currentRequestVersionNumber++;
         }
       }
     }
@@ -363,7 +380,10 @@
           if (param[0]!=column)
             newParams.push(param);
         });
-        params = newParams;
+        if (params != newParams) {
+          currentRequestVersionNumber++;
+          params = newParams;
+        }
         if (_refresh) refresh(); // Only clear if it was found
         return;
       }
@@ -381,6 +401,7 @@
       // Add new param
       if (updated === 0)
         params.push([column, string]);
+        currentRequestVersionNumber++;
     
       if (_refresh) refresh();
     }
@@ -405,7 +426,9 @@
 
     function setPagingOptions(args) {
       pagingOptionsChanged = false;
+
       if ((args.pageSize !== undefined) && (args.pageSize!=pageSize)) {
+        currentRequestVersionNumber++;
         pageSize = args.pageSize;
         pagingOptionsChanged = true;
       }
@@ -413,12 +436,14 @@
       var newPageNum = Math.min(args.pageNum, Math.ceil(totalRows / pageSize));
       
       if ((args.pageNum !== undefined) && (pageNum!=newPageNum)) {
+        currentRequestVersionNumber++;
         pageNum = newPageNum;
         pagingOptionsChanged = true;
       }
       
       // If we click "All" on pager, this is where we are
       if ((args.pageNum === undefined) && (args.pageSize === 0)) {
+        currentRequestVersionNumber++;
         pageNum = 0;
         pageSize = 0;
         pagingOptionsChanged = false;
@@ -426,6 +451,7 @@
       
       // Dirty fix for cases where the numbers don't add up
       if (totalRows / pageSize < pageNum) {
+        currentRequestVersionNumber++;
         pageNum = 0;
         pagingOptionsChanged = true;
       }
@@ -443,6 +469,7 @@
       "data": data,
       "oldData": oldData,
       "connectionManager": connectionManager,
+      "currentRequestVersionNumber": currentRequestVersionNumber,
       "lastRequestVersionNumber": lastRequestVersionNumber,
       
       // methods

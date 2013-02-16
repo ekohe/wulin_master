@@ -3,7 +3,7 @@
     // Keeps all the requests available in an array
     var requests = [];
 
-    function createConnection(grid, url, indicator, clientOnSuccess, clientOnError) {
+    function createConnection(grid, url, indicator, clientOnSuccess, clientOnError, currentRequestVersionNumber) {
       var existingRequest = getConnection(url);
       
       // Just return if connection already exists.
@@ -19,7 +19,7 @@
       newRequest.indicator = indicator;
       newRequest.url = url;
       newRequest.loader = grid.loader;
-      newRequest.versionNumber = new Date().getTime(); // Set the version number
+      newRequest.versionNumber = currentRequestVersionNumber; // Set the version number
       
       showIndicator(indicator);
 
@@ -27,10 +27,8 @@
     }
         
     function onSuccess(data, textStatus, request) {
-      var atTop = (request.url.indexOf('offset=0&') !== -1) || (request.url.indexOf('offset=&') !== -1);
       hideIndicator(request.indicator);
-      // Only if viewport scroll at the top, it will verify the versionNumber
-      if (atTop && (request.versionNumber < request.loader.lastRequestVersionNumber)) {
+      if (request.versionNumber < request.loader.lastRequestVersionNumber) {
         return;
       }
       request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
