@@ -14,7 +14,7 @@ module WulinMaster
       elsif options[:simple_time]
         assign_simple_time_attr(new_attrs, value, object)
       elsif invaild_attr?
-        attrs.delete_if {|key, value| key.to_s == field_str }
+        attrs.delete_if {|k, v| k.to_s == field_str }
       elsif value.blank?  #v == 'null'
         new_attrs[field_sym] = nil
       end
@@ -25,9 +25,7 @@ module WulinMaster
     end
 
     def simple_date_format(value)
-      Date.parse("#{value} #{WulinMaster.config.default_year}")
-    rescue Exception => e
-      nil
+      Date.parse("#{value} #{WulinMaster.config.default_year}") rescue nil
     end
     module_function :simple_date_format
 
@@ -53,7 +51,7 @@ module WulinMaster
         begin
           new_time = Time.parse(value)
           new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
-        rescue Exception => e
+        rescue
           new_attrs[field_sym] = nil
         end
       else
