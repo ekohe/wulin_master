@@ -30,6 +30,9 @@ var Requests = {
           for(var k in request.error_message){
             createFormElement.find(".field[name=" + k + "]").find(".field_error").text(request.error_message[k].join());
           }
+          if (request.error_message['base']) {
+            $('.base_error', createFormElement).text(request.error_message['base']);
+          }
         }
       }
     };

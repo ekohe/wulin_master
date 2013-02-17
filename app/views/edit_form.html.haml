@@ -11,6 +11,7 @@
     object = @grid.model.new
   .create_form{:id => "#{@grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
     = form_for object, :url => @grid.path do |form|
+      .base_error
       - columns.each do |column|
         - if edit_form_able?(column)
           :ruby
