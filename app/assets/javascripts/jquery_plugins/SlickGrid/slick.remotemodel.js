@@ -409,6 +409,16 @@
     function getParams() {
       return params;
     }
+
+    function getParam(key) {
+      var value = null;
+      $.each(params, function(i) {
+        if (params[i][0]==key) {
+          value = params[i][1];
+        }
+      });
+      return value;
+    }
     
     function setLoadingIndicator(indicator) {
       loadingIndicator = indicator;
@@ -489,6 +499,7 @@
       "addFiltersWithoutRefresh": addFiltersWithoutRefresh,
       "addFilters": addFilters,
       "getParams": getParams,
+      "getParam": getParam,
       "setParam": setParam,
       "setGrid": setGrid,
       "conditionalURI": conditionalURI,
