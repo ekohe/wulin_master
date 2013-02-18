@@ -84,8 +84,8 @@ module WulinMaster
         end
       end
       render json: {:success => true}
-    # rescue
-    #   render json: {:success => false, :error_message => $!.message }
+    rescue
+      render json: {:success => false, :error_message => $!.message }
     end
 
     def destroy
