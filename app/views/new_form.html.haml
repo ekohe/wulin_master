@@ -6,6 +6,8 @@
     object = @grid.model.new
   .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}", data: {action: 'create'}}
     = form_for object, :url => @grid.path do |form|
+      = hidden_field_tag :grid, @grid.class.to_s
+      = hidden_field_tag :screen, @screen.class.to_s
       .base_error
       - columns.each do |column|
         - if new_form_able?(column)
