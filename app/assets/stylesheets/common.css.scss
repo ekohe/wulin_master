@@ -421,4 +421,15 @@ span.switch_btn {
     width: 32px;
   }
 }
+
+.ajax-loading {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 3px;
+  width: 16px;
+  height: 16px;
+  background: url('ajax-loader-small.gif') no-repeat scroll center center transparent;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+}
   
