@@ -26,7 +26,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     if (masterIds.length === 0) return false;
 
     var association_key = this.through;
-    for(var i in this.detail_grids) {
+    for(var i=0; i < this.detail_grids.length; i++) {
       var detailGrid = this.detail_grids[i];
       // save the master relation info into detail grid
       detailGrid.master = {filter_column: association_key, filter_value: masterIds[0], filter_operator: this.operator};
