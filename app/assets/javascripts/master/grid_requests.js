@@ -42,15 +42,7 @@ var Requests = {
   // Record update by ajax
   updateByAjax: function(grid, item, editCommand) {
     delete item.slick_index;
-    var ids = item.id.toString();
-    var currentRow;
-    // multiple records
-    if (ids.indexOf(',') != -1) {
-      ids = ids.split(',');
-      currentRow = grid.getRowByRecordId(ids[ids.length-1]).index;
-    } else {  // one record
-      currentRow = grid.getRowByRecordId(ids).index;
-    }
+    var currentRow = this.getCurrentRow(grid, [item.id]);
     $.ajax({
       type: "POST",
       dateType: 'json',
@@ -75,6 +67,7 @@ var Requests = {
   // Delete rows along ajax
   deleteByAjax: function(grid, ids, force) {
     if(force === undefined) force = false;
+    var currentRow = this.getCurrentRow(grid, ids) - 1;
     $.ajax({
       type: 'POST',
       url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
@@ -82,7 +75,8 @@ var Requests = {
       success: function(msg) {
         if(msg.success) {
           grid.resetActiveCell();
-          grid.loader.reloadData();
+          var from = parseInt(currentRow / 200, 10) * 200;
+          grid.loader.reloadData(from, currentRow);
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
@@ -100,12 +94,10 @@ var Requests = {
             buttons: {
               Confirm: function() {
                 Requests.deleteByAjax(grid, ids, true);
-                $(this).find('#confirm_content').text("Are you sure to do this ?");
-                $(this).dialog("destroy");
+                $("#confirm_dialog").dialog("close");
               },
               Cancel: function() {
-                $(this).find('#confirm_content').text("Are you sure to do this ?");
-                $(this).dialog("destroy");
+                $("#confirm_dialog").dialog("close");
               }
             },
             close: function() {
@@ -118,5 +110,9 @@ var Requests = {
         }
       }
     });
+  },
+
+  getCurrentRow: function(grid, ids) {
+    return grid.getRowByRecordId(ids[ids.length-1]).index;
   }
 }; // Requests
