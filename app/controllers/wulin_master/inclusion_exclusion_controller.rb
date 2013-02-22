@@ -11,7 +11,7 @@ module WulinMaster
           group.save
         end
       end
-      render :json => {:status => 'OK', :message => "Added #{ids.size} #{params[:exclude_model]}#{ids.size > 1 ? 's' : ''}."}
+      render :json => {:status => 'OK', :message => "Added #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}."}
     rescue
       render :json => {:status => 'Error', :message => "Adding failed! Error: #{$!.message}"}
     end
@@ -20,7 +20,7 @@ module WulinMaster
       if (ids = params[:ids]).present?
         @include_model.where('id IN (?)', ids).destroy_all
       end
-      render :json => {:status => 'OK', :message => "Removed #{ids.size} #{params[:exclude_model]}#{ids.size > 1 ? 's' : ''}!"}
+      render :json => {:status => 'OK', :message => "Removed #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}!"}
     end
 
     private
