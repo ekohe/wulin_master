@@ -266,6 +266,11 @@
     }
 
     function reloadData(from,to) {
+      if(!from && !to){
+        var position = decideCurrentPosition();
+        from = position[0];
+        to = position[1];
+      }
       var i;
       if (from && to) {
         for (i=from; i<=to; i++)
@@ -276,6 +281,17 @@
       }
 
       ensureData(from,to);
+    }
+
+    function decideCurrentPosition(){
+      var currentRow, from;
+      if(grid.operatedIds.length > 0) {
+        currentRow = grid.getRowByRecordId(grid.operatedIds[grid.operatedIds.length-1]).index - 1;
+        from = parseInt(currentRow / 200, 10) * 200;
+        return [from, currentRow];
+      } else {
+        return [null, null];
+      }
     }
 
     function setSort(column,dir) {
