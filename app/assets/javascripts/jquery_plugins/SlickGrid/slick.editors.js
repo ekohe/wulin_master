@@ -1045,7 +1045,8 @@
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
-              $select.val(args.item[column.field].id);
+              var item = this.formatItem(args.item[column.field]);
+              $select.val(item.id);
               $select.chosen({allow_single_deselect: true});
             } else {
               self.getOptions();
@@ -1056,6 +1057,7 @@
           };
 
           this.getOptions = function(selectedId, theCurrentValue) {
+            var self = this;
             $.getJSON(choicesFetchPath, function(itemdata){
               $select.empty();
               $select.append($("<option />"));
@@ -1076,7 +1078,8 @@
                 }
                 $select.trigger('liszt:updated');
               } else {
-                $select.val(args.item[column.field].id);
+                var item = self.formatItem(args.item[column.field]);
+                $select.val(item.id);
                 $select.chosen({allow_single_deselect: true});
               }
 
@@ -1102,6 +1105,20 @@
             });
           };
 
+          this.formatItem = function(item) {
+            if (relationColumn && $.type(item) === 'object'){
+              newItem = {id: []};
+              for(var i in item) {
+                newItem["id"].push(item[i].id);
+                //newItem["name"] += item[i].value;
+              }
+              return newItem;
+            }
+            else {
+              return item;
+            }
+          };
+
           this.destroy = function() {
               // remove all data, events & dom elements created in the constructor
               $wrapper.remove();
@@ -1121,16 +1138,11 @@
                   if ($select.val().length != defaultValue.length) {
                     return true;
                   } else {
-                    $.each(defaultValue, function(i, n) {
-                      if (selectedValue.indexOf(n.toString()) == -1) {
-                        return true;
-                      }
-                    });
+                    return $.difference(defaultValue, selectedValue) !== [];
                   }
               } else {
                   return defaultValue.length > 0;
               }
-              return false;
             } else {
               return (selectedValue != defaultValue);
             }
@@ -1156,7 +1168,7 @@
               // load the value(s) from the data item and update the UI
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = item[column.field].id;
+              defaultValue = item[column.field].id ? item[column.field].id.toString() : item[column.field].id;
               $select.val(defaultValue);
               $select.select();
           };
@@ -1165,7 +1177,6 @@
               // deserialize the value(s) saved to "state" and apply them to the data item
               // this method may get called after the editor itself has been destroyed
               // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-              
               item[column.field].id = state.id;
               item[column.field][optionTextAttribute] = state[optionTextAttribute];
           };
@@ -1185,8 +1196,6 @@
 
           this.init();
         },
-        
-
 
         // This editor is a copy of BelongsToEditor but loads up the initial value differently; eventually this should be all cleaned up
         HasManyEditor : function(args) {
@@ -1213,6 +1222,7 @@
 
             var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
             var offsetWith = boxWidth + 28;
+
             this.init = function() {
               $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
               .appendTo(args.container);
@@ -1237,7 +1247,8 @@
                 $.each(choicesFetchPath, function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.val(args.item[column.field].id);
+                var item = this.formatItem(args.item[column.field]);
+                $select.val(item.id);
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1248,6 +1259,7 @@
             };
 
             this.getOptions = function(selectedId, theCurrentValue) {
+              var self = this;
               $.getJSON(choicesFetchPath, function(itemdata){
                 $select.empty();
                 $select.append($("<option />"));
@@ -1268,7 +1280,9 @@
                   }
                   $select.trigger('liszt:updated');
                 } else {
-                  $select.val(args.item[column.field].id);
+                  var item = self.formatItem(args.item[column.field]);
+                  // console.log(item)
+                  $select.val(item.id);
                   $select.chosen({allow_single_deselect: true});
                 }
   
@@ -1294,6 +1308,20 @@
               });
             };
 
+            this.formatItem = function(item) {
+              if (relationColumn && $.type(item) === 'array'){
+                newItem = {id: []};
+                for(var i in item) {
+                  newItem["id"].push(item[i].id);
+                  //newItem["name"] += item[i].value;
+                }
+                return newItem;
+              }
+              else {
+                return item;
+              }
+            };
+
             this.destroy = function() {
                 // remove all data, events & dom elements created in the constructor
               $wrapper.remove();
@@ -1313,16 +1341,11 @@
                       if ($select.val().length != defaultValue.length) {
                         return true;
                       } else {
-                        $.each(defaultValue, function(i, n) {
-                          if (selectedValue.indexOf(n.toString()) == -1) {
-                            return true;
-                          }
-                        });
+                        return $.difference(defaultValue, selectedValue) !== [];
                       }
                   } else {
                       return defaultValue.length > 0;
                   }
-                  return false;
                 } else {
                   return (selectedValue != defaultValue);
                 }
@@ -1342,7 +1365,7 @@
                 // load the value(s) from the data item and update the UI
                 // this method will be called immediately after the editor is initialized
                 // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-                defaultValue = $.map(item[column.field], function(val,i) { return val.id; } );
+                defaultValue = $.map(item[column.field], function(val,i) { return (val.id ? val.id.toString() : val.id); } );
                 $select.val(defaultValue);
                 $select.select();
             };
