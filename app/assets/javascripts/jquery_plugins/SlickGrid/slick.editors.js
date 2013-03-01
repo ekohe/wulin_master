@@ -1281,7 +1281,6 @@
                   $select.trigger('liszt:updated');
                 } else {
                   var item = self.formatItem(args.item[column.field]);
-                  // console.log(item)
                   $select.val(item.id);
                   $select.chosen({allow_single_deselect: true});
                 }

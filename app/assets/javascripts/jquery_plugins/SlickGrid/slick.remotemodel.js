@@ -286,7 +286,9 @@
     function decideCurrentPosition(){
       var currentRow, from;
       if(grid.operatedIds.length > 0) {
-        currentRow = grid.getRowByRecordId(grid.operatedIds[grid.operatedIds.length-1]).index - 1;
+        var gridRow = grid.getRowByRecordId(grid.operatedIds[grid.operatedIds.length-1]);
+        if(!gridRow) return [null, null];
+        currentRow = gridRow.index - 1;
         from = parseInt(currentRow / 200, 10) * 200;
         return [from, currentRow];
       } else {
