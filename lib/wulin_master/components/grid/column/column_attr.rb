@@ -13,8 +13,6 @@ module WulinMaster
         assign_simple_date_attr(new_attrs, value, object)
       elsif options[:simple_time]
         assign_simple_time_attr(new_attrs, value, object)
-      elsif invaild_attr?
-        attrs.delete_if {|k, v| k.to_s == field_str }
       elsif value.blank?  #v == 'null'
         new_attrs[field_sym] = nil
       end
@@ -145,10 +143,6 @@ module WulinMaster
 
     def has_one_reverse_relation?(related_klass, klass)
       (reflect = related_klass.reflections.find{|x| x[1].klass == klass}[1]) and reflect.macro == :has_one
-    end
-
-    def invaild_attr?
-      field_str !~ /_attributes$/ and model_columns.exclude?(field_str) and !model.public_method_defined?("#{field_str}=")
     end
 
     def relation_field?
