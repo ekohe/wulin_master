@@ -2534,7 +2534,7 @@ if (typeof Slick === "undefined") {
           var data = getData();
           if(data.length == 0 || data.length > 0 && !data[0]) data = self.loader.oldData;
           for(var i in data) {
-            if (data.hasOwnProperty(i) && i !== 'length' && data[i].id == id) { return { row: getRowAt(i), index: i} };
+            if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: getRowAt(i), index: i}; };
           }
         }
 
