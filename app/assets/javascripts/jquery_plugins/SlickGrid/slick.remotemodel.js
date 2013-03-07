@@ -227,20 +227,22 @@
       }
 
       totalRows = parseInt(resp.total, 10);
-      for (var i = 0; i < resp.rows.length; i++) {
-        var j = parseInt(from, 10) + parseInt(i, 10);
-        var obj = {};
-        $.each(columns, function(index, value) {
-          var item = resp.rows[i][index];
-          // match the column and the response data (compare column name and response data key)
-          if(item && typeof(item) == 'object' && !(item instanceof Array)) {
-            $.extend(true, obj, item);
-          } else {
-            obj[value.id] = item;
-          }
-        });
-        data[j] = obj;
-        data[j].slick_index = j;
+      if (resp.rows)
+        for (var i = 0; i < resp.rows.length; i++) {
+          var j = parseInt(from, 10) + parseInt(i, 10);
+          var obj = {};
+          $.each(columns, function(index, value) {
+            var item = resp.rows[i][index];
+            // match the column and the response data (compare column name and response data key)
+            if(item && typeof(item) == 'object' && !(item instanceof Array)) {
+              $.extend(true, obj, item);
+            } else {
+              obj[value.id] = item;
+            }
+          });
+          data[j] = obj;
+          data[j].slick_index = j;
+        }
       }
       req = null;
       

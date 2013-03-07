@@ -27,6 +27,8 @@
         return LongTextCellEditor;
         case "datetime":
         return DateTimeCellEditor;
+        case "time":
+        return TimeCellEditor;
         case "date":
         return StandardDateCellEditor;
         case "integer":
