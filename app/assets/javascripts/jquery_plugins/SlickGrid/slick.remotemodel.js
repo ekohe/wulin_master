@@ -227,7 +227,7 @@
       }
 
       totalRows = parseInt(resp.total, 10);
-      if (resp.rows)
+      if (resp.rows) {
         for (var i = 0; i < resp.rows.length; i++) {
           var j = parseInt(from, 10) + parseInt(i, 10);
           var obj = {};
