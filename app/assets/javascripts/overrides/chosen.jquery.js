@@ -8,6 +8,23 @@ Chosen.prototype.search_results_mouseup = function(evt) {
   }
 };
 
+Chosen.prototype.search_field_disabled = function() {
+  this.is_disabled = this.form_field_jq[0].disabled;
+  if (this.is_disabled) {
+    this.container.addClass('chzn-disabled');
+    if (this.search_field[0]) this.search_field[0].disabled = true;
+    if (!this.is_multiple) {
+      this.selected_item.unbind("focus", this.activate_action);
+    }
+    return this.close_field();
+  } else {
+    this.container.removeClass('chzn-disabled');
+    if (this.search_field[0]) this.search_field[0].disabled = false;
+    if (!this.is_multiple) {
+      return this.selected_item.bind("focus", this.activate_action);
+    }
+  }
+};
 // ---------------- support disabled options ---------------------------
 AbstractChosen.prototype.result_add_option = function(option) {
   var classes, style;
