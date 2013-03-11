@@ -216,6 +216,9 @@ A column can be a real field in the database table of current model, or virtual 
       ...
     end
 
+  `:auto_fill`
+  Default is false, if set true, the column will appear in the new/edit form but readonly.
+
   `:label`
   Controll the text displayed on the column header, if not set, the column label will be same with column name.
 

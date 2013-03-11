@@ -82,7 +82,7 @@
           columns[i].editor = TextCellEditor;
           columns[i].formatter = SimpleDateFormatter;
         } else if (columns[i].simple_time) {
-          columns[i].editor = TextCellEditor;
+          columns[i].editor = columns[i].editor || TextCellEditor;
           columns[i].formatter = SimpleTimeFormatter;
         }
 

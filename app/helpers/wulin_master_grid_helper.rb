@@ -32,7 +32,7 @@ module WulinMasterGridHelper
   end
 
   def time_column?(column)
-    'true' if column.options[:editor] == 'TimeCellEditor' and !column.options[:simple_date] and !column.options[:simple_time]
+    'true' if column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeCellEditor'
   end
   
   def get_column_name(column)

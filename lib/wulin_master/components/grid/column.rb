@@ -72,7 +72,6 @@ module WulinMaster
       if @options[:simple_date]
         value.respond_to?(:strftime) ? value.strftime('%d %b') : value
       elsif @options[:simple_time]
-
         value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
         if value.class == ActiveSupport::TimeWithZone or @options[:type] == 'Datetime'
