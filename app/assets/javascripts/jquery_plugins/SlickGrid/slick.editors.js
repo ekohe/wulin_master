@@ -1119,13 +1119,13 @@
 
             if (relationColumn) {
               if (selectedValue) {
-                  if ($select.val().length != defaultValue.length) {
+                  if (selectedValue.length != defaultValue.length) {
                     return true;
                   } else {
-                    return $.difference(defaultValue, selectedValue) !== [];
+                    return $.difference(defaultValue, selectedValue).length !== 0;
                   }
               } else {
-                  return defaultValue.length > 0;
+                return defaultValue.length > 0;
               }
             } else {
               return (selectedValue != defaultValue);
@@ -1152,7 +1152,7 @@
               // load the value(s) from the data item and update the UI
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = item[column.field].id// ? item[column.field].id.toString() : item[column.field].id;
+              defaultValue = item[column.field].id
               $select.val(item[column.field].id);
               $select.select();
           };
@@ -1305,10 +1305,10 @@
     
                 if (relationColumn) {
                   if (selectedValue) {
-                      if ($select.val().length != defaultValue.length) {
+                      if (selectedValue.length != defaultValue.length) {
                         return true;
                       } else {
-                        return $.difference(defaultValue, selectedValue) !== [];
+                        return $.difference(defaultValue, selectedValue).length !== 0;
                       }
                   } else {
                       return defaultValue.length > 0;
