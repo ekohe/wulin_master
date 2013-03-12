@@ -1332,7 +1332,7 @@
                 // load the value(s) from the data item and update the UI
                 // this method will be called immediately after the editor is initialized
                 // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-                defaultValue = $.map(item[column.field], function(val,i) { return (val.id ? val.id.toString() : val.id); } );
+                defaultValue = item[column.field].id
                 $select.val(defaultValue);
                 $select.select();
             };
