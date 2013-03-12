@@ -148,7 +148,8 @@
         },
 
         HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
-            return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
+            return value[columnDef.optionTextAttribute];
+            // return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
         },
         
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {

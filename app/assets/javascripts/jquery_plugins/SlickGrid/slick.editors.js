@@ -1045,8 +1045,7 @@
               $.each(choicesFetchPath, function(index, value) {
                 $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
-              var item = this.formatItem(args.item[column.field]);
-              $select.val(item.id);
+              $select.val(args.item[column.field].id);
               $select.chosen({allow_single_deselect: true});
             } else {
               self.getOptions();
@@ -1078,8 +1077,7 @@
                 }
                 $select.trigger('liszt:updated');
               } else {
-                var item = self.formatItem(args.item[column.field]);
-                $select.val(item.id);
+                $select.val(args.item[column.field].id);
                 $select.chosen({allow_single_deselect: true});
               }
 
@@ -1103,20 +1101,6 @@
                 return false;
               });
             });
-          };
-
-          this.formatItem = function(item) {
-            if (relationColumn && $.type(item) === 'object'){
-              newItem = {id: []};
-              for(var i in item) {
-                newItem["id"].push(item[i].id);
-                //newItem["name"] += item[i].value;
-              }
-              return newItem;
-            }
-            else {
-              return item;
-            }
           };
 
           this.destroy = function() {
@@ -1168,8 +1152,8 @@
               // load the value(s) from the data item and update the UI
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-              defaultValue = item[column.field].id ? item[column.field].id.toString() : item[column.field].id;
-              $select.val(defaultValue);
+              defaultValue = item[column.field].id// ? item[column.field].id.toString() : item[column.field].id;
+              $select.val(item[column.field].id);
               $select.select();
           };
 
@@ -1247,8 +1231,7 @@
                 $.each(choicesFetchPath, function(index, value) {
                   $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                var item = this.formatItem(args.item[column.field]);
-                $select.val(item.id);
+                $select.val(args.item[column.field].id);
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1280,8 +1263,7 @@
                   }
                   $select.trigger('liszt:updated');
                 } else {
-                  var item = self.formatItem(args.item[column.field]);
-                  $select.val(item.id);
+                  $select.val(args.item[column.field].id);
                   $select.chosen({allow_single_deselect: true});
                 }
   
@@ -1305,20 +1287,6 @@
                   return false;
                 });
               });
-            };
-
-            this.formatItem = function(item) {
-              if (relationColumn && $.type(item) === 'array'){
-                newItem = {id: []};
-                for(var i in item) {
-                  newItem["id"].push(item[i].id);
-                  //newItem["name"] += item[i].value;
-                }
-                return newItem;
-              }
-              else {
-                return item;
-              }
             };
 
             this.destroy = function() {

@@ -238,11 +238,9 @@ module WulinMaster
         association_object = object.send(@options[:through] || self.name)
         {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
       when 'has_and_belongs_to_many'
-        ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-        op_attribute = object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
-        {reflection.name => {id: ids, option_text_attribute => op_attribute}}
+        {reflection.name => format_multiple_objects(object.send(self.reflection.name.to_s))}
       when 'has_many'
-        {reflection.name => object.send(self.name.to_s).collect{|obj| {:id => obj.id, option_text_attribute => format(obj.send(option_text_attribute))}}}
+        {reflection.name => format_multiple_objects(object.send(self.name.to_s))}
       else
         self.format(object.send(self.name.to_s))
       end
@@ -299,6 +297,16 @@ module WulinMaster
 
     def association_through
       self.reflection ? self.reflection.try(:options)[:through] : nil
+    end
+
+    def format_multiple_objects(objects)
+      value = {:id => [], option_text_attribute => []}
+      objects.each do |obj|
+        value[:id] << obj.id
+        value[option_text_attribute] << format(obj.send(option_text_attribute))
+      end
+      value[option_text_attribute] = value[option_text_attribute].join(',')
+      value
     end
   end
 end
