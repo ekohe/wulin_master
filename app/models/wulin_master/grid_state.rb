@@ -1,5 +1,6 @@
 module WulinMaster 
   class GridState < ::ActiveRecord::Base
+    cattr_accessor :all_users
     attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
     
@@ -49,11 +50,24 @@ module WulinMaster
     end
 
     def user
-      User.all.find {|u| u.id == user_id}
+      self.class.all_users ||= User.all
+      u = get_user
+      # if can't find user, request the User.all again
+      unless u
+        self.class.all_users = User.all
+        u = get_user
+      end
+      u
     end
 
     def email
       user.try(:email)
+    end
+
+    private
+
+    def get_user
+      self.class.all_users.find{|x| x.id == self.user_id}
     end
 
   end
