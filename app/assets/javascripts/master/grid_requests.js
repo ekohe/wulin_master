@@ -42,7 +42,7 @@ var Requests = {
   // Record update by ajax
   updateByAjax: function(grid, item, editCommand) {
     delete item.slick_index;
-    var currentRow = this.getCurrentRow(grid, [item.id]);
+    var currentRow = this.getCurrentRows(grid, [item.id])[1];
     $.ajax({
       type: "POST",
       dateType: 'json',
@@ -67,7 +67,7 @@ var Requests = {
   // Delete rows along ajax
   deleteByAjax: function(grid, ids, force) {
     if(force === undefined) force = false;
-    var currentRow = this.getCurrentRow(grid, ids) - 1;
+    var range = this.getCurrentRows(grid, ids);
     $.ajax({
       type: 'POST',
       url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
@@ -75,8 +75,9 @@ var Requests = {
       success: function(msg) {
         if(msg.success) {
           grid.resetActiveCell();
-          var from = parseInt(currentRow / 200, 10) * 200;
-          grid.loader.reloadData(from, currentRow);
+          var from = parseInt(range[0] / 200, 10) * 200;
+          var to = range[1]+1;
+          grid.loader.reloadData(from, to);
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
@@ -112,7 +113,11 @@ var Requests = {
     });
   },
 
-  getCurrentRow: function(grid, ids) {
-    return grid.getRowByRecordId(ids[ids.length-1]).index;
+  getCurrentRows: function(grid, ids) {
+    var indexes = $.map(ids, function(id) {
+      return parseInt(grid.getRowByRecordId(id).index, 10);
+    });
+    indexes = indexes.sort();
+    return [indexes[0], indexes[indexes.length-1]];
   }
 }; // Requests

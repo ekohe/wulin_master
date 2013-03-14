@@ -1604,6 +1604,7 @@ if (typeof Slick === "undefined") {
             trigger(self.onKeyDown, {}, e);
             var handled = e.isImmediatePropagationStopped();
 
+                    
             if (!handled) {
                 if (!e.shiftKey && !e.altKey && !e.ctrlKey) {
                     if (e.which == 27) {

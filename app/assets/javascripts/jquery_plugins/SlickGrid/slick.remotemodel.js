@@ -65,7 +65,8 @@
     }
     
     function dataIsLoaded(args) {
-      for (var i = args.from; i <= args.to; i++) {
+      //for (var i = args.from; i <= args.to; i++) {
+      for (var i = args.from; i < args.to; i++) {
         grid.invalidateRow(i);
       }
 
@@ -189,7 +190,6 @@
 
         // for (var i=fromPage; i<=toPage; i++)
         //   data[i*loadingSize] = null; // null indicates a 'requested but not available yet'
-        
         return [(pageNum * pageSize), pageSize];
       }
     }
