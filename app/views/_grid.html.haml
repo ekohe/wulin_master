@@ -1,5 +1,12 @@
 .grid_container{:id => "grid_#{grid.name}", :name => "#{grid.name}",:style => grid.style}
   - unless grid.hide_header?
+    :ruby
+      toolbar_items = grid.toolbar_items
+      if params[:screen].present? and (screen = self.params[:screen].safe_constantize.try(:new))
+        toolbar_items.select! do |item|
+          grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || screen.authorize_create?(@current_user)
+        end
+      end
     .grid-header
       %h2= grid.title
       - grid.header_actions.each do |a|
@@ -8,7 +15,7 @@
       .toolbar-wrapper
         .toolbar(data-grid="#{@grid_name}")
           %ul
-            - grid.toolbar_items.each do |item|
+            - toolbar_items.each do |item|
               = render '/toolbar_item', :toolbar_item => item
       %span.tb_next.hidden
   .grid
@@ -23,7 +30,7 @@
                              #{grid.params["filters"].to_json.html_safe},
                              #{grid.javascript_column_model(params[:screen]).html_safe},
                              #{grid.states_for_user(@current_user).html_safe},
-                             #{grid.action_configs.to_json.html_safe},
+                             #{grid.action_configs(@current_user).to_json.html_safe},
                              #{grid.behavior_configs.to_json.html_safe},
                              #{grid.options.to_json.html_safe});
 

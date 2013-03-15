@@ -1,4 +1,5 @@
-- if @grid.action_names.include?('add') || @grid.action_names.include?('hotkey_add') 
+- @current_user = (self.respond_to?(:current_user) ? current_user : nil)
+- if @grid.action_names(@current_user).include?('add') || @grid.action_names(@current_user).include?('hotkey_add') 
   :ruby
     model_name = @grid.model.name.underscore
     columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }

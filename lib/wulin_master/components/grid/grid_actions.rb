@@ -7,6 +7,7 @@ module WulinMaster
     included do
       class_eval do
         ORIGINAL_ACTIONS = %w(add delete edit filter)
+        SENSITIVE_ACTIONS = %w(add delete edit hotkey_add hotkey_delete)
 
         class << self
           attr_reader :actions_pool
@@ -66,27 +67,39 @@ module WulinMaster
     # ----------------------- Instance Methods ------------------------------
 
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
-    def actions
+    def actions(current_user=nil)
       return self.class.actions_pool if self.params["screen"].blank?
-      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"])}.uniq {|action| action[:name]}
+
+      valid_actions = self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"])}.uniq {|action| action[:name]}
+      return valid_actions unless current_user
+
+      screen = self.params[:screen].safe_constantize.try(:new)
+      return valid_actions unless screen
+      valid_actions.select do |action|
+        self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?(current_user)
+      end
     end
 
     # the actions on the toolbar
-    def toolbar_actions
-      actions.reject {|action| action[:toolbar_item] == false || action[:visible] == false}
+    def toolbar_actions(current_user=nil)
+      the_actions = actions(current_user)
+      the_actions.reject {|action| action[:toolbar_item] == false || action[:visible] == false}
     end
 
     # the actions on the grid header (not on the toolbar)
-    def header_actions
-      actions.select {|action| action[:toolbar_item] == false}
+    def header_actions(current_user=nil)
+      the_actions = actions(current_user)
+      the_actions.select {|action| action[:toolbar_item] == false}
     end
     
-    def action_configs
-      actions.map {|a| a.reject{|k,v| k == :only or k == :except} }
+    def action_configs(current_user=nil)
+      the_actions = actions(current_user)
+      the_actions.map {|a| a.reject{|k,v| k == :only or k == :except} }
     end
 
-    def action_names
-      actions.map {|a| a[:name].to_s}
+    def action_names(current_user=nil)
+      the_actions = actions(current_user)
+      the_actions.map {|a| a[:name].to_s}
     end
 
     private

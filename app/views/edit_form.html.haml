@@ -1,4 +1,5 @@
-- if @grid.action_names.include?('edit') or @grid.action_names.include?('dynamic_edit')
+- @current_user = (self.respond_to?(:current_user) ? current_user : nil)
+- if @grid.action_names(@current_user).include?('edit') or @grid.action_names(@current_user).include?('dynamic_edit')
   :ruby
     model_name = @grid.model.name.underscore
     columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
