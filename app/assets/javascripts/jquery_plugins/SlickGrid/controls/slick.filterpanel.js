@@ -60,7 +60,7 @@
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $("input", $($grid.getHeaderRow())).off('keyup').on('keyup', function(e) {
+      $("input", $($grid.getHeaderRow())).die('keyup').live('keyup', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();
