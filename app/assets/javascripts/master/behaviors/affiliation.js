@@ -12,7 +12,9 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     }
     
     this.master_grid = gridManager.getGrid(self.master_grid_name);
-    this.master_grid[this.event].subscribe(function(){ self.handler(); });
+    if(this.master_grid) {
+      this.master_grid[this.event].subscribe(function(){ self.handler(); });
+    }
   },
 
   unsubscribe: function() {
