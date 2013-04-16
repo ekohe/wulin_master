@@ -75,11 +75,24 @@ module WulinMaster
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
       param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
+
       if param_attrs.present?
         updated_attributes = get_attributes(param_attrs, :update, @records.first)
+
+        hstore_att = updated_attributes.select{|k, v| k.to_s.index('->') }
+        other_att = updated_attributes.select{|k, v| !k.to_s.index('->')}
+
+        @records.each do |record|
+          hstore_att.each do |k,v|
+            record.send("#{k}=".to_sym, v)
+          end
+
+          record.save
+        end
+
         grid.model.transaction do
           @records.each do |record|
-            record.update_attributes!(updated_attributes)
+            record.update_attributes!(other_att)
           end
         end
       end
@@ -114,8 +127,18 @@ module WulinMaster
 
     def create
       param_key = ActiveModel::Naming.param_key(grid.model).to_sym
+
       attrs = get_attributes(params[param_key].presence || params[:item].presence, :create)
-      @record = grid.model.new(attrs)
+
+      hstore_att = attrs.select{|k, v| k.to_s.index('->') }
+      other_att = attrs.select{|k, v| !k.to_s.index('->')}
+
+      @record = grid.model.new(other_att)
+
+      hstore_att.each do |k,v|
+        @record.send("#{k}=".to_sym, v)
+      end
+
       message = if @record.save
         {:success => true, :id => @record.id }
       else
@@ -149,10 +172,21 @@ module WulinMaster
 
     protected
     
+    def column_for x
+      if x.index('->')
+        splitted = x.split(/->/)
+        column = splitted[0]
+        subs = splitted[1..-1]
+        return ([column] + subs.map{|x| "'#{x}'"}).join('->')
+      else
+        return x
+      end
+    end
+
     def construct_filters
       return unless params[:filters]
       params[:filters].each do |f|
-        @query = grid.apply_filter(@query, f[:column], f[:value], f[:operator])
+        @query = grid.apply_filter(@query, column_for(f[:column]), f[:value], f[:operator])
       end
     end
 

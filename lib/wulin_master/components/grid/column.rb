@@ -1,21 +1,60 @@
 require 'wulin_master/components/grid/column/column_filter'
 require 'wulin_master/components/grid/column/column_attr'
+require 'wulin_master/components/grid/column/dynamic_columns'
 
 module WulinMaster
   class Column
     include WulinMaster::ColumnFilter
     include WulinMaster::ColumnAttr
 
-    attr_accessor :name, :options
+    attr_accessor :options, :sub_value
 
     def initialize(name, grid_class, opts={})
-      @name = name
+      self.name = name
       @grid_class = grid_class
       @options = {:width => 150, :sortable => true}.merge(opts)
     end
 
+    def name
+      if is_hstore?
+        [@name, @sub_value.map{|x| "'#{x.to_s.gsub(/'/, "''") }'"}].compact.flatten.join('->').to_sym
+      else
+        @name
+      end
+    end
+
+    def name= x
+      if x.to_s.index('->')
+        tree = x.to_s.split(/->/)
+        @name =  tree.shift.to_sym
+        @sub_value = tree.map(&:to_sym)
+      else
+        @name = x
+        @sub_value = nil
+      end
+    end
+
+    def is_hstore?
+      !@sub_value.nil?
+    end
+
+    def get_hash_value object
+      dir = object
+
+      @sub_value.each do |x|
+        if dir.instance_of? Hash  
+          dir = dir[x]
+          return nil if dir.nil?
+        else
+          return nil
+        end
+      end
+
+      return dir
+    end
+
     def label
-      @options[:label] || @name.to_s.underscore.humanize
+      @options[:label] || [@name, @sub_value].compact.flatten.join(" ").underscore.humanize
     end
 
     def singular_name
@@ -100,6 +139,8 @@ module WulinMaster
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
         query.order("#{model.table_name}.#{@name} #{direction}, #{model.table_name}.id ASC")
+      elsif @sub_value
+        query.order("#{name} #{direction}, #{model.table_name}.id ASC")
       else
         Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{self.inspect}" 
         query
@@ -119,6 +160,8 @@ module WulinMaster
 
     def sql_type
       return :unknown if self.model.blank?
+      return :string if @sub_value
+
       if reflection
         options[:inner_formatter] ||= (options.delete(:formatter) || reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type))
         return association_type
@@ -160,11 +203,13 @@ module WulinMaster
 
     def full_name
       if @options[:option_text_attribute]
-       "#{name}_#{@options[:option_text_attribute].to_s}" 
+       "#{@name}_#{@options[:option_text_attribute].to_s}" 
       elsif @options[:through] 
-        "#{@options[:through]}_#{name}"
+        "#{@options[:through]}_#{@name}"
+      elsif @sub_value
+        "#{name}"
       elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
-        "#{name}_name"
+        "#{@name}_name"
       else
         name.to_s
       end
@@ -184,7 +229,8 @@ module WulinMaster
         if self.reflection
           [self.model.table_name + "."+ foreign_key, self.reflection.klass.table_name + "." + option_text_attribute.to_s]
         else
-          [self.model.table_name + "." + name.to_s]
+          val = [name, sub_value].compact.flatten.join(" -> ")
+          [self.model.table_name + "." + val]
         end
       else
         nil
@@ -223,8 +269,6 @@ module WulinMaster
         object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
       when 'has_many'
         object.send(self.name.to_s).collect{|obj| obj.send(option_text_attribute)}
-      else
-        self.format(object.send(self.name.to_s))
       end
     end
 
@@ -259,6 +303,12 @@ module WulinMaster
       @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
     
+    #
+    #  if self.name.instance_of? Hash
+    #    return :string
+    #  else
+    #
+
     alias_method :filterable?, :sortable?
 
     private
@@ -275,14 +325,19 @@ module WulinMaster
       elsif self.reflection
         "#{self.reflection.klass.table_name}.#{self.name}"
       else
-        self.name
+        "#{self.name}"
       end
     end
     
     def column_type(model, column_name)
       all_columns = model.respond_to?(:all_columns) ? model.all_columns : model.columns
       column = all_columns.find {|col| col.name.to_s == column_name.to_s}
-      (column.try(:type) || :unknown).to_s.to_sym
+
+      if column_name.index('->')
+        :string
+      else
+        (column.try(:type) || :unknow ).to_s.to_sym
+      end
     end
     
     def is_table_column?

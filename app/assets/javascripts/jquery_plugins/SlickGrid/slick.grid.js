@@ -441,9 +441,10 @@ if (typeof Slick === "undefined") {
                 var m = columns[i] = $.extend({},columnDefaults,columns[i]);
                 columnsById[m.id] = i;
 
-                var header = $("<div class='ui-state-default slick-header-column' id='" + uid + m.id + "' />")
+                var header = $("<div class='ui-state-default slick-header-column'/>")
                     .html("<span class='slick-column-name'>" + m.name + "</span>")
                     .width(m.width - headerColumnWidthDiff)
+                    .attr("id", uid + m.id)
                     .attr("title", m.toolTip || m.name || "")
                     .data("fieldId", m.id)
                     .addClass(m.headerCssClass || "")

@@ -220,7 +220,8 @@ module WulinMaster
           column.assign_attribute(object, value, new_attrs, attrs, type)
         end
       end
-      attrs.delete_if {|key, value| invalid_attr?(key.to_s) }
+
+      attrs.delete_if {|key, value| !key.to_s.index('->') && invalid_attr?(key.to_s) }
       new_attrs
     end
 
@@ -241,7 +242,9 @@ module WulinMaster
     end
     
     def find_sort_column_by_name(column_name)
+      puts "Name = #{column_name}"
       if column = find_column_by_name(column_name) and column.options[:sortable] != false
+
         column
       end
     end
@@ -249,10 +252,23 @@ module WulinMaster
     def find_filter_column_by_name(column_name)
       if column = find_column_by_name(column_name) and column.options[:filterable] != false
         column
+      else
+        raise "Unable to find #{column_name}?"
       end
     end
-    
+
     def find_column_by_name(column_name)
+      # params[:column_name] double the simple quote to prevent sql injection
+      # But we need to undouble the first and last simple quote from each field of a hstore
+      # this SHOULD keep the code safe
+      # keep in mind to test it...!
+      if column_name.index('->')
+        splitted = column_name.split(/->/)
+        first = splitted[0]
+        others = splitted[1..-1]
+        column_name = ([first] + others.map{|x| x.gsub(/^'('.*')'$/, '\\1')}).join('->')
+      end
+
       self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s } || self.columns.find{|c| c.foreign_key == column_name.to_s}
     end
 

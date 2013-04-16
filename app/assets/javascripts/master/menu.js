@@ -93,15 +93,19 @@ function selectMenuItem(url) {
 function initialize_menu() {
   // Click to load screen page
   $("#menu li.item a").on('click', function() {
-    $("#menu .active").removeClass("active");
-    $(this).parent().addClass("active");
-    // State management
-    var state = {};
-    currentUrl = $(this).attr('href');
-    state['url'] = currentUrl;
-    $.bbq.pushState(state);
-    load_page(currentUrl);
-    return false;
+    if($(this).attr('data-noajax')) {
+      return true;
+    } else {
+      $("#menu .active").removeClass("active");
+      $(this).parent().addClass("active");
+      // State management
+      var state = {};
+      currentUrl = $(this).attr('href');
+      state['url'] = currentUrl;
+      $.bbq.pushState(state);
+      load_page(currentUrl);
+      return false;
+    }
   });
   
   // Click to open submenu
@@ -113,13 +117,17 @@ function initialize_menu() {
   
   // Click to go back to dashboard
   $("#navigation h1 a").click(function() {
-    $("#menu .active").removeClass("active");
-    // State management
-    var state = {};
-    currentUrl = "/";
-    state['url'] = currentUrl;
-    $.bbq.pushState(state);
-    load_page(currentUrl);
-    return false;
+    if($(this).attr('data-noajax')) {
+      return true;
+    } else {
+      $("#menu .active").removeClass("active");
+      // State management
+      var state = {};
+      currentUrl = "/";
+      state['url'] = currentUrl;
+      $.bbq.pushState(state);
+      load_page(currentUrl);
+      return false;
+    }
   });
 }

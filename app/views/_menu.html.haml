@@ -15,9 +15,9 @@
               = menu_entry.title
             %ul
               - menu_entry.each do |submenu_entry|
-                %li.item{:style => submenu_entry.is_hidden? ? "display:none" : ""}= link_to submenu_entry.title, submenu_entry.path
+                %li.item{:style => submenu_entry.is_hidden? ? "display:none" : ""}= link_to submenu_entry.title, submenu_entry.path, { :data => submenu_entry.options }
         - else
-          %li.item= link_to menu_entry.title, menu_entry.path
+          %li.item= link_to menu_entry.title, menu_entry.path, { :data => menu_entry.options }
   
   - if defined?(WulinOAuth) and User.current_user
     #user_nav

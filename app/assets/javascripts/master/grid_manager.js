@@ -143,6 +143,7 @@
         behaviors: behaviors,
         options: options
       };
+
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }

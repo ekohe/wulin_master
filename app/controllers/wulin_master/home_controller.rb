@@ -21,7 +21,7 @@ module WulinMaster
         end
       end
     end
-    
+
     class << self
       attr_accessor :menu_block, :menu, :context
 
@@ -37,8 +37,9 @@ module WulinMaster
           yield
           @menu << @submenu if @submenu.size > 0
           @submenu = nil
-        end 
-        return @submenu   
+        end
+
+        return @submenu
       end
 
       def item(title_or_screen_class, options={})

@@ -1,5 +1,5 @@
 module WulinMaster
-  class FetchOptionsController < ::ActionController::Metal
+  class FetchOptionsController < ::ApplicationController
     
     def index
       if authorized? and params[:text_attr].present?
@@ -11,10 +11,12 @@ module WulinMaster
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
         # Should reply something different here, at least status code should be 403
+        puts "403"
         self.response_body = [].to_json
       end
-    rescue
-      self.response_body = [].to_json
+    #rescue
+    #  puts "rescue"
+    #  self.response_body = [].to_json
     end
     
     
@@ -53,9 +55,13 @@ module WulinMaster
     end
     
     def authorized_for_user?
-      controller = column_controller_class.new
-      screen = column_screen.new({}, controller)
-      !screen.respond_to?(:authorized?) || (screen.respond_to?(:authorized?) && screen.authorized?(current_user))
+      unless column_controller_class.nil?
+        controller = column_controller_class.new
+        screen = column_screen.new({}, controller)
+        !screen.respond_to?(:authorized?) || (screen.respond_to?(:authorized?) && screen.authorized?(current_user))
+      else
+        true
+      end
     end
     
     def column_belongs_to_grid?

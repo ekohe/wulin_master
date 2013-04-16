@@ -5,6 +5,7 @@ module WulinMaster
     included do
       class_eval do
         class_attribute :columns_pool
+        class_attribute :dynamic_columns_pool
       end
     end
     
@@ -12,6 +13,7 @@ module WulinMaster
       # Private - executed when class is subclassed
       def initialize_columns
         self.columns_pool ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
+        self.dynamic_columns_pool ||= []
       end
       
       # Add a column
@@ -19,6 +21,10 @@ module WulinMaster
         self.columns_pool += [Column.new(name, self, options)]
       end
       
+      def dynamic_columns(&block)
+        self.dynamic_columns_pool << block
+      end
+
       # Remove columns for exactly screens
       def remove_columns(r_columns, scope={})
         return unless scope[:screen].present?
@@ -38,6 +44,19 @@ module WulinMaster
     end
     
     # Instance Methods
+    
+    # Due to lack of performance, we load only once dynamic_columns for each grid.
+    def dynamic_columns
+      if @dynamic_columns.nil?
+        @dynamic_columns = DynamicColumns.new(self.class)
+
+        self.class.dynamic_columns_pool.each do |block|
+          @dynamic_columns.instance_eval &block
+        end
+      end
+
+      @dynamic_columns
+    end
 
     # Returns columns
     def columns
@@ -45,7 +64,8 @@ module WulinMaster
       return self.class.columns_pool if screen_name.blank?
       
       all_columns = self.class.columns_pool.dup
-      
+      all_columns += dynamic_columns.columns
+
       all_columns.select do |column|
         column.valid_in_screen(screen_name)
       end
