@@ -69,7 +69,7 @@ module WulinMaster
           reflection = detail_model.reflections[model_name.intern]
 
           # add association column
-          unless self.columns_pool.find {|c| c.full_name == reflection.foreign_key and c.options[:only].include?(options[:screen].intern)}
+          unless self.columns_pool.find {|c| c.full_name == reflection.foreign_key and c.valid_in_screen(options[:screen]) }
             column reflection.name, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_filter_column = reflection.foreign_key
           end
