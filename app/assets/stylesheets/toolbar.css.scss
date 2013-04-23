@@ -145,6 +145,10 @@ $toolbar_button_height: 50px;
   background: image-url("ui/clock_icon.png") no-repeat top center;
 }
 
+.toolbar_icon_pdf {
+  background: image-url("ui/pdf_icon.png") no-repeat top center;
+}
+
 .add_detail_action {
   min-width: 75px;
 }
