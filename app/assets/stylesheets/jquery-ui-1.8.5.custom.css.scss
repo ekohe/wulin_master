@@ -455,7 +455,7 @@ input.ui-button:active { background: image-url('button_bg.png') 0px bottom repea
 .ui-button-text-only .ui-button-text { padding: 5px 12px; }
 .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text { padding: 5px; text-indent: -9999999px; }
 .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 5px 12px 5px 25px; }
-.ui-button-text-icon-secondary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 5px 12px 5px 25px;; }
+.ui-button-text-icon-secondary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 5px 12px 5px 25px; }
 .ui-button-text-icons .ui-button-text { padding-right: 1.8em; }
 /* no icon support for input elements, provide padding by default */
 input.ui-button { padding: .4em 1em; }

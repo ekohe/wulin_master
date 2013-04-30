@@ -35,7 +35,7 @@ module WulinMaster
         if new_date.nil?
           new_attrs[field_sym] = nil
         else
-          value_was = object.__send__("#{field_str}_was").try(:to_date)
+          value_was = object.__send__("#{field_str}_was")
           new_attrs[field_sym] = (value_was.blank? ? new_date.to_s : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
         end
       else

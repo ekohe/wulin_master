@@ -3,7 +3,7 @@ class <%= class_name %>Grid < WulinMaster::Grid
 
   model <%= class_name %>
 
-  path '/<%= table_name %>'
+  # path '/<%= table_name %>' # Define a different route for the grid
 
 <% attributes.each do |column| -%>
   column :<%= column.name.include?(" ") ? "\"#{column.name}\"" : column.name %>
