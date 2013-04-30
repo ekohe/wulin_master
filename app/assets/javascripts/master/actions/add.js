@@ -1,4 +1,5 @@
 // Toolbar Item 'Add'
+jQuery.event.props.push("cancel");
 
 WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
   name: 'add',
@@ -11,14 +12,38 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
     Ui.openDialog(grid, 'wulin_master_new_form', grid.options);
 
     // register 'Create' button click event, need to remove to dialog action later
-    $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function() {
+    $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function(evt) {
       if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
+
+      var e = jQuery.Event('beforesubmit.wulin', {target: this});
+
+      var _cancel = false;
+      cancel = function() { _cancel = true; }
+
+      $(this).parents('form').trigger(e, cancel);
+
+      if(_cancel) {
+        return false;
+      }
+
       Requests.createByAjax(grid, false);
       return false;
     });
     // register 'Create and Continue' button click event, need to remove to dialog action later
-    $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function() {
+    $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function(evt) {
       if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
+
+      var e = jQuery.Event('beforesubmit.wulin', {target: this});
+
+      var _cancel = false;
+      cancel = function() { _cancel = true; }
+
+      $(this).parents('form').trigger(e, cancel);
+
+      if(_cancel) {
+        return false;
+      }
+
       Requests.createByAjax(grid, true);
       return false;
     });
