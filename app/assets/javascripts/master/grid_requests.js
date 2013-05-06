@@ -66,6 +66,10 @@ var Requests = {
 
   // Delete rows along ajax
   deleteByAjax: function(grid, ids, force) {
+    if (ids.length > 350) {
+      displayErrorMessage('You select too many rows, please select less than 350 rows.');
+      return;
+    }
     if(force === undefined) force = false;
     var range = this.getCurrentRows(grid, ids);
     $.ajax({

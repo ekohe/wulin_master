@@ -21,13 +21,17 @@ var batchUpdateByAjax = function(grid, version) {
     displayErrorMessage('Please select a record');
   } else {
     ids = grid.getSelectedIds();
+    if (ids.length > 350) {
+      displayErrorMessage('You select too many rows, please select less than 350 rows.');
+      return;
+    }
     url = grid.path + '/wulin_master_edit_form' + grid.query;
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
       $('body').append(data);
       scope = $( '#' + name + '_form');
-      
+
       if (grid.options) {
         width = grid.options.form_dialog_width || 600;
         height = grid.options.form_dialog_height || (scope.outerHeight() + 40);
@@ -55,7 +59,7 @@ var batchUpdateByAjax = function(grid, version) {
           setTimeout(function(){
             fillValues(scope, grid, selectedIndexes);
           }, 1000);
-          
+
           showFlagCheckBox(scope, ids);
         },
         close: function(event, ui) {
@@ -201,12 +205,12 @@ var checkTheBox = function(name) {
   scope.off('change', 'input:checkbox, input:file').on('change', 'input:checkbox:not(.target_flag), input:file', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
-  
+
   // Date picker \ datetime picker \ time picker
   scope.off('change', 'input.hasDatepicker').on('change', 'input.hasDatepicker', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
   });
-  
+
   // Empty input box when flag change to unchecked
   scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
     if ($.isEmptyObject($(this).attr('checked'))) {
@@ -239,7 +243,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
-          
+
           grid.loader.reloadData();
           displayNewNotification(selectedIndexes.length + ' records been updated!');
         } else {
