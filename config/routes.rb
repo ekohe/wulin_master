@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     post "grid_states_manages/update"
     get "grid_states_manages/manage"
     post "grid_states_manages/batch_update"
+    put 'grid_states_manages/reset_default'
 
     resources :grid_states do
       collection do

@@ -64,5 +64,15 @@ module WulinMaster
     rescue
       self.response_body = $!.message
     end
+
+    def reset_default
+      if params[:grid_name].present? and params[:user_id].present? and (default = GridState.for_user_and_grid(params[:user_id], params[:grid_name]).default.first)
+        default.reset!
+      end
+      render text: 'ok'
+    rescue
+      render text: $!.message
+    end
+
   end
 end

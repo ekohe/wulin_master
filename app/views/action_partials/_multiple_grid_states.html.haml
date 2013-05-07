@@ -4,6 +4,7 @@
   =label_tag "grid_states", "Custom Views:"
   =select_tag "grid_states", options_for_select(grid_states_options(@current_user.id, grid.name))
   %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
+  %a{:href => "javascript:void(0);", :class => "reset_icon_s reset"}
 
 
 :javascript
@@ -24,5 +25,17 @@
           }
         });
       });
+    });
+
+    $('.grid_states_switcher a.reset').on('click', function(){
+      if (confirm('Are you sure that you want to reset the default view?')) {
+        $.post('#{wulin_master_grid_states_manages_reset_default_path}', {_method: 'PUT', grid_name: '#{grid.name}', user_id: '#{@current_user.id}'}, function(data) {
+          if (data == 'ok') {
+            load_page($.bbq.getState('url'));
+          } else {
+            displayErrorMessage(data);
+          }
+        });
+      }
     });
   });

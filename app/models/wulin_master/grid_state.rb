@@ -4,7 +4,8 @@ module WulinMaster
     attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
     
-    scope :for_user_and_grid, lambda {|user_id, grid_name| where(:user_id => user_id, :grid_name => grid_name)}
+    scope :for_user_and_grid, ->(user_id, grid_name) { where(:user_id => user_id, :grid_name => grid_name)}
+    scope :default, -> { where(name: 'default') }
     
     reject_audit if defined? ::WulinAudit
 
@@ -62,6 +63,10 @@ module WulinMaster
 
     def email
       user.try(:email)
+    end
+
+    def reset!
+      update_attributes!(state_value: nil)
     end
 
     private
