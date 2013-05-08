@@ -10,5 +10,10 @@
     :javascript
       window._token = encodeURIComponent('#{form_authenticity_token}');
       window._always_reset_form = #{WulinMaster.config.always_reset_form};
+      $(function(){
+        if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
+          displayNewNotification('Current broswer is unsupported, Chrome is the only officially supported browser. Please switch to Chrome.', true);
+        }
+      });
   %body
     = yield

@@ -26,7 +26,7 @@ discardNotification = (notification) ->
     notification.remove() 
   notification.slideUp('fast', -> removeNotification())
     
-window.displayNewNotification = (message) ->
+window.displayNewNotification = (message, always) ->
   initializeContainer()
   notification = buildNotificationHtml(message)
   container().append(notification)
@@ -34,5 +34,5 @@ window.displayNewNotification = (message) ->
   notification.bind('click', -> discardNotification(notification))
   timedDiscard = ->
     discardNotification(notification)
-  setTimeout(timedDiscard, duration*1000)
+  setTimeout(timedDiscard, duration*1000) unless always
   true
