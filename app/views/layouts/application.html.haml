@@ -4,12 +4,17 @@
     %title= WulinMaster.config.app_title
     %meta(http-equiv="content-type" content="text/html; charset=UTF-8")
     %meta(http-equiv="content-language" content="en")
-    = stylesheet_link_tag    *WulinMaster.stylesheets
-    = javascript_include_tag *WulinMaster.javascripts
     = csrf_meta_tags
+    = stylesheet_link_tag    *WulinMaster.stylesheets
     :javascript
+      if (typeof(console) === "undefined") {
+        console = { log: function() {} };
+      }
       window._token = encodeURIComponent('#{form_authenticity_token}');
       window._always_reset_form = #{WulinMaster.config.always_reset_form};
+
+    = javascript_include_tag *WulinMaster.javascripts
+    :javascript
       $(function(){
         if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
           displayNewNotification('Current broswer is unsupported, Chrome is the only officially supported browser. Please switch to Chrome.', true);
