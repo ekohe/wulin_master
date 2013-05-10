@@ -25,9 +25,9 @@
     var lastRequestVersionNumber = 0;
     var currentRequestVersionNumber = 0;
     var self = this;
-    
+
     if(initialFilters) {
-      for(var i in initialFilters) {
+      for(var i = 0; i < initialFilters.length; i++) {
         filters.push([initialFilters[i]['column'], initialFilters[i]['value'], initialFilters[i]['operator']]);
       }
     }
@@ -136,6 +136,7 @@
       } else {
         url += "&sort_dir=DESC";
       }
+
       // Filters
       $.each(filters, function(index, value) {
         url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1])+"&filters[][operator]="+encodeURIComponent(value[2]);
