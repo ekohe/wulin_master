@@ -10,11 +10,10 @@ module WulinMaster
   end
   
   class Configuration
-    attr_accessor :app_title, :app_title_height, :report_title, :always_reset_form, :default_year
+    attr_accessor :app_title, :app_title_height, :always_reset_form, :default_year
     
     def initialize
       self.app_title = 'Undefined App'
-      self.report_title = 'Undefined Report'
       self.app_title_height = '42px'
       self.always_reset_form = false
       self.default_year = Date.today.year
