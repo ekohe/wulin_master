@@ -58,9 +58,10 @@
         };
       })();
 
+      $input = $("input", $($grid.getHeaderRow()));
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $("input", $($grid.getHeaderRow())).die('keyup').live('keyup', function(e) {
+      $input.die('keyup').live('keyup', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();
@@ -80,6 +81,23 @@
           }, 1000);
         }
       });
+
+      // Bind mousemove event to body to adjust reset filter panel position
+      $input.on('focus', function(){
+        var $headerRowScroller = $($grid.getHeaderRow()).parent();
+        var $viewPort = $($grid.getCanvasNode()).parent();
+        $('body').on('mousemove', function(){
+          delay(function(){
+            $headerRowScroller[0].scrollLeft = $viewPort[0].scrollLeft;
+          }, 300);
+        });
+      });
+
+      // Unbind mousemove event of body
+      $input.on('blur', function(){
+        $('body').off('mousedown');
+      });
+
     }
     
     function trigger(evt, args, e) {
@@ -91,6 +109,8 @@
     
     function generateFilters() {
       var inputWidth, columns, inputElement;
+      var $headerRow = $($grid.getHeaderRow());
+      var headerWidth = $($grid.getCanvasNode()).width();
       var ua = navigator.userAgent.toLowerCase();
 
       html = "";
@@ -130,7 +150,9 @@
       });
       
       // Fills up and display the secondary row
-      $($grid.getHeaderRow()).html(html).show();
+      $headerRow.width(headerWidth);
+      $headerRow.html(html).show();
+
     }
 
     // This method update the current filters applied to the currentFiltersApplied array
