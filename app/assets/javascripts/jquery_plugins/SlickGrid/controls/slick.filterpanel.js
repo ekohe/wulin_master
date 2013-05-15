@@ -95,7 +95,7 @@
 
       // Unbind mousemove event of body
       $input.on('blur', function(){
-        $('body').off('mousedown');
+        $('body').off('mousemove');
       });
 
     }
