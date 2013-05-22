@@ -58,6 +58,14 @@
         };
       })();
 
+      var repositionDelay = (function(){
+        var timer = 0;
+        return function(callback, ms){
+          clearTimeout (timer);
+          timer = setTimeout(callback, ms);
+        };
+      })();
+
       $input = $("input", $($grid.getHeaderRow()));
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
@@ -87,7 +95,7 @@
         var $headerRowScroller = $($grid.getHeaderRow()).parent();
         var $viewPort = $($grid.getCanvasNode()).parent();
         $('body').on('mousemove', function(){
-          delay(function(){
+          repositionDelay(function(){
             $headerRowScroller[0].scrollLeft = $viewPort[0].scrollLeft;
           }, 300);
         });
