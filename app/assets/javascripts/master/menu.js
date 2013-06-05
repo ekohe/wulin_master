@@ -70,7 +70,7 @@ function load_page(url) {
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
       if(typeof castor == 'object'){
-        castor.log({date: Date(), location: window.location.href});
+        castor.log({date: Date(), location: window.location.href, user: requester_email});
       };  
     },
     error: function() {
