@@ -69,6 +69,9 @@ function load_page(url) {
       indicators.find("#init_menu_indicator").fadeOut();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
+      if(typeof castor == 'object'){
+        castor.log({date: Date(), location: window.location.href});
+      };  
     },
     error: function() {
       indicators.find("#init_menu_indicator").fadeOut();
