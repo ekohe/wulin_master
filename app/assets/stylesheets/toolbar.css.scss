@@ -68,6 +68,10 @@ $toolbar_button_height: 50px;
   }
 }
 
+.toolbar_icon_send_mail {
+  background: image-url("ui/mail_icon.png") no-repeat top center;
+}
+
 .toolbar_icon_filter {
   background: image-url("ui/search_icon.png") no-repeat top center;
 }
