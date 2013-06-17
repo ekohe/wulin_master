@@ -148,12 +148,11 @@
         },
 
         HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value[columnDef.optionTextAttribute];
-            // return $.map(value, function(val,i) { return val[columnDef.optionTextAttribute]; }).join(", ");
+            return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         },
         
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value[columnDef.optionTextAttribute];
+            return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         }
     
     };
