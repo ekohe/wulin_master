@@ -123,7 +123,7 @@ module WulinMaster
         return association_type
       end
       column = model_columns.find {|col| col.name.to_s == self.name.to_s}
-      (column.try(:type) || association_type || :unknown).to_s.to_sym
+      (column.try(:type) || association_type || self.options[:sql_type] || :unknown ).to_s.to_sym
     end
 
     def reflection
