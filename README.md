@@ -254,6 +254,10 @@ A column can be a real field in the database table of current model, or virtual 
   `:sql_expression`
   This option is very special and rarely used. It is only used when you want to do some special sql operation, like sorting or filtering vitural attribute by sql.
 
+  `:sql_type`
+  This option is only used when the column is a virtual attribute column, because it is not a real column in database, so we can't know its type from db level, so if you want to make this column be editable in the create form or edit form, have to explicitly specify its :sql_type. 
+  (eg: There is a datatime column in the table but you just want to edit the time part, you can create a virtual attribute representing its time part, specify :sql_type be 'time', then you can edit this field through a timepicker)
+
   `:editor`
   By default, if the column is editable, the type of cell editor is decided from the column type: string, integer, boolean etc, so you don't need to specify the editor handly for general cases. But sometimes, you have to define the :editor, for example, 'SelectEditor' renders a dropdown of possible values of the column, 'TimeCellEditor' renders a timepicker for the column which is datetime type, etc. 
   And, you can define a new type of editor yourself, the editor definitions are all located in slick.editor.js
