@@ -118,7 +118,7 @@
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
-      var headerWidth = $($grid.getCanvasNode()).width();
+      var headerWidth = $($grid.getCanvasNode()).width() + 16;      // 16 is the vertical scrollbar width
       var ua = navigator.userAgent.toLowerCase();
 
       html = "";
