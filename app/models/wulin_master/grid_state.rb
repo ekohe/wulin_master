@@ -45,6 +45,14 @@ module WulinMaster
       end
     end
 
+    # cache all_users, loop all states and destroy the state without valid user_id
+    def self.clear_invalid_states!
+      self.all_users = User.all
+      self.all.each do |state|
+        state.destroy unless self.all_users.map(&:id).include?(state.user_id)
+      end if self.all_users.present?
+    end
+
     # ------------------------------ Instance Methods -------------------------------
     def brother_states
       self.class.for_user_and_grid(self.user_id, self.grid_name).where("id != ?", self.id)
@@ -52,13 +60,7 @@ module WulinMaster
 
     def user
       self.class.all_users ||= User.all
-      u = get_user
-      # if can't find user, request the User.all again
-      unless u
-        self.class.all_users = User.all
-        u = get_user
-      end
-      u
+      get_user
     end
 
     def email

@@ -6,6 +6,8 @@ module WulinMaster
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
 
+    before_filter :clear_invalid_states_and_users_cache, only: :index
+
     def copy
       GridState.transaction do
         params[:user_ids].each do |uid|
@@ -49,6 +51,12 @@ module WulinMaster
       @query = @query.all.sort do |s1, s2|
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
       end if @skip_order
+    end
+
+    def clear_invalid_states_and_users_cache
+      if params[:format] == 'json'
+        WulinMaster::GridState.clear_invalid_states!
+      end
     end
 
   end
