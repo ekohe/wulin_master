@@ -69,7 +69,9 @@
           columns[i].formatter = StandardDateCellFormatter;
           columns[i].DateShowFormat = "yy-mm-dd";
         } else if (type_str == "boolean") {
-          columns[i].formatter = BoolCellFormatter;
+          if(!columns[i].formatter) {
+            columns[i].formatter = BoolCellFormatter;
+          }
         } else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
           columns[i].formatter = BelongsToFormatter;
         } else if (type_str == "has_many") {
