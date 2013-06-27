@@ -119,7 +119,8 @@ module WulinMaster
     def sql_type
       return :unknown if self.model.blank?
       if reflection
-        options[:inner_formatter] ||= (options.delete(:formatter) || reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type))
+        options[:inner_sql_type] = reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type)
+        options[:inner_formatter] ||= (options.delete(:formatter) || options[:inner_sql_type])
         return association_type
       end
       column = model_columns.find {|col| col.name.to_s == self.name.to_s}
