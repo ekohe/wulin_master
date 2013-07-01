@@ -26,7 +26,7 @@ module WulinMaster
     end
     
     def boolean_query(query, column_name, value, column)
-      if column.options[:formatter] == 'YesNoCellFormatter' and !value
+      if (column.options[:formatter] == 'YesNoCellFormatter' or column.options[:inner_formatter] == 'YesNoCellFormatter') and !value
         query.where("#{column_name} = ? OR #{column_name} is NULL", 'f')
       else
         query.where(column_name => value)
