@@ -93,7 +93,7 @@ module WulinMaster
       elsif params[:format] != 'json'   # if format not json (screen request) it needs to initialize toolbar and styling configs
         # apply_default_config DEFAULT_CONFIG
         # apply_custom_config
-        initialize_toolbar
+        initialize_toolbar(controller_instance.current_user)
       else    # else, only need to apply custom configs without styling (like grid relation configs)
         # apply_custom_config_without_styling
       end
@@ -256,8 +256,8 @@ module WulinMaster
       self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s } || self.columns.find{|c| c.foreign_key == column_name.to_s}
     end
 
-    def initialize_toolbar
-      self.toolbar ||= Toolbar.new(name, self.toolbar_actions)
+    def initialize_toolbar(current_user=nil)
+      self.toolbar ||= Toolbar.new(name, self.toolbar_actions(current_user))
     end
   end
 end

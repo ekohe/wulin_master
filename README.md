@@ -506,6 +506,28 @@ As above, only in MagazineScreen, the PostGrid's width will be '30%', the `print
 The `:only` and `:except` option can be appended to all methods of grid styles, grid options, grid actions and grid behaviors.
 
 
+#### Configuration for diffrent users
+
+Permission management is a necessary aspect for the application. If you are using wulin_permits (the permission management plugin of wulin series), you can easily configure what screens or grid actions be invisible for a centain kinds of users.
+
+For screen permission, you can configure like:
+
+    submenu 'Orders' do
+      # the "order#cud" is a auto-generated permission by wulin_permits, you can configure it in 'Roles Permissions' setting
+      item CreateOrderScreen, :authorized? => lambda { |user| user.has_permission_with_name?("order#cud") }
+      item OrderScreen
+    end 
+
+For action permission, configure like:
+
+    class ContactGrid < WulinMaster::Grid
+       ...
+       action :add
+       action :edit
+       action :delete, :authorized? => lambda { |user| user.has_permission_with_name?("contacts#delete") }
+       ...
+    end
+
 ### 2. Panel configuration
 
 As one kind of WulinMaster component, `WulinMaster::Panel` can be also rendered in the screen like `WulinMaster::Grid`, but the configuration is much easier, let's take an example:

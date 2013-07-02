@@ -69,15 +69,7 @@ module WulinMaster
     # the actions of a grid instance, filtered by screen param from class's actions_pool 
     def actions(current_user=nil)
       return self.class.actions_pool if self.params["screen"].blank?
-
-      valid_actions = self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"])}.uniq {|action| action[:name]}
-      return valid_actions unless current_user
-
-      screen = self.params[:screen].safe_constantize.try(:new)
-      return valid_actions unless screen
-      valid_actions.select do |action|
-        self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?(current_user)
-      end
+      self.class.actions_pool.select {|action| valid_action?(action, self.params["screen"], current_user)}.uniq {|action| action[:name]}
     end
 
     # the actions on the toolbar
@@ -104,10 +96,35 @@ module WulinMaster
 
     private
 
-    def valid_action?(action, screen_name)
+    def valid_action?(action, screen_name, user)
+      valid_by_screen_configuration?(action, screen_name, user) and 
+      valid_by_screen_authorize_create?(action, screen_name, user) and 
+      valid_by_action_authorized?(action, user)
+    end
+
+    # 1. check if this action can be displayed in the screen due to :only or :except configuration
+    def valid_by_screen_configuration?(action, screen_name, user)
       (action[:only].blank? and action[:except].blank?) ||
       (action[:only].present? and screen_name and action[:only].include?(screen_name.intern)) ||
       (action[:except].present? and screen_name and action[:except].exclude?(screen_name.intern))
+    end
+
+    # 2. check if this screen creation authorized for current user if action is cud 
+    def valid_by_screen_authorize_create?(action, screen_name, user)
+      screen = screen_name.safe_constantize.try(:new)
+      return true unless (user and screen)
+      self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?(user)
+    end
+
+    # 3. check if this action authorized for current user
+    def valid_by_action_authorized?(action, user)
+      return true unless (action[:authorized?] and user)
+
+      if action[:authorized?].kind_of?(Proc)
+        return action[:authorized?].call(user)
+      else
+        return action[:authorized?] == true
+      end
     end
 
   end
