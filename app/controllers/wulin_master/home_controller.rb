@@ -55,7 +55,7 @@ module WulinMaster
             is_authorized = (context && context.respond_to?(:current_user)) ? options[:authorized?].call(context.current_user) : options[:authorized?].call(nil)
             return unless is_authorized
           else
-            return unless (is_authorized == true)
+            return unless (options[:authorized?] == true)
           end
         elsif title_or_screen_class.kind_of?(Class)
           if screen_instance.respond_to?(:authorized?)
