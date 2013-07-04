@@ -11,6 +11,7 @@
       
       var newRequest = $.ajax({url: url,
                            success: onSuccess,
+                           complete: complete,
                            dataType: 'json',
                            error: onError});
                            
@@ -25,7 +26,16 @@
 
       requests.push(newRequest);
     }
-        
+
+    function complete(request, textStatus) {
+      // Remove request
+      // var requestIndex = requests.indexOf(request);
+      // if(requestIndex!=-1) requests.splice(requestIndex, 1);
+      requests = $.grep(requests, function(n, i){
+        return n.url != request.url;
+      });
+    }
+
     function onSuccess(data, textStatus, request) {
       hideIndicator(request.indicator);
       if (request.versionNumber < request.loader.lastRequestVersionNumber) {
@@ -33,9 +43,6 @@
       }
       request.loader.lastRequestVersionNumber = request.versionNumber; // Update lastRequestVersionNumber
       request.clientOnSuccess(data, textStatus, request);
-      // Remove request
-      var requestIndex = requests.indexOf(request);
-      if(requestIndex!=-1) requests.splice(requestIndex, 1);
     }
     
     function onError(request, textStatus, errorThrown) {
