@@ -130,7 +130,7 @@
       if (sortcol === null) {
         sortcol = "";
       }
-      var url = "&sort_col=" + sortcol;
+      var url = "&sort_col="+encodeURIComponent(sortcol);
       if (sortdir>0) {
         url += "&sort_dir=ASC";
       } else {
@@ -139,12 +139,12 @@
 
       // Filters
       $.each(filters, function(index, value) {
-        url += "&filters[][column]="+value[0]+"&filters[][value]="+value[1]+"&filters[][operator]="+value[2];
+        url += "&filters[][column]="+encodeURIComponent(value[0])+"&filters[][value]="+encodeURIComponent(value[1])+"&filters[][operator]="+encodeURIComponent(value[2]);
       });
 
       // Parameters
       $.each(params, function(index, value) {
-        url += "&" + value[0]+ "=" + value[1];
+        url += "&"+encodeURIComponent(value[0])+"="+encodeURIComponent(value[1]);
       });
       
       return url;
@@ -205,7 +205,7 @@
       
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
       loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
-      connectionManager.createConnection(grid, decodeURIComponent(url), loadingIndicator, onSuccess, onError, currentRequestVersionNumber);
+      connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError, currentRequestVersionNumber);
     }
 
 
