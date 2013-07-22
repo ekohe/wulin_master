@@ -31,7 +31,7 @@
                              #{grid.javascript_column_model(params[:screen]).html_safe},
                              #{grid.states_for_user(@current_user).html_safe},
                              #{grid.action_configs(@current_user).to_json.html_safe},
-                             #{grid.behavior_configs.to_json.html_safe},
+                             #{grid.behavior_configs(@current_user).to_json.html_safe},
                              #{grid.options.to_json.html_safe});
 
   // Initial adjusting toolbar
