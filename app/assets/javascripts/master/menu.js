@@ -90,7 +90,11 @@ function deselectMenuItems() { $(".active").removeClass("active"); }
 
 function selectMenuItem(url) {
   deselectMenuItems();
-  $('#menu li.item a[href="' + url + '"]').parent().addClass('active');
+  var $currentLink = $('#menu li.item a[data-active-url*="' + url + '"]')
+  if ($currentLink.size() === 0) {
+    $currentLink = $('#menu li.item a[href="' + url + '"]');
+  }
+  $currentLink.parent().addClass('active');
 }
 
 function initialize_menu() {
