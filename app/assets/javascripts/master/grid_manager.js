@@ -1,10 +1,9 @@
-
 (function($) {
   function GridManager() {
     var gridElementPrefix = "#grid_",
     gridElementSuffix = " .grid",
     pagerElementSuffix = " .pager",
-    
+
     grids = [],
 
     defaultOptions = {
@@ -47,7 +46,7 @@
         return TextCellEditor;
       }
     }
-    
+
     function appendEditor(columns){
       var i, type_str;
       for(i=0; i<columns.length; i++){
@@ -70,7 +69,7 @@
           columns[i].DateShowFormat = "yy-mm-dd";
         } else if (type_str == "boolean") {
           if(!columns[i].formatter) {
-            columns[i].formatter = BoolCellFormatter;
+            columns[i].formatter = GraphicBoolCellFormatter;
           }
         } else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
           columns[i].formatter = BelongsToFormatter;
@@ -98,7 +97,7 @@
 
     function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
-      
+
       originColumns = deep_clone(columns);
 
       options = $.extend({}, defaultOptions, extend_options);
@@ -107,7 +106,7 @@
 
       // Append editor attribute to columns
       appendEditor(columns);
-      
+
       // Apply current filters
       filters = GridStatesManager.applyFilters(filters, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
@@ -159,11 +158,11 @@
 
       // Load data into grid
       loader.setGrid(grid);
-      
+
       // Create loading indicator on the activity panel, if not eager loading, hide the indicator
       var isHide = (grid.options.eagerLoading === false);
       loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
-      
+
       // Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 
@@ -171,14 +170,14 @@
       WulinMaster.ActionManager.dispatchActions(grid, actions);
       // Dispatch behaviors, should come first than grid.resizeCanvas, otherwise some event like onRendered can't be triggered
       WulinMaster.BehaviorManager.dispatchBehaviors(grid, behaviors);
-      
+
       // Set grid body height after rendering
       setGridBodyHeight(gridElement);
       grid.initialRender();
 
       // Load the first page
       grid.onViewportChanged.notify();
-      
+
       // Delete old grid if exsisting, then add grid
       for(var i in grids){
         if(grid.name == grids[i].name){
@@ -186,7 +185,7 @@
         }
       }
       grids.push(grid);
-      
+
       // ------------------------------ Register callbacks for handling grid states ------------------------
       if(states)
         GridStatesManager.onStateEvents(grid);
@@ -194,17 +193,16 @@
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
     } // createNewGrid
-    
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
       parent = gridElement.parent(".grid_container"),
       id = parent.attr("id"),
       title = $.trim(parent.find(".grid-header h2").text()),
-      
+
       indicators = $("#activity #indicators"),
       indicator;
-      
+
       if (title.length > truncateThreshold) {
         title = title.substring(0, truncateThreshold-2) + "...";
       }
@@ -236,14 +234,14 @@
 
       return theGrid;
     }
-    
+
     function setGridBodyHeight(gridElement) {
       var container = gridElement.parent(".grid_container"),
       ch = container.height(),
       hh = container.find(".grid-header").height(),
       ph = container.find(".pager").height(),
       gh = ch - hh - ph;
-      
+
       gridElement.css("height", gh - 1);
     }
 
@@ -255,7 +253,7 @@
         this.resizeCanvas();
       });
     }
-    
+
     init();
 
     return {
@@ -269,8 +267,7 @@
       "buildIndicatorHtml": buildIndicatorHtml
     };
   }
-  
-  
+
   $.extend(true, window, { GridManager: GridManager});
   })(jQuery);
 
@@ -278,4 +275,3 @@
   var gridManager = new GridManager();
 
   $(window).resize(function() { gridManager.resizeGrids(); });
-  

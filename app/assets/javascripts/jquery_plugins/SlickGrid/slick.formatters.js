@@ -5,7 +5,7 @@
         RawFormatter: function(row, cell, value, columnDef, dataContext) {
             return (value === null) ? "" : value;
         },
-  
+
         TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
             return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
         },
@@ -14,37 +14,16 @@
             return (!dataContext ? "" : row);
         },
 
-        PercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            if (value === null || value === "")
-                return "-";
-            else if (value < 50)
-                return "<span style='color:red;font-weight:bold;'>" + value + "%</span>";
-            else
-                return "<span style='color:green'>" + value + "%</span>";
-        },
-
-        GraphicalPercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            if (value === null || value === "")
-                return "";
-
-            var color;
-
-            if (value < 30)
-                color = "red";
-            else if (value < 70)
-                color = "silver";
-            else
-                color = "green";
-
-            return "<span class='percent-complete-bar' style='background:" + color + ";width:" + value + "%'></span>";
-        },
-
         YesNoCellFormatter : function(row, cell, value, columnDef, dataContext) {
             return value ? "Yes" : "No";
         },
 
-        BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
+        GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
             // return value ? "<img src='/assets/tick.png'>" : "";
+            return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
+        },
+
+        TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
             return value === null ? "" : (value ? 'Yes' : 'No');
         },
 
@@ -63,36 +42,17 @@
             return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
         },
 
-        TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
-            // todo:  html encode
-            var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
-            return spacer + " <img src='../images/expand.gif'>&nbsp;" + value;
-        },
-
-        ResourcesFormatter : function(row, cell, value, columnDef, dataContext) {
-            var resources = dataContext["resources"];
-
-            if (!resources || resources.length === 0)
-                return "";
-
-            if (columnDef.width < 50)
-                return (resources.length > 1 ? "<center><img src='../images/user_identity_plus.gif' " : "<center><img src='../images/user_identity.gif' ") +
-                        " title='" + resources.join(", ") + "'></center>";
-            else
-                return resources.join(", ");
-        },
-
         StarFormatter : function(row, cell, value, columnDef, dataContext) {
             return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
         },
-        
+
         // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
         StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
             if (value === null || value === "") {
                 return "";
             }
             value = value.split(/\s+/)[0];
-            
+
             if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
                 var thedate = $.datepicker.parseDate("yy-mm-dd", value);
                 return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
@@ -132,14 +92,14 @@
                 return value;
             }
         },
-        
+
         BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
             value = value[columnDef.optionTextAttribute];
             if(!columnDef.inner_formatter) return value;
 
             // if has inner_formatter
             if (columnDef.inner_formatter == 'boolean') {
-                return BoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+                return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
             } else if(typeof(window[columnDef.inner_formatter]) == 'function') {
                 return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
             } else {
@@ -150,11 +110,11 @@
         HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
             return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         },
-        
+
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
             return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         }
-    
+
     };
 
   $.extend(window, SlickFormatter);
