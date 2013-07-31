@@ -24,8 +24,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
   handler: function() {
     // get the selected id, then filter the detail grid
     var masterIds = this.master_grid.getSelectedIds();
-    // if (masterIds.length != 1) return false;
-    if (masterIds.length === 0) return false;
+    if (masterIds.length != 1) return false;
 
     var association_key = this.through;
     for(var i=0; i < this.detail_grids.length; i++) {

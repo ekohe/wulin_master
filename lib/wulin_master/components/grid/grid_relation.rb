@@ -24,11 +24,6 @@ module WulinMaster
 
           through = options[:through] || reflection.foreign_key
 
-          # disable the multiSelect for master grid
-          multi_select_options = master_grid_klass.constantize.options_pool.select{|x| x.keys.include?(:multiSelect)}
-          multi_select_option = multi_select_options.find{|x| (x[:only] && x[:only].include?(options[:screen].intern)) || !x[:only]}
-          master_grid_klass.constantize.multi_select false, only: [options[:screen].intern] unless (multi_select_option and multi_select_option[:multiSelect])
-
           # call affiliation or reverse_affiliation behavior for detail grid
           operator = if reflection.macro == :belongs_to
             inclusion ? 'equals' : 'not_equals'
@@ -45,6 +40,7 @@ module WulinMaster
           behavior :add_candidate_filter, filter: reflection.foreign_key, only: [options[:screen].intern]
           behavior :affiliation, master_grid_name: master_grid.name, only: [options[:screen].intern], through: through, operator: operator
           behavior :empty_detail, master_grid_name: master_grid.name, only: [options[:screen].intern]
+          behavior :clear_detail_when_multi_select, master_grid_name: master_grid.name, only: [options[:screen].intern]
         end
       end
 
