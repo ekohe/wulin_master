@@ -18,7 +18,6 @@
         function init(grid) {
             _options = $.extend(true, {}, _defaults, options);
             _grid = grid;
-            _grid.onActiveCellChanged.subscribe(handleActiveCellChange);
             _grid.onKeyDown.subscribe(handleKeyDown);
             _grid.onClick.subscribe(handleClick);
         }
@@ -115,7 +114,7 @@
             }
         }
 
-        function handleClick(e) {
+        function handleClick(e, data) {
             var cell = _grid.getCellFromEvent(e);
             if (!cell || !_grid.canCellBeActive(cell.row, cell.cell)) {
                 return false;
@@ -125,6 +124,7 @@
             var idx = $.inArray(cell.row, selection);
 
             if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+                handleActiveCellChange(e, data);
                 return false;
             }
             else if (_grid.getOptions().multiSelect) {
