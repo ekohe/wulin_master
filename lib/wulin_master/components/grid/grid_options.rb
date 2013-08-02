@@ -94,6 +94,7 @@ module WulinMaster
     end
 
     def set_cell_editable_for_current_user(option, screen_name, current_user)
+      return option if screen_name.blank?
       screen = screen_name.safe_constantize.try(:new)
       option[:editable] = screen.authorize_create?(current_user) if option[:editable].is_a?(TrueClass)
       option
