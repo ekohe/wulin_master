@@ -16,7 +16,9 @@
         .toolbar(data-grid="#{@grid_name}")
           %ul
             - toolbar_items.each do |item|
-              = render '/toolbar_item', :toolbar_item => item
+              %li.toolbar_item
+                =link_to 'javascript:void(0);', item.anchor_tag_options do
+                  %span= item.title
       %span.tb_next.hidden
   .grid
   .pager
