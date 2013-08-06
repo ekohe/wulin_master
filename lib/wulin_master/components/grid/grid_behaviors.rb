@@ -72,12 +72,12 @@ module WulinMaster
     private
 
     def valid_behavior?(behavior, screen_name, user)
-      valid_by_screen_configuration?(behavior, screen_name, user) and
+      valid_behavior_by_screen_configuration?(behavior, screen_name, user) and
       valid_by_behavior_authorized?(behavior, user)
     end
 
     # 1. check if this behavior can be applied in the screen due to :only or :except configuration
-    def valid_by_screen_configuration?(behavior, screen_name, user)
+    def valid_behavior_by_screen_configuration?(behavior, screen_name, user)
       (behavior[:only].blank? and behavior[:except].blank?) ||
       (behavior[:only].present? and screen_name and behavior[:only].include?(screen_name.intern)) ||
       (behavior[:except].present? and screen_name and behavior[:except].exclude?(screen_name.intern))

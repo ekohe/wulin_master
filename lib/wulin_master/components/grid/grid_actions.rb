@@ -97,13 +97,13 @@ module WulinMaster
     private
 
     def valid_action?(action, screen_name, user)
-      valid_by_screen_configuration?(action, screen_name, user) and 
+      valid_action_by_screen_configuration?(action, screen_name, user) and 
       valid_by_screen_authorize_create?(action, screen_name, user) and 
       valid_by_action_authorized?(action, user)
     end
 
     # 1. check if this action can be displayed in the screen due to :only or :except configuration
-    def valid_by_screen_configuration?(action, screen_name, user)
+    def valid_action_by_screen_configuration?(action, screen_name, user)
       (action[:only].blank? and action[:except].blank?) ||
       (action[:only].present? and screen_name and action[:only].include?(screen_name.intern)) ||
       (action[:except].present? and screen_name and action[:except].exclude?(screen_name.intern))

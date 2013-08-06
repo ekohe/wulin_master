@@ -71,11 +71,11 @@ module WulinMaster
       # title setter and getter
       def title(new_title=nil, options={})
         self.titles_pool ||= {}
-        screen = options[:screen] 
+        screen_name = options[:screen] 
         if new_title 
-          screen ? self.titles_pool[screen] = new_title : self.titles_pool[:_common] = new_title
+          screen_name ? self.titles_pool[screen_name] = new_title : self.titles_pool[:_common] = new_title
         else
-          self.titles_pool[screen] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
+          self.titles_pool[screen_name] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
         end
       end
     end
