@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name        = "wulin_master"
   s.version     = WulinMaster::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
+  s.authors     = ["Ekohe"]
+  s.email       = ["dev@ekohe.com"]
   s.homepage    = "http://rubygems.org/gems/wulin_master"
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{WulinMaster is a framework}
+  s.description = %q{WulinMaster is a framework}
 
   s.rubyforge_project = "wulin_master"
 
