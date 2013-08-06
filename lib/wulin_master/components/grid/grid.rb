@@ -1,13 +1,12 @@
-require File.join(File.dirname(__FILE__), 'toolbar')
-require File.join(File.dirname(__FILE__), 'toolbar_item')
-require File.join(File.dirname(__FILE__), 'column')
-require File.join(File.dirname(__FILE__), 'grid_options')
-require File.join(File.dirname(__FILE__), 'grid_columns')
-require File.join(File.dirname(__FILE__), 'grid_actions')
-require File.join(File.dirname(__FILE__), 'grid_behaviors')
-require File.join(File.dirname(__FILE__), 'grid_relation')
-require File.join(File.dirname(__FILE__), 'grid_states')
-require File.join(File.dirname(__FILE__), 'grid_dynamic_edit_form')
+require 'wulin_master/components/grid/toolbar'
+require 'wulin_master/components/grid/column'
+require 'wulin_master/components/grid/grid_options'
+require 'wulin_master/components/grid/grid_columns'
+require 'wulin_master/components/grid/grid_actions'
+require 'wulin_master/components/grid/grid_behaviors'
+require 'wulin_master/components/grid/grid_relation'
+require 'wulin_master/components/grid/grid_states'
+require 'wulin_master/components/grid/grid_dynamic_edit_form'
 
 module WulinMaster
   class Grid < Component

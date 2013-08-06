@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'component_styling')
+require 'wulin_master/components/component_styling'
 
 module WulinMaster
   class Component

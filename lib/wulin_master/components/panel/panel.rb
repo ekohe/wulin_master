@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'panel_relation')
+require 'wulin_master/components/panel/panel_relation'
 
 module WulinMaster
   class PanelView < ::ActionView::Base

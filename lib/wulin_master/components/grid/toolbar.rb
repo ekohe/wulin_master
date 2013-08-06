@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'toolbar_item')
+require 'wulin_master/components/grid/toolbar_item'
 
 module WulinMaster
   class Toolbar #< Array
