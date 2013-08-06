@@ -184,19 +184,15 @@ module WulinMaster
       end
     end
 
-    def full_includes
-      @full_includes ||= self.columns.map{|col| col.includes}.flatten.uniq
-    end
-
     # Returns the includes to add to the query
     def includes
-      @includes ||= remove_through_model(full_includes)
+      @includes ||= self.columns.map{|col| col.includes}.flatten.uniq
     end
 
     # Returns the joins to add to the query
     def joins
       full_joins = self.columns.map{|col| col.joins}.flatten.uniq
-      @joins ||= remove_through_model(full_joins - full_includes)
+      @joins ||= remove_through_model(full_joins - includes)
     end
 
     def arraify(objects)
