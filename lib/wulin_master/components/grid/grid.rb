@@ -18,14 +18,16 @@ module WulinMaster
     include GridStates
     include GridDynamicEditForm
     
-    cattr_accessor :grids
+    cattr_accessor :grids do
+      []
+    end
+
     class_attribute :_model, :_path, :titles_pool
 
     DEFAULT_CONFIG = {fill_window: true}
 
     # Grid has been subclassed
     def self.inherited(klass)
-      self.grids ||= []
       self.grids << klass
       klass.init
     end
@@ -47,8 +49,6 @@ module WulinMaster
         # default options
         cell_editable
         column_sortable
-
-        initialize_styles
 
         apply_default_config
       end
@@ -80,8 +80,6 @@ module WulinMaster
       end
     end
 
-    # Instance methods
-    # --------------------
     attr_accessor :toolbar, :virtual_sort_column, :virtual_filter_columns
 
     def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
@@ -111,6 +109,10 @@ module WulinMaster
       self.class.model
     end
 
+    def name
+      WulinMaster::Utilities.get_grid_name(self.class.name, self.screen.class.name)
+    end
+
     def model_columns
       @model_columns ||= model.column_names
     end
@@ -126,16 +128,6 @@ module WulinMaster
       uri.path << ".json"
       uri.query = [uri.query, params.to_query].compact.join('&')
       uri.to_s
-    end
-
-    def name
-      grid_name = self.class.to_s.sub('Grid', '').underscore
-      screen_name = self.params[:screen].constantize.new.name if self.params[:screen]
-      if screen_name.nil? or screen_name == grid_name
-        grid_name
-      else
-        "#{grid_name}_in_#{screen_name}"
-      end
     end
 
     # Helpers for SQL and Javascript generation

@@ -33,7 +33,7 @@ module WulinMaster
 
       # Add a grid config to a screen
       def grid(klass, options={})
-        @components_pool ||= []        
+        @components_pool ||= []
         @grid_configs ||= []
         if klass
           @components_pool << klass
@@ -100,7 +100,7 @@ module WulinMaster
     end
     
     def name
-      self.class.name.sub(/Screen$/, "").underscore
+      WulinMaster::Utilities.get_screen_name(self.class.name)
     end
     
     # Security
