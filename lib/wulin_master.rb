@@ -42,6 +42,7 @@ module WulinMaster
 
 end
 
+require 'wulin_master/utilities'
 require 'wulin_master/configuration'
 require 'wulin_master/extension'
 require 'wulin_master/actions'
