@@ -3,9 +3,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      class_eval do
-        class_attribute :columns_pool
-      end
+      class_attribute :columns_pool
     end
     
     module ClassMethods
@@ -13,12 +11,12 @@ module WulinMaster
       def initialize_columns
         self.columns_pool ||= [Column.new(:id, self, {:visible => false, :editable => false, :sortable => true})]
       end
-      
+
       # Add a column
       def column(name, options={})
         self.columns_pool += [Column.new(name, self, options)]
       end
-      
+
       # Remove columns for exactly screens
       def remove_columns(r_columns, scope={})
         return unless scope[:screen].present?
@@ -36,8 +34,6 @@ module WulinMaster
         self.columns_pool
       end
     end
-    
-    # Instance Methods
 
     # Returns columns
     def columns
@@ -50,6 +46,5 @@ module WulinMaster
         column.valid_in_screen(screen_name)
       end
     end
-    
   end
 end
