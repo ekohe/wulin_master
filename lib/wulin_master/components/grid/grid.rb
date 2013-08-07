@@ -82,7 +82,7 @@ module WulinMaster
 
     attr_accessor :toolbar, :virtual_sort_column, :virtual_filter_columns
 
-    def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
+    def initialize(screen_instance=nil, config={})
       super
 
       if params[:no_render]     # if no_render, skip the config applying 
@@ -90,7 +90,7 @@ module WulinMaster
       elsif params[:format] != 'json'   # if format not json (screen request) it needs to initialize toolbar and styling configs
         # apply_default_config DEFAULT_CONFIG
         # apply_custom_config
-        initialize_toolbar(controller_instance.current_user)
+        initialize_toolbar(@controller.current_user)
       else    # else, only need to apply custom configs without styling (like grid relation configs)
         # apply_custom_config_without_styling
       end

@@ -22,10 +22,10 @@ module WulinMaster
       end
     end
 
-    def initialize(params={}, screen_instance=nil, controller_instance=nil, config={})
-      @params = params
+    def initialize(screen_instance=nil, config={})
       @screen = screen_instance
-      @controller = controller_instance
+      @params = screen_instance.try(:params)
+      @controller = screen_instance.try(:controller)
       @custom_config = config
     end
   end
