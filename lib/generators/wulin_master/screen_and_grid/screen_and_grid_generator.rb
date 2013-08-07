@@ -12,13 +12,11 @@ module WulinMaster
     class_option :views,  :type => :boolean, :default => true, :desc => 'Config views directory for current grid'
 
     def create_migration_file
-      return unless options[:migration]
-      migration_template "grid_migration.rb", "db/migrate/create_#{table_name}.rb"
+      migration_template "grid_migration.rb", "db/migrate/create_#{table_name}.rb" if options.migration?
     end
 
     def create_controller
-      return unless options[:controller]
-      template "controller.rb", "app/controllers/#{table_name}_controller.rb"
+      template "controller.rb", "app/controllers/#{table_name}_controller.rb" if options.controller?
     end
 
     def create_screen
@@ -30,18 +28,15 @@ module WulinMaster
     end
 
     def create_model
-      return unless options[:model]
       template "model.rb", "app/models/#{underscored_name}.rb" if options.model?
     end
 
     def add_route
-      return unless options[:routes]
-      route "resources :#{table_name}"
+      route "resources :#{table_name}" if options.routes?
     end
     
     def create_view_directory
-      return unless options[:views]
-      empty_directory "app/views/#{table_name}"
+      empty_directory "app/views/#{table_name}" if options.views?
     end
 
     private
