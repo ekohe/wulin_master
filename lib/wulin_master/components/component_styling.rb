@@ -3,20 +3,17 @@ module WulinMaster
     extend ActiveSupport::Concern
     
     included do
-      class_eval do
-        FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
+      FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
 
-        class << self
-          attr_reader :styles_pool
+      class << self
+        attr_accessor :styles_pool
+        def styles_pool
+          @styles_pool ||= {}
         end
       end
     end
     
     module ClassMethods
-      def initialize_styles
-        @styles_pool = {}
-      end  
-
       # Set new component height
       def height(new_height, options={})
         fill_window(false, options)
@@ -46,20 +43,20 @@ module WulinMaster
       # Add a style into component of different screens
       def add_style(style_str, screen)
         if screen
-          @styles_pool[screen] ||= []
-          @styles_pool[screen] << style_str unless @styles_pool[screen].include?(style_str)
+          self.styles_pool[screen] ||= []
+          self.styles_pool[screen] << style_str unless self.styles_pool[screen].include?(style_str)
         else
-          @styles_pool[:_common] ||= []
-          @styles_pool[:_common] << style_str unless @styles_pool[:_common].include?(style_str)
+          self.styles_pool[:_common] ||= []
+          self.styles_pool[:_common] << style_str unless self.styles_pool[:_common].include?(style_str)
         end
       end
 
       # Remove a style from a component
       def remove_style(style_str, screen)
-        if screen 
-          @styles_pool[screen].delete(style_str) if @styles_pool[screen]
-        elsif @styles_pool[:_common]
-          @styles_pool[:_common].delete(style_str)
+        if screen and self.styles_pool[screen]
+          self.styles_pool[screen].delete(style_str) 
+        elsif self.styles_pool[:_common]
+          self.styles_pool[:_common].delete(style_str)
         end
       end
     end
