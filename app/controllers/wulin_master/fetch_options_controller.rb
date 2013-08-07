@@ -54,7 +54,7 @@ module WulinMaster
     
     def authorized_for_user?
       controller = column_controller_class.new
-      screen = column_screen.new({}, controller)
+      screen = column_screen.new(controller)
       !screen.respond_to?(:authorized?) || (screen.respond_to?(:authorized?) && screen.authorized?(current_user))
     end
     

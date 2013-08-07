@@ -56,7 +56,7 @@ module WulinMaster
         # else
         #   self.class.screen_classes.first
         # end
-        @screen = screen_class.new(params, self)
+        @screen = screen_class.new(self)
       else
         raise "Can't find a proper screen for the controller"
       end

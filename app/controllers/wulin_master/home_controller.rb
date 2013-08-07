@@ -43,7 +43,7 @@ module WulinMaster
 
       def item(title_or_screen_class, options={})
         return unless @menu
-        screen_instance = title_or_screen_class.new(options, context) if title_or_screen_class.kind_of?(Class)
+        screen_instance = title_or_screen_class.new(context) if title_or_screen_class.kind_of?(Class)
 
         title = options[:label] ||
                 (title_or_screen_class.respond_to?(:title) ? title_or_screen_class.title : title_or_screen_class.to_s)

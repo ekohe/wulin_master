@@ -13,18 +13,18 @@ module WulinMaster
       # Specify the inclusion grid for InclusionExclusionPanel
       def inclusion_grid(grid_klass, options={})
         if options[:screen]
-          inclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
+          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
           self.relations_pool[options[:screen]] ||= {}
-          self.relations_pool[options[:screen]].merge!({inclusion_grid: inclusion_grid.name})
+          self.relations_pool[options[:screen]].merge!({inclusion_grid: grid_name})
         end
       end
 
       # Specify the exclusion grid for InclusionExclusionPanel
       def exclusion_grid(grid_klass, options={})
         if options[:screen]
-          exclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
+          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
           self.relations_pool[options[:screen]] ||= {}
-          self.relations_pool[options[:screen]].merge!({exclusion_grid: exclusion_grid.name})
+          self.relations_pool[options[:screen]].merge!({exclusion_grid: grid_name})
         end
       end
     end
