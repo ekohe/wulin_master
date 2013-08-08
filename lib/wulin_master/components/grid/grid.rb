@@ -95,6 +95,10 @@ module WulinMaster
         # apply_custom_config_without_styling
       end
     end
+
+    def is_grid?
+      true
+    end
     
     def virtual_filter_columns
       @virtual_filter_columns ||= []
