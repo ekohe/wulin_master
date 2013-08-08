@@ -1,8 +1,4 @@
-- @current_user = (self.respond_to?(:current_user) ? current_user : nil)
-- @components = controller.screen.components
-- @components.select! {|x| x.class.name == params[:grid]} if params[:grid].present?
-
-- @components.each do |component|
-  = render :partial => '/grid', :locals => {:grid => component} if component.is_a?(WulinMaster::Grid)
-  = render :partial => '/panel', :locals => {:panel => component} if component.is_a?(WulinMaster::Panel)
+- components.each do |component|
+  = render :partial => '/grid', :locals => {:grid => component} if component.is_grid?
+  = render :partial => '/panel', :locals => {:panel => component} if component.is_panel?
   - break if component.respond_to?(:fill_window?) and component.fill_window?

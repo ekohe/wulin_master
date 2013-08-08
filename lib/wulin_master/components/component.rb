@@ -28,5 +28,13 @@ module WulinMaster
       @controller = screen_instance.try(:controller)
       @custom_config = config
     end
+
+    def is_panel?
+      false
+    end
+
+    def is_grid?
+      false
+    end
   end
 end

@@ -68,7 +68,6 @@ module WulinMaster
 
     def grids
       return @grids if defined?(@grids)
-      
       @grids = []
       self.class.grid_configs.each do |grid_config|
         grid_class = grid_config[:class]
@@ -91,7 +90,12 @@ module WulinMaster
     end
 
     def components
-      (grids + panels).sort_by {|e| self.class.components_pool.index(e.class)}
+      @components ||= begin
+        grids_and_panels = grids + panels
+        grids_and_panels.sort_by! {|e| self.class.components_pool.index(e.class)}
+        grids_and_panels.select! {|x| x.class.name == params[:grid]} if params[:grid].present?
+        grids_and_panels
+      end
     end
     
     def path

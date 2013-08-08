@@ -35,5 +35,9 @@ module WulinMaster
     def title
       self.class.title
     end
+
+    def is_panel?
+      true
+    end
   end
 end
