@@ -1,6 +1,7 @@
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
-    
+    include WulinMaster::Variables
+
     def index
       if authorized? and params[:text_attr].present?
         if klass.column_names.include? params[:text_attr]
@@ -49,38 +50,20 @@ module WulinMaster
     
     def authorized?
       return true unless self.respond_to?(:current_user)
-      current_user && column_belongs_to_grid? && column_screen && authorized_for_user?
+      current_user && column_belongs_to_grid? && screen.authorized?
     end
-    
-    def authorized_for_user?
-      controller = column_controller_class.new
-      screen = column_screen.new(controller)
-      !screen.respond_to?(:authorized?) || (screen.respond_to?(:authorized?) && screen.authorized?(current_user))
-    end
-    
+
     def column_belongs_to_grid?
       !!column
     end
-    
-    def column_screen
-      params[:screen].safe_constantize || "#{klass.name}Screen".safe_constantize
+
+    def klass
+      column.reflection.try(:klass) || params[:klass].classify.safe_constantize
     end
 
-    def column_controller_class
-      "#{klass.name.pluralize}Controller".safe_constantize
-    end
-    
-    def klass
-      column.reflection.try(:klass) || params[:klass].safe_constantize
-    end
-    
     def column
-      grid_class.columns.find {|x| x.name.to_s == params[:column]}
+      grid.columns.find {|x| x.name.to_s == params[:column]}
     end
-    
-    def grid_class
-      params[:grid].classify.safe_constantize
-    end
-    
+
   end
 end

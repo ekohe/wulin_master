@@ -38,7 +38,7 @@ module WulinMaster
           @menu << @submenu if @submenu.size > 0
           @submenu = nil
         end 
-        return @submenu   
+        return @submenu
       end
 
       def item(title_or_screen_class, options={})
