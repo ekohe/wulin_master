@@ -15,7 +15,6 @@ module WulinMaster
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
-    # ---------------------- metaclass, define some DSL methods -------------------------------
     class << self
       #alias_method :all, :screens
       attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
@@ -58,12 +57,12 @@ module WulinMaster
       end
     end
 
-    # -------------------------------- Instance methods ---------------------------------------
-    attr_accessor :controller, :params
+    attr_accessor :controller, :params, :current_user
     
     def initialize(controller_instance=nil)
       @controller = controller_instance
       @params = controller_instance.try(:params)
+      @current_user = controller_instance.try(:current_user)
     end
 
     def grids
@@ -108,7 +107,7 @@ module WulinMaster
     end
     
     # Security
-    def authorized?(user)
+    def authorized?(user=nil)
       true
     end
     
