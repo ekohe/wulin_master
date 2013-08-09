@@ -3,23 +3,23 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      class_eval do
-        class_attribute :edit_column_group, instance_writer: false
-        self.edit_column_group = {}
-      end
+      class_attribute :edit_column_group, instance_writer: false
+      self.edit_column_group = {}
     end
     
     module ClassMethods
       # Define dynamic edit form
-      # 
-      # edit_form :version1, :version2 do |form|
-      #   form << :name
-      # end
       #
-      # edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
-      #   form << :code
-      # end
-      # 
+      # Example:
+      #
+      #     edit_form :version1, :version2 do |form|
+      #       form << :name
+      #     end
+      #
+      #     edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
+      #       form << :code
+      #     end
+      #
       # It will define two edit form: version1, version2. form version1 has column [:name], form version2 has column [:name, :code]
       #
       # meanwhile two toolbars was defined: version1, version2.

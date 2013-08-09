@@ -1,17 +1,16 @@
-- @current_user = (self.respond_to?(:current_user) ? current_user : nil)
-- if @grid.action_names(@current_user).include?('edit') or @grid.action_names(@current_user).include?('dynamic_edit')
+- if grid.action_names.include?('edit') or grid.action_names.include?('dynamic_edit')
   :ruby
-    model_name = @grid.model.name.underscore
-    columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+    model_name = grid.model.model_name.singular
+    columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     
-    if params[:update_version].present? and (version_columns = @grid.find_columns_by_version(params[:update_version])).present?
+    if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
       columns.select!{|x| version_columns.include?(x.name)}
     end
 
     datepicker_str = ''
-    object = @grid.model.new
-  .create_form{:id => "#{@grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
-    = form_for object, :url => @grid.path do |form|
+    object = grid.model.new
+  .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
+    = form_for object, :url => grid.path do |form|
       .base_error
       - columns.each do |column|
         - if edit_form_able?(column)
@@ -87,18 +86,18 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success.update_btn{:id => "#{@grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
 
   :javascript
-    $('##{@grid.name}_form select[data-required="true"]').chosen();
-    $('##{@grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-    $('##{@grid.name}_form select').off('change').on('change', function(){
-      var flag = $('##{@grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+    $('##{grid.name}_form select[data-required="true"]').chosen();
+    $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('##{grid.name}_form select').off('change').on('change', function(){
+      var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
       if (flag.size() > 0) flag.attr('checked', 'checked');
     });
 
-    $('##{@grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('##{@grid.name}_form input[data-datetime]').datetimepicker({
+    $('##{grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('##{grid.name}_form input[data-datetime]').datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
       timeFormat: 'HH:mm',
@@ -108,18 +107,18 @@
       beforeShow: function() { calendarOpen = true },
       onClose: function() { calendarOpen = false }
     });
-    $('##{@grid.name}_form input[data-time]').timepicker({});
+    $('##{grid.name}_form input[data-time]').timepicker({});
 
     $(function(){
-      $('##{@grid.name}_form .input_clean_up').off('click').on('click', function(){
-        var $input = $('##{@grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
-        var $flagInput = $('##{@grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
+      $('##{grid.name}_form .input_clean_up').off('click').on('click', function(){
+        var $input = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
+        var $flagInput = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
         $flagInput.attr('checked', 'checked');
         $input.val('');
         if ($input.is('select')) $input.trigger("liszt:updated");
         if ($input.is(':checkbox')) {
           $input.removeAttr('checked');
-          $("##{@grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');
+          $("##{grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');
         }
       });
     });
