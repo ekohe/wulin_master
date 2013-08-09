@@ -3,9 +3,11 @@ module WulinMaster
     extend ActiveSupport::Concern
     
     included do
-      attr_accessor :relations_pool
-      def relations_pool
-        self.relations_pool ||= {}
+      class << self
+        attr_reader :relations_pool
+        def relations_pool
+          @relations_pool ||= {}
+        end
       end
     end
 

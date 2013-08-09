@@ -3,10 +3,8 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      class_eval do
-        class << self
-          attr_reader :current_filter_column, :current_detail_model
-        end
+      class << self
+        attr_reader :current_filter_column, :current_detail_model
       end
     end
     

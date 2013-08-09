@@ -1,12 +1,12 @@
 module WulinMaster
   module ComponentStyling
     extend ActiveSupport::Concern
-    
+
     included do
       FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
 
       class << self
-        attr_accessor :styles_pool
+        attr_reader :styles_pool
         def styles_pool
           @styles_pool ||= {}
         end
@@ -18,7 +18,6 @@ module WulinMaster
       def height(new_height, options={})
         fill_window(false, options)
         height_str = "height: #{new_height};"
-
         add_style(height_str, options[:screen])
       end
 
@@ -53,15 +52,13 @@ module WulinMaster
 
       # Remove a style from a component
       def remove_style(style_str, screen)
-        if screen and self.styles_pool[screen]
-          self.styles_pool[screen].delete(style_str) 
+        if screen 
+          self.styles_pool[screen].delete(style_str) if self.styles_pool[screen]
         elsif self.styles_pool[:_common]
           self.styles_pool[:_common].delete(style_str)
         end
       end
     end
-    
-    # ----------------------------- Instance Methods ------------------------------------
 
     # Return style to apply to the component container
     def style
