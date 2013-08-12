@@ -78,11 +78,11 @@ module WulinMaster
     # 2. check if this behavior authorized for current user
     def valid_by_behavior_authorized?(behavior)
       return true unless behavior[:authorized?] and current_user
-
-      if behavior[:authorized?].kind_of?(Proc)
-        return behavior[:authorized?].call(current_user)
+      authorized_proc = behavior.delete(:authorized?)
+      if authorized_proc.kind_of?(Proc)
+        return authorized_proc.call(current_user)
       else
-        return behavior[:authorized?] == true
+        return authorized_proc == true
       end
     end
     
