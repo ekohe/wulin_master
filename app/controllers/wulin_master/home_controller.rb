@@ -44,18 +44,19 @@ module WulinMaster
       def item(title_or_screen_class, options={})
         return unless @menu
         screen_instance = title_or_screen_class.new(context) if title_or_screen_class.kind_of?(Class)
+        authorized_proc = options.delete(:authorized?)
 
         title = options[:label] ||
                 (title_or_screen_class.respond_to?(:title) ? title_or_screen_class.title : title_or_screen_class.to_s)
         path = options[:url] ||
                (screen_instance.respond_to?(:path) ? screen_instance.path : '/')
 
-        if options[:authorized?]
-          if options[:authorized?].kind_of?(Proc)
-            is_authorized = (context && context.respond_to?(:current_user)) ? options[:authorized?].call(context.current_user) : options[:authorized?].call(nil)
+        if authorized_proc
+          if authorized_proc.kind_of?(Proc)
+            is_authorized = (context && context.respond_to?(:current_user)) ? authorized_proc.call(context.current_user) : authorized_proc.call(nil)
             return unless is_authorized
           else
-            return unless (options[:authorized?] == true)
+            return unless (authorized_proc == true)
           end
         elsif title_or_screen_class.kind_of?(Class)
           if screen_instance.respond_to?(:authorized?)
