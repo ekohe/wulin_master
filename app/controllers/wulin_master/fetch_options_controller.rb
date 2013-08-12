@@ -1,6 +1,7 @@
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
     include WulinMaster::Variables
+    ForbiddenMessage = "Sorry you can't get anything, please contact administrator."
 
     def index
       if authorized? and params[:text_attr].present?
@@ -11,14 +12,14 @@ module WulinMaster
         end
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
-        # Should reply something different here, at least status code should be 403
-        self.response_body = [].to_json
+        self.status = 403
+        self.response_body = ForbiddenMessage
       end
     rescue
-      self.response_body = [].to_json
+      self.status = 500
+      self.response_body = "Something wrong: #{$!.message}"
     end
-    
-    
+
     def specify_fetch
       if authorized? and params[:name_attr].present? and params[:code_attr].present?
         if klass.column_names.include?(params[:name_attr]) and klass.column_names.include?(params[:code_attr])
@@ -28,10 +29,12 @@ module WulinMaster
         end
         self.response_body = objects.to_json
       else
-        self.response_body = [].to_json
+        self.status = 403
+        self.response_body = ForbiddenMessage
       end
     rescue
-      self.response_body = [].to_json
+      self.status = 500
+      self.response_body = "Something wrong: #{$!.message}"
     end
 
     def fetch_distinct_options
@@ -39,31 +42,31 @@ module WulinMaster
         object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
         self.response_body = object_arr.to_json
       else
-        self.response_body = [].to_json
+        self.status = 403
+        self.response_body = ForbiddenMessage
       end
     rescue
-      self.response_body = [].to_json
+      self.status = 500
+      self.response_body = "Something wrong: #{$!.message}"
     end
-    
-    
+
     private
-    
-    def authorized?
-      return true unless self.respond_to?(:current_user)
-      current_user && column_belongs_to_grid? && screen.authorized?
-    end
+      def authorized?
+        return true unless self.respond_to?(:current_user)
+        current_user && column_belongs_to_grid? && screen.authorized?
+      end
 
-    def column_belongs_to_grid?
-      !!column
-    end
+      def column_belongs_to_grid?
+        !!column
+      end
 
-    def klass
-      column.reflection.try(:klass) || params[:klass].classify.safe_constantize
-    end
+      def klass
+        column.reflection.try(:klass) || params[:klass].classify.safe_constantize
+      end
 
-    def column
-      grid.columns.find {|x| x.name.to_s == params[:column]}
-    end
+      def column
+        grid.columns.find {|x| x.name.to_s == params[:column]}
+      end
 
   end
 end
