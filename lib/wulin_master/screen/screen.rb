@@ -11,7 +11,6 @@ module WulinMaster
 
       # ???
       subclass.send :include, Rails.application.routes.url_helpers
-
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
