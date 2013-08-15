@@ -1,5 +1,7 @@
 module WulinMaster
   module Variables
+    extend ActiveSupport::Concern
+
     def screen
       @screen ||= begin
         if params[:screen].present?

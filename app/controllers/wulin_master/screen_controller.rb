@@ -1,7 +1,6 @@
 require 'wulin_master/utilities/variables'
 module WulinMaster
   class ScreenController < ApplicationController
-    include WulinMaster::Variables
     include WulinMaster::Actions
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
