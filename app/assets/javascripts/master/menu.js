@@ -69,9 +69,6 @@ function load_page(url) {
       indicators.find("#init_menu_indicator").fadeOut();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
-      if(typeof castor == 'object'){
-        castor.log({date: Date(), location: window.location.href, user: requester_email});
-      };  
     },
     error: function() {
       indicators.find("#init_menu_indicator").fadeOut();
@@ -90,7 +87,7 @@ function deselectMenuItems() { $(".active").removeClass("active"); }
 
 function selectMenuItem(url) {
   deselectMenuItems();
-  var $currentLink = $('#menu li.item a[data-active-url*="' + url + '"]')
+  var $currentLink = $('#menu li.item a[data-active-url*="' + url + '"]');
   if ($currentLink.size() === 0) {
     $currentLink = $('#menu li.item a[href="' + url + '"]');
   }

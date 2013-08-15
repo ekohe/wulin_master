@@ -1,3 +1,4 @@
+require 'wulin_master/utilities/variables'
 module WulinMaster
   class ScreenController < ApplicationController
     include WulinMaster::Actions

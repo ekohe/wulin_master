@@ -1,3 +1,4 @@
+require 'wulin_master/utilities/variables'
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
     ForbiddenMessage = "Sorry you can't get anything, please contact administrator."
