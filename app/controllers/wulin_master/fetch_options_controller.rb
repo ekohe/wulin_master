@@ -1,6 +1,5 @@
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
-    include WulinMaster::Variables
     ForbiddenMessage = "Sorry you can't get anything, please contact administrator."
 
     def index
