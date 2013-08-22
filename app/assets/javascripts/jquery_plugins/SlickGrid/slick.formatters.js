@@ -19,8 +19,8 @@
         },
 
         GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            // return value ? "<img src='/assets/tick.png'>" : "";
-            return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
+            return value ? "<img src='/assets/tick.png'>" : "";
+            // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
         },
 
         TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
