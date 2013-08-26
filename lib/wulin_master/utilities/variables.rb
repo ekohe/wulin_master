@@ -1,4 +1,10 @@
 module WulinMaster
+  class ScreenParamInvalidError < StandardError
+    def initialize
+      super "Can't find a proper screen for the controller"
+    end
+  end
+
   module Variables
     extend ActiveSupport::Concern
 
@@ -8,7 +14,7 @@ module WulinMaster
           if screen_class = params[:screen].classify.safe_constantize
             screen_class.new(self)
           else
-            raise "Can't find a proper screen for the controller"
+            raise WulinMaster::ScreenParamInvalidError
           end
         else
           self.class.screen_classes.first.new(self)
