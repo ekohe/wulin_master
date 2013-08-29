@@ -1,14 +1,14 @@
-- @current_user = (self.respond_to?(:current_user) ? current_user : nil)
-- if @grid.action_names(@current_user).include?('add') || @grid.action_names(@current_user).include?('hotkey_add') || @grid.action_names(@current_user).include?('detail_add')
+= grid
+- if grid.action_names.include?('add') || grid.action_names.include?('hotkey_add') || grid.action_names.include?('detail_add')
   :ruby
-    model_name = @grid.model.name.underscore
-    columns = @grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+    model_name = grid.model.model_name.singular
+    columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
-    object = @grid.model.new
-  .create_form{:id => "#{@grid.name}_form", :title => "Create new #{model_name.titleize}", data: {action: 'create'}}
-    = form_for object, :url => @grid.path do |form|
-      = hidden_field_tag :grid, @grid.class.to_s
-      = hidden_field_tag :screen, @screen.class.to_s
+    object = grid.model.new
+  .create_form{:id => "#{grid.name}_form", :title => "Create new #{model_name.titleize}", data: {action: 'create'}}
+    = form_for object, :url => grid.path do |form|
+      = hidden_field_tag :grid, grid.class.to_s
+      = hidden_field_tag :screen, screen.class.to_s
       .base_error
       - columns.each do |column|
         - if new_form_able?(column)
@@ -82,11 +82,11 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success{:id => "#{@grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{@grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
+        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
   :javascript
-    $('##{@grid.name}_form select[data-required="true"]').chosen();
-    $('##{@grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('##{grid.name}_form select[data-required="true"]').chosen();
+    $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
     $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').datetimepicker({
       onlyTime: false,

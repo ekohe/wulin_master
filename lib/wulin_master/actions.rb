@@ -1,13 +1,12 @@
-require File.join(File.dirname(__FILE__), 'authorization')
+require 'wulin_master/authorization'
 
 module WulinMaster
   module Actions
     include Authorization
+    extend ActiveSupport::Concern
 
-    def self.included(base)
-      base.class_eval do
+    included do
         before_filter :require_authorization # Defined in Authorization module
-      end
     end
 
     def index
@@ -127,21 +126,18 @@ module WulinMaster
     end
 
     def wulin_master_new_form
-      @grid = grid
       render 'new_form', layout: false
     rescue ActionView::MissingTemplate
       render '/new_form', layout: false
     end
     
     def wulin_master_edit_form
-      @grid = grid
       render 'edit_form', layout: false
     rescue ActionView::MissingTemplate
       render '/edit_form', layout: false
     end
 
     def wulin_master_option_new_form
-      @grid = grid
       render 'option_new_form', layout: false
     rescue ActionView::MissingTemplate
       render '/option_new_form', layout: false
@@ -209,5 +205,20 @@ module WulinMaster
       attrs
     end
 
+    private
+
+      def fire_callbacks(name)
+        return unless self.class.callbacks
+        cbs = self.class.find_callbacks(name)
+
+        return if cbs.blank?
+        cbs.each do |cb|
+          if cb.class == Proc
+            cb.call
+          else
+            self.send(cb) if self.respond_to?(cb)
+          end
+        end
+      end
   end
 end

@@ -5,23 +5,19 @@ module WulinMaster
     extend ActiveSupport::Concern
     
     included do
-      class_eval do
-        class << self
-          attr_reader :options_pool
+      class << self
+        attr_accessor :options_pool
+        def options_pool
+          @options_pool ||= []
         end
       end
     end
-    
-    # --------------------- Class Methods ----------------------------
-    module ClassMethods
-      def initialize_options
-        @options_pool ||= []
-      end  
 
+    module ClassMethods
       def option(option)
         # turn option["screen"] to option[:only]
         option[:only] = [option[:screen].intern] if option[:screen]
-        @options_pool << option unless @options_pool.include?(option)
+        self.options_pool << option unless self.options_pool.include?(option)
       end 
       
       def options(*args)
@@ -59,44 +55,38 @@ module WulinMaster
       end
     end
 
-    # ----------------------- Instance Methods ------------------------------
-    def options(current_user)
+    def options
       # make sure the common option comes first so that the specific option for a screen can override it when merging
       the_options = self.class.options_pool.sort_by{|s| s[:only] || s[:except] || [] }
-      .select {|option| valid_option?(option, self.params["screen"], current_user)}
+      .select {|option| valid_option?(option)}
       .inject({}) {|h, e| h.merge(e.reject{|k,v| k == :only or k == :except})}
-      set_cell_editable_for_current_user(the_options, self.params["screen"], current_user)
+      set_cell_editable_for_current_user(the_options)
     end
 
     # helpers
-    def cell_editable?(current_user)
-      options(current_user)[:editable] == true
+    def cell_editable?
+      options[:editable] == true
     end
 
-    def column_sortable?(current_user)
-      options(current_user)[:sortable] == true
+    def column_sortable?
+      options[:sortable] == true
     end
 
-    def hide_header?(current_user)
-      options(current_user)[:hide_header] == true
+    def hide_header?
+      options[:hide_header] == true
     end
 
     private
 
-    def valid_option?(option, screen_name, current_user)
-      verify_screen_configuration(option, screen_name)
-    end
-
-    def verify_screen_configuration(option, screen_name)
+    def valid_option?(option)
       (option[:only].blank? and option[:except].blank?) ||
-      (option[:only].present? and screen_name and option[:only].include?(screen_name.intern)) ||
-      (option[:except].present? and screen_name and option[:except].exclude?(screen_name.intern))
+      (option[:only].present? and params[:screen].present? and option[:only].include?(params[:screen].intern)) ||
+      (option[:except].present? and params[:screen].present? and option[:except].exclude?(params[:screen].intern))
     end
 
-    def set_cell_editable_for_current_user(option, screen_name, current_user)
-      return option if screen_name.blank?
-      screen = screen_name.safe_constantize.try(:new)
-      option[:editable] = screen.authorize_create?(current_user) if option[:editable].is_a?(TrueClass)
+    def set_cell_editable_for_current_user(option)
+      return option if params[:screen].blank?
+      option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option
     end
 

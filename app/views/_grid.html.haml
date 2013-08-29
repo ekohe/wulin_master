@@ -1,11 +1,9 @@
 .grid_container{:id => "grid_#{grid.name}", :name => "#{grid.name}",:style => grid.style}
-  - unless grid.hide_header?(@current_user)
+  - unless grid.hide_header?
     :ruby
       toolbar_items = grid.toolbar_items
-      if params[:screen].present? and (screen = self.params[:screen].safe_constantize.try(:new))
-        toolbar_items.select! do |item|
-          grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || screen.authorize_create?(@current_user)
-        end
+      toolbar_items.select! do |item|
+        grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
     .grid-header
       %h2= grid.title
@@ -28,13 +26,13 @@
   gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
                             '#{grid.model.to_s.html_safe}',
                             '#{grid.params["screen"].to_s.html_safe}',
-                            '#{grid.path_for_json(request.query_parameters).to_s.html_safe}',
+                            '#{grid.path_for_json.to_s.html_safe}',
                              #{grid.params["filters"].to_json.html_safe},
-                             #{grid.javascript_column_model(params[:screen]).html_safe},
-                             #{grid.states_for_user(@current_user).html_safe},
-                             #{grid.action_configs(@current_user).to_json.html_safe},
-                             #{grid.behavior_configs(@current_user).to_json.html_safe},
-                             #{grid.options(@current_user).to_json.html_safe});
+                             #{grid.javascript_column_model.html_safe},
+                             #{grid.states_for_user.html_safe},
+                             #{grid.action_configs.to_json.html_safe},
+                             #{grid.behavior_configs.to_json.html_safe},
+                             #{grid.options.to_json.html_safe});
 
   // Initial adjusting toolbar
   WulinMaster.dynamicToolbar.reset('#{grid.name}', true);

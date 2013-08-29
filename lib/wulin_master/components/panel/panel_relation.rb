@@ -3,33 +3,30 @@ module WulinMaster
     extend ActiveSupport::Concern
     
     included do
-      class_eval do
-        class << self
-          attr_reader :relations_pool
+      class << self
+        attr_reader :relations_pool
+        def relations_pool
+          @relations_pool ||= {}
         end
       end
     end
 
     module ClassMethods
-      def initialize_relations
-        @relations_pool ||= {}
-      end  
-
       # Specify the inclusion grid for InclusionExclusionPanel
       def inclusion_grid(grid_klass, options={})
         if options[:screen]
-          inclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
-          @relations_pool[options[:screen]] ||= {}
-          @relations_pool[options[:screen]].merge!({inclusion_grid: inclusion_grid.name})
+          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
+          self.relations_pool[options[:screen]] ||= {}
+          self.relations_pool[options[:screen]].merge!({inclusion_grid: grid_name})
         end
       end
 
       # Specify the exclusion grid for InclusionExclusionPanel
       def exclusion_grid(grid_klass, options={})
         if options[:screen]
-          exclusion_grid = grid_klass.constantize.new({screen: options[:screen], no_render: true})
-          @relations_pool[options[:screen]] ||= {}
-          @relations_pool[options[:screen]].merge!({exclusion_grid: exclusion_grid.name})
+          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
+          self.relations_pool[options[:screen]] ||= {}
+          self.relations_pool[options[:screen]].merge!({exclusion_grid: grid_name})
         end
       end
     end

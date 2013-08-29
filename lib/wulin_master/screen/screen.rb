@@ -11,11 +11,9 @@ module WulinMaster
 
       # ???
       subclass.send :include, Rails.application.routes.url_helpers
-
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
-    # ---------------------- metaclass, define some DSL methods -------------------------------
     class << self
       #alias_method :all, :screens
       attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
@@ -33,7 +31,7 @@ module WulinMaster
 
       # Add a grid config to a screen
       def grid(klass, options={})
-        @components_pool ||= []        
+        @components_pool ||= []
         @grid_configs ||= []
         if klass
           @components_pool << klass
@@ -58,22 +56,21 @@ module WulinMaster
       end
     end
 
-    # -------------------------------- Instance methods ---------------------------------------
-    attr_accessor :controller, :params
+    attr_accessor :controller, :params, :current_user
     
-    def initialize(params={}, controller_instance=nil)
+    def initialize(controller_instance=nil)
       @controller = controller_instance
-      @params = params
+      @params = controller_instance.try(:params)
+      @current_user = controller_instance.try(:current_user)
     end
 
     def grids
       return @grids if defined?(@grids)
-      
       @grids = []
       self.class.grid_configs.each do |grid_config|
         grid_class = grid_config[:class]
         config = grid_config.reject{|k,v| k == :class}
-        @grids << grid_class.new(@params, self, @controller, config) if grid_class
+        @grids << grid_class.new(self, config) if grid_class
       end if self.class.grid_configs
       @grids
     end
@@ -85,13 +82,18 @@ module WulinMaster
       self.class.panel_configs.each do |panel_config|
         panel_class = panel_config[:class]
         config = panel_config.reject{|k,v| k == :class}
-        @panels << panel_class.new(@params, self, nil, config) if panel_class
+        @panels << panel_class.new(self, config) if panel_class
       end if self.class.panel_configs
       @panels
     end
 
     def components
-      (grids + panels).sort_by {|e| self.class.components_pool.index(e.class)}
+      @components ||= begin
+        grids_and_panels = grids + panels
+        grids_and_panels.sort_by! {|e| self.class.components_pool.index(e.class)}
+        grids_and_panels.select! {|x| x.class.name == params[:grid]} if params[:grid].present?
+        grids_and_panels
+      end
     end
     
     def path
@@ -100,11 +102,11 @@ module WulinMaster
     end
     
     def name
-      self.class.name.sub(/Screen$/, "").underscore
+      WulinMaster::Utilities.get_screen_name(self.class.name)
     end
     
     # Security
-    def authorized?(user)
+    def authorized?(user=nil)
       true
     end
     
