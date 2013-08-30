@@ -64,6 +64,7 @@ module WulinMaster
             return unless is_authorized
           end
         end
+        options[:screen_name] = screen_instance.try(:name)
         if @submenu
           @submenu << MenuEntry.new(title, path, options)
         else
