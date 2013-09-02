@@ -51,7 +51,7 @@
                 select_tag_options(column),                          |
                 :style             => "width:250px",                 |
                 :disabled          => column.options[:auto_fill],    |
-                :include_blank     => !required?(column),             |
+                :include_blank     => !required?(column),            |
                 "data-required"    => required?(column),             |
                 "data-target"      => "#{column_name}_target_flag",  |
                 "data-text-attr"   => column.option_text_attribute,  |
