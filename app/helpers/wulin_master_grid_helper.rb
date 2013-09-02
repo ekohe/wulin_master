@@ -81,7 +81,7 @@ module WulinMasterGridHelper
 
   def select_tag_field?(column)
     return true if (column.options[:distinct] and params[:action] != 'wulin_master_new_form')
-    (column.options[:choices].present? or column.options[:choices_column].present?)
+    (column.options.key?(:choices) or column.options.key?(:choices_column))
   end
 
   def required?(column)
