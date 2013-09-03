@@ -47,8 +47,13 @@ module WulinMaster
       if object and value.present?
         value_was = object.__send__("#{field_str}_was")
         begin
-          new_time = Time.parse(value)
-          new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
+          if value =~ /\A(\d{2}):?(\d{2})\Z/
+            value = "#{$1}:#{$2}"
+            new_time = Time.parse(value)
+            new_attrs[field_sym] = (value_was.blank? ? value : value_was.change(hour: new_time.hour, min: new_time.min))
+          else
+            new_attrs[field_sym] = nil
+          end
         rescue
           new_attrs[field_sym] = nil
         end
