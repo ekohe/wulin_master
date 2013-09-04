@@ -49,6 +49,7 @@ module WulinMaster
 
     def set_user_ids_for_sorting      
       @query = @query.all.sort do |s1, s2|
+        return 0 if s1.user.nil? || s2.user.nil?
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
       end if @skip_order
     end
