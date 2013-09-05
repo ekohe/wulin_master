@@ -23,7 +23,11 @@ module WulinMaster
     end
 
     def simple_date_format(value)
-      DateTime.parse("#{value} #{WulinMaster.config.default_year}") rescue nil
+      if value =~ /\A(\d{2})\s?([A-Za-z]{3})\Z/
+        DateTime.parse("#{$1} #{$2} #{WulinMaster.config.default_year}") rescue nil
+      else
+        nil
+      end
     end
     module_function :simple_date_format
 
