@@ -216,7 +216,7 @@ module WulinMaster
           if cb.class == Proc
             cb.call
           else
-            self.send(cb) if self.respond_to?(cb)
+            self.send(cb) if self.respond_to?(cb, true)
           end
         end
       end
