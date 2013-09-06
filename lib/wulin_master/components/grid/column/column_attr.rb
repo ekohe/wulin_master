@@ -1,5 +1,7 @@
 module WulinMaster
   module ColumnAttr
+    SIMPLE_DATE_REGEX = /\A(\d{2})\s?([A-Za-z]{3})\Z/
+    SIMPLE_TIME_REGEX = /\A(\d{2}):?(\d{2})\Z/
 
     def assign_attribute(object, value, new_attrs, attrs, type)
       if relation_field?
@@ -23,8 +25,8 @@ module WulinMaster
     end
 
     def simple_date_format(value)
-      if value =~ /\A(\d{2})\s?([A-Za-z]{3})\Z/
-        DateTime.parse("#{$1} #{$2} #{WulinMaster.config.default_year}") rescue nil
+      if value =~ SIMPLE_DATE_REGEX
+        DateTime.parse("#{$1} #{$2} #{WulinMaster.config.default_year}")
       end
     rescue
       nil
@@ -32,7 +34,7 @@ module WulinMaster
     module_function :simple_date_format
 
     def simple_time_format(value)
-      if value =~ /\A(\d{2}):?(\d{2})\Z/
+      if value =~ SIMPLE_TIME_REGEX
         Time.parse("#{$1}:#{$2}")
       end
     rescue
