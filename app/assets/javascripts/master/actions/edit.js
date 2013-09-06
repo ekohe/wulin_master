@@ -245,7 +245,12 @@ var submitForm = function(grid, ids, selectedIndexes) {
           Ui.resetForm(grid.name);
 
           grid.loader.reloadData();
-          displayNewNotification(selectedIndexes.length + ' records been updated!');
+          if (selectedIndexes.length > 1) {
+            displayNewNotification(selectedIndexes.length + ' records updated!');
+          } else {
+            displayNewNotification('1 record updated!');
+          }
+          
         } else {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();

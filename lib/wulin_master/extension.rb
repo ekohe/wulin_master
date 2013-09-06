@@ -8,7 +8,7 @@ module ActiveRecord::Associations::Builder
         has_one_macro = association(name).reflection.macro == :has_one
         if has_one_macro ? !send(name).nil? : send(name).exists?
           errors.add(:base, I18n.t("activerecord.errors.messages.restrict_dependent_destroy",
-                     :record => self.class.human_attribute_name(name).downcase))
+                     :record => self.class.human_attribute_name(name).downcase.singularize))
           return false
         end
       end

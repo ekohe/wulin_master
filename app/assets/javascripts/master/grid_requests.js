@@ -85,9 +85,9 @@ var Requests = {
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
-            message = recordSize+" records have been deleted.";
+            message = recordSize+" records deleted.";
           } else {
-            message = "One record has been deleted.";
+            message = "1 record deleted.";
           }
           displayNewNotification(message);
         } else if(msg.confirm) {
