@@ -1004,7 +1004,7 @@
           var $select, $wrapper;
           var choicesFetchPath = column.choices;
           var optionTextAttribute = column.optionTextAttribute || 'name';
-          var defaultValue;
+          var defaultValue, defaultText;
           var originColumn;
           var addOptionText = 'Add new Option';
           var relationColumn = (column.type === 'has_and_belongs_to_many') || (column.type === 'has_many');
@@ -1137,14 +1137,24 @@
               // can be an arbitrary object
               // the only restriction is that it must be a simple object that can be passed around even
               // when the editor itself has been destroyed
-              var obj = {id: $select.val()};
+              var value, text;
+              var obj = {};
+              if($select.val() != "") {
+                value = $select.val();
+                text = $('option:selected', $select).text();
+              } else {
+                value = defaultValue;
+                text = defaultText;
+              }
+              obj["id"] = value;
+              obj[optionTextAttribute] = text;
+
+              // special case for has_and_belongs_to_many
               if (column.type === 'has_and_belongs_to_many') {
                 obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){
                   return $(n).text();
                 }).join();
-              } else {
-                obj[optionTextAttribute] = $('option:selected', $select).text();
-              }
+              } 
               return obj;
           };
 
@@ -1153,6 +1163,7 @@
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
               defaultValue = item[column.field].id
+              defaultText = item[column.field][optionTextAttribute];
               $select.val(item[column.field].id);
               $select.select();
           };
