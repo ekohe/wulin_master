@@ -30,7 +30,6 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
     // 1. find the master grid and the selected record in master grid
     // 2. in the create dialog, find the master id dropdown
     // 3. set the dropdown value as the selected record in master grid, and disable it
-    console.log("start")
   }
 });
 
