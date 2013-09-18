@@ -37,7 +37,7 @@ module WulinMaster
       return if user_filter.blank?
 
       user_ids = User.all.select{|u| u.email.include?(user_filter["value"])}.map(&:id)
-      
+
       params[:filters].delete user_filter
       @query = @query.where(:user_id => user_ids)
     end
@@ -47,7 +47,7 @@ module WulinMaster
       @skip_order = true
     end
 
-    def set_user_ids_for_sorting      
+    def set_user_ids_for_sorting
       @query = @query.all.sort do |s1, s2|
         return 0 if s1.user.nil? || s2.user.nil?
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
@@ -56,6 +56,8 @@ module WulinMaster
 
     def clear_invalid_states_and_users_cache
       if params[:format] == 'json'
+        User.set_request_uri('/users.json?screen=UsersScreen')
+        WulinMaster::GridState.all_users = User.all
         WulinMaster::GridState.clear_invalid_states!
       end
     end

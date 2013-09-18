@@ -1,12 +1,12 @@
-module WulinMaster 
+module WulinMaster
   class GridState < ::ActiveRecord::Base
     cattr_accessor :all_users
     attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
-    
+
     scope :for_user_and_grid, ->(user_id, grid_name) { where(:user_id => user_id, :grid_name => grid_name)}
     scope :default, -> { where(name: 'default') }
-    
+
     reject_audit if defined? ::WulinAudit
 
     def self.update_or_create(attrs)
@@ -26,13 +26,13 @@ module WulinMaster
     def self.user_model
       if Module.const_defined? :WulinAuth
         WulinAuth::User
-      elsif Module.const_defined? :User 
+      elsif Module.const_defined? :User
         User
       else
         false
       end
     end
-    
+
     def self.current(user_id, grid_name)
       states = for_user_and_grid(user_id, grid_name).all
       return nil if states.blank?
@@ -47,7 +47,6 @@ module WulinMaster
 
     # cache all_users, loop all states and destroy the state without valid user_id
     def self.clear_invalid_states!
-      self.all_users = User.all
       self.all.each do |state|
         state.destroy unless self.all_users.map(&:id).include?(state.user_id)
       end if self.all_users.present?
