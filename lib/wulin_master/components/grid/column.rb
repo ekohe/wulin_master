@@ -6,7 +6,7 @@ module WulinMaster
     include WulinMaster::ColumnFilter
     include WulinMaster::ColumnAttr
 
-    attr_accessor :name, :options, :datetime_value
+    attr_accessor :name, :options, :datetime_value, :datetime_excel_format
 
     def initialize(name, grid_class, opts={})
       @name = name
@@ -69,15 +69,30 @@ module WulinMaster
     # Format a value
     # Called during json rendering
     def format(value)
+      @datetime_value = nil
+      @datetime_excel_format = nil
+
       if @options[:simple_date]
+        @datetime_value = value
+        @datetime_excel_format = 'dd mm'
         value.respond_to?(:strftime) ? value.strftime('%d %b') : value
       elsif @options[:simple_time]
+        @datetime_value = value
+        @datetime_excel_format = 'hh:mm'
         value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
         if value.class == ActiveSupport::TimeWithZone or @options[:type] == 'Datetime'
           @datetime_value = value
-          value.to_formatted_s(datetime_format)
+          if self.sql_type == :time
+            @datetime_excel_format = 'hh:mm'
+            value.try(:strftime, "%H:%M")
+          else
+            @datetime_excel_format = 'dd/mm/yy hh:mm'
+            value.to_formatted_s(datetime_format)
+          end
         elsif value.class == Time
+          @datetime_value = value
+          @datetime_excel_format = 'hh:mm'
           value.strftime('%H:%M')
         elsif value.class.name == 'BSON::ObjectId'
           value.to_s
