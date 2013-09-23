@@ -257,6 +257,80 @@
             this.init();
         },
 
+        FloatCellEditor : function(args) {
+            var column = args.column;
+            var $input;
+            var defaultValue;
+            var scope = this;
+            var boxWidth = column.width;
+            var offsetWith = boxWidth + 28;
+
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
+
+                $input.bind("keydown.nav", function(e) {
+                    if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                        e.stopImmediatePropagation();
+                    }
+                });
+
+                $input.appendTo(args.container);
+                $input.focus().select();
+                var winWith = $(window).width(),
+                offsetLeft = $input.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $input.offset({left: winWith - offsetWith});
+            };
+
+            this.destroy = function() {
+                $input.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.loadValue = function(item) {
+                defaultValue = item[column.field];
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                return $input.val() || 0;
+            };
+
+            this.applyValue = function(item,state) {
+                item[column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+            };
+
+            this.validate = function() {
+                if (isNaN($input.val())) {
+                    $input.val(defaultValue);
+                    return {
+                        valid: false,
+                        msg: "Please enter a valid integer"
+                    };
+                } else {
+                  return {
+                      valid: true,
+                      msg: null
+                  };
+                }
+            };
+
+            this.getCell = function(){
+              return $input.parent();
+            };
+
+            this.init();
+        },
+
         DateCellEditor : function(args) {
             var column = args.column;
             var $input;
