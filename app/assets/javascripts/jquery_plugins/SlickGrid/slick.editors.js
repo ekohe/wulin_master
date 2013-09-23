@@ -1004,7 +1004,7 @@
           var $select, $wrapper;
           var choicesFetchPath = column.choices;
           var optionTextAttribute = column.optionTextAttribute || 'name';
-          var defaultValue, defaultText;
+          var defaultValue;
           var originColumn;
           var addOptionText = 'Add new Option';
           var relationColumn = (column.type === 'has_and_belongs_to_many') || (column.type === 'has_many');
@@ -1039,13 +1039,20 @@
               $wrapper.offset({left: winWith - offsetWith});
             }
 
+            // must append the current value option, otherwise this.serializeValue can't get it
             $select.empty();
             $select.append($("<option />"));
+            if (args.item[column.field].id)
+              $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+            $select.val(args.item[column.field].id);
+            
             if ($.isArray(choicesFetchPath)) {
               $.each(choicesFetchPath, function(index, value) {
-                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                var arrOptions = [];
+                if (args.item[column.field].id != value.id )
+                  arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
-              $select.val(args.item[column.field].id);
+              $select.append(arrOptions.join(''));
               $select.chosen({allow_single_deselect: true});
             } else {
               self.getOptions();
@@ -1058,28 +1065,18 @@
           this.getOptions = function(selectedId, theCurrentValue) {
             var self = this;
             $.getJSON(choicesFetchPath, function(itemdata){
-              $select.empty();
-              $select.append($("<option />"));
+              var ajaxOptions = [];
               $.each(itemdata, function(index, value) {
-                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                if (args.item[column.field].id != value.id )
+                  ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
+              $select.append(ajaxOptions.join(''));
 
               if (column.dynamic_options) {
                 $select.append('<option>' + addOptionText + '</option>');
               }
 
-              if (selectedId) {
-                if (theCurrentValue && relationColumn) {
-                  theCurrentValue.unshift(selectedId);
-                  $select.val(theCurrentValue);
-                } else {
-                  $select.val([selectedId]);
-                }
-                $select.trigger('liszt:updated');
-              } else {
-                $select.val(args.item[column.field].id);
-                $select.chosen({allow_single_deselect: true});
-              }
+              $select.chosen({allow_single_deselect: true});
 
               // Update theCurrentValue
               $select.chosen().change(function(){ theCurrentValue = $select.val(); });
@@ -1136,17 +1133,9 @@
               // can be an arbitrary object
               // the only restriction is that it must be a simple object that can be passed around even
               // when the editor itself has been destroyed
-              var value, text;
               var obj = {};
-              // if($select.val() != "") {
-                value = $select.val();
-                text = $('option:selected', $select).text();
-              // } else {
-              //   value = defaultValue;
-              //   text = defaultText;
-              // }
-              obj["id"] = value;
-              obj[optionTextAttribute] = text;
+              obj["id"] = $select.val();
+              obj[optionTextAttribute] = $('option:selected', $select).text();
 
               // special case for has_and_belongs_to_many
               if (column.type === 'has_and_belongs_to_many') {
@@ -1162,7 +1151,6 @@
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
               defaultValue = item[column.field].id
-              defaultText = item[column.field][optionTextAttribute];
               $select.val(item[column.field].id);
               $select.select();
           };
