@@ -1045,10 +1045,10 @@
             if (args.item[column.field].id)
               $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
             $select.val(args.item[column.field].id);
-            
+
             if ($.isArray(choicesFetchPath)) {
+              var arrOptions = [];
               $.each(choicesFetchPath, function(index, value) {
-                var arrOptions = [];
                 if (args.item[column.field].id != value.id )
                   arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
@@ -1151,7 +1151,7 @@
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
               defaultValue = item[column.field].id
-              $select.val(item[column.field].id);
+              $select.val(defaultValue);
               $select.select();
           };
 
@@ -1223,13 +1223,20 @@
                 $wrapper.offset({left: winWith - offsetWith});
               }
 
+              // must append the current value option, otherwise this.serializeValue can't get it
               $select.empty();
               $select.append($("<option />"));
+              if (args.item[column.field].id)
+                $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+              $select.val(args.item[column.field].id);
+
               if ($.isArray(choicesFetchPath)) {
+                var arrOptions = [];
                 $.each(choicesFetchPath, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  if (args.item[column.field].id != value.id )
+                    arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                $select.val(args.item[column.field].id);
+                $select.append(arrOptions.join(''));
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1242,28 +1249,18 @@
             this.getOptions = function(selectedId, theCurrentValue) {
               var self = this;
               $.getJSON(choicesFetchPath, function(itemdata){
-                $select.empty();
-                $select.append($("<option />"));
+                var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  if (args.item[column.field].id != value.id )
+                    ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
+                $select.append(ajaxOptions.join(''));
 
                 if (column.dynamic_options) {
                   $select.append('<option>' + addOptionText + '</option>');
                 }
 
-                if (selectedId) {
-                  if (theCurrentValue && relationColumn) {
-                    theCurrentValue.unshift(selectedId);
-                    $select.val(theCurrentValue);
-                  } else {
-                    $select.val([selectedId]);
-                  }
-                  $select.trigger('liszt:updated');
-                } else {
-                  $select.val(args.item[column.field].id);
-                  $select.chosen({allow_single_deselect: true});
-                }
+                $select.chosen({allow_single_deselect: true});
 
                 // Update theCurrentValue
                 $select.chosen().change(function(){ theCurrentValue = $select.val(); });
@@ -1439,13 +1436,20 @@
                 }
               }
 
+              // must append the current value option, otherwise this.serializeValue can't get it
               $select.empty();
               $select.append($("<option />"));
+              if (args.item[column.field].id)
+                $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+              $select.val(args.item[column.field].id);
+
               if ($.isArray(choicesFetchPath)) {
+                var arrOptions = [];
                 $.each(choicesFetchPath, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+                  if (args.item[column.field].id != value.id )
+                    arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
-                $select.val(args.item[column.field]);
+                $select.append(arrOptions.join(''));
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1457,31 +1461,23 @@
 
             this.getOptions = function(selectedId, theCurrentValue) {
               $.getJSON(choicesFetchPath, function(itemdata){
-                $select.empty();
-                $select.append($("<option />"));
+                var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  if (args.item[column.field].id != value.id )
+                    ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
+                $select.append(ajaxOptions.join(''));
 
                 if (column.dynamic_options) {
                   $select.append('<option>' + addOptionText + '</option>');
                 }
 
-                if (selectedId) {
-                  if (theCurrentValue && relationColumn) {
-                    theCurrentValue.unshift(selectedId);
-                    $select.val(theCurrentValue);
-                  } else {
-                    $select.val([selectedId]);
-                  }
-                  $select.trigger('liszt:updated');
-                } else {
-                  $select.val(args.item[column.field].id);
-                  $select.chosen({allow_single_deselect: true});
-                }
+                $select.chosen({allow_single_deselect: true});
+
                 // Update theCurrentValue
                 $select.chosen().change(function(){ theCurrentValue = $select.val(); });
                 theCurrentValue = $select.val();
+
                 // 'Add new option' option handler
                 $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
                   event.preventDefault();
