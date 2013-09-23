@@ -74,7 +74,7 @@ module WulinMaster
 
       if @options[:simple_date]
         @datetime_value = value
-        @datetime_excel_format = 'dd mm'
+        @datetime_excel_format = 'dd mmm'
         value.respond_to?(:strftime) ? value.strftime('%d %b') : value
       elsif @options[:simple_time]
         @datetime_value = value
