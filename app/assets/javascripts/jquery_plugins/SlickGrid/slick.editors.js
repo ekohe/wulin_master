@@ -1114,16 +1114,16 @@
             }
 
             // must append the current value option, otherwise this.serializeValue can't get it
-            $select.empty();
             $select.append($("<option />"));
-            if (args.item[column.field].id)
+            if (args.item[column.field] && args.item[column.field].id) {
               $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
-            $select.val(args.item[column.field].id);
+              $select.val(args.item[column.field].id);
+            }
 
             if ($.isArray(choicesFetchPath)) {
               var arrOptions = [];
               $.each(choicesFetchPath, function(index, value) {
-                if (args.item[column.field].id != value.id )
+                if (!args.item[column.field] || args.item[column.field].id != value.id )
                   arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
               $select.append(arrOptions.join(''));
@@ -1141,7 +1141,7 @@
             $.getJSON(choicesFetchPath, function(itemdata){
               var ajaxOptions = [];
               $.each(itemdata, function(index, value) {
-                if (args.item[column.field].id != value.id )
+                if (!args.item[column.field] || args.item[column.field].id != value.id )
                   ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
               $select.append(ajaxOptions.join(''));
@@ -1298,16 +1298,16 @@
               }
 
               // must append the current value option, otherwise this.serializeValue can't get it
-              $select.empty();
               $select.append($("<option />"));
-              if (args.item[column.field].id)
+              if (args.item[column.field] && args.item[column.field].id) {
                 $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
-              $select.val(args.item[column.field].id);
+                $select.val(args.item[column.field].id);
+              }
 
               if ($.isArray(choicesFetchPath)) {
                 var arrOptions = [];
                 $.each(choicesFetchPath, function(index, value) {
-                  if (args.item[column.field].id != value.id )
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
                     arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
                 $select.append(arrOptions.join(''));
@@ -1325,7 +1325,7 @@
               $.getJSON(choicesFetchPath, function(itemdata){
                 var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  if (args.item[column.field].id != value.id )
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
                     ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
                 $select.append(ajaxOptions.join(''));
@@ -1498,8 +1498,6 @@
                   $wrapper.offset({left: winWith - offsetWith});
               }
 
-              $select.append($("<option />"));
-
               // if it depend on other column's value, filter the choices
               if(dependColumn){
                 var dependValue = args.item[dependColumn];
@@ -1511,16 +1509,16 @@
               }
 
               // must append the current value option, otherwise this.serializeValue can't get it
-              $select.empty();
               $select.append($("<option />"));
-              if (args.item[column.field].id)
+              if (args.item[column.field] && args.item[column.field].id) {
                 $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
-              $select.val(args.item[column.field].id);
+                $select.val(args.item[column.field].id);
+              }
 
               if ($.isArray(choicesFetchPath)) {
                 var arrOptions = [];
                 $.each(choicesFetchPath, function(index, value) {
-                  if (args.item[column.field].id != value.id )
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
                     arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
                 $select.append(arrOptions.join(''));
@@ -1537,7 +1535,7 @@
               $.getJSON(choicesFetchPath, function(itemdata){
                 var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  if (args.item[column.field].id != value.id )
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
                     ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
                 $select.append(ajaxOptions.join(''));
@@ -1761,8 +1759,12 @@
                 $wrapper.offset({left: winWith - offsetWith});
             }
 
-            $select.empty();
+            // must append the current value option, otherwise this.serializeValue can't get it
             $select.append($("<option />"));
+            if (args.item[column.field] && args.item[column.field].id) {
+              $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+              $select.val(args.item[column.field].id);
+            }
 
             self.getOptions();
 
@@ -1772,11 +1774,11 @@
 
           this.getOptions = function() {
             $.getJSON(choicesFetchPath, function(itemdata){
-              $select.empty();
-              $select.append($("<option />"));
+              var ajaxOptions = [];
               $.each(itemdata, function(index, value) {
-                $select.append("<option value='" + value + "'>" + value + "</option>");
+                ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
               });
+              $select.append(ajaxOptions.join(''));
 
               $select.append(bottomOption);
               $select.val(args.item[column.field]);
