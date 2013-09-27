@@ -2,7 +2,7 @@
   :ruby
     model_name = grid.model.model_name.singular
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
-    
+
     if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
       columns.select!{|x| version_columns.include?(x.name)}
     end
@@ -21,8 +21,10 @@
             %label{:for => "#{model_name}_#{column_name}"}
               = label
             %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
-
-            - if column.sql_type.to_s == 'belongs_to'
+            - if column.options[:editor].present?
+              - if column.options[:editor] == "LongTextCellEditor"
+                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 260px; height: 4em;'
+            - elsif column.sql_type.to_s == 'belongs_to'
               = form.select column_name,                            |
                 select_options(column),                             |
                 { include_blank: !column.presence_required? },      |
@@ -122,4 +124,3 @@
         }
       });
     });
-  
