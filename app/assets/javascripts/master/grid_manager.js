@@ -54,6 +54,8 @@
         // 1. append editor
         if (columns[i].editor) {
           columns[i].editor = eval(columns[i].editor);
+        } else if ((columns[i].distinct) && ((columns[i].auto_complete))) {
+          columns[i].editor = AutoCompleteTextEditor;
         } else if (columns[i].distinct) {
           columns[i].editor = DistinctEditor;
         } else {

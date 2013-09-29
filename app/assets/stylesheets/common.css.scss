@@ -4,7 +4,9 @@
 .green {
   color: green;
 }
-
+.blue-background {
+  background: #81abd7;
+}
 .hidden {
   display: none !important;
 }
@@ -404,7 +406,7 @@ span.switch_btn {
     margin-right: auto;
   }
   span.copy_btn {
-    background: image-url('copy.png') no-repeat top center; 
+    background: image-url('copy.png') no-repeat top center;
     width: 32px;
     height: 32px;
     margin-top: 15px;
@@ -432,4 +434,3 @@ span.switch_btn {
   opacity: 0.6;
   filter: alpha(opacity=60);
 }
-  
