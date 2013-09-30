@@ -1874,8 +1874,9 @@
 
           this.init();
         },
+
         // Usage:
-        // column: [column name], distinct: true, auto_complete: true, [other option]
+        // column: [column name], distinct: true, auto_complete: true
         AutoCompleteTextEditor : function(args) {
             var column = args.column;
             var $input, $select, $wrapper;
@@ -1890,9 +1891,61 @@
               var down = true;
               $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
                   .appendTo(args.container)
+                  .bind("keydown.nav", function(e) {
+                    var optionLength = $(".select-option").length;
+                    if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))){
+                      e.stopImmediatePropagation();
+                    }else if (e.keyCode === $.ui.keyCode.DOWN) {
+                      if($(".select-option").length > 0){
+                        if(down == true){
+                          if((count > 0) && (count < $(".select-option").length)){ $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background"); }
+                          $(".select-option:eq("+ count +")").addClass("blue-background");
+                        }else {
+                          if(count == 0){
+                            $(".select-option:eq("+ count +")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
+                          }else {
+                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
+                          }
+                          count++;
+                          down = true;
+                        }
+                        count++;
+                        if(count > $(".select-option").length){ count = $(".select-option").length; }
+                      }
+                    }else if (e.keyCode === $.ui.keyCode.UP){
+                      if($(".select-option").length > 0){
+                        if(down == true){
+                            count--;
+                          down = false;
+                        }
+                        if(count > 0){
+                          if(count == $(".select-option").length){
+                            $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count - 2)  +")").addClass("blue-background");
+                          }else {
+                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count - 1) +")").addClass("blue-background");
+                          }
+                        }
+                        count--;
+                        if(count < 0){ count = 0; }
+                      }
+                    }
+                  })
+                  .bind("keydown", function(event){
+                    if(event.keyCode == "13"){
+                      var value = $(".select-option.blue-background").text();
+                      self.setValue(value);
+                      $(".wrapper").remove();
+                    }
+                  })
                   .bind("input", function(){
                     var value = self.getValue();
                     self.getOptions(value);
+                    down = true;
+                    count = 0;
                   })
                   .scrollLeft(0)
                   .focus();
@@ -1908,7 +1961,7 @@
                 }
                 return false;
               }
-              $wrapper = $("<DIV style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
+              $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
               $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:0px;list-style:none;'></ul></div>")
                 .appendTo($wrapper);
               var winWith = $(window).width(),
@@ -1932,7 +1985,7 @@
                     ajaxOptions.push("<li class='select-option odd' value='" + value + "'>" + value + "</li>");
                   }
                 });
-
+                $(".wrapper").remove();
                 $wrapper.appendTo(args.container);
                 if(ajaxOptions.length == 0){
                   $(".auto-complete-select").remove();
@@ -1949,11 +2002,9 @@
                 $(".select-option").click(function(event){
                       var value = event.currentTarget.textContent;
                       self.setValue(value);
-                      $wrapper.remove();
+                      $(".wrapper").remove();
                 })
-
               });
-              $wrapper.remove();
             };
 
             this.destroy = function() {
