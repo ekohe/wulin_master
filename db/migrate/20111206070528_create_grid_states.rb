@@ -4,8 +4,9 @@ class CreateGridStates < ActiveRecord::Migration
       create_table :grid_states do |t|
         t.integer :user_id
         t.string  :grid_name
-        t.string  :state_type
         t.text    :state_value
+        t.string    :name,  :default => "default" 
+        t.boolean :current, :default => false, :null => false 
         t.timestamps
       end
       add_index :grid_states, :user_id
