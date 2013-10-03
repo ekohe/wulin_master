@@ -96,7 +96,7 @@
 
             this.init();
         },
-        
+
         TextCellEditor : function(args) {
             var column = args.column;
             var $input;
@@ -175,11 +175,11 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
-            
+
             this.init();
         },
 
@@ -249,7 +249,81 @@
                   };
                 }
             };
-            
+
+            this.getCell = function(){
+              return $input.parent();
+            };
+
+            this.init();
+        },
+
+        FloatCellEditor : function(args) {
+            var column = args.column;
+            var $input;
+            var defaultValue;
+            var scope = this;
+            var boxWidth = column.width;
+            var offsetWith = boxWidth + 28;
+
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
+
+                $input.bind("keydown.nav", function(e) {
+                    if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                        e.stopImmediatePropagation();
+                    }
+                });
+
+                $input.appendTo(args.container);
+                $input.focus().select();
+                var winWith = $(window).width(),
+                offsetLeft = $input.offset().left;
+                if(winWith - offsetLeft < offsetWith)
+                  $input.offset({left: winWith - offsetWith});
+            };
+
+            this.destroy = function() {
+                $input.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.loadValue = function(item) {
+                defaultValue = item[column.field];
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                return $input.val() || 0;
+            };
+
+            this.applyValue = function(item,state) {
+                item[column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+            };
+
+            this.validate = function() {
+                if (isNaN($input.val())) {
+                    $input.val(defaultValue);
+                    return {
+                        valid: false,
+                        msg: "Please enter a valid integer"
+                    };
+                } else {
+                  return {
+                      valid: true,
+                      msg: null
+                  };
+                }
+            };
+
             this.getCell = function(){
               return $input.parent();
             };
@@ -332,14 +406,14 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
 
             this.init();
         },
-        
+
         DateTimeCellEditor : function(args) {
             var column = args.column;
             var $input;
@@ -420,7 +494,7 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
@@ -518,14 +592,14 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
 
             this.init();
         },
-        
+
         // Date cell editor which can handle "yy-mm-dd" format
         StandardDateCellEditor: function(args) {
             var column = args.column;
@@ -535,7 +609,7 @@
             var calendarOpen = false;
             var showFormat = "yy-mm-dd";
             var sourceFormat = "yy-mm-dd";
-            
+
             this.init = function() {
                 if (column.DateSourceFormat !== undefined) {
                     sourceFormat = column.DateSourceFormat;
@@ -556,37 +630,37 @@
                 });
                 $input.width($input.width() - 18);
             };
-            
+
             this.destroy = function() {
                 $.datepicker.dpDiv.stop(true, true);
                 $input.datepicker("hide");
                 $input.datepicker("destroy");
                 $input.remove();
             };
-            
+
             this.show = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).show();
                 }
             };
-            
+
             this.hide = function() {
                 if (calendarOpen) {
                     $.datepicker.dpDiv.stop(true, true).hide();
                 }
             };
-            
+
             this.position = function(position) {
                 if (!calendarOpen) return;
                 $.datepicker.dpDiv
                 .css("top", position.top + 30)
                 .css("left", position.left);
             };
-            
+
             this.focus = function() {
                 $input.focus();
             };
-            
+
             this.loadValue = function(item) {
               if (item[column.field]) {
                 defaultValue = item[column.field].split(/\s+/)[0];
@@ -603,32 +677,32 @@
               $input[0].defaultValue = defaultValue;
               $input.select();
             };
-            
+
             this.serializeValue = function() {
                 var thedate = $.datepicker.parseDate(showFormat, $input.val());
                 return $.datepicker.formatDate(sourceFormat,
                 thedate);
             };
-            
+
             this.applyValue = function(item, state) {
                 item[column.field] = state;
             };
-            
+
             this.isValueChanged = function() {
                 return !($input.val() === "" && defaultValue === null) && ($input.val() != defaultValue);
             };
-            
+
             this.validate = function() {
                 return {
                     valid: true,
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
-            
+
             this.init();
         },
 
@@ -664,7 +738,7 @@
             this.applyValue = function(item,state) {
                 item[column.field] = state;
             };
-           
+
             this.isValueChanged = function() {
                 return ($select.val() != defaultValue);
             };
@@ -727,7 +801,7 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $select.parent();
             };
@@ -808,7 +882,7 @@
                   };
                 }
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
@@ -874,7 +948,7 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
@@ -897,20 +971,20 @@
 
             this.init = function() {
                 var $container = $("body");
-                
+
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                     .appendTo($container);
-                
+
                 $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + boxWidth + "px;height:80px;border:0;outline:0'>")
                     .appendTo($wrapper);
-                
+
                 $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
                     .appendTo($wrapper);
-                
+
                 $wrapper.find("button:first").bind("click", this.save);
                 $wrapper.find("button:last").bind("click", this.cancel);
                 $input.bind("keydown", this.handleKeyDown);
-                
+
                 scope.position(args.position);
                 $input.focus().select();
             };
@@ -989,15 +1063,15 @@
                     msg: null
                 };
             };
-            
+
             this.getCell = function(){
               return $input.parent();
             };
 
             this.init();
         },
-        
-        
+
+
         // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
         BelongsToEditor : function(args) {
           var column = args.column;
@@ -1022,7 +1096,7 @@
           }
           var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
           var offsetWith = boxWidth + 28;
-          
+
           this.init = function() {
             $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
               .appendTo(args.container);
@@ -1039,13 +1113,20 @@
               $wrapper.offset({left: winWith - offsetWith});
             }
 
-            $select.empty();
+            // must append the current value option, otherwise this.serializeValue can't get it
             $select.append($("<option />"));
-            if ($.isArray(choicesFetchPath)) {
-              $.each(choicesFetchPath, function(index, value) {
-                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-              });
+            if (args.item[column.field] && args.item[column.field].id) {
+              $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
               $select.val(args.item[column.field].id);
+            }
+
+            if ($.isArray(choicesFetchPath)) {
+              var arrOptions = [];
+              $.each(choicesFetchPath, function(index, value) {
+                if (!args.item[column.field] || args.item[column.field].id != value.id )
+                  arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+              });
+              $select.append(arrOptions.join(''));
               $select.chosen({allow_single_deselect: true});
             } else {
               self.getOptions();
@@ -1058,28 +1139,18 @@
           this.getOptions = function(selectedId, theCurrentValue) {
             var self = this;
             $.getJSON(choicesFetchPath, function(itemdata){
-              $select.empty();
-              $select.append($("<option />"));
+              var ajaxOptions = [];
               $.each(itemdata, function(index, value) {
-                $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                if (!args.item[column.field] || args.item[column.field].id != value.id )
+                  ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
               });
+              $select.append(ajaxOptions.join(''));
 
               if (column.dynamic_options) {
                 $select.append('<option>' + addOptionText + '</option>');
               }
 
-              if (selectedId) {
-                if (theCurrentValue && relationColumn) {
-                  theCurrentValue.unshift(selectedId);
-                  $select.val(theCurrentValue);
-                } else {
-                  $select.val([selectedId]);
-                }
-                $select.trigger('liszt:updated');
-              } else {
-                $select.val(args.item[column.field].id);
-                $select.chosen({allow_single_deselect: true});
-              }
+              $select.chosen({allow_single_deselect: true});
 
               // Update theCurrentValue
               $select.chosen().change(function(){ theCurrentValue = $select.val(); });
@@ -1116,7 +1187,6 @@
           this.isValueChanged = function() {
             // return true if the value(s) being edited by the user has/have been changed
             var selectedValue = $select.val();
-
             if (relationColumn) {
               if (selectedValue) {
                   if (selectedValue.length != defaultValue.length) {
@@ -1137,13 +1207,15 @@
               // can be an arbitrary object
               // the only restriction is that it must be a simple object that can be passed around even
               // when the editor itself has been destroyed
-              var obj = {id: $select.val()};
+              var obj = {};
+              obj["id"] = $select.val();
+              obj[optionTextAttribute] = $('option:selected', $select).text();
+
+              // special case for has_and_belongs_to_many
               if (column.type === 'has_and_belongs_to_many') {
                 obj[optionTextAttribute] = $.map($('option:selected', $select), function(n){
                   return $(n).text();
                 }).join();
-              } else {
-                obj[optionTextAttribute] = $('option:selected', $select).text();
               }
               return obj;
           };
@@ -1153,7 +1225,7 @@
               // this method will be called immediately after the editor is initialized
               // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
               defaultValue = item[column.field].id
-              $select.val(item[column.field].id);
+              $select.val(defaultValue);
               $select.select();
           };
 
@@ -1218,20 +1290,27 @@
 
               $select.appendTo($wrapper);
               $select.focus();
-              
+
               var winWith = $(window).width(),
               offsetLeft = $wrapper.offset().left;
               if(winWith - offsetLeft < offsetWith) {
                 $wrapper.offset({left: winWith - offsetWith});
               }
 
-              $select.empty();
+              // must append the current value option, otherwise this.serializeValue can't get it
               $select.append($("<option />"));
-              if ($.isArray(choicesFetchPath)) {
-                $.each(choicesFetchPath, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-                });
+              if (args.item[column.field] && args.item[column.field].id) {
+                $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
                 $select.val(args.item[column.field].id);
+              }
+
+              if ($.isArray(choicesFetchPath)) {
+                var arrOptions = [];
+                $.each(choicesFetchPath, function(index, value) {
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
+                    arrOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                });
+                $select.append(arrOptions.join(''));
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1244,33 +1323,23 @@
             this.getOptions = function(selectedId, theCurrentValue) {
               var self = this;
               $.getJSON(choicesFetchPath, function(itemdata){
-                $select.empty();
-                $select.append($("<option />"));
+                var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
+                    ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                
+                $select.append(ajaxOptions.join(''));
+
                 if (column.dynamic_options) {
                   $select.append('<option>' + addOptionText + '</option>');
                 }
-  
-                if (selectedId) {
-                  if (theCurrentValue && relationColumn) {
-                    theCurrentValue.unshift(selectedId);
-                    $select.val(theCurrentValue);
-                  } else {
-                    $select.val([selectedId]);
-                  }
-                  $select.trigger('liszt:updated');
-                } else {
-                  $select.val(args.item[column.field].id);
-                  $select.chosen({allow_single_deselect: true});
-                }
-  
+
+                $select.chosen({allow_single_deselect: true});
+
                 // Update theCurrentValue
                 $select.chosen().change(function(){ theCurrentValue = $select.val(); });
                 theCurrentValue = $select.val();
-  
+
                 // 'Add new option' option handler
                 $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
                   event.preventDefault();
@@ -1302,7 +1371,7 @@
             this.isValueChanged = function() {
                 // return true if the value(s) being edited by the user has/have been changed
                 var selectedValue = $select.val();
-    
+
                 if (relationColumn) {
                   if (selectedValue) {
                       if (selectedValue.length != defaultValue.length) {
@@ -1363,7 +1432,7 @@
 
             this.init();
         },
-        
+
         // The editor which use jquery.chosen to allow you choose the value as select
         SelectEditor : function(args) {
             var column = args.column;
@@ -1403,7 +1472,7 @@
                     }
                 }
             }
-  
+
             var dependColumn = column.depend_column;
             var defaultValue;
             var originColumn;
@@ -1413,7 +1482,7 @@
                     break;
                 }
             }
-            
+
             var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
             var offsetWith = boxWidth + 28;
 
@@ -1429,8 +1498,6 @@
                   $wrapper.offset({left: winWith - offsetWith});
               }
 
-              $select.append($("<option />"));
-
               // if it depend on other column's value, filter the choices
               if(dependColumn){
                 var dependValue = args.item[dependColumn];
@@ -1441,13 +1508,20 @@
                 }
               }
 
-              $select.empty();
+              // must append the current value option, otherwise this.serializeValue can't get it
               $select.append($("<option />"));
+              if (args.item[column.field] && args.item[column.field].id) {
+                $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+                $select.val(args.item[column.field].id);
+              }
+
               if ($.isArray(choicesFetchPath)) {
+                var arrOptions = [];
                 $.each(choicesFetchPath, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
+                    arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
                 });
-                $select.val(args.item[column.field]);
+                $select.append(arrOptions.join(''));
                 $select.chosen({allow_single_deselect: true});
               } else {
                 self.getOptions();
@@ -1459,31 +1533,23 @@
 
             this.getOptions = function(selectedId, theCurrentValue) {
               $.getJSON(choicesFetchPath, function(itemdata){
-                $select.empty();
-                $select.append($("<option />"));
+                var ajaxOptions = [];
                 $.each(itemdata, function(index, value) {
-                  $select.append("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+                  if (!args.item[column.field] || args.item[column.field].id != value.id )
+                    ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
                 });
-                
+                $select.append(ajaxOptions.join(''));
+
                 if (column.dynamic_options) {
                   $select.append('<option>' + addOptionText + '</option>');
                 }
 
-                if (selectedId) {
-                  if (theCurrentValue && relationColumn) {
-                    theCurrentValue.unshift(selectedId);
-                    $select.val(theCurrentValue);
-                  } else {
-                    $select.val([selectedId]);
-                  }
-                  $select.trigger('liszt:updated');
-                } else {
-                  $select.val(args.item[column.field].id);
-                  $select.chosen({allow_single_deselect: true});
-                }
+                $select.chosen({allow_single_deselect: true});
+
                 // Update theCurrentValue
                 $select.chosen().change(function(){ theCurrentValue = $select.val(); });
                 theCurrentValue = $select.val();
+
                 // 'Add new option' option handler
                 $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
                   event.preventDefault();
@@ -1562,7 +1628,7 @@
                 var $wrapper, values = args.item[column.field].split('-');
                 $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
                     .appendTo(args.container);
-                  
+
                 $from = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>").appendTo($wrapper);
                 $wrapper.append("&nbsp; <span>-</span> &nbsp;");
                 $to = $("<select class='chzn-select' style='width: " + boxWidth + "px;'></select>").appendTo($wrapper);
@@ -1605,7 +1671,7 @@
                 scope.focus();
                 // Open drop-down
                 setTimeout(function(){ $select.trigger('liszt:open'); }, 300);
-                
+
                 var winWith = $(window).width(),
                 offsetLeft = $wrapper.offset().left;
                 if(winWith - offsetLeft < offsetWith) {
@@ -1653,7 +1719,7 @@
             this.validate = function() {
                 return {valid: true, msg: null};
             };
-            
+
             this.getCell = function(){
               return $from.parent();
             };
@@ -1680,7 +1746,7 @@
           }
           var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
           var offsetWith = boxWidth + 28;
-          
+
           this.init = function() {
             $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
               .appendTo(args.container);
@@ -1693,8 +1759,12 @@
                 $wrapper.offset({left: winWith - offsetWith});
             }
 
-            $select.empty();
+            // must append the current value option, otherwise this.serializeValue can't get it
             $select.append($("<option />"));
+            if (args.item[column.field] && args.item[column.field].id) {
+              $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+              $select.val(args.item[column.field].id);
+            }
 
             self.getOptions();
 
@@ -1704,11 +1774,11 @@
 
           this.getOptions = function() {
             $.getJSON(choicesFetchPath, function(itemdata){
-              $select.empty();
-              $select.append($("<option />"));
+              var ajaxOptions = [];
               $.each(itemdata, function(index, value) {
-                $select.append("<option value='" + value + "'>" + value + "</option>");
+                ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
               });
+              $select.append(ajaxOptions.join(''));
 
               $select.append(bottomOption);
               $select.val(args.item[column.field]);
@@ -1803,9 +1873,198 @@
           };
 
           this.init();
-        }
-        
+        },
 
+        // Usage:
+        // column: [column name], distinct: true, auto_complete: true
+        AutoCompleteTextEditor : function(args) {
+            var column = args.column;
+            var $input, $select, $wrapper;
+            var choicesFetchPath = column.choices;
+            var defaultValue;
+            var self = this;
+            var boxWidth = column.width;
+            var offsetWith = boxWidth + 18;
+
+            this.init = function() {
+              var count = 0;
+              var down = true;
+              $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
+                  .appendTo(args.container)
+                  .bind("keydown.nav", function(e) {
+                    var optionLength = $(".select-option").length;
+                    if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))){
+                      e.stopImmediatePropagation();
+                    }else if (e.keyCode === $.ui.keyCode.DOWN) {
+                      if($(".select-option").length > 0){
+                        if(down == true){
+                          if((count > 0) && (count < $(".select-option").length)){ $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background"); }
+                          $(".select-option:eq("+ count +")").addClass("blue-background");
+                        }else {
+                          if(count == 0){
+                            $(".select-option:eq("+ count +")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
+                          }else {
+                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
+                          }
+                          count++;
+                          down = true;
+                        }
+                        count++;
+                        if(count > $(".select-option").length){ count = $(".select-option").length; }
+                      }
+                    }else if (e.keyCode === $.ui.keyCode.UP){
+                      if($(".select-option").length > 0){
+                        if(down == true){
+                            count--;
+                          down = false;
+                        }
+                        if(count > 0){
+                          if(count == $(".select-option").length){
+                            $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count - 2)  +")").addClass("blue-background");
+                          }else {
+                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                            $(".select-option:eq("+ (count - 1) +")").addClass("blue-background");
+                          }
+                        }
+                        count--;
+                        if(count < 0){ count = 0; }
+                      }
+                    }
+                  })
+                  .bind("keydown", function(event){
+                    if(event.keyCode == "13"){
+                      var value = $(".select-option.blue-background").text();
+                      self.setValue(value);
+                      $(".wrapper").remove();
+                    }
+                  })
+                  .bind("input", function(){
+                    var value = self.getValue();
+                    self.getOptions(value);
+                    down = true;
+                    count = 0;
+                  })
+                  .scrollLeft(0)
+                  .focus();
+            };
+
+            this.getOptions = function(input) {
+              if($(".select-option").length > 0){
+                $(".select-option").remove();
+              }
+              if(input == ""){
+                if($(".auto-complete-select").length > 0){
+                  $(".auto-complete-select").remove();
+                }
+                return false;
+              }
+              $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
+              $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:0px;list-style:none;'></ul></div>")
+                .appendTo($wrapper);
+              var winWith = $(window).width(),
+              offsetLeft = $wrapper.offset().left;
+              if(winWith - offsetLeft < offsetWith) {
+                $wrapper.offset({left: winWith - offsetWith});
+              }
+
+              $.getJSON(choicesFetchPath, function(data){
+                var itemdata = [];
+                $.each(data, function(index, value){
+                    if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
+                        itemdata.push(value);
+                    }
+                })
+                var ajaxOptions = [];
+                $.each(itemdata, function(index, value) {
+                  if(index % 2 == 0){
+                    ajaxOptions.push("<li class='select-option even' value='" + value + "'>" + value + "</li>");
+                  }else{
+                    ajaxOptions.push("<li class='select-option odd' value='" + value + "'>" + value + "</li>");
+                  }
+                });
+                $(".wrapper").remove();
+                $wrapper.appendTo(args.container);
+                if(ajaxOptions.length == 0){
+                  $(".auto-complete-select").remove();
+                }
+                $(".select-options").css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto", "border-radius":"6px", "-moz-border-radius":"6px"});
+                $(".select-options").append(ajaxOptions.join(''));
+                $(".select-option")
+                    .bind("mouseover", function(){
+                      $(this).addClass("blue-background");
+                    })
+                    .bind("mouseleave", function(){
+                      $(this).removeClass("blue-background");
+                    });
+                $(".select-option").click(function(event){
+                      var value = event.currentTarget.textContent;
+                      self.setValue(value);
+                      $(".wrapper").remove();
+                })
+              });
+            };
+
+            this.destroy = function() {
+                $input.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.getValue = function() {
+                return $input.val();
+            };
+
+            this.setValue = function(val) {
+                $input.val(val);
+            };
+
+            this.loadValue = function(item) {
+                defaultValue = item[column.field] || "";
+                // defaultValue = defaultValue.replace(/&amp;/g, '&');
+                // defaultValue = defaultValue.replace(/&gt;/g, '>');
+                // defaultValue = defaultValue.replace(/&lt;/g, '<');
+                // defaultValue = defaultValue.replace(/&quot;/g, '"');
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                return $input.val();
+            };
+
+            this.applyValue = function(item,state) {
+                item[column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+            };
+
+            this.validate = function() {
+                if (column.validator) {
+                    var validationResults = column.validator($input.val());
+                    if (!validationResults.valid)
+                        return validationResults;
+                }
+
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.getCell = function(){
+              return $input.parent();
+            };
+
+            this.init();
+        }
     };
 
     $.extend(window, SlickEditor);
