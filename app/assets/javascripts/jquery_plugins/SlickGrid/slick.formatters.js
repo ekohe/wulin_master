@@ -113,26 +113,8 @@
 
         HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
             return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-        },
+        }
 
-        // Helpers for simple time/date to support for date format as "12 May/12May", and time format as "12:12/1212"
-        ParseSimpleTime: function(simpleTimeStr) {
-            try {
-                var matchedArr = simpleTimeStr.match(/^(\d{2}):?(\d{2})$/);
-                return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2])
-            } catch(err) {
-                return null;
-            }
-        },
-
-        ParseSimpleDate: function(simpleDateStr) {
-            try {
-                var matchedArr = simpleDateStr.match(/^(\d{2})\s?([A-Za-z]{3})$/);
-                return $.datepicker.parseDate("dd M", matchedArr[1] + " " + matchedArr[2]);
-            } catch(err) {
-                return null;
-            }
-        },
     };
 
   $.extend(window, SlickFormatter);
