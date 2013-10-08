@@ -1877,7 +1877,7 @@
 
         // Usage:
         // column: [column name], auto_complete: true
-        AutoCompleteTextEditor : function(args){
+        AutoCompleteTextEditor : function(args) {
             var column = args.column;
             var $input, $select, $wrapper;
             var choicesFetchPath = column.choices;
@@ -1900,7 +1900,7 @@
                         if(down == true){
                           if((count > 0) && (count < $(".select-option").length)){ $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background"); }
                           $(".select-option:eq("+ count +")").addClass("blue-background");
-                        }else{
+                        }else {
                           $(".select-option:eq("+ count +")").removeClass("blue-background");
                           $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
                           count++;

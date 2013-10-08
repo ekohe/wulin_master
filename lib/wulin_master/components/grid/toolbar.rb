@@ -8,15 +8,16 @@ module WulinMaster
       #self.class.default_items.each {|item| self.unshift(item) }
       @grid_name = grid_name
       @items ||= []
-      
+
       actions.each do |action|
         item_options = {
-            :id => "#{action[:name]}_action_on_#{grid_name}", 
-            :class => ("#{action[:name]}_action " << action[:class].to_s), 
-            :icon => "#{action[:icon] || action[:name]}", 
+            :id => "#{action[:name]}_action_on_#{grid_name}",
+            :class => ("#{action[:name]}_action " << action[:class].to_s),
+            :icon => "#{action[:icon] || action[:name]}",
             :manually_enable => action[:manually_enable]
         }
         item_options = action.merge(item_options)
+        item_options.delete(:authorized?)
         item_name = action[:title] || action[:name].capitalize
 
         @items << ToolbarItem.new(item_name, item_options)
