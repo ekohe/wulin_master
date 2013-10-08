@@ -25,7 +25,7 @@ module WulinMaster
     def datetime_format
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
-    
+
     def relation_table_name
       options[:join_aliased_as] || self.reflection.klass.table_name
     end
@@ -33,7 +33,7 @@ module WulinMaster
     def relation_klass_name
       @relation_klass_name ||= self.reflection.klass.name
     end
-    
+
     def table_name
       self.reflection ? relation_table_name : self.model.table_name.to_s
     end
@@ -56,8 +56,7 @@ module WulinMaster
       elsif @options[:original_choices].is_a?(Proc)
         @options[:choices] = @options[:original_choices].call
       end
-        
-      append_distinct_options if @options[:distinct]
+      append_distinct_options if @options[:distinct] || @options[:auto_complete]
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
@@ -66,7 +65,7 @@ module WulinMaster
       h
     end
 
-    # Format a value 
+    # Format a value
     # Called during json rendering
     def format(value)
       if @options[:simple_date]
@@ -102,7 +101,7 @@ module WulinMaster
         order_str << ", #{model.table_name}.id ASC" if model < ActiveRecord::Base
         query.order(order_str)
       else
-        Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{self.inspect}" 
+        Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{self.inspect}"
         query
       end
     end
@@ -110,7 +109,7 @@ module WulinMaster
     def model
       @model ||= @grid_class.model
     end
-    
+
     def model_columns
       @model_columns ||= begin
         return [] unless model
@@ -154,7 +153,7 @@ module WulinMaster
       end
       { :choices => @options[:choices], :optionTextAttribute => self.option_text_attribute }
     end
-    
+
     # For belongs_to association, the name of the attribute to display
     def option_text_attribute
       @options[:option_text_attribute].presence || (@options[:through] ? self.name : :name)
@@ -162,8 +161,8 @@ module WulinMaster
 
     def full_name
       if @options[:option_text_attribute]
-       "#{name}_#{@options[:option_text_attribute].to_s}" 
-      elsif @options[:through] 
+       "#{name}_#{@options[:option_text_attribute].to_s}"
+      elsif @options[:through]
         "#{@options[:through]}_#{name}"
       elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
         "#{name}_name"
@@ -197,7 +196,7 @@ module WulinMaster
       !!self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(form_name.to_sym)}
     end
 
-    # Returns the includes to add to the query 
+    # Returns the includes to add to the query
     def includes
       if self.reflection && (self.reflection.klass < ActiveRecord::Base)
         [(@options[:through] || @name).to_sym, association_through ? association_through.to_sym : nil].compact
@@ -231,7 +230,7 @@ module WulinMaster
     end
 
     # Returns the json for the object in argument
-    def json(object) 
+    def json(object)
       case association_type.to_s
       when 'belongs_to'
         value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute)
@@ -254,19 +253,19 @@ module WulinMaster
       (@options[:only].present? and @options[:only].map(&:to_s).include?(screen_name)) ||
       (@options[:except].present? and @options[:except].map(&:to_s).exclude?(screen_name))
     end
-    
+
     def sortable?
       @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
-    
+
     alias_method :filterable?, :sortable?
 
     private
-    
+
     def related_column_filterable?
       reflection and reflection.klass.column_names.include?(option_text_attribute.to_s)
     end
-    
+
     def complete_column_name
       if @options[:sql_expression]
         "#{@options[:sql_expression]}"
@@ -278,17 +277,17 @@ module WulinMaster
         self.name
       end
     end
-    
+
     def column_type(model, column_name)
       all_columns = model.respond_to?(:all_columns) ? model.all_columns : model.columns
       column = all_columns.find {|col| col.name.to_s == column_name.to_s}
       (column.try(:type) || :unknown).to_s.to_sym
     end
-    
+
     def is_table_column?
       self.model.respond_to?(:column_names) ? self.model.column_names.include?(self.name.to_s) : false
     end
-    
+
     def is_nosql_field?
       self.model.ancestors.exclude?(ActiveModel::Serializers::JSON)
     end

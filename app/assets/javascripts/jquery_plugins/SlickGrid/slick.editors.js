@@ -1876,8 +1876,8 @@
         },
 
         // Usage:
-        // column: [column name], distinct: true, auto_complete: true
-        AutoCompleteTextEditor : function(args) {
+        // column: [column name], auto_complete: true
+        AutoCompleteTextEditor : function(args){
             var column = args.column;
             var $input, $select, $wrapper;
             var choicesFetchPath = column.choices;
@@ -1886,38 +1886,33 @@
             var boxWidth = column.width;
             var offsetWith = boxWidth + 18;
 
-            this.init = function() {
+            this.init = function(){
               var count = 0;
               var down = true;
               $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
                   .appendTo(args.container)
-                  .bind("keydown.nav", function(e) {
+                  .bind("keydown.nav", function(e){
                     var optionLength = $(".select-option").length;
                     if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))){
                       e.stopImmediatePropagation();
-                    }else if (e.keyCode === $.ui.keyCode.DOWN) {
+                    }else if (e.keyCode === $.ui.keyCode.DOWN){
                       if($(".select-option").length > 0){
                         if(down == true){
                           if((count > 0) && (count < $(".select-option").length)){ $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background"); }
                           $(".select-option:eq("+ count +")").addClass("blue-background");
-                        }else {
-                          if(count == 0){
-                            $(".select-option:eq("+ count +")").removeClass("blue-background");
-                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
-                          }else {
-                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
-                          }
+                        }else{
+                          $(".select-option:eq("+ count +")").removeClass("blue-background");
+                          $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
                           count++;
                           down = true;
                         }
                         count++;
                         if(count > $(".select-option").length){ count = $(".select-option").length; }
                       }
-                    }else if (e.keyCode === $.ui.keyCode.UP){
+                    }else if(e.keyCode === $.ui.keyCode.UP){
                       if($(".select-option").length > 0){
                         if(down == true){
-                            count--;
+                          count--;
                           down = false;
                         }
                         if(count > 0){
@@ -1951,7 +1946,7 @@
                   .focus();
             };
 
-            this.getOptions = function(input) {
+            this.getOptions = function(input){
               if($(".select-option").length > 0){
                 $(".select-option").remove();
               }
@@ -1966,19 +1961,19 @@
                 .appendTo($wrapper);
               var winWith = $(window).width(),
               offsetLeft = $wrapper.offset().left;
-              if(winWith - offsetLeft < offsetWith) {
+              if(winWith - offsetLeft < offsetWith){
                 $wrapper.offset({left: winWith - offsetWith});
               }
 
               $.getJSON(choicesFetchPath, function(data){
                 var itemdata = [];
                 $.each(data, function(index, value){
-                    if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
-                        itemdata.push(value);
-                    }
+                  if (value.toLowerCase().indexOf(input.toLowerCase()) == 0){
+                    itemdata.push(value);
+                  }
                 })
                 var ajaxOptions = [];
-                $.each(itemdata, function(index, value) {
+                $.each(itemdata, function(index, value){
                   if(index % 2 == 0){
                     ajaxOptions.push("<li class='select-option even' value='" + value + "'>" + value + "</li>");
                   }else{
@@ -1993,69 +1988,69 @@
                 $(".select-options").css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto", "border-radius":"6px", "-moz-border-radius":"6px"});
                 $(".select-options").append(ajaxOptions.join(''));
                 $(".select-option")
-                    .bind("mouseover", function(){
-                      $(this).addClass("blue-background");
-                    })
-                    .bind("mouseleave", function(){
-                      $(this).removeClass("blue-background");
-                    });
+                  .bind("mouseover", function(){
+                    $(this).addClass("blue-background");
+                  })
+                  .bind("mouseleave", function(){
+                    $(this).removeClass("blue-background");
+                  });
                 $(".select-option").click(function(event){
-                      var value = event.currentTarget.textContent;
-                      self.setValue(value);
-                      $(".wrapper").remove();
+                  var value = event.currentTarget.textContent;
+                  self.setValue(value);
+                  $(".wrapper").remove();
                 })
               });
             };
 
-            this.destroy = function() {
-                $input.remove();
+            this.destroy = function(){
+              $input.remove();
             };
 
-            this.focus = function() {
-                $input.focus();
+            this.focus = function(){
+              $input.focus();
             };
 
-            this.getValue = function() {
-                return $input.val();
+            this.getValue = function(){
+              return $input.val();
             };
 
-            this.setValue = function(val) {
-                $input.val(val);
+            this.setValue = function(val){
+              $input.val(val);
             };
 
-            this.loadValue = function(item) {
-                defaultValue = item[column.field] || "";
-                // defaultValue = defaultValue.replace(/&amp;/g, '&');
-                // defaultValue = defaultValue.replace(/&gt;/g, '>');
-                // defaultValue = defaultValue.replace(/&lt;/g, '<');
-                // defaultValue = defaultValue.replace(/&quot;/g, '"');
-                $input.val(defaultValue);
-                $input[0].defaultValue = defaultValue;
-                $input.select();
+            this.loadValue = function(item){
+              defaultValue = item[column.field] || "";
+              // defaultValue = defaultValue.replace(/&amp;/g, '&');
+              // defaultValue = defaultValue.replace(/&gt;/g, '>');
+              // defaultValue = defaultValue.replace(/&lt;/g, '<');
+              // defaultValue = defaultValue.replace(/&quot;/g, '"');
+              $input.val(defaultValue);
+              $input[0].defaultValue = defaultValue;
+              $input.select();
             };
 
-            this.serializeValue = function() {
-                return $input.val();
+            this.serializeValue = function(){
+              return $input.val();
             };
 
-            this.applyValue = function(item,state) {
-                item[column.field] = state;
+            this.applyValue = function(item,state){
+              item[column.field] = state;
             };
 
-            this.isValueChanged = function() {
-                return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+            this.isValueChanged = function(){
+              return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
             };
 
-            this.validate = function() {
-                if (column.validator) {
-                    var validationResults = column.validator($input.val());
-                    if (!validationResults.valid)
-                        return validationResults;
-                }
+            this.validate = function(){
+              if (column.validator){
+                var validationResults = column.validator($input.val());
+                if (!validationResults.valid)
+                  return validationResults;
+              }
 
-                return {
-                    valid: true,
-                    msg: null
+              return{
+                valid: true,
+                msg: null
                 };
             };
 
