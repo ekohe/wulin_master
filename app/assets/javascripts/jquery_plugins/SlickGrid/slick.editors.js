@@ -1876,7 +1876,7 @@
         },
 
         // Usage:
-        // column: [column name], distinct: true, auto_complete: true
+        // column: [column name], auto_complete: true
         AutoCompleteTextEditor : function(args) {
             var column = args.column;
             var $input, $select, $wrapper;
@@ -1901,13 +1901,8 @@
                           if((count > 0) && (count < $(".select-option").length)){ $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background"); }
                           $(".select-option:eq("+ count +")").addClass("blue-background");
                         }else {
-                          if(count == 0){
-                            $(".select-option:eq("+ count +")").removeClass("blue-background");
-                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
-                          }else {
-                            $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                            $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
-                          }
+                          $(".select-option:eq("+ count +")").removeClass("blue-background");
+                          $(".select-option:eq("+ (count + 1) +")").addClass("blue-background");
                           count++;
                           down = true;
                         }
