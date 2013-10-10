@@ -7,6 +7,7 @@ module WulinMaster
     included do
       ORIGINAL_ACTIONS = %w(add delete edit filter)
       SENSITIVE_ACTIONS = %w(add delete edit hotkey_add hotkey_delete)
+      PERMISSION_ACTIONS = {}
 
       class << self
         attr_reader :actions_pool
@@ -20,6 +21,10 @@ module WulinMaster
       # action DSL, add an action to the actions_pool
       def action(a_name, options={})
         new_action = {name: a_name}.merge(options)
+        # append authrized option to an action which need permission
+        if PERMISSION_ACTIONS.keys.map(&:to_s).include?(a_name.to_s)
+          new_action.reverse_merge!(:authorized? => lambda { |user| user.has_permission_with_name?(PERMISSION_ACTIONS[a_name]) })
+        end
         self.actions_pool << new_action
         add_hotkey_action(a_name, options)
       end
@@ -57,6 +62,11 @@ module WulinMaster
         elsif action_name == 'delete' and !self.actions_pool.find{|x| x[:name].to_s == 'hotkey_delete'}
           self.actions_pool << {name: :hotkey_delete, visible: false}.merge(action_options)
         end
+      end
+
+      # interface open to other plugins
+      def set_permission_to_action(action_name, permission_name)
+        PERMISSION_ACTIONS.merge!(action_name => permission_name)
       end
     end
 
