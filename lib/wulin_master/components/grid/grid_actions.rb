@@ -23,7 +23,7 @@ module WulinMaster
         new_action = {name: a_name}.merge(options)
         # append authrized option to an action which need permission
         if PERMISSION_ACTIONS.keys.map(&:to_s).include?(a_name.to_s)
-          new_action.reverse_merge!(:authorized? => lambda { |user| user.has_permission_with_name?(PERMISSION_ACTIONS[a_name]) })
+          new_action.reverse_merge!(:authorized? => lambda { |user| user.has_permission_with_name?(PERMISSION_ACTIONS[a_name.to_s]) })
         end
         self.actions_pool << new_action
         add_hotkey_action(a_name, options)
