@@ -50,11 +50,6 @@ module WulinMaster
         # action :hotkey_delete, visible: false
       end
 
-      # interface open to other plugins
-      def add_default_action(action)
-        ORIGINAL_ACTIONS << action
-      end
-
       def add_hotkey_action(action_name, action_options)
         action_name = action_name.to_s
         if action_name == 'add' and !self.actions_pool.find{|x| x[:name].to_s == 'hotkey_add'}
@@ -64,7 +59,15 @@ module WulinMaster
         end
       end
 
-      # interface open to other plugins
+      # ------------------------------------------ API, interface open to other plugins ------------------------------------------
+      def add_default_action(action)
+        ORIGINAL_ACTIONS << action
+      end
+
+      def add_sensitive_action(action)
+        SENSITIVE_ACTIONS << action
+      end
+
       def set_permission_to_action(action_name, permission_name)
         PERMISSION_ACTIONS.merge!(action_name => permission_name)
       end
