@@ -1934,8 +1934,10 @@
                   })
                   .bind("keydown", function(event){
                     if(event.keyCode == "13"){
-                      var value = $(".select-option.blue-background").text();
-                      self.setValue(value);
+                      var option = $(".select-option.blue-background").length;
+                      if(option.length > 0){
+                        self.setValue(option.text());
+                      }
                       $(".wrapper").remove();
                     }
                   })
