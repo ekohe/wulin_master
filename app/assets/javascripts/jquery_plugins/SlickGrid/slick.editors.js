@@ -1510,6 +1510,7 @@
 
               // must append the current value option, otherwise this.serializeValue can't get it
               $select.append($("<option />"));
+              $select.append("<option style='color:red;' value=''>Set Blank</option>");
               if (args.item[column.field] && args.item[column.field].id) {
                 $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
                 $select.val(args.item[column.field].id);
@@ -1589,7 +1590,9 @@
 
             this.loadValue = function(item) {
                 defaultValue = item[column.field];
-                $select.val(defaultValue);
+                if(defaultValue != ""){
+                    $select.val(defaultValue);
+                }
                 $select.select();
             };
 
