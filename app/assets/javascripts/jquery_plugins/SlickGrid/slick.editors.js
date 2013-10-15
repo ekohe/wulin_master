@@ -298,7 +298,7 @@
             };
 
             this.serializeValue = function() {
-                return $input.val() || 0;
+                return $input.val() || null;
             };
 
             this.applyValue = function(item,state) {
