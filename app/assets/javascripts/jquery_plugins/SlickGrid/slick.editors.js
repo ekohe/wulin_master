@@ -515,7 +515,11 @@
             var calendarOpen = false;
 
             this.init = function() {
-                $input = $("<INPUT type=text class='editor-text' />");
+                $input = $("<INPUT type=text class='editor-text' />").off('keydown.nav').on("keydown.nav", function(e){
+                    if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT){
+                        e.stopImmediatePropagation();
+                    }
+                });;
                 $input.appendTo(args.container);
                 $input.focus().select();
                 $input.width($input.width() - 18);
