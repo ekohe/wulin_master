@@ -1,7 +1,7 @@
 require 'wulin_master/utilities/variables'
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
-    ForbiddenMessage = "Sorry you can't get anything, please contact administrator."
+    FORBIDDENMESSAGE = "Sorry you can't get anything, please contact administrator."
 
     def index
       if authorized? and params[:text_attr].present?
@@ -13,7 +13,7 @@ module WulinMaster
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDENMESSAGE
       end
     rescue
       self.status = 500
@@ -30,7 +30,7 @@ module WulinMaster
         self.response_body = objects.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDENMESSAGE
       end
     rescue
       self.status = 500
@@ -43,7 +43,7 @@ module WulinMaster
         self.response_body = object_arr.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDENMESSAGE
       end
     rescue
       self.status = 500
