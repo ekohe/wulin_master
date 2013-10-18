@@ -71,8 +71,12 @@
                       var current_select = $("select#" + current_select_id);
                       var key = $(this).val();
                       current_select.find("option").hide().trigger("liszt:updated");
-                      current_select.val("").trigger("liszt:updated");
                       current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
+                      current_select.val("");
+                      $.each(current_select.find("option"), function(i, v){
+                        if($(v).css("display") != "none"){ current_select.get(0).selectedIndex = i; }
+                      })
+                      current_select.trigger("liszt:updated");
                     });
                   });
             - elsif column.options[:file]
