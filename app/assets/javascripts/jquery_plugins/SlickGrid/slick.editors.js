@@ -1522,10 +1522,10 @@
               //$select.append("<option style='color:red;' value=''>Set Blank</option>");
               if (args.item[column.field]) {
                 if (typeof(args.item[column.field]) == "string") {
-                  $select.append("<option value='" + args.item[column.field] + "'>" + args.item[column.field] + "</option>");
+                  $select.append("<option style='display: none;' value='" + args.item[column.field] + "'>" + args.item[column.field] + "</option>");
                   $select.val(args.item[column.field]);
                 } else if (args.item[column.field].id) {
-                  $select.append("<option value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
+                  $select.append("<option style='display: none;' value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
                   $select.val(args.item[column.field].id);
                 }
               }
