@@ -474,7 +474,12 @@
                     minuteGrid: 0,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true; },
-                    onClose: function() { calendarOpen = false; },
+                    onClose: function() {
+                        calendarOpen = false;
+                        e = $.Event("keydown");
+                        e.which = 13;
+                        $(this).trigger(e);
+                    },
                     dateFormat: "yy-mm-dd",
                     timeFormat: 'HH:mm'
                 });
