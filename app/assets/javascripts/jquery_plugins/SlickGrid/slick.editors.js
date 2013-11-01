@@ -347,7 +347,13 @@
                     buttonImageOnly: true,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true; },
-                    onClose: function() { calendarOpen = false; }
+                    onClose: function() {
+                      calendarOpen = false;
+                      calendarOpen = false;
+                      e = $.Event("keydown");
+                      e.which = 13;
+                      $(this).trigger(e);
+                    }
                 });
                 $input.width($input.width() - 18);
             };
@@ -569,7 +575,13 @@
                     buttonImageOnly: true,
                     buttonImage: "/assets/calendar.gif",
                     beforeShow: function() { calendarOpen = true; },
-                    onClose: function() { calendarOpen = false; },
+                    onClose: function() {
+                      calendarOpen = false;
+                      calendarOpen = false;
+                      e = $.Event("keydown");
+                      e.which = 13;
+                      $(this).trigger(e);
+                    },
                     timeFormat: 'HH:mm'
                 };
                 if(item.unit) {
@@ -638,7 +650,13 @@
                   buttonImageOnly: true,
                   buttonImage: "/assets/calendar.gif",
                   beforeShow: function() { calendarOpen = true; },
-                  onClose: function() { calendarOpen = false; },
+                  onClose: function() {
+                    calendarOpen = false;
+                    calendarOpen = false;
+                    e = $.Event("keydown");
+                    e.which = 13;
+                    $(this).trigger(e);
+                  },
                   dateFormat: showFormat
                 });
                 $input.width($input.width() - 18);
