@@ -1973,9 +1973,12 @@
                   })
                   .bind("keydown", function(event){
                     if(event.keyCode == "13"){
-                      var option = $(".select-option.blue-background").length;
-                      if(option.length > 0){
-                        self.setValue(option.text());
+                      var value = $(".select-option.blue-background").text();
+                      if(value != ""){
+                        self.setValue(value);
+                      }
+                      else{
+                        self.setValue($input.val());
                       }
                       $(".wrapper").remove();
                     }
