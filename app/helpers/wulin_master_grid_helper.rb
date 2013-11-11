@@ -34,7 +34,7 @@ module WulinMasterGridHelper
   def time_column?(column)
     'true' if column.sql_type.to_s.downcase == 'time' or (column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeCellEditor')
   end
-  
+
   def get_column_name(column)
     if column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
       column.reflection.name.to_s
@@ -77,6 +77,10 @@ module WulinMasterGridHelper
       end
     end
     return false if FalseClass === visible
+  end
+
+  def auto_complete_field?(column)
+    return column.options[:auto_complete] ? true : false
   end
 
   def select_tag_field?(column)

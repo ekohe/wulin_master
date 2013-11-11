@@ -14,6 +14,7 @@
           :ruby
             column_name = get_column_name(column)
             label = column.options[:form_label] || column.label
+            _klass = model_name.classify
           .field{:name => column_name}
             %label{:for => "#{model_name}_#{column_name}"}= label
             - if column.sql_type.to_s == 'belongs_to'
@@ -41,6 +42,28 @@
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
 
+            - elsif auto_complete_field?(column)
+              = form.text_field column_name, :class => "auto-complete-text-field", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name
+
+              :javascript
+                var choices = "/wulin_master/fetch_distinct_options?"
+                                     + "column=#{column_name}"
+                                     + "&grid=#{grid.class}"
+                                     + "&klass=#{_klass}"
+                                     + "&screen=#{screen.class}"
+                                     + "&text_attr=name";
+                var container = $(".auto-complete-text-field");
+                var column = {
+                  auto_complete: true,
+                  width: container.width(),
+                  choices: choices
+                }
+                var args = {
+                  column: column,
+                  container: container
+                };
+                AutoCompleteTextEditorForForm(args);
+
             - elsif select_tag_field?(column)
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
@@ -67,7 +90,7 @@
                       current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
                     });
                   });
-                  
+
             - elsif column.options[:file]
               = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
             - elsif column.options[:password]
