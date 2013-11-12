@@ -1925,7 +1925,7 @@
             var choicesFetchPath = column.choices;
             var defaultValue;
             var self = this;
-            var boxWidth = column.width;
+            var boxWidth = column.width + 2;
             var offsetWith = boxWidth + 18;
 
             this.init = function(){
@@ -2032,20 +2032,23 @@
                 if(ajaxOptions.length == 0){
                   $(".auto-complete-select").remove();
                 }
-                $(".select-options").css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto", "border-radius":"6px", "-moz-border-radius":"6px"});
-                $(".select-options").append(ajaxOptions.join(''));
+
+                $(".select-options")
+                  .css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto"})
+                  .append(ajaxOptions.join(''));
+
                 $(".select-option")
                   .bind("mouseover", function(){
                     $(this).addClass("blue-background");
                   })
-                  .bind("mouseleave", function(){
+                  .bind("mouseout", function(){
                     $(this).removeClass("blue-background");
+                  })
+                  .click(function(event){
+                    var value = event.currentTarget.textContent;
+                    self.setValue(value);
+                    $(".wrapper").remove();
                   });
-                $(".select-option").click(function(event){
-                  var value = event.currentTarget.textContent;
-                  self.setValue(value);
-                  $(".wrapper").remove();
-                })
               });
             };
 
@@ -2223,20 +2226,23 @@
                 if(ajaxOptions.length == 0){
                   $(".auto-complete-select").remove();
                 }
-                $(".select-options").css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto", "border-radius":"6px", "-moz-border-radius":"6px"});
-                $(".select-options").append(ajaxOptions.join(''));
+
+                $(".select-options")
+                  .css({"background": "white", "border": "1px solid gray", "margin": "-1px -1px 0px 3px", "overflow": "auto"})
+                  .append(ajaxOptions.join(''));
+
                 $(".select-option")
                   .bind("mouseover", function(){
                     $(this).addClass("blue-background");
                   })
-                  .bind("mouseleave", function(){
+                  .bind("mouseout", function(){
                     $(this).removeClass("blue-background");
+                  })
+                  .click(function(event){
+                    var value = event.currentTarget.textContent;
+                    self.setValue(value);
+                    $(".wrapper").remove();
                   });
-                $(".select-option").click(function(event){
-                  var value = event.currentTarget.textContent;
-                  self.setValue(value);
-                  $(".wrapper").remove();
-                })
               });
             };
 

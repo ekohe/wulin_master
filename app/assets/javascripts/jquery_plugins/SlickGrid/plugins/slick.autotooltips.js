@@ -28,6 +28,7 @@
             var cell = _grid.getCellFromEvent(e);
             if (cell) {
                 var node = _grid.getCellNode(cell.row, cell.cell);
+                if((node.lastChild) && (node.lastChild.className == "wrapper")){ return false; }
                 if ($(node).innerWidth() < node.scrollWidth) {
                     var text = $.trim($(node).text());
                     if (options.maxToolTipLength && text.length > options.maxToolTipLength) {
