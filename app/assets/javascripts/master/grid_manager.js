@@ -1,55 +1,54 @@
 (function($) {
   function GridManager() {
     var gridElementPrefix = "#grid_",
-    gridElementSuffix = " .grid",
-    pagerElementSuffix = " .pager",
+      gridElementSuffix = " .grid",
+      pagerElementSuffix = " .pager",
 
-    grids = [],
+      grids = [],
 
-    defaultOptions = {
-      enableAddRow: false,
-      enableCellNavigation: true,
-      asyncEditorLoading: false,
-      autoEdit: false,
-      cellFlashingCssClass: "master_flashing",
-      rowHeight: 25
-    };
+      defaultOptions = {
+        enableAddRow: false,
+        enableCellNavigation: true,
+        asyncEditorLoading: false,
+        autoEdit: false,
+        cellFlashingCssClass: "master_flashing",
+        rowHeight: 25
+      };
 
-    function init() {
-    }
+    function init() {}
 
-    function getEditorForType(type){
-      switch(type.toLowerCase()){
+    function getEditorForType(type) {
+      switch (type.toLowerCase()) {
         case "string":
-        return TextCellEditor;
+          return TextCellEditor;
         case "text":
-        return LongTextCellEditor;
+          return LongTextCellEditor;
         case "datetime":
-        return DateTimeCellEditor;
+          return DateTimeCellEditor;
         case "time":
-        return TimeCellEditor;
+          return TimeCellEditor;
         case "date":
-        return StandardDateCellEditor;
+          return StandardDateCellEditor;
         case "integer":
-        return IntegerCellEditor;
+          return IntegerCellEditor;
         case "boolean":
-        return YesNoCheckboxCellEditor;
+          return YesNoCheckboxCellEditor;
         case "belongs_to":
-        return BelongsToEditor;
+          return BelongsToEditor;
         case "has_one":
-        return BelongsToEditor;
+          return BelongsToEditor;
         case "has_and_belongs_to_many":
-        return BelongsToEditor;
+          return BelongsToEditor;
         case "has_many":
-        return HasManyEditor;
+          return HasManyEditor;
         default:
-        return TextCellEditor;
+          return TextCellEditor;
       }
     }
 
-    function appendEditor(columns){
+    function appendEditor(columns) {
       var i, type_str;
-      for(i=0; i<columns.length; i++){
+      for (i = 0; i < columns.length; i++) {
         type_str = columns[i].type.toLowerCase();
         // 1. append editor
         if (columns[i].editor) {
@@ -62,27 +61,27 @@
           columns[i].editor = getEditorForType(columns[i].type);
         }
         // 2. append cssClass
-        if(type_str == "boolean") {
+        if (type_str == "boolean") {
           columns[i].cssClass = 'cell-effort-driven';
         }
 
-        if(type_str == "date") {
+        if (type_str == "date") {
           columns[i].formatter = StandardDateCellFormatter;
           columns[i].DateShowFormat = "yy-mm-dd";
         } else if (type_str == "boolean") {
-          if(!columns[i].formatter) {
+          if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
-        } else if(type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
+        } else if (type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
           columns[i].formatter = BelongsToFormatter;
         } else if (type_str == "has_many") {
           columns[i].formatter = HasManyFormatter;
-        } else if(type_str == 'has_one' ) {
+        } else if (type_str == 'has_one') {
           columns[i].formatter = HasOneFormatter;
         }
 
         if (columns[i].simple_date) {
-          columns[i].editor = TextCellEditor;
+          columns[i].editor = SimpleDateEditor;
           columns[i].formatter = SimpleDateFormatter;
         } else if (columns[i].simple_time) {
           columns[i].editor = columns[i].editor || TextCellEditor;
@@ -148,7 +147,7 @@
         behaviors: behaviors,
         options: options
       };
-      for(var attr in gridAttrs) {
+      for (var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
 
@@ -181,15 +180,15 @@
       grid.onViewportChanged.notify();
 
       // Delete old grid if exsisting, then add grid
-      for(var i in grids){
-        if(grid.name == grids[i].name){
+      for (var i in grids) {
+        if (grid.name == grids[i].name) {
           grids.splice(i, 1);
         }
       }
       grids.push(grid);
 
       // ------------------------------ Register callbacks for handling grid states ------------------------
-      if(states)
+      if (states)
         GridStatesManager.onStateEvents(grid);
 
       // ------------------------------ Install some plugins -----------------------------------
@@ -198,15 +197,15 @@
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
-      parent = gridElement.parent(".grid_container"),
-      id = parent.attr("id"),
-      title = $.trim(parent.find(".grid-header h2").text()),
+        parent = gridElement.parent(".grid_container"),
+        id = parent.attr("id"),
+        title = $.trim(parent.find(".grid-header h2").text()),
 
-      indicators = $("#activity #indicators"),
-      indicator;
+        indicators = $("#activity #indicators"),
+        indicator;
 
       if (title.length > truncateThreshold) {
-        title = title.substring(0, truncateThreshold-2) + "...";
+        title = title.substring(0, truncateThreshold - 2) + "...";
       }
 
       // Remove init indicator if it exists.
@@ -222,8 +221,8 @@
       return indicator;
     }
 
-    function buildIndicatorHtml(id, title, isHide){
-      return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>"+ title +"</div><div class='loading_bar' /><div class='loading_stats' /></div>";
+    function buildIndicatorHtml(id, title, isHide) {
+      return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>" + title + "</div><div class='loading_bar' /><div class='loading_stats' /></div>";
     }
 
     function getGrid(name) {
@@ -231,7 +230,7 @@
 
       $.each(grids, function() {
         if (this.name == name)
-        theGrid = this;
+          theGrid = this;
       });
 
       return theGrid;
@@ -239,10 +238,10 @@
 
     function setGridBodyHeight(gridElement) {
       var container = gridElement.parent(".grid_container"),
-      ch = container.height(),
-      hh = container.find(".grid-header").height(),
-      ph = container.find(".pager").height(),
-      gh = ch - hh - ph;
+        ch = container.height(),
+        hh = container.find(".grid-header").height(),
+        ph = container.find(".pager").height(),
+        gh = ch - hh - ph;
 
       gridElement.css("height", gh - 1);
     }
@@ -270,10 +269,14 @@
     };
   }
 
-  $.extend(true, window, { GridManager: GridManager});
-  })(jQuery);
+  $.extend(true, window, {
+    GridManager: GridManager
+  });
+})(jQuery);
 
 
-  var gridManager = new GridManager();
+var gridManager = new GridManager();
 
-  $(window).resize(function() { gridManager.resizeGrids(); });
+$(window).resize(function() {
+  gridManager.resizeGrids();
+});

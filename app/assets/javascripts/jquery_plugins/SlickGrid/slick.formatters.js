@@ -10,11 +10,11 @@
             return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
         },
 
-        SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
+        SelectorCellFormatter: function(row, cell, value, columnDef, dataContext) {
             return (!dataContext ? "" : row);
         },
 
-        YesNoCellFormatter : function(row, cell, value, columnDef, dataContext) {
+        YesNoCellFormatter: function(row, cell, value, columnDef, dataContext) {
             return value ? "Yes" : "No";
         },
 
@@ -30,7 +30,7 @@
         MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
             // TODO: make the unit configurable
             var currency = columnDef.currency || "$";
-            var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' +currency;
+            var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
             return "<span style='text-align:right;display:block'>" + text + "</span>";
         },
 
@@ -42,7 +42,7 @@
             return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
         },
 
-        StarFormatter : function(row, cell, value, columnDef, dataContext) {
+        StarFormatter: function(row, cell, value, columnDef, dataContext) {
             return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
         },
 
@@ -93,25 +93,25 @@
             }
         },
 
-        BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
+        BelongsToFormatter: function(row, cell, value, columnDef, dataContext) {
             value = value[columnDef.optionTextAttribute];
-            if(!columnDef.inner_formatter) return value;
+            if (!columnDef.inner_formatter) return value;
 
             // if has inner_formatter
             if (columnDef.inner_formatter == 'boolean') {
                 return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
-            } else if(typeof(window[columnDef.inner_formatter]) == 'function') {
+            } else if (typeof(window[columnDef.inner_formatter]) == 'function') {
                 return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
             } else {
                 return value;
             }
         },
 
-        HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
+        HasManyFormatter: function(row, cell, value, columnDef, dataContext) {
             return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         },
 
-        HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
+        HasOneFormatter: function(row, cell, value, columnDef, dataContext) {
             return BelongsToFormatter(row, cell, value, columnDef, dataContext);
         },
 
@@ -119,8 +119,8 @@
         ParseSimpleTime: function(simpleTimeStr) {
             try {
                 var matchedArr = simpleTimeStr.match(/^(\d{2}):?(\d{2})$/);
-                return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2])
-            } catch(err) {
+                return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2]);
+            } catch (err) {
                 return null;
             }
         },
@@ -129,12 +129,12 @@
             try {
                 var matchedArr = simpleDateStr.match(/^(\d{2})\s?([A-Za-z]{3})$/);
                 return $.datepicker.parseDate("dd M", matchedArr[1] + " " + matchedArr[2]);
-            } catch(err) {
+            } catch (err) {
                 return null;
             }
         },
     };
 
-  $.extend(window, SlickFormatter);
+    $.extend(window, SlickFormatter);
 
 })(jQuery);
