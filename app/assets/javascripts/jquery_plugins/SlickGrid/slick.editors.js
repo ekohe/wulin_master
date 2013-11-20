@@ -2119,6 +2119,7 @@
                     });
                 }
 
+                choicesFetchPath += "&query_prefix=" + input;
                 $.getJSON(choicesFetchPath, function(data) {
                     var itemdata = [];
                     $.each(data, function(index, value) {

@@ -39,7 +39,11 @@ module WulinMaster
 
     def fetch_distinct_options
       if authorized? and params[:text_attr].present?
-        object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
+        if params[:query_prefix]
+          object_arr = klass.select(params[:text_attr]).where("lower(#{params[:text_attr]}) like ?", "#{params[:query_prefix].downcase}%").order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
+        else
+          object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
+        end
         self.response_body = object_arr.to_json
       else
         self.status = 403
