@@ -10,7 +10,7 @@ module WulinMaster
 
       # Search by NULL
       return filter_by_null(query, filtering_value, filtering_operator, adapter) if filtering_value.to_s.downcase == 'null'
-
+      
       if reflection
         return filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       else
@@ -21,7 +21,7 @@ module WulinMaster
 
     private
 
-    def filter_by_null(query, filtering_value, filtering_operator, adapter)
+    def filter_by_null(query, filtering_value, filtering_operator, adapter)      
       operator = case filtering_operator
       when 'equals' then ''
       when 'not_equals' then 'NOT'
@@ -39,7 +39,7 @@ module WulinMaster
         return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
       else
         column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
-        # for special column,
+        # for special column, 
         # ! need to refactor, use common code with filter_without_reflection
         if option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal, :boolean, :date, :datetime].include? column_type
           filtering_value = format_filtering_value(filtering_value, column_type)
@@ -47,7 +47,7 @@ module WulinMaster
             return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter)
           elsif ['include', 'exclude'].include? filtering_operator
             return apply_inclusion_filter(query, filtering_operator, filtering_value)
-          end
+          end          
         # for string column
         else
           return apply_string_filter(query, filtering_operator, filtering_value)
@@ -84,7 +84,7 @@ module WulinMaster
     end
 
     def apply_string_filter(query, operator, value)
-      operator = case operator
+      operator = case operator 
       when 'equals' then 'LIKE'
       when 'not_equals' then 'NOT LIKE'
       end
