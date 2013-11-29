@@ -12,27 +12,27 @@
     var $loader;
     var self = this;
     var currentFiltersApplied = [];
-    
+
     function init() {
       $grid = grid;
       $loader = loader;
-      
+
       generateFilters();
-      
+
       $grid.onColumnsReordered.subscribe(function(){
         generateFilters();
       });
       $grid.onColumnsResized.subscribe(function(){
         generateFilters();
       });
-      
+
       if (currentFilters) {
         $grid.showHeaderRowColumns();
       }
-      
+
       triggerElement.click(function() {
         if($(this).hasClass('toolbar_icon_disabled')) return false;
-        
+
         if ($($grid.getHeaderRow()).is(":visible")) {
             $grid.hideHeaderRowColumns();
             currentFilters = null;
@@ -107,14 +107,14 @@
       });
 
     }
-    
+
     function trigger(evt, args, e) {
         e = e || new Slick.EventData();
         args = args || {};
         args.filterPanel = self;
         return evt.notify(args, e, self);
     }
-    
+
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
@@ -140,23 +140,23 @@
         if (i==(totalColumnsCount-1)) {
           cssClass = "lastColumn";
         }
-        
+
         inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
-        
+
         if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
           inputWidth += 2;
         }
-        
+
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
-        
+
         if (this.filterable === false) {
           inputHtml += ' disabled="disabled"';
         }
-        
+
         inputHtml += '></input>';
         html += inputHtml;
       });
-      
+
       // Fills up and display the secondary row
       $headerRow.width(headerWidth);
       $headerRow.html(html).show();
@@ -168,13 +168,20 @@
     //  generate the filters boxes with the same values
     function updateCurrentFilters() {
       currentFilters = {};
-      $.each($("input", $($grid.getHeaderRow())), function() {
+      var columnType, inputValue;
+      $.each($("input", $($grid.getHeaderRow())), function(i, v) {
         if ($(this).val() !== '') {
+          inputValue = $(this).val();
+          columnType = $grid.getColumns()[i]["type"];
+          if(((columnType == "decimal") || (columnType == "integer")) && (isNaN(inputValue))){
+            currentFilters[$(this).attr('id')] = NaN;
+            return false;
+          }
           currentFilters[$(this).attr('id')] = $(this).val();
         }
       });
     }
-    
+
     function setOriginalFilter() {
       var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length !== 0) {
@@ -189,7 +196,7 @@
         $loader.setFilterWithoutRefresh(originalFilters);
       }
     }
-    
+
     function setCurrentFilter(){
       var filters = [];
       // add current filters
@@ -210,7 +217,7 @@
       }
       $loader.setFilter(filters);
     }
-    
+
     function applyCurrentFilters(filters) {
       currentFiltersApplied = [];
       if (filters) {
@@ -220,18 +227,18 @@
         });
       }
     }
-    
+
     $.extend(this, {
         // Events
         "onFilterLoaded":                     new Slick.Event(),
         'onFilterPanelClosed':                new Slick.Event(),
-        
+
         // Methods
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters
     });
-    
+
     init();
   }
 }(jQuery));
