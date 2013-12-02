@@ -1,5 +1,5 @@
 // ------------------------------------ UI tools -----------------------------------------
-var Ui = {  
+var Ui = {
   // return true if the dialog of grid with "name" is open, unless return false
   isOpen: function() {
     return ($(".ui-dialog:visible").size() > 0);
@@ -13,7 +13,7 @@ var Ui = {
     });
     return editing;
   },
-  
+
   // Resize grid
   resizeGrid: function(grid) {
     grid.resizeCanvas();
@@ -25,7 +25,7 @@ var Ui = {
       grid.filterPanel.generateFilters();
     });
   },
-    
+
   // Check if filter panel is open
   filterPanelOpen: function() {
     return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
@@ -46,7 +46,7 @@ var Ui = {
       }
     });
   },
-  
+
   // Refresh create form when continue create new record
   refreshCreateForm: function(grid) {
     var name = grid.name;
@@ -72,11 +72,11 @@ var Ui = {
 
     $.get(grid.path + '/' + action + grid.query, function(data){
       $( '#' + name + '_form').remove();
-      
+
       $('body').append(data);
-      
+
       scope = $( '#' + name + '_form');
-      
+
       if (options) {
         width = options.form_dialog_width || 600;
         height = options.form_dialog_height || (scope.outerHeight() + 40);
@@ -161,21 +161,23 @@ var Ui = {
         var field = n[0];
         var path = n[1];
         if (!path) return;
-      
+
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-   
+
           $.getJSON(path, function(itemdata){
+            var optionsArr = [];
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+                optionsArr.push("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
               } else {
-                target.append("<option value='" + value + "'>" + value + "</option>");
+                optionsArr.push("<option value='" + value + "'>" + value + "</option>");
               }
             });
+            target.append(optionsArr.join(''));
             Ui.setupChosen(target, monitor);
           });
 
@@ -189,22 +191,24 @@ var Ui = {
         var field = n[0];
         var path = n[1];
         if (!path) return;
-      
+
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-   
+
           $.getJSON(path, function(itemdata){
+            var optionsArr = [];
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+                optionsArr.push("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
               } else {
-                target.append("<option value='" + value + "'>" + value + "</option>");
+                optionsArr.push("<option value='" + value + "'>" + value + "</option>");
               }
             });
-            target.append("<option>Add new Option</option>");
+            optionsArr.push("<option>Add new Option</option>");
+            target.append(optionsArr.join(''));
           });
 
         }
@@ -219,20 +223,22 @@ var Ui = {
         var target = $("select[data-column='" + field + "']", scope);
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-            $.each(n[1], function(index, value) {
-              target.append("<option value='" + value + "'>" + value + "</option>");
-            });
-            Ui.setupChosen(target, monitor);
+          var optionsArr = [];
+          $.each(n[1], function(index, value) {
+            optionsArr.push("<option value='" + value + "'>" + value + "</option>");
+          });
+          target.append(optionsArr.join(''));
+          Ui.setupChosen(target, monitor);
         }
       });
     }
-    
+
     first_input = $( '#' + name + '_form input:text', scope).first();
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
   },
-  
+
   setupChosen: function(dom, monitor) {
     setTimeout(function(){
       var afterSetupChosen = dom.data('afterSetupChosen');
@@ -251,9 +257,9 @@ var Ui = {
   // Close dialog
   closeDialog: function(name) {
     var $form = $( '#' + name + '_form' );
-    
+
     window._focused = {};
-    
+
     $form.dialog("destroy");
     $form.remove();
   },
@@ -293,7 +299,7 @@ var Ui = {
     }
     return currentGrid;
   },
-  
+
   formatData: function(grid, arrayData) {
     var data = {}, columns;
     columns = grid.loader.getColumns();
