@@ -45,7 +45,7 @@ var batchUpdateByAjax = function(grid, version) {
         show: "blind",
         modal: true,
         create: function(event, ui) {
-          Ui.setupForm(grid, true);
+          Ui.setupForm(grid, true, selectedIndexes);
 
           // Check the checkbox when update the file
           checkTheBox(name);
@@ -54,12 +54,6 @@ var batchUpdateByAjax = function(grid, version) {
           submitForm(grid, ids, selectedIndexes);
         },
         open: function(event, ui) {
-
-          // Fill values
-          setTimeout(function(){
-            fillValues(scope, grid, selectedIndexes);
-          }, 1000);
-
           showFlagCheckBox(scope, ids);
         },
         close: function(event, ui) {
@@ -250,7 +244,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
           } else {
             displayNewNotification('1 record updated!');
           }
-          
+
         } else {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();

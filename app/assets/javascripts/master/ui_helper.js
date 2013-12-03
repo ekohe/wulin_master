@@ -128,7 +128,7 @@ var Ui = {
     $('#' + name + '_form input[data-time]').timepicker({});
   },
 
-  setupForm: function(grid, monitor) {
+  setupForm: function(grid, monitor, selectedIndexes) {
     var remotePath = [];
     var choicesColumn = [];
     var distinctColumn = [];
@@ -178,7 +178,7 @@ var Ui = {
               }
             });
             target.append(optionsArr.join(''));
-            Ui.setupChosen(target, monitor);
+            Ui.setupChosen(grid, target, monitor, selectedIndexes);
           });
 
         }
@@ -228,9 +228,13 @@ var Ui = {
             optionsArr.push("<option value='" + value + "'>" + value + "</option>");
           });
           target.append(optionsArr.join(''));
-          Ui.setupChosen(target, monitor);
+          Ui.setupChosen(grid, target, monitor, selectedIndexes);
         }
       });
+    }
+
+    if((distinctColumn.length == remotePath.length == choicesColumn.length == 0) && (typeof(selectedIndexes) != "undefined")){
+      fillValues(scope, grid, selectedIndexes);
     }
 
     first_input = $( '#' + name + '_form input:text', scope).first();
@@ -239,19 +243,20 @@ var Ui = {
     }
   },
 
-  setupChosen: function(dom, monitor) {
-    setTimeout(function(){
-      var afterSetupChosen = dom.data('afterSetupChosen');
-      if (dom.hasClass("chzn-done")) {
-        dom.trigger("liszt:updated");
-      } else {
-        dom.chosen();
-      }
+  setupChosen: function(grid, dom, monitor, selectedIndexes) {
+    if(typeof(selectedIndexes) != "undefined"){
+      fillValues(scope, grid, selectedIndexes);
+    }
+    var afterSetupChosen = dom.data('afterSetupChosen');
+    if (dom.hasClass("chzn-done")) {
+      dom.trigger("liszt:updated");
+    } else {
+      dom.chosen();
+    }
 
-      if( afterSetupChosen ) {
-        afterSetupChosen();
-      }
-    }, 100);
+    if( afterSetupChosen ) {
+      afterSetupChosen();
+    }
   },
 
   // Close dialog
