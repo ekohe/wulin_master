@@ -3,7 +3,7 @@ var Requests = {
   // Record create by ajax
   createByAjax: function(grid, continue_on, afterCreated) {
     var createFormElement, ajaxOptions;
-    createFormElement = $('div#'+grid.name+'_form form');
+    createFormElement = $('div#' + grid.name + '_form form');
     // clear all the error messages
     createFormElement.find(".field_error").text("");
     ajaxOptions = {
@@ -22,12 +22,14 @@ var Requests = {
             }
           } else {
             if (grid.loader.isDataLoaded()) {
-              setTimeout(function(){ Ui.closeDialog(grid.name); }, 100);
+              setTimeout(function() {
+                Ui.closeDialog(grid.name);
+              }, 100);
             }
           }
           displayNewNotification('Record successfully created!');
         } else {
-          for(var k in request.error_message){
+          for (var k in request.error_message) {
             createFormElement.find(".field[name=" + k + "]").find(".field_error").text(request.error_message[k].join());
           }
           if (request.error_message['base']) {
@@ -40,26 +42,31 @@ var Requests = {
   },
 
   // Record update by ajax
-  updateByAjax: function(grid, item, editCommand) {
+  updateByAjax: function(grid, item, editCommand, successCallback) {
     delete item.slick_index;
     var currentRow = this.getCurrentRows(grid, [item.id])[1];
     $.ajax({
       type: "POST",
       dateType: 'json',
       url: grid.path + "/" + item.id + ".json" + grid.query,
-      data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
+      data: {
+        _method: 'PUT',
+        item: item,
+        authenticity_token: decodeURIComponent(window._token)
+      },
       success: function(msg) {
-        if(msg.success) {
+        if (msg.success) {
           var from = parseInt(currentRow / 200, 10) * 200;
           grid.loader.reloadData(from, currentRow);
         } else {
           displayErrorMessage(msg.error_message);
-          if(editCommand) {
+          if (editCommand) {
             editCommand.undo();
           } else {
             grid.loader.reloadData();
           }
         }
+        if (successCallback) successCallback();
       }
     });
   },
@@ -70,31 +77,34 @@ var Requests = {
       displayErrorMessage('You select too many rows, please select less than 350 rows.');
       return;
     }
-    if(force === undefined) force = false;
+    if (force === undefined) force = false;
     var range = this.getCurrentRows(grid, ids);
     $.ajax({
       type: 'POST',
       url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
-      data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
+      data: decodeURIComponent($.param({
+        _method: 'DELETE',
+        authenticity_token: window._token
+      })),
       success: function(msg) {
-        if(msg.success) {
+        if (msg.success) {
           grid.resetActiveCell();
           var from = parseInt(range[0] / 200, 10) * 200;
-          var to = range[1]+1;
+          var to = range[1] + 1;
           grid.loader.reloadData(from, to);
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
-            message = recordSize+" records deleted.";
+            message = recordSize + " records deleted.";
           } else {
             message = "1 record deleted.";
           }
           displayNewNotification(message);
-        } else if(msg.confirm) {
+        } else if (msg.confirm) {
           $("#confirm_dialog").dialog({
             modal: true,
             open: function() {
-              if(msg.warning_message) $(this).find('#confirm_content').text(msg.warning_message);
+              if (msg.warning_message) $(this).find('#confirm_content').text(msg.warning_message);
             },
             buttons: {
               Confirm: function() {
@@ -122,6 +132,6 @@ var Requests = {
       return parseInt(grid.getRowByRecordId(id).index, 10);
     });
     indexes = indexes.sort();
-    return [indexes[0], indexes[indexes.length-1]];
+    return [indexes[0], indexes[indexes.length - 1]];
   }
 }; // Requests
