@@ -618,7 +618,7 @@
                         $input.val(defaultValue);
                         return {
                             valid: false,
-                            msg: "Please enter a valid Date"
+                            msg: "Please enter a valid Time"
                         };
                     }
                 }

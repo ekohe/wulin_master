@@ -45,30 +45,34 @@ module WulinMaster
     private
 
       def assign_simple_date_attr(new_attrs, value, object)
+        new_date = simple_date_format(value)
         if object and value.present?
           value_was = object.__send__("#{field_str}_was")
-          if new_date = simple_date_format(value)
+          if new_date
             new_attrs[field_sym] = (value_was.blank? ? new_date : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
           else
+            object.errors.add(field_sym, 'please enter a valid date')
             new_attrs[field_sym] = value_was
           end
         else
-          new_attrs[field_sym] = simple_date_format(value)
+          new_attrs[field_sym] = new_date
         end
       rescue
         new_attrs[field_sym] = value
       end
 
       def assign_simple_time_attr(new_attrs, value, object)
+        new_time = simple_time_format(value)
         if object and value.present?
           value_was = object.__send__("#{field_str}_was")
-          if new_time = simple_time_format(value)
+          if new_time
             new_attrs[field_sym] = (value_was.blank? ? new_time : value_was.change(hour: new_time.hour, min: new_time.min))
           else
+            object.errors.add(field_sym, 'please enter a valid time')
             new_attrs[field_sym] = value_was
           end
         else
-          new_attrs[field_sym] = simple_time_format(value)
+          new_attrs[field_sym] = new_time
         end
       rescue
         new_attrs[field_sym] = value
