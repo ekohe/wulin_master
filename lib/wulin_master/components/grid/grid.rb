@@ -1,5 +1,4 @@
 require 'wulin_master/components/grid/toolbar'
-require 'wulin_master/components/grid/column'
 require 'wulin_master/components/grid/grid_options'
 require 'wulin_master/components/grid/grid_columns'
 require 'wulin_master/components/grid/grid_actions'
@@ -17,7 +16,7 @@ module WulinMaster
     include GridRelation
     include GridStates
     include GridDynamicEditForm
-    
+
     cattr_accessor(:grids) { [] }
 
     class_attribute :_model, :_path, :titles_pool
@@ -62,11 +61,12 @@ module WulinMaster
       # title setter and getter
       def title(new_title=nil, options={})
         self.titles_pool ||= {}
-        screen_name = options[:screen] 
-        if new_title 
+        screen_name = options[:screen]
+        if new_title
           screen_name ? self.titles_pool[screen_name] = new_title : self.titles_pool[:_common] = new_title
         else
-          self.titles_pool[screen_name] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
+          # self.titles_pool[screen_name] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
+          self.titles_pool[screen_name] || self.titles_pool[:_common] || model.model_name.human#self.to_s.gsub(/Grid/, "")
         end
       end
     end
@@ -82,7 +82,7 @@ module WulinMaster
     def is_grid?
       true
     end
-    
+
     def virtual_filter_columns
       @virtual_filter_columns ||= []
     end
@@ -109,7 +109,7 @@ module WulinMaster
       uri.query = [uri.query, "grid=#{self.class.to_s}"].compact.join('&')
       uri.to_s
     end
-    
+
     def path_for_json
       query_parameters = controller.request.query_parameters
       uri = URI.parse(self.path).dup
@@ -145,7 +145,7 @@ module WulinMaster
 
     def apply_order(query, column_name, order_direction)
       column_name = column_name.split(".").last if column_name.include?(".")
-      
+
       if column = find_sort_column_by_name(column_name)
         if column.sortable?
           column.apply_order(query, order_direction)
@@ -187,7 +187,7 @@ module WulinMaster
     def javascript_column_model
       @javascript_column_model = self.columns.collect {|column| column.to_column_model(params[:screen])}.to_json
     end
-    
+
     def toolbar_items
       self.toolbar.items
     end
@@ -218,19 +218,19 @@ module WulinMaster
       end
       relations_dup
     end
-    
+
     def find_sort_column_by_name(column_name)
       if column = find_column_by_name(column_name) and column.options[:sortable] != false
         column
       end
     end
-    
+
     def find_filter_column_by_name(column_name)
       if column = find_column_by_name(column_name) and column.options[:filterable] != false
         column
       end
     end
-    
+
     def find_column_by_name(column_name)
       self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s } || self.columns.find{|c| c.foreign_key == column_name.to_s}
     end

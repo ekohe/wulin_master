@@ -16,7 +16,7 @@ module WulinMaster
     def javascript?
       !!@javascript
     end
-    
+
     def icon?
       !!@icon
     end
@@ -39,7 +39,7 @@ module WulinMaster
         self.options.delete(:href)
         self.options.delete(:onclick)
       end
-      
+
       self.options
     end
 
