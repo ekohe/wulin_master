@@ -55,7 +55,11 @@ module WulinMaster
           parse_pagination
 
           # Get all the objects
-          @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
+          @objects = case @query
+          when Array                  then @query
+          when ActiveRecord::Relation then @query.to_a
+          when Class                  then @query.all.to_a
+          end
 
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
@@ -75,6 +79,7 @@ module WulinMaster
       @records = grid.model.find(ids)
       param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
       if param_attrs.present?
+        param_attrs.permit!
         record = @records.first
         updated_attributes = get_attributes(param_attrs, :update, record)
         raise record.errors.full_messages.join(',') unless record.errors.empty?
@@ -118,6 +123,7 @@ module WulinMaster
       @record = grid.model.new
       attrs = get_attributes(params[param_key].presence || params[:item].presence, :create, @record)
       custom_errors = @record.errors
+      attrs.permit!
       @record.assign_attributes(attrs)
       message = if !custom_errors.empty?
         {:success => false, :error_message => custom_errors}
