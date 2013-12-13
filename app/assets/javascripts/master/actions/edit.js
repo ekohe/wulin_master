@@ -118,7 +118,7 @@ var loadValue = function(scope, data) {
         inputBox.val(data[i]);
       }
 
-      inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
+      //inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
       if (inputBox.hasClass("chzn-done")) {
         inputBox.trigger("liszt:updated");
       } else {
