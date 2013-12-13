@@ -11,7 +11,7 @@ module WulinMaster
     def initialize(name, grid_class, opts={})
       @name = name
       @grid_class = grid_class
-      @options = {:width => 150, :sortable => true}.merge(opts)
+      @options = {:width => WulinMaster.config.default_column_width, :sortable => true}.merge(opts)
     end
 
     def label
