@@ -2304,6 +2304,7 @@ if (typeof Slick === "undefined") {
             if (pos) {
                 var isAddNewRow = (pos.row == getDataLength());
                 scrollRowIntoView(pos.row, !isAddNewRow);
+                if (dir == 'up' || dir == 'down') setSelectedRows([pos.row]);   // change the row selection
                 setActiveCellInternal(getCellNode(pos.row, pos.cell), isAddNewRow || options.autoEdit);
                 activePosX = pos.posX;
             }
