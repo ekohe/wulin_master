@@ -4,7 +4,7 @@
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
     object = grid.model.new
-  .create_form{:id => "#{grid.name}_form", :title => "Create new #{model_name.titleize}", data: {action: 'create'}}
+  .create_form{:id => "#{grid.name}_form", :title => t('wulin_master.title.new_form', stuff: grid.model.model_name.human, default: "Create new #{grid.model.model_name.human}"), data: {action: 'create'}}
     = form_for object, :url => grid.path do |form|
       = hidden_field_tag :grid, grid.class.to_s
       = hidden_field_tag :screen, screen.class.to_s
@@ -104,8 +104,8 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => t('wulin_master.button.create', default: ' Create ')}/
+        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => t('wulin_master.button.create_and_continue', default: ' Create and Continue ')}/
   :javascript
     $('##{grid.name}_form select[data-required="true"]').chosen();
     $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});

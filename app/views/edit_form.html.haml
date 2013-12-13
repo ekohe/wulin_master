@@ -9,7 +9,7 @@
 
     datepicker_str = ''
     object = grid.model.new
-  .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
+  .create_form{:id => "#{grid.name}_form", :title => t('wulin_master.title.edit_form', stuff: grid.model.model_name.human, default: "Update #{grid.model.model_name.human}"), data: {action: 'update'}}
     = form_for object, :url => grid.path do |form|
       .base_error
       - columns.each do |column|
@@ -113,7 +113,7 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => t('wulin_master.button.update', default: ' Update ')}/
 
   :javascript
     $('##{grid.name}_form select[data-required="true"]').chosen();

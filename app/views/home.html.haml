@@ -4,9 +4,9 @@
     - begin
       = render :template => 'homepage/dashboard'
     - rescue
-  #confirm_dialog.ui-state-highlight{:style => "display: none;", :title => "Confirmation"}
+  #confirm_dialog.ui-state-highlight{:style => "display: none;", :title => t('wulin_master.title.confirmation', default: 'Confirmation')}
     %h4
       %span.ui-icon.ui-icon-alert{:style => "float: left; margin-right: .2em;"}
-      #confirm_content="Are you sure to do this ?"
+      #confirm_content= t('wulin_master.alert.confirm', default: 'Are you sure to do this ?')
 
 
