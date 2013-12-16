@@ -28,9 +28,9 @@ var batchUpdateByAjax = function(grid, version) {
     url = grid.path + '/wulin_master_edit_form' + grid.query;
     if (version)
       url = url + "&update_version=" + version;
-    $.get(url, function(data){
+    $.get(url, function(data) {
       $('body').append(data);
-      scope = $( '#' + name + '_form');
+      scope = $('#' + name + '_form');
 
       if (grid.options) {
         width = grid.options.form_dialog_width || 600;
@@ -72,10 +72,10 @@ var fillValues = function(scope, grid, selectedIndexes) {
     data = grid.loader.data[selectedIndexes[0]];
     loadValue(scope, data);
   } else {
-    dataArr = $.map(selectedIndexes, function(n, i){
+    dataArr = $.map(selectedIndexes, function(n, i) {
       return grid.loader.data[n];
     });
-    $.each(dataArr, function(index, n){
+    $.each(dataArr, function(index, n) {
       for (var k in n) {
         if (index === 0) {
           if (k != 'id' && k != 'slick_index') comm[k] = n[k];
@@ -93,7 +93,7 @@ var fillValues = function(scope, grid, selectedIndexes) {
 };
 
 var loadValue = function(scope, data) {
-  for ( var i in data) {
+  for (var i in data) {
     if ($('input:text[data-column="' + i + '"]', scope).size() > 0) {
       $('input[data-column="' + i + '"]', scope).val(data[i]);
     } else if ($('textarea[data-column="' + i + '"]', scope).size() > 0) {
@@ -118,7 +118,7 @@ var loadValue = function(scope, data) {
         inputBox.val(data[i]);
       }
 
-      //inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
+      inputBox.trigger("change"); // trigger change so that the depend_column selector can update options
       if (inputBox.hasClass("chzn-done")) {
         inputBox.trigger("liszt:updated");
       } else {
@@ -136,9 +136,17 @@ var distinctInput = function(inputBox) {
     addNewSelect = $('#' + inputBox.attr('id'));
     $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
       var $select = addNewSelect;
-      var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new option", 'class': "create_form"}).css('display', 'none').appendTo($('body'));
-      var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
-      var $submitDiv = $("<div />").attr({style: 'padding: 0 30px;'});
+      var $dialog = $("<div/>").attr({
+        id: 'distinct_dialog',
+        title: "Add new option",
+        'class': "create_form"
+      }).css('display', 'none').appendTo($('body'));
+      var $fieldDiv = $("<div />").attr({
+        style: 'padding: 20px 30px;'
+      });
+      var $submitDiv = $("<div />").attr({
+        style: 'padding: 0 30px;'
+      });
       $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
       $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
       $fieldDiv.appendTo($dialog);
@@ -156,18 +164,18 @@ var distinctInput = function(inputBox) {
           }
         },
         open: function(event, ui) {
-          $('#distinct_submit', $(this)).on('click', function(){
-              var optionText = $('#distinct_dialog #distinct_field').val();
-              if (optionText) {
-                  $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                  $select.val(optionText);
-                  $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
-                  $select.trigger('liszt:updated');
-                  $dialog.dialog("destroy");
-                  $dialog.remove();
-              } else {
-                  alert('New option can not be blank!');
-              }
+          $('#distinct_submit', $(this)).on('click', function() {
+            var optionText = $('#distinct_dialog #distinct_field').val();
+            if (optionText) {
+              $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
+              $select.val(optionText);
+              $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
+              $select.trigger('liszt:updated');
+              $dialog.dialog("destroy");
+              $dialog.remove();
+            } else {
+              alert('New option can not be blank!');
+            }
           });
         },
         close: function(event, ui) {
@@ -191,7 +199,7 @@ var showFlagCheckBox = function(scope, ids) {
 };
 
 var checkTheBox = function(name) {
-  var scope = $( '#' + name + '_form');
+  var scope = $('#' + name + '_form');
   // Check flag when change value of the box
   scope.off('keyup', 'input:text, input:password, textarea').on('keyup', 'input:text, input:password, textarea', function(e) {
     $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
@@ -206,7 +214,7 @@ var checkTheBox = function(name) {
   });
 
   // Empty input box when flag change to unchecked
-  scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
+  scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function() {
     if ($.isEmptyObject($(this).attr('checked'))) {
       $('input[data-target="' + $(this).attr('data-target') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
       $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("liszt:updated");
@@ -216,9 +224,9 @@ var checkTheBox = function(name) {
 
 var grepValues = function(formData, jqForm, options) {
   var flagDom;
-  for(var i = formData.length - 1; i >= 0; i--) {
+  for (var i = formData.length - 1; i >= 0; i--) {
     flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', scope);
-    if(flagDom.not(':checked').size() > 0) {
+    if (flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
   }
@@ -226,16 +234,18 @@ var grepValues = function(formData, jqForm, options) {
 
 var submitForm = function(grid, ids, selectedIndexes) {
   var name = grid.name,
-  $scope = $( '#' + name + '_form'),
-  $form = $('form', $scope);
+    $scope = $('#' + name + '_form'),
+    $form = $('form', $scope);
   $scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     var options = {
       dateType: 'json',
-      url: grid.path + "/" + ids + ".json"+grid.query,
-      data: {_method: 'PUT'},
+      url: grid.path + "/" + ids + ".json" + grid.query,
+      data: {
+        _method: 'PUT'
+      },
       beforeSubmit: grepValues,
       success: function(msg) {
-        if(msg.success) {
+        if (msg.success) {
           Ui.resetForm(grid.name);
 
           grid.loader.reloadData();
@@ -265,7 +275,7 @@ var compareArray = function(x, y) {
     }
 
     for (var k in x) {
-      if (x[k] != y[k]) {//!== So that the the values are not converted while comparison
+      if (x[k] != y[k]) { //!== So that the the values are not converted while comparison
         return false;
       }
     }
