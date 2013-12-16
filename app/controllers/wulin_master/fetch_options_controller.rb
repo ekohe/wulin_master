@@ -29,7 +29,7 @@ module WulinMaster
     def specify_fetch
       if authorized? and params[:name_attr].present? and params[:code_attr].present?
         if klass.column_names.include?(params[:name_attr]) and klass.column_names.include?(params[:code_attr])
-          objects = klass.select("id, #{params[:name_attr]}, #{params[:code_attr]}").order("#{params[:name_attr]} ASC").all
+          objects = klass.select("id, #{params[:name_attr]}, #{params[:code_attr]}").order("#{params[:name_attr]} ASC")
         else
           objects = klass.all.sort{|x,y| x.send(params[:name_attr]).to_s.downcase <=> y.send(params[:name_attr]).to_s.downcase}
         end

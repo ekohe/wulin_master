@@ -82,7 +82,8 @@
                 "data-required"    => required?(column),             |
                 "data-target"      => "#{column_name}_target_flag",  |
                 "data-text-attr"   => column.option_text_attribute,  |
-                "data-column"      => column.name                    |
+                "data-column"      => column.name,                   |
+                'multiple'         => column.options[:multi_select]  |
               - if column.options[:depend_column].present?
                 :javascript
                   $(function(){
