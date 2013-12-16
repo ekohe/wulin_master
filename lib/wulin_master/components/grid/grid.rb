@@ -75,7 +75,7 @@ module WulinMaster
 
     def initialize(screen_instance=nil, config={})
       super
-      @current_user = @screen.current_user
+      @current_user = @screen.try(:current_user)
       initialize_toolbar if params[:format] != 'json'
     end
 
