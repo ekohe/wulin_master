@@ -155,6 +155,8 @@ var Ui = {
       }
     });
 
+    var fillValuesWillRun = false;
+
     // Fetch select options from remote
     if (remotePath.length > 0) {
       $.each(remotePath, function(i, n) {
@@ -180,7 +182,7 @@ var Ui = {
             target.append(optionsArr.join(''));
             Ui.setupChosen(grid, target, monitor, selectedIndexes);
           });
-
+          fillValuesWillRun = true;
         }
       });
     }
@@ -210,7 +212,7 @@ var Ui = {
             optionsArr.push("<option>Add new Option</option>");
             target.append(optionsArr.join(''));
           });
-
+          fillValuesWillRun = true;
         }
       });
     }
@@ -229,11 +231,12 @@ var Ui = {
           });
           target.append(optionsArr.join(''));
           Ui.setupChosen(grid, target, monitor, selectedIndexes);
+          fillValuesWillRun = true;
         }
       });
     }
 
-    if((distinctColumn.length == remotePath.length == choicesColumn.length == 0) && (typeof(selectedIndexes) != "undefined")){
+    if((fillValuesWillRun==false) && (typeof(selectedIndexes) != "undefined")){
       fillValues(scope, grid, selectedIndexes);
     }
 
