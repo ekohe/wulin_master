@@ -1,7 +1,7 @@
 module WulinMaster
   class GridState < ::ActiveRecord::Base
     cattr_accessor :all_users
-    attr_accessible :user_id, :grid_name, :name, :current, :state_value
+    # attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
 
     scope :for_user_and_grid, ->(user_id, grid_name) { where(:user_id => user_id, :grid_name => grid_name)}
