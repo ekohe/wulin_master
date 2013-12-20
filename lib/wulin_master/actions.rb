@@ -137,6 +137,12 @@ module WulinMaster
       end
     end
 
+    def wulin_master_view_form
+      render 'view_form', local: {id: params[:id]}, layout: false
+    rescue ActionView::MissingTemplate
+      render '/view_form', local: {id: params[:id]}, layout: false
+    end
+
     def wulin_master_new_form
       render 'new_form', layout: false
     rescue ActionView::MissingTemplate
