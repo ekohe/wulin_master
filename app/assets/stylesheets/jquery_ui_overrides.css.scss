@@ -41,3 +41,11 @@
     border: 1px solid #a8a8a8;
   }
 }
+
+.ui-dialog .ui-dialog-content{
+  overflow: auto;
+}
+
+.ui-dialog-content{
+  max-height: 800px;
+}
