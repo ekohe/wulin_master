@@ -137,10 +137,11 @@ module WulinMaster
       end
     end
 
-    def wulin_master_view_form
-      render 'view_form', local: {id: params[:id]}, layout: false
+    def wulin_master_preview
+      @record = grid.model.find(params[:id])
+      render 'preview', layout: false
     rescue ActionView::MissingTemplate
-      render '/view_form', local: {id: params[:id]}, layout: false
+      render '/preview', layout: false
     end
 
     def wulin_master_new_form

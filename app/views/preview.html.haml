@@ -1,0 +1,13 @@
+- if grid.action_names.include?('preview')
+  - columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+
+  .preview_content{id: "#{grid.name}_preview", title: t('wulin_master.title.preview', stuff: grid.model.model_name.human, default: "Preview #{grid.model.model_name.name}")}
+    %ul
+      - columns.each do |column|
+        :ruby
+          value = column.value(@record)
+          value = value.join(",") if value.is_a?(Array)
+
+        %li
+          %label #{column.label}:
+          .value= value
