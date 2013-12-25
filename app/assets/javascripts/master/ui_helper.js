@@ -8,8 +8,8 @@ var Ui = {
   // check if the grid is being edited
   isEditing: function() {
     var editing = false;
-    $.each(gridManager.grids, function(){
-      if(this.isEditing()) editing = true;
+    $.each(gridManager.grids, function() {
+      if (this.isEditing()) editing = true;
     });
     return editing;
   },
@@ -28,7 +28,7 @@ var Ui = {
 
   // Check if filter panel is open
   filterPanelOpen: function() {
-    return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
+    return ($('.slick-headerrow-columns:visible').size() > 0 && $(document.activeElement).parent().attr('class') === 'slick-headerrow-columns');
   },
 
   // Check if can add or delete records
@@ -38,8 +38,9 @@ var Ui = {
 
   // Select grid names
   selectGridNames: function() {
-    var gridContainers = $(".grid_container"), gridName;
-    return $.map( gridContainers, function(container){
+    var gridContainers = $(".grid_container"),
+      gridName;
+    return $.map(gridContainers, function(container) {
       gridName = $.trim($(container).attr("id").split("grid_")[1]);
       if (gridName) {
         return gridName;
@@ -50,17 +51,19 @@ var Ui = {
   // Refresh create form when continue create new record
   refreshCreateForm: function(grid) {
     var name = grid.name;
-    $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data){
+    $.get(grid.path + '/wulin_master_new_form' + grid.query, function(data) {
       newFormDom = $(data);
       $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
-      setTimeout(function(){ Ui.setupForm(grid, false); }, 350);
+      setTimeout(function() {
+        Ui.setupForm(grid, false);
+      }, 350);
       Ui.setupComponents(grid);
     });
   },
 
   // Reset form
   resetForm: function(name) {
-    $(':input','#new_' + name).not(':button, :submit, :reset, :hidden').not('[readonly]').val('').removeAttr('checked').removeAttr('selected');
+    $(':input', '#new_' + name).not(':button, :submit, :reset, :hidden').not('[readonly]').val('').removeAttr('checked').removeAttr('selected');
     // For chosen
     $('ul.chzn-choices li.search-choice').remove();
   },
@@ -70,12 +73,12 @@ var Ui = {
     var scope, width, height, name;
     name = grid.name;
 
-    $.get(grid.path + '/' + action + grid.query, function(data){
-      $( '#' + name + '_form').remove();
+    $.get(grid.path + '/' + action + grid.query, function(data) {
+      $('#' + name + '_form').remove();
 
       $('body').append(data);
 
-      scope = $( '#' + name + '_form');
+      scope = $('#' + name + '_form');
 
       if (options) {
         width = options.form_dialog_width || 600;
@@ -106,15 +109,19 @@ var Ui = {
     var name = grid.name;
     // setup select as chosen
     $('#' + name + '_form select[data-required="true"]').chosen();
-    $('#' + name + '_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('#' + name + '_form select[data-required="false"]').chosen({
+      allow_single_deselect: true
+    });
 
-    $('#' + name + '_form select').off('change').on('change', function(){
+    $('#' + name + '_form select').off('change').on('change', function() {
       var flag = $('#' + name + '_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
       if (flag.size() > 0) flag.attr('checked', 'checked');
     });
 
     // setup datepicker
-    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#' + name + '_form input[data-date]').datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
     $('#' + name + '_form input[data-datetime]').datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
@@ -122,8 +129,12 @@ var Ui = {
       timeOnly: false,
       stepMinute: 1,
       minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true; },
-      onClose: function() { calendarOpen = false; }
+      beforeShow: function() {
+        calendarOpen = true;
+      },
+      onClose: function() {
+        calendarOpen = false;
+      }
     });
     $('#' + name + '_form input[data-time]').timepicker({});
   },
@@ -161,7 +172,7 @@ var Ui = {
     if (remotePath.length > 0) {
       $.each(remotePath, function(i, n) {
         var field = n[0];
-        var path = n[1]+"&rand="+parseInt(Math.random()*10000000);
+        var path = n[1] + "&rand=" + parseInt(Math.random() * 10000000, 10);
         if (!path) return;
 
         var first_input;
@@ -170,7 +181,7 @@ var Ui = {
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
 
-          $.getJSON(path, function(itemdata){
+          $.getJSON(path, function(itemdata) {
             var optionsArr = [];
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
@@ -191,7 +202,7 @@ var Ui = {
     if (distinctColumn.length > 0) {
       $.each(distinctColumn, function(i, n) {
         var field = n[0];
-        var path = n[1]+"&rand="+parseInt(Math.random()*10000000);
+        var path = n[1] + "&rand=" + parseInt(Math.random() * 10000000, 10);
         if (!path) return;
 
         var first_input;
@@ -199,7 +210,7 @@ var Ui = {
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-          $.getJSON(path, function(itemdata){
+          $.getJSON(path, function(itemdata) {
             var optionsArr = [];
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
@@ -219,7 +230,7 @@ var Ui = {
 
     // Fetch select options from current data
     if (choicesColumn.length > 0) {
-        $.each(choicesColumn, function(i, n) {
+      $.each(choicesColumn, function(i, n) {
         var field = n[0];
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
@@ -236,18 +247,19 @@ var Ui = {
       });
     }
 
-    if((fillValuesWillRun==false) && (typeof(selectedIndexes) != "undefined")){
+    if ((fillValuesWillRun === false) && (typeof(selectedIndexes) != "undefined")) {
       fillValues(scope, grid, selectedIndexes);
     }
 
-    first_input = $( '#' + name + '_form input:text', scope).first();
+    first_input = $('#' + name + '_form input:text', scope).first();
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
   },
 
   setupChosen: function(grid, dom, monitor, selectedIndexes) {
-    if(typeof(selectedIndexes) != "undefined"){
+    var scope = $('#' + grid.name + '_form');
+    if (typeof(selectedIndexes) != "undefined") {
       fillValues(scope, grid, selectedIndexes);
     }
     var afterSetupChosen = dom.data('afterSetupChosen');
@@ -257,14 +269,14 @@ var Ui = {
       dom.chosen();
     }
 
-    if( afterSetupChosen ) {
+    if (afterSetupChosen) {
       afterSetupChosen();
     }
   },
 
   // Close dialog
   closeDialog: function(name) {
-    var $form = $( '#' + name + '_form' );
+    var $form = $('#' + name + '_form');
 
     window._focused = {};
 
@@ -275,8 +287,8 @@ var Ui = {
   // Flash the notification
   flashNotice: function(ids, action) {
     var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length,
-    recordUnit = recordSize > 1 ? 'records' : 'record',
-    actionDesc = action === 'delete' ? 'has been deleted!' : 'has been created!';
+      recordUnit = recordSize > 1 ? 'records' : 'record',
+      actionDesc = action === 'delete' ? 'has been deleted!' : 'has been created!';
 
     if (recordSize > 0) {
       $('.notice_flash').remove();
@@ -288,7 +300,7 @@ var Ui = {
   // Find the selected grid
   findCurrentGrid: function() {
     var currentGrid = null;
-    currentGridContainer = $( document.activeElement ).parents('.grid_container');
+    currentGridContainer = $(document.activeElement).parents('.grid_container');
     if (currentGridContainer.size() === 0) {
       return null;
     }
@@ -300,8 +312,8 @@ var Ui = {
       if (currentGridContainer.size() == 1) {
         currentGrid = gridManager.getGrid(gridName);
       } else {
-        $.each(gridManager.grids, function(){
-          if(this.getSelectedRows().length > 0) currentGrid = this;
+        $.each(gridManager.grids, function() {
+          if (this.getSelectedRows().length > 0) currentGrid = this;
         });
       }
     }
@@ -311,7 +323,7 @@ var Ui = {
   formatData: function(grid, arrayData) {
     var data = {}, columns;
     columns = grid.loader.getColumns();
-    $.each(columns, function(index, column){
+    $.each(columns, function(index, column) {
       data[column['id']] = arrayData[index];
     });
     return data;

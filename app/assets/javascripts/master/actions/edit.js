@@ -29,6 +29,7 @@ var batchUpdateByAjax = function(grid, version) {
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data) {
+      $('#' + name + '_form').remove();
       $('body').append(data);
       scope = $('#' + name + '_form');
 
