@@ -1189,6 +1189,12 @@
 
             this.getOptions = function(selectedId, theCurrentValue) {
                 var self = this;
+                
+                // dynamic filter by other relational column
+                if(args.column.depend_column) {
+                    var relation_id = args.item[args.column.depend_column].id;
+                    choicesFetchPath += '&master_model=' + args.column.depend_column + '&master_id=' + relation_id;
+                }
                 $.getJSON(choicesFetchPath, function(itemdata) {
                     var ajaxOptions = [];
                     $.each(itemdata, function(index, value) {

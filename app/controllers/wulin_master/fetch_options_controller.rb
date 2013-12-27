@@ -5,10 +5,16 @@ module WulinMaster
 
     def index
       if authorized? and params[:text_attr].present?
+        query = klass
+        # dynamic filter
+        if params[:master_model].present? and params[:master_id].present?
+          reflection = klass.reflections[params[:master_model].to_sym] || klass.reflections[params[:master_model].pluralize.to_sym]
+          query = query.where("#{reflection.foreign_key}=?", params[:master_id]).joins(reflection.name)
+        end
         if klass.column_names.include? params[:text_attr]
-          objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+          objects = query.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
         else
-          objects = klass.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
+          objects = query.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
         end
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
