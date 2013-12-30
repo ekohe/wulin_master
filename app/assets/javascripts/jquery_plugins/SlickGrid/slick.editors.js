@@ -1175,7 +1175,7 @@
                     });
                     $select.append(arrOptions.join(''));
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                 } else {
                     self.getOptions();
@@ -1208,7 +1208,7 @@
                     }
 
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
 
                     // Update theCurrentValue
@@ -1373,7 +1373,7 @@
                     });
                     $select.val(args.item[column.field].id);
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                 } else {
                     self.getOptions();
@@ -1409,7 +1409,7 @@
                     } else {
                         $select.val(args.item[column.field].id);
                         $select.chosen({
-                            allow_single_deselect: true
+                            allow_single_deselect: !args.column['required']
                         });
                     }
 
@@ -1626,7 +1626,7 @@
                     });
                     $select.append(arrOptions.join(''));
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                 } else {
                     self.getOptions();
@@ -1652,7 +1652,7 @@
                     }
 
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
 
                     // Update theCurrentValue
@@ -1762,7 +1762,7 @@
                     });
                     $('option[code="' + values[0] + '"]', $from).attr("selected", "selected");
                     $from.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                 } else {
                     $.getJSON(from_choices, function(itemdata) {
@@ -1771,7 +1771,7 @@
                         });
                         $('option[code="' + values[0] + '"]', $from).attr("selected", "selected");
                         $from.chosen({
-                            allow_single_deselect: true
+                            allow_single_deselect: !args.column['required']
                         });
                     });
                 }
@@ -1782,7 +1782,7 @@
                     });
                     $('option[code="' + values[1] + '"]', $to).attr("selected", "selected");
                     $to.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                 } else {
                     $.getJSON(to_choices, function(itemdata) {
@@ -1791,7 +1791,7 @@
                         });
                         $('option[code="' + values[1] + '"]', $to).attr("selected", "selected");
                         $to.chosen({
-                            allow_single_deselect: true
+                            allow_single_deselect: !args.column['required']
                         });
                     });
                 }
@@ -1921,7 +1921,7 @@
                     $select.append(bottomOption);
                     $select.val(args.item[column.field]);
                     $select.chosen({
-                        allow_single_deselect: true
+                        allow_single_deselect: !args.column['required']
                     });
                     // 'Add new option' option handler
                     $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {

@@ -57,6 +57,8 @@ module WulinMaster
         @options[:choices] = @options[:original_choices].call
       end
 
+      @options[:required] = presence_required?
+
       append_distinct_options if @options[:distinct] || @options[:auto_complete]
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
@@ -212,8 +214,15 @@ module WulinMaster
       end
     end
 
-    def presence_required?
-      !!self.model.validators.find{|validator| (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(form_name.to_sym)}
+    def presence_required?(model=nil)
+      current_model = model || self.model
+      direct_validator_fields = current_model.validators.select{|x| x.class == ActiveModel::Validations::PresenceValidator}.map(&:attributes).flatten
+
+      if current_model.column_names.include?(form_name.to_s) || current_model.method_defined?(form_name)
+        return (direct_validator_fields.include?(form_name.to_sym) || !!direct_validator_fields.find{|f| reflection = current_model.reflections[f.to_sym]; reflection && reflection.foreign_key == form_name.to_s})
+      else
+        !!direct_validator_fields.find{|f| nested_model = f.to_s.classify.safe_constantize; nested_model && presence_required?(nested_model)}
+      end
     end
 
     # Returns the includes to add to the query
