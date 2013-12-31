@@ -12,7 +12,11 @@ module WulinMaster
     def index
       respond_to do |format|
         format.html do
-          render 'index', :layout => (request.xhr? ? false : 'application')
+          begin
+            render 'index', :layout => (request.xhr? ? false : 'application')
+          rescue ActionView::MissingTemplate
+            render '/index', :layout => (request.xhr? ? false : 'application')
+          end
         end
         format.json do
           fire_callbacks :initialize_query
