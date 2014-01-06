@@ -161,7 +161,7 @@ var Ui = {
     if (remotePath.length > 0) {
       $.each(remotePath, function(i, n) {
         var field = n[0];
-        var path = n[1];
+        var path = n[1]+"&rand="+parseInt(Math.random()*10000000);
         if (!path) return;
 
         var first_input;
@@ -191,7 +191,7 @@ var Ui = {
     if (distinctColumn.length > 0) {
       $.each(distinctColumn, function(i, n) {
         var field = n[0];
-        var path = n[1];
+        var path = n[1]+"&rand="+parseInt(Math.random()*10000000);
         if (!path) return;
 
         var first_input;
@@ -199,7 +199,6 @@ var Ui = {
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-
           $.getJSON(path, function(itemdata){
             var optionsArr = [];
             $.each(itemdata, function(index, value) {
@@ -211,6 +210,7 @@ var Ui = {
             });
             optionsArr.push("<option>Add new Option</option>");
             target.append(optionsArr.join(''));
+            Ui.setupChosen(grid, target, monitor, selectedIndexes);
           });
           fillValuesWillRun = true;
         }
