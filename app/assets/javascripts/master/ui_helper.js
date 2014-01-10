@@ -248,7 +248,7 @@ var Ui = {
     }
 
     if ((fillValuesWillRun === false) && (typeof(selectedIndexes) != "undefined")) {
-      fillValues(scope, grid, selectedIndexes);
+      Ui.fillValues(scope, grid, selectedIndexes);
     }
 
     first_input = $('#' + name + '_form input:text', scope).first();
@@ -260,7 +260,7 @@ var Ui = {
   setupChosen: function(grid, dom, monitor, selectedIndexes) {
     var scope = $('#' + grid.name + '_form');
     if (typeof(selectedIndexes) != "undefined") {
-      fillValues(scope, grid, selectedIndexes);
+      Ui.fillValues(scope, grid, selectedIndexes);
     }
     var afterSetupChosen = dom.data('afterSetupChosen');
     if (dom.hasClass("chzn-done")) {
@@ -327,6 +327,129 @@ var Ui = {
       data[column['id']] = arrayData[index];
     });
     return data;
+  },
+
+  fillValues: function(scope, grid, selectedIndexes) {
+    var data, inputBox, dataArr, comm = {};
+    if (selectedIndexes.length == 1) {
+      data = grid.loader.data[selectedIndexes[0]];
+      Ui.loadValue(scope, data);
+    } else {
+      dataArr = $.map(selectedIndexes, function(n, i) {
+        return grid.loader.data[n];
+      });
+      $.each(dataArr, function(index, n) {
+        for (var k in n) {
+          if (index === 0) {
+            if (k != 'id' && k != 'slick_index') comm[k] = n[k];
+          } else {
+            if ($.type(n[k]) != 'object' && comm[k] !== n[k]) {
+              delete comm[k];
+            } else if ($.type(n[k]) === 'object' && $.type(comm[k]) === 'object' && !compareArray(comm[k]['id'], n[k]['id'])) {
+              delete comm[k];
+            }
+          }
+        }
+      });
+      Ui.loadValue(scope, comm);
+    }
+  },
+
+  loadValue: function(scope, data) {
+    for (var i in data) {
+      if ($('input:text[data-column="' + i + '"]', scope).size() > 0) {
+        $('input[data-column="' + i + '"]', scope).val(data[i]);
+      } else if ($('textarea[data-column="' + i + '"]', scope).size() > 0) {
+        $('textarea[data-column="' + i + '"]', scope).val(data[i]);
+      } else if ($('input:checkbox[data-column="' + i + '"]', scope).size() > 0) {
+        if (data[i]) {
+          $('input:checkbox[data-column="' + i + '"]', scope).attr('checked', 'checked');
+        } else {
+          $('input:checkbox[data-column="' + i + '"]', scope).removeAttr('checked');
+        }
+      } else if ($('select[data-column="' + i + '"]', scope).size() > 0) {
+        inputBox = $('select[data-column="' + i + '"]', scope);
+        if ($.type(data[i]) === 'string') {
+          inputBox.val(data[i]);
+        } else if ($.type(data[i]) === 'object') {
+          if ($.type(data[i]['id']) === 'array') {
+            inputBox.val(data[i]['id']);
+          } else {
+            inputBox.val(data[i]['id']);
+          }
+        } else if ($.type(data[i]) === 'array') {
+          inputBox.val(data[i]);
+        }
+
+        inputBox.trigger("change"); // trigger change so that the depend_column selector can update options
+        if (inputBox.hasClass("chzn-done")) {
+          inputBox.trigger("liszt:updated");
+        } else {
+          inputBox.chosen();
+        }
+        Ui.distinctInput(inputBox);
+      }
+    }
+  },
+
+  distinctInput: function(inputBox) {
+    var addNewSelect;
+    // This is a crazy feature
+    if ($('#' + inputBox.attr('id') + '_chzn li:contains("Add new Option")').size() > 0) {
+      addNewSelect = $('#' + inputBox.attr('id'));
+      $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
+        var $select = addNewSelect;
+        var $dialog = $("<div/>").attr({
+          id: 'distinct_dialog',
+          title: "Add new option",
+          'class': "create_form"
+        }).css('display', 'none').appendTo($('body'));
+        var $fieldDiv = $("<div />").attr({
+          style: 'padding: 20px 30px;'
+        });
+        var $submitDiv = $("<div />").attr({
+          style: 'padding: 0 30px;'
+        });
+        $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
+        $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
+        $fieldDiv.appendTo($dialog);
+        $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add Option " name="commit">');
+        $submitDiv.appendTo($dialog);
+        $dialog.dialog({
+          autoOpen: true,
+          width: 450,
+          height: 180,
+          modal: true,
+          buttons: {
+            "Cancel": function() {
+              $(this).dialog("destroy");
+              $(this).remove();
+            }
+          },
+          open: function(event, ui) {
+            $('#distinct_submit', $(this)).on('click', function() {
+              var optionText = $('#distinct_dialog #distinct_field').val();
+              if (optionText) {
+                $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
+                $select.val(optionText);
+                $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
+                $select.trigger('liszt:updated');
+                $dialog.dialog("destroy");
+                $dialog.remove();
+              } else {
+                alert('New option can not be blank!');
+              }
+            });
+          },
+          close: function(event, ui) {
+            $(this).dialog("destroy");
+            $(this).remove();
+          }
+        });
+
+        return false;
+      });
+    }
   }
 
 };
