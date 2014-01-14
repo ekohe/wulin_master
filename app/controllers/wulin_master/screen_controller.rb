@@ -5,7 +5,6 @@ module WulinMaster
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
     respond_to :html, :json
-    rescue_from ActionView::MissingTemplate, with: :render_index
 
     helper_method :screen, :grid, :components
 
@@ -31,11 +30,6 @@ module WulinMaster
       end
     end
 
-    private
-
-      def render_index
-        render '/index', :layout => (request.xhr? ? false : 'application')
-      end
   end
 end
 
