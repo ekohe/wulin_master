@@ -4,9 +4,8 @@
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
     datepicker_str = ''
     object = grid.model.new
-    multipart = columns.any?{|x| x.options[:input_html] && x.options[:input_html][:type].to_s == 'file' }
   .create_form{:id => "#{grid.name}_form", :title => t('wulin_master.title.new_form', stuff: grid.model.model_name.human, default: "Create new #{grid.model.model_name.human}"), data: {action: 'create'}}
-    = form_for object, :url => grid.path, html: { multipart: multipart } do |form|
+    = form_for object, :url => grid.path do |form|
       = hidden_field_tag :grid, grid.class.to_s
       = hidden_field_tag :screen, screen.class.to_s
       .base_error

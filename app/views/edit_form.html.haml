@@ -9,9 +9,8 @@
 
     datepicker_str = ''
     object = grid.model.new
-    multipart = columns.any?{|x| x.options[:input_html] && x.options[:input_html][:type].to_s == 'file' }
   .create_form{:id => "#{grid.name}_form", :title => t('wulin_master.title.edit_form', stuff: grid.model.model_name.human, default: "Update #{grid.model.model_name.human}"), data: {action: 'update'}}
-    = form_for object, :url => grid.path, html: { multipart: multipart } do |form|
+    = form_for object, :url => grid.path do |form|
       .base_error
       - columns.each do |column|
         - if edit_form_able?(column)
