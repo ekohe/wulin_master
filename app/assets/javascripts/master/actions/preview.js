@@ -30,38 +30,6 @@ WulinMaster.actions.Preview = $.extend({}, WulinMaster.actions.BaseAction, {
     } else {
       displayErrorMessage("Please select one line.");
     }
-
-    // var $detailsDialog = $("<div/>").css({
-    //   'display': 'none',
-    //   'background-color': '#ededed',
-    //   'margin-bottom': '-5px'
-    // }).appendTo($('body'));
-    // var data = grid.loader.data[rows[0]];
-    // var url = grid.path + '/wulin_master_preview/?id=' + data.id;
-
-    // $detailsDialog.dialog({
-    //   show: "blind",
-    //   modal: true,
-    //   width: 520,
-    //   position: {
-    //     my: "center",
-    //     at: "center",
-    //     of: $('body')
-    //   },
-    //   open: function() {
-    //     $.ajax({
-    //       type: 'GET',
-    //       url: url
-    //     }).success(function(response) {
-    //       $detailsDialog.html(response);
-    //     });
-    //   },
-    //   buttons: {
-    //     "Close": function() {
-    //       $(this).dialog("destroy");
-    //     }
-    //   }
-    // });
   } // handler
 
 });
