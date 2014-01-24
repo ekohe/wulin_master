@@ -104,7 +104,7 @@
                   });
             - elsif column.options[:file]
               = form.file_field column_name, {"data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 243px'}.deep_merge(input_html)
-              = clean_up_tag(column_name)
+              /= clean_up_tag(column_name)
             - elsif column.options[:password]
               = form.password_field column_name, {"data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 243px'}.deep_merge(input_html)
             - else
