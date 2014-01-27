@@ -11,7 +11,7 @@ module WulinMaster
       if current_state
         current_state.state_value = JSON(current_state.state_value.presence || "{}").merge(params[:state_type] => params[:state_value]).to_json
       else
-        current_state = GridState.new(user_id: current_user.id, grid_name: params[:grid_name], 
+        current_state = GridState.new(user_id: current_user.id, grid_name: params[:grid_name],
           name: 'default', current: true, state_value: {params[:state_type] => params[:state_value]}.to_json)
       end
       if current_state.save
@@ -20,7 +20,7 @@ module WulinMaster
         self.response_body = {status: "failed", data: current_state.errors.full_messages.join('\n')}.to_json
       end
     end
-    
+
     def update
       new_state = GridState.find(params[:id])
       GridState.transaction do
@@ -40,10 +40,10 @@ module WulinMaster
     end
 
     def batch_update
-      params[:grid_states] ||= {}
+      params[:grid_states] ||= []
       all_states = GridState.for_user_and_grid(current_user.id, params[:grid_name])
       default_state = all_states.find_by_name('default')
-      remaining_ids = params[:grid_states].map{|index, state| state["id"].presence}.compact.map(&:to_i)
+      remaining_ids = params[:grid_states].map{|state| state["id"].presence}.compact.map(&:to_i)
 
       # delete some states
       GridState.delete(all_states.map(&:id) - remaining_ids - [default_state.id])
@@ -52,7 +52,7 @@ module WulinMaster
 
       GridState.transaction do
         # update or create states
-        params[:grid_states].each do |index, state|
+        params[:grid_states].each do |state|
           if state[:id].present?
             GridState.find(state[:id]).update_attributes!({:name => state[:name]})
           else

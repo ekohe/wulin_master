@@ -1,16 +1,18 @@
 .states_manage_form{:title => "Manage Grid States Configurations"}
-  = form_for :grid_states, :url => "/wulin_master/grid_states_manages/batch_update", :remote => true do |f|
+  = form_tag "/wulin_master/grid_states_manages/batch_update", remote: true do
     = hidden_field_tag "grid_name", @grid_name
     - default_option = @states_options.find{|x| x.first == 'default'}
     - @states_options.delete default_option
     - @states_options.push(["", ""]) if @states_options.empty?
     .state_field
-      =label_tag "Default Configuration: "
-      =text_field_tag 'default_state', default_option.first, :disabled => true, :readonly => true
-    - @states_options.each_with_index do |state_option, index|
+      = label_tag "Default Configuration: "
+      = text_field_tag 'default_state', default_option.first, :disabled => true, :readonly => true
+    - @states_options.each do |state_option|
       .state_field.custom
-        =f.hidden_field "id", :value => state_option.last
-        =f.text_field "name", :value => state_option.first
+        / = f.hidden_field "id", :value => state_option.last
+        = hidden_field_tag 'grid_states[][id]', state_option.last
+        / = f.text_field "name", :value => state_option.first
+        = text_field_tag 'grid_states[][name]', state_option.first
     .state_submit
       %input.btn.success{:id => 'save_states', :name => "commit", :type => "submit", :value => "Save"}
     %span.error_message
@@ -21,7 +23,6 @@
     $(".state_field.custom").simple_clone({
       label: "State ",
       label_colon: true,
-      nested: true,
       canBeEmpty: true
     });
 
