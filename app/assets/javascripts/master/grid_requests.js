@@ -122,6 +122,10 @@ var Requests = {
           });
         } else {
           displayErrorMessage(msg.error_message);
+          grid.resetActiveCell();
+          var from = parseInt(range[0] / 200, 10) * 200;
+          var to = range[1] + 1;
+          grid.loader.reloadData(from, to);
         }
       }
     });
