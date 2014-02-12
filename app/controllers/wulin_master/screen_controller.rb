@@ -5,6 +5,8 @@ module WulinMaster
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
     respond_to :html, :json
+
+    # TODO: Instead of using the exception rescue mecanism, we should instead have a correct order of view paths
     rescue_from ActionView::MissingTemplate, with: :render_index
 
     helper_method :screen, :grid, :components
