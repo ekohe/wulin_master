@@ -65,7 +65,18 @@
             };
 
             this.validate = function() {
+                var validationResults;
                 var currentValue = $input.val();
+                if (column.validator) {
+                    if ($.isFunction(column.validator)) {
+                        validationResults = column.validator(args, currentValue);
+                    } else {
+                        validationResults = eval(column.validator)(args, currentValue);
+                    }
+                    if (!validationResults.valid)
+                        return validationResults;
+                }
+
                 if (currentValue) {
                     if (!ParseSimpleDate(currentValue)) {
                         $input.val(defaultValue);
@@ -156,6 +167,24 @@
             this.validate = function() {
                 if (column.validator) {
                     var validationResults = column.validator($input.val());
+                    if (!validationResults.valid)
+                        return validationResults;
+                }
+
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.validate = function() {
+                var validationResults;
+                if (column.validator) {
+                    if ($.isFunction(column.validator)) {
+                        validationResults = column.validator(args, $input.val());
+                    } else {
+                        validationResults = eval(column.validator)(args, $input.val());
+                    }
                     if (!validationResults.valid)
                         return validationResults;
                 }
@@ -528,7 +557,7 @@
                     if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                         e.stopImmediatePropagation();
                     }
-                });;
+                });
                 $input.appendTo(args.container);
                 $input.focus().select();
                 $input.width($input.width() - 18);
@@ -1189,9 +1218,9 @@
 
             this.getOptions = function(selectedId, theCurrentValue) {
                 var self = this;
-                
+
                 // dynamic filter by other relational column
-                if(args.column.depend_column) {
+                if (args.column.depend_column) {
                     var relation_id = args.item[args.column.depend_column].id;
                     choicesFetchPath += '&master_model=' + args.column.depend_column + '&master_id=' + relation_id;
                 }
