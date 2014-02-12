@@ -276,7 +276,7 @@ module WulinMaster
       when 'has_many'
         {reflection.name => format_multiple_objects(object.send(self.name.to_s))}
       else
-        self.format(object[self.name.to_sym])
+        self.format(object.send(self.name.to_sym))
       end
     end
 
