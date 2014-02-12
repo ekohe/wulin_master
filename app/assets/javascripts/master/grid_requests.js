@@ -66,7 +66,8 @@ var Requests = {
             grid.loader.reloadData();
           }
         }
-        if (successCallback) successCallback();
+        if ($.isFunction(successCallback))
+          successCallback();
       }
     });
   },
