@@ -17,10 +17,15 @@ module WulinMaster
     end
 
     def exclude
-      if (ids = params[:ids]).present?
-        @include_model.where('id IN (?)', ids).destroy_all
+      if (ids = params[:ids]).present? && (@objects = @include_model.where(id: ids).to_a).present?
+        @objects.each do |object|
+          object.destroy
+          raise object.errors.full_messages.join(',') unless object.errors.empty?
+        end
       end
       render :json => {:status => 'OK', :message => "Removed #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}!"}
+    rescue
+      render json: {:success => 'NO', :message => $!.message }
     end
 
     private
