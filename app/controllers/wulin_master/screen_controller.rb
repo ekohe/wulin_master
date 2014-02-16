@@ -7,6 +7,7 @@ module WulinMaster
     respond_to :html, :json
 
     # TODO: Instead of using the exception rescue mecanism, we should instead have a correct order of view paths
+    # FIXME: This line is unnecessary, already handle view path for index action in actions.rb
     rescue_from ActionView::MissingTemplate, with: :render_index
 
     helper_method :screen, :grid, :components
@@ -34,7 +35,7 @@ module WulinMaster
     end
 
     private
-
+      # FIXME: This method is unnecessary, already handle view path for index action in actions.rb
       def render_index
         render '/index', :layout => (request.xhr? ? false : 'application')
       end
