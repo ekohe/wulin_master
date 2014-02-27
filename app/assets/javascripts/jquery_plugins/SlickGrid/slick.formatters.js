@@ -69,8 +69,6 @@
                 value = value[columnDef.optionTextAttribute];
             }
 
-            console.log("test", value);
-
             if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
                 var thedate = $.datepicker.parseDate("yy-mm-dd", value);
                 return thedate.format("yyyy-mm-dd");
