@@ -6,8 +6,6 @@ module WulinMaster
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
 
-    before_filter :clear_invalid_states_and_users_cache, only: :index
-
     def copy
       GridState.transaction do
         params[:user_ids].each do |uid|
@@ -54,6 +52,7 @@ module WulinMaster
       end if @skip_order
     end
 
+    # Disabled this - too dangerous
     def clear_invalid_states_and_users_cache
       if params[:format] == 'json'
         User.set_request_uri('/users.json?screen=UsersScreen')
