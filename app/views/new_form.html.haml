@@ -117,8 +117,8 @@
   :javascript
     $('##{grid.name}_form select[data-required="true"]').chosen();
     $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-    $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('input[data-datetime]').datetimepicker({
+    $('input[data-date]').attr("placeholder", "2000-01-01").datepicker({ dateFormat: 'yy-mm-dd' });
+    $('input[data-datetime]').attr("placeholder", "2000-01-01 00:00").datetimepicker({
       onlyTime: false,
       dateFormat: "yy-mm-dd",
       timeFormat: 'HH:mm',
@@ -128,4 +128,4 @@
       beforeShow: function() { calendarOpen = true },
       onClose: function() { calendarOpen = false }
     });
-    $('input[data-time]').timepicker({});
+    $('input[data-time]').attr("placeholder", "00:00").timepicker({});
