@@ -9,13 +9,20 @@ module WulinMaster
       @grid_name = grid_name
       @items ||= []
 
+      uids = {}
+
       actions.each do |action|
+        uids[action[:name]] ||= 0
+
         item_options = {
             :id => "#{action[:name]}_action_on_#{grid_name}",
-            :class => ("#{action[:name]}_action " << action[:class].to_s),
+            :class => ("#{action[:name]}_action #{action[:name]}_action_on_#{grid_name}_#{uids[action[:name]]}" << action[:class].to_s),
             :icon => "#{action[:icon] || action[:name]}",
             :manually_enable => action[:manually_enable]
         }
+
+        uids[action[:name]]+=1
+
         item_options = action.merge(item_options)
         item_options.delete(:authorized?)
         item_name = action[:title] || action[:name].capitalize

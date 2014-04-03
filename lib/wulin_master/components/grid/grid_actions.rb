@@ -76,7 +76,7 @@ module WulinMaster
     # the actions of a grid instance, filtered by screen param from class's actions_pool
     def actions
       return self.class.actions_pool if self.params["screen"].blank?
-      self.class.actions_pool.select {|action| valid_action?(action)}.uniq {|action| action[:name]}
+      self.class.actions_pool.select {|action| valid_action?(action)} #.uniq {|action| action[:name]}
     end
 
     # the actions on the toolbar

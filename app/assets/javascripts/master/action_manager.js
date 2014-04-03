@@ -21,12 +21,25 @@ WulinMaster.ActionManager = function(){
 
     dispatchActions: function(target, action_configs) {
       // try to find target's behaviors, and subsribe for target
+      var uids = {};
+
+      var id = 0;
       for(var i in action_configs) {
-        var action = this.getAction(action_configs[i].name);
+        var name = action_configs[i].name;
+        var action = this.getAction(name);
         if(action){
-          $.extend(action, action_configs[i]);
-          $.extend(action, {target: target});
-          if(action.init) action.init();
+          if(typeof(uids[name]) === 'undefined') uids[name] = 0;
+
+          var action_copy = {};
+
+          $.extend(action_copy, action);
+          $.extend(action_copy, action_configs[i]);
+          $.extend(action_copy, {target: target});
+          action_copy._uid = uids[name];
+
+          if(action_copy.init) action_copy.init();
+
+          uids[name]+=1;
         }
       }
     }
@@ -47,7 +60,8 @@ WulinMaster.actions.BaseAction = {
     // get the trigger element, you can override triggerElementIdentifier
     this.triggerElement = $("#content").find(this.triggerElementIdentifier);
     if(this.triggerElement.length === 0){
-      this.triggerElement = $("#" + this.name + "_action_on_" + this.target.name);
+      console.log("." + this.name + "_action_on_" + this.target.name + "_" + this._uid);
+      this.triggerElement = $("." + this.name + "_action_on_" + this.target.name + "_" + this._uid);
     }
 
     // activate the action

@@ -21,9 +21,9 @@ module WulinMaster
         self.status = 403
         self.response_body = FORBIDDENMESSAGE
       end
-    rescue
-      self.status = 500
-      self.response_body = "Something wrong: #{$!.message}"
+    #rescue
+    #  self.status = 500
+    #  self.response_body = "Something wrong: #{$!.message}"
     end
 
     def specify_fetch
@@ -38,9 +38,9 @@ module WulinMaster
         self.status = 403
         self.response_body = FORBIDDENMESSAGE
       end
-    rescue
-      self.status = 500
-      self.response_body = "Something wrong: #{$!.message}"
+    #rescue
+    #  self.status = 500
+    #  self.response_body = "Something wrong: #{$!.message}"
     end
 
     def fetch_distinct_options
@@ -55,9 +55,9 @@ module WulinMaster
         self.status = 403
         self.response_body = FORBIDDENMESSAGE
       end
-    rescue
-      self.status = 500
-      self.response_body = "Something wrong: #{$!.message}"
+    #rescue
+    #  self.status = 500
+    #  self.response_body = "Something wrong: #{$!.message}"
     end
 
     private
