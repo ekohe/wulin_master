@@ -34,6 +34,8 @@ var Requests = {
           }
           if (request.error_message['base']) {
             $('.base_error', createFormElement).text(request.error_message['base']);
+          } else {
+            $('.base_error', createFormElement).text('');
           }
         }
       }
