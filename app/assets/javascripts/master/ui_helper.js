@@ -108,8 +108,9 @@ var Ui = {
   setupComponents: function(grid) {
     var name = grid.name;
     // setup select as chosen
-    $('#' + name + '_form select[data-required="true"]').chosen();
+    $('#' + name + '_form select[data-required="true"]').chosen({search_contains: true});
     $('#' + name + '_form select[data-required="false"]').chosen({
+      search_contains: true,
       allow_single_deselect: true
     });
 
@@ -266,7 +267,7 @@ var Ui = {
     if (dom.hasClass("chzn-done")) {
       dom.trigger("liszt:updated");
     } else {
-      dom.chosen();
+      dom.chosen({search_contains: true});
     }
 
     if (afterSetupChosen) {
@@ -385,7 +386,7 @@ var Ui = {
         if (inputBox.hasClass("chzn-done")) {
           inputBox.trigger("liszt:updated");
         } else {
-          inputBox.chosen();
+          inputBox.chosen({search_contains: true});
         }
         Ui.distinctInput(inputBox);
       }

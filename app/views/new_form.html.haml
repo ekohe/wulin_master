@@ -115,8 +115,8 @@
         %input.btn.success{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => t('wulin_master.button.create', default: ' Create ')}/
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => t('wulin_master.button.create_and_continue', default: ' Create and Continue ')}/
   :javascript
-    $('##{grid.name}_form select[data-required="true"]').chosen();
-    $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('##{grid.name}_form select[data-required="true"]').chosen({search_contains: true});
+    $('##{grid.name}_form select[data-required="false"]').chosen({search_contains: true, allow_single_deselect: true});
     $('input[data-date]').attr("placeholder", "2000-01-01").datepicker({ dateFormat: 'yy-mm-dd' });
     $('input[data-datetime]').attr("placeholder", "2000-01-01 00:00").datetimepicker({
       onlyTime: false,
