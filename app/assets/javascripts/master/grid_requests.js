@@ -6,6 +6,8 @@ var Requests = {
     createFormElement = $('div#' + grid.name + '_form form');
     // clear all the error messages
     createFormElement.find(".field_error").text("");
+    $("input[type='submit']", createFormElement).attr('disabled', 'disabled').css('opacity', 0.5);
+
     ajaxOptions = {
       url: grid.path + '.json',
       success: function(request) {
@@ -29,6 +31,8 @@ var Requests = {
           }
           displayNewNotification('Record successfully created!');
         } else {
+          $("input[type='submit']", createFormElement).removeAttr('disabled').css('opacity', 1.0);
+
           for (var k in request.error_message) {
             createFormElement.find(".field[name=" + k + "]").find(".field_error").text(request.error_message[k].join());
           }
