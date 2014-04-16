@@ -5,7 +5,7 @@ class GridStateGrid < WulinMaster::Grid
 
   cell_editable false
 
-  column :email, label: 'User'
+  column :user_email, label: 'User'
   column :grid_name
   column :name
 

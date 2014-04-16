@@ -10,7 +10,7 @@
     var $copyButton = $("#panel_grid_state_user .copy_btn");
     $copyButton.on("click", function(){
       if($(this).attr("disabled") == "disabled") return false;
-      
+
       $(this).attr("disabled", true);
       var state_grid = gridManager.getGrid("state_grid_in_grid_states");
       var user_grid = gridManager.getGrid("user_in_grid_states");
@@ -22,7 +22,13 @@
         return false;
       } else {
         var url = "#{copy_wulin_master_grid_states_path}";
-        var data = {state_ids: selectedStateIds, user_ids: selectedUserIds}
+
+        var selectedUserEmails = [];
+        user_grid.getSelectedRows().each(function(index, value){
+          selectedUserEmails.push(user_grid.loader.data[index]);
+        });
+
+        var data = {state_ids: selectedStateIds, user_ids: selectedUserIds, user_emails: selectedUserEmails}
         $.post(url, data, function(response) {
           $copyButton.removeAttr("disabled");
           state_grid.resetActiveCell();

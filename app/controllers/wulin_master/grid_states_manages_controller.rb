@@ -11,7 +11,7 @@ module WulinMaster
       if current_state
         current_state.state_value = JSON(current_state.state_value.presence || "{}").merge(params[:state_type] => params[:state_value]).to_json
       else
-        current_state = GridState.new(user_id: current_user.id, grid_name: params[:grid_name],
+        current_state = GridState.new(user_id: current_user.id, user_email: current_user.email, grid_name: params[:grid_name],
           name: 'default', current: true, state_value: {params[:state_type] => params[:state_value]}.to_json)
       end
       if current_state.save

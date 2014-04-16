@@ -2,13 +2,9 @@ module WulinMaster
   class GridStatesController < ScreenController
     controller_for_screen ::GridStatesScreen
 
-    add_callback :query_initialized, :set_user_ids_for_filtering
-    add_callback :query_initialized, :skip_sorting_if_sort_by_user
-    add_callback :query_ready, :set_user_ids_for_sorting
-
     def copy
       GridState.transaction do
-        params[:user_ids].each do |uid|
+        params[:user_ids].each_with_index do |uid, index|
           params[:state_ids].each do |sid|
             state = GridState.find(sid)
             next if state.user_id == uid
@@ -16,7 +12,7 @@ module WulinMaster
             if new_state
               new_state.update_attributes!({state_value: state.state_value})
             else
-              GridState.create!(state.attributes.delete_if{|k,v| ["id", "created_at", "updated_at"].include? k}.merge(user_id: uid))
+              GridState.create!(state.attributes.delete_if{|k,v| ["id", "created_at", "updated_at"].include? k}.merge(user_id: uid, user_email: params[:user_emails]["#{index}"]["email"]))
             end
           end
         end
@@ -27,32 +23,7 @@ module WulinMaster
     end
 
     protected
-
-    def set_user_ids_for_filtering
-      return if params[:filters].blank?
-
-      user_filter = params[:filters].find{|x| x["column"] == "email"}
-      return if user_filter.blank?
-
-      user_ids = User.all.select{|u| u.email.include?(user_filter["value"])}.map(&:id)
-
-      params[:filters].delete user_filter
-      @query = @query.where(:user_id => user_ids)
-    end
-
-    def skip_sorting_if_sort_by_user
-      return if params[:sort_col].blank? or params[:sort_col] != "email"
-      @skip_order = true
-    end
-
-    def set_user_ids_for_sorting
-      @query = @query.all.sort do |s1, s2|
-        return 0 if s1.user.nil? || s2.user.nil?
-        params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
-      end if @skip_order
-    end
-
-    # Disabled this - too dangerous
+    # Disabled - too dangerous
     def clear_invalid_states_and_users_cache
       if params[:format] == 'json'
         User.set_request_uri('/users.json?screen=UsersScreen')
