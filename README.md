@@ -1,8 +1,8 @@
 # WulinMaster
 
-WulinMaster is a grid plugin base on ruby on rails and [SlickGrid](https://github.com/mleibman/SlickGrid). It provide powerfull generator 
+WulinMaster is a grid plugin base on ruby on rails and [SlickGrid](https://github.com/mleibman/SlickGrid). It provide powerfull generator
 and other tools to make grids easy to build, it also provides flexible configuration, you can easily configure your grid, a beautiful ui base on jqueryui and other good features.
-       
+
 
 ## Installation
 
@@ -13,7 +13,7 @@ and other tools to make grids easy to build, it also provides flexible configura
 ### 2. Run bundler command to install the gem:
 
     bundle install
-    
+
 ### 3. After you install wulin_master gem, you need run the generator to install the base building:
 
     bundle exec rails g wulin_master:install
@@ -23,15 +23,15 @@ and other tools to make grids easy to build, it also provides flexible configura
     create  app/controllers/homepage_controller.rb
     create  config/initializers/wulin_master.rb
     route  root :to => 'homepage#index'
-  
+
    Now, you can config wulin_master in *config/initializers/wulin_master.rb*
 
 ### 4. Then you need run the generator:
 
     bundle exec rails g wulin_master:grid_states
-   
+
    It will generator *db/migrate/<timestamp>_create_grid_states.rb* migrate file to your app,
-   *_grid_states_* table is used for store the grid states for each user. 
+   *_grid_states_* table is used for store the grid states for each user.
    It will store *column width*,*sort column*,*column order*,*visibility columns*,
    *filter states* for each user.
 
@@ -41,7 +41,7 @@ and other tools to make grids easy to build, it also provides flexible configura
 
    Remove the rails default view layout, because wulin_master users its own layout
 
-   In application.rb, add autoload_paths for screens folder: 
+   In application.rb, add autoload_paths for screens folder:
    config.autoload_paths += Dir[Rails.root.join('app', 'screens', '{**}')]
 
 ## Getting Started
@@ -49,11 +49,11 @@ and other tools to make grids easy to build, it also provides flexible configura
 ### 1. Generator resource files
 
   Assume generating a new grid called *post*, run the generator:
-    
+
     bundle exec rails g wulin_master:screen_and_grid post name:string age:integer
 
   This will create:
-   
+
     create  db/migrate/20110919093453_create_posts.rb
     create  app/controllers/posts_controller.rb
     create  app/screens/post_screen.rb
@@ -62,13 +62,13 @@ and other tools to make grids easy to build, it also provides flexible configura
     create  app/views/posts
     route  resources :posts
 
-   `name:string age:integer` are the columns of the grid, same as the `[field:type field:type]` 
+   `name:string age:integer` are the columns of the grid, same as the `[field:type field:type]`
    option of *scaffold* generator.
 
 ### 2. Run migration
 
     bundle exec rake db:migrate
-   
+
 ### 3. Configure grid
 
    You can configure your grid like following:
@@ -82,9 +82,9 @@ and other tools to make grids easy to build, it also provides flexible configura
       path '/hotels'  # Url path for this grid, correspond to <code>resources :posts</code> in routes.rb
 
       # Style options
-      fill_window false 
-      width: '500px' 
-      height: '500px'  # options for this grid 
+      fill_window false
+      width: '500px'
+      height: '500px'  # options for this grid
 
       # Other options
       cell_editable false
@@ -101,7 +101,7 @@ and other tools to make grids easy to build, it also provides flexible configura
       behavior :highlight
       behavior :show_total_price
       ...
-      
+
       # Define the grid columns
       column :title, sortable: true, visible: true, editable: true
       column :category, width: 100, label: "Category"
@@ -112,7 +112,7 @@ and other tools to make grids easy to build, it also provides flexible configura
       edit_form :version1 do |form|
         form << :name
       end
-      
+
       edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
         form << :code
       end
@@ -127,12 +127,12 @@ and other tools to make grids easy to build, it also provides flexible configura
       # click toolbar *version2* will popup form version1 inlucde column [:code]
 
     end
-   
+
 ### 4. Configure screen
 
    Grid is located in screen, one screen can has one or multiple grids,you can put any grid to one
    screen with *grid* method, and config the *title* and the *path* method.
-   
+
     # app/screens/post_screen.rb:
     class PostScreen < WulinMaster::Screen
       title 'All Posts'
@@ -143,23 +143,23 @@ and other tools to make grids easy to build, it also provides flexible configura
     end
 
 ### 5. Configure controller
-    
+
    Config resource controller which inherited from `WulinMaster::ScreenController`, to tell the controller which screens it controls, and you can also write customized callbacks
-   
+
     # app/controllers/posts_controller.rb
     class PostsController < WulinMaster::ScreenController
       controller_for_screen PostScreen
 
       add_callback :query_filters_ready, :add_scope
       add_callback :query_ready, :state_filter
-      
+
 
       protected
-      
+
       # pass params
       # +@query+ now is a ActiveRecord class
       def add_scope
-        @query = (params[:add_scope] == 'true' ? @query.scope : @query) 
+        @query = (params[:add_scope] == 'true' ? @query.scope : @query)
       end
 
       # Set filter for grid source
@@ -175,7 +175,7 @@ and other tools to make grids easy to build, it also provides flexible configura
 ### 1. Grid configuration
 
 #### Basic grid configuration
-      
+
 A basic grid configuration needs to provide model and columns. Title and path are optional, they will be automatically assigned according to the grid class name and model.
 
     class PostGrid < WulinMaster::Grid
@@ -197,22 +197,22 @@ A column can be a real field in the database table of current model, or virtual 
   `:visible`
   Default is true, if set false, the column will be visible initially (Can make it visible from column picker).
 
-  `:editable` 
+  `:editable`
   Default is true, if set false, the grid cell of this column can not be edited.
 
   `:sortable`
   Default is true, if set false, this column can not be sorted.
-  
+
   `:formable`
   Control this column appear in the create and update dialog form or not. You can set it to true or false, either pass an array like [:new, :edit] or one of them.
-  
+
     class PostGrid < WulinMaster::Grid
       ...
-      
+
       column :author, formable: true          # author column will appear in both create and update dialog form.
       column :title, formable: [:new, :edit]  # same as `formable: true`.
       column :content, formable: [:new]       # content column will appear in only create dialog form.
-      
+
       ...
     end
 
@@ -226,7 +226,7 @@ A column can be a real field in the database table of current model, or virtual 
   Controll the column initial width, default is 150.
 
   `:option_text_attribute`
-  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :option_text_attribute to be the column name,         
+  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :option_text_attribute to be the column name,
   eg:
 
     class PostGrid < WulinMaster::Grid
@@ -234,7 +234,7 @@ A column can be a real field in the database table of current model, or virtual 
 
       column :author, option_text_attribute: 'name'
 
-      ...   
+      ...
     end
 
   `:through`
@@ -255,11 +255,11 @@ A column can be a real field in the database table of current model, or virtual 
   This option is very special and rarely used. It is only used when you want to do some special sql operation, like sorting or filtering vitural attribute by sql.
 
   `:sql_type`
-  This option is only used when the column is a virtual attribute column, because it is not a real column in database, so we can't know its type from db level, so if you want to make this column be editable in the create form or edit form, have to explicitly specify its :sql_type. 
+  This option is only used when the column is a virtual attribute column, because it is not a real column in database, so we can't know its type from db level, so if you want to make this column be editable in the create form or edit form, have to explicitly specify its :sql_type.
   (eg: There is a datatime column in the table but you just want to edit the time part, you can create a virtual attribute representing its time part, specify :sql_type be 'time', then you can edit this field through a timepicker)
 
   `:editor`
-  By default, if the column is editable, the type of cell editor is decided from the column type: string, integer, boolean etc, so you don't need to specify the editor handly for general cases. But sometimes, you have to define the :editor, for example, 'SelectEditor' renders a dropdown of possible values of the column, 'TimeCellEditor' renders a timepicker for the column which is datetime type, etc. 
+  By default, if the column is editable, the type of cell editor is decided from the column type: string, integer, boolean etc, so you don't need to specify the editor handly for general cases. But sometimes, you have to define the :editor, for example, 'SelectEditor' renders a dropdown of possible values of the column, 'TimeCellEditor' renders a timepicker for the column which is datetime type, etc.
   And, you can define a new type of editor yourself, the editor definitions are all located in slick.editor.js
 
   `:formatter`
@@ -267,14 +267,14 @@ A column can be a real field in the database table of current model, or virtual 
   And, you can define a new formatter yourself, the formatter definitions are all located in slick.editor.js
 
   `:choices`
-  This option should be used together with 'SelectEditor', it specifies the options of the dropdown. Its value can be an array, a url path which can return a response of array, or a hash in very rare case.
-  
+  This option should be used together with 'SelectEditor', it specifies the options of the dropdown. Its value can be an array, a url path which can return a response of array, or a hash if used with :depend_column
+
   `:choices_columm`
   This option should be used together with 'SelectEditor', its value should be another column name in the grid, and the value of the column for current record is an array, so that current dropdown will load the array items as options.
 
   `:file`
   If this column is a file field, like image or any file, you should add this option and set it to true. It will use file_field in the new/edit form.
-  
+
   `:password`
   If this column is a password or password_confirmation, you should add this option and set it to true. It will use password_field in the new/edit form.
 
@@ -283,11 +283,11 @@ A column can be a real field in the database table of current model, or virtual 
 
     class ServiceGrid < WulinMaster::Grid
       UNIT_OPTIONS = ["piece", "match", "mn", "slot", "match-day", "match-period", "pkg"]
-      UNIT_SCALE_OPTIONS = {'piece' => [], 
-                      'match' => [], 
-                      'mn' => ['10','30','60'], 
-                      'slot' => ['pre','post'], 
-                      'match-day' => [], 
+      UNIT_SCALE_OPTIONS = {'piece' => [],
+                      'match' => [],
+                      'mn' => ['10','30','60'],
+                      'slot' => ['pre','post'],
+                      'match-day' => [],
                       'match-period' => [],
                       'pkg' => []
                     }
@@ -297,7 +297,7 @@ A column can be a real field in the database table of current model, or virtual 
       column :unit_scale, :choices => UNIT_SCALE_OPTIONS, :depend_column => :unit, :editor => "SelectEditor"
 
       ...
-    end 
+    end
 
   For above example, if you choose 'mn' for :unit column, the available values for :unit_scale will be ['10','30','60'].
 
@@ -330,7 +330,7 @@ The style configuration of grid can controll the css of the grid. Now the style 
 
     class PostScreen < WulinMaster::Screen
       grid PostGrid, width: "50%", height: "30%"
-    end 
+    end
 
   Followings are the available style methods:
 
@@ -397,7 +397,7 @@ After this, you will see a item 'Print Post' appear on the grid toolbar, and the
 
   You can add this js file anywhere in the application, but we recommend to put it in *app/assets/javascripts/actions* folder
 
-  That's all, you have set up a simple print action. 
+  That's all, you have set up a simple print action.
 
 In addition, you can call `load_default_actions` method to add default toolbar items of WulinMaster, they are 'Add', 'Delete', 'Edit',
 'Filter' and 'Audit' (if you have installed **WulinAudit** gem). Also, if you extend WulinMaster gem or create your own gem which include some new actions and you want to make them to be default actions, you can call the api method `add_default_action(YOUR_ACTION)` to do that.
@@ -445,7 +445,7 @@ You can add this js file anywhere in the application, but we recommend to put it
 
 That's all, you have set up a simple behavior.
 
-In addition, we already provide some behaviors in `wulin_master` gem, you can view them in *wulin_master/app/assets/javascripts/master/behaviors* folder, they are applied to all grids. But if you want to disable some default behaviors for the grid in your application, you can call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the api method `add_default_behavior(YOUR_BEHAVIOR)` to do that. 
+In addition, we already provide some behaviors in `wulin_master` gem, you can view them in *wulin_master/app/assets/javascripts/master/behaviors* folder, they are applied to all grids. But if you want to disable some default behaviors for the grid in your application, you can call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the api method `add_default_behavior(YOUR_BEHAVIOR)` to do that.
 
 
 #### Dynamic update popup form
@@ -457,11 +457,11 @@ Here we provide a simple way to do this fine:
     edit_form :version1 do |form|
       form << :name
     end
-    
+
     edit_form :version2, class: 'version2_toolbar', icon: 'add' do |form|
       form << :code
     end
-    
+
 It will define two edit form: version1, version2. form version1 has column [:name], form version2 has column [:code],
 
 meanwhile two toolbars was defined: version1, version2.
@@ -477,12 +477,12 @@ click toolbar *version2* will popup form version1 inlucde column [:code]
 
 In many cases, a grid may appear on different screens for different purpose, so it may have different styles, options, actions or behaviors between screens. It is easy to implement that.
 
-1.If you configure the grid in screen class file, the grid options are only applied in this screen, like: 
+1.If you configure the grid in screen class file, the grid options are only applied in this screen, like:
 
     class PostScreen < WulinMaster::Screen
       grid PostGrid, width: '30%', height: '50%', eager_loading: false, multi_select: false
       ...
-    end 
+    end
 
     class MagazineScreen < WulinMaster::Screen
       grid PostGrid
@@ -516,7 +516,7 @@ For screen permission, you can configure like:
       # the "order#cud" is a auto-generated permission by wulin_permits, you can configure it in 'Roles Permissions' setting
       item CreateOrderScreen, :authorized? => lambda { |user| user.has_permission_with_name?("order#cud") }
       item OrderScreen
-    end 
+    end
 
 For action permission, configure like:
 
@@ -580,13 +580,13 @@ In many cases, we need to display 2 grids in one screen whose model relationship
 In above example, `eager_loading` set to false to make PostGrid not loading until selecting an author.
 
 Sometimes, there is no master grid existing, but you still want to had the detail grid filtered by a given master id, in this case you can use `master_model` instead of `master_grid`. In fact, the two options both add a hidden column into detail grid in porpuse of filtering, generally the column name is the foreign key name between the detail grid model and the master model. Let's make a little change of previous example and use `master_model` option:
-    
+
     # article_screen.rb
     class ArticleScreen < WulinMaster::Screen
       title 'All Articles'
 
       panel AuthorSelectionPanel
-      grid PostGrid, height: '50%', master_model: 'author', eager_loading: false  
+      grid PostGrid, height: '50%', master_model: 'author', eager_loading: false
       # Actually, the master_model option will add a hidden column 'author_id' into PostGrid
     end
 
@@ -604,8 +604,8 @@ In above example, there is no Author grid, but supposing a dropdown list #author
 
 ##### add_detail action
 
-For master-detail relationship, wulin_master provides a build-in action `add_detail`. Once you use it on detail grid, you can get a new toolbar item which can help you to add one or more detail records for the selected master record. Let's take an example:    
-    
+For master-detail relationship, wulin_master provides a build-in action `add_detail`. Once you use it on detail grid, you can get a new toolbar item which can help you to add one or more detail records for the selected master record. Let's take an example:
+
     class AuthorPostGrid < WulinMaster::Grid
       ...
       action :add_detail, model: 'post', screen: 'AddPostScreen', icon: 'add', title: 'Add Posts'
@@ -636,7 +636,7 @@ Now we can build grids to add subordinates for the selected employee, like follo
     end
 
     class AddSubordinateScreen < WulinMaster::Screen
-      grid EmployeeGrid, title: 'Available Employees', master_model: 'bosses', detail_model: 'subordinates' 
+      grid EmployeeGrid, title: 'Available Employees', master_model: 'bosses', detail_model: 'subordinates'
     end
 
 In above code, we must specify detail_model as 'subordinates' for EmployeeGrid in AddSubordinateScreen, otherwise the EmployeeGrid will use the defaul model 'employee' to find the relationship which will cause error.
@@ -647,7 +647,7 @@ Inclusion-exclusion grids is also a very common case, there are 3 grids in the s
 
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++
     | People Groups                                       |
-    |-----------------------------------------------------| 
+    |-----------------------------------------------------|
     || Name    ||                                         |
     |-----------|                                         |
     | Managers  | *                                       |
