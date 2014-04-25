@@ -53,7 +53,7 @@ function loadPageForBBQState() {
   }
 }
 
-function load_page(url) {
+function load_page(url, callback) {
   $("#screen_content").empty();
 
   var indicators = $("#activity #indicators");
@@ -69,6 +69,7 @@ function load_page(url) {
       indicators.find("#init_menu_indicator").fadeOut();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
+      if(typeof(callback) !== "undefined") { callback(); };
     },
     error: function() {
       indicators.find("#init_menu_indicator").fadeOut();
