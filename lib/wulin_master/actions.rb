@@ -132,7 +132,7 @@ module WulinMaster
       message = if !custom_errors.empty?
         {:success => false, :error_message => custom_errors}
       elsif @record.save
-        {:success => true, :id => @record.id }
+        {:success => true, :id => @record.id, object: @record.as_json }
       else
         {:success => false, :error_message => @record.errors}
       end
