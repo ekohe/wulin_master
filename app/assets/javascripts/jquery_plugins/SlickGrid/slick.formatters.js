@@ -149,6 +149,10 @@
                 return null;
             }
         },
+
+        ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
+            return value === 0 ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
+        }
     };
 
     $.extend(window, SlickFormatter);
