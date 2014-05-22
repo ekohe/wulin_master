@@ -50,7 +50,7 @@
                 }.deep_merge(input_html)           |
 
             - elsif auto_complete_field?(column)
-              = form.text_field column_name, {:class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name}.deep_merge(input_html)
+              = form.text_field column_name, {:class => "auto-complete-text-field auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name}.deep_merge(input_html)
 
               :javascript
                 var choices = "/wulin_master/fetch_distinct_options?"

@@ -2284,68 +2284,76 @@
                 var count = 0;
                 var down = true;
                 $input = args.container;
-                $input.bind("keydown.nav", function(e) {
-                    var optionLength = $(".select-option").length;
-                    if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
-                        e.stopImmediatePropagation();
-                    } else if (e.keyCode === $.ui.keyCode.DOWN) {
-                        if ($(".select-option").length > 0) {
-                            if (down == true) {
-                                if ((count > 0) && (count < $(".select-option").length)) {
-                                    $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-                                }
-                                $(".select-option:eq(" + count + ")").addClass("blue-background");
-                            } else {
-                                $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                                $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
-                                count++;
-                                down = true;
-                            }
-                            count++;
-                            if (count > $(".select-option").length) {
-                                count = $(".select-option").length;
-                            }
-                        }
-                    } else if (e.keyCode === $.ui.keyCode.UP) {
-                        if ($(".select-option").length > 0) {
-                            if (down == true) {
-                                count--;
-                                down = false;
-                            }
-                            if (count > 0) {
-                                if (count == $(".select-option").length) {
-                                    $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-                                    $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
-                                } else {
-                                    $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                                    $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
-                                }
-                            }
-                            count--;
-                            if (count < 0) {
-                                count = 0;
-                            }
-                        }
-                    }
-                })
-                    .bind("keydown", function(event) {
-                        if (event.keyCode == "13") {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            var value = $(".select-option.blue-background").text();
-                            if (value != "") {
-                                self.setValue(value);
-                            } else {
-                                self.setValue($input.val());
-                            }
-                            $(".wrapper").remove();
-                        }
-                    })
-                    .bind("input", function() {
+
+                // ####################
+                // commented for read only
+                // ####################
+
+                // $input.bind("keydown.nav", function(e) {
+                //     var optionLength = $(".select-option").length;
+                //     if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
+                //         e.stopImmediatePropagation();
+                //     } else if (e.keyCode === $.ui.keyCode.DOWN) {
+                //         if ($(".select-option").length > 0) {
+                //             if (down == true) {
+                //                 if ((count > 0) && (count < $(".select-option").length)) {
+                //                     $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                //                 }
+                //                 $(".select-option:eq(" + count + ")").addClass("blue-background");
+                //             } else {
+                //                 $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                //                 $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
+                //                 count++;
+                //                 down = true;
+                //             }
+                //             count++;
+                //             if (count > $(".select-option").length) {
+                //                 count = $(".select-option").length;
+                //             }
+                //         }
+                //     } else if (e.keyCode === $.ui.keyCode.UP) {
+                //         if ($(".select-option").length > 0) {
+                //             if (down == true) {
+                //                 count--;
+                //                 down = false;
+                //             }
+                //             if (count > 0) {
+                //                 if (count == $(".select-option").length) {
+                //                     $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                //                     $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
+                //                 } else {
+                //                     $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                //                     $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
+                //                 }
+                //             }
+                //             count--;
+                //             if (count < 0) {
+                //                 count = 0;
+                //             }
+                //         }
+                //     }
+                // })
+                //     .bind("keydown", function(event) {
+                //         if (event.keyCode == "13") {
+                //             event.preventDefault();
+                //             event.stopPropagation();
+                //             var value = $(".select-option.blue-background").text();
+                //             if (value != "") {
+                //                 self.setValue(value);
+                //             } else {
+                //                 self.setValue($input.val());
+                //             }
+                //             $(".wrapper").remove();
+                //         }
+                //     })
+                $input.bind("input", function() {
                         var value = self.getValue();
                         self.getOptions(value);
                         down = true;
                         count = 0;
+                    })
+                    .bind("blur", function(e) {
+                        $(".wrapper").remove();
                     })
                     .scrollLeft(0)
                     .focus();
@@ -2398,6 +2406,7 @@
                             "background": "white",
                             "border": "1px solid gray",
                             "margin": "-1px -1px 0px 3px",
+                            "max-height": "220px",
                             "overflow": "auto"
                         })
                         .append(ajaxOptions.join(''));
