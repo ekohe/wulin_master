@@ -1204,6 +1204,7 @@
                     });
                     $select.append(arrOptions.join(''));
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                 } else {
@@ -1237,6 +1238,7 @@
                     }
 
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
 
@@ -1402,6 +1404,7 @@
                     });
                     $select.val(args.item[column.field].id);
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                 } else {
@@ -1438,6 +1441,7 @@
                     } else {
                         $select.val(args.item[column.field].id);
                         $select.chosen({
+                            search_contains: true,
                             allow_single_deselect: !args.column['required']
                         });
                     }
@@ -1655,6 +1659,7 @@
                     });
                     $select.append(arrOptions.join(''));
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                 } else {
@@ -1681,6 +1686,7 @@
                     }
 
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
 
@@ -1791,6 +1797,7 @@
                     });
                     $('option[code="' + values[0] + '"]', $from).attr("selected", "selected");
                     $from.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                 } else {
@@ -1800,6 +1807,7 @@
                         });
                         $('option[code="' + values[0] + '"]', $from).attr("selected", "selected");
                         $from.chosen({
+                            search_contains: true,
                             allow_single_deselect: !args.column['required']
                         });
                     });
@@ -1811,6 +1819,7 @@
                     });
                     $('option[code="' + values[1] + '"]', $to).attr("selected", "selected");
                     $to.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                 } else {
@@ -1820,6 +1829,7 @@
                         });
                         $('option[code="' + values[1] + '"]', $to).attr("selected", "selected");
                         $to.chosen({
+                            search_contains: true,
                             allow_single_deselect: !args.column['required']
                         });
                     });
@@ -1950,6 +1960,7 @@
                     $select.append(bottomOption);
                     $select.val(args.item[column.field]);
                     $select.chosen({
+                        search_contains: true,
                         allow_single_deselect: !args.column['required']
                     });
                     // 'Add new option' option handler

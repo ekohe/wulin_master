@@ -11,11 +11,12 @@ module WulinMaster
     def initialize(name, grid_class, opts={})
       @name = name
       @grid_class = grid_class
-      @options = {:width => 150, :sortable => true}.merge(opts)
+      @options = {:width => WulinMaster.config.default_column_width, :sortable => true}.merge(opts)
     end
 
     def label
-      @options[:label] || @name.to_s.underscore.humanize
+      # @options[:label] || @name.to_s.underscore.humanize
+      @options[:label] || model.human_attribute_name(@name)
     end
 
     def singular_name
@@ -65,6 +66,9 @@ module WulinMaster
       new_options = @options.dup
       h = {:id => full_name, :column_name => self.name, :singular_name => self.singular_name, :name => self.label, :table => table_name, :klass_name => klass_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
       h.merge!(reflection_options) if reflection
+
+      # Support cell_editable for column
+      h[:editable] = !!h[:cell_editable] unless h[:cell_editable].nil?
       h
     end
 

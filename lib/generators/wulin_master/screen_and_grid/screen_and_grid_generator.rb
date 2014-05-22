@@ -34,7 +34,7 @@ module WulinMaster
     def add_route
       route "resources :#{table_name}" if options.routes?
     end
-    
+
     def create_view_directory
       empty_directory "app/views/#{table_name}" if options.views?
     end

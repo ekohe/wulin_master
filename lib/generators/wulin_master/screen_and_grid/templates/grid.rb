@@ -1,5 +1,5 @@
 class <%= class_name %>Grid < WulinMaster::Grid
-  title '<%= human_name %>'
+  # title <%= class_name %>.model_name.human
 
   model <%= class_name %>
 

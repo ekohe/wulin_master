@@ -34,7 +34,7 @@ module WulinMaster
     end
 
     def self.current(user_id, grid_name)
-      states = for_user_and_grid(user_id, grid_name).all
+      states = for_user_and_grid(user_id, grid_name).load
       return nil if states.blank?
       states.find{|x| x.current?} || states.find{|x| x.name.to_s.downcase == 'default'} || states.first
     end

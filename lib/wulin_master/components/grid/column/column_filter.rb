@@ -36,7 +36,7 @@ module WulinMaster
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       if @options[:sql_expression]
-        return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
+        return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", "%#{filtering_value}%"])
       else
         column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
         # for special column,
@@ -105,7 +105,7 @@ module WulinMaster
     def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
       case column_sql_type.to_s
       when 'date', 'datetime'
-        return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
+        return query.where(["to_char(#{table_name}.#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
       when "boolean"
         true_values = ["y", "yes", "ye", "t", "true"]
         true_or_false = true_values.include?(filtering_value.downcase)

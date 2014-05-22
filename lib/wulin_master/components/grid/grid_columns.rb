@@ -1,3 +1,5 @@
+require 'wulin_master/components/grid/column'
+
 module WulinMaster
   module GridColumns
     extend ActiveSupport::Concern
@@ -5,7 +7,7 @@ module WulinMaster
     included do
       class_attribute :columns_pool
     end
-    
+
     module ClassMethods
       # Private - executed when class is subclassed
       def initialize_columns
@@ -20,7 +22,7 @@ module WulinMaster
       # Remove columns for exactly screens
       def remove_columns(r_columns, scope={})
         return unless scope[:screen].present?
-        
+
         r_columns = r_columns.map(&:to_s)
         self.columns_pool.each do |column|
           if r_columns.include? column.name.to_s
@@ -28,7 +30,7 @@ module WulinMaster
           end
         end
       end
-      
+
       # For the old caller, in some old code, there some call like: +grid_class.columns+
       def columns
         self.columns_pool
@@ -39,9 +41,9 @@ module WulinMaster
     def columns
       screen_name = params[:screen]
       return self.class.columns_pool if screen_name.blank?
-      
+
       all_columns = self.class.columns_pool.dup
-      
+
       all_columns.select do |column|
         column.valid_in_screen(screen_name)
       end

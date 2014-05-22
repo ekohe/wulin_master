@@ -9,7 +9,7 @@
 
     datepicker_str = ''
     object = grid.model.new
-  .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
+  .create_form{:id => "#{grid.name}_form", :title => t('wulin_master.title.edit_form', stuff: grid.model.model_name.human, default: "Update #{grid.model.model_name.human}"), data: {action: 'update'}}
     = form_for object, :url => grid.path do |form|
       .base_error
       - columns.each do |column|
@@ -18,6 +18,7 @@
             column_name = get_column_name(column)
             label = column.options[:form_label] || column.label
             _klass = model_name.classify
+            input_html = column.options[:input_html].presence || {}
           .field{:name => column_name}
             %label{:for => "#{model_name}_#{column_name}"}
               = label
@@ -25,34 +26,36 @@
 
             - if column.options[:popup_editor].present?
               - if column.options[:popup_editor] == "TextArea"
-                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 260px; height: 4em;'
+                = form.text_area column_name, {:readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 239px; height: 4em;'}.deep_merge(input_html)
 
             - elsif column.sql_type.to_s == 'belongs_to'
               = form.select column_name,                            |
                 select_options(column),                             |
                 { include_blank: !column.presence_required? },      |
-                :style             => "width:250px",                |
+                {:style             => "width:243px",               |
                 :disabled          => column.options[:auto_fill],   |
                 "data-required"    => column.presence_required?,    |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"       => column.name                  |
+                }.deep_merge(input_html)                            |
 
             - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
               = form.select column.reflection.name.to_s,            |
                 select_options(column),                             |
                 { include_blank: !column.presence_required? },      |
-                :multiple          => true,                         |
-                :style             => "width:250px",                |
+                {:multiple          => true,                        |
+                :style             => "width:243px",                |
                 "data-required"    => column.presence_required?,    |
                 "data-text-attr"   => column.option_text_attribute, |
                 "data-target"      => "#{column_name}_target_flag", |
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
+                }.deep_merge(input_html)                            |
               = clean_up_for(column)
 
             - elsif auto_complete_field?(column)
-              = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name
+              = form.text_field column_name, {:class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name}.deep_merge(input_html)
 
               :javascript
                 var choices = "/wulin_master/fetch_distinct_options?"
@@ -77,13 +80,14 @@
             - elsif select_tag_field?(column)
               = select_tag "#{model_name}[#{column_name}]",          |
                 select_tag_options(column),                          |
-                :style             => "width:250px",                 |
+                {:style             => "width:243px",                |
                 :disabled          => column.options[:auto_fill],    |
                 :include_blank     => !required?(column),            |
                 "data-required"    => required?(column),             |
                 "data-target"      => "#{column_name}_target_flag",  |
                 "data-text-attr"   => column.option_text_attribute,  |
                 "data-column"      => column.name                    |
+                }.deep_merge(input_html)                             |
               - if column.options[:depend_column].present?
                 :javascript
                   $(function(){
@@ -100,25 +104,25 @@
                     });
                   });
             - elsif column.options[:file]
-              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
-              = clean_up_tag(column_name)
+              = form.file_field column_name, {"data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 243px'}.deep_merge(input_html)
+              /= clean_up_tag(column_name)
             - elsif column.options[:password]
-              = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
+              = form.password_field column_name, {"data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 243px'}.deep_merge(input_html)
             - else
               - if column.sql_type.to_s.downcase == 'boolean'
-                = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name
+                = form.check_box column_name, {:readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name}.deep_merge(input_html)
                 = clean_up_for(column)
               - elsif column.sql_type.to_s.downcase == 'text'
-                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 260px; height: 4em;'
+                = form.text_area column_name, {:readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 239px; height: 4em;'}.deep_merge(input_html)
               - else
-                = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
+                = form.text_field column_name, {:style => 'width: 237px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name}.deep_merge(input_html)
             .field_error
       .submit
-        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => t('wulin_master.button.update', default: ' Update ')}/
 
   :javascript
-    $('##{grid.name}_form select[data-required="true"]').chosen();
-    $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+    $('##{grid.name}_form select[data-required="true"]').chosen({search_contains: true});
+    $('##{grid.name}_form select[data-required="false"]').chosen({search_contains: true,allow_single_deselect: true});
     $('##{grid.name}_form select').off('change').on('change', function(){
       var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
       if (flag.size() > 0) flag.attr('checked', 'checked');

@@ -1,10 +1,11 @@
 (function($) {
   // Slick.FilterPanel
   $.extend(true, window, {
-      Slick: {
-          FilterPanel: FilterPanel
-      }
+    Slick: {
+      FilterPanel: FilterPanel
+    }
   });
+
   function FilterPanel(grid, loader, triggerElement, currentFilters) {
     var filterWidthOffset = -3; // 2 pixels padding on the left and one pixel for the border on the left
     // private
@@ -19,10 +20,10 @@
 
       generateFilters();
 
-      $grid.onColumnsReordered.subscribe(function(){
+      $grid.onColumnsReordered.subscribe(function() {
         generateFilters();
       });
-      $grid.onColumnsResized.subscribe(function(){
+      $grid.onColumnsResized.subscribe(function() {
         generateFilters();
       });
 
@@ -31,37 +32,39 @@
       }
 
       triggerElement.click(function() {
-        if($(this).hasClass('toolbar_icon_disabled')) return false;
+        if ($(this).hasClass('toolbar_icon_disabled')) return false;
 
         if ($($grid.getHeaderRow()).is(":visible")) {
-            $grid.hideHeaderRowColumns();
-            currentFilters = null;
-            trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
+          $grid.hideHeaderRowColumns();
+          currentFilters = null;
+          trigger(self.onFilterPanelClosed, {
+            filterData: currentFiltersApplied
+          });
         } else {
-            $grid.showHeaderRowColumns();
-            // This corrects the scrollLeft of the filter secondary header row.
-            // The problem is that if the user scrolls on the left then click on filter, the
-            //   filters wouldn't have scrolled while there were hidden so they appear shifted.
-            // This corrects this problem by setting the scrollLeft value of the filters panel
-            //   to the scrollLeft of the header row
-            headerScroller = $($grid.getHeaderRow()).parent()[0];
-            headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
+          $grid.showHeaderRowColumns();
+          // This corrects the scrollLeft of the filter secondary header row.
+          // The problem is that if the user scrolls on the left then click on filter, the
+          //   filters wouldn't have scrolled while there were hidden so they appear shifted.
+          // This corrects this problem by setting the scrollLeft value of the filters panel
+          //   to the scrollLeft of the header row
+          headerScroller = $($grid.getHeaderRow()).parent()[0];
+          headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
         }
         return false;
       });
 
-      var delay = (function(){
+      var delay = (function() {
         var timer = 0;
-        return function(callback, ms){
-          clearTimeout (timer);
+        return function(callback, ms) {
+          clearTimeout(timer);
           timer = setTimeout(callback, ms);
         };
       })();
 
-      var repositionDelay = (function(){
+      var repositionDelay = (function() {
         var timer = 0;
-        return function(callback, ms){
-          clearTimeout (timer);
+        return function(callback, ms) {
+          clearTimeout(timer);
           timer = setTimeout(callback, ms);
         };
       })();
@@ -81,44 +84,46 @@
         }
 
         if (ignoreKeyCodes.indexOf(e.which) == -1) {
-          delay(function(){
+          delay(function() {
             updateCurrentFilters();
             applyCurrentFilters(currentFilters);
             setCurrentFilter();
-            trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
+            trigger(self.onFilterLoaded, {
+              filterData: currentFiltersApplied
+            });
           }, 1000);
         }
       });
 
       // Bind mousemove event to body to adjust reset filter panel position
-      $input.on('focus', function(){
+      $input.on('focus', function() {
         var $headerRowScroller = $($grid.getHeaderRow()).parent();
         var $viewPort = $($grid.getCanvasNode()).parent();
-        $('body').on('mousemove', function(){
-          repositionDelay(function(){
+        $('body').on('mousemove', function() {
+          repositionDelay(function() {
             $headerRowScroller[0].scrollLeft = $viewPort[0].scrollLeft;
           }, 300);
         });
       });
 
       // Unbind mousemove event of body
-      $input.on('blur', function(){
+      $input.on('blur', function() {
         $('body').off('mousemove');
       });
 
     }
 
     function trigger(evt, args, e) {
-        e = e || new Slick.EventData();
-        args = args || {};
-        args.filterPanel = self;
-        return evt.notify(args, e, self);
+      e = e || new Slick.EventData();
+      args = args || {};
+      args.filterPanel = self;
+      return evt.notify(args, e, self);
     }
 
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
-      var headerWidth = $($grid.getCanvasNode()).width() + 16;      // 16 is the vertical scrollbar width
+      var headerWidth = $($grid.getCanvasNode()).width() + 16; // 16 is the vertical scrollbar width
       var ua = navigator.userAgent.toLowerCase();
 
       html = "";
@@ -129,22 +134,30 @@
       setOriginalFilter();
 
       $.each(columns, function(i, v) {
-        var field = v.id, inputHtml = '', inputWidth, cssClass = "";
+        var field = v.id,
+          inputHtml = '',
+          inputWidth, cssClass = "";
         var value = '';
         // Try to get the value of this filter if any
         $.each(currentFiltersApplied, function() {
-          if (this.id==field)
+          if (this.id == field)
             value = this.value;
         });
 
-        if (i==(totalColumnsCount-1)) {
+        if (i == (totalColumnsCount - 1)) {
           cssClass = "lastColumn";
         }
 
-        inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
+        inputWidth = $.browser.mozilla ? parseInt(this.width, 10) + filterWidthOffset + 1 : parseInt(this.width, 10) + filterWidthOffset - 1;
 
-        if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
+        // webkit
+        if (ua.indexOf('webkit') != -1 && ua.indexOf("windows") != -1) {
           inputWidth += 2;
+        }
+
+        // IE
+        if (ua.indexOf('.net') != -1 && ua.indexOf("windows") != -1) {
+          inputWidth -= 2;
         }
 
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
@@ -173,7 +186,7 @@
         if ($(this).val() !== '') {
           inputValue = $(this).val();
           columnType = $grid.getColumns()[i]["type"];
-          if(((columnType == "decimal") || (columnType == "integer")) && (isNaN(inputValue))){
+          if (((columnType == "decimal") || (columnType == "integer")) && (isNaN(inputValue))) {
             currentFilters[$(this).attr('id')] = NaN;
             return false;
           }
@@ -186,9 +199,9 @@
       var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length !== 0) {
         $.each(currentFiltersApplied, function() {
-          if(this['operator'] === undefined) this['operator'] = 'equals';
+          if (this['operator'] === undefined) this['operator'] = 'equals';
           var newFilter = [this['id'], this['value'], this['operator']];
-          if(!$(originalFilters).arrayDeepInclude(newFilter)) {
+          if (!$(originalFilters).arrayDeepInclude(newFilter)) {
             originalFilters.push([this['id'], this['value'], this['operator']]);
           }
         });
@@ -197,18 +210,18 @@
       }
     }
 
-    function setCurrentFilter(){
+    function setCurrentFilter() {
       var filters = [];
       // add current filters
       if (currentFiltersApplied.length > 0) {
-        $.each(currentFiltersApplied, function(){
+        $.each(currentFiltersApplied, function() {
           filters.push([this['id'], this['value'], 'equals']);
         });
       }
       // add masters
       if ($grid.master) {
         if ($grid.master instanceof Array) {
-          $.each($grid.master, function(){
+          $.each($grid.master, function() {
             filters.push(this);
           });
         } else {
@@ -223,20 +236,23 @@
       if (filters) {
         $.each(filters, function(k, v) {
           if (v !== '')
-            currentFiltersApplied.push({id: k, value: v});
+            currentFiltersApplied.push({
+              id: k,
+              value: v
+            });
         });
       }
     }
 
     $.extend(this, {
-        // Events
-        "onFilterLoaded":                     new Slick.Event(),
-        'onFilterPanelClosed':                new Slick.Event(),
+      // Events
+      "onFilterLoaded": new Slick.Event(),
+      'onFilterPanelClosed': new Slick.Event(),
 
-        // Methods
-        'generateFilters':                    generateFilters,
-        "applyCurrentFilters":                applyCurrentFilters,
-        "updateCurrentFilters":               updateCurrentFilters
+      // Methods
+      'generateFilters': generateFilters,
+      "applyCurrentFilters": applyCurrentFilters,
+      "updateCurrentFilters": updateCurrentFilters
     });
 
     init();

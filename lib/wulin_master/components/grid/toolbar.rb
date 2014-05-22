@@ -18,7 +18,8 @@ module WulinMaster
         }
         item_options = action.merge(item_options)
         item_options.delete(:authorized?)
-        item_name = action[:title] || action[:name].capitalize
+        # item_name = action[:title] || action[:name].capitalize
+        item_name = action[:title] || I18n.t("wulin_master.button.#{action[:name]}", default: action[:name].capitalize)
 
         @items << ToolbarItem.new(item_name, item_options)
       end
