@@ -162,6 +162,11 @@ module WulinMaster
     end
 
     def reflection_options
+      # for debugging the service user fetch options
+      if @options[:label] == 'Service User'
+        Rails.logger.info '--------------------------- Trace fetch options params -----------------------------'
+        Rails.logger.info @options
+      end
       @options[:choices] ||= begin
         if self.reflection
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
