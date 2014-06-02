@@ -11,7 +11,12 @@ module WulinMaster
     def initialize(name, grid_class, opts={})
       @name = name
       @grid_class = grid_class
-      @options = {:width => 150, :sortable => true}.merge(opts)
+      @initial_options = opts
+      init_options
+    end
+
+    def init_options
+      @options = {:width => 150, :sortable => true}.merge(@initial_options.dup)
     end
 
     def label
@@ -47,6 +52,7 @@ module WulinMaster
     end
 
     def to_column_model(screen_name)
+      init_options
       @options[:screen] = screen_name
 
       # if the option :choices is a Proc, keep it, and call it when using it
@@ -109,7 +115,7 @@ module WulinMaster
 
     # Dynamically add some new options to the column
     def add_options(new_options={})
-      @options.merge!(new_options)
+      @initial_options.merge!(new_options)
     end
 
     def apply_order(query, direction)
@@ -162,11 +168,6 @@ module WulinMaster
     end
 
     def reflection_options
-      # for debugging the service user fetch options
-      if @options[:label] == 'Service User'
-        Rails.logger.info '--------------------------- Trace fetch options params -----------------------------'
-        Rails.logger.info @options
-      end
       @options[:choices] ||= begin
         if self.reflection
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
