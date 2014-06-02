@@ -79,8 +79,8 @@ function load_page(url, callback) {
 }
 
 function trackGoogleAnalytics() {
-  if (typeof(_gaq)!='undefined') {
-    _gaq.push(['_trackPageview', currentUrl]);
+  if (typeof(ga)!='undefined') {
+    ga('send', 'pageview', currentUrl);
   }
 }
 
