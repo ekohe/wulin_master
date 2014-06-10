@@ -96,17 +96,22 @@ var GridStatesManager = {
     if(!orderStates) return columns;
 
     var new_columns = [], i, j, k;
-    // find id column
-    for(i in columns){
-      if (columns[i].id == "id"){
-        new_columns.push(columns[i]);
-        break;
-      }
-    }
+
+    // remove duplication in orderStates
+    var orderedColumnIds = $.map(orderStates, function(i) {return i;});
+    var uniqueIds = [];
+    $.each(orderedColumnIds, function(i,e) { 
+      if(uniqueIds.indexOf(e) == -1) uniqueIds.push(e); 
+    });
+    var newOrderStates = {};
+    $.each(uniqueIds, function(i,e) {
+      newOrderStates[i] = e;
+    });
+
     // push other columns according to states
-    for(j in orderStates){
+    for(j in newOrderStates){
       for(k in columns) {
-        if(orderStates[j] != 'id' && columns[k].id == orderStates[j]){
+        if(columns[k].id == newOrderStates[j] ){
           new_columns.push(columns[k]);
           break;
         }
