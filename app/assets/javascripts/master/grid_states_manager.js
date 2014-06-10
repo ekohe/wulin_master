@@ -106,7 +106,7 @@ var GridStatesManager = {
     // push other columns according to states
     for(j in orderStates){
       for(k in columns) {
-        if(columns[k].id == orderStates[j]){
+        if(orderStates[j] != 'id' && columns[k].id == orderStates[j]){
           new_columns.push(columns[k]);
           break;
         }
