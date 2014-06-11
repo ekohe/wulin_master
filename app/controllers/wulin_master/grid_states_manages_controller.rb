@@ -7,6 +7,7 @@ module WulinMaster
     append_view_path "#{WulinMaster::Engine.root}/app/views"
 
     def save
+      params[:state_value] ||= [] if params[:state_type] == 'visibility'
       current_state = GridState.current(current_user.id, params[:grid_name])
       if current_state
         current_state.state_value = JSON(current_state.state_value.presence || "{}").merge(params[:state_type] => params[:state_value]).to_json
