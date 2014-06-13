@@ -313,6 +313,9 @@ A column can be a real field in the database table of current model, or virtual 
   `:dynamic_options`
   This option is only useful for some relation column, For examplem Post belongs ot Category, in Post grid category cell editor should be a drop-down, if set `:dynamic_options` to true for category column in Post grid, where will be a 'Add new option' option at botoom of categroy drop-down. When you click 'Add new option' option, category create dialog form will be popuped, you can create a new category in that form and then drop-down will selected the created category automatically.
 
+  `:required`
+  Generally this option is calculated automatically due to the precence validation of the column, but can also be explicitly specified. Possible values are true and false.
+
   `:distinct`
   This option is only useful for text column.
 

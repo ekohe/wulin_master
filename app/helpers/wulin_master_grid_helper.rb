@@ -98,6 +98,7 @@ module WulinMasterGridHelper
 
   def required?(column)
     return false if column.options[:distinct]
+    return true if column.options[:required]
     column.presence_required?
   end
 

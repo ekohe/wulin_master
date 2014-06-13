@@ -63,7 +63,7 @@ module WulinMaster
         @options[:choices] = @options[:original_choices].call
       end
 
-      @options[:required] = presence_required?
+      @options[:required] ||= presence_required?
 
       append_distinct_options if @options[:distinct] || @options[:auto_complete]
       sort_col_name = @options[:sort_column] || full_name
