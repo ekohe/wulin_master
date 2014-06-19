@@ -221,15 +221,17 @@ module WulinMaster
     def presence_required?(model=nil)
       current_model = model || self.model
       if current_model.respond_to?(:validators)
-        direct_validator_fields = current_model.validators.select{|x| x.class == ActiveModel::Validations::PresenceValidator}.map(&:attributes).flatten
+        direct_validator_fields = current_model.validators.select{|x| x.class == ActiveRecord::Validations::PresenceValidator}.map(&:attributes).flatten
       else
         direct_validator_fields = []
       end
 
-      if current_model.column_names.include?(form_name.to_s) || current_model.method_defined?(form_name)
-        return (direct_validator_fields.include?(form_name.to_sym) || !!direct_validator_fields.find{|f| reflection = current_model.reflections[f.to_sym]; reflection && reflection.foreign_key == form_name.to_s})
-      else
-        !!direct_validator_fields.find{|f| nested_model = f.to_s.classify.safe_constantize; nested_model && presence_required?(nested_model)}
+      if current_model.try(:column_names)
+        if current_model.column_names.include?(form_name.to_s) || current_model.method_defined?(form_name)
+          return (direct_validator_fields.include?(form_name.to_sym) || !!direct_validator_fields.find{|f| reflection = current_model.reflections[f.to_sym]; reflection && reflection.foreign_key == form_name.to_s})
+        else
+          !!direct_validator_fields.find{|f| nested_model = f.to_s.classify.safe_constantize; nested_model && presence_required?(nested_model)}
+        end
       end
     end
 

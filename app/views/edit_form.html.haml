@@ -117,6 +117,7 @@
               - else
                 = form.text_field column_name, {:style => 'width: 237px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name}.deep_merge(input_html)
             .field_error
+              .required_mark= "*" if column.options[:required] == true
       .submit
         %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => t('wulin_master.button.update', default: ' Update ')}/
 

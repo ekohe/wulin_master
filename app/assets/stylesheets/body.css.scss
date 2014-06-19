@@ -81,6 +81,9 @@ form {
     display: inline-block;
     margin-left: 5px;
     max-width: 85px;
+    .required_mark {
+      font-size: 14px;
+    }
   }
 
   .base_error {
