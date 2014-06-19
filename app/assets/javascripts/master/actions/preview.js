@@ -11,10 +11,11 @@ WulinMaster.actions.Preview = $.extend({}, WulinMaster.actions.BaseAction, {
       url = grid.path + '/wulin_master_preview/?id=' + selectedData.id;
       $.get(url, function(data) {
         var $scope;
-        $('#' + grid.name + '_preview').remove();
+        var grid_name = grid.name.split("_")[0];
+        $('#' + grid_name + '_preview').remove();
 
         $('body').append(data);
-        $scope = $('#' + grid.name + '_preview');
+        $scope = $('#' + grid_name + '_preview');
         $scope.dialog({
           width: 550,
           show: "blind",
