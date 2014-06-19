@@ -3,7 +3,7 @@
 module WulinMaster
   module GridOptions
     extend ActiveSupport::Concern
-    
+
     included do
       class << self
         attr_accessor :options_pool
@@ -18,8 +18,8 @@ module WulinMaster
         # turn option["screen"] to option[:only]
         option[:only] = [option[:screen].intern] if option[:screen]
         self.options_pool << option unless self.options_pool.include?(option)
-      end 
-      
+      end
+
       def options(*args)
         args.each do |arg|
           option(arg)
@@ -27,6 +27,10 @@ module WulinMaster
       end
 
       # helpers
+      def form_height(value=nil, options={})
+        option({form_dialog_height: value}.merge options)
+      end
+
       def cell_editable(value=true, options={})
         option({editable: value}.merge options)
       end
