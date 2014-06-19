@@ -46,7 +46,7 @@
     function adjustToolbarLeftPosition($toolbar_wrapper, $toolbar, rightVisibleIndex, initial){
       // adjust the toolbar left position if the most left item not fully displayed
       var oldLeft = parseFloat($toolbar_wrapper.css("left"));
-      
+
       var smallEnough = false;
       var newLeft = oldLeft;
       var remainingWidth = $toolbar_wrapper.outerWidth();
@@ -77,6 +77,7 @@
         // also, show all items
         $toolbar_wrapper.find(".toolbar").css("left", 0);
       } else {
+        $toolbar.css({"float": "left"});
         // make sure the first toolbar item always align left or more of toolbar_wrapper (otherwise there is a blank between first item and prev button)
         if($toolbar.offset().left > $toolbar_wrapper.offset().left) {
           $toolbar.css("left", 0);
