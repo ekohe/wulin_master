@@ -1,5 +1,5 @@
 - if grid.action_names.include?('preview')
-  - columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+  - columns = grid.columns.dup.delete_if {|x| (x.name.to_s == 'id') || (x.sql_type == :belongs_to) }
 
   .preview_content{id: "#{grid.name}_preview", title: t('wulin_master.title.preview', stuff: grid.model.model_name.human, default: "Preview #{grid.model.model_name.name}")}
     %ul
