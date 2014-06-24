@@ -115,9 +115,9 @@
               - elsif column.sql_type.to_s.downcase == 'text'
                 = form.text_area column_name, {:readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 239px; height: 4em;'}.deep_merge(input_html)
               - else
-                = form.text_field column_name, {:style => 'width: 237px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name}.deep_merge(input_html)
+                = form.text_field column_name, {:style => 'width: 237px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name, placeholder: column.options[:placeholder]}.deep_merge(input_html)
             .field_error
-              .required_mark= "*" if column.options[:required] == true
+              %span.required_mark= "*" if ( column.options[:input_html] && column.options[:input_html]["data-required"]) || column.options[:required]
       .submit
         %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => t('wulin_master.button.update', default: ' Update ')}/
 
