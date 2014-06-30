@@ -4,8 +4,10 @@
   .preview_content{id: "#{grid.name}_preview", title: t('wulin_master.title.preview', stuff: grid.model.model_name.human, default: "Preview #{grid.model.model_name.name}")}
     %ul
       - columns.each do |column|
+        - next if column.options[:visible] == false
         :ruby
           value = column.value(@record)
+          value = I18n.t(:"word.#{value}") if column.sql_type == :boolean
           value = value.join(",") if value.is_a?(Array)
 
         %li
