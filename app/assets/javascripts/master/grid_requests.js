@@ -6,6 +6,7 @@ var Requests = {
     createFormElement = $('div#' + grid.name + '_form form');
     // clear all the error messages
     createFormElement.find(".field_error").text("");
+    createFormElement.find(".base_error").text("");
     $("input[type='submit']", createFormElement).attr('disabled', 'disabled').css('opacity', 0.5);
 
     ajaxOptions = {
