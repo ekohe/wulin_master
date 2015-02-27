@@ -19,7 +19,11 @@
         },
 
         GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='/assets/tick.png'>" : "";
+            var image_path
+            var snipet
+            image_path = "<%= asset_path('tick.png') %>"
+            snipet = "<img src='" + image_path + "'>"
+            return value ? snipet : "";
             // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
         },
 
