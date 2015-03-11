@@ -51,7 +51,7 @@ $paper_form_title_color: black;
     @include text-shadow(white, 1px, 1px, 0);
     width: 100px;
     display: block;
-    float: left;
+    // float: left;
   }
   select {
     font-size: 1.4em;
