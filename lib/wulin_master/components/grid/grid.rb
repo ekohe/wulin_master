@@ -144,6 +144,7 @@ module WulinMaster
     end
 
     def apply_order(query, column_name, order_direction)
+      if column_name then 
       column_name = column_name.split(".").last if column_name.include?(".")
       
       if column = find_sort_column_by_name(column_name)
@@ -159,6 +160,9 @@ module WulinMaster
         end
       else
         self.virtual_sort_column = [column_name, order_direction]
+        query
+      end
+      else
         query
       end
     end
