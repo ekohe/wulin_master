@@ -25,9 +25,14 @@
 
 .ui-dialog {
   overflow: visible;
+  z-index: 500;
   .ui-dialog-content {
     overflow: visible;
   }
+}
+
+.ui-widget-overlay {
+  z-index: 100;
 }
 
 .ui-dialog {
