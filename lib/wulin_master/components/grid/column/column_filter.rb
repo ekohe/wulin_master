@@ -36,7 +36,12 @@ module WulinMaster
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       if @options[:sql_expression]
-        return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
+        # Add support for multiple columns filtering
+        if @options[:sql_expression].split(',').count > 1
+          return query.where("UPPER(concat(#{@options[:sql_expression]})) like ?", filtering_value.upcase.gsub(/\s+/, '') + '%')
+        else
+          return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
+        end
       else
         column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
         # for special column,

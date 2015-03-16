@@ -121,7 +121,14 @@ module WulinMaster
     def apply_order(query, direction)
       return query unless ["ASC", "DESC"].include?(direction)
       if @options[:sql_expression]
-        query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
+        # Add support for multiple columns ordering
+        if (options = @options[:sql_expression].split(',').map(&:strip)).count > 1
+          order_string = options.map{ |option| "#{option} #{direction}" }.join(',')
+          order_string = [order_string, "#{model.table_name}.id ASC"].join(', ')
+          query.order(order_string)
+        else
+          query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
+        end
       elsif self.reflection
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
