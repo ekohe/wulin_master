@@ -10,10 +10,10 @@ module WulinMaster
       Rails.logger.info "params = #{params}"
       Rails.logger.info "/\\"*50
 
-      middle_model = params[:detail_model].classify.constantize
+      middle_model = params[:model].classify.constantize
       Rails.logger.info "passed middle_model = params[:model].classify.constantize #{middle_model}"
 
-      detail_column = middle_model.reflections[params[:model].to_sym].foreign_key
+      detail_column = middle_model.reflections[params[:detail_model].to_sym].foreign_key
       Rails.logger.info "passed detail_column = middle_model.reflections[params[:detail_model].to_sym].foreign_key"
 
       Rails.logger.info "middle_model = #{middle_model} detail_column #{detail_column} "
