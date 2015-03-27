@@ -7,7 +7,7 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var grid = this.getGrid();
     var hiddenColumns = this.hidden_columns;
-    var masterId = this.target.master.filter_value;
+    var masterId = grid.master.filter_value
     
     Ui.openDialog(grid, 'wulin_master_new_form', grid.options);
 
@@ -67,12 +67,12 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
     var $createForm = $(".create_form form");
     var model = $createForm.attr("id").replace("new_", "");
     $('<input/>').attr("id", model + "_" + column).attr("type", "hidden").attr("value", value).attr("name", model + '[' + column + ']').appendTo($createForm);
-  }
+  },
 
 
   afterOpenDialog: function() {
     var $form = $('#new_vehicule_assignment');
-    $form.prepend('<input type="hidden" value="' + masterId + '" name="vehicule_assignment[vehicule_usage_id]">');
+    $form.prepend('<input type="hidden" value="' + this.grid.master.filter_value.toString() + '" name="vehicule_assignment[vehicule_usage_id]">');
   }
 
 
