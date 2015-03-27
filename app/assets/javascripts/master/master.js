@@ -1,3 +1,4 @@
+//= inflection
 //= require jquery
 //= require jquery_ujs
 //= require exception/js_error_reporter
