@@ -1,0 +1,16 @@
+Description:
+    Generates a grid based on a sql view (model controller screen grid).
+
+Example:
+    rails generate wulin_master:grid_view view_name
+
+    This will create:
+        create  app/controllers/wulins_controller.rb
+        create  app/screens/wulin_screen.rb
+        create  app/grids/wulin_grid.rb
+        create  app/models/wulin.rb
+        route  resources :wulins
+        
+    More info please run "rails generate wulin_master:screen_and_grid --help"  
+        
+        
