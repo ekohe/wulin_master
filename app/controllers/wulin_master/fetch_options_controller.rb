@@ -14,7 +14,7 @@ module WulinMaster
         if klass.column_names.include? params[:text_attr]
           objects = query.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
         else
-          objects = query.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
+          objects = query.all.sort_by {|i| i.send(params[:text_attr]) }
         end
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
@@ -23,7 +23,7 @@ module WulinMaster
       end
     rescue
       self.status = 500
-      self.response_body = "Something wrong: #{$!.message}"
+      self.response_body = "Something wrong: #{$!.message} "
     end
 
     def specify_fetch
