@@ -6,6 +6,13 @@ module WulinMaster
     def index
       if authorized? and params[:text_attr].present?
         query = klass
+
+        # column with option formable: false shouldn't call fetch_options
+        if column.options[:formable] == false
+          self.response_body = [].to_json
+          return
+        end
+
         # dynamic filter
         if params[:master_model].present? and params[:master_id].present?
           reflection = klass.reflections[params[:master_model].to_sym] || klass.reflections[params[:master_model].pluralize.to_sym]
