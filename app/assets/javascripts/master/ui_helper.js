@@ -136,7 +136,7 @@ var Ui = {
     var name = grid.name;
     var scope = $('#' + name + '_form');
     var formType = scope.data('action');
-    var columns = window[name + "_columns"] || grid.getColumns();
+    var columns = window[name + "_columns"] || grid.getAllColumns();
     var currentData = {};
 
     if (grid.loader)

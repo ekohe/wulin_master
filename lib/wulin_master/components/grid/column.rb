@@ -168,6 +168,7 @@ module WulinMaster
     end
 
     def reflection_options
+      return {} if not formable?
       @options[:choices] ||= begin
         if self.reflection
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
@@ -298,6 +299,10 @@ module WulinMaster
     end
 
     alias_method :filterable?, :sortable?
+
+    def formable?
+      @options[:formable].nil? || @options[:formable] != false
+    end
 
     private
 
