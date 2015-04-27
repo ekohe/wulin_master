@@ -6,7 +6,9 @@ class <%= class_name %>Grid < WulinMaster::Grid
   # path '/<%= table_name %>' # Define a different route for the grid
 <% r =  class_name.classify.constantize.columns.map { |c| c.name } %>
 <% r.each do |column| -%>
-  column :<%= column.include?(" ") ? "\"#{column}\"" : column %>
+  <% if column != 'id' then -%>
+    column :<%= column.include?(" ") ? "\"#{column}\"" : column %>
+  <% end -%>
 <% end -%>
 
   load_default_actions # Add default toolbar items for this grid
