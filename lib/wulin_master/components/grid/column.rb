@@ -175,6 +175,7 @@ module WulinMaster
     end
 
     def reflection_options
+      return { :choices => [], :optionTextAttribute => self.option_text_attribute } if options[:editable]==false
       @options[:choices] ||= begin
         if self.reflection
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
