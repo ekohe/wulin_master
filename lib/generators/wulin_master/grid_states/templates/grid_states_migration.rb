@@ -3,6 +3,7 @@ class CreateGridStates < ActiveRecord::Migration
     unless table_exists?(:grid_states)
       create_table :grid_states do |t|
         t.integer :user_id
+        t.string  :user_email
         t.string  :name, :default => "default"
         t.string  :grid_name
         t.boolean :current, :default => false, :null => false
