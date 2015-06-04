@@ -65,8 +65,8 @@ module WulinMaster
         if new_title
           screen_name ? self.titles_pool[screen_name] = new_title : self.titles_pool[:_common] = new_title
         else
-          # self.titles_pool[screen_name] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
-          self.titles_pool[screen_name] || self.titles_pool[:_common] || model.model_name.human#self.to_s.gsub(/Grid/, "")
+          self.titles_pool[screen_name] || self.titles_pool[:_common] || self.to_s.gsub(/Grid/, "")
+          # self.titles_pool[screen_name] || self.titles_pool[:_common] || model.model_name.human#self.to_s.gsub(/Grid/, "")
         end
       end
     end
