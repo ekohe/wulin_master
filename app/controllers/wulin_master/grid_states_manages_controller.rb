@@ -1,5 +1,6 @@
 module WulinMaster
   class GridStatesManagesController < ::ActionController::Metal
+    include ActionView::ViewPaths
     include ActionController::Rendering
     include ActionController::RequestForgeryProtection
     include WulinMasterGridHelper

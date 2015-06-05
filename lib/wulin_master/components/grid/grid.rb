@@ -179,6 +179,7 @@ module WulinMaster
     end
 
     def arraify(objects)
+      return [] unless objects.present?
       objects.collect do |object|
         self.columns.collect {|col| col.json(object) }
       end
@@ -214,7 +215,7 @@ module WulinMaster
     def remove_through_model(relations)
       relations_dup = relations.dup
       relations_dup.each do |relation|
-        relations_dup.delete(model.reflections[relation].options[:through])
+        relations_dup.delete(model.reflections[relation.to_s].options[:through])
       end
       relations_dup
     end

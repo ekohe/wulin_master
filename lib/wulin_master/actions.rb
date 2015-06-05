@@ -67,7 +67,8 @@ module WulinMaster
 
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
-            @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
+            size = @objects.try(:size) || 0
+            @count = (size < @per_page) ? size : @count_query.length
           end
 
           fire_callbacks :objects_ready

@@ -16,7 +16,7 @@ module WulinMaster
 
     def label
       # @options[:label] || @name.to_s.underscore.humanize
-      @options[:label] || model.human_attribute_name(@name)
+      @options[:label] || model.try(:human_attribute_name, @name) || @name.to_s.underscore.humanize
     end
 
     def singular_name
@@ -155,7 +155,7 @@ module WulinMaster
     end
 
     def reflection
-      @reflection ||= self.model.reflections[(@options[:through] || @name).to_sym]
+      @reflection ||= self.model.reflections[(@options[:through] || @name).to_s]
     end
 
     def append_distinct_options
@@ -211,7 +211,7 @@ module WulinMaster
         if self.reflection
           [self.model.table_name + "."+ foreign_key, self.reflection.klass.table_name + "." + option_text_attribute.to_s]
         else
-          [self.model.table_name + "." + name.to_s]
+          [self.model.table_name.to_s + "." + name.to_s]
         end
       else
         nil
