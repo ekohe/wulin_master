@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'jquery-rails'
+  s.add_dependency 'jquery-rails', '4.0.3'
+  s.add_dependency 'jquery-ui-rails', '5.0.5'
   s.add_dependency 'haml-rails'
   s.add_dependency 'compass', '~> 0.12.alpha'
   s.add_development_dependency "rspec-rails", "~> 2.8"

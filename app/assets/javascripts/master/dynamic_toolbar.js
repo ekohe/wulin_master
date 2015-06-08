@@ -148,7 +148,7 @@
     }
 
     // Click the prev button
-    $(".grid-header .tb_prev").live('click', function(){
+    $(".grid-header .tb_prev").on('click', function(){
       var $prev = $(this);
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");
@@ -175,7 +175,7 @@
     });
 
     // CLick the next button
-    $(".grid-header .tb_next").live('click', function(){
+    $(".grid-header .tb_next").on('click', function(){
       var $next = $(this);
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");

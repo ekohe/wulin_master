@@ -247,9 +247,9 @@ if (typeof Slick === "undefined") {
             }
 
             viewportW = parseFloat($.css($container[0], "width", true));
-            
+
             removeInvisibleColumns();
-            
+
             createColumnHeaders();
             setupColumnSort();
             createCssRules();
@@ -315,7 +315,7 @@ if (typeof Slick === "undefined") {
         function getCanvasNode() {
             return $canvas[0];
         }
-        
+
         // Remove columns which have option of visible:false when initialize the grid
         function removeInvisibleColumns() {
             var tmp = [];
@@ -372,7 +372,7 @@ if (typeof Slick === "undefined") {
             var increment = 1000000;
             var supportedHeight = increment;
             // FF reports the height back but still renders blank after ~6M px
-            var testUpTo = ($.browser.mozilla) ? 5000000 : 1000000000;
+            var testUpTo = (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 5000000 : 1000000000;
             var div = $("<div style='display:none' />").appendTo(document.body);
 
             while (supportedHeight <= testUpTo) {
@@ -1282,12 +1282,12 @@ if (typeof Slick === "undefined") {
                     removeRowFromCache(i);
                 }
             }
-            
+
             // Fix the viewport height bug when there is no horizontal scroll and the grid height is small than the viewport
             // There was a gap as high as the horizontal scroll between viewport and pager
             var hasHorizontalScroll = ($viewport[0].scrollWidth != $viewport[0].clientWidth);
             th = Math.max(options.rowHeight * newRowCount, viewportH - (hasHorizontalScroll ? scrollbarDimensions.height : 0));
-            
+
             if (th < maxSupportedCssHeight) {
                 // just one page
                 h = ph = th;
@@ -1601,12 +1601,12 @@ if (typeof Slick === "undefined") {
         function handleDragEnd(e,dd) {
             trigger(self.onDragEnd, dd, e);
         }
-        
+
         function handleKeyDown(e) {
             trigger(self.onKeyDown, {}, e);
             var handled = e.isImmediatePropagationStopped();
 
-                    
+
             if (!handled) {
                 if (!e.shiftKey && !e.altKey && !e.ctrlKey) {
                     if (e.which == 27) {
@@ -1639,7 +1639,7 @@ if (typeof Slick === "undefined") {
                                 // adding new row
                                 if (activeRow === getDataLength()) {
                                     navigateDown();
-                                } 
+                                }
                                 else if (!multiChosenExist || chosenFull) {
                                     setTimeout(function(){
                                       commitEditAndSetFocus();
@@ -1676,7 +1676,7 @@ if (typeof Slick === "undefined") {
             if (!cell || (currentEditor !== null && activeRow == cell.row && activeCell == cell.cell)) {
                 return;
             }
-            
+
             trigger(self.onClick, {row:cell.row, cell:cell.cell}, e);
             if (e.isImmediatePropagationStopped()) {
                 return;
@@ -1768,13 +1768,13 @@ if (typeof Slick === "undefined") {
 
         function getCellFromEvent(e) {
             var $cell = $(e.target).closest(".slick-cell", $canvas);
-            
+
             // get cell of current editor even if you are not clicking on the grid row (anywhere on the viewport)
             if($cell.length == 0 && currentEditor != null) {
               var currentEditorCell = currentEditor.getCell();
               $cell = $(currentEditorCell.next()[0] || currentEditorCell.prev()[0]);
             }
-            
+
             if (!$cell.length)
                 return null;
 
@@ -1814,7 +1814,7 @@ if (typeof Slick === "undefined") {
         function setFocus() {
             // IE tries to scroll the viewport so that the item being focused is aligned to the left border
             // IE-specific .setActive() sets the focus, but doesn't scroll
-            if ($.browser.msie) {
+            if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
                 $canvas[0].setActive();
             }
             else {
@@ -1925,7 +1925,7 @@ if (typeof Slick === "undefined") {
 
             // if there previously was text selected on a page (such as selected text in the edit cell just removed),
             // IE can't set focus to anything else correctly
-            if ($.browser.msie) { clearTextSelection(); }
+            if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) { clearTextSelection(); }
 
             getEditorLock().deactivate(editController);
         }
@@ -1933,7 +1933,7 @@ if (typeof Slick === "undefined") {
         function makeActiveCellEditable(editor) {
             if (!activeCellNode) { return; }
             // if (!options.editable) {
-            if (!isColumnEditable(columns[activeCell])) {  
+            if (!isColumnEditable(columns[activeCell])) {
                 throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
             }
 
@@ -2408,7 +2408,7 @@ if (typeof Slick === "undefined") {
             }
         }
 
-        
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         // IEditor implementation for the editor lock
 
@@ -2519,20 +2519,20 @@ if (typeof Slick === "undefined") {
             }
             selectionModel.setSelectedRanges(rowsToRanges(rows));
         }
-        
+
         // ----------------------- customized methods for convenience ------------------------
         function getRows() {
           return rowsCache;
         }
-      
+
         function getRowAt(i){
           return rowsCache[i];
         }
-        
+
         function isEditing(){
           return currentEditor != null;
         }
-        
+
         // Get row by record.id
         function getRowByRecordId(id){
           var data = getData();
@@ -2548,7 +2548,7 @@ if (typeof Slick === "undefined") {
               var selectedIndexes = getSelectedRows();
               var ids;
               if (selectedIndexes.length > 0) {
-                ids = $.map(selectedIndexes,function(n, i) { 
+                ids = $.map(selectedIndexes,function(n, i) {
                   return getDataItem(n)['id'];
                 });
                 return ids;
@@ -2568,7 +2568,7 @@ if (typeof Slick === "undefined") {
                 return column_option.editable;
             }
         }
-        
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         // Debug
 
@@ -2701,7 +2701,7 @@ if (typeof Slick === "undefined") {
             // IEditor implementation
             "getEditorLock":                getEditorLock,
             "getEditController":            getEditController,
-            
+
             // Customized APIs
             "getRows":                      getRows,
             "getRowAt":                     getRowAt,
