@@ -55,7 +55,7 @@
                     var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
                     var depend_select = $("select#" + depend_select_id);
 
-                    depend_select.live('change', function(){
+                    depend_select.on('change', function(){
                       var current_select_id = "#{model_name}_#{column_name}";
                       var current_select = $("select#" + current_select_id);
                       var key = $(this).val();

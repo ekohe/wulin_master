@@ -84,7 +84,7 @@ $.fn.simple_clone = function(option){
       $(this).attr("id", new_id);
     });
   };
-  
+
   // -------------------------- regenerate name of input and select inside the wrapper ----------------------
   $.fn.regenerate_names = function(number){
     $(this).find("input, select").each(function(){
@@ -106,7 +106,7 @@ $.fn.simple_clone = function(option){
   };
 
   // ---------------------------- '+' button event ---------------------------------------------------------
-  $("span.simple_plus").live("click", function(){
+  $("span.simple_plus").on("click", function(){
     var outer_wrapper = $(this).closest(".outer_simple_wrapper");
     var wrapper_count = outer_wrapper.find(".simple_wrapper").length;
     var last_wrapper = outer_wrapper.find(".simple_wrapper").last();
@@ -133,12 +133,12 @@ $.fn.simple_clone = function(option){
     // generate new id for input and select in cloned_wrapper
     var current_wrapper_count = wrapper_count + 1;
     cloned_wrapper.regenerate_ids(current_wrapper_count-1);
-    
+
     // generate new name for input and select in cloned_wrapper if option[:nested] true
     if(option.nested == true){
       cloned_wrapper.regenerate_names(current_wrapper_count-1);
     }
-    
+
     // generate new label for cloned_wrapper
     cloned_wrapper.regenerate_label(current_wrapper_count);
 
@@ -151,7 +151,7 @@ $.fn.simple_clone = function(option){
   });
 
   // ---------------------------- '-' button event ----------------------------------------------------------
-  $("span.simple_minus").live("click", function(){
+  $("span.simple_minus").on("click", function(){
     var outer_wrapper = $(this).closest(".outer_simple_wrapper");
     var wrapper_count = outer_wrapper.find(".simple_wrapper").length;
     // if you clicked the '-' of the last wrapper, later you will need to clone a new '+' button
@@ -183,14 +183,14 @@ $.fn.simple_clone = function(option){
     outer_wrapper.find(".simple_wrapper").each(function(i){
       $(this).regenerate_ids(i);
     });
-    
+
     // regenerate name for all remaining wrapper
     if(option.nested == true){
       outer_wrapper.find(".simple_wrapper").each(function(i){
         $(this).regenerate_names(i);
       });
     }
-    
+
     // regenerate labels for all remaining wrapper
     outer_wrapper.find(".simple_wrapper").each(function(i){
       $(this).regenerate_label(i+1);
