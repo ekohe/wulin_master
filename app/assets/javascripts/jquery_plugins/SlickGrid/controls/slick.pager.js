@@ -1,7 +1,7 @@
 (function($) {
     function SlickGridPager(dataView, grid, $container)
     {
-        var $status, $contextMenu;
+        var $status;
 
         function init()
         {
@@ -31,6 +31,9 @@
 
         function setPageSize(n)
         {
+            dataView.setRefreshHints({
+                isFilterUnchanged: true
+            });
             dataView.setPagingOptions({pageSize:n});
         }
 
@@ -96,19 +99,19 @@
             // $(icon_prefix + "ui-icon-seek-first" + icon_suffix)
             //         .click(gotoFirst)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-prev" + icon_suffix)
             //         .click(gotoPrev)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-next" + icon_suffix)
             //         .click(gotoNext)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-end" + icon_suffix)
             //         .click(gotoLast)
             //         .appendTo($nav);
-            // 
+            //
             // $container.find(".ui-icon-container")
             //         .hover(function() {
             //             $(this).toggleClass("ui-state-hover");
