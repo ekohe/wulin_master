@@ -17,8 +17,9 @@ WulinMaster.behaviors.clearFilters = $.extend({}, WulinMaster.behaviors.BaseBeha
 
   handler: function() {
     var master;
-    var fulledInputs = $('input[value!=""]', $(this.grid.getHeaderRow()));
-    
+    var fulledInputs = $('input', $(this.grid.getHeaderRow()));
+    fulledInputs = fulledInputs.filter(function() { return this.value != ""; });
+
     if (fulledInputs.size() > 0) {
       master = this.grid.master;
       // if the grid has no master grid, simply clear all filters, otherwise keep the master grid related filters
