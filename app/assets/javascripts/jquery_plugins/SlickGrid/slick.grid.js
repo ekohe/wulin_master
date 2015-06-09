@@ -352,6 +352,7 @@ if (typeof Slick === "undefined") {
 
         function setCanvasWidth(width) {
             $canvas.width(width);
+            $headerRow.width(width);
             viewportHasHScroll = (width > viewportW - scrollbarDimensions.width);
         }
 
@@ -458,7 +459,8 @@ if (typeof Slick === "undefined") {
                 }
 
                 if (options.showHeaderRow) {
-                    $("<div class='ui-state-default slick-headerrow-column c" + i + "'></div>").appendTo($headerRow);
+                    $("<div class='ui-state-default slick-headerrow-column l" + i + " r" + i +"'></div>")
+                        .appendTo($headerRow);
                 }
             }
 
@@ -726,8 +728,7 @@ if (typeof Slick === "undefined") {
                 "." + uid + " .slick-top-panel { height:" + options.topPanelHeight + "px; }",
                 "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
                 "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
-                "." + uid + " .slick-row { width:" + getRowWidth() + "px; height:" + options.rowHeight + "px; }",
-                "." + uid + " .lr { float:none; position:absolute; }"
+                "." + uid + " .slick-row { width:" + getRowWidth() + "px; height:" + options.rowHeight + "px; }"
             ];
 
             var rowWidth = getRowWidth();
@@ -1110,7 +1111,7 @@ if (typeof Slick === "undefined") {
             for (var i=0, cols=columns.length; i<cols; i++) {
                 var m = columns[i];
                 colspan = getColspan(row, i);  // TODO:  don't calc unless we have to
-                cellCss = "slick-cell lr l" + i + " r" + Math.min(columns.length -1, i + colspan - 1) + (m.cssClass ? " " + m.cssClass : "");
+                cellCss = "slick-cell l" + i + " r" + Math.min(columns.length -1, i + colspan - 1) + (m.cssClass ? " " + m.cssClass : "");
                 if (row === activeRow && i === activeCell) {
                     cellCss += (" active");
                 }

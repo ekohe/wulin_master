@@ -86,7 +86,7 @@ classes should alter those!
 }
 
 .slick-cell, .slick-headerrow-column {
-  float: left;
+  position: absolute;
 
   border: 1px solid transparent;
   border-right: 1px dotted silver;
