@@ -14,7 +14,10 @@
     function getNavState() {
       var cannotLeaveEditMode = !Slick.GlobalEditorLock.commitCurrentEdit();
       var pagingInfo = dataView.getPagingInfo();
-      var lastPage = Math.floor(pagingInfo.totalRows / pagingInfo.pageSize);
+      var lastPage = Math.ceil(pagingInfo.totalRows / pagingInfo.pageSize) - 1;
+      if (lastPage < 0) {
+        lastPage = 0;
+      }
 
       return {
         canGotoFirst: !cannotLeaveEditMode && pagingInfo.pageSize != 0 && pagingInfo.pageNum > 0,
@@ -135,7 +138,7 @@
       if (pagingInfo.pageSize == 0)
         $status.text("Showing all " + pagingInfo.totalRows + " rows");
       else
-        $status.text("Showing page " + (pagingInfo.pageNum + 1) + " of " + (Math.floor(pagingInfo.totalRows / pagingInfo.pageSize) + 1));
+        $status.text("Showing page " + (pagingInfo.pageNum + 1) + " of " + (state.lastPage + 1));
     }
 
     function resetPager() {
