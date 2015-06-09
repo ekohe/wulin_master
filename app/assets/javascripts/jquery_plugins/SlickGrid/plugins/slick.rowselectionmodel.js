@@ -10,6 +10,8 @@
         var _grid;
         var _ranges = [];
         var _self = this;
+        var _handler = new Slick.EventHandler();
+        var _inHandler;
         var _options;
         var _defaults = {
             selectActiveRow: true
@@ -18,14 +20,23 @@
         function init(grid) {
             _options = $.extend(true, {}, _defaults, options);
             _grid = grid;
-            _grid.onKeyDown.subscribe(handleKeyDown);
-            _grid.onClick.subscribe(handleClick);
+            _handler.subscribe(_grid.onActiveCellChanged, wrapHandler(handleActiveCellChange));
+            _handler.subscribe(_grid.onKeyDown, wrapHandler(handleKeyDown));
+            _handler.subscribe(_grid.onClick, wrapHandler(handleClick));
         }
 
         function destroy() {
-            _grid.onActiveCellChanged.unsubscribe(handleActiveCellChange);
-            _grid.onKeyDown.unsubscribe(handleKeyDown);
-            _grid.onClick.unsubscribe(handleClick);
+            _handler.unsubscribeAll();
+        }
+
+        function wrapHandler(handler) {
+            return function() {
+                if (!_inHandler) {
+                    _inHandler = true;
+                    handler.apply(this, arguments);
+                    _inHandler = false;
+                }
+            };
         }
 
         function rangesToRows(ranges) {
@@ -85,7 +96,7 @@
             var activeRow = _grid.getActiveCell();
             if (activeRow && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && (e.which == 38 || e.which == 40)) {
                 if(!_grid.getOptions().multiSelect) return false;
-                
+
                 var selectedRows = getSelectedRows();
                 selectedRows.sort(function(x,y) { return x-y });
                 if (!selectedRows.length) {
@@ -159,16 +170,16 @@
         }
 
         $.extend(this, {
-            "getSelectedRows":              getSelectedRows,
-            "setSelectedRows":              setSelectedRows,
+            "getSelectedRows":          getSelectedRows,
+            "setSelectedRows":          setSelectedRows,
 
-            "getSelectedRanges":            getSelectedRanges,
-            "setSelectedRanges":            setSelectedRanges,
+            "getSelectedRanges":        getSelectedRanges,
+            "setSelectedRanges":        setSelectedRanges,
 
-            "init":                         init,
-            "destroy":                      destroy,
+            "init":                     init,
+            "destroy":                  destroy,
 
-            "onSelectedRangesChanged":        new Slick.Event()
+            "onSelectedRangesChanged":  new Slick.Event()
         });
     }
 })(jQuery);
