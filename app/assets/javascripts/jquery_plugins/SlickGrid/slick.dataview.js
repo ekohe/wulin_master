@@ -123,11 +123,14 @@
     }
 
     function setPagingOptions(args) {
-      if (args.pageSize != undefined)
+      if (args.pageSize != undefined) {
         pagesize = args.pageSize;
+        pagenum = Math.min(pagenum, Math.ceil(totalRows / pagesize));
+      }
 
-      if (args.pageNum != undefined)
+      if (args.pageNum != undefined) {
         pagenum = Math.min(args.pageNum, Math.ceil(totalRows / pagesize));
+      }
 
       onPagingInfoChanged.notify(getPagingInfo(), null, self);
 
