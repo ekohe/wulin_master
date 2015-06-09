@@ -267,11 +267,11 @@ if (typeof Slick === "undefined") {
         createColumnHeaders();
         setupColumnSort();
         createCssRules();
-        resizeAndRender();
+        resizeCanvas();
         bindAncestorScrollEvents();
 
         $container
-          .on("resize.slickgrid", resizeAndRender);
+          .on("resize.slickgrid", resizeCanvas);
         $viewport
           .on("scroll.slickgrid", handleScroll);
         $headerScroller
@@ -1011,7 +1011,7 @@ if (typeof Slick === "undefined") {
         createColumnHeaders();
         removeCssRules();
         createCssRules();
-        resizeAndRender();
+        resizeCanvas();
         applyColumnWidths();
         handleScroll();
       }
@@ -1324,22 +1324,18 @@ if (typeof Slick === "undefined") {
       viewportW = parseFloat($.css($container[0], "width", true));
       $viewport.height(viewportH);
 
-      updateRowCount();
-      render();
       trigger(self.onCanvasResized, {});
-    }
 
-    function resizeAndRender() {
       if (options.forceFitColumns) {
         autosizeColumns();
-        render();
-      } else {
-        resizeCanvas();
       }
+
+      updateRowCount();
+      render();
     }
 
     function initialRender() {
-      resizeAndRender();
+      resizeCanvas();
       trigger(self.onRendered, {});
     }
 
