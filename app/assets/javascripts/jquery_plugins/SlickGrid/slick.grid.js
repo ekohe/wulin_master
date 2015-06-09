@@ -64,7 +64,6 @@ if (typeof Slick === "undefined") {
             editable: false,
             autoEdit: true,
             enableCellNavigation: true,
-            enableCellRangeSelection: false,
             enableColumnReorder: true,
             asyncEditorLoading: false,
             asyncEditorLoadDelay: 100,
@@ -83,6 +82,7 @@ if (typeof Slick === "undefined") {
             selectedCellCssClass: "selected",
             multiSelect: true,
             enableTextSelectionOnCells: false,
+            dataItemColumnValueExtractor: null,
             defaultFormatter: defaultFormatter
         };
 
@@ -1089,6 +1089,13 @@ if (typeof Slick === "undefined") {
             return column.editor || (options.editorFactory && options.editorFactory.getEditor(column));
         }
 
+        function getDataItemValueForColumn(item, columnDef) {
+            if (options.dataItemColumnValueExtractor) {
+                return options.dataItemColumnValueExtractor(item, columnDef);
+            }
+            return item[columnDef.field];
+        }
+
         function appendRowHtml(stringArray, row) {
             var d = getDataItem(row);
             var dataLoading = row < getDataLength() && !d;
@@ -1105,11 +1112,10 @@ if (typeof Slick === "undefined") {
 
             stringArray.push("<div class='ui-widget-content " + rowCss + "' row='" + row + "' style='top:" + (options.rowHeight*row-offset) + "px'>");
 
-            var colspan;
-            var rowHasColumnData = metadata && metadata.columns;
+            var colspan, m;
 
             for (var i=0, cols=columns.length; i<cols; i++) {
-                var m = columns[i];
+                m = columns[i];
                 colspan = getColspan(row, i);  // TODO:  don't calc unless we have to
                 cellCss = "slick-cell l" + i + " r" + Math.min(columns.length -1, i + colspan - 1) + (m.cssClass ? " " + m.cssClass : "");
                 if (row === activeRow && i === activeCell) {
@@ -1127,13 +1133,14 @@ if (typeof Slick === "undefined") {
 
                 // if there is a corresponding row (if not, this is the Add New row or this data hasn't been loaded yet)
                 if (d) {
-                    stringArray.push(getFormatter(row, m)(row, i, d[m.field], m, d));
+                    stringArray.push(getFormatter(row, m)(row, i, getDataItemValueForColumn(d, m), m, d));
                 }
 
                 stringArray.push("</div>");
 
-                if (colspan)
+                if (colspan) {
                     i += (colspan - 1);
+                }
             }
 
             stringArray.push("</div>");
