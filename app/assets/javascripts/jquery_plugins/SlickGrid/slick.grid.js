@@ -84,6 +84,7 @@ if (typeof Slick === "undefined") {
       multiSelect: true,
       enableTextSelectionOnCells: false,
       dataItemColumnValueExtractor: null,
+      fullWidthRows: false,
       defaultFormatter: defaultFormatter
     };
 
@@ -119,11 +120,13 @@ if (typeof Slick === "undefined") {
     var $viewport;
     var $canvas;
     var $style;
-    var stylesheet;
+    var stylesheet, columnCssRulesL = [], columnCssRulesR = [];
     var viewportH, viewportW;
-    var viewportHasHScroll;
+    var canvasWidth;
+    var viewportHasHScroll, viewportHasVScroll;
     var headerColumnWidthDiff, headerColumnHeightDiff, cellWidthDiff, cellHeightDiff; // padding+border
     var absoluteColumnMinWidth;
+    var numberOfRows = 0;
 
     var activePosX;
     var activeRow, activeCell;
@@ -344,19 +347,29 @@ if (typeof Slick === "undefined") {
       return dim;
     }
 
-    function getRowWidth() {
+    function getCanvasWidth() {
+      var availableWidth = viewportHasVScroll ? viewportW - scrollbarDimensions.width : viewportW;
       var rowWidth = 0;
       var i = columns.length;
       while (i--) {
         rowWidth += (columns[i].width || columnDefaults.width);
       }
-      return rowWidth;
+      return options.fullWidthRows ? Math.max(rowWidth, availableWidth) : rowWidth;
     }
 
-    function setCanvasWidth(width) {
-      $canvas.width(width);
-      $headerRow.width(width);
-      viewportHasHScroll = (width > viewportW - scrollbarDimensions.width);
+    function updateCanvasWidth(forceColumnWidthsUpdate) {
+      var oldCanvasWidth = canvasWidth;
+      canvasWidth = getCanvasWidth();
+
+      if (canvasWidth != oldCanvasWidth) {
+        $canvas.width(canvasWidth);
+        $headerRow.width(canvasWidth);
+        viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
+      }
+
+      if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
+        applyColumnWidths();
+      }
     }
 
     function disableSelection($target) {
@@ -549,7 +562,7 @@ if (typeof Slick === "undefined") {
     }
 
     function setupColumnResize() {
-      var $col, j, c, pageX, columnElements, minPageX, maxPageX, firstResizable, lastResizable, originalCanvasWidth;
+      var $col, j, c, pageX, columnElements, minPageX, maxPageX, firstResizable, lastResizable;
       columnElements = $headers.children();
       columnElements.find(".slick-resizable-handle").remove();
       columnElements.each(function(i, e) {
@@ -630,7 +643,6 @@ if (typeof Slick === "undefined") {
             }
             maxPageX = pageX + Math.min(shrinkLeewayOnRight, stretchLeewayOnLeft);
             minPageX = pageX - Math.min(shrinkLeewayOnLeft, stretchLeewayOnRight);
-            originalCanvasWidth = $canvas.width();
           })
           .bind("drag", function(e, dd) {
             var actualMinWidth, d = Math.min(maxPageX, Math.max(minPageX, e.pageX)) - pageX,
@@ -665,8 +677,6 @@ if (typeof Slick === "undefined") {
                     }
                   }
                 }
-              } else if (options.syncColumnCellResize) {
-                setCanvasWidth(originalCanvasWidth + d);
               }
             } else { // stretch column
               x = d;
@@ -698,8 +708,6 @@ if (typeof Slick === "undefined") {
                     }
                   }
                 }
-              } else if (options.syncColumnCellResize) {
-                setCanvasWidth(originalCanvasWidth + d);
               }
             }
             applyColumnHeaderWidths();
@@ -718,8 +726,7 @@ if (typeof Slick === "undefined") {
                 invalidateAllRows();
               }
             }
-            applyColumnWidths();
-            resizeCanvas();
+            updateCanvasWidth(true);
             trigger(self.onColumnsResized, {});
           });
       });
@@ -772,17 +779,12 @@ if (typeof Slick === "undefined") {
         "." + uid + " .slick-top-panel { height:" + options.topPanelHeight + "px; }",
         "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
         "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
-        "." + uid + " .slick-row { width:" + getRowWidth() + "px; height:" + options.rowHeight + "px; }"
+        "." + uid + " .slick-row { height:" + options.rowHeight + "px; }"
       ];
 
-      var rowWidth = getRowWidth();
-      var x = 0,
-        w;
       for (var i = 0; i < columns.length; i++) {
-        w = columns[i].width;
-        rules.push("." + uid + " .l" + i + " { left: " + x + "px; }");
-        rules.push("." + uid + " .r" + i + " { right: " + (rowWidth - x - w) + "px; }");
-        x += columns[i].width;
+        rules.push("." + uid + " .l" + i + " { }");
+        rules.push("." + uid + " .r" + i + " { }");
       }
 
       if ($style[0].styleSheet) { // IE
@@ -798,17 +800,20 @@ if (typeof Slick === "undefined") {
           break;
         }
       }
-    }
 
-    function findCssRule(selector) {
-      var rules = (stylesheet.cssRules || stylesheet.rules);
-
-      for (var i = 0; i < rules.length; i++) {
-        if (rules[i].selectorText == selector)
-          return rules[i];
+      // find and cache column CSS rules
+      columnCssRulesL = [], columnCssRulesR = [];
+      var cssRules = (stylesheet.cssRules || stylesheet.rules);
+      var matches, columnIdx;
+      for (var i = 0; i < cssRules.length; i++) {
+        if (matches = /\.l\d+/.exec(cssRules[i].selectorText)) {
+          columnIdx = parseInt(matches[0].substr(2, matches[0].length - 2), 10);
+          columnCssRulesL[columnIdx] = cssRules[i];
+        } else if (matches = /\.r\d+/.exec(cssRules[i].selectorText)) {
+          columnIdx = parseInt(matches[0].substr(2, matches[0].length - 2), 10);
+          columnCssRulesR[columnIdx] = cssRules[i];
+        }
       }
-
-      return null;
     }
 
     function removeCssRules() {
@@ -862,9 +867,9 @@ if (typeof Slick === "undefined") {
       var i, c,
         widths = [],
         shrinkLeeway = 0,
-        availWidth = (options.autoHeight ? viewportW : viewportW - scrollbarDimensions.width), // with AutoHeight, we do not need to accomodate the vertical scroll bar
         total = 0,
-        existingTotal = 0;
+        existingTotal = 0,
+        availWidth = viewportHasVScroll ? viewportW - scrollbarDimensions.width : viewportW;
 
       for (i = 0; i < columns.length; i++) {
         c = columns[i];
@@ -874,8 +879,6 @@ if (typeof Slick === "undefined") {
       }
 
       total = existingTotal;
-
-      invalidateAllRows();
 
       // shrink
       while (total > availWidth) {
@@ -916,8 +919,7 @@ if (typeof Slick === "undefined") {
       }
 
       applyColumnHeaderWidths();
-      applyColumnWidths();
-      resizeCanvas();
+      updateCanvasWidth(true);
     }
 
     function applyColumnHeaderWidths() {
@@ -931,23 +933,18 @@ if (typeof Slick === "undefined") {
     }
 
     function applyColumnWidths() {
-      var rowWidth = getRowWidth();
-      var x = 0,
-        w, rule;
+      var x = 0, w, rule;
       for (var i = 0; i < columns.length; i++) {
         w = columns[i].width;
 
-        rule = findCssRule("." + uid + " .l" + i);
+        rule = columnCssRulesL[i];
         rule.style.left = x + "px";
 
-        rule = findCssRule("." + uid + " .r" + i);
-        rule.style.right = (rowWidth - x - w) + "px";
+        rule = columnCssRulesR[i];
+        rule.style.right = (canvasWidth - x - w) + "px";
 
         x += columns[i].width;
       }
-
-      rule = findCssRule("." + uid + " .slick-row");
-      rule.style.width = rowWidth + "px";
     }
 
     function setSortColumn(columnId, ascending) {
@@ -1001,6 +998,7 @@ if (typeof Slick === "undefined") {
       removeCssRules();
       createCssRules();
       resizeAndRender();
+      applyColumnWidths();
       handleScroll();
     }
 
@@ -1310,13 +1308,6 @@ if (typeof Slick === "undefined") {
       viewportW = parseFloat($.css($container[0], "width", true));
       $viewport.height(viewportH);
 
-      var w = 0,
-        i = columns.length;
-      while (i--) {
-        w += columns[i].width;
-      }
-      setCanvasWidth(w);
-
       updateRowCount();
       render();
       trigger(self.onCanvasResized, {});
@@ -1325,6 +1316,7 @@ if (typeof Slick === "undefined") {
     function resizeAndRender() {
       if (options.forceFitColumns) {
         autosizeColumns();
+        render();
       } else {
         resizeCanvas();
       }
@@ -1336,8 +1328,13 @@ if (typeof Slick === "undefined") {
     }
 
     function updateRowCount() {
-      var newRowCount = getDataLength() + (options.enableAddRow ? 1 : 0) + (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0);
-      var oldH = h;
+      numberOfRows = getDataLength() +
+          (options.enableAddRow ? 1 : 0) +
+          (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0);
+
+      var oldViewportHasVScroll = viewportHasVScroll;
+      // with autoHeight, we do not need to accommodate the vertical scroll bar
+      viewportHasVScroll = !options.autoHeight && (numberOfRows * options.rowHeight > viewportH);
 
       // remove the rows that are now outside of the data range
       // this helps avoid redundant calls to .removeRow() when the size of the data decreased by thousands of rows
@@ -1348,11 +1345,8 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      // Fix the viewport height bug when there is no horizontal scroll and the grid height is small than the viewport
-      // There was a gap as high as the horizontal scroll between viewport and pager
-      var hasHorizontalScroll = ($viewport[0].scrollWidth != $viewport[0].clientWidth);
-      th = Math.max(options.rowHeight * newRowCount, viewportH - (hasHorizontalScroll ? scrollbarDimensions.height : 0));
-
+      var oldH = h;
+      th = Math.max(options.rowHeight * numberOfRows, viewportH - scrollbarDimensions.height);
       if (th < maxSupportedCssHeight) {
         // just one page
         h = ph = th;
@@ -1382,12 +1376,16 @@ if (typeof Slick === "undefined") {
         // scroll to bottom
         // scrollTo(th-viewportH);
         scrollTo(th - (viewportH - (viewportHasHScroll ? scrollbarDimensions.height : 0)));
-
       }
 
       if (h != oldH && options.autoHeight) {
         resizeCanvas();
       }
+
+      if (options.forceFitColumns && oldViewportHasVScroll != viewportHasVScroll) {
+        autosizeColumns();
+      }
+      updateCanvasWidth(false);
     }
 
     function getVisibleRange(viewportTop) {
