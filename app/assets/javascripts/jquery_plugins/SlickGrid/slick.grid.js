@@ -2317,6 +2317,8 @@ if (typeof Slick === "undefined") {
                 if (dir == 'up' || dir == 'down') setSelectedRows([pos.row]);   // change the row selection
                 setActiveCellInternal(getCellNode(pos.row, pos.cell), isAddNewRow || options.autoEdit);
                 activePosX = pos.posX;
+            } else {
+                setActiveCellInternal(getCellNode(activeRow, activeCell), (activeRow == getDataLength()) || options.autoEdit);
             }
         }
 
