@@ -495,7 +495,7 @@ if (typeof Slick === "undefined") {
                     }
 
                     setSortColumn(sortColumnId,sortAsc);
-                    trigger(self.onSort, {sortCol:column,sortAsc:sortAsc});
+                    trigger(self.onSort, {sortCol:column,sortAsc:sortAsc}, e);
                 }
             });
         }
