@@ -57,6 +57,7 @@ if (typeof Slick === "undefined") {
 
     // settings
     var defaults = {
+      explicitInitialization: false,
       headerHeight: 25,
       rowHeight: 25,
       defaultColumnWidth: 80,
@@ -109,6 +110,7 @@ if (typeof Slick === "undefined") {
     var scrollDir = 1;
 
     // private
+    var initialized = false;
     var $container;
     var uid = "slickgrid_" + Math.round(1000000 * Math.random());
     var self = this;
@@ -124,7 +126,8 @@ if (typeof Slick === "undefined") {
     var viewportH, viewportW;
     var canvasWidth;
     var viewportHasHScroll, viewportHasVScroll;
-    var headerColumnWidthDiff, headerColumnHeightDiff, cellWidthDiff, cellHeightDiff; // padding+border
+    var headerColumnWidthDiff = 0, headerColumnHeightDiff = 0, // border+padding
+      cellWidthDiff = 0, cellHeightDiff = 0;
     var absoluteColumnMinWidth;
     var numberOfRows = 0;
 
@@ -230,53 +233,62 @@ if (typeof Slick === "undefined") {
       $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='width:100%;overflow-x:auto;outline:0;position:relative;overflow-y:auto;'>").appendTo($container);
       $canvas = $("<div class='grid-canvas' tabIndex='0' hideFocus />").appendTo($viewport);
 
-      // header columns and cells may have different padding/border skewing width calculations (box-sizing, hello?)
-      // calculate the diff so we can set consistent sizes
-      measureCellPaddingAndBorder();
-
-      // for usability reasons, all text selection in SlickGrid is disabled
-      // with the exception of input and textarea elements (selection must
-      // be enabled there so that editors work as expected); note that
-      // selection in grid cells (grid body) is already unavailable in
-      // all browsers except IE
-      disableSelection($headers); // disable all text selection in header (including input and textarea)
-
-      if (!options.enableTextSelectionOnCells) {
-        // disable text selection in grid cells except in input and textarea elements
-        // (this is IE-specific, because selectstart event will only fire in IE)
-        $viewport.bind("selectstart.ui", function(event) {
-          return $(event.target).is("input,textarea");
-        });
+      if (!options.explicitInitialization) {
+        finishInitialization();
       }
+    }
 
-      viewportW = parseFloat($.css($container[0], "width", true));
+    function finishInitialization() {
+      if (!initialized) {
+        initialized = true;
+        viewportW = parseFloat($.css($container[0], "width", true));
 
-      removeInvisibleColumns();
+        // header columns and cells may have different padding/border skewing width calculations (box-sizing, hello?)
+        // calculate the diff so we can set consistent sizes
+        measureCellPaddingAndBorder();
 
-      createColumnHeaders();
-      setupColumnSort();
-      createCssRules();
-      resizeAndRender();
+        // for usability reasons, all text selection in SlickGrid is disabled
+        // with the exception of input and textarea elements (selection must
+        // be enabled there so that editors work as expected); note that
+        // selection in grid cells (grid body) is already unavailable in
+        // all browsers except IE
+        disableSelection($headers); // disable all text selection in header (including input and textarea)
 
-      bindAncestorScrollEvents();
-      $viewport.bind("scroll.slickgrid", handleScroll);
-      $container.bind("resize.slickgrid", resizeAndRender);
-      $headerScroller
-        .bind("contextmenu.slickgrid", handleHeaderContextMenu)
-        .bind("click.slickgrid", handleHeaderClick);
+        removeInvisibleColumns();
 
-      $canvas
-        .bind("keydown.slickgrid", handleKeyDown)
-        .bind("click.slickgrid", handleClick)
-        .bind("dblclick.slickgrid", handleDblClick)
-        .bind("contextmenu.slickgrid", handleContextMenu)
-        .bind("draginit", handleDragInit)
-        .bind("dragstart", handleDragStart)
-        .bind("drag", handleDrag)
-        .bind("dragend", handleDragEnd);
+        if (!options.enableTextSelectionOnCells) {
+          // disable text selection in grid cells except in input and textarea elements
+          // (this is IE-specific, because selectstart event will only fire in IE)
+          $viewport.bind("selectstart.ui", function (event) {
+            return $(event.target).is("input,textarea");
+          });
+        }
 
-      $canvas.delegate(".slick-cell", "mouseenter", handleMouseEnter);
-      $canvas.delegate(".slick-cell", "mouseleave", handleMouseLeave);
+        createColumnHeaders();
+        setupColumnSort();
+        createCssRules();
+        resizeAndRender();
+        bindAncestorScrollEvents();
+
+        $container
+          .on("resize.slickgrid", resizeAndRender);
+        $viewport
+          .on("scroll.slickgrid", handleScroll);
+        $headerScroller
+          .on("contextmenu.slickgrid", handleHeaderContextMenu)
+          .on("click.slickgrid", handleHeaderClick);
+        $canvas
+          .on("keydown.slickgrid", handleKeyDown)
+          .on("click.slickgrid", handleClick)
+          .on("dblclick.slickgrid", handleDblClick)
+          .on("contextmenu.slickgrid", handleContextMenu)
+          .on("draginit", handleDragInit)
+          .on("dragstart", handleDragStart)
+          .on("drag", handleDrag)
+          .on("dragend", handleDragEnd)
+          .on("mouseenter", ".slick-cell", handleMouseEnter)
+          .on("mouseleave", ".slick-cell", handleMouseLeave);
+      }
     }
 
     function registerPlugin(plugin) {
@@ -426,6 +438,7 @@ if (typeof Slick === "undefined") {
     }
 
     function updateColumnHeader(columnId, title, toolTip) {
+      if (!initialized) { return; }
       var idx = getColumnIndex(columnId);
       var $header = $headers.children().eq(idx);
       if ($header) {
@@ -448,7 +461,6 @@ if (typeof Slick === "undefined") {
     }
 
     function createColumnHeaders() {
-      var i;
 
       function hoverBegin() {
         $(this).addClass("ui-state-hover");
@@ -462,7 +474,7 @@ if (typeof Slick === "undefined") {
       $headerRow.empty();
       columnsById = {};
 
-      for (i = 0; i < columns.length; i++) {
+      for (var i = 0; i < columns.length; i++) {
         var m = columns[i] = $.extend({}, columnDefaults, columns[i]);
         columnsById[m.id] = i;
 
@@ -923,6 +935,7 @@ if (typeof Slick === "undefined") {
     }
 
     function applyColumnHeaderWidths() {
+      if (!initialized) { return; }
       var h;
       for (var i = 0, headers = $headers.children(), ii = headers.length; i < ii; i++) {
         h = $(headers[i]);
@@ -993,13 +1006,15 @@ if (typeof Slick === "undefined") {
 
     function setColumns(columnDefinitions) {
       columns = columnDefinitions;
-      invalidateAllRows();
-      createColumnHeaders();
-      removeCssRules();
-      createCssRules();
-      resizeAndRender();
-      applyColumnWidths();
-      handleScroll();
+      if (initialized) {
+        invalidateAllRows();
+        createColumnHeaders();
+        removeCssRules();
+        createCssRules();
+        resizeAndRender();
+        applyColumnWidths();
+        handleScroll();
+      }
     }
 
     function getOptions() {
@@ -1298,6 +1313,7 @@ if (typeof Slick === "undefined") {
     }
 
     function resizeCanvas() {
+      if (!initialized) { return; }
       if (options.autoHeight) {
         viewportH = options.rowHeight * (getDataLength() + (options.enableAddRow ? 1 : 0) + (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0));
       } else {
@@ -1328,6 +1344,7 @@ if (typeof Slick === "undefined") {
     }
 
     function updateRowCount() {
+      if (!initialized) { return; }
       numberOfRows = getDataLength() +
           (options.enableAddRow ? 1 : 0) +
           (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0);
@@ -1480,6 +1497,7 @@ if (typeof Slick === "undefined") {
     }
 
     function render() {
+      if (!initialized) { return; }
       var visible = getVisibleRange();
       var rendered = getRenderedRange();
 
@@ -2432,6 +2450,7 @@ if (typeof Slick === "undefined") {
     }
 
     function setActiveCell(row, cell) {
+      if (!initialized) { return; }
       if (row > getDataLength() || row < 0 || cell >= columns.length || cell < 0) {
         return;
       }
@@ -2492,6 +2511,7 @@ if (typeof Slick === "undefined") {
     }
 
     function gotoCell(row, cell, forceEdit) {
+      if (!initialized) { return; }
       if (!canCellBeActive(row, cell)) {
         return;
       }
@@ -2809,6 +2829,7 @@ if (typeof Slick === "undefined") {
       "setCellCssStyles": setCellCssStyles,
       "removeCellCssStyles": removeCellCssStyles,
 
+      "init": finishInitialization,
       "destroy": destroy,
 
       // IEditor implementation
