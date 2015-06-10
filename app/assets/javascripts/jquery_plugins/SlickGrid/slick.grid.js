@@ -516,6 +516,9 @@ if (typeof Slick === "undefined") {
 
     function setupColumnSort() {
       $headers.click(function(e) {
+        // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
+        e.metaKey = e.metaKey || e.ctrlKey;
+
         if ($(e.target).hasClass("slick-resizable-handle")) {
           return;
         }
@@ -539,7 +542,7 @@ if (typeof Slick === "undefined") {
             }
           }
 
-          if (e.ctrlKey && options.multiColumnSort) {
+          if (e.metaKey && options.multiColumnSort) {
             if (sortOpts) {
               sortColumns.splice(i, 1);
             }
