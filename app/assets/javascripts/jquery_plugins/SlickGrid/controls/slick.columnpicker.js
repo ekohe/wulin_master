@@ -2,6 +2,7 @@
   function SlickColumnPicker(columns,grid,options)
   {
     var $menu;
+    var columnCheckboxes;
     var _self = this;   // Ekohe fork
 
     var defaults = {
@@ -10,21 +11,21 @@
 
     function init() {
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
-        
+
       options = $.extend({}, defaults, options);
 
       $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:10250;' />").appendTo(document.body);
 
       $menu.bind("mouseleave", function(e) { $(this).fadeOut(options.fadeSpeed) });
       $menu.bind("click", updateColumn);
-      
+
       // Ekohe fork
       // bind the column pick event
       $menu.bind("click", handleColumnPick);
       bindGrid();
       // ------------------------------------------------
     }
-    
+
     // Ekohe fork
     // assign the picker itself to grid
     function bindGrid() {
@@ -36,6 +37,7 @@
     {
       e.preventDefault();
       $menu.empty();
+      columnCheckboxes = [];
 
       var $li, $input, $allNoneInput;
 
@@ -49,10 +51,8 @@
       for (var i=0; i<columns.length; i++) {
         $li = $("<li />").appendTo($menu);
 
-        $input = $("<input type='checkbox' />")
-                  .attr({id: "columnpicker_" + i, name: columns[i].field})
-                  //.data("field", columns[i].field)
-                  .appendTo($li);
+        $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+        columnCheckboxes.push($input);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
           $input.attr("checked","checked");
@@ -60,23 +60,30 @@
           $allNoneInput.removeAttr("checked");
         }
 
-        $("<label for='columnpicker_" + i + "' />")
+        $("<label />")
           .text(columns[i].name)
+          .prepend($input)
           .appendTo($li);
       }
 
       // Addpend "Force Fit Columns" checkbox
       $("<hr/>").appendTo($menu);
       $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' id='autoresize' />").appendTo($li);
-      $("<label for='autoresize'>Force Fit Columns</label>").appendTo($li);
+      $input = $("<input type='checkbox' />").data("option", "autoresize");
+      $("<label />")
+          .text("Force fit columns")
+          .prepend($input)
+          .appendTo($li);
       if (grid.getOptions().forceFitColumns)
         $input.attr("checked", "checked");
 
       // Addpend "Synchronous Resizing" checkbox
       $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' id='syncresize' />").appendTo($li);
-      $("<label for='syncresize'>Synchronous Resizing</label>").appendTo($li);
+      $input = $("<input type='checkbox' />").data("option", "syncresize");
+      $("<label />")
+          .text("Synchronous resize")
+          .prepend($input)
+          .appendTo($li);
       if (grid.getOptions().syncColumnCellResize)
         $input.attr("checked", "checked");
 
@@ -85,7 +92,7 @@
         .css("left", e.pageX - 10)
         .fadeIn(options.fadeSpeed);
     }
-    
+
     function handleColumnPick(e, args) {
       _self.onColumnsPick.notify({});
     }
@@ -105,7 +112,7 @@
       });
 
       // "Force Fit Columns" checkbox hanlder
-      if (e.target.id == 'autoresize') {
+      if ($(e.target).data("option") == "autoresize") {
         if (e.target.checked) {
           grid.setOptions({forceFitColumns: true});
           grid.autosizeColumns();
@@ -116,7 +123,7 @@
       }
 
       // "Synchronous Resizing" checkbox hanlder
-      if (e.target.id == 'syncresize') {
+      if ($(e.target).data("option") == "syncresize") {
         if (e.target.checked) {
           grid.setOptions({syncColumnCellResize: true});
         } else {
@@ -142,17 +149,18 @@
 
       // Column checkbox handler
       if ($(e.target).is(":checkbox")) {
-        if ($menu.find(":checkbox:checked").length == 0) {
-          $(e.target).attr("checked","checked");
-          return;
-        }
-
         var visibleColumns = [];
-        $menu.find(":checkbox[id^=columnpicker]").each(function(i,e) {
+        $.each(columnCheckboxes, function (i, e) {
           if ($(this).is(":checked")) {
             visibleColumns.push(columns[i]);
           }
         });
+
+        if (!visibleColumns.length) {
+          $(e.target).attr("checked", "checked");
+          return;
+        }
+
         grid.setColumns(visibleColumns);
       }
     }
