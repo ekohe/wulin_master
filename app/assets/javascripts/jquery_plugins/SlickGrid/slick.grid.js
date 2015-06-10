@@ -85,6 +85,7 @@ if (typeof Slick === "undefined") {
       enableTextSelectionOnCells: false,
       dataItemColumnValueExtractor: null,
       fullWidthRows: false,
+      multiColumnSort: false,
       defaultFormatter: defaultFormatter
     };
 
@@ -153,8 +154,7 @@ if (typeof Slick === "undefined") {
     var cellCssClasses = {};
 
     var columnsById = {};
-    var sortColumnId;
-    var sortAsc = true;
+    var sortColumns = [];
 
     // async call handles
     var h_editorLoader = null;
@@ -501,7 +501,7 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      setSortColumn(sortColumnId, sortAsc);
+      setSortColumns(sortColumns);
       setupColumnResize();
       if (options.enableColumnReorder) {
         setupColumnReorder();
@@ -523,18 +523,40 @@ if (typeof Slick === "undefined") {
           if (!getEditorLock().commitCurrentEdit())
             return;
 
-          if (column.id === sortColumnId) {
-            sortAsc = !sortAsc;
-          } else {
-            sortColumnId = column.id;
-            sortAsc = true;
+          var sortOpts = null;
+          for (var i = 0; i < sortColumns.length; i++) {
+            if (sortColumns[i].id == column.id) {
+              sortOpts = sortColumns[i];
+              sortOpts.sortAsc = !sortOpts.sortAsc;
+              break;
+            }
           }
 
-          setSortColumn(sortColumnId, sortAsc);
-          trigger(self.onSort, {
-            sortCol: column,
-            sortAsc: sortAsc
-          }, e);
+          if ((!e.shiftKey && !e.metaKey) || !options.multiColumnSort) {
+            sortColumns = [];
+          }
+
+          if (!sortOpts) {
+            sortOpts = { id: column.id, sortAsc: true };
+            sortColumns.push(sortOpts);
+          } else if (sortColumns.length == 0) {
+            sortColumns.push(sortOpts);
+          }
+
+          setSortColumns(sortColumns);
+
+          if (!options.multiColumnSort) {
+            trigger(self.onSort, {
+              multiColumnSort: false,
+              sortCol: column,
+              sortAsc: sortOpts.sortAsc}, e);
+          } else {
+            trigger(self.onSort, {
+              multiColumnSort: true,
+              sortCols: $.map(sortColumns, function(col) {
+                return {sortCol: columns[getColumnIndex(col.id)], sortAsc: col.sortAsc };
+              })}, e);
+          }
         }
       });
     }
@@ -978,19 +1000,29 @@ if (typeof Slick === "undefined") {
     }
 
     function setSortColumn(columnId, ascending) {
-      sortColumnId = columnId;
-      sortAsc = ascending;
-      var columnIndex = getColumnIndex(sortColumnId);
+      setSortColumns({ columnId: columnId, sortAsc: ascending});
+    }
 
-      $headers.children().removeClass("slick-header-column-sorted");
-      $headers.find(".slick-sort-indicator").removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
-
-      if (columnIndex != null) {
-        $headers.children().eq(columnIndex)
-          .addClass("slick-header-column-sorted")
+    function setSortColumns(cols) {
+      sortColumns = cols;
+      var headerColumnEls = $headers.children();
+      headerColumnEls
+          .removeClass("slick-header-column-sorted")
           .find(".slick-sort-indicator")
-          .addClass(sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
-      }
+              .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
+
+      $.each(sortColumns, function(i, col) {
+        if (col.sortAsc == null) {
+          col.sortAsc = true;
+        }
+        var columnIndex = getColumnIndex(col.id);
+        if (columnIndex != null) {
+          headerColumnEls.eq(columnIndex)
+              .addClass("slick-header-column-sorted")
+              .find(".slick-sort-indicator")
+                  .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
+        }
+      });
     }
 
     function handleSelectedRangesChanged(e, ranges) {
@@ -2803,6 +2835,7 @@ if (typeof Slick === "undefined") {
       "getColumnIndex": getColumnIndex,
       "updateColumnHeader": updateColumnHeader,
       "setSortColumn": setSortColumn,
+      "setSortColumns": setSortColumns,
       "autosizeColumns": autosizeColumns,
       "getOptions": getOptions,
       "setOptions": setOptions,
