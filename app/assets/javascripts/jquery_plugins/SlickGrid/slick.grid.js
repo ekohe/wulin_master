@@ -1039,6 +1039,10 @@ if (typeof Slick === "undefined") {
       });
     }
 
+    function getSortColumns() {
+      return sortColumns;
+    }
+
     function handleSelectedRangesChanged(e, ranges) {
       selectedRows = [];
       var hash = {};
@@ -2850,6 +2854,7 @@ if (typeof Slick === "undefined") {
       "updateColumnHeader": updateColumnHeader,
       "setSortColumn": setSortColumn,
       "setSortColumns": setSortColumns,
+      "getSortColumns": getSortColumns,
       "autosizeColumns": autosizeColumns,
       "getOptions": getOptions,
       "setOptions": setOptions,
