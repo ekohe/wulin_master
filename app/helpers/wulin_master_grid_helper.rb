@@ -40,7 +40,7 @@ module WulinMasterGridHelper
   end
 
   def time_column?(column)
-    'true' if column.sql_type.to_s.downcase == 'time' or (column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeCellEditor')
+    'true' if column.sql_type.to_s.downcase == 'time' or (column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeEditor')
   end
 
   def get_column_name(column)

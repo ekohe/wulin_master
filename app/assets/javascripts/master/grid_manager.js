@@ -20,29 +20,29 @@
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
         case "string":
-          return TextCellEditor;
+          return Slick.Editors.Text;
         case "text":
-          return LongTextCellEditor;
+          return Slick.Editors.LongText;
         case "datetime":
-          return DateTimeCellEditor;
+          return Slick.Editors.DateTime;
         case "time":
-          return TimeCellEditor;
+          return Slick.Editors.Time;
         case "date":
-          return StandardDateCellEditor;
+          return Slick.Editors.StandardDate;
         case "integer":
-          return IntegerCellEditor;
+          return Slick.Editors.Integer;
         case "boolean":
-          return YesNoCheckboxCellEditor;
+          return Slick.Editors.YesNoCheckbox;
         case "belongs_to":
-          return BelongsToEditor;
+          return Slick.Editors.BelongsTo;
         case "has_one":
-          return BelongsToEditor;
+          return Slick.Editors.BelongsTo;
         case "has_and_belongs_to_many":
-          return BelongsToEditor;
+          return Slick.Editors.BelongsTo;
         case "has_many":
-          return HasManyEditor;
+          return Slick.Editors.HasMany;
         default:
-          return TextCellEditor;
+          return Slick.Editors.Text;
       }
     }
 
@@ -52,11 +52,11 @@
         type_str = columns[i].type.toLowerCase();
         // 1. append editor
         if (columns[i].editor) {
-          columns[i].editor = eval(columns[i].editor);
+          columns[i].editor = eval("Slick.Editors." + columns[i].editor.replace('Editor', ''));
         } else if (columns[i].auto_complete) {
-          columns[i].editor = AutoCompleteTextEditor;
+          columns[i].editor = Slick.Editors.AutoCompleteText;
         } else if (columns[i].distinct) {
-          columns[i].editor = DistinctEditor;
+          columns[i].editor = Slick.Editors.Distinct;
         } else {
           columns[i].editor = getEditorForType(columns[i].type);
         }
@@ -66,31 +66,35 @@
         }
 
         if (type_str == "date") {
-          columns[i].formatter = StandardDateCellFormatter;
+          columns[i].formatter = Slick.Formatters.StandardDateCell;
           columns[i].DateShowFormat = "yy-mm-dd";
         } else if (type_str == "boolean") {
           if (!columns[i].formatter) {
-            columns[i].formatter = GraphicBoolCellFormatter;
+            columns[i].formatter = Slick.Formatters.GraphicBoolCell;
           }
         } else if (type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
-          columns[i].formatter = BelongsToFormatter;
+          columns[i].formatter = Slick.Formatters.BelongsTo;
         } else if (type_str == "has_many") {
-          columns[i].formatter = HasManyFormatter;
+          columns[i].formatter = Slick.Formatters.HasMany;
         } else if (type_str == 'has_one') {
-          columns[i].formatter = HasOneFormatter;
+          columns[i].formatter = Slick.Formatters.HasOne;
         }
 
         if (columns[i].simple_date) {
-          columns[i].editor = SimpleDateEditor;
-          columns[i].formatter = SimpleDateFormatter;
+          columns[i].editor = Slick.Editors.SimpleDate;
+          columns[i].formatter = Slick.Formatters.SimpleDate;
         } else if (columns[i].simple_time) {
-          columns[i].editor = columns[i].editor || TextCellEditor;
-          columns[i].formatter = SimpleTimeFormatter;
+          columns[i].editor = columns[i].editor || Slick.Editors.Text;
+          columns[i].formatter = Slick.Formatters.SimpleTime;
         }
 
         // 3. append formatter
         if (columns[i].formatter) {
-          columns[i].formatter = eval(columns[i].formatter);
+          if (typeof columns[i].formatter == "function"){
+            columns[i].formatter = eval(columns[i].formatter);
+          } else {
+            columns[i].formatter = eval("Slick.Formatters." + columns[i].formatter.replace('Formatter', ''));
+          }
           continue;
         }
       }
