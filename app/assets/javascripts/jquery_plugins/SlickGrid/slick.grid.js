@@ -881,37 +881,44 @@ if (typeof Slick === "undefined") {
         widths = [],
         shrinkLeeway = 0,
         total = 0,
-        existingTotal = 0,
+        prevTotal = 0,
         availWidth = viewportHasVScroll ? viewportW - scrollbarDimensions.width : viewportW;
 
       for (i = 0; i < columns.length; i++) {
         c = columns[i];
         widths.push(c.width);
-        existingTotal += c.width;
-        shrinkLeeway += c.width - Math.max(c.minWidth || 0, absoluteColumnMinWidth);
+        total += c.width;
+        if (c.resizable) {
+          shrinkLeeway += c.width - Math.max(c.minWidth, absoluteColumnMinWidth);
+        }
       }
 
-      total = existingTotal;
+      prevTotal = total;
 
       // shrink
-      while (total > availWidth) {
-        if (!shrinkLeeway) {
-          return;
-        }
+      while (total > availWidth && shrinkLeeway) {
         var shrinkProportion = (total - availWidth) / shrinkLeeway;
         for (i = 0; i < columns.length && total > availWidth; i++) {
           c = columns[i];
-          if (!c.resizable || c.minWidth === c.width || c.width === absoluteColumnMinWidth) {
+          var width = widths[i];
+          if (!c.resizable || width <= c.minWidth || width <= absoluteColumnMinWidth) {
             continue;
           }
-          var shrinkSize = Math.floor(shrinkProportion * (c.width - Math.max(c.minWidth || 0, absoluteColumnMinWidth))) || 1;
+          var absMinWidth = Math.max(c.minWidth, absoluteColumnMinWidth);
+          var shrinkSize = Math.floor(shrinkProportion * (width - absMinWidth)) || 1;
+          shrinkSize = Math.min(shrinkSize, width - absMinWidth);
           total -= shrinkSize;
+          shrinkLeeway -= shrinkSize;
           widths[i] -= shrinkSize;
         }
+        if (prevTotal == total) {  // avoid infinite loop
+          break;
+        }
+        prevTotal = total;
       }
 
       // grow
-      var previousTotal = total;
+      prevTotal = total;
       while (total < availWidth) {
         var growProportion = availWidth / total;
         for (i = 0; i < columns.length && total < availWidth; i++) {
@@ -923,8 +930,8 @@ if (typeof Slick === "undefined") {
           total += growSize;
           widths[i] += growSize;
         }
-        if (previousTotal == total) break; // if total is not changing, will result in infinite loop
-        previousTotal = total;
+        if (prevTotal == total) break; // avoid infinite loop
+        prevTotal = total;
       }
 
       for (i = 0; i < columns.length; i++) {
