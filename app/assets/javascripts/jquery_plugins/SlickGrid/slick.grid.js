@@ -1110,8 +1110,9 @@ if (typeof Slick === "undefined") {
     }
 
     function setData(newData, scrollToTop) {
-      invalidateAllRows();
       data = newData;
+      invalidateAllRows();
+      updateRowCount();
       if (scrollToTop)
         scrollTo(0);
     }
