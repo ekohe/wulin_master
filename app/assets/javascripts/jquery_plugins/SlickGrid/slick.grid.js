@@ -1169,7 +1169,7 @@ if (typeof Slick === "undefined") {
 
     function scrollTo(y) {
       y = Math.max(y, 0);
-      y = Math.min(y, th - viewportH);
+      y = Math.min(y, th - viewportH + (viewportHasHScroll ? scrollbarDimensions.height : 0));
       var oldOffset = offset;
 
       page = Math.min(n - 1, Math.floor(y / ph));
