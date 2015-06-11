@@ -146,7 +146,6 @@ if (typeof Slick === "undefined") {
     var scrollTop = 0;
     var lastRenderedScrollTop = 0;
     var prevScrollLeft = 0;
-    var avgRowRenderTime = 10;
 
     var selectionModel;
     var selectedRows = [];
@@ -1253,7 +1252,7 @@ if (typeof Slick === "undefined") {
 
       stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + (options.rowHeight * row - offset) + "px'>");
 
-      var colspan, m, childIdx = 0;
+      var colspan, m;
 
       for (var i = 0, cols = columns.length; i < cols; i++) {
         m = columns[i];
@@ -1283,8 +1282,6 @@ if (typeof Slick === "undefined") {
         if (colspan) {
           i += (colspan - 1);
         }
-
-        childIdx++;
       }
 
       stringArray.push("</div>");
@@ -1535,10 +1532,8 @@ if (typeof Slick === "undefined") {
 
     function renderRows(range) {
       var parentNode = $canvas[0],
-        rowsBefore = renderedRows,
         stringArray = [],
         rows = [],
-        startTimestamp = new Date(),
         needToReselectCell = false;
 
       for (var i = range.top; i <= range.bottom; i++) {
@@ -1571,10 +1566,6 @@ if (typeof Slick === "undefined") {
 
       if (needToReselectCell) {
         activeCellNode = getCellNode(activeRow, activeCell);
-      }
-
-      if (renderedRows - rowsBefore > 5) {
-        avgRowRenderTime = (new Date() - startTimestamp) / (renderedRows - rowsBefore);
       }
     }
 
