@@ -114,6 +114,7 @@ if (typeof Slick === "undefined") {
     var $container;
     var uid = "slickgrid_" + Math.round(1000000 * Math.random());
     var self = this;
+    var $focusSink;
     var $headerScroller;
     var $headers;
     var $headerRow, $headerRowScroller;
@@ -201,8 +202,6 @@ if (typeof Slick === "undefined") {
 
       $container
         .empty()
-        .attr("tabIndex", 0)
-        .attr("hideFocus", true)
         .css("overflow", "hidden")
         .css("outline", 0)
         .addClass(uid)
@@ -211,6 +210,8 @@ if (typeof Slick === "undefined") {
       // set up a positioning container if needed
       if (!/relative|absolute|fixed/.test($container.css("position")))
         $container.css("position", "relative");
+
+      $focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
 
       $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
       $headers = $("<div class='slick-header-columns' style='width:10000px; left:-1000px' />").appendTo($headerScroller);
@@ -229,10 +230,10 @@ if (typeof Slick === "undefined") {
         $headerRowScroller.hide();
       }
 
-      $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='width:100%;overflow:auto;outline:0;position:relative;;'>").appendTo($container);
+      $viewport = $("<div class='slick-viewport' style='width:100%;overflow:auto;outline:0;position:relative;;'>").appendTo($container);
       $viewport.css("overflow-y", options.autoHeight ? "hidden" : "auto");
 
-      $canvas = $("<div class='grid-canvas' tabIndex='0' hideFocus />").appendTo($viewport);
+      $canvas = $("<div class='grid-canvas' />").appendTo($viewport);
 
       if (!options.explicitInitialization) {
         finishInitialization();
@@ -278,6 +279,8 @@ if (typeof Slick === "undefined") {
         $headerScroller
           .on("contextmenu.slickgrid", handleHeaderContextMenu)
           .on("click.slickgrid", handleHeaderClick);
+        $focusSink
+          .on("keydown.slickgrid", handleKeyDown);
         $canvas
           .on("keydown.slickgrid", handleKeyDown)
           .on("click.slickgrid", handleClick)
@@ -1839,6 +1842,9 @@ if (typeof Slick === "undefined") {
     }
 
     function handleClick(e) {
+      if (!currentEditor) {
+        setFocus();
+      }
       var cell = getCellFromEvent(e);
       if (!cell || (currentEditor !== null && activeRow == cell.row && activeCell == cell.cell)) {
         return;
@@ -1996,13 +2002,7 @@ if (typeof Slick === "undefined") {
     }
 
     function setFocus() {
-      // IE tries to scroll the viewport so that the item being focused is aligned to the left border
-      // IE-specific .setActive() sets the focus, but doesn't scroll
-      if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
-        $canvas[0].setActive();
-      } else {
-        $canvas[0].focus();
-      }
+      $focusSink[0].focus();
     }
 
     function scrollActiveCellIntoView() {
@@ -2501,6 +2501,7 @@ if (typeof Slick === "undefined") {
       if (!getEditorLock().commitCurrentEdit()) {
         return;
       }
+      setFocus();
 
       var stepFunctions = {
         "up": gotoUp,
@@ -2889,6 +2890,7 @@ if (typeof Slick === "undefined") {
       "updateRowCount": updateRowCount,
       "scrollRowIntoView": scrollRowIntoView,
       "getCanvasNode": getCanvasNode,
+      "focus": setFocus,
 
       "getCellFromPoint": getCellFromPoint,
       "getCellFromEvent": getCellFromEvent,
