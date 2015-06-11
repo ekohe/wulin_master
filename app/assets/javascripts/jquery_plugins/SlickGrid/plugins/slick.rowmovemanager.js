@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   // register namespace
   $.extend(true, window, {
     "Slick": {
@@ -11,21 +11,20 @@
     var _canvas;
     var _dragging;
     var _self = this;
+    var _handler = new Slick.EventHandler();
 
     function init(grid) {
       _grid = grid;
       _canvas = _grid.getCanvasNode();
-      _grid.onDragInit.subscribe(handleDragInit);
-      _grid.onDragStart.subscribe(handleDragStart);
-      _grid.onDrag.subscribe(handleDrag);
-      _grid.onDragEnd.subscribe(handleDragEnd);
+      _handler
+        .subscribe(_grid.onDragInit, handleDragInit)
+        .subscribe(_grid.onDragStart, handleDragStart)
+        .subscribe(_grid.onDrag, handleDrag)
+        .subscribe(_grid.onDragEnd, handleDragEnd);
     }
 
     function destroy() {
-      _grid.onDragInit.unsubscribe(handleDragInit);
-      _grid.onDragStart.unsubscribe(handleDragStart);
-      _grid.onDrag.unsubscribe(handleDrag);
-      _grid.onDragEnd.unsubscribe(handleDragEnd);
+      _handler.unsubscribeAll();
     }
 
     function handleDragInit(e, dd) {
@@ -54,18 +53,18 @@
       dd.selectedRows = selectedRows;
 
       dd.selectionProxy = $("<div class='slick-reorder-proxy'/>")
-        .css("position", "absolute")
-        .css("zIndex", "99999")
-        .css("width", $(_canvas).innerWidth())
-        .css("height", rowHeight * selectedRows.length)
-        .appendTo(_canvas);
+          .css("position", "absolute")
+          .css("zIndex", "99999")
+          .css("width", $(_canvas).innerWidth())
+          .css("height", rowHeight * selectedRows.length)
+          .appendTo(_canvas);
 
       dd.guide = $("<div class='slick-reorder-guide'/>")
-        .css("position", "absolute")
-        .css("zIndex", "99998")
-        .css("width", $(_canvas).innerWidth())
-        .css("top", -1000)
-        .appendTo(_canvas);
+          .css("position", "absolute")
+          .css("zIndex", "99998")
+          .css("width", $(_canvas).innerWidth())
+          .css("top", -1000)
+          .appendTo(_canvas);
 
       dd.insertBefore = -1;
     }
