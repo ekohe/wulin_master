@@ -316,22 +316,16 @@
       };
 
       this.loadValue = function (item) {
-        defaultValue = item[args.column.field];
+        defaultValue = !!item[args.column.field];
         if (defaultValue) {
-          defaultValue = true;
           $select.attr("checked", "checked");
         } else {
-          defaultValue = false;
           $select.removeAttr("checked");
         }
       };
 
       this.serializeValue = function () {
-        if ($select.attr("checked") === 'checked') {
-          return true;
-        } else {
-          return false;
-        }
+        return !!$select.attr("checked");
       };
 
       this.applyValue = function (item, state) {
@@ -339,11 +333,7 @@
       };
 
       this.isValueChanged = function () {
-        if ($select.attr("checked") === 'checked') {
-          return !defaultValue;
-        } else {
-          return defaultValue;
-        }
+        return (this.serializeValue() !== defaultValue);
       };
 
       this.validate = function () {
