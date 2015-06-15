@@ -11,7 +11,7 @@
 
     function init() {
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
-
+      grid.onColumnsReordered.subscribe(handleColumnsReordered);
       options = $.extend({}, defaults, options);
 
       $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:10250;' />").appendTo(document.body);
@@ -95,6 +95,10 @@
 
     function handleColumnPick(e, args) {
       _self.onColumnsPick.notify({});
+    }
+
+    function handleColumnsReordered() {
+      columns = grid.getColumns();
     }
 
     function updateColumn(e) {
