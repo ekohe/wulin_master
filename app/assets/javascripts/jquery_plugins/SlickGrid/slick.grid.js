@@ -1538,6 +1538,10 @@ if (typeof Slick === "undefined") {
       ensureCellNodesInRowsCache(row);
 
       for (var columnIdx in cacheEntry.cellNodesByColumnIdx) {
+        if (!cacheEntry.cellNodesByColumnIdx.hasOwnProperty(columnIdx)) {
+          continue;
+        }
+
         columnIdx = columnIdx | 0;
         var m = columns[columnIdx],
             d = getDataItem(row),
