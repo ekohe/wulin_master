@@ -1618,6 +1618,10 @@ if (typeof Slick === "undefined") {
         }
       }
 
+      if (activeCellNode && activeRow > l) {
+        resetActiveCell();
+      }
+
       var oldH = h;
       th = Math.max(options.rowHeight * numberOfRows, viewportH - scrollbarDimensions.height);
       if (th < maxSupportedCssHeight) {
@@ -2432,7 +2436,9 @@ if (typeof Slick === "undefined") {
       if (activeCellNode !== null) {
         makeActiveCellNormal();
         $(activeCellNode).removeClass("active");
-        $(rowsCache[activeRow].rowNode).removeClass("active");
+        if (rowsCache[activeRow]) {
+          $(rowsCache[activeRow].rowNode).removeClass("active");
+        }
       }
 
       var activeCellChanged = (activeCellNode !== newCell);
