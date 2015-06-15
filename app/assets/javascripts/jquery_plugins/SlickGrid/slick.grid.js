@@ -992,8 +992,9 @@ if (typeof Slick === "undefined") {
         unregisterPlugin(plugins[i]);
       }
 
-      if (options.enableColumnReorder && $headers.sortable)
-        $headers.sortable("destroy");
+      if (options.enableColumnReorder) {
+        $headers.filter(":ui-sortable").sortable("destroy");
+      }
 
       unbindAncestorScrollEvents();
       $container.unbind(".slickgrid");
