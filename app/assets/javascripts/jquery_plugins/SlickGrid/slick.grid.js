@@ -98,7 +98,8 @@ if (typeof Slick === "undefined") {
       rerenderOnResize: false,
       headerCssClass: null,
       defaultSortAsc: true,
-      focusable: true
+      focusable: true,
+      selectable: true
     };
 
     // scroller
@@ -3071,11 +3072,7 @@ if (typeof Slick === "undefined") {
         return columnMetadata.selectable;
       }
 
-      if (typeof columns[cell].selectable === "boolean") {
-        return columns[cell].selectable;
-      }
-
-      return true;
+      return columns[cell].selectable;
     }
 
     function gotoCell(row, cell, forceEdit) {
