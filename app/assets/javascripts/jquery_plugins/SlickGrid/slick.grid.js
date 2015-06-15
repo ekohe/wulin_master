@@ -684,6 +684,7 @@ if (typeof Slick === "undefined") {
       }
       $headers.sortable({
         containment: "parent",
+        distance: 5,
         axis: "x",
         cursor: "default",
         tolerance: "intersection",
