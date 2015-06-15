@@ -124,6 +124,7 @@ if (typeof Slick === "undefined") {
     var $viewport;
     var $canvas;
     var $style;
+    var $boundAncestors;
     var stylesheet, columnCssRulesL = [], columnCssRulesR = [];
     var viewportH, viewportW;
     var canvasWidth;
@@ -461,12 +462,22 @@ if (typeof Slick === "undefined") {
       while ((elem = elem.parentNode) != document.body) {
         // bind to scroll containers only
         if (elem == $viewport[0] || elem.scrollWidth != elem.clientWidth || elem.scrollHeight != elem.clientHeight)
-          $(elem).bind("scroll.slickgrid", handleActiveCellPositionChange);
+          var $elem = $(elem);
+          if (!$boundAncestors) {
+            $boundAncestors = $elem;
+          } else {
+            $boundAncestors = $boundAncestors.add($elem);
+          }
+          $elem.bind("scroll." + uid, handleActiveCellPositionChange);
       }
     }
 
     function unbindAncestorScrollEvents() {
-      $canvas.parents().unbind("scroll.slickgrid");
+      if (!$boundAncestors) {
+        return;
+      }
+      $boundAncestors.unbind("scroll." + uid);
+      $boundAncestors = null;
     }
 
     function updateColumnHeader(columnId, title, toolTip) {
@@ -1343,7 +1354,7 @@ if (typeof Slick === "undefined") {
       var dataLoading = row < getDataLength() && !d;
       var rowCss = "slick-row" +
         (dataLoading ? " loading" : "") +
-        (row === activeRow ? "active" : "") +
+        (row === activeRow ? " active" : "") +
         (row % 2 == 1 ? ' odd' : ' even');
 
       var metadata = data.getItemMetadata && data.getItemMetadata(row);
