@@ -97,7 +97,8 @@ if (typeof Slick === "undefined") {
       minWidth: 30,
       rerenderOnResize: false,
       headerCssClass: null,
-      defaultSortAsc: true
+      defaultSortAsc: true,
+      focusable: true
     };
 
     // scroller
