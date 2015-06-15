@@ -1339,10 +1339,8 @@ if (typeof Slick === "undefined") {
     }
 
     function appendRowHtml(stringArray, row, range) {
-      var cacheEntry = rowsCache[row];
       var d = getDataItem(row);
       var dataLoading = row < getDataLength() && !d;
-      var cellCss;
       var rowCss = "slick-row" +
         (dataLoading ? " loading" : "") +
         (row % 2 == 1 ? ' odd' : ' even');
@@ -2373,12 +2371,6 @@ if (typeof Slick === "undefined") {
         $viewport.scrollLeft(Math.min(left, right - $viewport[0].clientWidth));
         handleScroll();
         render();
-      }
-    }
-
-    function scrollActiveCellIntoView() {
-      if (activeRow != null && activeCell != null) {
-        scrollCellIntoView(activeRow, activeCell);
       }
     }
 
