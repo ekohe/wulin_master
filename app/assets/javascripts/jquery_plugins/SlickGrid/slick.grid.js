@@ -301,6 +301,8 @@ if (typeof Slick === "undefined") {
           .on("click", handleHeaderClick)
           .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
           .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave);
+        $headerRowScroller
+          .on("scroll", handleHeaderRowScroll);
         $focusSink
           .on("keydown", handleKeyDown);
         $canvas
@@ -1932,6 +1934,13 @@ if (typeof Slick === "undefined") {
       lastRenderedScrollTop = scrollTop;
       lastRenderedScrollLeft = scrollLeft;
       h_render = null;
+    }
+
+    function handleHeaderRowScroll() {
+      var scrollLeft = $headerRowScroller[0].scrollLeft;
+      if (scrollLeft != $viewport[0].scrollLeft) {
+        $viewport[0].scrollLeft = scrollLeft;
+      }
     }
 
     function handleScroll() {
