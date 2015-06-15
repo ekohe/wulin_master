@@ -1343,6 +1343,7 @@ if (typeof Slick === "undefined") {
       var dataLoading = row < getDataLength() && !d;
       var rowCss = "slick-row" +
         (dataLoading ? " loading" : "") +
+        (row === activeRow ? "active" : "") +
         (row % 2 == 1 ? ' odd' : ' even');
 
       var metadata = data.getItemMetadata && data.getItemMetadata(row);
@@ -2378,6 +2379,7 @@ if (typeof Slick === "undefined") {
       if (activeCellNode !== null) {
         makeActiveCellNormal();
         $(activeCellNode).removeClass("active");
+        $(rowsCache[activeRow].rowNode).removeClass("active");
       }
 
       var activeCellChanged = (activeCellNode !== newCell);
@@ -2388,6 +2390,7 @@ if (typeof Slick === "undefined") {
         activeCell = activePosX = getCellFromNode(activeCellNode);
 
         $(activeCellNode).addClass("active");
+        $(rowsCache[activeRow].rowNode).addClass("active");
 
         // if (options.editable && editMode && isCellPotentiallyEditable(activeRow,activeCell)) {
         if (isColumnEditable(columns[activeCell]) && editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
@@ -3175,7 +3178,7 @@ if (typeof Slick === "undefined") {
     // Public API
 
     $.extend(this, {
-      "slickGridVersion": "2.0",
+      "slickGridVersion": "2.1",
 
       // Events
       "onScroll": new Slick.Event(),
