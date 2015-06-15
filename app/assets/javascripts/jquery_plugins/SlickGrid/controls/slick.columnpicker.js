@@ -11,7 +11,6 @@
 
     function init() {
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
-      grid.onColumnsReordered.subscribe(handleColumnsReordered);
       options = $.extend({}, defaults, options);
 
       $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:10250;' />").appendTo(document.body);
@@ -37,6 +36,7 @@
     {
       e.preventDefault();
       $menu.empty();
+      updateColumnOrder();
       columnCheckboxes = [];
 
       var $li, $input, $allNoneInput;
@@ -97,8 +97,8 @@
       _self.onColumnsPick.notify({});
     }
 
-    function handleColumnsReordered(e, args) {
-      // When columns are re-ordered, we have to update the `columns`
+    function updateColumnOrder() {
+      // Because columns can be reordered, we have to update the `columns`
       // to reflect the new order, however we can't just take `grid.getColumns()`,
       // as it does not include columns currently hidden by the picker.
       // We create a new `columns` structure by leaving currently-hidden
