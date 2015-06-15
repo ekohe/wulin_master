@@ -295,19 +295,19 @@ if (typeof Slick === "undefined") {
         $container
           .on("resize.slickgrid", resizeCanvas);
         $viewport
-          .on("scroll.slickgrid", handleScroll);
+          .on("scroll", handleScroll);
         $headerScroller
-          .on("contextmenu.slickgrid", handleHeaderContextMenu)
-          .on("click.slickgrid", handleHeaderClick)
+          .on("contextmenu", handleHeaderContextMenu)
+          .on("click", handleHeaderClick)
           .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
           .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave);
         $focusSink
-          .on("keydown.slickgrid", handleKeyDown);
+          .on("keydown", handleKeyDown);
         $canvas
-          .on("keydown.slickgrid", handleKeyDown)
-          .on("click.slickgrid", handleClick)
-          .on("dblclick.slickgrid", handleDblClick)
-          .on("contextmenu.slickgrid", handleContextMenu)
+          .on("keydown", handleKeyDown)
+          .on("click", handleClick)
+          .on("dblclick", handleDblClick)
+          .on("contextmenu", handleContextMenu)
           .on("draginit", handleDragInit)
           .on("dragstart", handleDragStart)
           .on("drag", handleDrag)
