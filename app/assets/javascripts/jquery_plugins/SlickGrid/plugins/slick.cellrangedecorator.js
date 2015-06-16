@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   // register namespace
   $.extend(true, window, {
     "Slick": {
@@ -31,12 +31,9 @@
 
     function show(range) {
       if (!_elem) {
-        _elem = $("<div></div>", {
-            css: options.selectionCss
-          })
-          .css("position", "absolute")
-          .appendTo(grid.getCanvasNode());
-
+        _elem = $("<div class='slick-range-decorator'></div>", {css: options.selectionCss})
+            .css("position", "absolute")
+            .appendTo(grid.getCanvasNode());
       }
 
       var from = grid.getCellNodeBox(range.fromRow, range.fromCell);
