@@ -318,14 +318,14 @@
       this.loadValue = function (item) {
         defaultValue = !!item[args.column.field];
         if (defaultValue) {
-          $select.attr("checked", "checked");
+          $select.prop('checked', true);
         } else {
-          $select.removeAttr("checked");
+          $select.prop('checked', false);
         }
       };
 
       this.serializeValue = function () {
-        return !!$select.attr("checked");
+        return $select.prop('checked');
       };
 
       this.applyValue = function (item, state) {
@@ -1055,9 +1055,9 @@
       this.loadValue = function(item) {
         defaultValue = item[column.field];
         if (defaultValue) {
-          $select.attr("checked", "checked");
+          $select.prop('checked', true);
         } else {
-          $select.removeAttr("checked");
+          $select.prop('checked', false);
         }
       };
 
