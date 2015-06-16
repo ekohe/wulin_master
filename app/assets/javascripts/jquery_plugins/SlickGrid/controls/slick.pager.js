@@ -132,13 +132,13 @@
 
 
       if (pagingInfo.pageSize == 0) {
-        var totalRowsCount = dataView.getItems().length;
-        var visibleRowsCount = pagingInfo.totalRows;
-        if (visibleRowsCount < totalRowsCount) {
-          $status.text("Showing " + visibleRowsCount + " of " + totalRowsCount + " rows");
-        } else {
-          $status.text("Showing all " + totalRowsCount + " rows");
-        }
+        // var totalRowsCount = dataView.getItems().length;
+        // var visibleRowsCount = pagingInfo.totalRows;
+        // if (visibleRowsCount < totalRowsCount) {
+        //   $status.text("Showing " + visibleRowsCount + " of " + totalRowsCount + " rows");
+        // } else {
+        //   $status.text("Showing all " + totalRowsCount + " rows");
+        // }
         $status.text("Showing all " + pagingInfo.totalRows + " rows");
       }
       else {
