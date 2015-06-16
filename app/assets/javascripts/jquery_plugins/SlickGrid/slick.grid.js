@@ -3213,10 +3213,20 @@ if (typeof Slick === "undefined") {
                 execute: function() {
                   this.editor.applyValue(item, this.serializedValue);
                   updateRow(this.row);
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item
+                  });
                 },
                 undo: function() {
                   this.editor.applyValue(item, this.prevSerializedValue);
                   updateRow(this.row);
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item
+                  });
                 }
               };
 
@@ -3231,12 +3241,6 @@ if (typeof Slick === "undefined") {
 
               submitItem['id'] = item.id;
               submitItem[column.field] = item[column.field];
-              trigger(self.onCellChange, {
-                row: activeRow,
-                cell: activeCell,
-                item: submitItem,
-                editCommand: editCommand
-              });
             } else {
               var newItem = {};
               currentEditor.applyValue(newItem, currentEditor.serializeValue());
