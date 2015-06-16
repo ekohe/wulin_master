@@ -173,6 +173,7 @@
 
         // if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize] !== undefined)) {
         if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize])) {
+          onDataLoaded.notify({from: from, to: to});
           return [0,0];
         }
 
