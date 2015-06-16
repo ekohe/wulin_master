@@ -131,10 +131,19 @@
       // if (!state.canGotoPrev) $container.find(".ui-icon-seek-prev").addClass("ui-state-disabled");
 
 
-      if (pagingInfo.pageSize == 0)
+      if (pagingInfo.pageSize == 0) {
+        var totalRowsCount = dataView.getItems().length;
+        var visibleRowsCount = pagingInfo.totalRows;
+        if (visibleRowsCount < totalRowsCount) {
+          $status.text("Showing " + visibleRowsCount + " of " + totalRowsCount + " rows");
+        } else {
+          $status.text("Showing all " + totalRowsCount + " rows");
+        }
         $status.text("Showing all " + pagingInfo.totalRows + " rows");
-      else
+      }
+      else {
         $status.text("Showing page " + (pagingInfo.pageNum + 1) + " of " + pagingInfo.totalPages);
+      }
     }
 
     function resetPager() {
