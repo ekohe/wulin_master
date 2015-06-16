@@ -12,6 +12,8 @@
   }
 }
 
+.ui-widget-overlay { z-index: 1; }
+
 .ui-dialog .ui-dialog-buttonpane button, .ui-button .ui-button-text {
   line-height: 0.6em;
 }
@@ -36,7 +38,7 @@
 }
 
 .ui-dialog {
-  z-index: 1;
+  z-index: 2;
   overflow: visible;
   .ui-dialog-content {
     overflow: visible;
