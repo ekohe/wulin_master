@@ -3249,7 +3249,8 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    item: item
+                    item: item,
+                    editCommand: editCommand
                   });
                 },
                 undo: function() {
@@ -3258,7 +3259,8 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    item: item
+                    item: item,
+                    editCommand: editCommand
                   });
                 }
               };
