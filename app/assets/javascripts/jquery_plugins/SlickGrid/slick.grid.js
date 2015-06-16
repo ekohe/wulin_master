@@ -303,7 +303,6 @@ if (typeof Slick === "undefined") {
         $container
           .on("resize.slickgrid", resizeCanvas);
         $viewport
-          .on("click", handleClick)
           .on("scroll", handleScroll);
         $headerScroller
           .on("contextmenu", handleHeaderContextMenu)
