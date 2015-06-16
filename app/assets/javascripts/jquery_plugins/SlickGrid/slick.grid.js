@@ -87,7 +87,8 @@ if (typeof Slick === "undefined") {
       fullWidthRows: false,
       multiColumnSort: false,
       defaultFormatter: defaultFormatter,
-      forceSyncScrolling: false
+      forceSyncScrolling: false,
+      addNewRowCssClass: "new-row"
     };
 
     var columnDefaults = {
@@ -1425,6 +1426,10 @@ if (typeof Slick === "undefined") {
         (dataLoading ? " loading" : "") +
         (row === activeRow ? " active" : "") +
         (row % 2 == 1 ? ' odd' : ' even');
+
+      if (!d) {
+        rowCss += " " + options.addNewRowCssClass;
+      }
 
       var metadata = data.getItemMetadata && data.getItemMetadata(row);
 
