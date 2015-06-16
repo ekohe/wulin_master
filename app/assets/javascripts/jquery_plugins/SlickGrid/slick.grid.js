@@ -3476,6 +3476,8 @@ if (typeof Slick === "undefined") {
       "navigateDown": navigateDown,
       "navigateLeft": navigateLeft,
       "navigateRight": navigateRight,
+      "scrollPageUp": scrollPageUp,
+      "scrollPageDown": scrollPageDown,
       "gotoCell": gotoCell,
       "getTopPanel": getTopPanel,
       "showHeaderRowColumns": showHeaderRowColumns,
