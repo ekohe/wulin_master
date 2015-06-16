@@ -1641,7 +1641,6 @@ if (typeof Slick === "undefined") {
     }
 
     function updateRowCount() {
-      var dataLength = getDataLength();
       if (!initialized) { return; }
 
       var dataLengthIncludingAddNew = getDataLengthIncludingAddNew();
