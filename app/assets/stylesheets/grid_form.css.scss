@@ -1,11 +1,12 @@
 @import "base";
 .create_form {
   display: none;
-  background-color: #ededed !important;
+  // background-color: #ededed !important;
   // overflow-y: auto !important
   form {
     padding: 20px 0;
     .field {
+      min-height: 50px;
       padding: 5px 0;
       label {
         width: 120px;

@@ -87,20 +87,11 @@ var Ui = {
         width = 600;
         height = (scope.outerHeight() + 40);
       }
-      scope.dialog({
-        height: height,
-        width: width,
-        show: "blind",
-        modal: true,
-        create: function(event, ui) {
-          Ui.setupForm(grid, false);
-          if ($.isFunction(callback))
-            callback();
-        },
-        close: function(event, ui) {
-          scope.dialog('destroy');
-          scope.remove();
-        }
+      $("#" + name + "_form").modal();
+      $("#" + name + "_form").on('shown.bs.modal', function(e) {
+        Ui.setupForm(grid, false);
+        if ($.isFunction(callback))
+          callback();
       });
     });
   },

@@ -12,7 +12,6 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
   }
 });
 
-
 var batchUpdateByAjax = function(grid, version) {
   var ids, name, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
@@ -40,33 +39,21 @@ var batchUpdateByAjax = function(grid, version) {
         width = 600;
         height = (scope.outerHeight() + 40);
       }
-      scope.dialog({
-        height: height,
-        width: width,
-        show: "blind",
-        modal: true,
-        create: function(event, ui) {
-          Ui.setupForm(grid, true, selectedIndexes);
+      $("#" + name + "_form").modal();
+      $("#" + name + "_form").on('shown.bs.modal', function(e) {
+        showFlagCheckBox(scope, ids);
 
-          // Check the checkbox when update the file
-          checkTheBox(name);
+        Ui.setupForm(grid, true, selectedIndexes);
 
-          // Submit the form
-          submitForm(grid, ids, selectedIndexes);
-        },
-        open: function(event, ui) {
-          showFlagCheckBox(scope, ids);
-        },
-        close: function(event, ui) {
-          scope.dialog('destroy');
-          scope.remove();
-        }
+        // Check the checkbox when update the file
+        checkTheBox(name);
+
+        // Submit the form
+        submitForm(grid, ids, selectedIndexes);
       });
     });
-
   }
 };
-
 
 var showFlagCheckBox = function(scope, ids) {
   if (ids.length > 1) {
@@ -138,8 +125,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();
         }
-        $scope.dialog("destroy");
-        $scope.remove();
+        $("#" + grid.name + "_form").modal('hide');
       }
     };
     $form.ajaxSubmit(options);
@@ -163,7 +149,5 @@ var compareArray = function(x, y) {
     return x === y;
   }
 };
-
-
 
 WulinMaster.ActionManager.register(WulinMaster.actions.Edit);

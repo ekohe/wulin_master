@@ -26,7 +26,7 @@ var Requests = {
           } else {
             if (grid.loader.isDataLoaded()) {
               setTimeout(function() {
-                Ui.closeDialog(grid.name);
+                $("#" + grid.name + "_form").modal('hide');
               }, 100);
             }
           }
