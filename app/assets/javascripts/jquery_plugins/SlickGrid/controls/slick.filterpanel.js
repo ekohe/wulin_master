@@ -148,7 +148,7 @@
           cssClass = "lastColumn";
         }
 
-        inputWidth = navigator.userAgent.toLowerCase().indexOf('firefox') != -1 ? parseInt(this.width, 10) + filterWidthOffset + 1 : parseInt(this.width, 10) + filterWidthOffset - 1;
+        inputWidth = navigator.userAgent.toLowerCase().indexOf('firefox') != -1 ? parseInt(this.width, 10) + filterWidthOffset + 1 : parseInt(this.width, 10);
 
         // webkit
         if (ua.indexOf('webkit') != -1 && ua.indexOf("windows") != -1) {
@@ -160,7 +160,7 @@
           inputWidth -= 2;
         }
 
-        inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
+        inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;height:25px;border-width:1px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
 
         if (this.filterable === false) {
           inputHtml += ' disabled="disabled"';

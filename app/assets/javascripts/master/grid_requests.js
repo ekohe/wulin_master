@@ -109,24 +109,9 @@ var Requests = {
           }
           displayNewNotification(message);
         } else if (msg.confirm) {
-          $("#confirm_dialog").dialog({
-            modal: true,
-            open: function() {
-              if (msg.warning_message) $(this).find('#confirm_content').text(msg.warning_message);
-            },
-            buttons: {
-              Confirm: function() {
-                Requests.deleteByAjax(grid, ids, true);
-                $("#confirm_dialog").dialog("close");
-              },
-              Cancel: function() {
-                $("#confirm_dialog").dialog("close");
-              }
-            },
-            close: function() {
-              $(this).find('#confirm_content').text("Are you sure to do this ?");
-              $(this).dialog("destroy");
-            }
+          $("#confirm_modal").modal();
+          $("#confirm_modal").on('show.bs.modal', function(){
+            if (msg.warning_message) $(this).find('#confirm_content').text(msg.warning_message);
           });
         } else {
           displayErrorMessage(msg.error_message);

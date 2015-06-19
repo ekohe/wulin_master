@@ -3,7 +3,7 @@ var currentUrl = null;
 $(document).ready(function () {
   initialize_menu();
 
-  $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
+  $("#navigation").resizable({handles: 'e, w', minWidth:200, maxWidth:500});
 
   $("#navigation #nav_toggle").hover(function(){
     $(this).toggleClass("transparent");
@@ -18,7 +18,7 @@ $(document).ready(function () {
     });
   },function(){
     var $toggle = $(this);
-    $("#navigation").animate({width:199});
+    $("#navigation").animate({width:200});
     $('#content').animate({left:200}, function(){
       $toggle.toggleClass("open");
       $(window).trigger("resize");

@@ -1,66 +1,66 @@
-@import "base";
+// @import "base";
 
-.ui-widget-header .ui-button {
-  background-color: rgba(0, 0, 0, 0) !important;
-  .ui-button-text {
-    display: none !important;
-  }
-  .ui-icon-closethick {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-}
+// .ui-widget-header .ui-button {
+//   background-color: rgba(0, 0, 0, 0) !important;
+//   .ui-button-text {
+//     display: none !important;
+//   }
+//   .ui-icon-closethick {
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//   }
+// }
 
-.ui-widget-overlay { z-index: 1; }
+// .ui-widget-overlay { z-index: 1; }
 
-.ui-dialog .ui-dialog-buttonpane button, .ui-button .ui-button-text {
-  line-height: 0.6em;
-}
+// .ui-dialog .ui-dialog-buttonpane button, .ui-button .ui-button-text {
+//   line-height: 0.6em;
+// }
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-  color: $default_text_color;
-  font-weight: normal;
-  font-size: 12px;
-  @include text-shadow(white, 1px, 1px, 0);
-}
+// .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+//   color: $default_text_color;
+//   font-weight: normal;
+//   font-size: 12px;
+//   @include text-shadow(white, 1px, 1px, 0);
+// }
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-  border: none;
-}
+// .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+//   border: none;
+// }
 
-.ui-state-default, .ui-widget-header .ui-state-default {
-  background: white;
-}
+// .ui-state-default, .ui-widget-header .ui-state-default {
+//   background: white;
+// }
 
-.ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover {
-  top: 6px;
-}
+// .ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover {
+//   top: 6px;
+// }
 
-.ui-dialog {
-  z-index: 2;
-  overflow: visible;
-  .ui-dialog-content {
-    overflow: visible;
-  }
-}
+// .ui-dialog {
+//   z-index: 2;
+//   overflow: visible;
+//   .ui-dialog-content {
+//     overflow: visible;
+//   }
+// }
 
-.ui-dialog {
-  .ui-dialog-content {
-    padding: 0 1em;
-  }
-}
+// .ui-dialog {
+//   .ui-dialog-content {
+//     padding: 0 1em;
+//   }
+// }
 
-.ui-tabs {
-  li.ui-state-active {
-    border: 1px solid #a8a8a8;
-  }
-}
+// .ui-tabs {
+//   li.ui-state-active {
+//     border: 1px solid #a8a8a8;
+//   }
+// }
 
-.ui-dialog .ui-dialog-content{
-  overflow: auto;
-}
+// .ui-dialog .ui-dialog-content{
+//   overflow: auto;
+// }
 
-.ui-dialog-content{
-  max-height: 800px;
-}
+// .ui-dialog-content{
+//   max-height: 800px;
+// }

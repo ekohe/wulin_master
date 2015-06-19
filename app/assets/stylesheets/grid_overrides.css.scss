@@ -11,8 +11,29 @@ $pager_background: #eff3f8;
 
 /* Grid Column Headers */
 
+.grid_container {
+  .pager {
+    margin: 0;
+  }
+}
+
+.slick-header {
+  .slick-column-name {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .slick-header-columns {
+    background-color: white;
+  }
+
+  .slick-headerrow-columns {
+    input { width: 150px; }
+  }
+}
+
 .slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
-  height: $column_header_height - $column_header_padding * 2;
+  height: $column_header_height;
   line-height: $column_header_height - $column_header_padding * 2;
   padding: $column_header_padding;
   background: image-url("ui/column_header_background.png") repeat-x;
