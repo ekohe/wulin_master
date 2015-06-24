@@ -31,6 +31,18 @@
             %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}/
             %input.btn.btn-default.yes{type: 'button', value: 'Yes'}/
 
+  #normal_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog{role: 'document'}
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Title
+        .modal-body
+        .modal-footer
+          .submit
+            %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
+
   #error_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
       .modal-content
@@ -43,6 +55,11 @@
         .modal-footer
           .submit
             %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
+
+  #simple_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog{role: 'document'}
+      .modal-content
+        .modal-body
 
   / sync customers modal
   #sync_modal.modal.fade{role: 'dialog', tabindex: '-1'}

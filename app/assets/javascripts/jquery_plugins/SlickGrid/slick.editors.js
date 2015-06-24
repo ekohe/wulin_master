@@ -1259,7 +1259,7 @@
           // 'Add new option' option handler
           $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
             event.preventDefault();
-            Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
+            Ui.openModal(virtualGrid, 'wulin_master_option_new_form', null, function() {
               // register 'Create' button click event, need to remove to dialog action later
               $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
                 e.preventDefault();
@@ -1269,7 +1269,7 @@
                 }, false, function(data) {
                   self.getOptions(data.id, theCurrentValue);
                   setTimeout(function() {
-                    Ui.closeDialog(virtualGrid.name);
+                    Ui.hideModal(virtualGrid.name);
                   }, 100);
                 });
               });
@@ -1463,7 +1463,7 @@
           // 'Add new option' option handler
           $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
             event.preventDefault();
-            Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
+            Ui.openModal(virtualGrid, 'wulin_master_option_new_form', null, function() {
               // register 'Create' button click event, need to remove to dialog action later
               $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
                 e.preventDefault();
@@ -1473,7 +1473,7 @@
                 }, false, function(data) {
                   self.getOptions(data.id, theCurrentValue);
                   setTimeout(function() {
-                    Ui.closeDialog(virtualGrid.name);
+                    Ui.hideModal(virtualGrid.name);
                   }, 100);
                 });
               });
@@ -1707,7 +1707,7 @@
           // 'Add new option' option handler
           $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
             event.preventDefault();
-            Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
+            Ui.openModal(virtualGrid, 'wulin_master_option_new_form', null, function() {
               // register 'Create' button click event, need to remove to dialog action later
               $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
                 e.preventDefault();
@@ -1717,7 +1717,7 @@
                 }, false, function(data) {
                   self.getOptions(data.id, theCurrentValue);
                   setTimeout(function() {
-                    Ui.closeDialog(virtualGrid.name);
+                    Ui.hideModal(virtualGrid.name);
                   }, 100);
                 });
               });

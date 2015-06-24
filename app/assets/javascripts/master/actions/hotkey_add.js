@@ -10,7 +10,7 @@ WulinMaster.actions.HotkeyAdd = $.extend({}, WulinMaster.actions.BaseAction, {
 
     var grid = Ui.findCurrentGrid();
     if (grid && (e.which == 99 || e.which == 67)) {  // keypress 'C' for show dialog
-      Ui.openDialog(grid, 'wulin_master_new_form', grid.options);
+      Ui.openModal(grid, 'wulin_master_new_form', grid.options);
 
       // register 'Create' button click event, need to remove to dialog action later
       $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function() {

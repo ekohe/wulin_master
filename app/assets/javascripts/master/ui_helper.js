@@ -2,7 +2,7 @@
 var Ui = {
   // return true if the dialog of grid with "name" is open, unless return false
   isOpen: function() {
-    return ($(".ui-dialog:visible").size() > 0);
+    return ($(".modal:visible").size() > 0);
   },
 
   // check if the grid is being edited
@@ -68,8 +68,8 @@ var Ui = {
     $('ul.chzn-choices li.search-choice').remove();
   },
 
-  // Create and open dialog
-  openDialog: function(grid, action, options, callback) {
+  // Create and open modal
+  openModal: function(grid, action, options, callback) {
     var scope, width, height, name;
     name = grid.name;
 
@@ -266,13 +266,13 @@ var Ui = {
     }
   },
 
-  // Close dialog
-  closeDialog: function(name) {
+  // Hide Modal
+  hideModal: function(name) {
     var $form = $('#' + name + '_form');
 
     window._focused = {};
 
-    $form.dialog("destroy");
+    $form.modal('hide');
     $form.remove();
   },
 

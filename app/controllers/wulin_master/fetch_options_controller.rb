@@ -8,7 +8,7 @@ module WulinMaster
         query = klass
         # dynamic filter
         if params[:master_model].present? and params[:master_id].present?
-          reflection = klass.reflections[params[:master_model].to_sym] || klass.reflections[params[:master_model].pluralize.to_sym]
+          reflection = klass.reflections[params[:master_model].to_s] || klass.reflections[params[:master_model].pluralize.to_s]
           query = query.where("#{reflection.foreign_key}=?", params[:master_id]).joins(reflection.name)
         end
         if klass.column_names.include? params[:text_attr]

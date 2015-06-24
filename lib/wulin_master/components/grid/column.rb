@@ -190,7 +190,7 @@ module WulinMaster
        "#{name}_#{@options[:option_text_attribute].to_s}"
       elsif @options[:through]
         "#{@options[:through]}_#{name}"
-      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
+      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_s]
         "#{name}_name"
       else
         name.to_s
@@ -228,7 +228,7 @@ module WulinMaster
 
       if current_model.try(:column_names)
         if current_model.column_names.include?(form_name.to_s) || current_model.method_defined?(form_name)
-          return (direct_validator_fields.include?(form_name.to_sym) || !!direct_validator_fields.find{|f| reflection = current_model.reflections[f.to_sym]; reflection && reflection.foreign_key == form_name.to_s})
+          return (direct_validator_fields.include?(form_name.to_sym) || !!direct_validator_fields.find{|f| reflection = current_model.reflections[f.to_s]; reflection && reflection.foreign_key == form_name.to_s})
         else
           !!direct_validator_fields.find{|f| nested_model = f.to_s.classify.safe_constantize; nested_model && presence_required?(nested_model)}
         end

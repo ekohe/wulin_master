@@ -64,7 +64,7 @@ module WulinMaster
 
         if options[:screen]
           detail_model = self.model
-          reflection = detail_model.reflections[model_name.intern]
+          reflection = detail_model.reflections[model_name.to_s]
 
           # add association column
           unless self.columns_pool.find {|c| c.full_name == reflection.foreign_key and c.valid_in_screen(options[:screen]) }

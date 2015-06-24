@@ -9,7 +9,7 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
     this.grid = grid;
     var self = this;
 
-    Ui.openDialog(grid, 'wulin_master_new_form', grid.options, function() {setTimeout(function(){
+    Ui.openModal(grid, 'wulin_master_new_form', grid.options, function() {setTimeout(function(){
       self.assignMaster(grid);
     }, 1000);});
 
