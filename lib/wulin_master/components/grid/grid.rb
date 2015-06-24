@@ -175,7 +175,7 @@ module WulinMaster
     # Returns the joins to add to the query
     def joins
       full_joins = self.columns.map{|col| col.joins}.flatten.uniq
-      @joins ||= remove_through_model(full_joins - full_includes)
+      @joins ||= remove_through_model(full_joins)
     end
 
     def arraify(objects)

@@ -3,7 +3,7 @@
 module WulinMaster
   module GridBehaviors
     extend ActiveSupport::Concern
-    
+
     included do
       ORIGINAL_BEHAVIORS = %w(update validate highlight get_operate_ids clear_filters)
 
@@ -46,7 +46,7 @@ module WulinMaster
       end
     end
 
-    # the behaviors of a grid instance, filtered by screen param from class's behaviors_pool 
+    # the behaviors of a grid instance, filtered by screen param from class's behaviors_pool
     def behaviors
       return self.class.behaviors_pool if self.params["screen"].blank?
       self.class.behaviors_pool.select {|behavior| valid_behavior?(behavior)}
@@ -85,6 +85,6 @@ module WulinMaster
         return authorized_proc == true
       end
     end
-    
+
   end
 end
