@@ -7,22 +7,22 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
 
-    var $modal = $('#general_modal');
+    var modalId = '#standard_modal';
 
     var openCallback = function() {
-      self.getModelGrid(masterId, $modal);
+      self.getModelGrid(masterId, modalId);
     };
 
     var confirmCallback = function(){
-      self.appendNewRecordToMiddleTable(masterId, $modal);
+      self.appendNewRecordToMiddleTable(masterId, modalId);
     };
 
     var title = 'Attach';
 
-    displayGeneralMessage(openCallback, confirmCallback, 'Cancel', 'Attach', null, title);
+    displayStandardMessage(openCallback, confirmCallback, 'Cancel', 'Attach', null, title);
   },
 
-  getModelGrid: function(masterId, modal) {
+  getModelGrid: function(masterId, modalId) {
     var master = $.extend({}, this.target.master);
     var screen = this.screen;
     // first get controller of the detail model, then open the modal fill the detail grid
@@ -33,9 +33,10 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         url: url
       })
       .success(function(response){
-        modal.find('.modal-body').html(response);
+        $modal = $(modalId);
+        $modal.find('.modal-body').html(response);
         // copy the target's master to detail grid, just replace the operator to 'exclude'
-        var gridName = modal.find(".grid_container").attr("name");
+        var gridName = $modal.find(".grid_container").attr("name");
         var grid = gridManager.getGrid(gridName);
         master["filter_operator"] = 'exclude';
         if(grid.master && grid.master instanceof Array) {
@@ -48,10 +49,11 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
   },
 
   // Attach
-  appendNewRecordToMiddleTable: function(masterId, modal) {
+  appendNewRecordToMiddleTable: function(masterId, modalId) {
     var self = this;
     var middleModel = this.target.model;
-    var detailGridName = modal.find(".grid_container").attr("name");
+    var $modal = $(modalId);
+    var detailGridName = $modal.find(".grid_container").attr("name");
     var detailGrid = gridManager.getGrid(detailGridName);
     var detailIds = detailGrid.getSelectedIds();
 
@@ -61,7 +63,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel};
       $.post('/wulin_master/attach_details', data, function(response){
         displayNewNotification(response.message);
-        modal.modal('hide');
+        $modal.modal('hide');
         self.target.loader.reloadData();
         // reload master grid (in some cases, attaching a detail will affect the master record's data)
         if(self.reload_master && self.target.master_grid) {

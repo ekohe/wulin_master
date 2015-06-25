@@ -1,4 +1,4 @@
-// click this button to view the specific data row in a dialog
+// click this button to view the specific data row in a modal
 
 WulinMaster.actions.Preview = $.extend({}, WulinMaster.actions.BaseAction, {
   name: 'preview',
@@ -14,19 +14,7 @@ WulinMaster.actions.Preview = $.extend({}, WulinMaster.actions.BaseAction, {
         var grid_name = grid.name.split("_")[0];
         $('#' + grid_name + '_preview').remove();
 
-        $('body').append(data);
-        $scope = $('#' + grid_name + '_preview');
-        $scope.dialog({
-          width: 550,
-          show: "blind",
-          modal: true,
-          buttons: {
-            "Close": function() {
-              $(this).dialog("destroy");
-              $scope.remove();
-            }
-          }
-        });
+        displayStandardMessage(null, null, null, 'Ok', data, 'Preview');
       });
     } else {
       displayErrorMessage("Please select one line.");

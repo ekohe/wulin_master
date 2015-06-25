@@ -11,19 +11,7 @@
   $(function(){
     $("a.manage").click(function(){
       $.get('wulin_master/grid_states_manages/manage?' + "grid=#{grid.name}", function(data){
-        $('body').append(data);
-        var scope = $(".states_manage_form");
-
-        scope.dialog({
-          height: 250,
-          width: 400,
-          show: "blind",
-          modal: true,
-          close: function(event, ui) {
-            scope.dialog('destroy');
-            scope.remove();
-          }
-        });
+        displayNormalMessage(data);
       });
     });
 

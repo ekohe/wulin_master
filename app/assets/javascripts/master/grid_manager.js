@@ -226,6 +226,7 @@
     }
 
     function buildIndicatorHtml(id, title, isHide) {
+      $('.loading_indicator').remove();
       return "<div class='loading_indicator' id='" + id + "_indicator' style='" + (isHide ? "display:none" : '') + "'><div class='loading_text'>" + title + "</div><div class='loading_bar' /><div class='loading_stats' /></div>";
     }
 

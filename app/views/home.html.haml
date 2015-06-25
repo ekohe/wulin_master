@@ -4,32 +4,11 @@
     - begin
       = render :template => 'homepage/dashboard'
     - rescue
-  #general_modal.modal.fade{role: 'dialog', tabindex: '-1'}
-    .modal-dialog
-      .modal-content
-        .modal-header
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-            %span{"aria-hidden" => "true"} &times;
-          %h4#myModalLabel.modal-title Notice
-        .modal-body
-        .modal-footer
-          %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
-          %input.btn.btn-default.yes{type: 'button', value: 'Yes'}
 
-  #confirm_modal.modal.fade{role: 'dialog', tabindex: '-1', title: t('wulin_master.title.confirmation', default: 'Confirmation')}
+  #simple_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
       .modal-content
-        .modal-header
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-            %span{"aria-hidden" => "true"} &times;
-          %h4#myModalLabel.modal-title Confirmation
         .modal-body
-          %span.ui-icon.ui-icon-alert{:style => "float: left; margin-right: .2em;"}
-          #confirm_content= t('wulin_master.alert.confirm', default: 'Are you sure to do this ?')
-        .modal-footer
-          .submit
-            %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}/
-            %input.btn.btn-default.yes{type: 'button', value: 'Yes'}/
 
   #normal_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
@@ -37,7 +16,7 @@
         .modal-header
           %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
             %span{"aria-hidden" => "true"} &times;
-          %h4#myModalLabel.modal-title Title
+          %h4#myModalLabel.modal-title Notice
         .modal-body
         .modal-footer
           .submit
@@ -56,14 +35,29 @@
           .submit
             %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
 
-  #simple_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+  #confirm_modal.modal.fade{role: 'dialog', tabindex: '-1', title: t('wulin_master.title.confirmation', default: 'Confirmation')}
     .modal-dialog{role: 'document'}
       .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Confirmation
         .modal-body
+          %span.ui-icon.ui-icon-alert{:style => "float: left; margin-right: .2em;"}
+          #confirm_content= t('wulin_master.alert.confirm', default: 'Are you sure to do this ?')
+        .modal-footer
+          .submit
+            %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}/
+            %input.btn.btn-default.yes{type: 'button', value: 'Yes'}/
 
-  / sync customers modal
-  #sync_modal.modal.fade{role: 'dialog', tabindex: '-1'}
-    .modal-dialog{role: 'document'}
+  #general_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog
       .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Notice
         .modal-body
-          Synchronizing...
+        .modal-footer
+          %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
+          %input.btn.btn-default.yes{type: 'button', value: 'Yes'}

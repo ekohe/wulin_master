@@ -20,26 +20,14 @@ WulinMaster.actions.HotkeyDelete = $.extend({}, WulinMaster.actions.BaseAction, 
     }
   },
 
-  // Handle delete confirm with dialog
+  // Handle delete confirm with modal
   deleteGridRecords: function(grid, ids) {
-    $("#confirm_dialog").dialog({
-      modal: true,
-      buttons: {
-        Yes: function() {
-          Requests.deleteByAjax(grid, ids);
-          $(this).dialog("destroy");
-        },
-        Cancel: function() {
-          $(this).dialog("destroy");
-        }
-      },
-      close: function() {
-        $(this).dialog("destroy");
-      }
-    });
+    var confirmCallback = function(){
+      Requests.deleteByAjax(grid, ids);
+    };
+
+    displayConfirmMessage(confirmCallback);
   }
 });
 
 WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyDelete);
-
-

@@ -30,7 +30,7 @@
     var grid = gridManager.getGrid("#{@grid_name}");
     manageForm.bind('ajax:success', function(data, status, xhr) {
       if(status == "success") {
-        $(".states_manage_form").dialog("destroy").remove();
+        $(".states_manage_form").modal('hide');
         var grid_url = grid.path + grid.query;
         $.get(grid_url, function(data){
           grid.container.html(data);
