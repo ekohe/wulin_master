@@ -14,7 +14,7 @@ WulinMaster.actions.Preview = $.extend({}, WulinMaster.actions.BaseAction, {
         var grid_name = grid.name.split("_")[0];
         $('#' + grid_name + '_preview').remove();
 
-        displayStandardMessage(null, null, null, 'Ok', data, 'Preview');
+        displayGridMessage(null, null, null, 'Ok', data, 'Preview');
       });
     } else {
       displayErrorMessage("Please select one line.");

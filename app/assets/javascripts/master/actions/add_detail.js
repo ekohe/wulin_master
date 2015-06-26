@@ -7,7 +7,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
 
-    var modalId = '#standard_modal';
+    var modalId = '#grid_modal';
 
     var openCallback = function() {
       self.getModelGrid(masterId, modalId);
@@ -19,7 +19,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
 
     var title = 'Attach';
 
-    displayStandardMessage(openCallback, confirmCallback, 'Cancel', 'Attach', null, title);
+    displayGridMessage(openCallback, confirmCallback, 'Cancel', 'Attach', null, title);
   },
 
   getModelGrid: function(masterId, modalId) {

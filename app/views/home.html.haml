@@ -22,19 +22,6 @@
           .submit
             %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
 
-  #error_modal.modal.fade{role: 'dialog', tabindex: '-1'}
-    .modal-dialog{role: 'document'}
-      .modal-content
-        .modal-header
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-            %span{"aria-hidden" => "true"} &times;
-          %h4#myModalLabel.modal-title Error
-        .modal-body
-          An unexpected error occured.
-        .modal-footer
-          .submit
-            %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
-
   #confirm_modal.modal.fade{role: 'dialog', tabindex: '-1', title: t('wulin_master.title.confirmation', default: 'Confirmation')}
     .modal-dialog{role: 'document'}
       .modal-content
@@ -61,3 +48,29 @@
         .modal-footer
           %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
           %input.btn.btn-default.yes{type: 'button', value: 'Yes'}
+
+  #custom_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Title
+        .modal-body
+        .modal-footer
+          %input.btn.btn-default.btn1{type: 'button', value: 'Button1'}
+          %input.btn.btn-default.btn2{type: 'button', value: 'Button2'}
+          %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
+
+  #error_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog{role: 'document'}
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Error
+        .modal-body
+          An unexpected error occured.
+        .modal-footer
+          .submit
+            %input.btn.btn-default{type: 'button', value: 'OK', "data-dismiss" => "modal"}/
