@@ -33,8 +33,8 @@ var batchUpdateByAjax = function(grid, version) {
       scope = $('#' + name + '_form');
 
       if (grid.options) {
-        width = grid.options.form_dialog_width || 600;
-        height = grid.options.form_dialog_height || (scope.outerHeight() + 40);
+        width = grid.options.form_modal_width || 600;
+        height = grid.options.form_modal_height || (scope.outerHeight() + 40);
       } else {
         width = 600;
         height = (scope.outerHeight() + 40);

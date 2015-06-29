@@ -11,7 +11,7 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
 
     Ui.openModal(grid, 'wulin_master_new_form', grid.options);
 
-    // register 'Create' button click event, need to remove to dialog action later
+    // register 'Create' button click event
     $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function(evt) {
       if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
 
@@ -29,7 +29,7 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
       Requests.createByAjax(grid, false);
       return false;
     });
-    // register 'Create and Continue' button click event, need to remove to dialog action later
+    // register 'Create and Continue' button click event
     $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function(evt) {
       if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
 

@@ -81,8 +81,8 @@ var Ui = {
       scope = $('#' + name + '_form');
 
       if (options) {
-        width = options.form_dialog_width || 600;
-        height = options.form_dialog_height || (scope.outerHeight() + 40);
+        width = options.form_modal_width || 600;
+        height = options.form_modal_height || (scope.outerHeight() + 40);
       } else {
         width = 600;
         height = (scope.outerHeight() + 40);

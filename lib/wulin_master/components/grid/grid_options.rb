@@ -28,7 +28,7 @@ module WulinMaster
 
       # helpers
       def form_height(value=nil, options={})
-        option({form_dialog_height: value}.merge options)
+        option({form_modal_height: value}.merge options)
       end
 
       def cell_editable(value=true, options={})

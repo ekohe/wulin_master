@@ -13,12 +13,12 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
       self.assignMaster(grid);
     }, 1000);});
 
-    // register 'Create' button click event, need to remove to dialog action later
+    // register 'Create' button click event
     $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function() {
       Requests.createByAjax(grid, false);
       return false;
     });
-    // register 'Create and Continue' button click event, need to remove to dialog action later
+    // register 'Create and Continue' button click event
     $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function() {
       Requests.createByAjax(grid, true);
       return false;
@@ -28,7 +28,7 @@ WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
   assignMaster: function(){
     // TODO
     // 1. find the master grid and the selected record in master grid
-    // 2. in the create dialog, find the master id dropdown
+    // 2. in the create modal, find the master id dropdown
     // 3. set the dropdown value as the selected record in master grid, and disable it
     console.log("start")
   }
