@@ -119,11 +119,11 @@ function openModal(modal, message, title, defaultMessage, defaultTitle) {
   modal.modal();
   modal.on('hidden.bs.modal', function(){
     modal.find('.modal-title').html(defaultTitle);
-    modal.find('.modal-body').html(defaultMessage);
+    // modal.find('.modal-body').html(defaultMessage);
   });
 }
 
-function displayCustomMessage(openCallback, confirmCallback1, confirmCallback2, button1, button2, message, title) {
+function displayCustomMessage(openCallback, confirmCallback1, confirmCallback2, cancelCallback, button1, button2, cancelButton, message, title) {
   defaultTitle = 'Title';
   defaultMessage = '';
   $modal = $('#custom_modal');
@@ -169,4 +169,16 @@ function displayCustomMessage(openCallback, confirmCallback1, confirmCallback2, 
       confirmCallback2 = null;
     }
   });
+
+  if(cancelButton != undefined){
+    $modal.find('.cancel').off('click').on('click', function(){
+    if (cancelCallback != undefined) {
+      $modal.modal('hide');
+      cancelCallback();
+      cancelCallback = null;
+    }
+  });
+  } else {
+    $modal.find('.cancel').hide();
+  }
 }
