@@ -62,6 +62,32 @@
           %input.btn.btn-default.btn2{type: 'button', value: 'Button2'}
           %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
 
+  #target_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Title
+        .modal-body
+        .modal-footer
+          %input.btn.btn-default.btn1{type: 'button', value: 'Button1'}
+          %input.btn.btn-default.btn2{type: 'button', value: 'Button2'}
+          %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
+
+  #service_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4#myModalLabel.modal-title Title
+        .modal-body
+        .modal-footer
+          %input.btn.btn-default.btn1{type: 'button', value: 'Button1'}
+          %input.btn.btn-default.btn2{type: 'button', value: 'Button2'}
+          %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
+
   #error_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
       .modal-content
