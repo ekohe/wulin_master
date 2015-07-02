@@ -77,7 +77,6 @@
         // also, show all items
         $toolbar_wrapper.find(".toolbar").css("left", 0);
       } else {
-        $toolbar.css({"float": "left"});
         // make sure the first toolbar item always align left or more of toolbar_wrapper (otherwise there is a blank between first item and prev button)
         if($toolbar.offset().left > $toolbar_wrapper.offset().left) {
           $toolbar.css("left", 0);
