@@ -1,6 +1,6 @@
 // ------------------------------------ UI tools -----------------------------------------
 var Ui = {
-  // return true if the dialog of grid with "name" is open, unless return false
+  // return true if the modal of grid with "name" is open, unless return false
   isOpen: function() {
     return ($(".modal:visible").size() > 0);
   },
@@ -391,11 +391,9 @@ var Ui = {
       addNewSelect = $('#' + inputBox.attr('id'));
       $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
         var $select = addNewSelect;
-        var $dialog = $("<div/>").attr({
-          id: 'distinct_dialog',
-          title: "Add new option",
-          'class': "create_form"
-        }).css('display', 'none').appendTo($('body'));
+
+        var $modal = $('#general_modal');
+
         var $fieldDiv = $("<div />").attr({
           style: 'padding: 20px 30px;'
         });
@@ -404,44 +402,29 @@ var Ui = {
         });
         $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
         $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
-        $fieldDiv.appendTo($dialog);
+        $fieldDiv.appendTo($modal);
         $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add Option " name="commit">');
-        $submitDiv.appendTo($dialog);
-        $dialog.dialog({
-          autoOpen: true,
-          width: 450,
-          height: 180,
-          modal: true,
-          buttons: {
-            "Cancel": function() {
-              $(this).dialog("destroy");
-              $(this).remove();
+        $submitDiv.appendTo($modal);
+
+        var openCallback = function() {
+          $('#distinct_submit', $(this)).on('click', function() {
+            var optionText = $('#distinct_field').val();
+            if (optionText) {
+              $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
+              $select.val(optionText);
+              $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
+              $select.trigger('liszt:updated');
+              $modal.modal('hide');
+            } else {
+              alert('New option can not be blank!');
             }
-          },
-          open: function(event, ui) {
-            $('#distinct_submit', $(this)).on('click', function() {
-              var optionText = $('#distinct_dialog #distinct_field').val();
-              if (optionText) {
-                $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                $select.val(optionText);
-                $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
-                $select.trigger('liszt:updated');
-                $dialog.dialog("destroy");
-                $dialog.remove();
-              } else {
-                alert('New option can not be blank!');
-              }
-            });
-          },
-          close: function(event, ui) {
-            $(this).dialog("destroy");
-            $(this).remove();
-          }
-        });
+          });
+        }
+
+        displayGeneralMessage(openCallback, null, 'Cancel', null, null, 'Add new option');
 
         return false;
       });
     }
   }
-
 };
