@@ -61,6 +61,13 @@ function displayGridMessage(openCallback, confirmCallback, cancelButton, yesButt
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
 }
 
+function displayContinuousGridMessage(number, openCallback, confirmCallback, cancelButton, yesButton, message, title) {
+  $('#continuous_grid_modal' + number).remove();
+  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'continuous_grid_modal' + number);
+  $modal = $('#continuous_grid_modal' + number);
+  displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
+}
+
 function displayContinuousMessage(openCallback, confirmCallback, cancelButton, yesButton, message, title) {
   $('#continuous_modal').remove();
   $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'continuous_modal');
@@ -122,7 +129,7 @@ function openModal(modal, message, title, defaultMessage, defaultTitle) {
   modal.modal();
   modal.on('hidden.bs.modal', function(){
     modal.find('.modal-title').html(defaultTitle);
-    // modal.find('.modal-body').html(defaultMessage);
+    modal.find('.modal-body').html(defaultMessage);
   });
 }
 
@@ -203,7 +210,22 @@ function displayTargetMessage(openCallback, confirmCallback1, confirmCallback2, 
     $modal.find('.modal-footer .btn2').hide();
   }
 
-  openModal($modal, message, title, defaultMessage, defaultTitle);
+  if (title != undefined){
+    $modal.find('.modal-title').html(title);
+  }
+
+  if (message != undefined) {
+    $modal.find('.modal-body').html(message);
+  }
+
+  var $modalBody = $modal.find('.modal-body');
+  var innerHeight = $modalBody.children().first().height();
+  $modalBody.height(innerHeight);
+
+  $modal.modal();
+  $modal.on('hidden.bs.modal', function(){
+    $modal.find('.modal-title').html(defaultTitle);
+  });
 
   $modal.on('shown.bs.modal', function(){
     if (openCallback != undefined) {
@@ -261,7 +283,22 @@ function displayServiceMessage(openCallback, confirmCallback1, confirmCallback2,
     $modal.find('.modal-footer .btn2').hide();
   }
 
-  openModal($modal, message, title, defaultMessage, defaultTitle);
+  if (title != undefined){
+    $modal.find('.modal-title').html(title);
+  }
+
+  if (message != undefined) {
+    $modal.find('.modal-body').html(message);
+  }
+
+  var $modalBody = $modal.find('.modal-body');
+  var innerHeight = $modalBody.children().first().height();
+  $modalBody.height(innerHeight);
+
+  $modal.modal();
+  $modal.on('hidden.bs.modal', function(){
+    $modal.find('.modal-title').html(defaultTitle);
+  });
 
   $modal.on('shown.bs.modal', function(){
     if (openCallback != undefined) {
