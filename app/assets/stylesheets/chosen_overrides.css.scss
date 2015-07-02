@@ -22,7 +22,7 @@
   top: 11px;
 }
 
-select.form-control + .chzn-container.chzn-container-single .chzn-single {
+.chzn-container.chzn-container-single .chzn-single {
     position: initial;
     display: block;
     width: 100%;
@@ -42,12 +42,12 @@ select.form-control + .chzn-container.chzn-container-single .chzn-single {
     background-image:none;
 }
 
-select.form-control + .chzn-container.chzn-container-single .chzn-single div {
+.chzn-container.chzn-container-single .chzn-single div {
     top:4px;
     color:#000;
 }
 
-select.form-control + .chzn-container .chzn-drop {
+.chzn-container .chzn-drop {
     background-color: #FFF;
     border: 1px solid #CCC;
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -59,7 +59,7 @@ select.form-control + .chzn-container .chzn-drop {
 
 }
 
-select.form-control + .chzn-container .chzn-search input[type=text] {
+.chzn-container .chzn-search input[type=text] {
     display: block;
     width: 100%!important;
     height: 34px;
@@ -78,7 +78,7 @@ select.form-control + .chzn-container .chzn-search input[type=text] {
     background-image:none;
 }
 
-select.form-control + .chzn-container .chzn-results {
+.chzn-container .chzn-results {
     margin: 2px 0 0;
     padding: 5px 0;
     font-size: 14px;
@@ -87,8 +87,8 @@ select.form-control + .chzn-container .chzn-results {
     margin-bottom: 5px;
 }
 
-select.form-control + .chzn-container .chzn-results li ,
-select.form-control + .chzn-container .chzn-results li.active-result {
+.chzn-container .chzn-results li ,
+.chzn-container .chzn-results li.active-result {
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -98,9 +98,9 @@ select.form-control + .chzn-container .chzn-results li.active-result {
     white-space: nowrap;
     background-image:none;
 }
-select.form-control + .chzn-container .chzn-results li:hover,
-select.form-control + .chzn-container .chzn-results li.active-result:hover,
-select.form-control + .chzn-container .chzn-results li.highlighted
+.chzn-container .chzn-results li:hover,
+.chzn-container .chzn-results li.active-result:hover,
+.chzn-container .chzn-results li.highlighted
 {
     color: #FFF;
     text-decoration: none;
@@ -108,7 +108,7 @@ select.form-control + .chzn-container .chzn-results li.highlighted
     background-image:none;
 }
 
-select.form-control + .chzn-container-multi .chzn-choices {
+.chzn-container-multi .chzn-choices {
     display: block;
     width: 100%;
     min-height: 34px;
@@ -127,12 +127,12 @@ select.form-control + .chzn-container-multi .chzn-choices {
     background-image:none;
 }
 
-select.form-control + .chzn-container-multi .chzn-choices li.search-field input[type="text"] {
+.chzn-container-multi .chzn-choices li.search-field input[type="text"] {
     height:auto;
     padding:5px 0;
 }
 
-select.form-control + .chzn-container-multi .chzn-choices li.search-choice {
+.chzn-container-multi .chzn-choices li.search-choice {
 
     background-image: none;
     padding: 3px 24px 3px 5px;
@@ -151,21 +151,21 @@ select.form-control + .chzn-container-multi .chzn-choices li.search-choice {
     border-color: #CCC;
 }
 
-select.form-control + .chzn-container-multi .chzn-choices li.search-choice .search-choice-close {
+.chzn-container-multi .chzn-choices li.search-choice .search-choice-close {
     top:8px;
     right:6px;
 }
 
-select.form-control + .chzn-container-multi.chzn-container-active .chzn-choices,
-select.form-control + .chzn-container.chzn-container-single.chzn-container-active .chzn-single,
-select.form-control + .chzn-container .chzn-search input[type=text]:focus{
+.chzn-container-multi.chzn-container-active .chzn-choices,
+.chzn-container.chzn-container-single.chzn-container-active .chzn-single,
+.chzn-container .chzn-search input[type=text]:focus{
     border-color: #66AFE9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(102, 175, 233, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(102, 175, 233, 0.6);
 }
 
-select.form-control + .chzn-container-multi .chzn-results li.result-selected{
+.chzn-container-multi .chzn-results li.result-selected{
     display: list-item;
     color: #ccc;
     cursor: default;
