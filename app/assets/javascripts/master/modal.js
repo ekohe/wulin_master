@@ -22,7 +22,8 @@ function displayNormalMessage(message, title) {
 function displayNormalMessageWithoutButton(message, title) {
   defaultTitle = 'Notice'
   defaultMessage = ''
-  $modal = $('#normal_modal').clone().prependTo('body #content').attr('id', 'normal_modal_without_button');;
+  $('#normal_modal_without_button').remove();
+  $modal = $('#normal_modal').clone().insertBefore('body #content #error_modal').attr('id', 'normal_modal_without_button');;
   $modal.find('.modal-footer').hide();
   openModal($modal, message, title, defaultMessage, defaultTitle);
 }
@@ -54,13 +55,15 @@ function displayGeneralMessage(openCallback, confirmCallback, cancelButton, yesB
 }
 
 function displayGridMessage(openCallback, confirmCallback, cancelButton, yesButton, message, title) {
-  $('#general_modal').clone().prependTo('body #content').attr('id', 'grid_modal');
+  $('#grid_modal').remove();
+  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'grid_modal');
   $modal = $('#grid_modal');
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
 }
 
 function displayContinuousMessage(openCallback, confirmCallback, cancelButton, yesButton, message, title) {
-  $('#general_modal').clone().prependTo('body #content').attr('id', 'continuous_modal');
+  $('#continuous_modal').remove();
+  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'continuous_modal');
   $modal = $('#continuous_modal');
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
 }
