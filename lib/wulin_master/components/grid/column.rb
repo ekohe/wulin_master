@@ -246,7 +246,7 @@ module WulinMaster
 
     # Returns the joins to add to the query
     def joins
-      if self.reflection && (self.reflection.klass < ActiveRecord::Base)
+      if self.reflection && (self.reflection.klass < ActiveRecord::Base) && presence_required?
         [(@options[:through] || @name).to_sym]
       else
         []
