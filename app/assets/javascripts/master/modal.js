@@ -22,7 +22,7 @@ function displayNormalMessage(message, title) {
 function displayNormalMessageWithoutButton(message, title) {
   defaultTitle = 'Notice'
   defaultMessage = ''
-  $modal = $('#normal_modal').clone().insertBefore('body #content #error_modal').attr('id', 'normal_modal_without_button');;
+  $modal = $('#normal_modal').clone().insertBefore('body #content #simple_modal').attr('id', 'normal_modal_without_button');;
   $modal.find('.modal-footer').hide();
   openModal($modal, message, title, defaultMessage, defaultTitle);
   $modal.on('hidden.bs.modal', function(){
@@ -57,7 +57,7 @@ function displayGeneralMessage(openCallback, confirmCallback, cancelButton, yesB
 }
 
 function displayGridMessage(openCallback, confirmCallback, cancelButton, yesButton, message, title) {
-  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'grid_modal');
+  $('#general_modal').clone().insertBefore('body #content #simple_modal').attr('id', 'grid_modal');
   $modal = $('#grid_modal');
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
   $modal.on('hidden.bs.modal', function(){
@@ -66,7 +66,7 @@ function displayGridMessage(openCallback, confirmCallback, cancelButton, yesButt
 }
 
 function displayContinuousGridMessage(number, openCallback, confirmCallback, cancelButton, yesButton, message, title) {
-  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'continuous_grid_modal' + number);
+  $('#general_modal').clone().insertBefore('body #content #simple_modal').attr('id', 'continuous_grid_modal' + number);
   $modal = $('#continuous_grid_modal' + number);
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
   $modal.on('hidden.bs.modal', function(){
@@ -75,7 +75,7 @@ function displayContinuousGridMessage(number, openCallback, confirmCallback, can
 }
 
 function displayContinuousMessage(openCallback, confirmCallback, cancelButton, yesButton, message, title) {
-  $('#general_modal').clone().insertBefore('body #content #error_modal').attr('id', 'continuous_modal');
+  $('#general_modal').clone().insertBefore('body #content #simple_modal').attr('id', 'continuous_modal');
   $modal = $('#continuous_modal');
   displayMessage($modal, openCallback, confirmCallback, cancelButton, yesButton, message, title);
   $modal.on('hidden.bs.modal', function(){

@@ -5,11 +5,6 @@
       = render :template => 'homepage/dashboard'
     - rescue
 
-  #simple_modal.modal.fade{role: 'dialog', tabindex: '-1'}
-    .modal-dialog{role: 'document'}
-      .modal-content
-        .modal-body
-
   #normal_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
       .modal-content
@@ -87,6 +82,11 @@
           %input.btn.btn-default.btn1{type: 'button', value: 'Button1'}
           %input.btn.btn-default.btn2{type: 'button', value: 'Button2'}
           %input.btn.btn-default.cancel{type: 'button', value: 'Cancel', "data-dismiss" => "modal"}
+
+  #simple_modal.modal.fade{role: 'dialog', tabindex: '-1'}
+    .modal-dialog{role: 'document'}
+      .modal-content
+        .modal-body
 
   #error_modal.modal.fade{role: 'dialog', tabindex: '-1'}
     .modal-dialog{role: 'document'}
