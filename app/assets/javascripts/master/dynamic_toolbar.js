@@ -22,7 +22,7 @@
 
         // set toolbar original left position
         var left = 0;
-        $toolbar_wrapper.prevAll().each(function(){
+        $toolbar_wrapper.prevAll().filter(':visible').each(function(){
           left += $(this).outerWidth() + parseFloat($(this).css("margin-left")) + parseFloat($(this).css("margin-right"));
         });
         left += 50;
