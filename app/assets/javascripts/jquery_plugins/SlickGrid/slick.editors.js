@@ -1984,7 +1984,7 @@
             $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + column.name + '</label>');
             $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
             $fieldDiv.appendTo($modal);
-            $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + column.name + ' " name="commit">');
+            $submitDiv.append('<input id="distinct_submit" class="btn btn-success" type="submit" value=" Add ' + column.name + ' " name="commit">');
             $submitDiv.appendTo($modal);
 
             var openCallback = function() {
@@ -2078,12 +2078,12 @@
               if ($(".select-option").length > 0) {
                 if (down == true) {
                   if ((count > 0) && (count < $(".select-option").length)) {
-                    $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                    $(".select-option:eq(" + (count - 1) + ")").removeClass("bg-blue");
                   }
-                  $(".select-option:eq(" + count + ")").addClass("blue-background");
+                  $(".select-option:eq(" + count + ")").addClass("bg-blue");
                 } else {
-                  $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                  $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
+                  $(".select-option:eq(" + count + ")").removeClass("bg-blue");
+                  $(".select-option:eq(" + (count + 1) + ")").addClass("bg-blue");
                   count++;
                   down = true;
                 }
@@ -2100,11 +2100,11 @@
                 }
                 if (count > 0) {
                   if (count == $(".select-option").length) {
-                    $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-                    $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
+                    $(".select-option:eq(" + (count - 1) + ")").removeClass("bg-blue");
+                    $(".select-option:eq(" + (count - 2) + ")").addClass("bg-blue");
                   } else {
-                    $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                    $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
+                    $(".select-option:eq(" + count + ")").removeClass("bg-blue");
+                    $(".select-option:eq(" + (count - 1) + ")").addClass("bg-blue");
                   }
                 }
                 count--;
@@ -2116,7 +2116,7 @@
           })
           .bind("keydown", function(event) {
             if (event.keyCode == "13") {
-              var value = $(".select-option.blue-background").text();
+              var value = $(".select-option.bg-blue").text();
               if (value != "") {
                 self.setValue(value);
               } else {
@@ -2189,10 +2189,10 @@
 
           $(".select-option")
             .bind("mouseover", function() {
-              $(this).addClass("blue-background");
+              $(this).addClass("bg-blue");
             })
             .bind("mouseout", function() {
-              $(this).removeClass("blue-background");
+              $(this).removeClass("bg-blue");
             })
             .click(function(event) {
               var value = event.currentTarget.textContent;
@@ -2343,10 +2343,10 @@
 
           $(".select-option")
             .bind("mouseover", function() {
-              $(this).addClass("blue-background");
+              $(this).addClass("bg-blue");
             })
             .bind("mouseout", function() {
-              $(this).removeClass("blue-background");
+              $(this).removeClass("bg-blue");
             })
             .click(function(event) {
               var value = event.currentTarget.textContent;

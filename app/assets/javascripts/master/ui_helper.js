@@ -403,7 +403,7 @@ var Ui = {
         $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
         $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
         $fieldDiv.appendTo($modal);
-        $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add Option " name="commit">');
+        $submitDiv.append('<input id="distinct_submit" class="btn btn-success" type="submit" value=" Add Option " name="commit">');
         $submitDiv.appendTo($modal);
 
         var openCallback = function() {

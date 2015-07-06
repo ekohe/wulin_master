@@ -14,7 +14,7 @@
         / = f.text_field "name", :value => state_option.first
         = text_field_tag 'grid_states[][name]', state_option.first
     .state_submit
-      %input.btn.success{:id => 'save_states', :name => "commit", :type => "submit", :value => "Save"}
+      %input.btn.btn-success{:id => 'save_states', :name => "commit", :type => "submit", :value => "Save"}
     %span.error_message
 
 

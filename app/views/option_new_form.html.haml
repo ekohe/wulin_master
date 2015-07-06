@@ -78,7 +78,7 @@
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-column" => column.name
             .field_error
       .submit
-        %input.btn.success{:id => "#{grid.name}_option_submit", :name => "commit", :type => "submit", :value => " Create "}/
+        %input.btn.btn-success{:id => "#{grid.name}_option_submit", :name => "commit", :type => "submit", :value => " Create "}/
 
   :javascript
     // create grid
