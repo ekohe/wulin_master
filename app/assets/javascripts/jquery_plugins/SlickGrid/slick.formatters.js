@@ -74,7 +74,7 @@
   }
 
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? "<img src='../images/tick.png'>" : "";
+    return value ? "<span class='tick'></span>" : "";
   }
 
   function RawFormatter(row, cell, value, columnDef, dataContext) {
@@ -94,8 +94,7 @@
   }
 
   function GraphicBoolCellFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? "<img src='/assets/tick.png'>" : "";
-    // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
+    return value ? "<span class='tick'></span>" : "";
   }
 
   function TextBoolCellFormatter(row, cell, value, columnDef, dataContext) {

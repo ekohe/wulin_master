@@ -92,3 +92,10 @@ form {
     color: red;
   }
 }
+
+.tick {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background: image-url('tick.png') no-repeat center center;
+}
