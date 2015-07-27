@@ -226,7 +226,7 @@ module WulinMaster
       attrs.delete_if {|k,v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
-      attrs
+      attrs.permit!
     end
 
     private

@@ -1,12 +1,12 @@
 module WulinMaster
   class SqlAdapter
     attr_accessor :model, :query
-    
+
     def initialize(model, query)
       @model = model
       @query = query
     end
-    
+
     %w(null_query boolean_query string_query).each do |method_name|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{method_name}(column_name, value, column)
@@ -19,12 +19,12 @@ module WulinMaster
       RUBY
     end
   end
-  
+
   module SqlQuery
     def null_query(query, column_name, value, column)
       query.where("#{column_name} IS #{value} NULL")
     end
-    
+
     def boolean_query(query, column_name, value, column)
       if (column.options[:formatter] == 'YesNoCellFormatter' or column.options[:inner_formatter] == 'YesNoCellFormatter') and !value
         query.where("#{column_name} = ? OR #{column_name} is NULL", 'f')
@@ -32,14 +32,14 @@ module WulinMaster
         query.where(column_name => value)
       end
     end
-    
+
     def string_query(query, column_name, value, column)
       query.where(["UPPER(cast((#{column_name}) as text)) LIKE UPPER(?)", value+"%"])
     end
-    
+
     module_function :null_query, :boolean_query, :string_query
   end
-  
+
   module NoSqlQuery
     def null_query(query, column_name, value, column)
       # query.where("name IS #{value} NULL")
@@ -49,7 +49,7 @@ module WulinMaster
         query.where(column_name.to_sym.eq => "", column_name.to_sym.exists => false)
       end
     end
-    
+
     def boolean_query(query, column_name, value, column)
       if value
         query.where(column.name => true)
@@ -57,18 +57,18 @@ module WulinMaster
         query.any_in(column.name => [nil, false])
       end
     end
-    
+
     def string_query(query, column_name, value, column)
       if column.options[:type] == 'Datetime' and (datetime_range = format_datetime(value)).present?
         query.where(
-        column.name.to_sym.gte => datetime_range[:from], 
+        column.name.to_sym.gte => datetime_range[:from],
         column.name.to_sym.lte => datetime_range[:to]
         )
       else
         query.where(column.name => Regexp.new("#{Regexp.escape(value)}.*", true))
       end
     end
-    
+
 
     def self.format_datetime(datetime)
       case datetime
@@ -162,9 +162,9 @@ module WulinMaster
     def self.build_datetime(*args)
       DateTime.new(*args) rescue nil
     end
-    
-    
+
+
     module_function :null_query, :boolean_query, :string_query
   end
-  
+
 end

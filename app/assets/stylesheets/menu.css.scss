@@ -14,12 +14,10 @@ $menu_width: 200px;
   border-right: 1px solid #a5a5a5;
   line-height: 1.7em;
   h1 {
-    font-size: 1.3em;
     text-transform: uppercase;
     font-weight: bold;
     margin-bottom: $margin * 2;
     margin-left: $margin;
-    padding-top: $margin;
     a {
       color: $app_title_color;
       @include text-shadow(white, 1px, 1px, 0);
