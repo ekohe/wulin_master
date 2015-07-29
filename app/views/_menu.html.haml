@@ -23,14 +23,14 @@
     #user_nav
       #user_email
         = User.current_user.email
-        = link_to image_tag('logout.jpg'), "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", title: 'Logout', class: 'btn logout-btn'
+        = link_to image_tag('logout.jpg'), "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}", title: 'Logout', class: 'logout-btn'
 
   - elsif current_user
     #user_nav
       #user_email
         = current_user.email
         - if respond_to?(:logout_path)
-          = link_to image_tag('logout.jpg'), logout_path, title: 'Logout', class: 'btn logout-btn'
+          = link_to image_tag('logout.jpg'), logout_path, title: 'Logout', class: 'logout-btn'
 
 
   #activity

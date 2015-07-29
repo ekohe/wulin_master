@@ -14,9 +14,10 @@ $menu_width: 200px;
   border-right: 1px solid #a5a5a5;
   line-height: 1.7em;
   h1 {
+    font-size: 1rem;
     text-transform: uppercase;
     font-weight: bold;
-    margin-bottom: $margin * 2;
+    margin-top: $margin * 2;
     margin-left: $margin;
     a {
       color: $app_title_color;
@@ -124,7 +125,8 @@ $menu_width: 200px;
       color: #336699;
       .logout-btn {
         line-height: 0;
-        vertical-align: middle;
+        margin-left: 10px;
+        vertical-align: 1px;
         text-decoration: none;
       }
     }
