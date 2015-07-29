@@ -17,6 +17,7 @@ module WulinMaster
       def option(option)
         # turn option["screen"] to option[:only]
         option[:only] = [option[:screen].intern] if option[:screen]
+        option[:rowHeight] = 35
         self.options_pool << option unless self.options_pool.include?(option)
       end
 
@@ -93,6 +94,5 @@ module WulinMaster
       option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option
     end
-
   end
 end
