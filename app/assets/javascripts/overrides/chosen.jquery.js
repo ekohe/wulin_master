@@ -1,3 +1,59 @@
+Chosen.prototype.set_up_html = function() {
+  var container_classes, container_div, container_props, dd_top, dd_width, sf_width;
+  this.container_id = this.form_field.id.length ? this.form_field.id.replace(/[^\w]/g, '_') : this.generate_field_id();
+  this.container_id += "_chzn";
+  container_classes = ["chzn-container"];
+  container_classes.push("chzn-container-" + (this.is_multiple ? "multi" : "single"));
+  if (this.inherit_select_classes && this.form_field.className) {
+    container_classes.push(this.form_field.className);
+  }
+  if (this.is_rtl) {
+    container_classes.push("chzn-rtl");
+  }
+  this.f_width = this.form_field_jq.outerWidth();
+  container_props = {
+    id: this.container_id,
+    "class": container_classes.join(' '),
+    style: 'width: ' + this.f_width + 'px;',
+    title: this.form_field.title
+  };
+  container_div = $("<div />", container_props);
+  if (this.is_multiple) {
+    container_div.html('<ul class="chzn-choices"><li class="search-field"><input type="text" value="' + this.default_text + '" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chzn-drop" style="left:-9000px;"><ul class="chzn-results"></ul></div>');
+  } else {
+    container_div.html('<a href="javascript:void(0)" class="chzn-single chzn-default" tabindex="-1"><span>' + this.default_text + '</span><div><b></b></div></a><div class="chzn-drop" style="left:-9000px;"><div class="chzn-search"><input type="text" autocomplete="off" /></div><ul class="chzn-results"></ul></div>');
+  }
+  this.form_field_jq.hide().after(container_div);
+  this.container = $('#' + this.container_id);
+  this.dropdown = this.container.find('div.chzn-drop').first();
+  dd_top = this.container.height();
+  dd_width = this.f_width - get_side_border_padding(this.dropdown);
+  this.dropdown.css({
+    "width": dd_width + "px",
+    "top": dd_top + "px"
+  });
+  this.search_field = this.container.find('input').first();
+  this.search_results = this.container.find('ul.chzn-results').first();
+  this.search_field_scale();
+  this.search_no_results = this.container.find('li.no-results').first();
+  if (this.is_multiple) {
+    this.search_choices = this.container.find('ul.chzn-choices').first();
+    this.search_container = this.container.find('li.search-field').first();
+  } else {
+    this.search_container = this.container.find('div.chzn-search').first();
+    this.selected_item = this.container.find('.chzn-single').first();
+    sf_width = dd_width - get_side_border_padding(this.search_container) - get_side_border_padding(this.search_field);
+    this.search_field.css({
+      "width": sf_width + "px"
+    });
+  }
+  this.results_build();
+  this.set_tab_index();
+  return this.form_field_jq.trigger("liszt:ready", {
+    chosen: this
+  });
+};
+
 Chosen.prototype.search_results_mouseup = function(evt) {
   var target;
   target = $(evt.target).hasClass("active-result") ? $(evt.target) : $(evt.target).parents(".active-result").first();
@@ -95,5 +151,10 @@ Chosen.prototype.result_select = function(evt) {
     this.current_value = this.form_field_jq.val();
     return this.search_field_scale();
   }
+};
+
+get_side_border_padding = function(elmt) {
+  var side_border_padding;
+  return side_border_padding = elmt.outerWidth() - elmt.width() + 1;
 };
 // ---------------- support disabled options ---------------------------

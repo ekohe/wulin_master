@@ -1,72 +1,73 @@
 @import "base";
 
-$column_header_height: 23px;
-$column_header_padding: 4px;
-$column_header_border_color: #dce0e2;
+$column_height: 35px;
 
 $row_background: #f2f2f2;
-$selected_row_background: #81abd7;
-
+$row_border_color: silver;
 $pager_background: #eff3f8;
 
-/* Grid Column Headers */
-
-.grid_container {
-  .pager {
-    margin: 0;
-  }
+.slick-viewport {
+  background-color: white;
 }
 
-.slick-header {
-  .slick-column-name {
-    width: 100%;
-    font-size: 13px;
-  }
-
-  .slick-header-columns {
-    background-color: white;
-  }
-
-  .slick-headerrow-columns {
-    input { width: 150px; }
-  }
-}
-
-.slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
-  height: $column_header_height;
-  line-height: $column_header_height - $column_header_padding * 2;
-  padding: $column_header_padding;
-  border: none;
-  border-left: 1px solid $column_header_border_color;
-  text-align: center;
-  position: relative;
-}
-
-.slick-sort-indicator-desc,.slick-sort-indicator-asc {
+.slick-sort-indicator-asc, .slick-sort-indicator-desc {
   display: block;
   position: absolute;
   right: 4px;
   top: 15px;
   width: 9px;
   height: 8px;
-  background: image-url("ui/sort_indicator_desc.png") no-repeat;
-}
-
-.slick-sort-indicator.slick-sort-indicator-asc {
   background: image-url("ui/sort_indicator_asc.png") no-repeat;
 }
 
-/* Grid Rows Headers */
+.slick-sort-indicator-desc {
+  background: image-url("ui/sort_indicator_desc.png") no-repeat;
+}
 
-//.ui-widget-content.slick-row.even,.ui-widget-content.slick-row.odd
+.slick-headerrow-columns {
+  input {
+    border-bottom: 1px solid $row_border_color;
+  }
+  input:first-child {
+    border-left: 1px solid $row_border_color;
+  }
+  input:last-child {
+    border-right: 1px solid $row_border_color;
+  }
+}
 
-// .ui-widget-content.slick-row.odd {
-//   background: $odd_row_background;
-// }
+.slick-header-column.ui-state-default {
+  border: none;
+  border-bottom: 1px solid $row_border_color;
+  height: $column_height;
+  line-height: $column_height;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0;
+  text-align: center;
+  &:first-child {
+    border-left: 1px solid $row_border_color;
+  }
+  &:last-child {
+    border-right: 1px solid $row_border_color;
+  }
+  .slick-column-name {
+    width: 100%;
+    font-size: 13px;
+  }
+}
+
+.slick-row.ui-widget-content, .slick-row.ui-state-active {
+  &:hover {
+    background: $row_background;
+  }
+}
 
 .slick-cell {
+  border: none;
+  border-bottom: 1px solid silver;
+  line-height: $column_height;
   font-size: 12px;
-  line-height: 20px;
   .editor-text {
     background: none repeat scroll 0 0 transparent;
     height: 100%;
@@ -76,6 +77,12 @@ $pager_background: #eff3f8;
     border: 0;
     outline: 0 none;
   }
+  &:first-child {
+    border-left: 1px solid $row_border_color;
+  }
+  &:last-child {
+    border-right: 1px solid $row_border_color;
+  }
   &.master_flashing {
     background-color: pink;
   }
@@ -83,45 +90,10 @@ $pager_background: #eff3f8;
     background-color: ivory;
   }
   &.active {
-    // color: white
-    border: black solid 1px;
-    span {
-      color: black;
-    }
+    border: 1px black solid;
   }
-}
-
-.ui-widget-content.slick-row.ui-state-active.selected {
-  background: $selected_row_background;
-}
-
-.cell-effort-driven {
-  text-align: center;
-}
-
-.grid-canvas {
-  background: white;
-  .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    color: white;
-  }
-}
-
-/* Grid Secondary row, filters */
-
-.slick-header-columns-secondary {
-  height: 21px;
-  input {
-    border-top: none;
-    border-bottom: 1px solid $column_header_border_color;
-    border-right: none;
-    border-left: 1px solid $column_header_border_color;
-    height: 20px;
-    padding-left: 2px;
-    padding-right: 0;
-    margin: 0;
-  }
-  input.lastColumn {
-    border-right: 1px solid $column_header_border_color;
+  &.selected {
+    background: $row_background;
   }
 }
 
@@ -134,55 +106,8 @@ $pager_background: #eff3f8;
   @include text-shadow(white, 1px, 1px, 0);
 }
 
-/* datapicker */
-.ui-datepicker {
-  min-width: 17em;
-  width: auto !important;
-}
-
-/* datapicker icon */
-.ui-datepicker-trigger {
-  margin-top: 2px;
-  padding: 0;
-  vertical-align: top;
-}
-
-.slick-viewport {
-  background-color: white;
-}
-
-
-/////////////////////////////////
-// .slick-row {
-//   height: 35px!important;
-// }
-
-.slick-cell, .slick-headerrow-column {
-  border: none;
-  height: 35px!important;
-  line-height: 35px;
-  &.selected {
-    background: $row_background;
-  }
-}
-
-.ui-state-default.slick-header-column {
-  border: none;
-  border-bottom: 1px solid silver;
-  font-style: normal;
-  font-weight: bold;
-  height: 35px;
-  line-height: 35px;
-  padding: 0;
-  &:last-child {
-    border-right: 1px solid silver;
-  }
-}
-
-.slick-row.ui-widget-content, .slick-row.ui-state-active {
-  border-right: 1px solid silver;
-  border-bottom: 1px solid silver;
-  &:hover {
-    background: $row_background;
+.grid_container {
+  .pager {
+    margin: 0;
   }
 }
