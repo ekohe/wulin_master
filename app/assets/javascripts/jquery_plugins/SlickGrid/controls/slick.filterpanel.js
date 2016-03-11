@@ -147,6 +147,11 @@
           inputWidth += 2;
         }
 
+        //stephan - fix firefox filter box shift
+        if ($.browser.mozilla) {
+          inputWidth = inputWidth - 2;
+        }
+
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
 
         if (this.filterable === false) {
