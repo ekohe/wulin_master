@@ -1,36 +1,85 @@
-// Detail grid Toolbar Item 'Add'
+// Toolbar Item 'Detail_Add'
 jQuery.event.props.push("cancel");
 
-WulinMaster.actions.DetailAdd = $.extend({}, WulinMaster.actions.BaseAction, {
+WulinMaster.actions.Detail_add = $.extend({}, WulinMaster.actions.BaseAction, {
   name: 'detail_add',
 
   handler: function(e) {
-    var grid = this.getGrid();
-    this.grid = grid;
     var self = this;
+    var grid = this.getGrid();
+    var hiddenColumns = this.hidden_columns;
 
-    Ui.openDialog(grid, 'wulin_master_new_form', grid.options, function() {setTimeout(function(){
-      self.assignMaster(grid);
-    }, 1000);});
+    Ui.openDialog(grid, 'wulin_master_new_form', grid.options);
 
     // register 'Create' button click event, need to remove to dialog action later
-    $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function() {
+    $('body').off("click", '#' + grid.name + '_submit').on('click', '#' + grid.name + '_submit', function(evt) {
+      if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
+
+      var e = jQuery.Event('beforesubmit.wulin', {target: this});
+
+      var _cancel = false;
+      cancel = function() { _cancel = true; }
+
+      $(this).parents('form').trigger(e, cancel);
+
+      // add master id to foreign key before submit stephan
+      var column = self.grid.columns[self.grid.columns.length -1].id // suppose the last column is foreign key added by wulin
+      var model = this.form["id"].replace("new_", "");
+      var value = self.grid.master_grid.getSelectedIds()[0] 
+      $('<input/>').attr("type", "hidden").attr("value", value).attr("name", model + '[' + column + ']').appendTo(this.form);
+
+
+      if(_cancel) {
+        return false;
+      }
+
       Requests.createByAjax(grid, false);
       return false;
     });
     // register 'Create and Continue' button click event, need to remove to dialog action later
-    $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function() {
+    $('body').off("click", '#' + grid.name + '_submit_continue').on('click', '#' + grid.name + '_submit_continue', function(evt) {
+      if(hiddenColumns) self.fillHiddenColumns(grid, hiddenColumns);
+
+      var e = jQuery.Event('beforesubmit.wulin', {target: this});
+
+      var _cancel = false;
+      cancel = function() { _cancel = true; }
+
+      $(this).parents('form').trigger(e, cancel);
+
+      // add master id to foreign key before submit stephan
+      var column = self.grid.columns[self.grid.columns.length -1].id
+      var model = this.form["id"].replace("new_", "");
+      var value = self.grid.master_grid.getSelectedIds()[0] 
+      $('<input/>').attr("type", "hidden").attr("value", value).attr("name", model + '[' + column + ']').appendTo(this.form);
+
+
+      if(_cancel) {
+        return false;
+      }
+
       Requests.createByAjax(grid, true);
       return false;
     });
   },
 
-  assignMaster: function(){
-    // TODO
-    // 1. find the master grid and the selected record in master grid
-    // 2. in the create dialog, find the master id dropdown
-    // 3. set the dropdown value as the selected record in master grid, and disable it
+  fillHiddenColumns: function(grid, hiddenColumns) {
+    var self = this;
+    if(!hiddenColumns instanceof Array) return false;
+
+    var currentFilters = grid.loader.getFilters();
+    $.each(currentFilters, function(index, filter) {
+      if(hiddenColumns.indexOf(filter[0]) != -1) {
+        self.addHiddenColumn(filter[0], filter[1]);
+      }
+    });
+  },
+
+  addHiddenColumn: function(column, value) {
+    var $createForm = $(".create_form form");
+    var model = $createForm.attr("id").replace("new_", "");
+    $('<input/>').attr("id", model + "_" + column).attr("type", "hidden").attr("value", value).attr("name", model + '[' + column + ']').appendTo($createForm);
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.DetailAdd);
+WulinMaster.ActionManager.register(WulinMaster.actions.Detail_add);
