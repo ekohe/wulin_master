@@ -175,10 +175,17 @@ module WulinMaster
     end
 
     def reflection_options
+      # Rails.logger.info "*-"*40
+      # Rails.logger.info " options = #{options.inspect}"
+      # Rails.logger.info "*-"*40
       return { :choices => [], :optionTextAttribute => self.option_text_attribute } if options[:editable]==false
       @options[:choices] ||= begin
         if self.reflection
-          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
+          if options[:choices_sort] then
+            params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] , :sort => options[:choices_sort]}
+          else
+            params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
+          end  
           "/wulin_master/fetch_options?#{params_hash.to_param}"
         elsif @options[:distinct]
           params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }

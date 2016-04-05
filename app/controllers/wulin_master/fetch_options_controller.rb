@@ -12,16 +12,23 @@ module WulinMaster
           self.response_body = [].to_json
           return
         end
+      Rails.logger.info "*-"*40
+      Rails.logger.info " params = #{params.inspect}"
+      Rails.logger.info "*-"*40
 
         # dynamic filter
         if params[:master_model].present? and params[:master_id].present?
           reflection = klass.reflections[params[:master_model].to_sym] || klass.reflections[params[:master_model].pluralize.to_sym]
           query = query.where("#{reflection.foreign_key}=?", params[:master_id]).joins(reflection.name)
         end
-        if klass.column_names.include? params[:text_attr]
-          objects = query.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+        if params[:sort] then 
+            objects = query.select("id, #{params[:text_attr]}").order("#{params[:sort]} ASC").all
         else
-          objects = query.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
+          if klass.column_names.include? params[:text_attr]
+            objects = query.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+          else
+            objects = query.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
+          end
         end
         self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
       else
