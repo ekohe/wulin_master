@@ -100,6 +100,22 @@
             }
         },
 
+        // Simple data formatter,display a date as "MM" format, like "December"
+        SimpleMonthFormatter: function(row, cell, value, columnDef, dataContext) {
+            if (value === null || value === "") {
+                return "";
+            } else if ($.isPlainObject(value)) {
+                value = value[columnDef.optionTextAttribute];
+            }
+
+            if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
+                var thedate = $.datepicker.parseDate("yy-mm-dd", value);
+                return "<span style='text-align:right;display:block'>" + $.datepicker.formatDate(columnDef.DateShowFormat, thedate) + "</span>";
+            } else {
+                return "<span style='text-align:right;display:block'>" + value + "</span>";
+            }
+        },
+
         SimpleTimeFormatter: function(row, cell, value, columnDef, dataContext) {
             var timeArr;
             if (value === null || value === "") {

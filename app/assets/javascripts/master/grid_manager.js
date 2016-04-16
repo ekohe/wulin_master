@@ -66,8 +66,13 @@
         }
 
         if (type_str == "date") {
-          columns[i].formatter = StandardDateCellFormatter;
-          columns[i].DateShowFormat = "yy-mm-dd";
+          if (columns[i].simple_month) {
+             columns[i].formatter = SimpleMonthFormatter;
+             columns[i].DateShowFormat = "MM";
+          } else {
+            columns[i].formatter = StandardDateCellFormatter;
+            columns[i].DateShowFormat = "yy-mm-dd";            
+          }
         } else if (type_str == "boolean") {
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
