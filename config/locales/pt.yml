@@ -1,0 +1,14 @@
+pt:
+  activerecord:
+    errors:
+      messages:
+        restrict_dependent_destroy: "Can't delete this record because dependent %{record} exists"
+
+pt:
+  wulin_master:
+    button:
+      add: 'Criar'
+      delete: 'Supprimir'
+      edit: 'Mudar'
+      filter: 'Filtro'
+      excel: 'Excel'
