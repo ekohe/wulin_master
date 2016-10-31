@@ -5,7 +5,8 @@
 // code example see Affilication behavior
 
 WulinMaster.behaviors.AddCandidateFilter = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
-  event: "onRendered",
+  // event: "onRendered",
+  event: "onHeaderCellRendered",
 
   subscribe: function(target) {
     this.grid = target;
