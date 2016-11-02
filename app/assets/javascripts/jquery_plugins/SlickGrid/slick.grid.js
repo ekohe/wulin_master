@@ -1455,6 +1455,16 @@ if (typeof Slick === "undefined") {
       return $container.get(0);
     }
 
+    function showHeaderRowColumns() {
+        options.showHeaderRow = true;
+        $headerRowScroller.slideDown("fast", resizeCanvas);
+    }
+
+    function hideHeaderRowColumns() {
+        options.showHeaderRow = false;
+        $headerRowScroller.slideUp("fast", resizeCanvas);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Rendering / Scrolling
 
@@ -3759,7 +3769,9 @@ if (typeof Slick === "undefined") {
       "isEditing":                    isEditing,
       "getRowByRecordId":             getRowByRecordId,
       "getSelectedIds":               getSelectedIds,
-      "initialRender":                initialRender
+      "initialRender":                initialRender,
+      "showHeaderRowColumns":         showHeaderRowColumns,
+      "hideHeaderRowColumns":         hideHeaderRowColumns
     });
 
     init();
