@@ -1812,7 +1812,20 @@ if (typeof Slick === "undefined") {
     function updatePagingStatusFromView( pagingInfo ) {
 		pagingActive = (pagingInfo.pageSize !== 0);
 		pagingIsLastPage = (pagingInfo.pageNum == pagingInfo.totalPages - 1);
-	}
+  	}
+
+    function resizeAndRender() {
+      if (options.forceFitColumns) {
+          autosizeColumns();
+      } else {
+          resizeCanvas();
+      }
+    }
+
+    function initialRender() {
+        resizeAndRender();
+        trigger(self.onRendered, {});
+    }
 
     function updateRowCount() {
       if (!initialized) { return; }
@@ -3653,6 +3666,7 @@ if (typeof Slick === "undefined") {
       "onDragEnd": new Slick.Event(),
       "onSelectedRowsChanged": new Slick.Event(),
       "onCellCssStylesChanged": new Slick.Event(),
+      "onRendered": new Slick.Event(), // wulin customized
 
       // Methods
       "registerPlugin": registerPlugin,
@@ -3676,7 +3690,7 @@ if (typeof Slick === "undefined") {
       "getSelectedRows": getSelectedRows,
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
-	  "updatePagingStatusFromView": updatePagingStatusFromView,
+	    "updatePagingStatusFromView": updatePagingStatusFromView,
 
       "render": render,
       "invalidate": invalidate,
@@ -3744,7 +3758,8 @@ if (typeof Slick === "undefined") {
       "getRowAt":                     getRowAt,
       "isEditing":                    isEditing,
       "getRowByRecordId":             getRowByRecordId,
-      "getSelectedIds":               getSelectedIds
+      "getSelectedIds":               getSelectedIds,
+      "initialRender":                initialRender
     });
 
     init();
