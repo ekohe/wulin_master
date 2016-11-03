@@ -55,7 +55,7 @@ if (typeof Slick === "undefined") {
   function SlickGrid(container, data, columns, options) {
     // settings
     var defaults = {
-      explicitInitialization: false,
+      explicitInitialization: true,
       rowHeight: 25,
       defaultColumnWidth: 80,
       enableAddRow: false,
@@ -1824,19 +1824,6 @@ if (typeof Slick === "undefined") {
 		pagingIsLastPage = (pagingInfo.pageNum == pagingInfo.totalPages - 1);
   	}
 
-    function resizeAndRender() {
-      if (options.forceFitColumns) {
-          autosizeColumns();
-      } else {
-          resizeCanvas();
-      }
-    }
-
-    function initialRender() {
-        resizeAndRender();
-        trigger(self.onRendered, {});
-    }
-
     function updateRowCount() {
       if (!initialized) { return; }
 
@@ -3571,14 +3558,6 @@ if (typeof Slick === "undefined") {
     }
 
     // ----------------------- customized methods for convenience ------------------------
-    function getRows() {
-      return rowsCache;
-    }
-
-    function getRowAt(i){
-      return rowsCache[i];
-    }
-
     function isEditing(){
       return currentEditor != null;
     }
@@ -3676,7 +3655,6 @@ if (typeof Slick === "undefined") {
       "onDragEnd": new Slick.Event(),
       "onSelectedRowsChanged": new Slick.Event(),
       "onCellCssStylesChanged": new Slick.Event(),
-      "onRendered": new Slick.Event(), // wulin customized
 
       // Methods
       "registerPlugin": registerPlugin,
@@ -3764,12 +3742,9 @@ if (typeof Slick === "undefined") {
       "getEditController": getEditController,
 
       // Customized APIs
-      "getRows":                      getRows,
-      "getRowAt":                     getRowAt,
       "isEditing":                    isEditing,
       "getRowByRecordId":             getRowByRecordId,
       "getSelectedIds":               getSelectedIds,
-      "initialRender":                initialRender,
       "showHeaderRowColumns":         showHeaderRowColumns,
       "hideHeaderRowColumns":         hideHeaderRowColumns
     });
