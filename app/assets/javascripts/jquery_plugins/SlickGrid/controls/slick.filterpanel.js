@@ -12,33 +12,33 @@
     var $loader;
     var self = this;
     var currentFiltersApplied = [];
-    
+
     function init() {
       $grid = grid;
       $loader = loader;
-      
+
       generateFilters();
-      
+
       $grid.onColumnsReordered.subscribe(function(){
         generateFilters();
       });
       $grid.onColumnsResized.subscribe(function(){
         generateFilters();
       });
-      
+
       if (currentFilters) {
-        $grid.showHeaderRowColumns();
+        $grid.setHeaderRowVisibility(true);
       }
-      
+
       triggerElement.click(function() {
         if($(this).hasClass('toolbar_icon_disabled')) return false;
-        
+
         if ($($grid.getHeaderRow()).is(":visible")) {
-            $grid.hideHeaderRowColumns();
+            $grid.setHeaderRowVisibility(false);
             currentFilters = null;
             trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
         } else {
-            $grid.showHeaderRowColumns();
+            $grid.setHeaderRowVisibility(true);
             // This corrects the scrollLeft of the filter secondary header row.
             // The problem is that if the user scrolls on the left then click on filter, the
             //   filters wouldn't have scrolled while there were hidden so they appear shifted.
@@ -107,14 +107,14 @@
       });
 
     }
-    
+
     function trigger(evt, args, e) {
         e = e || new Slick.EventData();
         args = args || {};
         args.filterPanel = self;
         return evt.notify(args, e, self);
     }
-    
+
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
@@ -140,23 +140,23 @@
         if (i==(totalColumnsCount-1)) {
           cssClass = "lastColumn";
         }
-        
+
         inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
-        
+
         if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
           inputWidth += 2;
         }
-        
+
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
-        
+
         if (this.filterable === false) {
           inputHtml += ' disabled="disabled"';
         }
-        
+
         inputHtml += '></input>';
         html += inputHtml;
       });
-      
+
       // Fills up and display the secondary row
       $headerRow.width(headerWidth);
       $headerRow.html(html).show();
@@ -174,7 +174,7 @@
         }
       });
     }
-    
+
     function setOriginalFilter() {
       var originalFilters = $loader.getFilters();
       if (currentFiltersApplied.length !== 0) {
@@ -189,7 +189,7 @@
         $loader.setFilterWithoutRefresh(originalFilters);
       }
     }
-    
+
     function setCurrentFilter(){
       var filters = [];
       // add current filters
@@ -210,7 +210,7 @@
       }
       $loader.setFilter(filters);
     }
-    
+
     function applyCurrentFilters(filters) {
       currentFiltersApplied = [];
       if (filters) {
@@ -220,18 +220,18 @@
         });
       }
     }
-    
+
     $.extend(this, {
         // Events
         "onFilterLoaded":                     new Slick.Event(),
         'onFilterPanelClosed':                new Slick.Event(),
-        
+
         // Methods
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters
     });
-    
+
     init();
   }
 }(jQuery));
