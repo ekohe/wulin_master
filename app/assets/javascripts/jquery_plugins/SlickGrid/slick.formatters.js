@@ -1,140 +1,59 @@
-/* THESE FORMATTERS ARE JUST SAMPLES! */
-(function($) {
-    var SlickFormatter = {
+/***
+ * Contains basic SlickGrid formatters.
+ * 
+ * NOTE:  These are merely examples.  You will most likely need to implement something more
+ *        robust/extensible/localizable/etc. for your use!
+ * 
+ * @module Formatters
+ * @namespace Slick
+ */
 
-        RawFormatter: function(row, cell, value, columnDef, dataContext) {
-            return (value === null) ? "" : value;
-        },
+(function ($) {
+  // register namespace
+  $.extend(true, window, {
+    "Slick": {
+      "Formatters": {
+        "PercentComplete": PercentCompleteFormatter,
+        "PercentCompleteBar": PercentCompleteBarFormatter,
+        "YesNo": YesNoFormatter,
+        "Checkmark": CheckmarkFormatter
+      }
+    }
+  });
 
-        TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-            return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
-        },
+  function PercentCompleteFormatter(row, cell, value, columnDef, dataContext) {
+    if (value == null || value === "") {
+      return "-";
+    } else if (value < 50) {
+      return "<span style='color:red;font-weight:bold;'>" + value + "%</span>";
+    } else {
+      return "<span style='color:green'>" + value + "%</span>";
+    }
+  }
 
-        SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            return (!dataContext ? "" : row);
-        },
+  function PercentCompleteBarFormatter(row, cell, value, columnDef, dataContext) {
+    if (value == null || value === "") {
+      return "";
+    }
 
-        YesNoCellFormatter : function(row, cell, value, columnDef, dataContext) {
-            return value ? "Yes" : "No";
-        },
+    var color;
 
-        GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='/assets/tick.png'>" : "";
-            // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
-        },
+    if (value < 30) {
+      color = "red";
+    } else if (value < 70) {
+      color = "silver";
+    } else {
+      color = "green";
+    }
 
-        TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value === null ? "" : (value ? 'Yes' : 'No');
-        },
+    return "<span class='percent-complete-bar' style='background:" + color + ";width:" + value + "%'></span>";
+  }
 
-        MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
-            // TODO: make the unit configurable
-            var currency = columnDef.currency || "$";
-            var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' +currency;
-            return "<span style='text-align:right;display:block'>" + text + "</span>";
-        },
+  function YesNoFormatter(row, cell, value, columnDef, dataContext) {
+    return value ? "Yes" : "No";
+  }
 
-        RightFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value === null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
-        },
-
-        CenterFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
-        },
-
-        StarFormatter : function(row, cell, value, columnDef, dataContext) {
-            return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
-        },
-
-        // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
-        StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            if (value === null || value === "") {
-                return "";
-            }
-            value = value.split(/\s+/)[0];
-
-            if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
-                var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-                return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
-            } else {
-                return value;
-            }
-        },
-
-        // Simple data formatter,display a date as "dd mmm" format, like "21 dec"
-        SimpleDateFormatter: function(row, cell, value, columnDef, dataContext) {
-            if (value === null || value === "") {
-                return "";
-            } else if ($.isPlainObject(value)) {
-                value = value[columnDef.optionTextAttribute];
-            }
-
-            if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
-                var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-                return thedate.format("dd mmm");
-            } else {
-                return value;
-            }
-        },
-
-        SimpleTimeFormatter: function(row, cell, value, columnDef, dataContext) {
-            var timeArr;
-            if (value === null || value === "") {
-                return "";
-            } else if ($.isPlainObject(value)) {
-                value = value[columnDef.optionTextAttribute];
-            }
-
-            if (/^(\d{4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,2}\s)?\d{1,2}:\d{1,2}$/.test(value)) {
-                timeArr = value.split(/\s/);
-                return timeArr[timeArr.length - 1];
-            } else {
-                return value;
-            }
-        },
-
-        BelongsToFormatter : function(row, cell, value, columnDef, dataContext) {
-            value = value[columnDef.optionTextAttribute];
-            if(!columnDef.inner_formatter) return value;
-
-            // if has inner_formatter
-            if (columnDef.inner_formatter == 'boolean') {
-                return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
-            } else if(typeof(window[columnDef.inner_formatter]) == 'function') {
-                return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
-            } else {
-                return value;
-            }
-        },
-
-        HasManyFormatter : function(row, cell, value, columnDef, dataContext) {
-            return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-        },
-
-        HasOneFormatter : function(row, cell, value, columnDef, dataContext) {
-            return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-        },
-
-        // Helpers for simple time/date to support for date format as "12 May/12May", and time format as "12:12/1212"
-        ParseSimpleTime: function(simpleTimeStr) {
-            try {
-                var matchedArr = simpleTimeStr.match(/^(\d{2}):?(\d{2})$/);
-                return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2])
-            } catch(err) {
-                return null;
-            }
-        },
-
-        ParseSimpleDate: function(simpleDateStr) {
-            try {
-                var matchedArr = simpleDateStr.match(/^(\d{2})\s?([A-Za-z]{3})$/);
-                return $.datepicker.parseDate("dd M", matchedArr[1] + " " + matchedArr[2]);
-            } catch(err) {
-                return null;
-            }
-        },
-    };
-
-  $.extend(window, SlickFormatter);
-
+  function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
+    return value ? "<img src='../images/tick.png'>" : "";
+  }
 })(jQuery);
