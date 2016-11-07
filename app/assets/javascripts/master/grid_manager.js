@@ -21,17 +21,17 @@
     function getEditorForType(type){
       switch(type.toLowerCase()){
         case "string":
-        return TextCellEditor;
+        return Slick.Editors.Text;
         case "text":
-        return LongTextCellEditor;
+        return Slick.Editors.LongText;
         case "datetime":
         return DateTimeCellEditor;
         case "time":
         return TimeCellEditor;
         case "date":
-        return StandardDateCellEditor;
+        return Slick.Editors.Date;
         case "integer":
-        return IntegerCellEditor;
+        return Slick.Editors.Integer;
         case "boolean":
         return YesNoCheckboxCellEditor;
         case "belongs_to":
@@ -43,7 +43,7 @@
         case "has_many":
         return HasManyEditor;
         default:
-        return TextCellEditor;
+        return Slick.Editors.Text;
       }
     }
 
@@ -80,10 +80,10 @@
         }
 
         if (columns[i].simple_date) {
-          columns[i].editor = TextCellEditor;
+          columns[i].editor = Slick.Editors.Text;
           columns[i].formatter = SimpleDateFormatter;
         } else if (columns[i].simple_time) {
-          columns[i].editor = columns[i].editor || TextCellEditor;
+          columns[i].editor = columns[i].editor || Slick.Editors.Text;
           columns[i].formatter = SimpleTimeFormatter;
         }
 
