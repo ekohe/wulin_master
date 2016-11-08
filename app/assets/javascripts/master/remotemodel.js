@@ -31,10 +31,10 @@
         filters.push([initialFilters[i]['column'], initialFilters[i]['value'], initialFilters[i]['operator']]);
       }
     }
-    
+
     // Connection manager
     var connectionManager = new ConnectionManager();
-    
+
     // events
     var beforeRemoteRequest = new Slick.Event();
     var onDataLoading = new Slick.Event();
@@ -43,7 +43,7 @@
 
     function setGrid(newGrid) {
       grid = newGrid;
-      
+
       //  Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
@@ -58,12 +58,12 @@
         setSort(args.sortCol.sortColumn, args.sortAsc ? 1 : -1);
       });
     }
-    
+
     function rowsChanged() {
       var vp = grid.getViewport();
       ensureData(vp.top, vp.bottom);
     }
-    
+
     function dataIsLoaded(args) {
       //for (var i = args.from; i <= args.to; i++) {
       for (var i = args.from; i < args.to; i++) {
@@ -72,7 +72,7 @@
 
       grid.updateRowCount();
       grid.render();
-      
+
       onDataLoaded.notify();
     }
 
@@ -109,7 +109,7 @@
           // the current data on the view is loaded and no preemptive loading to do
           return null;
         }
-        
+
         // Preemptive loading mode
         normalLoadingMode = false;
       }
@@ -119,12 +119,12 @@
         initedFilter = true;
       }
       var url = path + "&offset=" + offset + "&count=" + count;
-      
+
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI();
       return [url, normalLoadingMode];
     }
-    
+
     function conditionalURI() {
       // Sorting
       if (sortcol === null) {
@@ -146,10 +146,10 @@
       $.each(params, function(index, value) {
         url += "&"+encodeURIComponent(value[0])+"="+encodeURIComponent(value[1]);
       });
-      
+
       return url;
     }
-    
+
     // Returns offset, count
     function getPaginationOptions(from, to) {
       // 2 cases, whether we are in load-as-scroll mode or the per page mode
@@ -159,10 +159,10 @@
           from = 0;
 
         fromPage = Math.floor(from / loadingSize);
-        
+
         toPage = Math.floor(to / loadingSize);
 
-        
+
         // Increment fromPage if the page at fromPage is already loaded until we find an area that hasn't been loaded yet
         while (data[fromPage * loadingSize] !== undefined && fromPage < toPage)
           fromPage++;
@@ -175,7 +175,7 @@
         if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize])) {
           return [0,0];
         }
-      
+
         for (var i=fromPage; i<=toPage; i++)
           data[i*loadingSize] = null; // null indicates a 'requested but not available yet'
 
@@ -202,7 +202,7 @@
       if(urlData === null) { return; }
       var url = urlData[0];
       var normalLoading = urlData[1];
-      
+
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
       loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
       connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError, currentRequestVersionNumber);
@@ -246,7 +246,7 @@
         }
       }
       req = null;
-      
+
       // keep oldData as a clone of data, never get deleted
       this.loader.oldData = deep_clone(data);
 
@@ -256,11 +256,11 @@
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
     }
-    
+
     function getColumns() {
       return columns;
     }
-    
+
     function getKeys(h) {
       var keys = [];
       for (var key in h)
@@ -315,7 +315,7 @@
         sortdir = dir;
       }
     }
-    
+
     function getSortColumn() {
       return sortcol;
     }
@@ -323,7 +323,7 @@
     function getSortDirection() {
       return sortdir;
     }
-    
+
     function setFilter(filterFn) {
       if (filters != filterFn) {
         currentRequestVersionNumber++;
@@ -331,7 +331,7 @@
       }
       refresh();
     }
-    
+
     function setFilterWithoutRefresh(filterFn) {
       if (filters != filterFn) {
         currentRequestVersionNumber++;
@@ -408,7 +408,7 @@
         if (_refresh) refresh(); // Only clear if it was found
         return;
       }
-            
+
       var updated = 0;
       // Try to update existing param
       $.map(params, function(param) {
@@ -418,12 +418,12 @@
           return;
         }
       });
-      
+
       // Add new param
       if (updated === 0)
         params.push([column, string]);
         currentRequestVersionNumber++;
-    
+
       if (_refresh) refresh();
     }
 
@@ -440,15 +440,15 @@
       });
       return value;
     }
-    
+
     function setLoadingIndicator(indicator) {
       loadingIndicator = indicator;
     }
-    
+
     function setMainIndicator(indicator) {
       mainIndicator = indicator;
     }
-    
+
     function refresh() {
       pagingOptionsChanged = true;
       clear();
@@ -463,15 +463,15 @@
         pageSize = args.pageSize;
         pagingOptionsChanged = true;
       }
-      
+
       var newPageNum = Math.min(args.pageNum, Math.ceil(totalRows / pageSize));
-      
+
       if ((args.pageNum !== undefined) && (pageNum!=newPageNum)) {
         currentRequestVersionNumber++;
         pageNum = newPageNum;
         pagingOptionsChanged = true;
       }
-      
+
       // If we click "All" on pager, this is where we are
       if ((args.pageNum === undefined) && (args.pageSize === 0)) {
         currentRequestVersionNumber++;
@@ -479,14 +479,14 @@
         pageSize = 0;
         pagingOptionsChanged = false;
       }
-      
+
       // Dirty fix for cases where the numbers don't add up
       if (totalRows / pageSize < pageNum) {
         currentRequestVersionNumber++;
         pageNum = 0;
         pagingOptionsChanged = true;
       }
-      
+
       refresh();
       onPagingInfoChanged.notify(getPagingInfo());
     }
@@ -502,7 +502,7 @@
       "connectionManager": connectionManager,
       "currentRequestVersionNumber": currentRequestVersionNumber,
       "lastRequestVersionNumber": lastRequestVersionNumber,
-      
+
       // methods
       "clear": clear,
       "isDataLoaded": isDataLoaded,
@@ -525,22 +525,22 @@
       "setGrid": setGrid,
       "conditionalURI": conditionalURI,
       'getColumns': getColumns,
-      
+
       // events
       "beforeRemoteRequest": beforeRemoteRequest,
       "onDataLoading": onDataLoading,
       "onPagingInfoChanged":  onPagingInfoChanged,
       "onDataLoaded": onDataLoaded,
-      
+
       // pager
       "getPagingInfo": getPagingInfo,
       "setPagingOptions": setPagingOptions,
-      
+
       "setLoadingIndicator": setLoadingIndicator,
       "setMainIndicator": setMainIndicator
     };
   }
 
-  // Slick.Data.RemoteModel
-  $.extend(true, window, { Slick: { Data: { RemoteModel: RemoteModel }}});
+  // WulinMaster.Data.RemoteModel
+  $.extend(true, window, { WulinMaster: { Data: { RemoteModel: RemoteModel }}});
 })(jQuery);

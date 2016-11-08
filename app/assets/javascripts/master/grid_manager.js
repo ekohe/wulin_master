@@ -113,7 +113,7 @@
       query = path.split(".json")[1];
 
       // Set Loader
-      loader = new Slick.Data.RemoteModel(path, filters, columns);
+      loader = new WulinMaster.Data.RemoteModel(path, filters, columns);
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
