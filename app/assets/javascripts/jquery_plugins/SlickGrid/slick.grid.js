@@ -3545,9 +3545,6 @@ if (typeof Slick === "undefined") {
     }
 
     // ----------------------- customized methods for convenience ------------------------
-    function isEditing(){
-      return currentEditor != null;
-    }
 
     // Get row by record.id
     function getRowByRecordId(id){
@@ -3729,7 +3726,6 @@ if (typeof Slick === "undefined") {
       "getEditController": getEditController,
 
       // Customized APIs
-      "isEditing":                    isEditing,
       "getRowByRecordId":             getRowByRecordId,
       "getSelectedIds":               getSelectedIds
     });
