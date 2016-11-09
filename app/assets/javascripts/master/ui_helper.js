@@ -1,5 +1,5 @@
 // ------------------------------------ UI tools -----------------------------------------
-var Ui = {  
+var Ui = {
   // return true if the dialog of grid with "name" is open, unless return false
   isOpen: function() {
     return ($(".ui-dialog:visible").size() > 0);
@@ -9,11 +9,11 @@ var Ui = {
   isEditing: function() {
     var editing = false;
     $.each(gridManager.grids, function(){
-      if(this.isEditing()) editing = true;
+      if(this.currentEditor != null) editing = true;
     });
     return editing;
   },
-  
+
   // Resize grid
   resizeGrid: function(grid) {
     grid.resizeCanvas();
@@ -25,7 +25,7 @@ var Ui = {
       grid.filterPanel.generateFilters();
     });
   },
-    
+
   // Check if filter panel is open
   filterPanelOpen: function() {
     return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
@@ -46,7 +46,7 @@ var Ui = {
       }
     });
   },
-  
+
   // Refresh create form when continue create new record
   refreshCreateForm: function(grid) {
     var name = grid.name;
@@ -72,11 +72,11 @@ var Ui = {
 
     $.get(grid.path + '/' + action + grid.query, function(data){
       $( '#' + name + '_form').remove();
-      
+
       $('body').append(data);
-      
+
       scope = $( '#' + name + '_form');
-      
+
       if (options) {
         width = options.form_dialog_width || 600;
         height = options.form_dialog_height || (scope.outerHeight() + 40);
@@ -161,13 +161,13 @@ var Ui = {
         var field = n[0];
         var path = n[1];
         if (!path) return;
-      
+
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-   
+
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
@@ -189,13 +189,13 @@ var Ui = {
         var field = n[0];
         var path = n[1];
         if (!path) return;
-      
+
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
         var textAttr = target.attr('data-text-attr');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-   
+
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
@@ -226,13 +226,13 @@ var Ui = {
         }
       });
     }
-    
+
     first_input = $( '#' + name + '_form input:text', scope).first();
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
   },
-  
+
   setupChosen: function(dom, monitor) {
     setTimeout(function(){
       var afterSetupChosen = dom.data('afterSetupChosen');
@@ -251,9 +251,9 @@ var Ui = {
   // Close dialog
   closeDialog: function(name) {
     var $form = $( '#' + name + '_form' );
-    
+
     window._focused = {};
-    
+
     $form.dialog("destroy");
     $form.remove();
   },
@@ -293,7 +293,7 @@ var Ui = {
     }
     return currentGrid;
   },
-  
+
   formatData: function(grid, arrayData) {
     var data = {}, columns;
     columns = grid.loader.getColumns();
