@@ -98,6 +98,7 @@
     function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
+      extend_options.explicitInitialization = true;
       originColumns = deep_clone(columns);
 
       options = $.extend({}, defaultOptions, extend_options);
@@ -127,7 +128,7 @@
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
       // ------------------------- Create Grid ------------------------------------
-      grid = new Slick.Grid(gridElement, loader.data, columns, options);
+      grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
       gridAttrs = {

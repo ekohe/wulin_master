@@ -55,7 +55,7 @@ if (typeof Slick === "undefined") {
   function SlickGrid(container, data, columns, options) {
     // settings
     var defaults = {
-      explicitInitialization: true,
+      explicitInitialization: false,
       rowHeight: 25,
       defaultColumnWidth: 80,
       enableAddRow: false,
@@ -173,7 +173,7 @@ if (typeof Slick === "undefined") {
 
 	var pagingActive = false;
 	var pagingIsLastPage = false;
-
+	
     // async call handles
     var h_editorLoader = null;
     var h_render = null;
@@ -1812,7 +1812,7 @@ if (typeof Slick === "undefined") {
     function updatePagingStatusFromView( pagingInfo ) {
 		pagingActive = (pagingInfo.pageSize !== 0);
 		pagingIsLastPage = (pagingInfo.pageNum == pagingInfo.totalPages - 1);
-  	}
+	}
 
     function updateRowCount() {
       if (!initialized) { return; }
@@ -2552,7 +2552,7 @@ if (typeof Slick === "undefined") {
       if (e.isImmediatePropagationStopped()) {
         return;
       }
-
+      
 	  // this optimisation causes trouble - MLeibman #329
       //if ((activeCell != cell.cell || activeRow != cell.row) && canCellBeActive(cell.row, cell.cell)) {
       if (canCellBeActive(cell.row, cell.cell)) {
@@ -2780,7 +2780,7 @@ if (typeof Slick === "undefined") {
       } else {
         activeRow = activeCell = null;
       }
-
+	
 	  // this optimisation causes trouble - MLeibman #329
       //if (activeCellChanged) {
         trigger(self.onActiveCellChanged, getActiveCell());
@@ -3547,34 +3547,6 @@ if (typeof Slick === "undefined") {
       selectionModel.setSelectedRanges(rowsToRanges(rows));
     }
 
-    // ----------------------- customized methods for convenience ------------------------
-
-    // Get row by record.id
-    function getRowByRecordId(id){
-      var data = getData();
-      if(data.length == 0 || data.length > 0 && !data[0]) data = self.loader.oldData;
-      for(var i in data) {
-        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: rowsCache[i], index: i}; };
-      }
-    }
-
-    // get ids of selected rows
-    function getSelectedIds(){
-      try {
-          var selectedIndexes = getSelectedRows();
-          var ids;
-          if (selectedIndexes.length > 0) {
-            ids = $.map(selectedIndexes,function(n, i) {
-              return getDataItem(n)['id'];
-            });
-            return ids;
-          } else {
-            return [];
-          }
-      } catch (e) {
-        alert('You selected too many rows! Please select again.');
-      }
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Debug
@@ -3665,7 +3637,7 @@ if (typeof Slick === "undefined") {
       "getSelectedRows": getSelectedRows,
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
-	    "updatePagingStatusFromView": updatePagingStatusFromView,
+	  "updatePagingStatusFromView": updatePagingStatusFromView,
 
       "render": render,
       "invalidate": invalidate,
@@ -3726,11 +3698,7 @@ if (typeof Slick === "undefined") {
 
       // IEditor implementation
       "getEditorLock": getEditorLock,
-      "getEditController": getEditController,
-
-      // Customized APIs
-      "getRowByRecordId":             getRowByRecordId,
-      "getSelectedIds":               getSelectedIds
+      "getEditController": getEditController
     });
 
     init();
