@@ -3441,7 +3441,6 @@ if (typeof Slick === "undefined") {
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
       var column = columns[activeCell];
-      var submitItem = {};
 
       if (currentEditor) {
         if (currentEditor.isValueChanged()) {
@@ -3458,10 +3457,22 @@ if (typeof Slick === "undefined") {
                 execute: function () {
                   this.editor.applyValue(item, this.serializedValue);
                   updateRow(this.row);
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item,
+                    grid: self
+                  });
                 },
                 undo: function () {
                   this.editor.applyValue(item, this.prevSerializedValue);
                   updateRow(this.row);
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item,
+                    grid: self
+                  });
                 }
               };
 
@@ -3473,14 +3484,6 @@ if (typeof Slick === "undefined") {
                 makeActiveCellNormal();
               }
 
-              submitItem['id'] = item.id;
-              submitItem[column.field] = item[column.field];
-              trigger(self.onCellChange, {
-                  row: activeRow,
-                  cell: activeCell,
-                  item: submitItem,
-                  editCommand: editCommand
-              });
             } else {
               var newItem = {};
               currentEditor.applyValue(newItem, currentEditor.serializeValue());

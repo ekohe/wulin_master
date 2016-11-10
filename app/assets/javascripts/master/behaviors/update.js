@@ -14,14 +14,13 @@ WulinMaster.behaviors.Update = $.extend({}, WulinMaster.behaviors.BaseBehavior, 
   },
 
   handler: function(args) {
-    // memorize the updated item in local grid 
+    // memorize the updated item in local grid
     var updated_column;
     for(var i in args.item) {
       if(i !== 'id') updated_column = i;
     }
-    this.grid.updated_item = {"id": args.item.id, column: updated_column, oldValue: args.editCommand.prevSerializedValue.id, newValue: args.editCommand.serializedValue.id}
     // send update request
-    Requests.updateByAjax(this.grid, args.item, args.editCommand);
+    Requests.updateByAjax(this.grid, args.item);
   }
 
 });
