@@ -10,7 +10,7 @@ WulinMaster.behaviors.ClearDetailWhenMultiSelect = $.extend({}, WulinMaster.beha
     if(this.detail_grids.indexOf(target) < 0) {
       this.detail_grids.push(target);
     }
-    
+
     this.master_grid = gridManager.getGrid(self.master_grid_name);
     if(this.master_grid) {
       this.master_grid[this.event].subscribe(function(){ self.handler(); });
@@ -29,8 +29,8 @@ WulinMaster.behaviors.ClearDetailWhenMultiSelect = $.extend({}, WulinMaster.beha
         var detailGrid = this.detail_grids[i];
         detailGrid.resetActiveCell();
         detailGrid.loader.clear();
-        detailGrid.pager.resetPager();
-        detailGrid.initialRender();
+        // detailGrid.pager.resetPager();
+        detailGrid.render();
       }
     }
   }
