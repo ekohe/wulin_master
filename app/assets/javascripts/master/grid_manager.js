@@ -7,6 +7,7 @@
     grids = [],
 
     defaultOptions = {
+      explicitInitialization: true,
       enableAddRow: false,
       enableCellNavigation: true,
       asyncEditorLoading: false,
@@ -98,7 +99,6 @@
     function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
-      extend_options.explicitInitialization = true;
       originColumns = deep_clone(columns);
 
       options = $.extend({}, defaultOptions, extend_options);
@@ -118,7 +118,8 @@
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      pager = new Slick.Controls.Pager(loader, grid, pagerElement);
+      // pager = new Slick.Controls.Pager(loader, grid, pagerElement);
+      pager = new WulinMaster.Pager(loader, grid, pagerElement);
 
       // Restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
