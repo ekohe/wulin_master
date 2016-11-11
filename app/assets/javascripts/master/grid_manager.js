@@ -118,7 +118,6 @@
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      // pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       pager = new WulinMaster.Pager(loader, grid, pagerElement);
 
       // Restore the order states to columns
