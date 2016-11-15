@@ -7,7 +7,6 @@
     grids = [],
 
     defaultOptions = {
-      explicitInitialization: true,
       enableAddRow: false,
       enableCellNavigation: true,
       asyncEditorLoading: false,
@@ -174,7 +173,7 @@
 
       // Set grid body height after rendering
       setGridBodyHeight(gridElement);
-      grid.init();
+      grid.initialRender();
 
       // Load the first page
       grid.onViewportChanged.notify();

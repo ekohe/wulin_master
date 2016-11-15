@@ -1,7 +1,7 @@
 // Disable toolbar items after grid rendered for some cases (eg: eagerLoading is false)
 
 WulinMaster.behaviors.disableToolbarInitially = $.extend({}, WulinMaster.behaviors.BaseBehavior, {
-  event: "onHeaderCellRendered",
+  event: "onRendered",
 
   subscribe: function(target) {
     this.grid = target;

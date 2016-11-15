@@ -11,7 +11,22 @@
   function WulinMasterGrid(container, data, columns, options) {
     Slick.Grid.call(this, container, data, columns, options);
 
-    this.getRowByRecordId = function getRowByRecordId(id) {
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // General
+
+    // Same logic to trigger() in slick.grid.js, recreate here because SlickGrid
+    // doesn't open it to outsides
+    function trigger(evt, args, e) {
+      e = e || new Slick.EventData();
+      args = args || {};
+      args.grid = self;
+      return evt.notify(args, e, self);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Customized API for WulinMaster
+
+    function getRowByRecordId(id) {
       var data = this.getData();
       if(data.length == 0 || data.length > 0 && !data[0]) data = self.loader.oldData;
       for(var i in data) {
@@ -19,7 +34,7 @@
       }
     }
 
-    this.getSelectedIds = function getSelectedIds() {
+    function getSelectedIds() {
       try {
         var selectedIndexes = this.getSelectedRows();
         var ids;
@@ -35,6 +50,30 @@
         alert('You selected too many rows! Please select again.');
       }
     }
+
+    function resizeAndRender() {
+      if (options.forceFitColumns) {
+        this.autosizeColumns();
+      } else {
+        this.resizeCanvas();
+      }
+    }
+
+    function initialRender() {
+      this.resizeAndRender();
+      trigger(this.onRendered, {});
+    }
+
+    $.extend(this, {
+      // Events
+      'onRendered':                     new Slick.Event(),
+
+      // methods
+      'getRowByRecordId':               getRowByRecordId,
+      'getSelectedIds':                 getSelectedIds,
+      'resizeAndRender':                resizeAndRender,
+      'initialRender':                  initialRender
+    });
   }
 
   WulinMasterGrid.prototype = Object.create(Slick.Grid.prototype);
