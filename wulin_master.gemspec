@@ -20,12 +20,13 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'jquery-rails'
+  s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'haml-rails'
-  s.add_dependency 'compass', '~> 0.12.alpha'
-  s.add_development_dependency "rspec-rails", "~> 2.8"
+  s.add_dependency 'compass'#, '~> 0.12.alpha'
+  s.add_development_dependency "rspec-rails"#, "~> 2.8"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "guard-spork"
-  s.add_development_dependency "spork", "~> 0.9.0.rc"
+  s.add_development_dependency "spork"#, "~> 0.9.0.rc"
   s.add_development_dependency "generator_spec"
 end
