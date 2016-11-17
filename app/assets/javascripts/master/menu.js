@@ -24,7 +24,7 @@ $(document).ready(function () {
       $(window).trigger("resize");
     });
   });
-  
+
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {
     $("#content").css('left', $("#navigation").width()+1);
@@ -32,15 +32,16 @@ $(document).ready(function () {
     $("#user_nav").css('width', $("#navigation").width());
     $("#navigation").css('height', '100%');
   });
-  
+
   $(window).bind('hashchange', function(e) { loadPageForBBQState(); });
-  
+
   // Initial
   loadPageForBBQState();
 });
 
 function loadPageForBBQState() {
-  var url = $.bbq.getState('url');
+  // var url = $.bbq.getState('url');
+  var url = History.getState().url;
   if (url != currentUrl) {
     if (url === undefined) {
       $("#screen_content").empty();
@@ -55,12 +56,12 @@ function loadPageForBBQState() {
 
 function load_page(url) {
   $("#screen_content").empty();
-  
+
   var indicators = $("#activity #indicators");
   // init grid loader
   indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
   indicators.find("#init_menu").show();
-  
+
   $.ajax({
     type: 'GET',
     dataType: 'html',
@@ -102,27 +103,29 @@ function initialize_menu() {
     // State management
     var state = {};
     currentUrl = $(this).attr('href');
-    state['url'] = currentUrl;
-    $.bbq.pushState(state);
+    // state['url'] = currentUrl;
+    // $.bbq.pushState(state);
+    History.pushState(null, null, currentUrl);
     load_page(currentUrl);
     return false;
   });
-  
+
   // Click to open submenu
   $("#menu li.submenu a").click(function() {
     $(this).find(".indicator").toggleClass("closed");
     $(this).siblings("ul").toggle();
     return false;
   });
-  
+
   // Click to go back to dashboard
   $("#navigation h1 a").click(function() {
     $("#menu .active").removeClass("active");
     // State management
     var state = {};
     currentUrl = "/";
-    state['url'] = currentUrl;
-    $.bbq.pushState(state);
+    // state['url'] = currentUrl;
+    // $.bbq.pushState(state);
+    History.pushState(null, null, currentUrl);
     load_page(currentUrl);
     return false;
   });
