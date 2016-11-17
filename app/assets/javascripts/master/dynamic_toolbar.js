@@ -46,7 +46,7 @@
     function adjustToolbarLeftPosition($toolbar_wrapper, $toolbar, rightVisibleIndex, initial){
       // adjust the toolbar left position if the most left item not fully displayed
       var oldLeft = parseFloat($toolbar_wrapper.css("left"));
-      
+
       var smallEnough = false;
       var newLeft = oldLeft;
       var remainingWidth = $toolbar_wrapper.outerWidth();
@@ -147,7 +147,7 @@
     }
 
     // Click the prev button
-    $(".grid-header .tb_prev").live('click', function(){
+    $(".grid-header .tb_prev").on('click', function(){
       var $prev = $(this);
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");
@@ -174,7 +174,7 @@
     });
 
     // CLick the next button
-    $(".grid-header .tb_next").live('click', function(){
+    $(".grid-header .tb_next").on('click', function(){
       var $next = $(this);
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");
