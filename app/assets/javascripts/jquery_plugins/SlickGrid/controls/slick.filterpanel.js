@@ -69,7 +69,7 @@
       $input = $("input", $($grid.getHeaderRow()));
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $input.die('keyup').on('keyup', function(e) {
+      $input.off('keyup', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();
@@ -141,11 +141,11 @@
           cssClass = "lastColumn";
         }
 
-        inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
-
-        if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
-          inputWidth += 2;
-        }
+        // inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
+        //
+        // if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
+        //   inputWidth += 2;
+        // }
 
         inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
 
