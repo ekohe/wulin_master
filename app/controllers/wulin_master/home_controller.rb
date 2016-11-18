@@ -9,7 +9,7 @@ module WulinMaster
             begin
               render :template => 'homepage/dashboard', :layout => false
             rescue
-              render :text => ''
+              render plain: ''
             end
           else
             begin
@@ -21,7 +21,7 @@ module WulinMaster
         end
       end
     end
-    
+
     class << self
       attr_accessor :menu_block, :menu, :context
 
@@ -37,7 +37,7 @@ module WulinMaster
           yield
           @menu << @submenu if @submenu.size > 0
           @submenu = nil
-        end 
+        end
         return @submenu
       end
 
@@ -71,7 +71,7 @@ module WulinMaster
           @menu << MenuEntry.new(title, path, options)
         end
       end
-      
+
       def get_menu
         @menu
       end

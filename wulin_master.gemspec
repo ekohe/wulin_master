@@ -29,4 +29,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "guard-spork"
   s.add_development_dependency "spork"#, "~> 0.9.0.rc"
   s.add_development_dependency "generator_spec"
+  s.add_development_dependency "responders" # for using respond_to in Rails 5
 end

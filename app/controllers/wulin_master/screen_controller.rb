@@ -38,4 +38,3 @@ module WulinMaster
       end
   end
 end
-

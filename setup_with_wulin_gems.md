@@ -59,8 +59,8 @@
   Put some code for wulin_oauth in <em>application_controller.rb</em>
   
     #app/controllers/application_controller.rb
-    before_filter :require_login
-    before_filter :set_current_user
+    before_action :require_login
+    before_action :set_current_user
 
     def set_current_user
       User.set_current_user(current_user)
