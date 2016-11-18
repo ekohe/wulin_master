@@ -1,7 +1,6 @@
 module WulinMaster
   class GridState < ::ActiveRecord::Base
     cattr_accessor :all_users
-    attr_accessible :user_id, :grid_name, :name, :current, :state_value
     validates :name, :uniqueness => {:scope => [:user_id, :grid_name]}
 
     scope :for_user_and_grid, ->(user_id, grid_name) { where(:user_id => user_id, :grid_name => grid_name)}
@@ -76,6 +75,9 @@ module WulinMaster
       self.class.all_users.find{|x| x.id == self.user_id}
     end
 
+    def grid_state_params
+      params.require(:grid_state).permit(:user_id, :grid_name, :name, :current, :state_value)
+    end
   end
 end
 
