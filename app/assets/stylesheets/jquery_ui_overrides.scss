@@ -25,6 +25,7 @@
 
 .ui-dialog {
   overflow: visible;
+  z-index: 1;
   .ui-dialog-content {
     overflow: visible;
   }
