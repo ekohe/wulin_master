@@ -6,7 +6,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-        before_action :require_authorization # Defined in Authorization module
+      before_action :require_authorization # Defined in Authorization module
     end
 
     def index
@@ -16,7 +16,7 @@ module WulinMaster
         end
         format.json do
           fire_callbacks :initialize_query
-          
+
           # Create initial query object
           @query = @query || grid.model
 
@@ -73,12 +73,13 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
+      param_key = ActiveModel::Naming.param_key(grid.model).to_sym
+      param_attrs = params[:item].presence || params[param_key].presence
       if param_attrs.present?
-        updated_attributes = get_attributes(param_attrs, :update, @records.first)
         grid.model.transaction do
           @records.each do |record|
-            record.update_attributes!(updated_attributes)
+            record.update_attributes(key_params(param_key, params[param_key])) if params[param_key].presence
+            record.update_attributes(key_params(:item, params[:item])) if params[:item].presence
           end
         end
       end
@@ -88,12 +89,13 @@ module WulinMaster
     end
 
     def destroy
+      binding.pry
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
       success = true
       error_message = ""
       grid.model.transaction do
-        @records.each do |record| 
+        @records.each do |record|
           unless record.destroy
             success = false
             error_message << record.errors.full_messages.join(",\n")
@@ -110,11 +112,10 @@ module WulinMaster
       render json: {:success => false, :error_message => $!.message}
     end
 
-
     def create
       param_key = ActiveModel::Naming.param_key(grid.model).to_sym
       attrs = get_attributes(params[param_key].presence || params[:item].presence, :create)
-      @record = grid.model.new(attrs)
+      @record = grid.model.new(key_params(param_key, attrs))
       message = if @record.save
         {:success => true, :id => @record.id }
       else
@@ -130,7 +131,7 @@ module WulinMaster
     rescue ActionView::MissingTemplate
       render '/new_form', layout: false
     end
-    
+
     def wulin_master_edit_form
       render 'edit_form', layout: false
     rescue ActionView::MissingTemplate
@@ -144,7 +145,7 @@ module WulinMaster
     end
 
     protected
-    
+
     def construct_filters
       return unless params[:filters]
       params[:filters].each do |f|
@@ -157,7 +158,7 @@ module WulinMaster
       if params[:sort_col].present? and (grid.columns.map(&:full_name).map(&:to_s).include?(params[:sort_col]))
         @order_column = params[:sort_col]
       elsif params[:sort_col].present?
-        Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:full_name).inspect}" 
+        Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:full_name).inspect}"
       end
       @order_direction = "ASC"
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
@@ -207,18 +208,22 @@ module WulinMaster
 
     private
 
-      def fire_callbacks(name)
-        return unless self.class.callbacks
-        cbs = self.class.find_callbacks(name)
+    def key_params(key, attrs)
+      params.require(key).permit(attrs.keys.map(&:to_sym))
+    end
 
-        return if cbs.blank?
-        cbs.each do |cb|
-          if cb.class == Proc
-            cb.call
-          else
-            self.send(cb) if self.respond_to?(cb, true)
-          end
+    def fire_callbacks(name)
+      return unless self.class.callbacks
+      cbs = self.class.find_callbacks(name)
+
+      return if cbs.blank?
+      cbs.each do |cb|
+        if cb.class == Proc
+          cb.call
+        else
+          self.send(cb) if self.respond_to?(cb, true)
         end
       end
+    end
   end
 end
