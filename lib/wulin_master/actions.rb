@@ -89,7 +89,6 @@ module WulinMaster
     end
 
     def destroy
-      binding.pry
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
       success = true

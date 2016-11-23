@@ -33,14 +33,13 @@ $(document).ready(function () {
     $("#navigation").css('height', '100%');
   });
 
-  $(window).bind('hashchange', function(e) { loadPageForBBQState(); });
+  $(window).bind('hashchange', function(e) { loadPageForHistoryState(); });
 
   // Initial
-  loadPageForBBQState();
+  loadPageForHistoryState();
 });
 
-function loadPageForBBQState() {
-  // var url = $.bbq.getState('url');
+function loadPageForHistoryState() {
   var url = History.getState().url;
   if (url != currentUrl) {
     if (url === undefined) {
@@ -103,8 +102,6 @@ function initialize_menu() {
     // State management
     var state = {};
     currentUrl = $(this).attr('href');
-    // state['url'] = currentUrl;
-    // $.bbq.pushState(state);
     History.pushState(null, null, currentUrl);
     load_page(currentUrl);
     return false;
@@ -123,8 +120,6 @@ function initialize_menu() {
     // State management
     var state = {};
     currentUrl = "/";
-    // state['url'] = currentUrl;
-    // $.bbq.pushState(state);
     History.pushState(null, null, currentUrl);
     load_page(currentUrl);
     return false;

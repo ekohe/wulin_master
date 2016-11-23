@@ -31,7 +31,7 @@
       if (confirm('Are you sure that you want to reset the default view?')) {
         $.post('#{wulin_master_grid_states_manages_reset_default_path}', {_method: 'PUT', grid_name: '#{grid.name}', user_id: '#{current_user.id}'}, function(data) {
           if (data == 'ok') {
-            load_page($.bbq.getState('url'));
+            load_page(History.getState().url);
           } else {
             displayErrorMessage(data);
           }
