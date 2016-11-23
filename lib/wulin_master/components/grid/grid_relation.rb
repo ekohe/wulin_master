@@ -7,7 +7,7 @@ module WulinMaster
         attr_reader :current_filter_column, :current_detail_model
       end
     end
-    
+
     module ClassMethods
       # Set master grid, invoked from grid.apply_custom_config method
       def master_grid(master_grid_klass_name, options={}, inclusion=true)
@@ -19,7 +19,7 @@ module WulinMaster
             master_grid_name = WulinMaster::Utilities.get_grid_name(master_grid_klass_name, options[:screen])
 
             # master_model must has_many detail_model, detail_model may belongs_to master_model OR has_many master_model
-            reflection = detail_model.reflections[master_grid_klass.model.name.underscore.intern] || detail_model.reflections[master_grid_klass.model.name.underscore.pluralize.intern]
+            reflection = detail_model.reflections[master_grid_klass.model.name.underscore] || detail_model.reflections[master_grid_klass.model.name.underscore.pluralize]
 
             through = options[:through] || reflection.foreign_key
 
@@ -77,7 +77,7 @@ module WulinMaster
       end
 
       # when the detail grid data is come from the model which is not the corresponding model of the grid (eg: the self related model)
-      # you can specify it handily 
+      # you can specify it handily
       def detail_model(model_name, options={})
         @current_detail_model = nil
 
@@ -95,6 +95,6 @@ module WulinMaster
     end
 
     # ----------------------------- Instance Methods ------------------------------------
-    
+
   end
 end
