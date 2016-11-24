@@ -23,11 +23,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'haml-rails'
   s.add_dependency 'compass'#, '~> 0.12.alpha'
+  s.add_dependency "responders" # for using respond_to in Rails 5
   s.add_development_dependency "rspec-rails"#, "~> 2.8"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "guard-spork"
   s.add_development_dependency "spork"#, "~> 0.9.0.rc"
   s.add_development_dependency "generator_spec"
-  s.add_development_dependency "responders" # for using respond_to in Rails 5
 end

@@ -2,9 +2,10 @@ require 'wulin_master/engine' if defined?(Rails)
 
 require 'haml'
 require 'haml-rails'
+require 'responders'
 
 module WulinMaster
-  
+
   @javascripts = ['application.js']
   @stylesheets = ['application.css']
 
@@ -59,5 +60,3 @@ Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
 Time::DATE_FORMATS[:date] = "%Y-%m-%d"
 Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds
-
-
