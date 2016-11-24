@@ -1,7 +1,7 @@
 (function($) {
-  // Slick.FilterPanel
+  // WulinMaster.FilterPanel
   $.extend(true, window, {
-      Slick: {
+      WulinMaster: {
           FilterPanel: FilterPanel
       }
   });
@@ -69,7 +69,7 @@
       $input = $("input", $($grid.getHeaderRow()));
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $input.off('keyup', function(e) {
+      $input.off('keyup').on('keyup', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();
