@@ -184,7 +184,7 @@ module WulinMaster
        "#{name}_#{@options[:option_text_attribute].to_s}"
       elsif @options[:through]
         "#{@options[:through]}_#{name}"
-      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_sym]
+      elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_s]
         "#{name}_name"
       else
         name.to_s
