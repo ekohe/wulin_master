@@ -149,7 +149,7 @@ module WulinMaster
     end
 
     def reflection
-      @reflection ||= self.model.reflections[(@options[:through] || @name).to_sym]
+      @reflection ||= self.model.reflections[(@options[:through] || @name).to_s]
     end
 
     def append_distinct_options
