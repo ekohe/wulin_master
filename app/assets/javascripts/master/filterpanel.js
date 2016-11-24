@@ -142,7 +142,8 @@
         }
 
         // inputWidth = $.browser.mozilla ? parseInt(this.width, 10)+filterWidthOffset + 1 : parseInt(this.width, 10)+filterWidthOffset - 1;
-        //
+        inputWidth = parseInt(this.width, 10)+filterWidthOffset - 1;
+
         // if (!$.browser.msie && (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1 || ua.indexOf("linux") != -1)) {
         //   inputWidth += 2;
         // }
