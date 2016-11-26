@@ -33,7 +33,9 @@ $(document).ready(function () {
     $("#navigation").css('height', '100%');
   });
 
-  $(window).bind('hashchange', function(e) { loadPageForHistoryState(); });
+  History.Adapter.bind(window, 'statechange', function() {
+    loadPageForHistoryState();
+  });
 
   // Initial
   loadPageForHistoryState();
