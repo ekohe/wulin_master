@@ -1,6 +1,7 @@
 require 'wulin_master/utilities/variables'
 module WulinMaster
   class ScreenController < ApplicationController
+    include WulinMaster::Menuable
     include WulinMaster::Actions
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
@@ -8,6 +9,10 @@ module WulinMaster
     rescue_from ActionView::MissingTemplate, with: :render_index
 
     helper_method :screen, :grid, :components
+
+    def self.inherited(subclass)
+      subclass.define_menu
+    end
 
     class << self
       attr_accessor :screen_classes, :grid_class, :callbacks
@@ -33,8 +38,8 @@ module WulinMaster
 
     private
 
-      def render_index
-        render '/index', :layout => (request.xhr? ? false : 'application')
-      end
+    def render_index
+      render '/index', :layout => (request.xhr? ? false : 'application'), :locals => {xhr: request.xhr?}
+    end
   end
 end
