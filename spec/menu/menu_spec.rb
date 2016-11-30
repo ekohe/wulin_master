@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'spec_helper'
+require './lib/wulin_master/menu/menu'
 
 # Test MenuEntry
 describe WulinMaster::MenuEntry do

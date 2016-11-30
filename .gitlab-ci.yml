@@ -7,4 +7,4 @@ before_script:
 
 rspec:
   script:
-    - bundle exec rspec
+    - rspec

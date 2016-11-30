@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec-rails"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
-  s.add_development_dependency "guard-spork"
-  s.add_development_dependency "spork"
+  s.add_development_dependency "guard-spring"
+  s.add_development_dependency "spring"
   s.add_development_dependency "generator_spec"
 end

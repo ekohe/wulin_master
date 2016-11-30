@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'spec_helper'
+require './lib/wulin_master/components/grid/column'
 
 describe WulinMaster::Column do
 

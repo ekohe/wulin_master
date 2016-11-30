@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'spec_helper'
+require './lib/wulin_master/screen/screen'
 
 describe WulinMaster::Screen do
   before :each do

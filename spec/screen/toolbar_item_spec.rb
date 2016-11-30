@@ -1,4 +1,5 @@
-require "rails_helper"
+require "spec_helper"
+require './lib/wulin_master/components/grid/toolbar_item'
 
 describe WulinMaster::ToolbarItem do
   before :each do

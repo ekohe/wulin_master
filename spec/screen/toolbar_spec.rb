@@ -1,4 +1,5 @@
-require "rails_helper"
+require "spec_helper"
+require './lib/wulin_master/components/grid/toolbar'
 
 describe WulinMaster::Toolbar do
   it "should render a toolbar with the toolbar items" do

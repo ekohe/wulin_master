@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 require './lib/generators/wulin_master/screen_and_grid/screen_and_grid_generator'
 # require 'generator_spec/test_case'
 

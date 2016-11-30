@@ -1,4 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
+require './lib/wulin_master/components/component'
+require './lib/wulin_master/components/grid/grid'
 
 describe WulinMaster::Grid do
   before :each do
