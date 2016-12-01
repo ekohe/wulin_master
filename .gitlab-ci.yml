@@ -1,7 +1,6 @@
 before_script:
   - apt-get update -qy
   - apt-get install -y nodejs
-  - bundle install --path /cache
   - ruby -v
   - which ruby
   - gem install bundler
