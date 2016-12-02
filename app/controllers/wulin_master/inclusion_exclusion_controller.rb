@@ -1,6 +1,6 @@
 module WulinMaster
   class InclusionExclusionController < ApplicationController
-    before_action :get_models
+    before_filter :get_models
 
     def include
       if (ids = params[:ids]).present? and (group = @group_model.find params[:group_id] rescue false)

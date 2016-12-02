@@ -6,7 +6,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      before_action :require_authorization # Defined in Authorization module
+      before_filter :require_authorization # Defined in Authorization module
     end
 
     def index
