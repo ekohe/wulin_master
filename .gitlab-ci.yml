@@ -1,8 +1,15 @@
+image: ruby:2.3.1
+
+stages:
+  - test
+
+cache:
+  paths:
+    - cache/
+
 before_script:
   - apt-get update -qy
   - apt-get install -y nodejs
-  - ruby -v
-  - which ruby
   - gem install bundler
   - bundle install --path /cache
 
