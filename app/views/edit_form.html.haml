@@ -2,7 +2,7 @@
   :ruby
     model_name = grid.model.model_name.singular
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
-    
+
     if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
       columns.select!{|x| version_columns.include?(x.name)}
     end
@@ -62,7 +62,7 @@
                     var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
                     var depend_select = $("select#" + depend_select_id);
 
-                    depend_select.live('change', function(){
+                    depend_select.on('change', function(){
                       var current_select_id = "#{model_name}_#{column_name}";
                       var current_select = $("select#" + current_select_id);
                       var key = $(this).val();
@@ -122,4 +122,3 @@
         }
       });
     });
-  

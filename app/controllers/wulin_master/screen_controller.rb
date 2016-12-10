@@ -5,7 +5,7 @@ module WulinMaster
     include WulinMaster::Actions
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
-    respond_to :html, :json
+    # respond_to :html, :json
     rescue_from ActionView::MissingTemplate, with: :render_index
 
     helper_method :screen, :grid, :components

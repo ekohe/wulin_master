@@ -34,7 +34,7 @@ module WulinMasterGridHelper
   def time_column?(column)
     'true' if column.sql_type.to_s.downcase == 'time' or (column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeCellEditor')
   end
-  
+
   def get_column_name(column)
     if column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
       column.reflection.name.to_s
@@ -44,7 +44,7 @@ module WulinMasterGridHelper
   end
 
   def grid_states_options(user_id, grid_name)
-    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all
+    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all.to_a
     return [] if states.blank?
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)

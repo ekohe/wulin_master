@@ -58,7 +58,7 @@
                     var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
                     var depend_select = $("select#" + depend_select_id);
 
-                    depend_select.live('change', function(){
+                    depend_select.on('change', function(){
                       var current_select_id = "#{model_name}_#{column_name}";
                       var current_select = $("select#" + current_select_id);
                       var key = $(this).val();
@@ -67,7 +67,7 @@
                       current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
                     });
                   });
-                  
+
             - elsif column.options[:file]
               = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
             - elsif column.options[:password]
