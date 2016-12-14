@@ -152,6 +152,19 @@
 
         ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
             return value === 0 ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
+        },
+
+        LinkFormatter: function(row, cell, value, columnDef, dataContext) {
+            var urlReg = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+            if (value) {
+                if (urlReg.test(value)) {
+                    return '<a target="_blank" href="' + value + '">' + value + '</a>';
+                } else {
+                    return value;
+                }
+            } else {
+                return null;
+            }
         }
     };
 
