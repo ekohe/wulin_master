@@ -73,13 +73,13 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      param_key = ActiveModel::Naming.param_key(grid.model).to_sym
-      param_attrs = params[:item].presence || params[param_key].presence
-      if param_attrs.present?
+      if params_permit.present?
+        record = @records.first
+        updated_attributes = get_attributes(params_permit, :update, record)
+        raise record.errors.full_messages.join(',') unless record.errors.empty?
         grid.model.transaction do
           @records.each do |record|
-            record.update_attributes(key_params(param_key, params[param_key])) if params[param_key].presence
-            record.update_attributes(key_params(:item, params[:item])) if params[:item].presence
+            record.update_attributes!(updated_attributes)
           end
         end
       end
@@ -112,10 +112,13 @@ module WulinMaster
     end
 
     def create
-      param_key = ActiveModel::Naming.param_key(grid.model).to_sym
-      attrs = get_attributes(params[param_key].presence || params[:item].presence, :create)
-      @record = grid.model.new(key_params(param_key, attrs))
-      message = if @record.save
+      @record = grid.model.new
+      attrs = get_attributes(params_permit, :create, @record)
+      custom_errors = @record.errors
+      @record.assign_attributes(attrs)
+      message = if !custom_errors.empty?
+        {:success => false, :error_message => custom_errors}
+      elsif @record.save
         {:success => true, :id => @record.id }
       else
         {:success => false, :error_message => @record.errors}
@@ -207,8 +210,11 @@ module WulinMaster
 
     private
 
-    def key_params(key, attrs)
-      params.require(key).permit(attrs.keys.map(&:to_sym))
+    def params_permit
+      model_key = ActiveModel::Naming.param_key(grid.model).to_sym
+      params.require(:item).permit! if params[:item].presence
+      params.require(model_key).permit! if params[model_key].presence
+      params[:item].presence || params[model_key].presence
     end
 
     def fire_callbacks(name)

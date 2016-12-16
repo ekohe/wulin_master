@@ -155,7 +155,7 @@ module WulinMaster
       end
 
       def relation_object
-        @relation_object ||= model_associations[field_sym]
+        @relation_object ||= model_associations[field_str]
       end
 
       def has_one_reverse_relation?(related_klass, klass)
@@ -163,7 +163,7 @@ module WulinMaster
       end
 
       def relation_field?
-        model_associations.keys.include?(field_sym)
+        model_associations.keys.include?(field_str)
       end
 
   end
