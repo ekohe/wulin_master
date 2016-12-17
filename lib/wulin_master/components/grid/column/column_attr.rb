@@ -135,6 +135,11 @@ module WulinMaster
         if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
            association_attributes = association_attributes.values.map{|x| x['id']}.uniq.delete_if(&:blank?)
         end
+
+        if ActionController::Parameters === association_attributes
+          association_attributes = association_attributes['id'] || 'null'
+        end
+
         if association_attributes == 'null' or association_attributes.all? {|value| value == 'null'}
           new_attrs[field_sym] = []
         else
