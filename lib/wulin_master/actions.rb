@@ -179,7 +179,7 @@ module WulinMaster
 
     def add_includes
       includes = grid.includes
-      @query = @query.includes(includes) if includes.size > 0 && @query.respond_to?(:includes)
+      @query = @query.includes(includes).references(includes) if includes.size > 0 && @query.respond_to?(:includes)
     end
 
     def add_joins
