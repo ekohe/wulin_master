@@ -20,8 +20,6 @@ Rails.application.routes.draw do
     get 'get_detail_controller', :to => WulinMaster::MasterDetailController.action(:get_detail_controller)
     post 'attach_details', :to => WulinMaster::MasterDetailController.action(:attach_details)
 
-    # Required by Rails 5
-    # match 'js_error_report', :to => WulinMaster::ExceptionReportController.action(:js_error)
-    get 'js_error_report', :to => WulinMaster::ExceptionReportController.action(:js_error)
+    match 'js_error_report', to: WulinMaster::ExceptionReportController.action(:js_error), via: [:get, :post]
   end
 end
