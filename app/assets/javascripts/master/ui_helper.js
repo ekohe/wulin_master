@@ -148,7 +148,8 @@ var Ui = {
         if (n['distinct'] && formType != 'create') {
           distinctColumn.push([n.field, n['choices']]);
         } else {
-          remotePath.push([n.field, n['choices']]);
+          var formable = n.formable === false ? false : true;
+          remotePath.push([n.field, n['choices'], formable]);
         }
       } else if (currentData && n['choices_column']) {
         choicesColumn.push([n.field, currentData[n['choices_column']]]);
@@ -160,7 +161,8 @@ var Ui = {
       $.each(remotePath, function(i, n) {
         var field = n[0];
         var path = n[1];
-        if (!path) return;
+        var formable = n[2];
+        if (!path || !formable) return;
 
         var first_input;
         var target = $("select[data-column='" + field + "']", scope);
