@@ -21,6 +21,8 @@ var Requests = {
           if (continue_on) {
             if (window._always_reset_form) {
               Ui.refreshCreateForm(grid);
+            } else {
+              $("input[type='submit']", createFormElement).removeAttr('disabled').css('opacity', 1.0);
             }
           } else {
             if (grid.loader.isDataLoaded()) {
