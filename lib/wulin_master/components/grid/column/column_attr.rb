@@ -117,7 +117,7 @@ module WulinMaster
         # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
         if Array === association_attributes
           the_ids = association_attributes#.first.split(',')
-        elsif Hash === association_attributes
+        elsif (Hash === association_attributes) || (ActionController::Parameters === association_attributes)
           the_ids = ((association_attributes['id'] == 'null' or association_attributes['id'].blank?) ? [] : association_attributes['id'])
         else
           the_ids = []
