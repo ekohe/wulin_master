@@ -98,7 +98,9 @@ module WulinMaster
         when :has_and_belongs_to_many then
           assign_habtm_attr(new_attrs, value)
         when :has_many then
-          assign_has_many_attr(new_attrs,value)
+          assign_has_many_attr(new_attrs, value)
+        when :has_one then
+          assign_has_one_attr(new_attrs, value)
         end
       end
 
@@ -144,6 +146,22 @@ module WulinMaster
           new_attrs[field_sym] = []
         else
           new_attrs[field_sym] = relation_object.klass.find(association_attributes.uniq.delete_if(&:blank?)).to_a
+        end
+      end
+
+      def assign_has_one_attr(new_attrs, association_attributes)
+        if Hash === association_attributes and association_attributes.values.all? {|value| value.key?('id')}
+           association_attributes = association_attributes.values.map{|x| x['id']}.uniq.delete_if(&:blank?)
+        end
+
+        if ActionController::Parameters === association_attributes
+          association_attributes = association_attributes['id'] || 'null'
+        end
+
+        if association_attributes == 'null'
+          new_attrs[field_sym] = nil
+        else
+          new_attrs[field_sym] = relation_object.klass.find(association_attributes)
         end
       end
 
