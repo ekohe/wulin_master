@@ -173,7 +173,7 @@ if (typeof Slick === "undefined") {
 
 	var pagingActive = false;
 	var pagingIsLastPage = false;
-	
+
     // async call handles
     var h_editorLoader = null;
     var h_render = null;
@@ -2552,7 +2552,7 @@ if (typeof Slick === "undefined") {
       if (e.isImmediatePropagationStopped()) {
         return;
       }
-      
+
 	  // this optimisation causes trouble - MLeibman #329
       //if ((activeCell != cell.cell || activeRow != cell.row) && canCellBeActive(cell.row, cell.cell)) {
       if (canCellBeActive(cell.row, cell.cell)) {
@@ -2577,6 +2577,11 @@ if (typeof Slick === "undefined") {
       trigger(self.onContextMenu, {grid: self}, e);
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Customised for WulinMaster
+    // 1. Only work for editable column
+
     function handleDblClick(e) {
       var cell = getCellFromEvent(e);
       if (!cell || (currentEditor !== null && activeRow == cell.row && activeCell == cell.cell)) {
@@ -2588,7 +2593,8 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      if (options.editable) {
+      // if (options.editable) {
+      if(isColumnEditable(columns[cell.cell])) { // use editable option for column
         gotoCell(cell.row, cell.cell, true);
       }
     }
@@ -2780,7 +2786,7 @@ if (typeof Slick === "undefined") {
       } else {
         activeRow = activeCell = null;
       }
-	
+
 	  // this optimisation causes trouble - MLeibman #329
       //if (activeCellChanged) {
         trigger(self.onActiveCellChanged, getActiveCell());
@@ -3437,10 +3443,17 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // IEditor implementation for the editor lock
+    //
+    // Customised for WulinMaster:
+    // 1. Summit only
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
       var column = columns[activeCell];
+
+      var submitItem = {};
+      submitItem['id'] = item.id;
+      submitItem[column.field] = item[column.field];
 
       if (currentEditor) {
         if (currentEditor.isValueChanged()) {
@@ -3460,7 +3473,8 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    item: item,
+                    // item: item
+                    item: submitItem, // summit only current field
                     grid: self
                   });
                 },
@@ -3470,7 +3484,8 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    item: item,
+                    // item: item
+                    item: submitItem, // summit only current field
                     grid: self
                   });
                 }
@@ -3547,6 +3562,17 @@ if (typeof Slick === "undefined") {
       selectionModel.setSelectedRanges(rowsToRanges(rows));
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Customised APIs for WulinMaster
+
+    // get the editable for a column accoring to self's config and current grid's config
+    function isColumnEditable(column_option) {
+      if(column_option.editable == undefined) {
+        return options.editable;
+      } else {
+        return column_option.editable;
+      }
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Debug
