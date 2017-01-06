@@ -3445,7 +3445,7 @@ if (typeof Slick === "undefined") {
     // IEditor implementation for the editor lock
     //
     // Customised for WulinMaster:
-    // 1. Summit only
+    // 1. Commit only current field
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
@@ -3474,7 +3474,7 @@ if (typeof Slick === "undefined") {
                     row: activeRow,
                     cell: activeCell,
                     // item: item
-                    item: submitItem, // summit only current field
+                    item: submitItem, // commit only current field
                     grid: self
                   });
                 },
@@ -3485,7 +3485,7 @@ if (typeof Slick === "undefined") {
                     row: activeRow,
                     cell: activeCell,
                     // item: item
-                    item: submitItem, // summit only current field
+                    item: submitItem, // commit only current field
                     grid: self
                   });
                 }
