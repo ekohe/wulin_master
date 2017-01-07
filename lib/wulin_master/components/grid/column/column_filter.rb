@@ -11,7 +11,11 @@ module WulinMaster
       # Search by NULL
       return filter_by_null(query, filtering_value, filtering_operator, adapter) if filtering_value.to_s.downcase == 'null'
 
-      if reflection
+      # Although RoleUser `belongs_to` user, User (in WulinOAuth) doesn't provide
+      # `has_many` relationship to RoleUser since it is not inherited from
+      # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
+
+      if reflection && query != RolesUser
         return filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       else
         return filter_without_reflection(query, filtering_value, sql_type, adapter)
