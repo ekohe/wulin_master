@@ -3443,17 +3443,10 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // IEditor implementation for the editor lock
-    //
-    // Customised for WulinMaster:
-    // 1. Commit only current field
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
       var column = columns[activeCell];
-
-      var submitItem = {};
-      submitItem['id'] = item.id;
-      submitItem[column.field] = item[column.field];
 
       if (currentEditor) {
         if (currentEditor.isValueChanged()) {
@@ -3473,8 +3466,7 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    // item: item
-                    item: submitItem, // commit only current field
+                    item: item,
                     grid: self
                   });
                 },
@@ -3484,8 +3476,7 @@ if (typeof Slick === "undefined") {
                   trigger(self.onCellChange, {
                     row: activeRow,
                     cell: activeCell,
-                    // item: item
-                    item: submitItem, // commit only current field
+                    item: item,
                     grid: self
                   });
                 }
@@ -3599,6 +3590,13 @@ if (typeof Slick === "undefined") {
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Getters for WulinMasterGrid
+
+    function getSerializedEditorValue() {
+      return serializedEditorValue;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
     // Public API
 
     $.extend(this, {
@@ -3663,7 +3661,7 @@ if (typeof Slick === "undefined") {
       "getSelectedRows": getSelectedRows,
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
-	  "updatePagingStatusFromView": updatePagingStatusFromView,
+	    "updatePagingStatusFromView": updatePagingStatusFromView,
 
       "render": render,
       "invalidate": invalidate,
@@ -3724,7 +3722,12 @@ if (typeof Slick === "undefined") {
 
       // IEditor implementation
       "getEditorLock": getEditorLock,
-      "getEditController": getEditController
+      "getEditController": getEditController,
+
+      // New APIs open to WulinMasterGrid
+      "getSerializedEditorValue": getSerializedEditorValue,
+      "makeActiveCellNormal": makeActiveCellNormal,
+      "trigger": trigger
     });
 
     init();
