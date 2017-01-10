@@ -153,6 +153,7 @@
     $.extend(this, {
       // Events
       'onRendered':                     new Slick.Event(),
+      'onCanvasResized':                new Slick.Event(),
 
       // methods
       'getRowByRecordId':               getRowByRecordId,

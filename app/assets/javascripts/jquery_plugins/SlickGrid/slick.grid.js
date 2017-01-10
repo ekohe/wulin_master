@@ -3596,6 +3596,14 @@ if (typeof Slick === "undefined") {
       return serializedEditorValue;
     }
 
+    function getRows() {
+      return rowsCache;
+    }
+
+    function getRowAt(i){
+      return rowsCache[i];
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Public API
 
@@ -3725,6 +3733,8 @@ if (typeof Slick === "undefined") {
       "getEditController": getEditController,
 
       // New APIs open to WulinMasterGrid
+      "getRows": getRows,
+      "getRowAt": getRowAt,
       "getSerializedEditorValue": getSerializedEditorValue,
       "makeActiveCellNormal": makeActiveCellNormal,
       "trigger": trigger
