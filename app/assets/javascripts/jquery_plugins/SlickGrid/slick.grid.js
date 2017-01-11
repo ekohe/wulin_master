@@ -3443,10 +3443,14 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // IEditor implementation for the editor lock
+    //
+    // Customized for WulinMaster
+    //   1. Use item info of current cell instead of the whole row for submit in onCellChange trigger
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
       var column = columns[activeCell];
+      var submitItem = {}; // Use for get item info of current cell for submit
 
       if (currentEditor) {
         if (currentEditor.isValueChanged()) {
@@ -3463,22 +3467,24 @@ if (typeof Slick === "undefined") {
                 execute: function () {
                   this.editor.applyValue(item, this.serializedValue);
                   updateRow(this.row);
-                  trigger(self.onCellChange, {
-                    row: activeRow,
-                    cell: activeCell,
-                    item: item,
-                    grid: self
-                  });
+                  // Original SlickGrid Logic: Submit item for the whole row
+                  // trigger(self.onCellChange, {
+                  //   row: activeRow,
+                  //   cell: activeCell,
+                  //   item: item,
+                  //   grid: self
+                  // });
                 },
                 undo: function () {
                   this.editor.applyValue(item, this.prevSerializedValue);
                   updateRow(this.row);
-                  trigger(self.onCellChange, {
-                    row: activeRow,
-                    cell: activeCell,
-                    item: item,
-                    grid: self
-                  });
+                  // Original SlickGrid Logic: Submit item for the whole row
+                  // trigger(self.onCellChange, {
+                  //   row: activeRow,
+                  //   cell: activeCell,
+                  //   item: item,
+                  //   grid: self
+                  // });
                 }
               };
 
@@ -3489,6 +3495,17 @@ if (typeof Slick === "undefined") {
                 editCommand.execute();
                 makeActiveCellNormal();
               }
+
+              // New logic for customization:
+              //   Use item info of current cell for submit in onCellChange trigger
+              submitItem['id'] = item.id;
+              submitItem[column.field] = item[column.field];
+              trigger(self.onCellChange, {
+                  row: activeRow,
+                  cell: activeCell,
+                  item: submitItem,
+                  editCommand: editCommand
+              });
 
             } else {
               var newItem = {};
@@ -3735,8 +3752,6 @@ if (typeof Slick === "undefined") {
       // New APIs open to WulinMasterGrid
       "getRows": getRows,
       "getRowAt": getRowAt,
-      "getSerializedEditorValue": getSerializedEditorValue,
-      "makeActiveCellNormal": makeActiveCellNormal,
       "trigger": trigger
     });
 
