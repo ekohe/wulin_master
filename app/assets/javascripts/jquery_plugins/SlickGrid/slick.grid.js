@@ -220,10 +220,10 @@ if (typeof Slick === "undefined") {
       validateAndEnforceOptions();
       columnDefaults.width = options.defaultColumnWidth;
 
-      columnsById = {};
+      // columnsById = {};
       for (var i = 0; i < columns.length; i++) {
         var m = columns[i] = $.extend({}, columnDefaults, columns[i]);
-        columnsById[m.id] = i;
+        // columnsById[m.id] = i;
         if (m.minWidth && m.width < m.minWidth) {
           m.width = m.minWidth;
         }
@@ -325,6 +325,8 @@ if (typeof Slick === "undefined") {
             return $(event.target).is("input,textarea");
           });
         }
+
+        removeInvisibleColumns();
 
         updateColumnCaches();
         createColumnHeaders();
@@ -648,10 +650,13 @@ if (typeof Slick === "undefined") {
             }
           });
         $footerRow.empty();
-	  }
+	    }
+
+      columnsById = {};
 
       for (var i = 0; i < columns.length; i++) {
         var m = columns[i];
+        columnsById[m.id] = i;
 
         var header = $("<div class='ui-state-default slick-header-column' />")
             .html("<span class='slick-column-name'>" + m.name + "</span>")
@@ -3571,18 +3576,6 @@ if (typeof Slick === "undefined") {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Customised APIs for WulinMaster
-
-    // get the editable for a column accoring to self's config and current grid's config
-    function isColumnEditable(column_option) {
-      if(column_option.editable == undefined) {
-        return options.editable;
-      } else {
-        return column_option.editable;
-      }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
     // Debug
 
     this.debug = function () {
@@ -3607,11 +3600,30 @@ if (typeof Slick === "undefined") {
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Getters for WulinMasterGrid
+    // Customised APIs for WulinMaster
 
-    function getSerializedEditorValue() {
-      return serializedEditorValue;
+    // get the editable for a column accoring to self's config and current grid's config
+    function isColumnEditable(column_option) {
+      if(column_option.editable == undefined) {
+        return options.editable;
+      } else {
+        return column_option.editable;
+      }
     }
+
+    // Remove columns which have option of visible:false when initialize the grid
+    function removeInvisibleColumns() {
+        var tmp = [];
+        for (var i = 0; i < columns.length; i++) {
+            if (columns[i].visible != false) {
+                tmp.push(columns[i]);
+            }
+        }
+        columns = tmp;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Getters for WulinMasterGrid
 
     function getRows() {
       return rowsCache;

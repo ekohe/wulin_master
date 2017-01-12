@@ -125,12 +125,11 @@
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
       // Restore the visibility states to columns
       GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
-      visibleColumns = getVisibleColumns(columns);
       // Restore the width states to columns
-      GridStatesManager.restoreWidthStates(visibleColumns, states["width"]);
+      GridStatesManager.restoreWidthStates(columns, states["width"]);
 
       // ------------------------- Create Grid ------------------------------------
-      grid = new WulinMaster.Grid(gridElement, loader.data, visibleColumns, options);
+      grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
       gridAttrs = {
@@ -139,7 +138,7 @@
         screen: screen,
         loader: loader,
         path: pathWithoutQuery,
-        columns: visibleColumns,
+        columns: columns,
         originColumns: originColumns,
         query: query,
         container: gridElement.parent(),
@@ -157,7 +156,7 @@
       grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // Set ColumnPicker
-      var columnpicker = new Slick.Controls.ColumnPicker(visibleColumns, grid, options);
+      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 
       // Load data into grid
       loader.setGrid(grid);
@@ -255,17 +254,6 @@
         setGridBodyHeight(gridElement);
         this.resizeCanvas();
       });
-    }
-
-    // Remove columns which have option of visible:false when initialize the grid
-    function getVisibleColumns(columns) {
-      var tmp = [];
-      for (var i = 0; i < columns.length; i++) {
-        if (columns[i].visible != false) {
-          tmp.push(columns[i]);
-        }
-      }
-      return tmp;
     }
 
     init();
