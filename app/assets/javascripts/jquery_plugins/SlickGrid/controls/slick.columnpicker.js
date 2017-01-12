@@ -2,7 +2,6 @@
   function SlickColumnPicker(columns, grid, options) {
     var $menu;
     var columnCheckboxes;
-    var _self = this;   // Ekohe Add
 
     var defaults = {
       fadeSpeed:250
@@ -19,20 +18,6 @@
         $(this).fadeOut(options.fadeSpeed)
       });
       $menu.on("click", updateColumn);
-
-      // Ekohe Add: Bind the column pick event
-      $menu.on("click", handleColumnPick);
-      bindGrid();
-    }
-
-    // Ekohe Add: Assign the picker itself to grid
-    function bindGrid() {
-      grid.picker = _self;
-    }
-
-    // Ekohe Add: Notify onColumnsPick event
-    function handleColumnPick(e, args) {
-      _self.onColumnsPick.notify({});
     }
 
     function destroy() {
@@ -41,10 +26,6 @@
       $menu.remove();
     }
 
-    // Ekohe Modify:
-    //   1. Add "All/None" checkbox
-    //   2. Use attr instead of data for columns checkbox
-    //   3. Add process for "All/None" checkbox in columns checkbox
     function handleHeaderContextMenu(e, args) {
       e.preventDefault();
       $menu.empty();
@@ -53,25 +34,14 @@
 
       var $li, $input, $allNoneInput;
 
-      // Ekohe Add: Append "All/None" checkbox
-      $li = $("<li />").appendTo($menu);
-      $allNoneInput = $("<input type='checkbox' id='all_none' checked='checked' />").appendTo($li);
-      $("<label for='all_none'>All/None</label>").appendTo($li);
-      $("<hr/>").appendTo($menu);
-
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
         $li = $("<li />").appendTo($menu);
-        // Ekohe Modify: Use attr instead of data for columns checkbox
-        $input = $("<input type='checkbox' />").attr({id: "columnpicker_" + i, name: columns[i].field})
-        // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+        $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         columnCheckboxes.push($input);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
           $input.attr("checked", "checked");
-        // Ekohe Add: Uncheck "All/None" when unchecked columns exist
-        } else {
-          $allNoneInput.removeAttr("checked");
         }
 
         $("<label />")
@@ -85,9 +55,9 @@
       $li = $("<li />").appendTo($menu);
       $input = $("<input type='checkbox' />").data("option", "autoresize");
       $("<label />")
-          .text("Force fit columns")
-          .prepend($input)
-          .appendTo($li);
+        .text("Force fit columns")
+        .prepend($input)
+        .appendTo($li);
       if (grid.getOptions().forceFitColumns) {
         $input.attr("checked", "checked");
       }
@@ -132,8 +102,6 @@
       columns = ordered;
     }
 
-    // Ekohe Modify:
-    //   1. "All/None" checkbox hanlder
     function updateColumn(e) {
       // "Force Fit Columns" checkbox hanlder
       if ($(e.target).data("option") == "autoresize") {
@@ -152,22 +120,6 @@
           grid.setOptions({syncColumnCellResize:true});
         } else {
           grid.setOptions({syncColumnCellResize:false});
-        }
-        return;
-      }
-
-      // Ekohe Add: "All/None" checkbox hanlder
-      if (e.target.id == 'all_none') {
-        if (e.target.checked) {
-          $menu.find(":checkbox[id^=columnpicker]").attr('checked', 'checked');
-          $menu.find(":checkbox").attr('checked', 'checked');
-          grid.setColumns(columns);
-        } else {
-          $menu.find(":checkbox[id^=columnpicker]").not("[name='id']").removeAttr('checked');
-          idColumns = $.grep(grid.getColumns(), function(n, i){
-            return (n.field == 'id');
-          });
-          grid.setColumns(idColumns);
         }
         return;
       }
@@ -194,19 +146,31 @@
       return columns;
     }
 
-    // Ekohe fork
-    // define the columns pick event
+    ///////////////////////////////////////////////////////////
+    // Ekohe Add: New getter/setters
+
+    function getMenu() {
+      return $menu;
+    }
+
+    function getColumnCheckboxes() {
+      return columnCheckboxes;
+    }
+
+    // Ekohe Delete: Will be called in WulinMasterColumnPicker
+    // init();
+
+    // Ekohe Modify: Use extend instead of return to set APIs to this
     $.extend(this, {
-      // Events
-      "onColumnsPick":    new Slick.Event()
+    // return {
+      "getMenu": getMenu,                                 // Ekohe Add
+      "getColumnCheckboxes": getColumnCheckboxes,         // Ekohe Add
+      "init": init,                                       // Ekohe Add
+      "updateColumn": updateColumn,                       // Ekohe Add
+      "handleHeaderContextMenu": handleHeaderContextMenu, // Ekohe Add
+      // "destroy": destroy // Ekohe Delete (should use WulinMasterColumnPicker's API)
+      "getAllColumns": getAllColumns
     });
-
-    init();
-
-    return {
-      "getAllColumns": getAllColumns,
-      "destroy": destroy
-    };
   }
 
   // Slick.Controls.ColumnPicker
