@@ -220,10 +220,10 @@ if (typeof Slick === "undefined") {
       validateAndEnforceOptions();
       columnDefaults.width = options.defaultColumnWidth;
 
-      // columnsById = {};
+      columnsById = {};
       for (var i = 0; i < columns.length; i++) {
         var m = columns[i] = $.extend({}, columnDefaults, columns[i]);
-        // columnsById[m.id] = i;
+        columnsById[m.id] = i;
         if (m.minWidth && m.width < m.minWidth) {
           m.width = m.minWidth;
         }
@@ -296,9 +296,11 @@ if (typeof Slick === "undefined") {
 
       $focusSink2 = $focusSink.clone().appendTo($container);
 
-      if (!options.explicitInitialization) {
-        finishInitialization();
-      }
+      // Ekohe Delete: Will call finishInitialization() in WulinMasterGrid
+      //
+      // if (!options.explicitInitialization) {
+      //   finishInitialization();
+      // }
     }
 
     function finishInitialization() {
@@ -325,8 +327,6 @@ if (typeof Slick === "undefined") {
             return $(event.target).is("input,textarea");
           });
         }
-
-        removeInvisibleColumns();
 
         updateColumnCaches();
         createColumnHeaders();
@@ -2585,7 +2585,7 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Customised for WulinMaster
-    // 1. Only work for editable column
+    //   1. Move call of gotoCell() to WulinMasterGrid for changing of entry condition
 
     function handleDblClick(e) {
       var cell = getCellFromEvent(e);
@@ -2598,10 +2598,10 @@ if (typeof Slick === "undefined") {
         return;
       }
 
+      // Ekohe Delete: Move to WulinMasterGrid for changing of entry condition
       // if (options.editable) {
-      if(isColumnEditable(columns[cell.cell])) { // use editable option for column
-        gotoCell(cell.row, cell.cell, true);
-      }
+      //   gotoCell(cell.row, cell.cell, true);
+      // }
     }
 
     function handleHeaderMouseEnter(e) {
@@ -3600,30 +3600,7 @@ if (typeof Slick === "undefined") {
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Customised APIs for WulinMaster
-
-    // get the editable for a column accoring to self's config and current grid's config
-    function isColumnEditable(column_option) {
-      if(column_option.editable == undefined) {
-        return options.editable;
-      } else {
-        return column_option.editable;
-      }
-    }
-
-    // Remove columns which have option of visible:false when initialize the grid
-    function removeInvisibleColumns() {
-        var tmp = [];
-        for (var i = 0; i < columns.length; i++) {
-            if (columns[i].visible != false) {
-                tmp.push(columns[i]);
-            }
-        }
-        columns = tmp;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Getters for WulinMasterGrid
+    // Ekohe Add: Getters/Setters for WulinMasterGrid
 
     function getRows() {
       return rowsCache;
@@ -3631,6 +3608,14 @@ if (typeof Slick === "undefined") {
 
     function getRowAt(i){
       return rowsCache[i];
+    }
+
+    function getCanvas(){
+      return $canvas;
+    }
+
+    function setColumnsById(c){
+      columnsById = c;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -3754,19 +3739,26 @@ if (typeof Slick === "undefined") {
       "removeCellCssStyles": removeCellCssStyles,
       "getCellCssStyles": getCellCssStyles,
 
-      "init": finishInitialization,
+      // Ekohe Modify: Open init() to WulinMasterGrid
+      // "init": finishInitialization,
+      "init": init,
       "destroy": destroy,
 
       // IEditor implementation
       "getEditorLock": getEditorLock,
       "getEditController": getEditController,
 
-      // New APIs open to WulinMasterGrid
+      // Ekohe Add: New APIs open to WulinMasterGrid
       "getRows": getRows,
       "getRowAt": getRowAt,
+      "getCanvas": getCanvas,
+      "setColumnsById": setColumnsById,
+      "finishInitialization": finishInitialization,
+      "handleDblClick": handleDblClick,
       "trigger": trigger
     });
 
-    init();
+    // Ekohe Delete: Will call init() in WulinMasterGrid
+    // init();
   }
 }(jQuery));
