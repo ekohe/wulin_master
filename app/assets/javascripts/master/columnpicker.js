@@ -16,7 +16,7 @@
 
     var _self = this;
 
-    // Ekohe Add: Customized Initication
+    // Ekohe Add: Customization of init()
     function wulinInit() {
       // Call SlickColumnPicker's init()
       _self.init()
@@ -41,7 +41,7 @@
       grid.picker = _self;
     }
 
-    // Ekohe Modify: Customized Destroy
+    // Ekohe Modify: Customization of destroy()
     function destroy() {
       // Ekohe Modify: Use customized wulinHandleHeaderContextMenu()
       grid.onHeaderContextMenu.unsubscribe(wulinHandleHeaderContextMenu);
