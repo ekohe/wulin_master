@@ -171,8 +171,8 @@ if (typeof Slick === "undefined") {
     var columnPosLeft = [];
     var columnPosRight = [];
 
-	var pagingActive = false;
-	var pagingIsLastPage = false;
+    var pagingActive = false;
+    var pagingIsLastPage = false;
 
     // async call handles
     var h_editorLoader = null;
@@ -2886,7 +2886,7 @@ if (typeof Slick === "undefined") {
       getEditorLock().activate(editController);
       $(activeCellNode).addClass("editable");
 
-	  var useEditor = editor || getEditor(activeRow, activeCell);
+  	  var useEditor = editor || getEditor(activeRow, activeCell);
 
       // don't clear the cell if a custom editor is passed through
       if (!editor && !useEditor.suppressClearOnEdit) {
@@ -3448,14 +3448,10 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // IEditor implementation for the editor lock
-    //
-    // Customized for WulinMaster
-    //   1. Use item info of current cell instead of the whole row for submit in onCellChange trigger
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
       var column = columns[activeCell];
-      var submitItem = {}; // Use for get item info of current cell for submit
 
       if (currentEditor) {
         if (currentEditor.isValueChanged()) {
@@ -3472,24 +3468,22 @@ if (typeof Slick === "undefined") {
                 execute: function () {
                   this.editor.applyValue(item, this.serializedValue);
                   updateRow(this.row);
-                  // Original SlickGrid Logic: Submit item for the whole row
-                  // trigger(self.onCellChange, {
-                  //   row: activeRow,
-                  //   cell: activeCell,
-                  //   item: item,
-                  //   grid: self
-                  // });
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item,
+                    grid: self
+                  });
                 },
                 undo: function () {
                   this.editor.applyValue(item, this.prevSerializedValue);
                   updateRow(this.row);
-                  // Original SlickGrid Logic: Submit item for the whole row
-                  // trigger(self.onCellChange, {
-                  //   row: activeRow,
-                  //   cell: activeCell,
-                  //   item: item,
-                  //   grid: self
-                  // });
+                  trigger(self.onCellChange, {
+                    row: activeRow,
+                    cell: activeCell,
+                    item: item,
+                    grid: self
+                  });
                 }
               };
 
@@ -3500,17 +3494,6 @@ if (typeof Slick === "undefined") {
                 editCommand.execute();
                 makeActiveCellNormal();
               }
-
-              // New logic for customization:
-              //   Use item info of current cell for submit in onCellChange trigger
-              submitItem['id'] = item.id;
-              submitItem[column.field] = item[column.field];
-              trigger(self.onCellChange, {
-                  row: activeRow,
-                  cell: activeCell,
-                  item: submitItem,
-                  editCommand: editCommand
-              });
 
             } else {
               var newItem = {};
@@ -3614,8 +3597,16 @@ if (typeof Slick === "undefined") {
       return $canvas;
     }
 
+    function getSerializedEditorValue(){
+      return serializedEditorValue;
+    }
+
     function setColumnsById(c){
       columnsById = c;
+    }
+
+    function setEditController(c){
+      editController = c;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -3752,9 +3743,12 @@ if (typeof Slick === "undefined") {
       "getRows": getRows,
       "getRowAt": getRowAt,
       "getCanvas": getCanvas,
+      "getSerializedEditorValue": getSerializedEditorValue,
       "setColumnsById": setColumnsById,
+      "setEditController": setEditController,
       "finishInitialization": finishInitialization,
       "handleDblClick": handleDblClick,
+      "makeActiveCellNormal": makeActiveCellNormal,
       "trigger": trigger
     });
 
