@@ -57,7 +57,7 @@ module WulinMaster
         @options[:choices] = @options[:original_choices].call
       end
 
-      append_distinct_options if @options[:distinct]
+      append_distinct_options if @options[:distinct] || @options[:auto_complete]
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
