@@ -48,6 +48,7 @@
     // Ekohe Add: Customization of handleDblClick()
     //   1. Only work for editable column
     function wulinHandleDblClick(e) {
+      var columns = _self.getColumns();
       var cell = _self.getActiveCell();
 
       // Call SlickColumnPicker's handleDblClick()
@@ -178,6 +179,8 @@
 
     // Remove columns which have option of visible:false when initialize the grid
     function removeInvisibleColumns() {
+      var columns = _self.getColumns();
+
       var tmp = [];
       for (var i = 0; i < columns.length; i++) {
         if (columns[i].visible != false) {
