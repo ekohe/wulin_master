@@ -18,7 +18,7 @@
 
     // Ekohe Add: Customization of init()
     function wulinInit() {
-      // Call SlickColumnPicker's init()
+      // Call SlickGrid's init()
       _self.init();
 
       // Use customized commitCurrentEdit() for editController
@@ -39,9 +39,9 @@
       _self.setColumnsById({});
       // Remove invisible columns
       removeInvisibleColumns();
-      // Call SlickColumnPicker's finishInitialization()
+      // Call SlickGrid's finishInitialization()
       _self.finishInitialization()
-      // Use customized handler for dblclick
+      // Use customized handler for `dblclick` event
       _self.getCanvas().on("dblclick", wulinHandleDblClick)
     }
 
@@ -51,7 +51,7 @@
       var columns = _self.getColumns();
       var cell = _self.getActiveCell();
 
-      // Call SlickColumnPicker's handleDblClick()
+      // Call SlickGrids handleDblClick()
       _self.handleDblClick(e);
 
       // Ekohe Modify: Only work for editable column
@@ -242,6 +242,7 @@
       'initialRender':                  initialRender
     });
 
+    // Ekohe Add: Call customized initialization
     wulinInit();
   }
 

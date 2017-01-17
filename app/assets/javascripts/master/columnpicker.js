@@ -21,6 +21,7 @@
       // Call SlickColumnPicker's init()
       _self.init()
 
+      // Subscribe customized handleHeaderContextMenu() to onHeaderContextMenu event
       grid.onHeaderContextMenu.subscribe(wulinHandleHeaderContextMenu);
 
       // Rewrite menu.click to use customized updateColumn()
@@ -109,6 +110,7 @@
       "destroy": destroy
     });
 
+    // Ekohe Add: Call customized initialization
     wulinInit();
   }
 

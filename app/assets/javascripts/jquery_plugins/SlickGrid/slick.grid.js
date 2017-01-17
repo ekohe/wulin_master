@@ -296,8 +296,7 @@ if (typeof Slick === "undefined") {
 
       $focusSink2 = $focusSink.clone().appendTo($container);
 
-      // Ekohe Delete: Will call finishInitialization() in WulinMasterGrid
-      //
+      // Ekohe Delete: Customized finishInitialization() will be called in WulinMasterGrid()
       // if (!options.explicitInitialization) {
       //   finishInitialization();
       // }
@@ -2584,8 +2583,8 @@ if (typeof Slick === "undefined") {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Customised for WulinMaster
-    //   1. Move call of gotoCell() to WulinMasterGrid for changing of entry condition
+    // Ekohe Modify
+    //   1. Move the call of gotoCell() to WulinMasterGrid() for changing of entry condition
 
     function handleDblClick(e) {
       var cell = getCellFromEvent(e);
@@ -3583,7 +3582,7 @@ if (typeof Slick === "undefined") {
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Add: Getters/Setters for WulinMasterGrid
+    // Ekohe Add: Getters/Setters
 
     function getRows() {
       return rowsCache;
@@ -3730,7 +3729,7 @@ if (typeof Slick === "undefined") {
       "removeCellCssStyles": removeCellCssStyles,
       "getCellCssStyles": getCellCssStyles,
 
-      // Ekohe Modify: Open init() to WulinMasterGrid
+      // Ekohe Modify: Expose init() to WulinMasterGrid
       // "init": finishInitialization,
       "init": init,
       "destroy": destroy,
@@ -3739,7 +3738,7 @@ if (typeof Slick === "undefined") {
       "getEditorLock": getEditorLock,
       "getEditController": getEditController,
 
-      // Ekohe Add: New APIs open to WulinMasterGrid
+      // Ekohe Add: New APIs
       "getRows": getRows,
       "getRowAt": getRowAt,
       "getCanvas": getCanvas,
@@ -3752,7 +3751,7 @@ if (typeof Slick === "undefined") {
       "trigger": trigger
     });
 
-    // Ekohe Delete: Will call init() in WulinMasterGrid
+    // Ekohe Delete: Will be called in WulinMasterGrid
     // init();
   }
 }(jQuery));
