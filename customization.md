@@ -1,5 +1,21 @@
 # Customization of SlickGrid
 
+## Index
+
+1. [Customization of `slick.grid.js`](#customization-of-slickgridjs)
+  - [Design Pattern & Preparation in `SlickGrid()`](#design-pattern-preparation-in-slickgrid)
+  - [Customization of `init()`](#customization-of-init)
+  - [Customization of `finishInitialization()`](#customization-of-finishinitialization)
+  - [Customization of `handleDblClick()`](#customization-of-handledblclick)
+  - [Customization of `commitCurrentEdit()`](#customization-of-commitcurrentedit)
+1. [Customization of `slick.columnpicker.js`](#customization-of-slickcolumnpickerjs)
+  - [Design Pattern & Preparation in `SlickColumnPicker()`](#design-pattern-preparation-in-slickcolumnpicker)
+  - [Customization of `init()`](#customization-of-init-1)
+  - [Customization of `handleHeaderContextMenu()`](#customization-of-handleheadercontextmenu)
+  - [Customization of `updateColumn()`](#customization-of-updatecolumn)
+  - [Customization of `destroy()`](#customization-of-destroy)
+  - [Add `onColumnsPick` event and related processing](#add-oncolumnspick-event-and-related-processing)
+
 ## Customization of `slick.grid.js`
 
 ### Design Pattern & Preparation in `SlickGrid()`
