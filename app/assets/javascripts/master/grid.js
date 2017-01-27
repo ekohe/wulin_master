@@ -51,13 +51,30 @@
       var columns = _self.getColumns();
       var cell = _self.getActiveCell();
 
-      // Call SlickGrids handleDblClick()
+      // Call SlickGrid's handleDblClick()
       _self.handleDblClick(e);
 
       // Ekohe Modify: Only work for editable column
       if(isColumnEditable(columns[cell.cell])) {
-        _self.gotoCell(cell.row, cell.cell, true);
+        wulinGotoCell(cell.row, cell.cell, true);
       }
+    }
+
+    // Ekohe Add: Customization of gotoCell()
+    //   1. Pass new param `column_editable` to judge if set the cell active or not
+    function wulinGotoCell(row, cell, forceEdit) {
+      var newCell = _self.getCellNode(row, cell);
+      var columns = _self.getColumns();
+
+      // Call SlickGrid's handleDblClick()
+      _self.gotoCell(row, cell, forceEdit);
+
+      // Ekohe Modify: Pass new param `column_editable` to judge if set the cell active or not
+      _self.setActiveCellInternal(
+        newCell,
+        (forceEdit || (row === getDataLength()) || options.autoEdit),
+        isColumnEditable(columns[cell])
+      )
     }
 
     // Ekohe Add: Customization of commitCurrentEdit()

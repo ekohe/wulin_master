@@ -2753,7 +2753,11 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function setActiveCellInternal(newCell, opt_editMode) {
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Use new parameter `column_editable` to judge if make active or not
+
+    function setActiveCellInternal(newCell, opt_editMode, column_editable) {
       if (activeCellNode !== null) {
         makeActiveCellNormal();
         $(activeCellNode).removeClass("active");
@@ -2776,7 +2780,8 @@ if (typeof Slick === "undefined") {
         $(activeCellNode).addClass("active");
         $(rowsCache[activeRow].rowNode).addClass("active");
 
-        if (options.editable && opt_editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
+        // Ekohe Add: Use new parameter `column_editable` to judge if make active or not
+        if ((column_editable || options.editable) && opt_editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
           clearTimeout(h_editorLoader);
 
           if (options.asyncEditorLoading) {
@@ -2863,9 +2868,11 @@ if (typeof Slick === "undefined") {
       if (!activeCellNode) {
         return;
       }
-      if (!options.editable) {
-        throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
-      }
+
+      // Ekohe Delete: Change to judge editable or not by specific column's `editable` option, not grid's
+      // if (!options.editable) {
+      //   throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
+      // }
 
       // cancel pending async call if there is one
       clearTimeout(h_editorLoader);
@@ -3745,6 +3752,7 @@ if (typeof Slick === "undefined") {
       "getSerializedEditorValue": getSerializedEditorValue,
       "setColumnsById": setColumnsById,
       "setEditController": setEditController,
+      "setActiveCellInternal": setActiveCellInternal,
       "finishInitialization": finishInitialization,
       "handleDblClick": handleDblClick,
       "makeActiveCellNormal": makeActiveCellNormal,

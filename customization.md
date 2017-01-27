@@ -7,6 +7,8 @@
   - [Customization of `init()`](#customization-of-init)
   - [Customization of `finishInitialization()`](#customization-of-finishinitialization)
   - [Customization of `handleDblClick()`](#customization-of-handledblclick)
+  - [Customization of `gotoCell()`](#customization-of-gotocell)
+  - [Customization of `setActiveCellInternal()`](#customization-of-setactivecellinternal)
   - [Customization of `commitCurrentEdit()`](#customization-of-commitcurrentedit)
 1. [Customization of `slick.columnpicker.js`](#customization-of-slickcolumnpickerjs)
   - [Design Pattern & Preparation in `SlickColumnPicker()`](#design-pattern-preparation-in-slickcolumnpicker)
@@ -152,8 +154,16 @@ function WulinMasterGrid(container, data, columns, options) {
 
 `jquery_plugins/SlickGrid/slick.grid.js`
 ``` js
-// No change
-// Will be called in WulinMasterGrid()
+function SlickGrid(container, data, columns, options) {
+  ...
+
+  function finishInitialization() {
+    // No change.
+    // Will be called by wulinFinishInitialization()
+  }
+
+  ...
+}
 ```
 
 `master/grid.js`
@@ -217,8 +227,78 @@ function WulinMasterGrid(container, data, columns, options) {
 
     // Ekohe Modify: Only work for editable column
     if(isColumnEditable(columns[cell.cell])) {
-      _self.gotoCell(cell.row, cell.cell, true);
+      wulinGotoCell(cell.row, cell.cell, true);
     }
+  }
+
+  ...
+}
+```
+
+### Customization of `gotoCell()`
+
+`jquery_plugins/SlickGrid/slick.grid.js`
+``` js
+function SlickGrid(container, data, columns, options) {
+  ...
+
+  function gotoCell() {
+    // No change.
+    // Will be called by wulinGotoCell()
+  }
+
+  ...
+}
+```
+
+`master/grid.js`
+``` js
+function WulinMasterGrid(container, data, columns, options) {
+  ...
+
+  // Ekohe Add: Customization of gotoCell()
+  //   1. Pass new param `column_editable` to judge if set the cell active or not
+  function wulinGotoCell(row, cell, forceEdit) {
+    var newCell = _self.getCellNode(row, cell);
+    var columns = _self.getColumns();
+
+    // Call SlickGrid's handleDblClick()
+    _self.gotoCell(row, cell, forceEdit);
+
+    // Ekohe Modify: Pass new param `column_editable` to judge if set the cell active or not
+    _self.setActiveCellInternal(
+      newCell,
+      (forceEdit || (row === getDataLength()) || options.autoEdit),
+      isColumnEditable(columns[cell])
+    )
+  }
+
+  ...
+}
+```
+
+### Customization of `setActiveCellInternal()`
+
+`jquery_plugins/SlickGrid/slick.grid.js`
+``` js
+function SlickGrid(container, data, columns, options) {
+  ...
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // Ekohe Modify
+  //   1. Use new parameter `column_editable` to judge if make active or not
+
+  function setActiveCellInternal(newCell, opt_editMode, column_editable) {
+    ...
+    if (activeCellNode != null) {
+      ...
+      // Ekohe Add: Use new parameter `column_editable` to judge if make active or not
+      if ((column_editable || options.editable) && opt_editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
+        ...
+      }
+      ...
+    }
+    ...
   }
 
   ...
