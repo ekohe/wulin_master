@@ -207,24 +207,28 @@
       _self.setColumns(tmp);
     }
 
+    function isEditing(){
+      return _self.getCellEditor() != null;
+    }
+
     function getRowByRecordId(id) {
-      var data = this.getData();
+      var data = _self.getData();
       if (data.length == 0 || data.length > 0 && !data[0]) {
-        if (self.loader) data = self.loader.oldData;
+        if (_self.loader) data = _self.loader.oldData;
       }
       for(var i in data) {
-        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: this.getActiveCell.row, index: i}; };
+        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: _self.getActiveCell().row, index: i}; };
       }
     }
 
     function getSelectedIds() {
       try {
-        var selectedIndexes = this.getSelectedRows();
+        var selectedIndexes = _self.getSelectedRows();
         var ids;
         if (selectedIndexes.length > 0) {
           ids = $.map(selectedIndexes,function(n, i) {
-            return this.getDataItem(n)['id'];
-          }.bind(this));
+            return _self.getDataItem(n)['id'];
+          });
           return ids;
         } else {
           return [];
@@ -236,15 +240,15 @@
 
     function resizeAndRender() {
       if (options.forceFitColumns) {
-        this.autosizeColumns();
+        _self.autosizeColumns();
       } else {
-        this.resizeCanvas();
+        _self.resizeCanvas();
       }
     }
 
     function initialRender() {
-      this.resizeAndRender();
-      this.trigger(this.onRendered, {});
+      _self.resizeAndRender();
+      _self.trigger(_self.onRendered, {});
     }
 
     $.extend(this, {
@@ -253,6 +257,7 @@
       'onCanvasResized':                new Slick.Event(),
 
       // methods
+      'isEditing':                      isEditing,
       'getRowByRecordId':               getRowByRecordId,
       'getSelectedIds':                 getSelectedIds,
       'resizeAndRender':                resizeAndRender,
