@@ -147,8 +147,11 @@
     }
 
     // Click the prev button
-    $(".grid-header .tb_prev").on('click', function(){
+    $(document).on('click', '.tb_prev', function() {
+    // $(".grid-header .tb_prev").on('click', function(){
       var $prev = $(this);
+      if($prev.attr('disabled')) return false;
+
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");
 
@@ -161,21 +164,22 @@
 
       // If not reach the left eage, continue shift
       if(!mostLeft){
+        $prev.attr("disabled", true);
         $toolbar.animate({
           left: '+=' + shiftWidth
         }, 'slow', function(){
-          // $prev.siblings(".tb_next").removeClass("hidden");
-          // if(leftResult.visibleItemIndex == 1) {
-          //   $prev.addClass("hidden");
-          // }
           adjustWrapperPositionAfterShift($toolbar_wrapper, leftPositionOffset);
+          $prev.removeAttr("disabled");
         });
       }
     });
 
     // CLick the next button
-    $(".grid-header .tb_next").on('click', function(){
+    $(document).on('click', '.tb_next', function() {
+    // $(".grid-header .tb_next").on('click', function(){
       var $next = $(this);
+      if($next.attr('disabled')) return false;
+
       var $toolbar_wrapper = $(this).siblings(".toolbar-wrapper");
       var $toolbar = $toolbar_wrapper.find(".toolbar");
 
@@ -188,14 +192,12 @@
 
       // If not reach the right eager, continue shift
       if(!mostRight) {
+        $next.attr("disabled", true);
         $toolbar.animate({
           left: '-=' + shiftWidth
         }, 'slow', function(){
-          // $next.siblings(".tb_prev").removeClass("hidden");
-          // if(rightResult.visibleItemIndex == $toolbar.find(".toolbar_item").length - 1) {
-          //   $next.addClass("hidden");
-          // }
           adjustWrapperPositionAfterShift($toolbar_wrapper, leftPositionOffset);
+          $next.removeAttr("disabled");
         });
       }
     });
