@@ -80,8 +80,8 @@ function load_page(url) {
 }
 
 function trackGoogleAnalytics() {
-  if (typeof(_gaq)!='undefined') {
-    _gaq.push(['_trackPageview', currentUrl]);
+  if (typeof(ga)!='undefined') {
+    ga('send', 'pageview', currentUrl);
   }
 }
 
@@ -99,11 +99,18 @@ function selectMenuItem(url) {
 function initialize_menu() {
   // Click to load screen page
   $("#menu li.item a").on('click', function() {
+    currentUrl = $(this).attr('href');
+
+    // If the item in the menu is an absolute URL, then go to the change password page.
+    if (/^https?:\/\//i.test(currentUrl))
+    {
+      window.open(currentUrl);
+      return;
+    }
+
     $("#menu .active").removeClass("active");
     $(this).parent().addClass("active");
     // State management
-    var state = {};
-    currentUrl = $(this).attr('href');
     History.pushState(null, null, currentUrl);
     load_page(currentUrl);
     return false;
