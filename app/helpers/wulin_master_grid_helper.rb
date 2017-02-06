@@ -17,7 +17,15 @@ module WulinMasterGridHelper
     elsif choices.is_a?(Proc)
       array_to_options(choices.call)
     elsif choices.is_a?(Hash) # TODO: support hash options
-      choices.map{|k,v| v.inject("<option value=''></option>"){|str, e| str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"}}.inject(""){|options, x| options << x}.html_safe
+      choices.map do |k,v|
+        v.inject("<option value=''></option>") do |str, e|
+          if e.is_a?(Array)
+            str << "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
+          else
+            str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
+          end
+        end
+      end.inject(""){|options, x| options << x}.html_safe
     else
       array_to_options([])
     end
@@ -44,7 +52,7 @@ module WulinMasterGridHelper
   end
 
   def grid_states_options(user_id, grid_name)
-    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all.to_a
+    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all
     return [] if states.blank?
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)
@@ -79,6 +87,10 @@ module WulinMasterGridHelper
     return false if FalseClass === visible
   end
 
+  def auto_complete_field?(column)
+    return column.options[:auto_complete] ? true : false
+  end
+
   def select_tag_field?(column)
     return true if (column.options[:distinct] and params[:action] != 'wulin_master_new_form')
     (column.options.key?(:choices) or column.options.key?(:choices_column))
@@ -86,6 +98,7 @@ module WulinMasterGridHelper
 
   def required?(column)
     return false if column.options[:distinct]
+    return true if column.options[:required]
     column.presence_required?
   end
 
@@ -99,8 +112,8 @@ module WulinMasterGridHelper
   end
 
   def array_to_options(arr)
-    arr.map!{|o| o.is_a?(Hash) ? o : {:id => o, :name => o} }
-    arr.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
+    options = arr.map{|o| o.is_a?(Hash) ? o : {:id => o, :name => o} }
+    options.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
   end
 
 end

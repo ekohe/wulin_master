@@ -217,7 +217,7 @@
         if (_self.loader) data = _self.loader.oldData;
       }
       for(var i in data) {
-        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: _self.getActiveCell().row, index: i}; };
+        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: _self.getRowAt(i), index: i}; };
       }
     }
 
