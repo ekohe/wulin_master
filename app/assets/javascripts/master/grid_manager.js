@@ -153,7 +153,7 @@
       }
 
       // Set selection model
-      grid.setSelectionModel(new Slick.RowSelectionModel());
+      grid.setSelectionModel(new WulinMaster.RowSelectionModel());
 
       // Set ColumnPicker
       var columnpicker = new WulinMaster.ColumnPicker(columns, grid, options);
