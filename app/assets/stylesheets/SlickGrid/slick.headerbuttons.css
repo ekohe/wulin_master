@@ -5,7 +5,7 @@
    * display way below the lower boundary of the column thus hiding them.
    */
   display: inline-block;
-  float: left;
+  /*float: left;*/ /* Ekohe Delete: Show title in cneter */
   margin-bottom: 100px;
 }
 
