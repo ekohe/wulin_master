@@ -80,9 +80,14 @@
       setSelectedRanges(rowsToRanges(rows));
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Delete entry check of empty selection for initail toolbar status check
+
     function setSelectedRanges(ranges) {
+      // Ekohe Delete: Also used for empty selection for initial Toolbar status
       // simle check for: empty selection didn't change, prevent firing onSelectedRangesChanged
-      if ((!_ranges || _ranges.length === 0) && (!ranges || ranges.length === 0)) { return; }
+      // if ((!_ranges || _ranges.length === 0) && (!ranges || ranges.length === 0)) { return; }
       _ranges = ranges;
       _self.onSelectedRangesChanged.notify(_ranges);
     }
@@ -130,40 +135,53 @@
       }
     }
 
-    function handleClick(e) {
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Add data as parameter
+    //   2. Add processing for single selection
+
+    // function handleClick(e) {
+    function handleClick(e, data) {
       var cell = _grid.getCellFromEvent(e);
       if (!cell || !_grid.canCellBeActive(cell.row, cell.cell)) {
         return false;
       }
 
-      if (!_grid.getOptions().multiSelect || (
-          !e.ctrlKey && !e.shiftKey && !e.metaKey)) {
-        return false;
-      }
+      // Ekohe Delete: Support single selection
+      // if (!_grid.getOptions().multiSelect || (
+      //     !e.ctrlKey && !e.shiftKey && !e.metaKey)) {
+      //   return false;
+      // }
 
       var selection = rangesToRows(_ranges);
       var idx = $.inArray(cell.row, selection);
 
-      if (idx === -1 && (e.ctrlKey || e.metaKey)) {
-        selection.push(cell.row);
-        _grid.setActiveCell(cell.row, cell.cell);
-      } else if (idx !== -1 && (e.ctrlKey || e.metaKey)) {
-        selection = $.grep(selection, function (o, i) {
-          return (o !== cell.row);
-        });
-        _grid.setActiveCell(cell.row, cell.cell);
-      } else if (selection.length && e.shiftKey) {
-        var last = selection.pop();
-        var from = Math.min(cell.row, last);
-        var to = Math.max(cell.row, last);
-        selection = [];
-        for (var i = from; i <= to; i++) {
-          if (i !== last) {
-            selection.push(i);
+      // Ekohe Add: Processing for single selection
+      if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+        handleActiveCellChange(e, data);
+        return false;
+      } else if (_grid.getOptions().multiSelect) {
+        if (idx === -1 && (e.ctrlKey || e.metaKey)) {
+          selection.push(cell.row);
+          _grid.setActiveCell(cell.row, cell.cell);
+        } else if (idx !== -1 && (e.ctrlKey || e.metaKey)) {
+          selection = $.grep(selection, function (o, i) {
+            return (o !== cell.row);
+          });
+          _grid.setActiveCell(cell.row, cell.cell);
+        } else if (selection.length && e.shiftKey) {
+          var last = selection.pop();
+          var from = Math.min(cell.row, last);
+          var to = Math.max(cell.row, last);
+          selection = [];
+          for (var i = from; i <= to; i++) {
+            if (i !== last) {
+              selection.push(i);
+            }
           }
+          selection.push(last);
+          _grid.setActiveCell(cell.row, cell.cell);
         }
-        selection.push(last);
-        _grid.setActiveCell(cell.row, cell.cell);
       }
 
       var tempRanges = rowsToRanges(selection);

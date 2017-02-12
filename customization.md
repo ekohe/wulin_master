@@ -17,6 +17,10 @@
   - [Customization of `updateColumn()`](#customization-of-updatecolumn)
   - [Customization of `destroy()`](#customization-of-destroy)
   - [Add `onColumnsPick` event and related processing](#add-oncolumnspick-event-and-related-processing)
+1. [Customization of `slick.rowselectionmodel.js`](#customization-of-slickrowselectionmodeljs)
+  - [Design Pattern & Preparation in `Slick.RowSelectionModel()`](#design-pattern-preparation-in-slickrowselectionmodel)
+  - [Customization of `setSelectedRanges()`](#customization-of-setselectedranges)
+  - [Customization of `handleClick()`](#customization-of-handleclick)
 
 ## Customization of `slick.grid.js`
 
@@ -690,5 +694,89 @@ function WulinMasterColumnPicker(columns, grid, options) {
   });
 
   ...
+}
+```
+
+## Customization of `slick.rowselectionmodel.js`
+
+### Design Pattern & Preparation in `Slick.RowSelectionModel()`
+
+##### Create `WulinMaster.RowSelectionModel` to inherit `Slick.RowSelectionModel`
+
+`master/rowselectionmodel.js`
+``` js
+(function($) {
+  $.extend(true, window, {
+    WulinMaster: {
+      RowSelectionModel: RowSelectionModel
+    }
+  });
+
+  function RowSelectionModel(options) {
+    Slick.RowSelectionModel.call(this, options);
+
+    var _self = this;
+
+    // Customization ...
+  }
+
+  RowSelectionModel.prototype = Object.create(Slick.RowSelectionModel.prototype);
+})(jQuery);
+```
+
+### Customization of `setSelectedRanges()`
+
+`jquery_plugins/SlickGrid/plugins/slick.rowselectionmodel.js`
+``` js
+function RowSelectionModel(options) {
+  ...
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // Ekohe Modify
+  //   1. Delete entry check of empty selection for initail toolbar status check
+
+  function setSelectedRanges(ranges) {
+    // Ekohe Delete: Also used for empty selection for initial Toolbar status
+    // simle check for: empty selection didn't change, prevent firing onSelectedRangesChanged
+    // if ((!_ranges || _ranges.length === 0) && (!ranges || ranges.length === 0)) { return; }
+    ...
+  }
+
+  ...
+  }
+}
+```
+
+### Customization of `handleClick()`
+
+`jquery_plugins/SlickGrid/plugins/slick.rowselectionmodel.js`
+``` js
+function RowSelectionModel(options) {
+  ...
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // Ekohe Modify
+  //   1. Add data as parameter
+  //   2. Add processing for single selection
+
+  // function handleClick(e) {
+  function handleClick(e, data) {
+    ...
+    // Ekohe Delete: Support single selection
+    // if (!_grid.getOptions().multiSelect || (
+    //     !e.ctrlKey && !e.shiftKey && !e.metaKey)) {
+    //   return false;
+    // }
+    ...
+    // Ekohe Add: Processing for single selection
+    if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+      handleActiveCellChange(e, data);
+      return false;
+    } else if (_grid.getOptions().multiSelect) {
+      ...
+    }
+    ...
+  }
+
+  ...
+  }
 }
 ```
