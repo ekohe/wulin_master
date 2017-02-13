@@ -52,7 +52,7 @@ module WulinMasterGridHelper
   end
 
   def grid_states_options(user_id, grid_name)
-    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all
+    states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all.to_a
     return [] if states.blank?
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)
