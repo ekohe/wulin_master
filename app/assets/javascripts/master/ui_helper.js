@@ -9,7 +9,7 @@ var Ui = {
   isEditing: function() {
     var editing = false;
     $.each(gridManager.grids, function(){
-      if(this.currentEditor != null) editing = true;
+      if(this.getCellEditor() != null) editing = true;
     });
     return editing;
   },
