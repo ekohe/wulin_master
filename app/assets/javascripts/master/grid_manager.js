@@ -51,7 +51,9 @@
       var i, type_str;
       for (i = 0; i < columns.length; i++) {
         type_str = columns[i].type.toLowerCase();
+
         // 1. append editor
+
         if (columns[i].editor) {
           columns[i].editor = eval(columns[i].editor);
         } else if (columns[i].auto_complete) {
@@ -61,9 +63,16 @@
         } else {
           columns[i].editor = getEditorForType(columns[i].type);
         }
+
         // 2. append cssClass
         if (type_str == "boolean") {
           columns[i].cssClass = 'cell-effort-driven';
+        }
+
+        // 3. append formatter
+
+        if (!columns[i].formatter) {
+          columns[i].formatter = BasisFormatter;
         }
 
         if (type_str == "date") {
@@ -89,7 +98,6 @@
           columns[i].formatter = SimpleTimeFormatter;
         }
 
-        // 3. append formatter
         if (columns[i].formatter) {
           columns[i].formatter = eval(columns[i].formatter);
           continue;
