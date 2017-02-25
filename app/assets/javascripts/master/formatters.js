@@ -5,7 +5,7 @@
     // New added (Basis Formatter)
     ///////////////////////////////////////////////////////////////////////////
 
-    BasisFormatter: function(row, cell, value, columnDef, dataContext) {
+    BaseFormatter: function(row, cell, value, columnDef, dataContext) {
 
       var style = columnDef.style;
       var optionTextAttribute = columnDef.optionTextAttribute;

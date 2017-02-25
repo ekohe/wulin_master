@@ -72,7 +72,7 @@
         // 3. append formatter
 
         if (!columns[i].formatter) {
-          columns[i].formatter = BasisFormatter;
+          columns[i].formatter = BaseFormatter;
         }
 
         if (type_str == "date") {
