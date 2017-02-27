@@ -82,12 +82,6 @@
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
-        } else if (type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
-          columns[i].formatter = BelongsToFormatter;
-        } else if (type_str == "has_many") {
-          columns[i].formatter = HasManyFormatter;
-        } else if (type_str == 'has_one') {
-          columns[i].formatter = HasOneFormatter;
         }
 
         if (columns[i].simple_date) {
