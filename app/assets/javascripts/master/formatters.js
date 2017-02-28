@@ -41,18 +41,19 @@
       return ApplyStyle(text, columnDef.style);
     },
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Existing (Not tested yet)
-    ///////////////////////////////////////////////////////////////////////////
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === null ? "" : (value ? 'Yes' : 'No');
       return ApplyStyle(text, columnDef.style);
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      return value ? "<img src='/assets/tick.png'>" : "";
-      // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
+      var html = value ? "<img src='/assets/tick.png'>" : "";
+      return ApplyStyle(html, columnDef.style);
     },
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Existing (Not tested yet)
+    ///////////////////////////////////////////////////////////////////////////
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
       return value === 0 ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
