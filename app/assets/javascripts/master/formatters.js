@@ -51,13 +51,14 @@
       return ApplyStyle(html, columnDef.style);
     },
 
+    ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
+      var text = value === 0 ? "" : value;
+      return ApplyStyle(text, columnDef.style);
+    },
+
     ///////////////////////////////////////////////////////////////////////////
     // Existing (Not tested yet)
     ///////////////////////////////////////////////////////////////////////////
-
-    ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
-      return value === 0 ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
-    },
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
       return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
