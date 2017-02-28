@@ -25,7 +25,7 @@
       // Apply format for relation columns
       if (inner_formatter) {
         if (inner_formatter == 'boolean') {
-          return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+          value = TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
         } else if (typeof(window[inner_formatter]) == 'function') {
           value = window[inner_formatter](row, cell, value, columnDef, dataContext);
         }
@@ -45,7 +45,8 @@
     // Existing (Not tested yet)
     ///////////////////////////////////////////////////////////////////////////
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      return value === null ? "" : (value ? 'Yes' : 'No');
+      var text = value === null ? "" : (value ? 'Yes' : 'No');
+      return ApplyStyle(text, columnDef.style);
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
