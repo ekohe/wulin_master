@@ -56,13 +56,13 @@
       return ApplyStyle(text, columnDef.style);
     },
 
+    TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
+      return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style) + "</div>";
+    },
+
     ///////////////////////////////////////////////////////////////////////////
     // Existing (Not tested yet)
     ///////////////////////////////////////////////////////////////////////////
-
-    TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-      return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
-    },
 
     // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
     StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {

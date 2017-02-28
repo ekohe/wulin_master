@@ -71,10 +71,6 @@
 
         // 3. append formatter
 
-        if (!columns[i].formatter) {
-          columns[i].formatter = BaseFormatter;
-        }
-
         if (type_str == "date") {
           columns[i].formatter = StandardDateCellFormatter;
           columns[i].DateShowFormat = "yy-mm-dd";
@@ -92,10 +88,12 @@
           columns[i].formatter = SimpleTimeFormatter;
         }
 
-        if (columns[i].formatter) {
-          columns[i].formatter = eval(columns[i].formatter);
-          continue;
+        if (!columns[i].formatter) {
+          columns[i].formatter = BaseFormatter;
         }
+
+        columns[i].formatter = eval(columns[i].formatter);
+        continue;
       }
     }
 
