@@ -2,63 +2,50 @@
   var SlickFormatter = {
 
     ///////////////////////////////////////////////////////////////////////////
-    // New added (Basis Formatter)
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    ApplyStyle: function(value, style) {
+      return value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";;
+    },
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Tested Formatter
     ///////////////////////////////////////////////////////////////////////////
 
     BaseFormatter: function(row, cell, value, columnDef, dataContext) {
-
-      var style = columnDef.style;
       var optionTextAttribute = columnDef.optionTextAttribute;
+      var inner_formatter = columnDef.inner_formatter;
+
+      // Retrive info for relation columns
+      if (optionTextAttribute) {
+        value = value[optionTextAttribute];
+      }
+
+      // Apply format for relation columns
+      if (inner_formatter) {
+        if (inner_formatter == 'boolean') {
+          return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+        } else if (typeof(window[inner_formatter]) == 'function') {
+          value = window[inner_formatter](row, cell, value, columnDef, dataContext);
+        }
+      }
 
       // Apply style
-      if (style) {
-        value = value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";;
-      }
+      return ApplyStyle(value, columnDef.style);
+    },
 
-      // Use `inner_formatter` to determine formatter for realtion columns
-
-      if (optionTextAttribute) {
-        value = value[columnDef.optionTextAttribute];
-      }
-      if (!columnDef.inner_formatter) return value;
-
-      if (columnDef.inner_formatter == 'boolean') {
-        return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
-      } else if (typeof(window[columnDef.inner_formatter]) == 'function') {
-        return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
-      } else {
-        return value;
-      }
+    MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
+      var currency = columnDef.currency || "$";
+      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
+      return ApplyStyle(text, columnDef.style);
     },
 
     ///////////////////////////////////////////////////////////////////////////
     // Existing (Not tested yet)
     ///////////////////////////////////////////////////////////////////////////
-
-    // BelongsToFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   value = value[columnDef.optionTextAttribute];
-    //   if (!columnDef.inner_formatter) return value;
-    //
-    //   // if has inner_formatter
-    //   if (columnDef.inner_formatter == 'boolean') {
-    //     return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
-    //   } else if (typeof(window[columnDef.inner_formatter]) == 'function') {
-    //     return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
-    //   } else {
-    //     return value;
-    //   }
-    // },
-
-    // HasManyFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-    // },
-
-    // HasOneFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-    // },
-
-    TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-      return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
+    TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
+      return value === null ? "" : (value ? 'Yes' : 'No');
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
@@ -66,19 +53,12 @@
       // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
     },
 
-    TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      return value === null ? "" : (value ? 'Yes' : 'No');
-    },
-
-    MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
-      // TODO: make the unit configurable
-      var currency = columnDef.currency || "$";
-      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
-      return "<span style='text-align:right;display:block'>" + text + "</span>";
-    },
-
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
       return value === 0 ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
+    },
+
+    TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
+      return "<div title='" + columnDef.tooltips[value] + "'>" + "<span style='text-align:center;display:block'>" + value + "</span></div>";
     },
 
     // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
@@ -173,6 +153,28 @@
 
     // CenterFormatter: function(row, cell, value, columnDef, dataContext) {
     //   return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
+    // },
+
+    // BelongsToFormatter: function(row, cell, value, columnDef, dataContext) {
+    //   value = value[columnDef.optionTextAttribute];
+    //   if (!columnDef.inner_formatter) return value;
+    //
+    //   // if has inner_formatter
+    //   if (columnDef.inner_formatter == 'boolean') {
+    //     return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+    //   } else if (typeof(window[columnDef.inner_formatter]) == 'function') {
+    //     return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
+    //   } else {
+    //     return value;
+    //   }
+    // },
+
+    // HasManyFormatter: function(row, cell, value, columnDef, dataContext) {
+    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
+    // },
+
+    // HasOneFormatter: function(row, cell, value, columnDef, dataContext) {
+    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
     // },
 
     ///////////////////////////////////////////////////////////////////////////
