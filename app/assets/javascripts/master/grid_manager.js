@@ -31,9 +31,11 @@
         case "date":
           return StandardDateCellEditor;
         case "integer":
-          return IntegerCellEditor;
+          return IntegerEditor;
+        case "decimal":
+          return DecimalEditor;
         case "boolean":
-          return YesNoCheckboxCellEditor;
+          return YesNoCheckboxEditor;
         case "belongs_to":
           return BelongsToEditor;
         case "has_one":
@@ -51,7 +53,9 @@
       var i, type_str;
       for (i = 0; i < columns.length; i++) {
         type_str = columns[i].type.toLowerCase();
+
         // 1. append editor
+
         if (columns[i].editor) {
           columns[i].editor = eval(columns[i].editor);
         } else if (columns[i].auto_complete) {
@@ -61,10 +65,13 @@
         } else {
           columns[i].editor = getEditorForType(columns[i].type);
         }
+
         // 2. append cssClass
         if (type_str == "boolean") {
           columns[i].cssClass = 'cell-effort-driven';
         }
+
+        // 3. append formatter
 
         if (type_str == "date") {
           columns[i].formatter = StandardDateCellFormatter;
@@ -73,12 +80,6 @@
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
-        } else if (type_str == "belongs_to" || type_str == "has_and_belongs_to_many") {
-          columns[i].formatter = BelongsToFormatter;
-        } else if (type_str == "has_many") {
-          columns[i].formatter = HasManyFormatter;
-        } else if (type_str == 'has_one') {
-          columns[i].formatter = HasOneFormatter;
         }
 
         if (columns[i].simple_date) {
@@ -89,11 +90,12 @@
           columns[i].formatter = SimpleTimeFormatter;
         }
 
-        // 3. append formatter
-        if (columns[i].formatter) {
-          columns[i].formatter = eval(columns[i].formatter);
-          continue;
+        if (!columns[i].formatter) {
+          columns[i].formatter = BaseFormatter;
         }
+
+        columns[i].formatter = eval(columns[i].formatter);
+        continue;
       }
     }
 
