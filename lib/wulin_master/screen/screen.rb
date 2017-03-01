@@ -19,11 +19,11 @@ module WulinMaster
       attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
       attr_accessor :controller_class
 
-      def title(new_title=nil)
-        new_title ? @title = new_title : @title || self.to_s.gsub(/Screen/, "")
+      def title(new_title = nil)
+        new_title.nil? ? (@title || to_s.gsub(/Screen/, "")) : (@title = new_title)
       end
 
-      def path(new_path=nil)
+      def path(new_path = nil)
         new_path ? @path = new_path : @path || self.to_s.gsub(/Screen/, "").underscore.pluralize
         # TODO
         # in last circle of refactoring, the screen path can be the same-named action path of screens_controller
@@ -57,7 +57,7 @@ module WulinMaster
     end
 
     attr_accessor :controller, :params, :current_user
-    
+
     def initialize(controller_instance=nil)
       @controller = controller_instance
       @params = controller_instance.try(:params)
@@ -95,21 +95,21 @@ module WulinMaster
         grids_and_panels
       end
     end
-    
+
     def path
       # This should be better put together. What if there's already a parameter in the path? that would break
-      self.class.path + "?screen=#{self.class.to_s}" 
+      self.class.path + "?screen=#{self.class.to_s}"
     end
-    
+
     def name
       WulinMaster::Utilities.get_screen_name(self.class.name)
     end
-    
+
     # Security
     def authorized?(user=nil)
       true
     end
-    
+
     alias_method :authorize_create?, :authorized?
     alias_method :authorize_update?, :authorized?
     alias_method :authorize_destroy?, :authorized?
