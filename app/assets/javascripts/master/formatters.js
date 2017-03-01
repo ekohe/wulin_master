@@ -38,26 +38,26 @@
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
       var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
-      return ApplyStyle(text, columnDef.style);
+      return ApplyStyle(text, columnDef.style || 'text-align:right');
     },
 
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === null ? "" : (value ? 'Yes' : 'No');
-      return ApplyStyle(text, columnDef.style);
+      return ApplyStyle(text, columnDef.style || 'text-align:center');
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var html = value ? "<img src='/assets/tick.png'>" : "";
-      return ApplyStyle(html, columnDef.style);
+      return ApplyStyle(html, columnDef.style || 'text-align:center');
     },
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === 0 ? "" : value;
-      return ApplyStyle(text, columnDef.style);
+      return ApplyStyle(text, columnDef.style || 'text-align:right');
     },
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-      return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style) + "</div>";
+      return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style || 'text-align:center') + "</div>";
     },
 
     ///////////////////////////////////////////////////////////////////////////
