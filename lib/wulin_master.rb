@@ -2,6 +2,10 @@ require 'wulin_master/engine' if defined?(Rails)
 
 require 'haml'
 require 'haml-rails'
+require 'jquery-rails'
+require 'jquery-ui-rails'
+require 'coffee-rails'
+require 'sass-rails'
 require 'responders'
 
 module WulinMaster

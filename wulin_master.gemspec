@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'jquery-rails'
   s.add_runtime_dependency 'jquery-ui-rails'
   s.add_runtime_dependency 'haml-rails'
+  s.add_runtime_dependency 'coffee-rails'
+  s.add_runtime_dependency 'sass-rails'
   s.add_runtime_dependency 'responders'
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'spring'

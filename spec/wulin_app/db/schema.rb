@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161228155000) do
+ActiveRecord::Schema.define(version: 20170301095901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,14 @@ ActiveRecord::Schema.define(version: 20161228155000) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id"], name: "index_grid_states_on_user_id", using: :btree
+  end
+
+  create_table "people", force: :cascade do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.datetime "birthdate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
