@@ -15,6 +15,7 @@ before_script:
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - bundle install --path /cache
 
-rspec:
+test:
   script:
     - bundle exec rspec
+    - bundle exec cucumber
