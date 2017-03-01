@@ -12,6 +12,7 @@ before_script:
   - apt-get update -qy
   - apt-get install -y nodejs
   - gem install bundler
+  - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - bundle install --path /cache
 
 rspec:
