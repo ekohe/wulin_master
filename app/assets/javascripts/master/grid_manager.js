@@ -35,7 +35,7 @@
         case "decimal":
           return DecimalEditor;
         case "boolean":
-          return YesNoCheckboxCellEditor;
+          return YesNoCheckboxEditor;
         case "belongs_to":
           return BelongsToEditor;
         case "has_one":

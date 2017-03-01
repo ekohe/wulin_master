@@ -143,61 +143,49 @@
       IntegerEditor.prototype = Object.create(InputEditor.prototype);
     },
 
-    // TODO: OOP + Rename
-    YesNoCheckboxCellEditor: function(args) {
+    ///////////////////////////////////////////////////////////////////////////
+    // YesNoCheckboxEditor
+    ///////////////////////////////////////////////////////////////////////////
+
+    YesNoCheckboxEditor: function(args) {
+      BaseEditor.call(this, args);
+
+      var _self = this;
       var column = args.column;
-      var $select;
+      var $checkbox;
       var defaultValue;
-      var scope = this;
 
       this.init = function() {
-        $select = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
-        $select.appendTo(args.container);
-        $select.focus();
-      };
-
-      this.destroy = function() {
-        $select.remove();
-      };
-
-      this.focus = function() {
-        $select.focus();
+        $checkbox = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
+        _self.setElement($checkbox);
+        _self.afterInit();
       };
 
       this.loadValue = function(item) {
         defaultValue = item[column.field];
         if (defaultValue) {
-          $select.attr("checked", "checked");
+          $checkbox.attr("checked", "checked");
         } else {
-          $select.removeAttr("checked");
+          $checkbox.removeAttr("checked");
         }
       };
 
       this.serializeValue = function() {
-        return $select[0].checked;
-      };
-
-      this.applyValue = function(item, state) {
-        item[column.field] = state;
+        return $checkbox[0].checked;
       };
 
       this.isValueChanged = function() {
-        var currentValue = $select[0].checked;
+        var currentValue = $checkbox[0].checked;
         return (currentValue != defaultValue);
       };
 
       this.validate = function() {
-        return {
-          valid: true,
-          msg: null
-        };
+        return _self.validatePass();
       };
 
-      this.getCell = function() {
-        return $select.parent();
-      };
+      _self.init();
 
-      this.init();
+      YesNoCheckboxEditor.prototype = Object.create(BaseEditor.prototype);
     },
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2167,6 +2155,62 @@
     //
     //   this.getCell = function() {
     //     return $input.parent();
+    //   };
+    //
+    //   this.init();
+    // },
+
+    // YesNoCheckboxCellEditor: function(args) {
+    //   var column = args.column;
+    //   var $select;
+    //   var defaultValue;
+    //   var scope = this;
+    //
+    //   this.init = function() {
+    //     $select = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
+    //     $select.appendTo(args.container);
+    //     $select.focus();
+    //   };
+    //
+    //   this.destroy = function() {
+    //     $select.remove();
+    //   };
+    //
+    //   this.focus = function() {
+    //     $select.focus();
+    //   };
+    //
+    //   this.loadValue = function(item) {
+    //     defaultValue = item[column.field];
+    //     if (defaultValue) {
+    //       $select.attr("checked", "checked");
+    //     } else {
+    //       $select.removeAttr("checked");
+    //     }
+    //   };
+    //
+    //   this.serializeValue = function() {
+    //     return $select[0].checked;
+    //   };
+    //
+    //   this.applyValue = function(item, state) {
+    //     item[column.field] = state;
+    //   };
+    //
+    //   this.isValueChanged = function() {
+    //     var currentValue = $select[0].checked;
+    //     return (currentValue != defaultValue);
+    //   };
+    //
+    //   this.validate = function() {
+    //     return {
+    //       valid: true,
+    //       msg: null
+    //     };
+    //   };
+    //
+    //   this.getCell = function() {
+    //     return $select.parent();
     //   };
     //
     //   this.init();
