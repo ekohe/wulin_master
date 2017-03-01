@@ -7,12 +7,12 @@ module WulinMaster
     end
 
     def index
-      dashboard if self.respond_to?(:dashboard)
+      dashboard if respond_to?(:dashboard)
       respond_to do |format|
         format.html do
           if request.xhr?
             begin
-              render :template => 'homepage/dashboard', :layout => false
+              render template: 'homepage/dashboard', layout: false
             rescue
               render plain: ''
             end

@@ -14,6 +14,7 @@ describe WulinMaster::Screen do
   end
 
   it "should has the default title" do
+    DemoScreen.title(false)
     DemoScreen.title.should == "Demo"
   end
 

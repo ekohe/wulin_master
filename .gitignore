@@ -5,3 +5,6 @@ pkg/*
 spec/tmp/*
 doc
 .DS_Store
+spec/wulin_app/db/log/*.log
+spec/wulin_app/tmp/
+spec/wulin_app/.sass-cache

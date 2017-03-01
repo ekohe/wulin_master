@@ -1,2 +1,1 @@
---drb
--c
+--require rails_helper

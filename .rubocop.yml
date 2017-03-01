@@ -1,0 +1,82 @@
+AllCops:
+  DisplayCopNames: true
+  Exclude:
+    - '**/*.yml'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'doc/**/*'
+    - 'deployment/**/*'
+    - 'bin/**/*'
+    - 'spec/spec_helper.rb'
+
+Style/StringLiterals:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 160
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/FormatString:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Style/EmptyLinesAroundAccessModifier:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/NumericLiterals:
+  Exclude:
+    - 'spec/**/*'
+
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 30
+
+Style/CaseIndentation:
+  # Valid values are: case, end
+  EnforcedStyle: end
+  IndentOneStep: false
+
+Lint/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Metrics/AbcSize:
+  Max: 40
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 15
+
+Metrics/ParameterLists:
+  Max: 10
+
+Lint/UselessAssignment:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Rails:
+  Enabled: true

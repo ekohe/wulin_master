@@ -105,7 +105,6 @@ describe CountriesController, :type => :controller do
         end
 
         it "should do nothing when calling construct_filters if no filter params given" do
-          pending 'fix'
           controller.stub(:params).and_return({})
           @grid.should_not_receive(:apply_filter)
           controller.send(:construct_filters)
@@ -159,7 +158,6 @@ describe CountriesController, :type => :controller do
         end
 
         it "should return a json object after calling render_json" do
-          pending 'fix'
           @grid.stub(:arraify) { ["China", "USA"] }
           @grid.should_receive(:arraify)
           result = controller.send(:render_json)
