@@ -2,20 +2,74 @@
   var SlickEditor = {
 
     ///////////////////////////////////////////////////////////////////////////
-    // Interger, Decimal, Boolean Editors
+    // BaseEditor
     ///////////////////////////////////////////////////////////////////////////
 
-    // TODO: OOP + Rename
-    IntegerCellEditor: function(args) {
+    BaseEditor: function(args) {
+      var $element;
+
+      this.afterInit = function() {
+        $element.appendTo(args.container);
+        $element.focus().select();
+      };
+
+      this.destroy = function() {
+        $element.remove();
+      };
+
+      this.focus = function() {
+        $element.focus();
+      };
+
+      this.applyValue = function(item, state) {
+        item[args.column.field] = state;
+      };
+
+      this.validatePass = function() {
+        return {
+          valid: true,
+          msg: null
+        };
+      };
+
+      this.getElement = function() {
+        return $element;
+      };
+
+      this.setElement = function(e) {
+        $element = e;
+      };
+
+      this.getValue = function() {
+        return $element.val();
+      };
+
+      this.setValue = function(val) {
+        $element.val(val);
+      };
+
+      this.getCell = function() {
+        return $element.parent();
+      };
+    },
+
+    ///////////////////////////////////////////////////////////////////////////
+    // InputEditor > IntegerEditor, FloatEditor
+    ///////////////////////////////////////////////////////////////////////////
+
+    InputEditor: function(args) {
+      BaseEditor.call(this, args);
+
+      var _self = this;
       var column = args.column;
       var $input;
       var defaultValue;
-      var scope = this;
       var boxWidth = column.width;
       var offsetWith = boxWidth + 28;
 
       this.init = function() {
         $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
+        _self.setElement($input);
 
         $input.bind("keydown.nav", function(e) {
           if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
@@ -23,8 +77,8 @@
           }
         });
 
-        $input.appendTo(args.container);
-        $input.focus().select();
+        _self.afterInit();
+
         var winWith = $(window).width(),
           offsetLeft = $input.offset().left;
         if (winWith - offsetLeft < offsetWith)
@@ -33,27 +87,11 @@
           });
       };
 
-      this.destroy = function() {
-        $input.remove();
-      };
-
-      this.focus = function() {
-        $input.focus();
-      };
-
       this.loadValue = function(item) {
         defaultValue = item[column.field];
         $input.val(defaultValue);
         $input[0].defaultValue = defaultValue;
         $input.select();
-      };
-
-      this.serializeValue = function() {
-        return parseInt($input.val(), 10) || 0;
-      };
-
-      this.applyValue = function(item, state) {
-        item[column.field] = state;
       };
 
       this.isValueChanged = function() {
@@ -68,18 +106,26 @@
             msg: "Please enter a valid integer"
           };
         } else {
-          return {
-            valid: true,
-            msg: null
-          };
+          return _self.validatePass();
         }
       };
 
-      this.getCell = function() {
-        return $input.parent();
+      InputEditor.prototype = Object.create(BaseEditor.prototype);
+    },
+
+    IntegerEditor: function(args) {
+      InputEditor.call(this, args);
+
+      var _self = this;
+
+      this.serializeValue = function() {
+        var $input = _self.getElement();
+        return parseInt($input.val(), 10) || 0;
       };
 
-      this.init();
+      _self.init();
+
+      IntegerEditor.prototype = Object.create(InputEditor.prototype);
     },
 
     // TODO: OOP + Rename
@@ -690,7 +736,7 @@
       };
 
       this.init();
-    }
+    },
 
     /*
      * An example of a "detached" editor.
@@ -2032,6 +2078,86 @@
 
       this.init();
     },
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Old version (should remove after refactoring)
+    ///////////////////////////////////////////////////////////////////////////
+
+    // IntegerCellEditor: function(args) {
+    //   var column = args.column;
+    //   var $input;
+    //   var defaultValue;
+    //   var scope = this;
+    //   var boxWidth = column.width;
+    //   var offsetWith = boxWidth + 28;
+    //
+    //   this.init = function() {
+    //     $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:none;' />");
+    //
+    //     $input.bind("keydown.nav", function(e) {
+    //       if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+    //         e.stopImmediatePropagation();
+    //       }
+    //     });
+    //
+    //     $input.appendTo(args.container);
+    //     $input.focus().select();
+    //     var winWith = $(window).width(),
+    //       offsetLeft = $input.offset().left;
+    //     if (winWith - offsetLeft < offsetWith)
+    //       $input.offset({
+    //         left: winWith - offsetWith
+    //       });
+    //   };
+    //
+    //   this.destroy = function() {
+    //     $input.remove();
+    //   };
+    //
+    //   this.focus = function() {
+    //     $input.focus();
+    //   };
+    //
+    //   this.loadValue = function(item) {
+    //     defaultValue = item[column.field];
+    //     $input.val(defaultValue);
+    //     $input[0].defaultValue = defaultValue;
+    //     $input.select();
+    //   };
+    //
+    //   this.serializeValue = function() {
+    //     return parseInt($input.val(), 10) || 0;
+    //   };
+    //
+    //   this.applyValue = function(item, state) {
+    //     item[column.field] = state;
+    //   };
+    //
+    //   this.isValueChanged = function() {
+    //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+    //   };
+    //
+    //   this.validate = function() {
+    //     if (isNaN($input.val())) {
+    //       $input.val(defaultValue);
+    //       return {
+    //         valid: false,
+    //         msg: "Please enter a valid integer"
+    //       };
+    //     } else {
+    //       return {
+    //         valid: true,
+    //         msg: null
+    //       };
+    //     }
+    //   };
+    //
+    //   this.getCell = function() {
+    //     return $input.parent();
+    //   };
+    //
+    //   this.init();
+    // },
 
     ///////////////////////////////////////////////////////////////////////////
     // Not in Use (bss, terra_nova, mrldb, crewlist, mima)

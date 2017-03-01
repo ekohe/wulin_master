@@ -31,7 +31,7 @@
         case "date":
           return StandardDateCellEditor;
         case "integer":
-          return IntegerCellEditor;
+          return IntegerEditor;
         case "boolean":
           return YesNoCheckboxCellEditor;
         case "belongs_to":
