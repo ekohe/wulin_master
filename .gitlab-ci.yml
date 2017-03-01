@@ -1,8 +1,16 @@
+image: ruby:2.3.1
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: wulin_app_test
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: ''
+
 before_script:
   - apt-get update -qy
   - apt-get install -y nodejs
-  - ruby -v
-  - which ruby
   - gem install bundler
   - bundle install --path /cache
 
