@@ -1,7 +1,6 @@
 (function($) {
 
-  var SlickEditor = {
-  // $.extend(true, window, {
+  $.extend(true, window, {
     IntegerEditor: this.IntegerEditor,
     DecimalEditor: this.DecimalEditor,
     YesNoCheckboxEditor: this.YesNoCheckboxEditor,
@@ -17,8 +16,7 @@
     TimeCellEditor: this.TimeCellEditor,
     SimpleDateEditor: this.SimpleDateEditor,
     StandardDateCellEditor: this.StandardDateCellEditor
-  };
-  // });
+  });
 
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
@@ -50,6 +48,10 @@
       this.defaultValue = item[this.column.field];
       this.element.val(this.defaultValue);
       this.element.select();
+    },
+
+    isValueChanged: function() {
+      return (this.element.val() != this.defaultValue);
     },
 
     validate: function() {
@@ -213,11 +215,180 @@
   ///////////////////////////////////////////////////////////////////////////
 
   // Provide options from pre-defined arrays for `string` type columns
-  // SelectEditor: function(args) {
-  //   BaseEditor.call(this, args);
-  //
-  //   var _self = this;
-  //
+  this.SelectEditor = function(args) {
+    BaseEditor.call(this, args);
+
+    this.choices = this.column.choices;
+    this.dependColumn = this.column.depend_column;
+    this.addOptionText = 'Add new Option';
+    this.virtualGrid = {
+      name: this.column.singular_name,
+      path: '/' + this.column.table,
+      query: "?grid=" + this.column.klass_name + "Grid&screen=" + this.column.klass_name + "Screen"
+    };
+
+    // set choicesFetchPath
+
+    // get choices options from choices_column value
+    if (!this.choices && this.column.choices_column) {
+      this.choices = args.item[this.column.choices_column];
+    }
+    // if the choices option is an array, construce an select option for each element
+    if ($.isArray(this.choices)) {
+      this.choicesFetchPath = $.map(this.choices, function(e, index) {
+        if ($.isPlainObject(e)) {
+          return e;
+        } else {
+          return {
+            id: e,
+            name: e
+          };
+        }
+      });
+    } else if ($.isPlainObject(choices)) { // else if it is an object, construct a more complex object containing select options
+      this.choicesFetchPath = {};
+      for (var i in this.choices) {
+        if ($.isEmptyObject(this.choices[i])) {
+          this.choicesFetchPath[i] = [];
+        } else {
+          var option = $.map(this.choices[i], function(e, index) {
+            return {
+              id: e,
+              name: e
+            };
+          });
+          this.choicesFetchPath[i] = option;
+        }
+      }
+    }
+
+    // set originColumn
+    for (var k in args.grid.originColumns) {
+      if (args.grid.originColumns[k].name == this.column.name) {
+        this.originColumn = args.grid.originColumns[k];
+        break;
+      }
+    }
+
+    this.boxWidth = (this.column.width < this.originColumn.width) ? this.originColumn.width : this.column.width;
+    this.offsetWith = this.boxWidth + 28;
+
+    this.init();
+  }
+
+  SelectEditor.prototype = Object.create(BaseEditor.prototype);
+
+  SelectEditor.prototype.init = function() {
+    _self = this;
+
+    _self.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+    _self.setWrapper(_self.wrapper);
+    _self.wrapper.appendTo(_self.args.container);
+
+    _self.select = $("<select class='chzn-select' style='width:" + _self.boxWidth + "px'></select>");
+    _self.setElement(_self.select);
+    _self.select.appendTo(_self.wrapper);
+    _self.select.focus();
+
+    _self.setOffset(_self.wrapper, _self.offsetWith);
+
+    // if it depend on other column's value, filter the choices
+    if (_self.dependColumn) {
+      var dependValue = _self.args.item[_self.dependColumn];
+      _self.choicesFetchPath = _self.choicesFetchPath[dependValue];
+    }
+
+    // must append the current value option, otherwise this.serializeValue can't get it
+    _self.select.append($("<option />"));
+
+    //$select.append("<option style='color:red;' value=''>Set Blank</option>");
+    if (_self.args.item[_self.column.field]) {
+      if (typeof(this.args.item[this.column.field]) == "string") {
+        this.select.append("<option style='display: none;' value='" + this.args.item[this.column.field] + "'>" + this.args.item[this.column.field] + "</option>");
+        this.select.val(this.args.item[this.column.field]);
+      } else if (this.args.item[this.column.field].id) {
+        this.select.append("<option style='display: none;' value='" + this.args.item[column.field].id + "'>" + this.args.item[this.column.field][optionTextAttribute] + "</option>");
+        this.select.val(this.args.item[this.column.field].id);
+      }
+    }
+
+    if ($.isArray(_self.choicesFetchPath)) {
+      var arrOptions = [];
+      $.each(_self.choicesFetchPath, function(index, value) {
+        if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
+          arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
+      });
+      _self.select.append(arrOptions.join(''));
+      _self.select.chosen({
+        allow_single_deselect: !_self.args.column['required']
+      });
+    } else {
+      _self.getOptions();
+    }
+
+    // Open drop-down
+    setTimeout(function() {
+      _self.select.trigger('liszt:open');
+    }, 300);
+  };
+
+  SelectEditor.prototype.getOptions = function(selectedId, theCurrentValue) {
+    $.getJSON(this.choicesFetchPath, function(itemdata) {
+      var ajaxOptions = [];
+      $.each(itemdata, function(index, value) {
+        if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
+          ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
+      });
+      this.select.append(ajaxOptions.join(''));
+
+      if (this.column.dynamic_options) {
+        this.select.append('<option>' + this.addOptionText + '</option>');
+      }
+
+      this.select.chosen({
+        allow_single_deselect: !this.args.column['required']
+      });
+
+      // Update theCurrentValue
+      this.select.chosen().change(function() {
+        theCurrentValue = this.select.val();
+      });
+      theCurrentValue = this.select.val();
+
+      // 'Add new option' option handler
+      $('#' + this.select.attr('id') + '_chzn li:contains("' + this.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+        event.preventDefault();
+        Ui.openDialog(this.virtualGrid, 'wulin_master_option_new_form', null, function() {
+          // register 'Create' button click event, need to remove to dialog action later
+          $('#' + this.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
+            e.preventDefault();
+            Requests.createByAjax({
+              path: this.virtualGrid.path,
+              name: this.virtualGrid.name
+            }, false, function(data) {
+              this.getOptions(data.id, theCurrentValue);
+              setTimeout(function() {
+                Ui.closeDialog(this.virtualGrid.name);
+              }, 100);
+            });
+          });
+        });
+        return false;
+      });
+    });
+  };
+
+  SelectEditor.prototype.serializeValue = function() {
+    return { id: this.select.val() };
+  };
+
+  SelectEditor.prototype.applyValue = function(item, state) {
+    item[this.column.field] = state.id;
+  };
+
+  // TODO: OOP
+  // The editor which use jquery.chosen to allow you choose the value as select
+  // this.SelectEditor = function(args) {
   //   var column = args.column;
   //   var $select, $wrapper;
   //   var choicesFetchPath;
@@ -225,11 +396,10 @@
   //   var addOptionText = 'Add new Option';
   //   var self = this;
   //   var virtualGrid = {
-  //     name: column.singular_name,
-  //     path: '/' + column.table,
-  //     query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
+  //       name: column.singular_name,
+  //       path: '/' + column.table,
+  //       query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
   //   };
-  //
   //   // get choices options from choices_column value
   //   if (!choices && column.choices_column) {
   //     choices = args.item[column.choices_column];
@@ -282,15 +452,22 @@
   //     $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>")
   //       .appendTo($wrapper);
   //     $select.focus();
-  //
-  //     _self.setWrapper($wrapper);
-  //     _self.setElement($select);
-  //     _self.setOffset($wrapper, offsetWith);
+  //     var winWith = $(window).width(),
+  //         offsetLeft = $wrapper.offset().left;
+  //     if (winWith - offsetLeft < offsetWith) {
+  //       $wrapper.offset({
+  //         left: winWith - offsetWith
+  //       });
+  //     }
   //
   //     // if it depend on other column's value, filter the choices
   //     if (dependColumn) {
   //       var dependValue = args.item[dependColumn];
   //       choicesFetchPath = choicesFetchPath[dependValue];
+  //       if (!$.isArray(choicesFetchPath) || choicesFetchPath.length === 0) {
+  //         // TODO: maybe need to disable the editor?
+  //         //return false;
+  //       }
   //     }
   //
   //     // must append the current value option, otherwise this.serializeValue can't get it
@@ -373,238 +550,51 @@
   //     });
   //   };
   //
+  //   this.destroy = function() {
+  //     $wrapper.remove();
+  //   };
+  //
+  //   this.focus = function() {
+  //     $select.focus();
+  //   };
+  //
+  //   this.isValueChanged = function() {
+  //     // return true if the value(s) being edited by the user has/have been changed
+  //     return ($select.val() != defaultValue);
+  //   };
+  //
+  //   this.serializeValue = function() {
+  //     var obj = {
+  //       id: $select.val()
+  //     };
+  //     obj.id = $select.val();
+  //     return obj;
+  //   };
+  //
   //   this.loadValue = function(item) {
   //     defaultValue = item[column.field];
+  //     //if(defaultValue != "")
   //     $select.val(defaultValue);
   //     $select.select();
   //   };
   //
-  //   this.serializeValue = function() {
-  //     return { id: $select.val() };
-  //   };
-  //
-  //   this.isValueChanged = function() {
-  //     return ($select.val() != defaultValue);
+  //   this.applyValue = function(item, state) {
+  //     item[column.field] = state.id;
   //   };
   //
   //   this.validate = function() {
-  //     return _self.validatePass();
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
   //   };
   //
-  //   _self.init();
+  //   this.getCell = function() {
+  //     return $select.parent();
+  //   };
   //
-  //   SelectEditor.prototype = Object.create(BaseEditor.prototype);
-  // },
-
-  // TODO: OOP
-  // The editor which use jquery.chosen to allow you choose the value as select
-  this.SelectEditor = function(args) {
-    var column = args.column;
-    var $select, $wrapper;
-    var choicesFetchPath;
-    var choices = column.choices;
-    var addOptionText = 'Add new Option';
-    var self = this;
-    var virtualGrid = {
-        name: column.singular_name,
-        path: '/' + column.table,
-        query: "?grid=" + column.klass_name + "Grid&screen=" + column.klass_name + "Screen"
-    };
-    // get choices options from choices_column value
-    if (!choices && column.choices_column) {
-      choices = args.item[column.choices_column];
-    }
-    // if the choices option is an array, construce an select option for each element
-    if ($.isArray(choices)) {
-      choicesFetchPath = $.map(choices, function(e, index) {
-        if ($.isPlainObject(e)) {
-          return e;
-        } else {
-          return {
-            id: e,
-            name: e
-          };
-        }
-      });
-    } else if ($.isPlainObject(choices)) { // else if it is an object, construct a more complex object containing select options
-      choicesFetchPath = {};
-      for (var i in choices) {
-        if ($.isEmptyObject(choices[i])) {
-          choicesFetchPath[i] = [];
-        } else {
-          var option = $.map(choices[i], function(e, index) {
-              return {
-                id: e,
-                name: e
-              };
-          });
-          choicesFetchPath[i] = option;
-        }
-      }
-    }
-
-    var dependColumn = column.depend_column;
-    var defaultValue;
-    var originColumn;
-    for (var k in args.grid.originColumns) {
-      if (args.grid.originColumns[k].name == column.name) {
-        originColumn = args.grid.originColumns[k];
-        break;
-      }
-    }
-
-    var boxWidth = (column.width < originColumn.width) ? originColumn.width : column.width;
-    var offsetWith = boxWidth + 28;
-
-    this.init = function() {
-      $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
-        .appendTo(args.container);
-      $select = $("<select class='chzn-select' style='width:" + boxWidth + "px'></select>")
-        .appendTo($wrapper);
-      $select.focus();
-      var winWith = $(window).width(),
-          offsetLeft = $wrapper.offset().left;
-      if (winWith - offsetLeft < offsetWith) {
-        $wrapper.offset({
-          left: winWith - offsetWith
-        });
-      }
-
-      // if it depend on other column's value, filter the choices
-      if (dependColumn) {
-        var dependValue = args.item[dependColumn];
-        choicesFetchPath = choicesFetchPath[dependValue];
-        if (!$.isArray(choicesFetchPath) || choicesFetchPath.length === 0) {
-          // TODO: maybe need to disable the editor?
-          //return false;
-        }
-      }
-
-      // must append the current value option, otherwise this.serializeValue can't get it
-      $select.append($("<option />"));
-
-      //$select.append("<option style='color:red;' value=''>Set Blank</option>");
-      if (args.item[column.field]) {
-        if (typeof(args.item[column.field]) == "string") {
-          $select.append("<option style='display: none;' value='" + args.item[column.field] + "'>" + args.item[column.field] + "</option>");
-          $select.val(args.item[column.field]);
-        } else if (args.item[column.field].id) {
-          $select.append("<option style='display: none;' value='" + args.item[column.field].id + "'>" + args.item[column.field][optionTextAttribute] + "</option>");
-          $select.val(args.item[column.field].id);
-        }
-      }
-
-      if ($.isArray(choicesFetchPath)) {
-        var arrOptions = [];
-        $.each(choicesFetchPath, function(index, value) {
-          if (!args.item[column.field] || args.item[column.field].id != value.id)
-            arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
-        });
-        $select.append(arrOptions.join(''));
-        $select.chosen({
-          allow_single_deselect: !args.column['required']
-        });
-      } else {
-        self.getOptions();
-      }
-
-      // Open drop-down
-      setTimeout(function() {
-        $select.trigger('liszt:open');
-      }, 300);
-    };
-
-    this.getOptions = function(selectedId, theCurrentValue) {
-      $.getJSON(choicesFetchPath, function(itemdata) {
-        var ajaxOptions = [];
-        $.each(itemdata, function(index, value) {
-          if (!args.item[column.field] || args.item[column.field].id != value.id)
-            ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-        });
-        $select.append(ajaxOptions.join(''));
-
-        if (column.dynamic_options) {
-          $select.append('<option>' + addOptionText + '</option>');
-        }
-
-        $select.chosen({
-          allow_single_deselect: !args.column['required']
-        });
-
-        // Update theCurrentValue
-        $select.chosen().change(function() {
-          theCurrentValue = $select.val();
-        });
-        theCurrentValue = $select.val();
-
-        // 'Add new option' option handler
-        $('#' + $select.attr('id') + '_chzn li:contains("' + addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-          event.preventDefault();
-          Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
-            // register 'Create' button click event, need to remove to dialog action later
-            $('#' + virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
-              e.preventDefault();
-              Requests.createByAjax({
-                path: virtualGrid.path,
-                name: virtualGrid.name
-              }, false, function(data) {
-                self.getOptions(data.id, theCurrentValue);
-                setTimeout(function() {
-                  Ui.closeDialog(virtualGrid.name);
-                }, 100);
-              });
-            });
-          });
-          return false;
-        });
-      });
-    };
-
-    this.destroy = function() {
-      $wrapper.remove();
-    };
-
-    this.focus = function() {
-      $select.focus();
-    };
-
-    this.isValueChanged = function() {
-      // return true if the value(s) being edited by the user has/have been changed
-      return ($select.val() != defaultValue);
-    };
-
-    this.serializeValue = function() {
-      var obj = {
-        id: $select.val()
-      };
-      obj.id = $select.val();
-      return obj;
-    };
-
-    this.loadValue = function(item) {
-      defaultValue = item[column.field];
-      //if(defaultValue != "")
-      $select.val(defaultValue);
-      $select.select();
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state.id;
-    };
-
-    this.validate = function() {
-      return {
-        valid: true,
-        msg: null
-      };
-    };
-
-    this.getCell = function() {
-      return $select.parent();
-    };
-
-    this.init();
-  }
+  //   this.init();
+  // }
 
   // TODO: OOP
   // The editor which use jquery.chosen to allow you inputting multiple values that belongs to a record
