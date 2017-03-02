@@ -100,3 +100,4 @@ end
 require 'capybara/rails'
 require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
+require 'support/factory_girl'

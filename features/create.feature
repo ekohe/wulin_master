@@ -15,7 +15,7 @@ Feature: Create objects
     And I enter 'Guilbot' in 'Last name'
     And I press the 'return' key
     When I press ' Create '
-    Then I should see the notice 'Record successfully created'
+    Then I should see the notice 'Record successfully created!'
     And I should see 'Maxime' in the 'People' grid
     And I should see 'Guilbot' in the 'People' grid
     And I should see '1982-08-28 10:10' in the 'People' grid
