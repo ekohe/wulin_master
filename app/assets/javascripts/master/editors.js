@@ -44,6 +44,10 @@
       item[this.column.field] = state;
     },
 
+    serializeValue: function() {
+      return this.element.val();
+    },
+
     loadValue: function(item) {
       this.defaultValue = item[this.column.field];
       this.element.val(this.defaultValue);
@@ -221,50 +225,8 @@
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
-    this.dependColumn = this.column.depend_column;
-    this.addOptionText = 'Add new Option';
-    this.virtualGrid = {
-      name: this.column.singular_name,
-      path: '/' + this.column.table,
-      query: "?grid=" + this.column.klass_name + "Grid&screen=" + this.column.klass_name + "Screen"
-    };
 
-    // set choicesFetchPath
-
-    // get choices options from choices_column value
-    if (!this.choices && this.column.choices_column) {
-      this.choices = args.item[this.column.choices_column];
-    }
-    // if the choices option is an array, construce an select option for each element
-    if ($.isArray(this.choices)) {
-      this.choicesFetchPath = $.map(this.choices, function(e, index) {
-        if ($.isPlainObject(e)) {
-          return e;
-        } else {
-          return {
-            id: e,
-            name: e
-          };
-        }
-      });
-    } else if ($.isPlainObject(this.choices)) { // else if it is an object, construct a more complex object containing select options
-      this.choicesFetchPath = {};
-      for (var i in this.choices) {
-        if ($.isEmptyObject(this.choices[i])) {
-          this.choicesFetchPath[i] = [];
-        } else {
-          var option = $.map(this.choices[i], function(e, index) {
-            return {
-              id: e,
-              name: e
-            };
-          });
-          this.choicesFetchPath[i] = option;
-        }
-      }
-    }
-
-    // set originColumn
+    // find originColumn
     for (var k in args.grid.originColumns) {
       if (args.grid.originColumns[k].name == this.column.name) {
         this.originColumn = args.grid.originColumns[k];
@@ -294,29 +256,19 @@
 
     _self.setOffset(_self.wrapper, _self.offsetWith);
 
-    // if it depend on other column's value, filter the choices
-    if (_self.dependColumn) {
-      var dependValue = _self.args.item[_self.dependColumn];
-      _self.choicesFetchPath = _self.choicesFetchPath[dependValue];
-    }
-
     // must append the current value option, otherwise this.serializeValue can't get it
     _self.select.append($("<option />"));
 
-    //$select.append("<option style='color:red;' value=''>Set Blank</option>");
     if (_self.args.item[_self.column.field]) {
       if (typeof(this.args.item[this.column.field]) == "string") {
         _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
         _self.select.val(_self.args.item[_self.column.field]);
-      } else if (_self.args.item[_self.column.field].id) {
-        _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field].id + "'>" + _self.args.item[_self.column.field][_self.optionTextAttribute] + "</option>");
-        _self.select.val(_self.args.item[_self.column.field].id);
       }
     }
 
-    if ($.isArray(_self.choicesFetchPath)) {
+    if ($.isArray(_self.choices)) {
       var arrOptions = [];
-      $.each(_self.choicesFetchPath, function(index, value) {
+      $.each(_self.choices, function(index, value) {
         if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
           arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
       });
@@ -324,70 +276,9 @@
       _self.select.chosen({
         allow_single_deselect: !_self.args.column['required']
       });
-    } else {
-      _self.getOptions();
     }
 
-    // Open drop-down
-    setTimeout(function() {
-      _self.select.trigger('liszt:open');
-    }, 300);
-  };
-
-  SelectEditor.prototype.getOptions = function(selectedId, theCurrentValue) {
-    var _self = this;
-
-    $.getJSON(_self.choicesFetchPath, function(itemdata) {
-      var ajaxOptions = [];
-      $.each(itemdata, function(index, value) {
-        if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
-          ajaxOptions.push("<option value='" + value.id + "'>" + value[optionTextAttribute] + "</option>");
-      });
-      _self.select.append(ajaxOptions.join(''));
-
-      if (_self.column.dynamic_options) {
-        _self.select.append('<option>' + _self.addOptionText + '</option>');
-      }
-
-      _self.select.chosen({
-        allow_single_deselect: !_self.args.column['required']
-      });
-
-      // Update theCurrentValue
-      _self.select.chosen().change(function() {
-        theCurrentValue = _self.select.val();
-      });
-      theCurrentValue = _self.select.val();
-
-      // 'Add new option' option handler
-      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-        event.preventDefault();
-        Ui.openDialog(_self.virtualGrid, 'wulin_master_option_new_form', null, function() {
-          // register 'Create' button click event, need to remove to dialog action later
-          $('#' + _self.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
-            e.preventDefault();
-            Requests.createByAjax({
-              path: _self.virtualGrid.path,
-              name: _self.virtualGrid.name
-            }, false, function(data) {
-              _self.getOptions(data.id, theCurrentValue);
-              setTimeout(function() {
-                Ui.closeDialog(_self.virtualGrid.name);
-              }, 100);
-            });
-          });
-        });
-        return false;
-      });
-    });
-  };
-
-  SelectEditor.prototype.serializeValue = function() {
-    return { id: this.select.val() };
-  };
-
-  SelectEditor.prototype.applyValue = function(item, state) {
-    item[this.column.field] = state.id;
+    _self.select.trigger('liszt:open');
   };
 
   ///////////////////////////////////////////////////////////////////////////
@@ -518,17 +409,6 @@
         return false;
       });
     });
-  };
-
-  DistinctEditor.prototype.serializeValue = function() {
-    return this.select.val();
-  };
-
-  DistinctEditor.prototype.loadValue = function(item) {
-    this.defaultValue = item[this.column.field] || "";
-    this.select.val(this.defaultValue);
-    this.select[0].defaultValue = this.defaultValue;
-    this.select.select();
   };
 
   // TODO: OOP
