@@ -248,9 +248,6 @@
     this.select.focus();
 
     this.setOffset(this.wrapper, this.offsetWith);
-
-    // must append the current value option, otherwise this.serializeValue can't get it
-    this.select.append($("<option />"));
   };
 
   ///////////////////////////////////////////////////////////////////////////
@@ -272,13 +269,14 @@
 
     var _self = this;
 
+    // Append the current value option, otherwise this.serializeValue can't get it
+    this.select.append($("<option />"));
     if (_self.args.item[_self.column.field]) {
-      if (typeof(this.args.item[this.column.field]) == "string") {
-        _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
-        _self.select.val(_self.args.item[_self.column.field]);
-      }
+      _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
+      _self.select.val(_self.args.item[_self.column.field]);
     }
 
+    // Append options from choices array
     if ($.isArray(_self.choices)) {
       var arrOptions = [];
       $.each(_self.choices, function(index, value) {
