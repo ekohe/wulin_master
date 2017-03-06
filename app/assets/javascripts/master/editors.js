@@ -248,6 +248,8 @@
     this.select.focus();
 
     this.setOffset(this.wrapper, this.offsetWith);
+
+    this.select.append($("<option />"));
   };
 
   ///////////////////////////////////////////////////////////////////////////
@@ -270,7 +272,6 @@
     var _self = this;
 
     // Append the current value option, otherwise this.serializeValue can't get it
-    this.select.append($("<option />"));
     if (_self.args.item[_self.column.field]) {
       _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
       _self.select.val(_self.args.item[_self.column.field]);
@@ -293,56 +294,28 @@
   };
 
   ///////////////////////////////////////////////////////////////////////////
-  // DistinctEditor < BaseEditor
+  // DistinctEditor < SelectElementEditor < BaseEditor
   //
-  //  1. Provide distinct options from the column with repeatable items
-  //  2. Use jquery.chosen to allow you inputting multiple values that belongs to a column
+  //  1. Provide distinct options from the string column with repeatable items
+  //  2. Use jquery.chosen to allow you choose the value as select
   ///////////////////////////////////////////////////////////////////////////
 
   this.DistinctEditor = function(args) {
-    BaseEditor.call(this, args);
+    SelectElementEditor.call(this, args);
 
-    this.choicesFetchPath = this.column.choices;
     this.optionTextAttribute = this.column.optionTextAttribute || 'name';
     this.addOptionText = 'Add new Option';
     this.bottomOption = '<option>' + this.addOptionText + '</option>';
 
-    for (var i in args.grid.originColumns) {
-      if (args.grid.originColumns[i].name == this.column.name) {
-        this.originColumn = args.grid.originColumns[i];
-        break;
-      }
-    }
-
-    this.boxWidth = (this.column.width < this.originColumn.width) ? this.originColumn.width : this.column.width;
-    this.offsetWith = this.boxWidth + 28;
-
     this.init();
   }
 
-  DistinctEditor.prototype = Object.create(BaseEditor.prototype);
+  DistinctEditor.prototype = Object.create(SelectElementEditor.prototype);
 
   DistinctEditor.prototype.init = function() {
+    SelectElementEditor.prototype.init.call(this);
+
     var _self = this;
-
-    _self.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
-    _self.setWrapper(_self.wrapper);
-    _self.wrapper.appendTo(_self.args.container);
-
-    _self.select = $("<select class='chzn-select' style='width:" + _self.boxWidth + "px'></select>");
-    _self.setElement(_self.select);
-    _self.select.appendTo(_self.wrapper);
-    _self.select.focus();
-
-    _self.setOffset(_self.wrapper, _self.offsetWith);
-
-    // must append the current value option, otherwise this.serializeValue can't get it
-    _self.select.append($("<option />"));
-
-    if (_self.args.item[_self.column.field] && _self.args.item[_self.column.field].id) {
-      _self.select.append("<option value='" + _self.args.item[_self.column.field].id + "'>" + _self.args.item[_self.column.field][_self.optionTextAttribute] + "</option>");
-      _self.select.val(_self.args.item[_self.column.field].id);
-    }
 
     _self.getOptions();
 
@@ -355,7 +328,7 @@
   DistinctEditor.prototype.getOptions = function() {
     var _self = this;
 
-    $.getJSON(_self.choicesFetchPath, function(itemdata) {
+    $.getJSON(_self.choices, function(itemdata) {
       var ajaxOptions = [];
       $.each(itemdata, function(index, value) {
         ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
