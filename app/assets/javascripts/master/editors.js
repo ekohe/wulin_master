@@ -102,10 +102,10 @@
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // InputEditor < BaseEditor
+  // InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
-  function InputEditor(args) {
+  function InputElementEditor(args) {
     BaseEditor.call(this, args);
 
     this.boxWidth = this.column.width;
@@ -114,9 +114,9 @@
     this.init();
   }
 
-  InputEditor.prototype = Object.create(BaseEditor.prototype);
+  InputElementEditor.prototype = Object.create(BaseEditor.prototype);
 
-  InputEditor.prototype.init = function() {
+  InputElementEditor.prototype.init = function() {
     this.input = $("<INPUT type=text class='editor-text' style='width:" + this.boxWidth + "px;border:none;' />");
     this.setElement(this.input);
 
@@ -132,11 +132,11 @@
     this.setOffset(this.input, this.offsetWith);
   };
 
-  InputEditor.prototype.isValueChanged = function() {
+  InputElementEditor.prototype.isValueChanged = function() {
     return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);
   };
 
-  InputEditor.prototype.validate = function() {
+  InputElementEditor.prototype.validate = function() {
     if (isNaN(this.input.val())) {
       this.input.val(this.defaultValue);
       return {
@@ -152,28 +152,28 @@
   };
 
   ///////////////////////////////////////////////////////////////////////////
-  // IntegerEditor < InputEditor < BaseEditor
+  // IntegerEditor < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
   this.IntegerEditor = function(args) {
-    InputEditor.call(this, args);
+    InputElementEditor.call(this, args);
   };
 
-  IntegerEditor.prototype = Object.create(InputEditor.prototype);
+  IntegerEditor.prototype = Object.create(InputElementEditor.prototype);
 
   IntegerEditor.prototype.serializeValue = function() {
     return parseInt(this.input.val(), 10) || 0;
   };
 
   ///////////////////////////////////////////////////////////////////////////
-  // DecimalEditor < InputEditor < BaseEditor
+  // DecimalEditor < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
   this.DecimalEditor = function(args) {
-    InputEditor.call(this, args);
+    InputElementEditor.call(this, args);
   };
 
-  DecimalEditor.prototype = Object.create(InputEditor.prototype);
+  DecimalEditor.prototype = Object.create(InputElementEditor.prototype);
 
   DecimalEditor.prototype.serializeValue = function() {
     return this.input.val() || '';
@@ -215,13 +215,10 @@
   };
 
   ///////////////////////////////////////////////////////////////////////////
-  // SelectEditor < BaseEditor
-  //
-  //  1. Provide options from pre-defined arrays for `string` type columns
-  //  2. Use jquery.chosen to allow you choose the value as select
+  // SelectElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
-  this.SelectEditor = function(args) {
+  function SelectElementEditor(args) {
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
@@ -236,28 +233,44 @@
 
     this.boxWidth = (this.column.width < this.originColumn.width) ? this.originColumn.width : this.column.width;
     this.offsetWith = this.boxWidth + 28;
+  }
 
+  SelectElementEditor.prototype = Object.create(BaseEditor.prototype);
+
+  SelectElementEditor.prototype.init = function() {
+    this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+    this.setWrapper(this.wrapper);
+    this.wrapper.appendTo(this.args.container);
+
+    this.select = $("<select class='chzn-select' style='width:" + this.boxWidth + "px'></select>");
+    this.setElement(this.select);
+    this.select.appendTo(this.wrapper);
+    this.select.focus();
+
+    this.setOffset(this.wrapper, this.offsetWith);
+
+    // must append the current value option, otherwise this.serializeValue can't get it
+    this.select.append($("<option />"));
+  };
+
+  ///////////////////////////////////////////////////////////////////////////
+  // SelectEditor < SelectElementEditor < BaseEditor
+  //
+  //  1. Provide options from pre-defined arrays for `string` type columns
+  //  2. Use jquery.chosen to allow you choose the value as select
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.SelectEditor = function(args) {
+    SelectElementEditor.call(this, args);
     this.init();
   }
 
-  SelectEditor.prototype = Object.create(BaseEditor.prototype);
+  SelectEditor.prototype = Object.create(SelectElementEditor.prototype);
 
   SelectEditor.prototype.init = function() {
+    SelectElementEditor.prototype.init.call(this);
+
     var _self = this;
-
-    _self.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
-    _self.setWrapper(_self.wrapper);
-    _self.wrapper.appendTo(_self.args.container);
-
-    _self.select = $("<select class='chzn-select' style='width:" + _self.boxWidth + "px'></select>");
-    _self.setElement(_self.select);
-    _self.select.appendTo(_self.wrapper);
-    _self.select.focus();
-
-    _self.setOffset(_self.wrapper, _self.offsetWith);
-
-    // must append the current value option, otherwise this.serializeValue can't get it
-    _self.select.append($("<option />"));
 
     if (_self.args.item[_self.column.field]) {
       if (typeof(this.args.item[this.column.field]) == "string") {
