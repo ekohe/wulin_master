@@ -37,11 +37,11 @@
         case "boolean":
           return YesNoCheckboxEditor;
         case "belongs_to":
-          return BelongsToEditor;
+          return RelationEditor;
         case "has_one":
-          return BelongsToEditor;
+          return RelationEditor;
         case "has_and_belongs_to_many":
-          return BelongsToEditor;
+          return RelationEditor;
         case "has_many":
           return HasManyEditor;
         default:
