@@ -233,30 +233,30 @@
 
     this.boxWidth = (this.column.width < this.originColumn.width) ? this.originColumn.width : this.column.width;
     this.offsetWith = this.boxWidth + 28;
+
+    this.initElements = function() {
+      this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+      this.setWrapper(this.wrapper);
+      this.wrapper.appendTo(this.args.container);
+
+      this.select = $("<select class='chzn-select' style='width:" + this.boxWidth + "px'></select>");
+      this.setElement(this.select);
+      this.select.appendTo(this.wrapper);
+      this.select.focus();
+
+      this.setOffset(this.wrapper, this.offsetWith);
+
+      this.select.append($("<option />"));
+    };
+
+    this.openDropDrown = function() {
+      setTimeout(function() {
+        this.select.trigger('liszt:open');
+      }.bind(this), 300);
+    };
   }
 
   SelectElementEditor.prototype = Object.create(BaseEditor.prototype);
-
-  SelectElementEditor.prototype.init = function() {
-    this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
-    this.setWrapper(this.wrapper);
-    this.wrapper.appendTo(this.args.container);
-
-    this.select = $("<select class='chzn-select' style='width:" + this.boxWidth + "px'></select>");
-    this.setElement(this.select);
-    this.select.appendTo(this.wrapper);
-    this.select.focus();
-
-    this.setOffset(this.wrapper, this.offsetWith);
-
-    this.select.append($("<option />"));
-  };
-
-  SelectElementEditor.prototype.openDropDrown = function() {
-    setTimeout(function() {
-      this.select.trigger('liszt:open');
-    }.bind(this), 300);
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // SelectEditor < SelectElementEditor < BaseEditor
@@ -267,37 +267,38 @@
 
   this.SelectEditor = function(args) {
     SelectElementEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+
+      var _self = this;
+
+      // Append the current value option, otherwise this.serializeValue can't get it
+      if (_self.args.item[_self.column.field]) {
+        _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
+        _self.select.val(_self.args.item[_self.column.field]);
+      }
+
+      // Append options from choices array
+      if ($.isArray(_self.choices)) {
+        var arrOptions = [];
+        $.each(_self.choices, function(index, value) {
+          if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
+            arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
+        });
+        _self.select.append(arrOptions.join(''));
+        _self.select.chosen({
+          allow_single_deselect: !_self.args.column['required']
+        });
+      }
+
+      _self.openDropDrown();
+    };
+
     this.init();
   }
 
   SelectEditor.prototype = Object.create(SelectElementEditor.prototype);
-
-  SelectEditor.prototype.init = function() {
-    SelectElementEditor.prototype.init.call(this);
-
-    var _self = this;
-
-    // Append the current value option, otherwise this.serializeValue can't get it
-    if (_self.args.item[_self.column.field]) {
-      _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
-      _self.select.val(_self.args.item[_self.column.field]);
-    }
-
-    // Append options from choices array
-    if ($.isArray(_self.choices)) {
-      var arrOptions = [];
-      $.each(_self.choices, function(index, value) {
-        if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
-          arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
-      });
-      _self.select.append(arrOptions.join(''));
-      _self.select.chosen({
-        allow_single_deselect: !_self.args.column['required']
-      });
-    }
-
-    _self.openDropDrown();
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // DistinctEditor < SelectElementEditor < BaseEditor
