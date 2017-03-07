@@ -314,86 +314,86 @@
     this.addOptionText = 'Add new Option';
     this.bottomOption = '<option>' + this.addOptionText + '</option>';
 
+    this.init = function() {
+      this.initElements();
+      this.getOptions();
+      this.openDropDrown();
+    };
+
+    this.getOptions = function() {
+      var _self = this;
+
+      $.getJSON(_self.choices, function(itemdata) {
+        var ajaxOptions = [];
+        $.each(itemdata, function(index, value) {
+          ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
+        });
+        _self.select.append(ajaxOptions.join(''));
+
+        _self.select.append(_self.bottomOption);
+        _self.select.val(_self.args.item[_self.column.field]);
+        _self.select.chosen({
+          allow_single_deselect: !_self.args.column['required']
+        });
+
+        // 'Add new option' option handler
+        $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+          var $dialog = $("<div/>").attr({
+            id: 'distinct_dialog',
+            title: "Add new " + _self.column.name,
+            'class': "create_form"
+          }).css('display', 'none').appendTo($('body'));
+          var $fieldDiv = $("<div />").attr({
+            style: 'padding: 20px 30px;'
+          });
+          var $submitDiv = $("<div />").attr({
+            style: 'padding: 0 30px;'
+          });
+          $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + _self.column.name + '</label>');
+          $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
+          $fieldDiv.appendTo($dialog);
+          $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + _self.column.name + ' " name="commit">');
+          $submitDiv.appendTo($dialog);
+          $dialog.dialog({
+            autoOpen: true,
+            width: 450,
+            height: 180,
+            modal: true,
+            buttons: {
+              "Cancel": function() {
+                $(this).dialog("destroy");
+                $(this).remove();
+              }
+            },
+            open: function(event, ui) {
+              $('#distinct_submit', $(this)).on('click', function() {
+                var optionText = $('#distinct_dialog #distinct_field').val();
+                if (optionText) {
+                  $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
+                  _self.select.val(optionText);
+                  _self.select.trigger('liszt:updated');
+                  $dialog.dialog("destroy");
+                  $dialog.remove();
+                } else {
+                  alert('New ' + _self.column.name + ' can not be blank!');
+                }
+              });
+            },
+            close: function(event, ui) {
+              $(this).dialog("destroy");
+              $(this).remove();
+            }
+          });
+
+          return false;
+        });
+      });
+    };
+
     this.init();
   }
 
   DistinctEditor.prototype = Object.create(SelectElementEditor.prototype);
-
-  DistinctEditor.prototype.init = function() {
-    SelectElementEditor.prototype.init.call(this);
-    this.getOptions();
-    this.openDropDrown();
-  };
-
-  DistinctEditor.prototype.getOptions = function() {
-    var _self = this;
-
-    $.getJSON(_self.choices, function(itemdata) {
-      var ajaxOptions = [];
-      $.each(itemdata, function(index, value) {
-        ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
-      });
-      _self.select.append(ajaxOptions.join(''));
-
-      _self.select.append(_self.bottomOption);
-      _self.select.val(_self.args.item[_self.column.field]);
-      _self.select.chosen({
-        allow_single_deselect: !_self.args.column['required']
-      });
-
-      // 'Add new option' option handler
-      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-        var $dialog = $("<div/>").attr({
-          id: 'distinct_dialog',
-          title: "Add new " + _self.column.name,
-          'class': "create_form"
-        }).css('display', 'none').appendTo($('body'));
-        var $fieldDiv = $("<div />").attr({
-          style: 'padding: 20px 30px;'
-        });
-        var $submitDiv = $("<div />").attr({
-          style: 'padding: 0 30px;'
-        });
-        $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + _self.column.name + '</label>');
-        $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
-        $fieldDiv.appendTo($dialog);
-        $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + _self.column.name + ' " name="commit">');
-        $submitDiv.appendTo($dialog);
-        $dialog.dialog({
-          autoOpen: true,
-          width: 450,
-          height: 180,
-          modal: true,
-          buttons: {
-            "Cancel": function() {
-              $(this).dialog("destroy");
-              $(this).remove();
-            }
-          },
-          open: function(event, ui) {
-            $('#distinct_submit', $(this)).on('click', function() {
-              var optionText = $('#distinct_dialog #distinct_field').val();
-              if (optionText) {
-                $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                _self.select.val(optionText);
-                _self.select.trigger('liszt:updated');
-                $dialog.dialog("destroy");
-                $dialog.remove();
-              } else {
-                alert('New ' + _self.column.name + ' can not be blank!');
-              }
-            });
-          },
-          close: function(event, ui) {
-            $(this).dialog("destroy");
-            $(this).remove();
-          }
-        });
-
-        return false;
-      });
-    });
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // RelationEditor < SelectElementEditor < BaseEditor
