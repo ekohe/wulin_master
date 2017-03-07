@@ -564,146 +564,95 @@
   ///////////////////////////////////////////////////////////////////////////
 
   this.HasManyEditor = function(args) {
-    SelectElementEditor.call(this, args);
+    RelationEditor.call(this, args);
 
-    this.optionTextAttribute = this.column.optionTextAttribute || 'name';
-    this.addOptionText = 'Add new Option';
-    this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
-    this.virtualGrid = {
-      name: this.column.singular_name,
-      path: '/' + this.column.table,
-      query: "?grid=" + this.column.klass_name + "Grid&screen=" + this.column.klass_name + "Screen"
+    this.init = function() {
+      this.initElements();
+
+      if (this.relationColumn) {
+        this.select.attr('multiple', 'true');
+      }
+
+      this.select.empty();
+      this.select.append($("<option />"));
+
+      this.getOptions();
+      this.openDropDrown();
+    };
+
+    this.getOptions = function(selectedId, theCurrentValue) {
+      var _self = this;
+
+      $.getJSON(_self.choices, function(itemdata) {
+        _self.select.empty();
+        _self.select.append($("<option />"));
+        $.each(itemdata, function(index, value) {
+          _self.select.append("<option value='" + value.id + "'>" + value[_self.optionTextAttribute] + "</option>");
+        });
+
+        if (_self.column.dynamic_options) {
+          _self.select.append('<option>' + _self.addOptionText + '</option>');
+        }
+
+        if (selectedId) {
+          if (theCurrentValue && _self.relationColumn) {
+            theCurrentValue.unshift(selectedId);
+            _self.select.val(theCurrentValue);
+          } else {
+            _self.select.val([selectedId]);
+          }
+          _self.select.trigger('liszt:updated');
+        } else {
+          _self.select.val(_self.args.item[_self.column.field].id);
+          _self.select.chosen({
+            allow_single_deselect: !_self.args.column['required']
+          });
+        }
+
+        // Update theCurrentValue
+        _self.select.chosen().change(function() {
+          theCurrentValue = _self.select.val();
+        });
+        theCurrentValue = _self.select.val();
+
+        // 'Add new option' option handler
+        $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+          event.preventDefault();
+          Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
+            // register 'Create' button click event, need to remove to dialog action later
+            $('#' + _self.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
+              e.preventDefault();
+              Requests.createByAjax({
+                path: _self.virtualGrid.path,
+                name: _self.virtualGrid.name
+              }, false, function(data) {
+                _self.getOptions(data.id, theCurrentValue);
+                setTimeout(function() {
+                  Ui.closeDialog(_self.virtualGrid.name);
+                }, 100);
+              });
+            });
+          });
+          return false;
+        });
+      });
+    };
+
+    this.applyValue = function(item, state) {
+      // deserialize the value(s) saved to "state" and apply them to the data item
+      // this method may get called after the editor itself has been destroyed
+      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+      if (state.id === null) {
+        item[this.column.field] = 'null';
+      } else {
+        item[this.column.field] = state.id;
+      }
     };
 
     this.init();
   }
 
-  HasManyEditor.prototype = Object.create(SelectElementEditor.prototype);
-
-  HasManyEditor.prototype.init = function() {
-    this.initElements();
-
-    if (this.relationColumn) {
-      this.select.attr('multiple', 'true');
-    }
-
-    this.select.empty();
-    this.select.append($("<option />"));
-
-    this.getOptions();
-    this.openDropDrown();
-  };
-
-  HasManyEditor.prototype.getOptions = function(selectedId, theCurrentValue) {
-    var _self = this;
-
-    $.getJSON(_self.choices, function(itemdata) {
-      _self.select.empty();
-      _self.select.append($("<option />"));
-      $.each(itemdata, function(index, value) {
-        _self.select.append("<option value='" + value.id + "'>" + value[_self.optionTextAttribute] + "</option>");
-      });
-
-      if (_self.column.dynamic_options) {
-        _self.select.append('<option>' + _self.addOptionText + '</option>');
-      }
-
-      if (selectedId) {
-        if (theCurrentValue && _self.relationColumn) {
-          theCurrentValue.unshift(selectedId);
-          _self.select.val(theCurrentValue);
-        } else {
-          _self.select.val([selectedId]);
-        }
-        _self.select.trigger('liszt:updated');
-      } else {
-        _self.select.val(_self.args.item[_self.column.field].id);
-        _self.select.chosen({
-          allow_single_deselect: !_self.args.column['required']
-        });
-      }
-
-      // Update theCurrentValue
-      _self.select.chosen().change(function() {
-        theCurrentValue = _self.select.val();
-      });
-      theCurrentValue = _self.select.val();
-
-      // 'Add new option' option handler
-      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-        event.preventDefault();
-        Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
-          // register 'Create' button click event, need to remove to dialog action later
-          $('#' + _self.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
-            e.preventDefault();
-            Requests.createByAjax({
-              path: _self.virtualGrid.path,
-              name: _self.virtualGrid.name
-            }, false, function(data) {
-              _self.getOptions(data.id, theCurrentValue);
-              setTimeout(function() {
-                Ui.closeDialog(_self.virtualGrid.name);
-              }, 100);
-            });
-          });
-        });
-        return false;
-      });
-    });
-  };
-
-  HasManyEditor.prototype.isValueChanged = function() {
-    // return true if the value(s) being edited by the user has/have been changed
-    var selectedValue = this.select.val();
-
-    if (this.relationColumn) {
-      if (selectedValue) {
-        if (selectedValue.length != this.defaultValue.length) {
-          return true;
-        } else {
-          return $.difference(this.defaultValue, selectedValue).length !== 0;
-        }
-      } else {
-        return this.defaultValue.length > 0;
-      }
-    } else {
-      return (selectedValue != this.defaultValue);
-    }
-  };
-
-  HasManyEditor.prototype.serializeValue = function() {
-    // return the value(s) being edited by the user in a serialized form
-    // can be an arbitrary object
-    // the only restriction is that it must be a simple object that can be passed around even
-    // when the editor itself has been destroyed
-    var obj = {
-      id: this.select.val()
-    };
-    obj[this.optionTextAttribute] = $.map($('option:selected', this.select), function(n) {
-      return $(n).text();
-    }).join();
-    return obj;
-  };
-
-  HasManyEditor.prototype.loadValue = function(item) {
-    // load the value(s) from the data item and update the UI
-    // this method will be called immediately after the editor is initialized
-    // it may also be called by the grid if if the row/cell being edited is updated via grid.updateRow/updateCell
-    this.defaultValue = item[this.column.field].id
-    this.select.val(this.defaultValue);
-    this.select.select();
-  };
-
-  HasManyEditor.prototype.applyValue = function(item, state) {
-    // deserialize the value(s) saved to "state" and apply them to the data item
-    // this method may get called after the editor itself has been destroyed
-    // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-    if (state.id === null) {
-      item[this.column.field] = 'null';
-    } else {
-      item[this.column.field] = state.id;
-    }
-  };
+  HasManyEditor.prototype = Object.create(RelationEditor.prototype);
 
   // TODO: OOP + Rename + Combination
   // This editor is a copy of BelongsToEditor but loads up the initial value differently; eventually this should be all cleaned up
