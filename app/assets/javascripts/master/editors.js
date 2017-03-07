@@ -6,7 +6,7 @@
     YesNoCheckboxEditor: this.YesNoCheckboxEditor,
     SelectEditor: this.SelectEditor,
     DistinctEditor: this.DistinctEditor,
-    RelationEditor: this.RelationEditor,
+    OtherRelationEditor: this.OtherRelationEditor,
     HasManyEditor: this.HasManyEditor,
     TextCellEditor: this.TextCellEditor,
     AutoCompleteTextEditor: this.AutoCompleteTextEditor,
@@ -398,8 +398,7 @@
   ///////////////////////////////////////////////////////////////////////////
   // RelationEditor < SelectElementEditor < BaseEditor
   //
-  //  1. Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
-  //  2. Use jquery.chosen to allow you inputting multiple values that belongs to a record
+  //  Use jquery.chosen to choose options from a relation column
   ///////////////////////////////////////////////////////////////////////////
 
   this.RelationEditor = function(args) {
@@ -408,33 +407,15 @@
     this.optionTextAttribute = this.column.optionTextAttribute || 'name';
     this.addOptionText = 'Add new Option';
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
+
     this.virtualGrid = {
       name: this.column.singular_name,
       path: '/' + this.column.table,
       query: "?grid=" + this.column.klass_name + "Grid&screen=" + this.column.klass_name + "Screen"
     };
-
-    this.init();
   }
 
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
-
-  RelationEditor.prototype.init = function() {
-    SelectElementEditor.prototype.init.call(this);
-
-    if (this.relationColumn) {
-      this.select.attr('multiple', 'true');
-    }
-
-    // must append the current value option, otherwise this.serializeValue can't get it
-    if (this.args.item[this.column.field] && this.args.item[this.column.field].id) {
-      this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.optionTextAttribute] + "</option>");
-      this.select.val(this.args.item[this.column.field].id);
-    }
-
-    this.getOptions();
-    this.openDropDrown();
-  };
 
   RelationEditor.prototype.getOptions = function(selectedId, theCurrentValue) {
     var _self = this;
@@ -534,6 +515,47 @@
     this.select.select();
   };
 
+  RelationEditor.prototype.applyValue = function(item, state) {
+    // deserialize the value(s) saved to "state" and apply them to the data item
+    // this method may get called after the editor itself has been destroyed
+    // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+    item[this.column.field].id = state.id;
+    item[this.column.field][this.optionTextAttribute] = state[this.optionTextAttribute];
+  };
+
+  ///////////////////////////////////////////////////////////////////////////
+  // OtherReationEditor < RelationEditor < SelectElementEditor < BaseEditor
+  //
+  //  1. Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
+  //  2. Use jquery.chosen to allow you inputting multiple values that belongs to a record
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.OtherRelationEditor = function(args) {
+    RelationEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+
+      if (this.relationColumn) {
+        this.select.attr('multiple', 'true');
+      }
+
+      // must append the current value option, otherwise this.serializeValue can't get it
+      this.select.append($("<option />"));
+      if (this.args.item[this.column.field] && this.args.item[this.column.field].id) {
+        this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.optionTextAttribute] + "</option>");
+        this.select.val(this.args.item[this.column.field].id);
+      }
+
+      this.getOptions();
+      this.openDropDrown();
+    };
+
+    this.init();
+  }
+
+  OtherRelationEditor.prototype = Object.create(RelationEditor.prototype);
+
   ///////////////////////////////////////////////////////////////////////////
   // HasManyEditor < SelectElementEditor < BaseEditor
   //
@@ -559,7 +581,7 @@
   HasManyEditor.prototype = Object.create(SelectElementEditor.prototype);
 
   HasManyEditor.prototype.init = function() {
-    SelectElementEditor.prototype.init.call(this);
+    this.initElements();
 
     if (this.relationColumn) {
       this.select.attr('multiple', 'true');
