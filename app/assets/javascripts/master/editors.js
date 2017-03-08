@@ -462,14 +462,15 @@
 
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
 
-  RelationEditor.prototype.getOptions = function(selectedId, theCurrentValue) {
+  RelationEditor.prototype.getOptions = function(theCurrentValue) {
     var _self = this;
 
     // dynamic filter by other relational column
     if (_self.args.column.depend_column) {
       var relation_id = _self.args.item[_self.args.column.depend_column].id;
-      choicesFetchPath += '&master_model=' + _self.args.column.depend_column + '&master_id=' + relation_id;
+      this.choices += '&master_model=' + _self.args.column.depend_column + '&master_id=' + relation_id;
     }
+
     $.getJSON(_self.choices, function(itemdata) {
       var ajaxOptions = [];
       $.each(itemdata, function(index, value) {
@@ -478,39 +479,8 @@
       });
       _self.select.append(ajaxOptions.join(''));
 
-      if (_self.column.dynamic_options) {
-        _self.select.append('<option>' + addOptionText + '</option>');
-      }
-
       _self.select.chosen({
         allow_single_deselect: !_self.args.column['required']
-      });
-
-      // Update theCurrentValue
-      _self.select.chosen().change(function() {
-        theCurrentValue = _self.select.val();
-      });
-      theCurrentValue = _self.select.val();
-
-      // 'Add new option' option handler
-      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-        event.preventDefault();
-        Ui.openDialog(_self.virtualGrid, 'wulin_master_option_new_form', null, function() {
-          // register 'Create' button click event, need to remove to dialog action later
-          $('#' + _self.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
-            e.preventDefault();
-            Requests.createByAjax({
-              path: _self.virtualGrid.path,
-              name: _self.virtualGrid.name
-            }, false, function(data) {
-              self.getOptions(data.id, theCurrentValue);
-              setTimeout(function() {
-                Ui.closeDialog(_self.virtualGrid.name);
-              }, 100);
-            });
-          });
-        });
-        return false;
       });
     });
   };
@@ -526,8 +496,7 @@
   ///////////////////////////////////////////////////////////////////////////
   // OtherReationEditor < RelationEditor < SelectElementEditor < BaseEditor
   //
-  //  1. Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
-  //  2. Use jquery.chosen to allow you inputting multiple values that belongs to a record
+  //  Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
   ///////////////////////////////////////////////////////////////////////////
 
   this.OtherRelationEditor = function(args) {
@@ -559,8 +528,7 @@
   ///////////////////////////////////////////////////////////////////////////
   // HasManyEditor < SelectElementEditor < BaseEditor
   //
-  //  1. Provide options for `has_many` type columns
-  //  2. Copy of BelongsToEditor but loads up the initial value differently
+  //  Provide options for `has_many` type columns
   ///////////////////////////////////////////////////////////////////////////
 
   this.HasManyEditor = function(args) {
@@ -580,7 +548,7 @@
       this.openDropDrown();
     };
 
-    this.getOptions = function(selectedId, theCurrentValue) {
+    this.getOptions = function(theCurrentValue) {
       var _self = this;
 
       $.getJSON(_self.choices, function(itemdata) {
@@ -590,50 +558,10 @@
           _self.select.append("<option value='" + value.id + "'>" + value[_self.optionTextAttribute] + "</option>");
         });
 
-        if (_self.column.dynamic_options) {
-          _self.select.append('<option>' + _self.addOptionText + '</option>');
-        }
+        _self.select.val(_self.args.item[_self.column.field].id);
 
-        if (selectedId) {
-          if (theCurrentValue && _self.relationColumn) {
-            theCurrentValue.unshift(selectedId);
-            _self.select.val(theCurrentValue);
-          } else {
-            _self.select.val([selectedId]);
-          }
-          _self.select.trigger('liszt:updated');
-        } else {
-          _self.select.val(_self.args.item[_self.column.field].id);
-          _self.select.chosen({
-            allow_single_deselect: !_self.args.column['required']
-          });
-        }
-
-        // Update theCurrentValue
-        _self.select.chosen().change(function() {
-          theCurrentValue = _self.select.val();
-        });
-        theCurrentValue = _self.select.val();
-
-        // 'Add new option' option handler
-        $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-          event.preventDefault();
-          Ui.openDialog(virtualGrid, 'wulin_master_option_new_form', null, function() {
-            // register 'Create' button click event, need to remove to dialog action later
-            $('#' + _self.virtualGrid.name + '_option_submit').off('click').on('click', function(e) {
-              e.preventDefault();
-              Requests.createByAjax({
-                path: _self.virtualGrid.path,
-                name: _self.virtualGrid.name
-              }, false, function(data) {
-                _self.getOptions(data.id, theCurrentValue);
-                setTimeout(function() {
-                  Ui.closeDialog(_self.virtualGrid.name);
-                }, 100);
-              });
-            });
-          });
-          return false;
+        _self.select.chosen({
+          allow_single_deselect: !_self.args.column['required']
         });
       });
     };
