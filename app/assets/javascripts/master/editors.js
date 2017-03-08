@@ -408,10 +408,20 @@
     this.addOptionText = 'Add new Option';
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
 
-    this.virtualGrid = {
-      name: this.column.singular_name,
-      path: '/' + this.column.table,
-      query: "?grid=" + this.column.klass_name + "Grid&screen=" + this.column.klass_name + "Screen"
+    this.setSelectOptions = function(itemdata) {
+      var ajaxOptions = [];
+      $.each(itemdata, function(index, value) {
+        if (!args.item[this.column.field] || args.item[this.column.field].id != value.id)
+          ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+      }.bind(this));
+      this.select.append(ajaxOptions.join(''));
+    };
+
+    this.setAllowSingleDeselect = function() {
+      this.select.val(args.item[this.column.field].id);
+      this.select.chosen({
+        allow_single_deselect: !args.column['required']
+      });
     };
 
     this.isValueChanged = function() {
@@ -463,26 +473,16 @@
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
 
   RelationEditor.prototype.getOptions = function(theCurrentValue) {
-    var _self = this;
-
     // dynamic filter by other relational column
-    if (_self.args.column.depend_column) {
-      var relation_id = _self.args.item[_self.args.column.depend_column].id;
-      this.choices += '&master_model=' + _self.args.column.depend_column + '&master_id=' + relation_id;
+    if (this.args.column.depend_column) {
+      var relation_id = this.args.item[this.args.column.depend_column].id;
+      this.choices += '&master_model=' + this.args.column.depend_column + '&master_id=' + relation_id;
     }
 
-    $.getJSON(_self.choices, function(itemdata) {
-      var ajaxOptions = [];
-      $.each(itemdata, function(index, value) {
-        if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
-          ajaxOptions.push("<option value='" + value.id + "'>" + value[_self.optionTextAttribute] + "</option>");
-      });
-      _self.select.append(ajaxOptions.join(''));
-
-      _self.select.chosen({
-        allow_single_deselect: !_self.args.column['required']
-      });
-    });
+    $.getJSON(this.choices, function(itemdata) {
+      this.setSelectOptions(itemdata);
+      this.setAllowSingleDeselect();
+    }.bind(this));
   };
 
   RelationEditor.prototype.applyValue = function(item, state) {
@@ -549,21 +549,18 @@
     };
 
     this.getOptions = function(theCurrentValue) {
-      var _self = this;
+      $.getJSON(this.choices, function(itemdata) {
 
-      $.getJSON(_self.choices, function(itemdata) {
-        _self.select.empty();
-        _self.select.append($("<option />"));
+        // set select options
+        this.select.empty();
+        this.select.append($("<option />"));
         $.each(itemdata, function(index, value) {
-          _self.select.append("<option value='" + value.id + "'>" + value[_self.optionTextAttribute] + "</option>");
-        });
+          this.select.append("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+        }.bind(this));
 
-        _self.select.val(_self.args.item[_self.column.field].id);
+        this.setAllowSingleDeselect();
 
-        _self.select.chosen({
-          allow_single_deselect: !_self.args.column['required']
-        });
-      });
+      }.bind(this));
     };
 
     this.applyValue = function(item, state) {
