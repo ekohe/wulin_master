@@ -111,45 +111,45 @@
     this.boxWidth = this.column.width;
     this.offsetWith = this.boxWidth + 28;
 
+    this.init = function() {
+      this.input = $("<INPUT type=text class='editor-text' style='width:" + this.boxWidth + "px;border:none;' />");
+      this.setElement(this.input);
+
+      this.input.bind("keydown.nav", function(e) {
+        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+          e.stopImmediatePropagation();
+        }
+      });
+
+      this.input.appendTo(this.args.container);
+      this.input.focus().select();
+
+      this.setOffset(this.input, this.offsetWith);
+    };
+
+    this.isValueChanged = function() {
+      return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);
+    };
+
+    this.validate = function() {
+      if (isNaN(this.input.val())) {
+        this.input.val(this.defaultValue);
+        return {
+          valid: false,
+          msg: "Please enter a valid integer"
+        };
+      } else {
+        return {
+          valid: true,
+          msg: null
+        };
+      }
+    };
+
     this.init();
   }
 
   InputElementEditor.prototype = Object.create(BaseEditor.prototype);
-
-  InputElementEditor.prototype.init = function() {
-    this.input = $("<INPUT type=text class='editor-text' style='width:" + this.boxWidth + "px;border:none;' />");
-    this.setElement(this.input);
-
-    this.input.bind("keydown.nav", function(e) {
-      if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-        e.stopImmediatePropagation();
-      }
-    });
-
-    this.input.appendTo(this.args.container);
-    this.input.focus().select();
-
-    this.setOffset(this.input, this.offsetWith);
-  };
-
-  InputElementEditor.prototype.isValueChanged = function() {
-    return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);
-  };
-
-  InputElementEditor.prototype.validate = function() {
-    if (isNaN(this.input.val())) {
-      this.input.val(this.defaultValue);
-      return {
-        valid: false,
-        msg: "Please enter a valid integer"
-      };
-    } else {
-      return {
-        valid: true,
-        msg: null
-      };
-    }
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // IntegerEditor < InputElementEditor < BaseEditor
@@ -157,13 +157,13 @@
 
   this.IntegerEditor = function(args) {
     InputElementEditor.call(this, args);
+
+    this.serializeValue = function() {
+      return parseInt(this.input.val(), 10) || 0;
+    };
   };
 
   IntegerEditor.prototype = Object.create(InputElementEditor.prototype);
-
-  IntegerEditor.prototype.serializeValue = function() {
-    return parseInt(this.input.val(), 10) || 0;
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // DecimalEditor < InputElementEditor < BaseEditor
