@@ -254,15 +254,20 @@
         this.select.trigger('liszt:open');
       }.bind(this), 300);
     };
+
+    this.setAllowSingleDeselect = function() {
+      this.select.chosen({
+        allow_single_deselect: !args.column['required']
+      });
+    };
   }
 
   SelectElementEditor.prototype = Object.create(BaseEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
   // SelectEditor < SelectElementEditor < BaseEditor
-  //
-  //  1. Provide options from pre-defined arrays for `string` type columns
-  //  2. Use jquery.chosen to allow you choose the value as select
+  // 1. Provide options from pre-defined arrays for `string` type columns
+  // 2. Use jquery.chosen to allow you choose the value as select
   ///////////////////////////////////////////////////////////////////////////
 
   this.SelectEditor = function(args) {
@@ -302,9 +307,8 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // DistinctEditor < SelectElementEditor < BaseEditor
-  //
-  //  1. Provide distinct options from the string column with repeatable items
-  //  2. Use jquery.chosen to allow you choose the value as select
+  // 1. Provide distinct options from the string column with repeatable items
+  // 2. Use jquery.chosen to allow you choose the value as select
   ///////////////////////////////////////////////////////////////////////////
 
   this.DistinctEditor = function(args) {
@@ -320,74 +324,80 @@
       this.openDropDrown();
     };
 
-    this.getOptions = function() {
+    this.addNewOptionHandler = function() {
       var _self = this;
 
-      $.getJSON(_self.choices, function(itemdata) {
+      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
+        var $dialog = $("<div/>").attr({
+          id: 'distinct_dialog',
+          title: "Add new " + _self.column.name,
+          'class': "create_form"
+        }).css('display', 'none').appendTo($('body'));
+        var $fieldDiv = $("<div />").attr({
+          style: 'padding: 20px 30px;'
+        });
+        var $submitDiv = $("<div />").attr({
+          style: 'padding: 0 30px;'
+        });
+        $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + _self.column.name + '</label>');
+        $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
+        $fieldDiv.appendTo($dialog);
+        $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + _self.column.name + ' " name="commit">');
+        $submitDiv.appendTo($dialog);
+        $dialog.dialog({
+          autoOpen: true,
+          width: 450,
+          height: 180,
+          modal: true,
+          buttons: {
+            "Cancel": function() {
+              $(this).dialog("destroy");
+              $(this).remove();
+            }
+          },
+          open: function(event, ui) {
+            $('#distinct_submit', $(this)).on('click', function() {
+              var optionText = $('#distinct_dialog #distinct_field').val();
+              if (optionText) {
+                $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
+                _self.select.val(optionText);
+                _self.select.trigger('liszt:updated');
+                $dialog.dialog("destroy");
+                $dialog.remove();
+              } else {
+                alert('New ' + _self.column.name + ' can not be blank!');
+              }
+            });
+          },
+          close: function(event, ui) {
+            $(this).dialog("destroy");
+            $(this).remove();
+          }
+        });
+
+        return false;
+      });
+    };
+
+    this.getOptions = function() {
+      $.getJSON(this.choices, function(itemdata) {
+
+        // set options with AJAX
         var ajaxOptions = [];
         $.each(itemdata, function(index, value) {
           ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
         });
-        _self.select.append(ajaxOptions.join(''));
+        this.select.append(ajaxOptions.join(''));
 
-        _self.select.append(_self.bottomOption);
-        _self.select.val(_self.args.item[_self.column.field]);
-        _self.select.chosen({
-          allow_single_deselect: !_self.args.column['required']
-        });
+        // append 'Add new options' option
+        this.select.append(this.bottomOption);
+
+        this.select.val(args.item[this.column.field]);
+        this.setAllowSingleDeselect();
 
         // 'Add new option' option handler
-        $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-          var $dialog = $("<div/>").attr({
-            id: 'distinct_dialog',
-            title: "Add new " + _self.column.name,
-            'class': "create_form"
-          }).css('display', 'none').appendTo($('body'));
-          var $fieldDiv = $("<div />").attr({
-            style: 'padding: 20px 30px;'
-          });
-          var $submitDiv = $("<div />").attr({
-            style: 'padding: 0 30px;'
-          });
-          $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + _self.column.name + '</label>');
-          $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
-          $fieldDiv.appendTo($dialog);
-          $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + _self.column.name + ' " name="commit">');
-          $submitDiv.appendTo($dialog);
-          $dialog.dialog({
-            autoOpen: true,
-            width: 450,
-            height: 180,
-            modal: true,
-            buttons: {
-              "Cancel": function() {
-                $(this).dialog("destroy");
-                $(this).remove();
-              }
-            },
-            open: function(event, ui) {
-              $('#distinct_submit', $(this)).on('click', function() {
-                var optionText = $('#distinct_dialog #distinct_field').val();
-                if (optionText) {
-                  $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                  _self.select.val(optionText);
-                  _self.select.trigger('liszt:updated');
-                  $dialog.dialog("destroy");
-                  $dialog.remove();
-                } else {
-                  alert('New ' + _self.column.name + ' can not be blank!');
-                }
-              });
-            },
-            close: function(event, ui) {
-              $(this).dialog("destroy");
-              $(this).remove();
-            }
-          });
-
-          return false;
-        });
-      });
+        this.addNewOptionHandler();
+      }.bind(this));
     };
 
     this.init();
@@ -397,8 +407,7 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // RelationEditor < SelectElementEditor < BaseEditor
-  //
-  //  Use jquery.chosen to choose options from a relation column
+  // - Use jquery.chosen to choose options from a relation column
   ///////////////////////////////////////////////////////////////////////////
 
   this.RelationEditor = function(args) {
@@ -407,22 +416,6 @@
     this.optionTextAttribute = this.column.optionTextAttribute || 'name';
     this.addOptionText = 'Add new Option';
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
-
-    this.setSelectOptions = function(itemdata) {
-      var ajaxOptions = [];
-      $.each(itemdata, function(index, value) {
-        if (!args.item[this.column.field] || args.item[this.column.field].id != value.id)
-          ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
-      }.bind(this));
-      this.select.append(ajaxOptions.join(''));
-    };
-
-    this.setAllowSingleDeselect = function() {
-      this.select.val(args.item[this.column.field].id);
-      this.select.chosen({
-        allow_single_deselect: !args.column['required']
-      });
-    };
 
     this.isValueChanged = function() {
       // return true if the value(s) being edited by the user has/have been changed
@@ -473,6 +466,7 @@
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
 
   RelationEditor.prototype.getOptions = function(theCurrentValue) {
+
     // dynamic filter by other relational column
     if (this.args.column.depend_column) {
       var relation_id = this.args.item[this.args.column.depend_column].id;
@@ -480,8 +474,17 @@
     }
 
     $.getJSON(this.choices, function(itemdata) {
-      this.setSelectOptions(itemdata);
+
+      // set options with AJAX
+      var ajaxOptions = [];
+      $.each(itemdata, function(index, value) {
+        if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
+          ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+      }.bind(this));
+      this.select.append(ajaxOptions.join(''));
+
       this.setAllowSingleDeselect();
+
     }.bind(this));
   };
 
@@ -495,8 +498,7 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // OtherReationEditor < RelationEditor < SelectElementEditor < BaseEditor
-  //
-  //  Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
+  // - Provide options for `belong_to`, `has_one`, `has_and_belongs_to_many` type columns
   ///////////////////////////////////////////////////////////////////////////
 
   this.OtherRelationEditor = function(args) {
@@ -527,8 +529,7 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // HasManyEditor < SelectElementEditor < BaseEditor
-  //
-  //  Provide options for `has_many` type columns
+  // - Provide options for `has_many` type columns
   ///////////////////////////////////////////////////////////////////////////
 
   this.HasManyEditor = function(args) {
@@ -551,13 +552,14 @@
     this.getOptions = function(theCurrentValue) {
       $.getJSON(this.choices, function(itemdata) {
 
-        // set select options
+        // set select options with AJAX
         this.select.empty();
         this.select.append($("<option />"));
         $.each(itemdata, function(index, value) {
           this.select.append("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
         }.bind(this));
 
+        this.select.val(args.item[this.column.field].id);
         this.setAllowSingleDeselect();
 
       }.bind(this));
