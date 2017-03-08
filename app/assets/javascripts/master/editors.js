@@ -461,40 +461,40 @@
       this.select.val(this.defaultValue);
       this.select.select();
     };
+
+    this.getOptions = function(theCurrentValue) {
+
+      // dynamic filter by other relational column
+      if (this.args.column.depend_column) {
+        var relation_id = this.args.item[this.args.column.depend_column].id;
+        this.choices += '&master_model=' + this.args.column.depend_column + '&master_id=' + relation_id;
+      }
+
+      $.getJSON(this.choices, function(itemdata) {
+
+        // set options with AJAX
+        var ajaxOptions = [];
+        $.each(itemdata, function(index, value) {
+          if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
+            ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+        }.bind(this));
+        this.select.append(ajaxOptions.join(''));
+
+        this.setAllowSingleDeselect();
+
+      }.bind(this));
+    };
+
+    this.applyValue = function(item, state) {
+      // deserialize the value(s) saved to "state" and apply them to the data item
+      // this method may get called after the editor itself has been destroyed
+      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+      item[this.column.field].id = state.id;
+      item[this.column.field][this.optionTextAttribute] = state[this.optionTextAttribute];
+    };
   }
 
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
-
-  RelationEditor.prototype.getOptions = function(theCurrentValue) {
-
-    // dynamic filter by other relational column
-    if (this.args.column.depend_column) {
-      var relation_id = this.args.item[this.args.column.depend_column].id;
-      this.choices += '&master_model=' + this.args.column.depend_column + '&master_id=' + relation_id;
-    }
-
-    $.getJSON(this.choices, function(itemdata) {
-
-      // set options with AJAX
-      var ajaxOptions = [];
-      $.each(itemdata, function(index, value) {
-        if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
-          ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
-      }.bind(this));
-      this.select.append(ajaxOptions.join(''));
-
-      this.setAllowSingleDeselect();
-
-    }.bind(this));
-  };
-
-  RelationEditor.prototype.applyValue = function(item, state) {
-    // deserialize the value(s) saved to "state" and apply them to the data item
-    // this method may get called after the editor itself has been destroyed
-    // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-    item[this.column.field].id = state.id;
-    item[this.column.field][this.optionTextAttribute] = state[this.optionTextAttribute];
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // OtherReationEditor < RelationEditor < SelectElementEditor < BaseEditor
@@ -572,7 +572,7 @@
       if (state.id === null) {
         item[this.column.field] = 'null';
       } else {
-        item[this.column.field] = state.id;
+        item[this.column.field] = state;
       }
     };
 
