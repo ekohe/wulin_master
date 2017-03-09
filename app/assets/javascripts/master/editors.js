@@ -11,7 +11,7 @@
     TextCellEditor: this.TextCellEditor,
     AutoCompleteTextEditor: this.AutoCompleteTextEditor,
     AutoCompleteTextEditorForForm: this.AutoCompleteTextEditorForForm,
-    LongTextCellEditor: this.LongTextCellEditor,
+    TextAreaEditor: this.TextAreaEditor,
     DateTimeCellEditor: this.DateTimeCellEditor,
     TimeCellEditor: this.TimeCellEditor,
     SimpleDateEditor: this.SimpleDateEditor,
@@ -583,8 +583,93 @@
   HasManyEditor.prototype = Object.create(RelationEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // Text related Editors
+  // TextAreaEditor < BaseEditor
+  // 1. An example of a "detached" editor.
+  // 2. The UI is added onto document BODY and .position(), .show() and .hide() are implemented.
+  // 3. KeyDown events are also handled to provide handling for Tab, Shift-Tab, Esc and Ctrl-Enter.
   ///////////////////////////////////////////////////////////////////////////
+
+  this.TextAreaEditor = function(args) {
+    BaseEditor.call(this, args);
+
+    var _self = this;
+
+    this.boxWidth = 250;
+    this.offsetWith = this.boxWidth + 18;
+
+    this.init = function() {
+      this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+      this.setWrapper(this.wrapper);
+      this.wrapper.appendTo($("body"));
+
+      this.textArea = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + this.boxWidth + "px;height:80px;border:0;outline:0'>");
+      this.setElement(this.textArea);
+      this.textArea.appendTo(this.wrapper);
+
+      $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+        .appendTo(this.wrapper);
+
+      this.wrapper.find("button:first").on("click", this.save);
+      this.wrapper.find("button:last").on("click", this.cancel);
+      this.textArea.on("keydown", this.handleKeyDown);
+
+      this.position(args.position);
+      this.textArea.focus().select();
+    };
+
+    this.handleKeyDown = function(e) {
+      if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+        _self.save();
+      } else if (e.which == $.ui.keyCode.ESCAPE) {
+        e.preventDefault();
+          _self.cancel();
+      } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+        e.preventDefault();
+          args.grid.navigatePrev();
+      } else if (e.which == $.ui.keyCode.TAB) {
+        e.preventDefault();
+        args.grid.navigateNext();
+      }
+    };
+
+    this.save = function() {
+      args.commitChanges();
+    };
+
+    this.cancel = function() {
+      _self.textArea.val(_self.defaultValue);
+      args.cancelChanges();
+    };
+
+    this.hide = function() {
+      this.wrapper.hide();
+    };
+
+    this.show = function() {
+      this.wrapper.show();
+    };
+
+    this.position = function(position) {
+      var winWith = $(window).width(),
+          offsetLeft = this.wrapper.offset().left;
+      this.wrapper.css({
+        "top": position.top - 5,
+        "left": position.left - 5
+      });
+      if (winWith - offsetLeft < this.offsetWith)
+        this.wrapper.offset({
+          left: winWith - this.offsetWith
+        });
+    };
+
+    this.isValueChanged = function() {
+      return (!(this.textArea.val() === "" && this.defaultValue === null)) && (this.textArea.val() != this.defaultValue);
+    };
+
+    this.init();
+  }
+
+  TextAreaEditor.prototype = Object.create(BaseEditor.prototype);
 
   // TODO: OOP + Rename
   // TODO: Add auto_complete feature
@@ -1052,125 +1137,6 @@
 
     this.setValue = function(val) {
       $input.val(val);
-    };
-
-    this.init();
-  }
-
-  /*
-   * An example of a "detached" editor.
-   * The UI is added onto document BODY and .position(), .show() and .hide() are implemented.
-   * KeyDown events are also handled to provide handling for Tab, Shift-Tab, Esc and Ctrl-Enter.
-   */
-
-   // TODO: OOP + Rename
-  this.LongTextCellEditor = function(args) {
-    var column = args.column;
-    var $input, $wrapper;
-    var defaultValue;
-    var scope = this;
-    var boxWidth = 250;
-    var offsetWith = boxWidth + 18;
-
-    this.init = function() {
-      var $container = $("body");
-
-      $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
-        .appendTo($container);
-
-      $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + boxWidth + "px;height:80px;border:0;outline:0'>")
-        .appendTo($wrapper);
-
-      $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
-        .appendTo($wrapper);
-
-      $wrapper.find("button:first").bind("click", this.save);
-      $wrapper.find("button:last").bind("click", this.cancel);
-      $input.bind("keydown", this.handleKeyDown);
-
-      scope.position(args.position);
-      $input.focus().select();
-    };
-
-    this.handleKeyDown = function(e) {
-      if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
-        scope.save();
-      } else if (e.which == $.ui.keyCode.ESCAPE) {
-        e.preventDefault();
-          scope.cancel();
-      } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
-        e.preventDefault();
-          grid.navigatePrev();
-      } else if (e.which == $.ui.keyCode.TAB) {
-        e.preventDefault();
-        grid.navigateNext();
-      }
-    };
-
-    this.save = function() {
-      args.commitChanges();
-    };
-
-    this.cancel = function() {
-      $input.val(defaultValue);
-      args.cancelChanges();
-    };
-
-    this.hide = function() {
-      $wrapper.hide();
-    };
-
-    this.show = function() {
-      $wrapper.show();
-    };
-
-    this.position = function(position) {
-      var winWith = $(window).width(),
-          offsetLeft = $wrapper.offset().left;
-      $wrapper.css({
-        "top": position.top - 5,
-        "left": position.left - 5
-      });
-      if (winWith - offsetLeft < offsetWith)
-        $wrapper.offset({
-          left: winWith - offsetWith
-        });
-    };
-
-    this.destroy = function() {
-      $wrapper.remove();
-    };
-
-    this.focus = function() {
-      $input.focus();
-    };
-
-    this.loadValue = function(item) {
-      $input.val(defaultValue = item[column.field]);
-      $input.select();
-    };
-
-    this.serializeValue = function() {
-      return $input.val();
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state;
-    };
-
-    this.isValueChanged = function() {
-      return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-      return {
-        valid: true,
-        msg: null
-      };
-    };
-
-    this.getCell = function() {
-      return $input.parent();
     };
 
     this.init();
@@ -2593,6 +2559,118 @@
   //
   //   this.getCell = function() {
   //     return $select.parent();
+  //   };
+  //
+  //   this.init();
+  // }
+
+  // this.LongTextCellEditor = function(args) {
+  //   var column = args.column;
+  //   var $input, $wrapper;
+  //   var defaultValue;
+  //   var scope = this;
+  //   var boxWidth = 250;
+  //   var offsetWith = boxWidth + 18;
+  //
+  //   this.init = function() {
+  //     var $container = $("body");
+  //
+  //     $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+  //       .appendTo($container);
+  //
+  //     $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + boxWidth + "px;height:80px;border:0;outline:0'>")
+  //       .appendTo($wrapper);
+  //
+  //     $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+  //       .appendTo($wrapper);
+  //
+  //     $wrapper.find("button:first").bind("click", this.save);
+  //     $wrapper.find("button:last").bind("click", this.cancel);
+  //     $input.bind("keydown", this.handleKeyDown);
+  //
+  //     scope.position(args.position);
+  //     $input.focus().select();
+  //   };
+  //
+  //   this.handleKeyDown = function(e) {
+  //     if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+  //       scope.save();
+  //     } else if (e.which == $.ui.keyCode.ESCAPE) {
+  //       e.preventDefault();
+  //         scope.cancel();
+  //     } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+  //       e.preventDefault();
+  //         grid.navigatePrev();
+  //     } else if (e.which == $.ui.keyCode.TAB) {
+  //       e.preventDefault();
+  //       grid.navigateNext();
+  //     }
+  //   };
+  //
+  //   this.save = function() {
+  //     args.commitChanges();
+  //   };
+  //
+  //   this.cancel = function() {
+  //     $input.val(defaultValue);
+  //     args.cancelChanges();
+  //   };
+  //
+  //   this.hide = function() {
+  //     $wrapper.hide();
+  //   };
+  //
+  //   this.show = function() {
+  //     $wrapper.show();
+  //   };
+  //
+  //   this.position = function(position) {
+  //     var winWith = $(window).width(),
+  //         offsetLeft = $wrapper.offset().left;
+  //     $wrapper.css({
+  //       "top": position.top - 5,
+  //       "left": position.left - 5
+  //     });
+  //     if (winWith - offsetLeft < offsetWith)
+  //       $wrapper.offset({
+  //         left: winWith - offsetWith
+  //       });
+  //   };
+  //
+  //   this.destroy = function() {
+  //     $wrapper.remove();
+  //   };
+  //
+  //   this.focus = function() {
+  //     $input.focus();
+  //   };
+  //
+  //   this.loadValue = function(item) {
+  //     $input.val(defaultValue = item[column.field]);
+  //     $input.select();
+  //   };
+  //
+  //   this.serializeValue = function() {
+  //     return $input.val();
+  //   };
+  //
+  //   this.applyValue = function(item, state) {
+  //     item[column.field] = state;
+  //   };
+  //
+  //   this.isValueChanged = function() {
+  //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+  //   };
+  //
+  //   this.validate = function() {
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
+  //   };
+  //
+  //   this.getCell = function() {
+  //     return $input.parent();
   //   };
   //
   //   this.init();

@@ -23,7 +23,7 @@
         case "string":
           return TextCellEditor;
         case "text":
-          return LongTextCellEditor;
+          return TextAreaEditor;
         case "datetime":
           return DateTimeCellEditor;
         case "time":
