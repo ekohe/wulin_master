@@ -8,7 +8,7 @@
     DistinctEditor: this.DistinctEditor,
     OtherRelationEditor: this.OtherRelationEditor,
     HasManyEditor: this.HasManyEditor,
-    TextCellEditor: this.TextCellEditor,
+    TextEditor: this.TextEditor,
     AutoCompleteTextEditor: this.AutoCompleteTextEditor,
     AutoCompleteTextEditorForForm: this.AutoCompleteTextEditorForForm,
     TextAreaEditor: this.TextAreaEditor,
@@ -115,7 +115,7 @@
       this.input = $("<INPUT type=text class='editor-text' style='width:" + this.boxWidth + "px;border:none;' />");
       this.setElement(this.input);
 
-      this.input.bind("keydown.nav", function(e) {
+      this.input.on("keydown.nav", function(e) {
         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
           e.stopImmediatePropagation();
         }
@@ -411,7 +411,7 @@
   // - Use jquery.chosen to choose options from a relation column
   ///////////////////////////////////////////////////////////////////////////
 
-  this.RelationEditor = function(args) {
+  function RelationEditor(args) {
     SelectElementEditor.call(this, args);
 
     this.optionTextAttribute = this.column.optionTextAttribute || 'name';
@@ -529,7 +529,7 @@
   OtherRelationEditor.prototype = Object.create(RelationEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // HasManyEditor < SelectElementEditor < BaseEditor
+  // HasManyEditor < RelationEditor < SelectElementEditor < BaseEditor
   // - Provide options for `has_many` type columns
   ///////////////////////////////////////////////////////////////////////////
 
@@ -671,109 +671,33 @@
 
   TextAreaEditor.prototype = Object.create(BaseEditor.prototype);
 
-  // TODO: OOP + Rename
+  ///////////////////////////////////////////////////////////////////////////
+  // TextEditor < InputElementEditor < BaseEditor
   // TODO: Add auto_complete feature
-  this.TextCellEditor = function(args) {
-    var column = args.column;
-    var $input;
-    var defaultValue;
-    var scope = this;
-    var boxWidth = column.width;
-    var offsetWith = boxWidth + 18;
+  ///////////////////////////////////////////////////////////////////////////
 
-    this.init = function() {
-      $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
-        .appendTo(args.container);
-      $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
-        .appendTo($wrapper)
-        .bind("keydown.nav", function(e) {
-          if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-            e.stopImmediatePropagation();
-          }
-        })
-        .scrollLeft(0)
-        .focus()
-        .select();
-      var winWith = $(window).width(),
-        offsetLeft = $wrapper.offset().left;
-      if (winWith - offsetLeft < offsetWith)
-        $wrapper.offset({
-          left: winWith - offsetWith
-        });
-    };
-
-    this.destroy = function() {
-      $input.remove();
-    };
-
-    this.focus = function() {
-      $input.focus();
-    };
-
-    this.getValue = function() {
-      return $input.val();
-    };
-
-    this.setValue = function(val) {
-      $input.val(val);
-    };
-
-    this.loadValue = function(item) {
-      defaultValue = item[column.field] || "";
-      $input.val(defaultValue);
-      $input[0].defaultValue = defaultValue;
-      $input.select();
-    };
-
-    this.serializeValue = function() {
-      return $input.val();
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state;
-    };
-
-    this.isValueChanged = function() {
-      return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-      if (column.validator) {
-        var validationResults = column.validator($input.val());
-        if (!validationResults.valid)
-          return validationResults;
-      }
-
-      return {
-        valid: true,
-        msg: null
-      };
-    };
+  this.TextEditor = function(args) {
+    InputElementEditor.call(this, args);
 
     this.validate = function() {
       var validationResults;
-      if (column.validator) {
-        if ($.isFunction(column.validator)) {
-          validationResults = column.validator(args, $input.val());
+      if (this.column.validator) {
+        if ($.isFunction(this.column.validator)) {
+          validationResults = this.column.validator(args, this.input.val());
         } else {
-          validationResults = eval(column.validator)(args, $input.val());
+          validationResults = eval(this.column.validator)(args, this.input.val());
         }
-        if (!validationResults.valid)
+
+        if (!validationResults.valid) {
           return validationResults;
+        }
       }
 
-      return {
-        valid: true,
-        msg: null
-      };
+      return { valid: true, msg: null };
     };
-
-    this.getCell = function() {
-      return $input.parent();
-    };
-
-    this.init();
   }
+
+  TextEditor.prototype = Object.create(InputElementEditor.prototype);
 
   // Usage:
   // column [:column_name], auto_complete: true
@@ -2663,6 +2587,108 @@
   //   };
   //
   //   this.validate = function() {
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
+  //   };
+  //
+  //   this.getCell = function() {
+  //     return $input.parent();
+  //   };
+  //
+  //   this.init();
+  // }
+
+  // this.TextCellEditor = function(args) {
+  //   var column = args.column;
+  //   var $input;
+  //   var defaultValue;
+  //   var scope = this;
+  //   var boxWidth = column.width;
+  //   var offsetWith = boxWidth + 18;
+  //
+  //   this.init = function() {
+  //     $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+  //       .appendTo(args.container);
+  //     $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
+  //       .appendTo($wrapper)
+  //       .bind("keydown.nav", function(e) {
+  //         if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+  //           e.stopImmediatePropagation();
+  //         }
+  //       })
+  //       .scrollLeft(0)
+  //       .focus()
+  //       .select();
+  //     var winWith = $(window).width(),
+  //       offsetLeft = $wrapper.offset().left;
+  //     if (winWith - offsetLeft < offsetWith)
+  //       $wrapper.offset({
+  //         left: winWith - offsetWith
+  //       });
+  //   };
+  //
+  //   this.destroy = function() {
+  //     $input.remove();
+  //   };
+  //
+  //   this.focus = function() {
+  //     $input.focus();
+  //   };
+  //
+  //   this.getValue = function() {
+  //     return $input.val();
+  //   };
+  //
+  //   this.setValue = function(val) {
+  //     $input.val(val);
+  //   };
+  //
+  //   this.loadValue = function(item) {
+  //     defaultValue = item[column.field] || "";
+  //     $input.val(defaultValue);
+  //     $input[0].defaultValue = defaultValue;
+  //     $input.select();
+  //   };
+  //
+  //   this.serializeValue = function() {
+  //     return $input.val();
+  //   };
+  //
+  //   this.applyValue = function(item, state) {
+  //     item[column.field] = state;
+  //   };
+  //
+  //   this.isValueChanged = function() {
+  //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+  //   };
+  //
+  //   this.validate = function() {
+  //     if (column.validator) {
+  //       var validationResults = column.validator($input.val());
+  //       if (!validationResults.valid)
+  //         return validationResults;
+  //     }
+  //
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
+  //   };
+  //
+  //   this.validate = function() {
+  //     var validationResults;
+  //     if (column.validator) {
+  //       if ($.isFunction(column.validator)) {
+  //         validationResults = column.validator(args, $input.val());
+  //       } else {
+  //         validationResults = eval(column.validator)(args, $input.val());
+  //       }
+  //       if (!validationResults.valid)
+  //         return validationResults;
+  //     }
+  //
   //     return {
   //       valid: true,
   //       msg: null

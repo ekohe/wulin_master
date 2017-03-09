@@ -21,7 +21,7 @@
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
         case "string":
-          return TextCellEditor;
+          return TextEditor;
         case "text":
           return TextAreaEditor;
         case "datetime":
@@ -45,7 +45,7 @@
         case "has_many":
           return HasManyEditor;
         default:
-          return TextCellEditor;
+          return TextEditor;
       }
     }
 
