@@ -136,7 +136,7 @@
         this.input.val(this.defaultValue);
         return {
           valid: false,
-          msg: "Please enter a valid integer"
+          msg: "Please enter a valid number"
         };
       } else {
         return {
@@ -171,13 +171,13 @@
 
   this.DecimalEditor = function(args) {
     InputElementEditor.call(this, args);
+
+    this.serializeValue = function() {
+      return this.input.val() || '';
+    };
   };
 
   DecimalEditor.prototype = Object.create(InputElementEditor.prototype);
-
-  DecimalEditor.prototype.serializeValue = function() {
-    return this.input.val() || '';
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // YesNoCheckboxEditor < BaseEditor
