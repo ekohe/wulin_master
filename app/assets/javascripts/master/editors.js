@@ -185,34 +185,35 @@
 
   this.YesNoCheckboxEditor = function(args) {
     BaseEditor.call(this, args);
+
+    YesNoCheckboxEditor.prototype.init = function() {
+      this.checkbox = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
+      this.setElement(this.checkbox);
+      this.checkbox.appendTo(this.args.container);
+      this.checkbox.focus().select();
+    };
+
+    YesNoCheckboxEditor.prototype.loadValue = function(item) {
+      this.defaultValue = item[this.column.field];
+      if (this.defaultValue) {
+        this.checkbox.attr("checked", "checked");
+      } else {
+        this.checkbox.removeAttr("checked");
+      }
+    };
+
+    YesNoCheckboxEditor.prototype.serializeValue = function() {
+      return this.checkbox[0].checked;
+    };
+
+    YesNoCheckboxEditor.prototype.isValueChanged = function() {
+      return (this.checkbox[0].checked != this.defaultValue);
+    };
+
     this.init();
   }
 
   YesNoCheckboxEditor.prototype = Object.create(BaseEditor.prototype);
-
-  YesNoCheckboxEditor.prototype.init = function() {
-    this.checkbox = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
-    this.setElement(this.checkbox);
-    this.checkbox.appendTo(this.args.container);
-    this.checkbox.focus().select();
-  };
-
-  YesNoCheckboxEditor.prototype.loadValue = function(item) {
-    this.defaultValue = item[this.column.field];
-    if (this.defaultValue) {
-      this.checkbox.attr("checked", "checked");
-    } else {
-      this.checkbox.removeAttr("checked");
-    }
-  };
-
-  YesNoCheckboxEditor.prototype.serializeValue = function() {
-    return this.checkbox[0].checked;
-  };
-
-  YesNoCheckboxEditor.prototype.isValueChanged = function() {
-    return (this.checkbox[0].checked != this.defaultValue);
-  };
 
   ///////////////////////////////////////////////////////////////////////////
   // SelectElementEditor < BaseEditor
