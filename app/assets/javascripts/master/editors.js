@@ -111,7 +111,7 @@
     this.boxWidth = this.column.width;
     this.offsetWith = this.boxWidth + 28;
 
-    this.init = function() {
+    this.initElements = function() {
       this.input = $("<INPUT type=text class='editor-text' style='width:" + this.boxWidth + "px;border:none;' />");
       this.setElement(this.input);
 
@@ -145,8 +145,6 @@
         };
       }
     };
-
-    this.init();
   }
 
   InputElementEditor.prototype = Object.create(BaseEditor.prototype);
@@ -161,6 +159,8 @@
     this.serializeValue = function() {
       return parseInt(this.input.val(), 10) || 0;
     };
+
+    this.initElements();
   };
 
   IntegerEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -175,6 +175,8 @@
     this.serializeValue = function() {
       return this.input.val() || '';
     };
+
+    this.initElements();
   };
 
   DecimalEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -695,6 +697,8 @@
 
       return { valid: true, msg: null };
     };
+
+    this.initElements();
   }
 
   TextEditor.prototype = Object.create(InputElementEditor.prototype);
