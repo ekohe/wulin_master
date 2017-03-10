@@ -10,7 +10,7 @@
     HasManyEditor: this.HasManyEditor,
     TextEditor: this.TextEditor,
     TextAreaEditor: this.TextAreaEditor,
-    DateTimeCellEditor: this.DateTimeCellEditor,
+    DateTimeEditor: this.DateTimeEditor,
     TimeCellEditor: this.TimeCellEditor,
     SimpleDateEditor: this.SimpleDateEditor,
     StandardDateCellEditor: this.StandardDateCellEditor
@@ -57,7 +57,25 @@
     },
 
     validate: function() {
-      return { valid: true, msg: null };
+      return {
+        valid: true,
+        msg: null
+      };
+    },
+
+    validateNumber: function() {
+      if (isNaN(this.element.val())) {
+        this.element.val(this.defaultValue);
+        return {
+          valid: false,
+          msg: "Please enter a valid number."
+        };
+      } else {
+        return {
+          valid: true,
+          msg: null
+        };
+      }
     },
 
     getWrapper: function() {
@@ -121,27 +139,10 @@
 
       this.input.appendTo(this.args.container);
       this.input.focus().select();
-
-      this.setOffset(this.input, this.offsetWith);
     };
 
     this.isValueChanged = function() {
       return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);
-    };
-
-    this.validate = function() {
-      if (isNaN(this.input.val())) {
-        this.input.val(this.defaultValue);
-        return {
-          valid: false,
-          msg: "Please enter a valid number"
-        };
-      } else {
-        return {
-          valid: true,
-          msg: null
-        };
-      }
     };
   }
 
@@ -154,11 +155,20 @@
   this.IntegerEditor = function(args) {
     InputElementEditor.call(this, args);
 
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+    };
+
     this.serializeValue = function() {
       return parseInt(this.input.val(), 10) || 0;
     };
 
-    this.initElements();
+    this.validate = function() {
+      return this.validateNumber();
+    };
+
+    this.init();
   };
 
   IntegerEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -170,11 +180,20 @@
   this.DecimalEditor = function(args) {
     InputElementEditor.call(this, args);
 
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+    };
+
     this.serializeValue = function() {
       return this.input.val() || '';
     };
 
-    this.initElements();
+    this.validate = function() {
+      return this.validateNumber();
+    };
+
+    this.init();
   };
 
   DecimalEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -680,6 +699,7 @@
 
     this.init = function() {
       this.initElements();
+      this.setOffset(this.input, this.offsetWith);
 
       $.getJSON(args.column.choices, function(data) {
         this.input.autocomplete({source: data});
@@ -709,64 +729,51 @@
   TextEditor.prototype = Object.create(InputElementEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // Date/Time related Editors
+  // DateTimeEditor < InputElementEditor < BaseEditor
+  // TODO: Improvement with easy-to-use keyboard features
   ///////////////////////////////////////////////////////////////////////////
 
-  // TODO: OOP + Rename
-  // TODO: Improvement with easy-to-use keyboard features
-  this.DateTimeCellEditor = function(args) {
-    var column = args.column;
-    var $input;
-    var defaultValue;
-    var scope = this;
-    var calendarOpen = false;
+  this.DateTimeEditor = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.calendarOpen = false;
 
     this.init = function() {
-      $input = $("<INPUT type=text class='editor-text' />").off('keydown.nav').on("keydown.nav", function(e) {
-        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-          e.stopImmediatePropagation();
-        }
-      });
-      $input.appendTo(args.container);
-      $input.focus().select();
-      $input.width($input.width() - 18);
+      this.boxWidth -= 24;
+      this.initElements();
     };
 
     this.destroy = function() {
       $.datepicker.dpDiv.stop(true, true);
-      $input.datetimepicker("hide");
-      $input.remove();
+      this.input.datetimepicker("hide");
+      this.input.remove();
     };
 
     this.show = function() {
-      if (calendarOpen) {
+      if (this.calendarOpen) {
         $.datepicker.dpDiv.stop(true, true).show();
       }
     };
 
     this.hide = function() {
-      if (calendarOpen) {
+      if (this.calendarOpen) {
         $.datepicker.dpDiv.stop(true, true).hide();
       }
     };
 
     this.position = function(position) {
-      if (!calendarOpen) return;
+      if (!this.calendarOpen) return;
       $.datepicker.dpDiv
         .css("top", position.top + 30)
         .css("left", position.left);
     };
 
-    this.focus = function() {
-      $input.focus();
-    };
-
     this.loadValue = function(item) {
-      defaultValue = item[column.field];
-      $input.val(defaultValue);
-      $input[0].defaultValue = defaultValue;
-      $input.select();
-      $input.datetimepicker({
+      this.defaultValue = item[this.column.field];
+      this.input.val(this.defaultValue);
+      this.input[0].defaultValue = this.defaultValue;
+      this.input.select();
+      this.input.datetimepicker({
         showOn: "button",
         buttonImageOnly: true,
         timeOnly: false,
@@ -774,10 +781,10 @@
         minuteGrid: 0,
         buttonImage: "/assets/calendar.gif",
         beforeShow: function() {
-          calendarOpen = true;
+          this.calendarOpen = true;
         },
         onClose: function() {
-          calendarOpen = false;
+          this.calendarOpen = false;
           e = $.Event("keydown");
           e.which = 13;
           $(this).trigger(e);
@@ -787,31 +794,10 @@
       });
     };
 
-    this.serializeValue = function() {
-      return $input.val();
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state;
-    };
-
-    this.isValueChanged = function() {
-      return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-      return {
-        valid: true,
-        msg: null
-      };
-    };
-
-    this.getCell = function() {
-      return $input.parent();
-    };
-
     this.init();
   }
+
+  DateTimeEditor.prototype = Object.create(InputElementEditor.prototype);
 
   // TODO: OOP + Rename
   this.TimeCellEditor = function(args) {
@@ -2549,158 +2535,100 @@
   //   this.init();
   // }
 
-  // this.AutoCompleteTextEditorForForm = function(args) {
+  // this.DateTimeCellEditor = function(args) {
   //   var column = args.column;
-  //   var $input, $select, $wrapper;
-  //   var choicesFetchPath = column.choices;
+  //   var $input;
   //   var defaultValue;
-  //   var self = this;
-  //   var boxWidth = column.width + 10;
-  //   var offsetWith = boxWidth + 18;
+  //   var scope = this;
+  //   var calendarOpen = false;
   //
   //   this.init = function() {
-  //     var count = 0;
-  //     var down = true;
-  //     $input = args.container;
-  //     $input.bind("keydown.nav", function(e) {
-  //       var optionLength = $(".select-option").length;
-  //       if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
+  //     $input = $("<INPUT type=text class='editor-text' />").off('keydown.nav').on("keydown.nav", function(e) {
+  //       if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
   //         e.stopImmediatePropagation();
-  //       } else if (e.keyCode === $.ui.keyCode.DOWN) {
-  //         if ($(".select-option").length > 0) {
-  //           if (down == true) {
-  //             if ((count > 0) && (count < $(".select-option").length)) {
-  //               $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-  //             }
-  //             $(".select-option:eq(" + count + ")").addClass("blue-background");
-  //           } else {
-  //             $(".select-option:eq(" + count + ")").removeClass("blue-background");
-  //             $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
-  //             count++;
-  //             down = true;
-  //           }
-  //           count++;
-  //           if (count > $(".select-option").length) {
-  //             count = $(".select-option").length;
-  //           }
-  //         }
-  //       } else if (e.keyCode === $.ui.keyCode.UP) {
-  //         if ($(".select-option").length > 0) {
-  //           if (down == true) {
-  //             count--;
-  //             down = false;
-  //           }
-  //           if (count > 0) {
-  //             if (count == $(".select-option").length) {
-  //               $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-  //               $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
-  //             } else {
-  //               $(".select-option:eq(" + count + ")").removeClass("blue-background");
-  //               $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
-  //             }
-  //           }
-  //           count--;
-  //           if (count < 0) {
-  //             count = 0;
-  //           }
-  //         }
   //       }
-  //     })
-  //     .bind("keydown", function(event) {
-  //       if (event.keyCode == "13") {
-  //         event.preventDefault();
-  //         event.stopPropagation();
-  //         var value = $(".select-option.blue-background").text();
-  //         if (value != "") {
-  //           self.setValue(value);
-  //         } else {
-  //           self.setValue($input.val());
-  //         }
-  //         $(".wrapper").remove();
-  //       }
-  //     })
-  //     .bind("input", function() {
-  //       var value = self.getValue();
-  //       self.getOptions(value);
-  //       down = true;
-  //       count = 0;
-  //     })
-  //     .scrollLeft(0)
-  //     .focus();
+  //     });
+  //     $input.appendTo(args.container);
+  //     $input.focus().select();
+  //     $input.width($input.width() - 18);
   //   };
   //
-  //   this.getOptions = function(input) {
-  //     if ($(".select-option").length > 0) {
-  //       $(".select-option").remove();
-  //     }
-  //     if (input == "") {
-  //       if ($(".auto-complete-select").length > 0) {
-  //         $(".auto-complete-select").remove();
-  //       }
-  //       return false;
-  //     }
-  //     $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:-3px 0 0 128px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
-  //     $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:3px;list-style:none;'></ul></div>")
-  //       .appendTo($wrapper);
-  //     var winWith = $(window).width(),
-  //         offsetLeft = $wrapper.offset().left;
-  //     if (winWith - offsetLeft < offsetWith) {
-  //       $wrapper.offset({
-  //         left: winWith - offsetWith
-  //       });
-  //     }
+  //   this.destroy = function() {
+  //     $.datepicker.dpDiv.stop(true, true);
+  //     $input.datetimepicker("hide");
+  //     $input.remove();
+  //   };
   //
-  //     $.getJSON(choicesFetchPath, function(data) {
-  //       var itemdata = [];
-  //       $.each(data, function(index, value) {
-  //         if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
-  //           itemdata.push(value);
-  //         }
-  //       })
-  //       var ajaxOptions = [];
-  //       $.each(itemdata, function(index, value) {
-  //         if (index % 2 == 0) {
-  //           ajaxOptions.push("<li class='select-option even' value='" + value + "'>" + value + "</li>");
-  //         } else {
-  //           ajaxOptions.push("<li class='select-option odd' value='" + value + "'>" + value + "</li>");
-  //         }
-  //       });
-  //       $(".wrapper").remove();
-  //       $wrapper.insertAfter($input);
-  //       if (ajaxOptions.length == 0) {
-  //         $(".auto-complete-select").remove();
-  //       }
+  //   this.show = function() {
+  //     if (calendarOpen) {
+  //       $.datepicker.dpDiv.stop(true, true).show();
+  //     }
+  //   };
   //
-  //       $(".select-options")
-  //         .css({
-  //           "background": "white",
-  //           "border": "1px solid gray",
-  //           "margin": "-1px -1px 0px 3px",
-  //           "overflow": "auto"
-  //         })
-  //         .append(ajaxOptions.join(''));
+  //   this.hide = function() {
+  //     if (calendarOpen) {
+  //       $.datepicker.dpDiv.stop(true, true).hide();
+  //     }
+  //   };
   //
-  //       $(".select-option")
-  //         .bind("mouseover", function() {
-  //           $(this).addClass("blue-background");
-  //         })
-  //         .bind("mouseout", function() {
-  //           $(this).removeClass("blue-background");
-  //         })
-  //         .click(function(event) {
-  //           var value = event.currentTarget.textContent;
-  //           self.setValue(value);
-  //           $(".wrapper").remove();
-  //         });
+  //   this.position = function(position) {
+  //     if (!calendarOpen) return;
+  //     $.datepicker.dpDiv
+  //       .css("top", position.top + 30)
+  //       .css("left", position.left);
+  //   };
+  //
+  //   this.focus = function() {
+  //     $input.focus();
+  //   };
+  //
+  //   this.loadValue = function(item) {
+  //     defaultValue = item[column.field];
+  //     $input.val(defaultValue);
+  //     $input[0].defaultValue = defaultValue;
+  //     $input.select();
+  //     $input.datetimepicker({
+  //       showOn: "button",
+  //       buttonImageOnly: true,
+  //       timeOnly: false,
+  //       stepMinute: 1,
+  //       minuteGrid: 0,
+  //       buttonImage: "/assets/calendar.gif",
+  //       beforeShow: function() {
+  //         calendarOpen = true;
+  //       },
+  //       onClose: function() {
+  //         calendarOpen = false;
+  //         e = $.Event("keydown");
+  //         e.which = 13;
+  //         $(this).trigger(e);
+  //       },
+  //       dateFormat: "yy-mm-dd",
+  //       timeFormat: 'HH:mm'
   //     });
   //   };
   //
-  //   this.getValue = function() {
+  //   this.serializeValue = function() {
   //     return $input.val();
   //   };
   //
-  //   this.setValue = function(val) {
-  //     $input.val(val);
+  //   this.applyValue = function(item, state) {
+  //     item[column.field] = state;
+  //   };
+  //
+  //   this.isValueChanged = function() {
+  //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+  //   };
+  //
+  //   this.validate = function() {
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
+  //   };
+  //
+  //   this.getCell = function() {
+  //     return $input.parent();
   //   };
   //
   //   this.init();
@@ -3126,5 +3054,162 @@
   //
   //   this.init();
   // },
+
+  // this.AutoCompleteTextEditorForForm = function(args) {
+  //   var column = args.column;
+  //   var $input, $select, $wrapper;
+  //   var choicesFetchPath = column.choices;
+  //   var defaultValue;
+  //   var self = this;
+  //   var boxWidth = column.width + 10;
+  //   var offsetWith = boxWidth + 18;
+  //
+  //   this.init = function() {
+  //     var count = 0;
+  //     var down = true;
+  //     $input = args.container;
+  //     $input.bind("keydown.nav", function(e) {
+  //       var optionLength = $(".select-option").length;
+  //       if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
+  //         e.stopImmediatePropagation();
+  //       } else if (e.keyCode === $.ui.keyCode.DOWN) {
+  //         if ($(".select-option").length > 0) {
+  //           if (down == true) {
+  //             if ((count > 0) && (count < $(".select-option").length)) {
+  //               $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+  //             }
+  //             $(".select-option:eq(" + count + ")").addClass("blue-background");
+  //           } else {
+  //             $(".select-option:eq(" + count + ")").removeClass("blue-background");
+  //             $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
+  //             count++;
+  //             down = true;
+  //           }
+  //           count++;
+  //           if (count > $(".select-option").length) {
+  //             count = $(".select-option").length;
+  //           }
+  //         }
+  //       } else if (e.keyCode === $.ui.keyCode.UP) {
+  //         if ($(".select-option").length > 0) {
+  //           if (down == true) {
+  //             count--;
+  //             down = false;
+  //           }
+  //           if (count > 0) {
+  //             if (count == $(".select-option").length) {
+  //               $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+  //               $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
+  //             } else {
+  //               $(".select-option:eq(" + count + ")").removeClass("blue-background");
+  //               $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
+  //             }
+  //           }
+  //           count--;
+  //           if (count < 0) {
+  //             count = 0;
+  //           }
+  //         }
+  //       }
+  //     })
+  //     .bind("keydown", function(event) {
+  //       if (event.keyCode == "13") {
+  //         event.preventDefault();
+  //         event.stopPropagation();
+  //         var value = $(".select-option.blue-background").text();
+  //         if (value != "") {
+  //           self.setValue(value);
+  //         } else {
+  //           self.setValue($input.val());
+  //         }
+  //         $(".wrapper").remove();
+  //       }
+  //     })
+  //     .bind("input", function() {
+  //       var value = self.getValue();
+  //       self.getOptions(value);
+  //       down = true;
+  //       count = 0;
+  //     })
+  //     .scrollLeft(0)
+  //     .focus();
+  //   };
+  //
+  //   this.getOptions = function(input) {
+  //     if ($(".select-option").length > 0) {
+  //       $(".select-option").remove();
+  //     }
+  //     if (input == "") {
+  //       if ($(".auto-complete-select").length > 0) {
+  //         $(".auto-complete-select").remove();
+  //       }
+  //       return false;
+  //     }
+  //     $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:-3px 0 0 128px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
+  //     $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:3px;list-style:none;'></ul></div>")
+  //       .appendTo($wrapper);
+  //     var winWith = $(window).width(),
+  //         offsetLeft = $wrapper.offset().left;
+  //     if (winWith - offsetLeft < offsetWith) {
+  //       $wrapper.offset({
+  //         left: winWith - offsetWith
+  //       });
+  //     }
+  //
+  //     $.getJSON(choicesFetchPath, function(data) {
+  //       var itemdata = [];
+  //       $.each(data, function(index, value) {
+  //         if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
+  //           itemdata.push(value);
+  //         }
+  //       })
+  //       var ajaxOptions = [];
+  //       $.each(itemdata, function(index, value) {
+  //         if (index % 2 == 0) {
+  //           ajaxOptions.push("<li class='select-option even' value='" + value + "'>" + value + "</li>");
+  //         } else {
+  //           ajaxOptions.push("<li class='select-option odd' value='" + value + "'>" + value + "</li>");
+  //         }
+  //       });
+  //       $(".wrapper").remove();
+  //       $wrapper.insertAfter($input);
+  //       if (ajaxOptions.length == 0) {
+  //         $(".auto-complete-select").remove();
+  //       }
+  //
+  //       $(".select-options")
+  //         .css({
+  //           "background": "white",
+  //           "border": "1px solid gray",
+  //           "margin": "-1px -1px 0px 3px",
+  //           "overflow": "auto"
+  //         })
+  //         .append(ajaxOptions.join(''));
+  //
+  //       $(".select-option")
+  //         .bind("mouseover", function() {
+  //           $(this).addClass("blue-background");
+  //         })
+  //         .bind("mouseout", function() {
+  //           $(this).removeClass("blue-background");
+  //         })
+  //         .click(function(event) {
+  //           var value = event.currentTarget.textContent;
+  //           self.setValue(value);
+  //           $(".wrapper").remove();
+  //         });
+  //     });
+  //   };
+  //
+  //   this.getValue = function() {
+  //     return $input.val();
+  //   };
+  //
+  //   this.setValue = function(val) {
+  //     $input.val(val);
+  //   };
+  //
+  //   this.init();
+  // }
 
 })(jQuery);

@@ -25,7 +25,7 @@
         case "text":
           return TextAreaEditor;
         case "datetime":
-          return DateTimeCellEditor;
+          return DateTimeEditor;
         case "time":
           return TimeCellEditor;
         case "date":
