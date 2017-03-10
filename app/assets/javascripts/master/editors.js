@@ -674,80 +674,120 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // TextEditor < InputElementEditor < BaseEditor
-  // TODO: Add auto_complete feature
   ///////////////////////////////////////////////////////////////////////////
 
   this.TextEditor = function(args) {
     InputElementEditor.call(this, args);
 
-    var self = this;
-    this.choicesFetchPath = this.column.choices;
-
     this.init = function() {
       this.initElements();
 
-      this.input.bind("keydown.nav", function(e) {
-        var optionLength = $(".select-option").length;
-        if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
-          e.stopImmediatePropagation();
-        } else if (e.keyCode === $.ui.keyCode.DOWN) {
-          if ($(".select-option").length > 0) {
-            if (down == true) {
-              if ((count > 0) && (count < $(".select-option").length)) {
-                $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-              }
-              $(".select-option:eq(" + count + ")").addClass("blue-background");
-            } else {
-              $(".select-option:eq(" + count + ")").removeClass("blue-background");
-              $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
-              count++;
-              down = true;
-            }
-            count++;
-            if (count > $(".select-option").length) {
-              count = $(".select-option").length;
-            }
-          }
-        } else if (e.keyCode === $.ui.keyCode.UP) {
-          if ($(".select-option").length > 0) {
-            if (down == true) {
-              count--;
-              down = false;
-            }
-            if (count > 0) {
-              if (count == $(".select-option").length) {
-                $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-                $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
+      $.getJSON(args.column.choices, function(data) {
+        this.input.autocomplete({source: data});
+      }.bind(this));
+    }
+
+    this.validate = function() {
+      var validationResults;
+      if (this.column.validator) {
+        if ($.isFunction(this.column.validator)) {
+          validationResults = this.column.validator(args, this.input.val());
+        } else {
+          validationResults = eval(this.column.validator)(args, this.input.val());
+        }
+
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      return { valid: true, msg: null };
+    };
+
+    this.init();
+  }
+
+  TextEditor.prototype = Object.create(InputElementEditor.prototype);
+
+  // TODO: Remove
+  this.AutoCompleteTextEditor = function(args) {
+    var column = args.column;
+    var $input, $select, $wrapper;
+    var choicesFetchPath = column.choices;
+    var defaultValue;
+    var self = this;
+    var boxWidth = column.width + 2;
+    var offsetWith = boxWidth + 18;
+
+    this.init = function() {
+      var count = 0;
+      var down = true;
+      $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
+        .appendTo(args.container)
+        .bind("keydown.nav", function(e) {
+          var optionLength = $(".select-option").length;
+          if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
+            e.stopImmediatePropagation();
+          } else if (e.keyCode === $.ui.keyCode.DOWN) {
+            if ($(".select-option").length > 0) {
+              if (down == true) {
+                if ((count > 0) && (count < $(".select-option").length)) {
+                  $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                }
+                $(".select-option:eq(" + count + ")").addClass("blue-background");
               } else {
                 $(".select-option:eq(" + count + ")").removeClass("blue-background");
-                $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
+                $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
+                count++;
+                down = true;
+              }
+              count++;
+              if (count > $(".select-option").length) {
+                count = $(".select-option").length;
               }
             }
-            count--;
-            if (count < 0) {
-                count = 0;
+          } else if (e.keyCode === $.ui.keyCode.UP) {
+            if ($(".select-option").length > 0) {
+              if (down == true) {
+                count--;
+                down = false;
+              }
+              if (count > 0) {
+                if (count == $(".select-option").length) {
+                  $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
+                  $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
+                } else {
+                  $(".select-option:eq(" + count + ")").removeClass("blue-background");
+                  $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
+                }
+              }
+              count--;
+              if (count < 0) {
+                  count = 0;
+              }
             }
           }
-        }
-      });
-      this.input.bind("keydown", function(event) {
-        if (event.keyCode == "13") {
-          var value = $(".select-option.blue-background").text();
-          if (value != "") {
-            self.setValue(value);
-          } else {
-            self.setValue($input.val());
+        })
+        .bind("keydown", function(event) {
+          if (event.keyCode == "13") {
+            var value = $(".select-option.blue-background").text();
+            if (value != "") {
+              self.setValue(value);
+            } else {
+              self.setValue($input.val());
+            }
+            $(".wrapper").remove();
           }
-          $(".wrapper").remove();
-        }
-      });
-      this.input.bind("input", function() {
-        var value = self.getValue();
-        self.getOptions(value);
-        down = true;
-        count = 0;
-      });
-    }
+        })
+        .bind("input", function() {
+          var value = self.getValue();
+          self.getOptions(value);
+          down = true;
+          count = 0;
+        })
+        .scrollLeft(0)
+        .focus();
+    };
 
     this.getOptions = function(input) {
       if ($(".select-option").length > 0) {
@@ -759,19 +799,19 @@
         }
         return false;
       }
-      this.wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
-      this.select = $("<div class='auto-complete-select' style='width:" + this.boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:1px;list-style:none;'></ul></div>")
-        .appendTo(this.wrapper);
+      $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
+      $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:1px;list-style:none;'></ul></div>")
+        .appendTo($wrapper);
       var winWith = $(window).width(),
-          offsetLeft = this.wrapper.offset().left;
-      if (winWith - offsetLeft < this.offsetWith) {
-        this.wrapper.offset({
-          left: winWith - this.offsetWith
+          offsetLeft = $wrapper.offset().left;
+      if (winWith - offsetLeft < offsetWith) {
+        $wrapper.offset({
+          left: winWith - offsetWith
         });
       }
 
-      this.choicesFetchPath += "&query_prefix=" + input;
-      $.getJSON(this.choicesFetchPath, function(data) {
+      choicesFetchPath += "&query_prefix=" + input;
+      $.getJSON(choicesFetchPath, function(data) {
         var itemdata = [];
         $.each(data, function(index, value) {
           if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
@@ -787,7 +827,7 @@
           }
         });
         $(".wrapper").remove();
-        self.wrapper.appendTo(args.container);
+        $wrapper.appendTo(args.container);
         if (ajaxOptions.length == 0) {
           $(".auto-complete-select").remove();
         }
@@ -816,27 +856,64 @@
       });
     };
 
-    this.validate = function() {
-      var validationResults;
-      if (this.column.validator) {
-        if ($.isFunction(this.column.validator)) {
-          validationResults = this.column.validator(args, this.input.val());
-        } else {
-          validationResults = eval(this.column.validator)(args, this.input.val());
-        }
+    this.destroy = function() {
+      $input.remove();
+    };
 
-        if (!validationResults.valid) {
+    this.focus = function() {
+      $input.focus();
+    };
+
+    this.getValue = function() {
+      return $input.val();
+    };
+
+    this.setValue = function(val) {
+      $input.val(val);
+    };
+
+    this.loadValue = function(item) {
+      defaultValue = item[column.field] || "";
+      // defaultValue = defaultValue.replace(/&amp;/g, '&');
+      // defaultValue = defaultValue.replace(/&gt;/g, '>');
+      // defaultValue = defaultValue.replace(/&lt;/g, '<');
+      // defaultValue = defaultValue.replace(/&quot;/g, '"');
+      $input.val(defaultValue);
+      $input[0].defaultValue = defaultValue;
+      $input.select();
+    };
+
+    this.serializeValue = function() {
+      return $input.val();
+    };
+
+    this.applyValue = function(item, state) {
+      item[column.field] = state;
+    };
+
+    this.isValueChanged = function() {
+      return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+    };
+
+    this.validate = function() {
+      if (column.validator) {
+        var validationResults = column.validator($input.val());
+        if (!validationResults.valid)
           return validationResults;
-        }
       }
 
-      return { valid: true, msg: null };
+      return {
+        valid: true,
+        msg: null
+      };
+    };
+
+    this.getCell = function() {
+      return $input.parent();
     };
 
     this.init();
   }
-
-  TextEditor.prototype = Object.create(InputElementEditor.prototype);
 
   // Usage: column [:column_name], auto_complete: true
   // TODO: TBD
@@ -2616,211 +2693,6 @@
   //       } else {
   //         validationResults = eval(column.validator)(args, $input.val());
   //       }
-  //       if (!validationResults.valid)
-  //         return validationResults;
-  //     }
-  //
-  //     return {
-  //       valid: true,
-  //       msg: null
-  //     };
-  //   };
-  //
-  //   this.getCell = function() {
-  //     return $input.parent();
-  //   };
-  //
-  //   this.init();
-  // }
-
-  // this.AutoCompleteTextEditor = function(args) {
-  //   var column = args.column;
-  //   var $input, $select, $wrapper;
-  //   var choicesFetchPath = column.choices;
-  //   var defaultValue;
-  //   var self = this;
-  //   var boxWidth = column.width + 2;
-  //   var offsetWith = boxWidth + 18;
-  //
-  //   this.init = function() {
-  //     var count = 0;
-  //     var down = true;
-  //     $input = $("<INPUT type=text class='editor-text' style='width:" + boxWidth + "px;border:0' />")
-  //       .appendTo(args.container)
-  //       .bind("keydown.nav", function(e) {
-  //         var optionLength = $(".select-option").length;
-  //         if ((e.keyCode === $.ui.keyCode.LEFT) || ((e.keyCode === $.ui.keyCode.RIGHT))) {
-  //           e.stopImmediatePropagation();
-  //         } else if (e.keyCode === $.ui.keyCode.DOWN) {
-  //           if ($(".select-option").length > 0) {
-  //             if (down == true) {
-  //               if ((count > 0) && (count < $(".select-option").length)) {
-  //                 $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-  //               }
-  //               $(".select-option:eq(" + count + ")").addClass("blue-background");
-  //             } else {
-  //               $(".select-option:eq(" + count + ")").removeClass("blue-background");
-  //               $(".select-option:eq(" + (count + 1) + ")").addClass("blue-background");
-  //               count++;
-  //               down = true;
-  //             }
-  //             count++;
-  //             if (count > $(".select-option").length) {
-  //               count = $(".select-option").length;
-  //             }
-  //           }
-  //         } else if (e.keyCode === $.ui.keyCode.UP) {
-  //           if ($(".select-option").length > 0) {
-  //             if (down == true) {
-  //               count--;
-  //               down = false;
-  //             }
-  //             if (count > 0) {
-  //               if (count == $(".select-option").length) {
-  //                 $(".select-option:eq(" + (count - 1) + ")").removeClass("blue-background");
-  //                 $(".select-option:eq(" + (count - 2) + ")").addClass("blue-background");
-  //               } else {
-  //                 $(".select-option:eq(" + count + ")").removeClass("blue-background");
-  //                 $(".select-option:eq(" + (count - 1) + ")").addClass("blue-background");
-  //               }
-  //             }
-  //             count--;
-  //             if (count < 0) {
-  //                 count = 0;
-  //             }
-  //           }
-  //         }
-  //       })
-  //       .bind("keydown", function(event) {
-  //         if (event.keyCode == "13") {
-  //           var value = $(".select-option.blue-background").text();
-  //           if (value != "") {
-  //             self.setValue(value);
-  //           } else {
-  //             self.setValue($input.val());
-  //           }
-  //           $(".wrapper").remove();
-  //         }
-  //       })
-  //       .bind("input", function() {
-  //         var value = self.getValue();
-  //         self.getOptions(value);
-  //         down = true;
-  //         count = 0;
-  //       })
-  //       .scrollLeft(0)
-  //       .focus();
-  //   };
-  //
-  //   this.getOptions = function(input) {
-  //     if ($(".select-option").length > 0) {
-  //       $(".select-option").remove();
-  //     }
-  //     if (input == "") {
-  //       if ($(".auto-complete-select").length > 0) {
-  //         $(".auto-complete-select").remove();
-  //       }
-  //       return false;
-  //     }
-  //     $wrapper = $("<DIV class='wrapper' style='z-index:10000;position:absolute;padding:2px;margin:2px 0 0 -2px;width:0;height:0;border:0px solid gray; -moz-border-radius:6px; border-radius:6px;'/>");
-  //     $select = $("<div class='auto-complete-select' style='width:" + boxWidth + "px;margin: 0px -4px -2px -5px;'><ul class='select-options' style='padding:1px;list-style:none;'></ul></div>")
-  //       .appendTo($wrapper);
-  //     var winWith = $(window).width(),
-  //         offsetLeft = $wrapper.offset().left;
-  //     if (winWith - offsetLeft < offsetWith) {
-  //       $wrapper.offset({
-  //         left: winWith - offsetWith
-  //       });
-  //     }
-  //
-  //     choicesFetchPath += "&query_prefix=" + input;
-  //     $.getJSON(choicesFetchPath, function(data) {
-  //       var itemdata = [];
-  //       $.each(data, function(index, value) {
-  //         if (value.toLowerCase().indexOf(input.toLowerCase()) == 0) {
-  //           itemdata.push(value);
-  //         }
-  //       })
-  //       var ajaxOptions = [];
-  //       $.each(itemdata, function(index, value) {
-  //         if (index % 2 == 0) {
-  //           ajaxOptions.push("<li class='select-option even' value='" + value + "'>" + value + "</li>");
-  //         } else {
-  //           ajaxOptions.push("<li class='select-option odd' value='" + value + "'>" + value + "</li>");
-  //         }
-  //       });
-  //       $(".wrapper").remove();
-  //       $wrapper.appendTo(args.container);
-  //       if (ajaxOptions.length == 0) {
-  //         $(".auto-complete-select").remove();
-  //       }
-  //
-  //       $(".select-options")
-  //         .css({
-  //           "background": "white",
-  //           "border": "1px solid gray",
-  //           "margin": "-1px -1px 0px 3px",
-  //           "overflow": "auto"
-  //         })
-  //         .append(ajaxOptions.join(''));
-  //
-  //       $(".select-option")
-  //         .bind("mouseover", function() {
-  //           $(this).addClass("blue-background");
-  //         })
-  //         .bind("mouseout", function() {
-  //           $(this).removeClass("blue-background");
-  //         })
-  //         .click(function(event) {
-  //           var value = event.currentTarget.textContent;
-  //           self.setValue(value);
-  //           $(".wrapper").remove();
-  //         });
-  //     });
-  //   };
-  //
-  //   this.destroy = function() {
-  //     $input.remove();
-  //   };
-  //
-  //   this.focus = function() {
-  //     $input.focus();
-  //   };
-  //
-  //   this.getValue = function() {
-  //     return $input.val();
-  //   };
-  //
-  //   this.setValue = function(val) {
-  //     $input.val(val);
-  //   };
-  //
-  //   this.loadValue = function(item) {
-  //     defaultValue = item[column.field] || "";
-  //     // defaultValue = defaultValue.replace(/&amp;/g, '&');
-  //     // defaultValue = defaultValue.replace(/&gt;/g, '>');
-  //     // defaultValue = defaultValue.replace(/&lt;/g, '<');
-  //     // defaultValue = defaultValue.replace(/&quot;/g, '"');
-  //     $input.val(defaultValue);
-  //     $input[0].defaultValue = defaultValue;
-  //     $input.select();
-  //   };
-  //
-  //   this.serializeValue = function() {
-  //     return $input.val();
-  //   };
-  //
-  //   this.applyValue = function(item, state) {
-  //     item[column.field] = state;
-  //   };
-  //
-  //   this.isValueChanged = function() {
-  //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
-  //   };
-  //
-  //   this.validate = function() {
-  //     if (column.validator) {
-  //       var validationResults = column.validator($input.val());
   //       if (!validationResults.valid)
   //         return validationResults;
   //     }
