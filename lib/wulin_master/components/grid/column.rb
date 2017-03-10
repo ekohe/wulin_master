@@ -57,7 +57,9 @@ module WulinMaster
         @options[:choices] = @options[:original_choices].call
       end
 
-      append_distinct_options if @options[:distinct] || @options[:auto_complete]
+      # append choices option to all string columns for applying auto_complete features
+      append_choices if sql_type == :string
+
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
@@ -152,7 +154,7 @@ module WulinMaster
       @reflection ||= self.model.reflections[(@options[:through] || @name).to_s]
     end
 
-    def append_distinct_options
+    def append_choices
       @options[:choices] ||= begin
         params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }
         "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
