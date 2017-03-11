@@ -27,7 +27,7 @@
         case "datetime":
           return DateTimeEditor;
         case "time":
-          return TimeCellEditor;
+          return TimeEditor;
         case "date":
           return DateEditor;
         case "integer":

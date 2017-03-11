@@ -724,7 +724,7 @@
     this.dateSourceFormat = "yy-mm-dd";
     this.timeShowFormat = "HH:mm";
 
-    this.defaultDatePickerOptions = {
+    this.datePickerOptions = {
       showOn: "button",
       buttonImageOnly: true,
       buttonImage: "/assets/calendar.gif",
@@ -736,8 +736,7 @@
         e = $.Event("keydown");
         e.which = 13;
         $(this).trigger(e);
-      },
-      dateFormat: this.dateShowFormat
+      }
     };
 
     this.setDateTimeFormates = function() {
@@ -817,8 +816,8 @@
       if (item[this.column.field]) {
         this.defaultValue = item[this.column.field].split(/\s+/)[0];
         if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(this.defaultValue)) {
-          var thedate = $.datepicker.parseDate(this.sourceFormat, this.defaultValue);
-          this.defaultValue = $.datepicker.formatDate(this.showFormat, thedate);
+          var thedate = $.datepicker.parseDate(this.dateSourceFormat, this.defaultValue);
+          this.defaultValue = $.datepicker.formatDate(this.dateShowFormat, thedate);
         } else {
           this.defaultValue = null;
         }
@@ -840,107 +839,46 @@
 
   DateEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
-  // TODO: OOP + Rename
-  this.TimeCellEditor = function(args) {
-    var column = args.column;
-    var $input;
-    var defaultValue;
-    var scope = this;
-    var calendarOpen = false;
+  ///////////////////////////////////////////////////////////////////////////
+  // TimeEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.TimeEditor = function(args) {
+    DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      $input = $("<INPUT type=text class='editor-text' />").off('keydown.nav').on("keydown.nav", function(e) {
-        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
-          e.stopImmediatePropagation();
-        }
-      });
-      $input.appendTo(args.container);
-      $input.focus().select();
-      $input.width($input.width() - 18);
-    };
-
-    this.destroy = function() {
-      $.datepicker.dpDiv.stop(true, true);
-      $input.datetimepicker("hide");
-      $input.remove();
-    };
-
-    this.show = function() {
-      if (calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).show();
-      }
-    };
-
-    this.hide = function() {
-      if (calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).hide();
-      }
-    };
-
-    this.position = function(position) {
-      if (!calendarOpen) return;
-      $.datepicker.dpDiv
-        .css("top", position.top + 30)
-        .css("left", position.left);
-    };
-
-    this.focus = function() {
-      $input.focus();
+      this.setDateTimeFormates();
+      this.boxWidth -= 24;
+      this.initElements();
     };
 
     this.loadValue = function(item) {
-      defaultValue = item[column.field];
-      $input.val(defaultValue);
-      $input[0].defaultValue = defaultValue;
-      $input.select();
-      var attrs = {
-        showOn: "button",
-        buttonImageOnly: true,
-        buttonImage: "/assets/calendar.gif",
-        beforeShow: function() {
-          calendarOpen = true;
-        },
-        onClose: function() {
-          calendarOpen = false;
-          calendarOpen = false;
-          e = $.Event("keydown");
-          e.which = 13;
-          $(this).trigger(e);
-        },
-        timeFormat: 'HH:mm'
-      };
+      BaseEditor.prototype.loadValue.call(this, item);
+
+      $.extend(this.datePickerOptions, {
+        timeFormat: this.timeShowFormat,
+        stepMinute: 5
+      });
+
       if (item.unit) {
         if (item.unit.unit == "mn")
-          $.extend(attrs, {
-            stepMinute: 5,
+          $.extend(this.datePickerOptions, {
             minuteGrid: 5
           });
         else if (item.unit.unit == 'slot')
-          $.extend(attrs, {
-            stepMinute: 5,
+          $.extend(this.datePickerOptions, {
             minuteGrid: 10
           });
       }
-      $input.timepicker(attrs);
-    };
 
-    this.serializeValue = function() {
-      return $input.val();
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state;
-    };
-
-    this.isValueChanged = function() {
-      return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+      this.input.timepicker(this.datePickerOptions);
     };
 
     this.validate = function() {
-      var currentValue = $input.val();
+      var currentValue = this.input.val();
       if (currentValue) {
         if (!ParseSimpleTime(currentValue)) {
-          $input.val(defaultValue);
+          this.input.val(this.defaultValue);
           return {
             valid: false,
             msg: "Please enter a valid Time"
@@ -953,12 +891,10 @@
       };
     };
 
-    this.getCell = function() {
-      return $input.parent();
-    };
-
     this.init();
   }
+
+  TimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   // TODO: Remove
   this.SimpleDateEditor = function(args) {
@@ -2660,6 +2596,125 @@
   //   };
   //
   //   this.validate = function() {
+  //     return {
+  //       valid: true,
+  //       msg: null
+  //     };
+  //   };
+  //
+  //   this.getCell = function() {
+  //     return $input.parent();
+  //   };
+  //
+  //   this.init();
+  // }
+
+  // this.TimeCellEditor = function(args) {
+  //   var column = args.column;
+  //   var $input;
+  //   var defaultValue;
+  //   var scope = this;
+  //   var calendarOpen = false;
+  //
+  //   this.init = function() {
+  //     $input = $("<INPUT type=text class='editor-text' />").off('keydown.nav').on("keydown.nav", function(e) {
+  //       if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+  //         e.stopImmediatePropagation();
+  //       }
+  //     });
+  //     $input.appendTo(args.container);
+  //     $input.focus().select();
+  //     $input.width($input.width() - 18);
+  //   };
+  //
+  //   this.destroy = function() {
+  //     $.datepicker.dpDiv.stop(true, true);
+  //     $input.datetimepicker("hide");
+  //     $input.remove();
+  //   };
+  //
+  //   this.show = function() {
+  //     if (calendarOpen) {
+  //       $.datepicker.dpDiv.stop(true, true).show();
+  //     }
+  //   };
+  //
+  //   this.hide = function() {
+  //     if (calendarOpen) {
+  //       $.datepicker.dpDiv.stop(true, true).hide();
+  //     }
+  //   };
+  //
+  //   this.position = function(position) {
+  //     if (!calendarOpen) return;
+  //     $.datepicker.dpDiv
+  //       .css("top", position.top + 30)
+  //       .css("left", position.left);
+  //   };
+  //
+  //   this.focus = function() {
+  //     $input.focus();
+  //   };
+  //
+  //   this.loadValue = function(item) {
+  //     defaultValue = item[column.field];
+  //     $input.val(defaultValue);
+  //     $input[0].defaultValue = defaultValue;
+  //     $input.select();
+  //     var attrs = {
+  //       showOn: "button",
+  //       buttonImageOnly: true,
+  //       buttonImage: "/assets/calendar.gif",
+  //       beforeShow: function() {
+  //         calendarOpen = true;
+  //       },
+  //       onClose: function() {
+  //         calendarOpen = false;
+  //         calendarOpen = false;
+  //         e = $.Event("keydown");
+  //         e.which = 13;
+  //         $(this).trigger(e);
+  //       },
+  //       timeFormat: 'HH:mm'
+  //     };
+  //     if (item.unit) {
+  //       if (item.unit.unit == "mn")
+  //         $.extend(attrs, {
+  //           stepMinute: 5,
+  //           minuteGrid: 5
+  //         });
+  //       else if (item.unit.unit == 'slot')
+  //         $.extend(attrs, {
+  //           stepMinute: 5,
+  //           minuteGrid: 10
+  //         });
+  //     }
+  //     $input.timepicker(attrs);
+  //   };
+  //
+  //   this.serializeValue = function() {
+  //     return $input.val();
+  //   };
+  //
+  //   this.applyValue = function(item, state) {
+  //     item[column.field] = state;
+  //   };
+  //
+  //   this.isValueChanged = function() {
+  //     return (!($input.val() === "" && defaultValue === null)) && ($input.val() != defaultValue);
+  //   };
+  //
+  //   this.validate = function() {
+  //     var currentValue = $input.val();
+  //     if (currentValue) {
+  //       if (!ParseSimpleTime(currentValue)) {
+  //         $input.val(defaultValue);
+  //         return {
+  //           valid: false,
+  //           msg: "Please enter a valid Time"
+  //         };
+  //       }
+  //     }
   //     return {
   //       valid: true,
   //       msg: null
