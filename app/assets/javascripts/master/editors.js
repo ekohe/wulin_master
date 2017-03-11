@@ -1,21 +1,5 @@
 (function($) {
 
-  $.extend(true, window, {
-    IntegerEditor: this.IntegerEditor,
-    DecimalEditor: this.DecimalEditor,
-    YesNoCheckboxEditor: this.YesNoCheckboxEditor,
-    SelectEditor: this.SelectEditor,
-    DistinctEditor: this.DistinctEditor,
-    OtherRelationEditor: this.OtherRelationEditor,
-    HasManyEditor: this.HasManyEditor,
-    TextEditor: this.TextEditor,
-    TextAreaEditor: this.TextAreaEditor,
-    DateTimeEditor: this.DateTimeEditor,
-    TimeCellEditor: this.TimeCellEditor,
-    SimpleDateEditor: this.SimpleDateEditor,
-    StandardDateCellEditor: this.StandardDateCellEditor
-  });
-
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
   ///////////////////////////////////////////////////////////////////////////
@@ -773,6 +757,7 @@
       this.input.val(this.defaultValue);
       this.input[0].defaultValue = this.defaultValue;
       this.input.select();
+
       this.input.datetimepicker({
         showOn: "button",
         buttonImageOnly: true,
@@ -798,6 +783,92 @@
   }
 
   DateTimeEditor.prototype = Object.create(InputElementEditor.prototype);
+
+  ///////////////////////////////////////////////////////////////////////////
+  // DateEditor < InputElementEditor < BaseEditor
+  // TODO: Create DateTimeBaseEditor to abstract same processing with DateTimeCaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.DateEditor = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.calendarOpen = false;
+    this.showFormat = "yy-mm-dd";
+    this.sourceFormat = "yy-mm-dd";
+
+    this.init = function() {
+      if (this.column.DateSourceFormat !== undefined) {
+        sourceFormat = this.column.DateSourceFormat;
+      }
+      if (this.column.DateShowFormat !== undefined) {
+        showFormat = this.column.DateShowFormat;
+      }
+
+      this.boxWidth -= 24;
+      this.initElements();
+
+      this.input.datepicker({
+        showOn: "button",
+        buttonImageOnly: true,
+        buttonImage: "/assets/calendar.gif",
+        beforeShow: function() {
+          this.calendarOpen = true;
+        },
+        onClose: function() {
+          this.calendarOpen = false;
+          e = $.Event("keydown");
+          e.which = 13;
+          $(this).trigger(e);
+        },
+        dateFormat: this.showFormat
+      });
+    };
+
+    this.destroy = function() {
+      $.datepicker.dpDiv.stop(true, true);
+      this.input.datepicker("hide");
+      this.input.datepicker("destroy");
+      this.input.remove();
+    };
+
+    this.show = function() {
+      if (this.calendarOpen) {
+        $.datepicker.dpDiv.stop(true, true).show();
+      }
+    };
+
+    this.hide = function() {
+      if (this.calendarOpen) {
+        $.datepicker.dpDiv.stop(true, true).hide();
+      }
+    };
+
+    this.loadValue = function(item) {
+      if (item[this.column.field]) {
+        this.defaultValue = item[this.column.field].split(/\s+/)[0];
+        if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(this.defaultValue)) {
+          var thedate = $.datepicker.parseDate(this.sourceFormat, this.defaultValue);
+          this.defaultValue = $.datepicker.formatDate(this.showFormat, thedate);
+        } else {
+          this.defaultValue = null;
+        }
+      } else {
+        this.defaultValue = null;
+      }
+      this.input.val(this.defaultValue);
+      this.input[0].defaultValue = this.defaultValue;
+      this.input.select();
+    };
+
+    this.serializeValue = function() {
+      var thedate = $.datepicker.parseDate(this.showFormat, this.input.val());
+      return $.datepicker.formatDate(this.sourceFormat, thedate);
+    };
+
+    this.init();
+  };
+
+  DateEditor.prototype = Object.create(InputElementEditor.prototype);
 
   // TODO: OOP + Rename
   this.TimeCellEditor = function(args) {
@@ -1006,120 +1077,6 @@
         }
       }
 
-      return {
-        valid: true,
-        msg: null
-      };
-    };
-
-    this.getCell = function() {
-      return $input.parent();
-    };
-
-    this.init();
-  }
-
-  // Date cell editor which can handle "yy-mm-dd" format
-  // TODO: OOP + Rename
-  this.StandardDateCellEditor = function(args) {
-    var column = args.column;
-    var $input;
-    var defaultValue;
-    var scope = this;
-    var calendarOpen = false;
-    var showFormat = "yy-mm-dd";
-    var sourceFormat = "yy-mm-dd";
-
-    this.init = function() {
-      if (column.DateSourceFormat !== undefined) {
-        sourceFormat = column.DateSourceFormat;
-      }
-      if (column.DateShowFormat !== undefined) {
-        showFormat = column.DateShowFormat;
-      }
-      $input = $("<INPUT type=text class='editor-text' />");
-      $input.appendTo(args.container);
-      $input.focus().select();
-      $input.datepicker({
-        showOn: "button",
-        buttonImageOnly: true,
-        buttonImage: "/assets/calendar.gif",
-        beforeShow: function() {
-          calendarOpen = true;
-        },
-        onClose: function() {
-          calendarOpen = false;
-          calendarOpen = false;
-          e = $.Event("keydown");
-          e.which = 13;
-          $(this).trigger(e);
-        },
-        dateFormat: showFormat
-      });
-      $input.width($input.width() - 18);
-    };
-
-    this.destroy = function() {
-      $.datepicker.dpDiv.stop(true, true);
-      $input.datepicker("hide");
-      $input.datepicker("destroy");
-      $input.remove();
-    };
-
-    this.show = function() {
-      if (calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).show();
-      }
-    };
-
-    this.hide = function() {
-      if (calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).hide();
-      }
-    };
-
-    this.position = function(position) {
-      if (!calendarOpen) return;
-      $.datepicker.dpDiv
-        .css("top", position.top + 30)
-        .css("left", position.left);
-    };
-
-    this.focus = function() {
-      $input.focus();
-    };
-
-    this.loadValue = function(item) {
-      if (item[column.field]) {
-        defaultValue = item[column.field].split(/\s+/)[0];
-        if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(defaultValue)) {
-          var thedate = $.datepicker.parseDate(sourceFormat, defaultValue);
-          defaultValue = $.datepicker.formatDate(showFormat, thedate);
-        } else {
-          defaultValue = null;
-        }
-      } else {
-        defaultValue = null;
-      }
-      $input.val(defaultValue);
-      $input[0].defaultValue = defaultValue;
-      $input.select();
-    };
-
-    this.serializeValue = function() {
-      var thedate = $.datepicker.parseDate(showFormat, $input.val());
-      return $.datepicker.formatDate(sourceFormat, thedate);
-    };
-
-    this.applyValue = function(item, state) {
-      item[column.field] = state;
-    };
-
-    this.isValueChanged = function() {
-      return !($input.val() === "" && defaultValue === null) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
       return {
         valid: true,
         msg: null

@@ -29,7 +29,7 @@
         case "time":
           return TimeCellEditor;
         case "date":
-          return StandardDateCellEditor;
+          return DateEditor;
         case "integer":
           return IntegerEditor;
         case "decimal":
