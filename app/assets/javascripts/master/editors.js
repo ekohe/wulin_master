@@ -720,8 +720,9 @@
     InputElementEditor.call(this, args);
 
     this.calendarOpen = false;
-    this.showFormat = "yy-mm-dd";
-    this.sourceFormat = "yy-mm-dd";
+    this.dateShowFormat = "yy-mm-dd";
+    this.dateSourceFormat = "yy-mm-dd";
+    this.timeShowFormat = "HH:mm";
 
     this.defaultDatePickerOptions = {
       showOn: "button",
@@ -736,15 +737,15 @@
         e.which = 13;
         $(this).trigger(e);
       },
-      dateFormat: this.showFormat
+      dateFormat: this.dateShowFormat
     };
 
     this.setDateTimeFormates = function() {
       if (this.column.DateSourceFormat !== undefined) {
-        this.sourceFormat = this.column.DateSourceFormat;
+        this.dateSourceFormat = this.column.DateSourceFormat;
       }
       if (this.column.DateShowFormat !== undefined) {
-        this.showFormat = this.column.DateShowFormat;
+        this.dateShowFormat = this.column.DateShowFormat;
       }
     };
 
@@ -776,71 +777,27 @@
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateTimeEditor = function(args) {
-    InputElementEditor.call(this, args);
-
-    this.calendarOpen = false;
+    DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      this.boxWidth -= 24;
-      this.initElements();
-    };
-
-    this.destroy = function() {
-      $.datepicker.dpDiv.stop(true, true);
-      this.input.datetimepicker("hide");
-      this.input.remove();
-    };
-
-    this.show = function() {
-      if (this.calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).show();
-      }
-    };
-
-    this.hide = function() {
-      if (this.calendarOpen) {
-        $.datepicker.dpDiv.stop(true, true).hide();
-      }
-    };
-
-    this.position = function(position) {
-      if (!this.calendarOpen) return;
-      $.datepicker.dpDiv
-        .css("top", position.top + 30)
-        .css("left", position.left);
-    };
-
-    this.loadValue = function(item) {
-      this.defaultValue = item[this.column.field];
-      this.input.val(this.defaultValue);
-      this.input[0].defaultValue = this.defaultValue;
-      this.input.select();
-
-      this.input.datetimepicker({
-        showOn: "button",
-        buttonImageOnly: true,
+      var timePickerOptions = {
         timeOnly: false,
         stepMinute: 1,
         minuteGrid: 0,
-        buttonImage: "/assets/calendar.gif",
-        beforeShow: function() {
-          this.calendarOpen = true;
-        },
-        onClose: function() {
-          this.calendarOpen = false;
-          e = $.Event("keydown");
-          e.which = 13;
-          $(this).trigger(e);
-        },
-        dateFormat: "yy-mm-dd",
-        timeFormat: 'HH:mm'
-      });
+        timeFormat: this.timeShowFormat
+      };
+      var datePickerOptions = Object.assign(this.defaultDatePickerOptions, timePickerOptions);
+      this.boxWidth -= 24;
+
+      this.initElements();
+
+      this.input.datetimepicker(datePickerOptions);
     };
 
     this.init();
   }
 
-  DateTimeEditor.prototype = Object.create(InputElementEditor.prototype);
+  DateTimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
   // DateEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
@@ -874,8 +831,8 @@
     };
 
     this.serializeValue = function() {
-      var thedate = $.datepicker.parseDate(this.showFormat, this.input.val());
-      return $.datepicker.formatDate(this.sourceFormat, thedate);
+      var thedate = $.datepicker.parseDate(this.dateShowFormat, this.input.val());
+      return $.datepicker.formatDate(this.dateSourceFormat, thedate);
     };
 
     this.init();
