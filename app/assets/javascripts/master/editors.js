@@ -714,6 +714,7 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // DateTimeBaseEditor < InputElementEditor < BaseEditor
+  // TODO: Improvement with easy-to-use keyboard features
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateTimeBaseEditor = function(args) {
@@ -772,7 +773,6 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // DateTimeEditor < InputElementEditor < BaseEditor
-  // TODO: Improvement with easy-to-use keyboard features
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateTimeEditor = function(args) {
@@ -809,7 +809,11 @@
       this.setDateTimeFormates();
       this.boxWidth -= 24;
       this.initElements();
-      this.input.datepicker(this.defaultDatePickerOptions);
+
+      $.extend(this.datePickerOptions, {
+        dateFormat: this.dateShowFormat
+      });
+      this.input.datepicker(this.datePickerOptions);
     };
 
     this.loadValue = function(item) {
@@ -841,6 +845,7 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // TimeEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
+  // TODO: Add auto filling ':' feature like SimpleTimeFormatter
   ///////////////////////////////////////////////////////////////////////////
 
   this.TimeEditor = function(args) {
@@ -889,6 +894,16 @@
         valid: true,
         msg: null
       };
+    };
+
+    this.serializeValue = function() {
+      var matchedArr = this.element.val().match(/^(\d{2}):?(\d{2})$/);
+
+      if (matchedArr) {
+        return matchedArr[1] + ':' + matchedArr[2];
+      } else {
+        return this.element.val();
+      }
     };
 
     this.init();
