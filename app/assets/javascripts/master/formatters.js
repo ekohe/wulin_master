@@ -60,6 +60,22 @@
       return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style || 'text-align:center') + "</div>";
     },
 
+    // Display only date info as 'yyyy-mm-dd' format for a datetime column
+    OnlyDateFormatter: function(row, cell, value, columnDef, dataContext) {
+      if (value === null || value === "") {
+        return "";
+      } else if ($.isPlainObject(value)) {
+        value = value[columnDef.optionTextAttribute];
+      }
+
+      if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
+        var thedate = $.datepicker.parseDate("yy-mm-dd", value);
+        return thedate.format("yyyy-mm-dd");
+      } else {
+        return value;
+      }
+    },
+
     ///////////////////////////////////////////////////////////////////////////
     // Existing (Should remove after improvement of DateTimeEditor)
     ///////////////////////////////////////////////////////////////////////////
@@ -74,22 +90,6 @@
       if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
         var thedate = $.datepicker.parseDate("yy-mm-dd", value);
         return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
-      } else {
-        return value;
-      }
-    },
-
-    // Simple data formatter,display a date as "dd mmm" format, like "21 dec"
-    OnlyDateFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value === null || value === "") {
-        return "";
-      } else if ($.isPlainObject(value)) {
-        value = value[columnDef.optionTextAttribute];
-      }
-
-      if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
-        var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-        return thedate.format("yyyy-mm-dd");
       } else {
         return value;
       }
