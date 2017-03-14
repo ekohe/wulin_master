@@ -70,10 +70,10 @@
 
       if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
         var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-        return thedate.format("yyyy-mm-dd");
-      } else {
-        return value;
+        value = thedate.format("yyyy-mm-dd");
       }
+
+      return ApplyStyle(value, columnDef.style || 'text-align:center');
     },
 
     ///////////////////////////////////////////////////////////////////////////
