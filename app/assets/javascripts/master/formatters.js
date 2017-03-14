@@ -80,21 +80,6 @@
     // Existing (Should remove after improvement of DateTimeEditor)
     ///////////////////////////////////////////////////////////////////////////
 
-    // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
-    StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value === null || value === "") {
-        return "";
-      }
-      value = value.split(/\s+/)[0];
-
-      if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
-        var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-        return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
-      } else {
-        return value;
-      }
-    },
-
     // Simple data formatter,display a date as "dd mmm" format, like "21 dec"
     SimpleDateFormatter: function(row, cell, value, columnDef, dataContext) {
       if (value === null || value === "") {
@@ -178,6 +163,21 @@
 
     // HasOneFormatter: function(row, cell, value, columnDef, dataContext) {
     //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
+    // },
+
+    // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
+    // StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
+    //   if (value === null || value === "") {
+    //     return "";
+    //   }
+    //   value = value.split(/\s+/)[0];
+    //
+    //   if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
+    //     var thedate = $.datepicker.parseDate("yy-mm-dd", value);
+    //     return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
+    //   } else {
+    //     return value;
+    //   }
     // },
 
     ///////////////////////////////////////////////////////////////////////////

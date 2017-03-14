@@ -72,13 +72,13 @@
 
         // 3. append formatter
 
-        if (type_str == "date") {
-          columns[i].formatter = StandardDateCellFormatter;
-          columns[i].DateShowFormat = "yy-mm-dd";
-        } else if (type_str == "boolean") {
+        if (type_str == "boolean") {
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
+        // } else if (type_str == "date") {
+        //   columns[i].formatter = StandardDateCellFormatter;
+        //   columns[i].DateShowFormat = "yy-mm-dd";
         }
 
         if (columns[i].simple_date) {
