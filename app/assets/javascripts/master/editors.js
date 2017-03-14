@@ -779,18 +779,17 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var timePickerOptions = {
+      this.boxWidth -= 24;
+      this.initElements();
+
+      $.extend(this.datePickerOptions, {
         timeOnly: false,
         stepMinute: 1,
         minuteGrid: 0,
+        dateFormat: this.dateShowFormat,
         timeFormat: this.timeShowFormat
-      };
-      var datePickerOptions = Object.assign(this.defaultDatePickerOptions, timePickerOptions);
-      this.boxWidth -= 24;
-
-      this.initElements();
-
-      this.input.datetimepicker(datePickerOptions);
+      });
+      this.input.datetimepicker(this.datePickerOptions);
     };
 
     this.init();
