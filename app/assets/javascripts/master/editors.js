@@ -749,6 +749,41 @@
       }
     };
 
+    this.parseTime = function(timeStr) {
+      try {
+        var matchedArr = timeStr.match(/^(\d{2}):?(\d{2})$/);
+        return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2]);
+      } catch (err) {
+        return null;
+      }
+    };
+
+    this.parseDate = function(dateStr) {
+      try {
+        var matchedArr = dateStr.match(/^(\d{4})\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/);
+        return $.datepicker.parseDate("yy-mm-dd", matchedArr[1] + "-" + matchedArr[2] + "-" + matchedArr[3]);
+      } catch (err) {
+        return null;
+      }
+    };
+
+    this.validateDateTime = function(validator, msg) {
+      var currentValue = this.input.val();
+      if (currentValue) {
+        if (!eval(validator)(currentValue)) {
+          this.input.val(this.defaultValue);
+          return {
+            valid: false,
+            msg: "Please enter a valid " + msg
+          };
+        }
+      }
+      return {
+        valid: true,
+        msg: null
+      };
+    };
+
     this.destroy = function() {
       $.datepicker.dpDiv.stop(true, true);
       this.input.datetimepicker("hide");
@@ -832,6 +867,10 @@
       this.input.select();
     };
 
+    this.validate = function() {
+      return this.validateDateTime('this.parseDate', 'Date');
+    };
+
     this.serializeValue = function() {
       var thedate = $.datepicker.parseDate(this.dateShowFormat, this.input.val());
       return $.datepicker.formatDate(this.dateSourceFormat, thedate);
@@ -878,20 +917,7 @@
     };
 
     this.validate = function() {
-      var currentValue = this.input.val();
-      if (currentValue) {
-        if (!ParseSimpleTime(currentValue)) {
-          this.input.val(this.defaultValue);
-          return {
-            valid: false,
-            msg: "Please enter a valid Time"
-          };
-        }
-      }
-      return {
-        valid: true,
-        msg: null
-      };
+      return this.validateDateTime('this.parseTime', 'Time');
     };
 
     this.serializeValue = function() {
