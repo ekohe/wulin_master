@@ -750,27 +750,17 @@
     };
 
     this.parseTime = function(timeStr) {
-      try {
-        var matchedArr = timeStr.match(/^(\d{2}):?(\d{2})$/);
-        return $.datepicker.parseTime("hh:mm", matchedArr[1] + ":" + matchedArr[2]);
-      } catch (err) {
-        return null;
-      }
+      return timeStr.match(/^(\d{2}):?(\d{2})$/);
     };
 
     this.parseDate = function(dateStr) {
-      try {
-        var matchedArr = dateStr.match(/^(\d{4})\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/);
-        return $.datepicker.parseDate("yy-mm-dd", matchedArr[1] + "-" + matchedArr[2] + "-" + matchedArr[3]);
-      } catch (err) {
-        return null;
-      }
+      return dateStr.match(/^(\d{4})\-?(0?[1-9]|1[012])\-?(0?[1-9]|[12][0-9]|3[01])$/);
     };
 
-    this.validateDateTime = function(validator, msg) {
+    this.validateDateTime = function(parser, msg) {
       var currentValue = this.input.val();
       if (currentValue) {
-        if (!eval(validator)(currentValue)) {
+        if (!eval('this.' + parser)(currentValue)) {
           this.input.val(this.defaultValue);
           return {
             valid: false,
@@ -783,6 +773,26 @@
         msg: null
       };
     };
+
+    this.serializeDateTime = function(parser) {
+      var value = this.element.val();
+      var matchedArr = eval('this.' + parser)(value);
+
+      if (matchedArr) {
+        switch(parser) {
+          case 'parseDate':
+            return matchedArr[1] + '-' + matchedArr[2] + '-' + matchedArr[3];
+            break;
+          case 'parseTime':
+            return matchedArr[1] + ':' + matchedArr[2];
+            break;
+          default:
+            return value;
+        }
+      } else {
+        return value;
+      }
+    }
 
     this.destroy = function() {
       $.datepicker.dpDiv.stop(true, true);
@@ -868,12 +878,11 @@
     };
 
     this.validate = function() {
-      return this.validateDateTime('this.parseDate', 'Date');
+      return this.validateDateTime('parseDate', 'Date');
     };
 
     this.serializeValue = function() {
-      var thedate = $.datepicker.parseDate(this.dateShowFormat, this.input.val());
-      return $.datepicker.formatDate(this.dateSourceFormat, thedate);
+      return this.serializeDateTime('parseDate');
     };
 
     this.init();
@@ -917,17 +926,11 @@
     };
 
     this.validate = function() {
-      return this.validateDateTime('this.parseTime', 'Time');
+      return this.validateDateTime('parseTime', 'Time');
     };
 
     this.serializeValue = function() {
-      var matchedArr = this.element.val().match(/^(\d{2}):?(\d{2})$/);
-
-      if (matchedArr) {
-        return matchedArr[1] + ':' + matchedArr[2];
-      } else {
-        return this.element.val();
-      }
+      return this.serializeDateTime('parseTime');
     };
 
     this.init();
