@@ -765,6 +765,10 @@
       return dateStr.match(new RegExp('^' + REGEX_DATE + '$'));
     };
 
+    this.parseDateTime = function(dateTimeStr) {
+      return dateTimeStr.match(new RegExp('^' + REGEX_DATE + '[ \\t]?' + REGEX_TIME + '$'));
+    };
+
     this.validateDateTime = function(parser, msg) {
       var validationResults;
       var value = this.element.val();
@@ -805,7 +809,7 @@
             return matchedArr[1] + ':' + matchedArr[2];
             break;
           default:
-            return value;
+            return matchedArr[1] + '-' + matchedArr[2] + '-' + matchedArr[3] + ' ' + matchedArr[4] + ':' + matchedArr[5];
         }
       } else {
         return value;
@@ -853,6 +857,14 @@
         timeFormat: this.timeShowFormat
       });
       this.input.datetimepicker(this.datePickerOptions);
+    };
+
+    this.validate = function() {
+      return this.validateDateTime('parseDateTime', 'DateTime');
+    };
+
+    this.serializeValue = function() {
+      return this.serializeDateTime('parseDateTime');
     };
 
     this.init();
