@@ -725,6 +725,9 @@
   this.DateTimeBaseEditor = function(args) {
     InputElementEditor.call(this, args);
 
+    var REGEX_DATE = '(\\d{4})\\-?(0?[1-9]|1[012])\\-?(0?[1-9]|[12][0-9]|3[01])';
+    var REGEX_TIME = '(\\d{2}):?(\\d{2})';
+
     this.calendarOpen = false;
     this.dateShowFormat = "yy-mm-dd";
     this.dateSourceFormat = "yy-mm-dd";
@@ -755,11 +758,11 @@
     };
 
     this.parseTime = function(timeStr) {
-      return timeStr.match(/^(\d{2}):?(\d{2})$/);
+      return timeStr.match(new RegExp('^' + REGEX_TIME + '$'));
     };
 
     this.parseDate = function(dateStr) {
-      return dateStr.match(/^(\d{4})\-?(0?[1-9]|1[012])\-?(0?[1-9]|[12][0-9]|3[01])$/);
+      return dateStr.match(new RegExp('^' + REGEX_DATE + '$'));
     };
 
     this.validateDateTime = function(parser, msg) {
