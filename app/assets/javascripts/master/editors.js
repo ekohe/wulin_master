@@ -90,6 +90,14 @@
       return this.element.parent();
     },
 
+    callValidator: function(value) {
+      if ($.isFunction(this.column.validator)) {
+        return this.column.validator(args, value);
+      } else {
+        return eval(this.column.validator)(args, value);
+      }
+    },
+
     setOffset: function(element, offsetWith) {
       var winWith = $(window).width(),
           offsetLeft = this.element.offset().left;
@@ -692,13 +700,10 @@
 
     this.validate = function() {
       var validationResults;
-      if (this.column.validator) {
-        if ($.isFunction(this.column.validator)) {
-          validationResults = this.column.validator(args, this.input.val());
-        } else {
-          validationResults = eval(this.column.validator)(args, this.input.val());
-        }
+      var value = this.element.val();
 
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
         if (!validationResults.valid) {
           return validationResults;
         }
@@ -758,16 +763,26 @@
     };
 
     this.validateDateTime = function(parser, msg) {
-      var currentValue = this.input.val();
-      if (currentValue) {
-        if (!eval('this.' + parser)(currentValue)) {
-          this.input.val(this.defaultValue);
+      var validationResults;
+      var value = this.element.val();
+
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      if (value) {
+        if (!eval('this.' + parser)(value)) {
+          this.element.val(this.defaultValue);
           return {
             valid: false,
             msg: "Please enter a valid " + msg
           };
         }
       }
+
       return {
         valid: true,
         msg: null
