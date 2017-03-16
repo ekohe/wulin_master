@@ -604,6 +604,12 @@
       this.initElements();
       this.setOffset(this.input, this.offsetWith);
 
+      this.input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      }.bind(this));
+
       $.getJSON(args.column.choices, function(data) {
         this.input.autocomplete({source: data});
       }.bind(this));
@@ -635,6 +641,12 @@
   this.TextEditorForForm = function(args) {
     this.init = function() {
       var $input = args.container;
+
+      $input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      });
 
       $.getJSON(args.column.choices, function(data) {
         $input.autocomplete({source: data});
