@@ -288,28 +288,19 @@
     this.init = function() {
       this.initElements();
 
-      var _self = this;
-
       // Append the current value option, otherwise this.serializeValue can't get it
-      if (_self.args.item[_self.column.field]) {
-        _self.select.append("<option style='display: none;' value='" + _self.args.item[_self.column.field] + "'>" + _self.args.item[_self.column.field] + "</option>");
-        _self.select.val(_self.args.item[_self.column.field]);
+      if (args.item[this.column.field]) {
+        this.select.append("<option style='display: none;' value='" + args.item[this.column.field] + "'>" + args.item[this.column.field] + "</option>");
+        this.select.val(args.item[this.column.field]);
       }
 
       // Append options from choices array
-      if ($.isArray(_self.choices)) {
-        var arrOptions = [];
-        $.each(_self.choices, function(index, value) {
-          if (!_self.args.item[_self.column.field] || _self.args.item[_self.column.field].id != value.id)
-            arrOptions.push("<option value='" + value.id + "'>" + value.name + "</option>");
-        });
-        _self.select.append(arrOptions.join(''));
-        _self.select.chosen({
-          allow_single_deselect: !_self.args.column['required']
-        });
-      }
+      $.each(this.choices, function(index, value) {
+        this.select.append("<option value='" + value + "'>" + value + "</option>")
+      }.bind(this));
 
-      _self.openDropDrown();
+      this.setAllowSingleDeselect();
+      this.openDropDrown();
     };
 
     this.init();
