@@ -42,7 +42,7 @@
                 "data-column"      => column.name,                  |
                 :disabled          => column.options[:auto_fill]    |
 
-            - elsif auto_complete_field?(column)
+            - elsif column.sql_type.to_s == 'string'
               = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name
 
               :javascript
@@ -62,7 +62,7 @@
                   column: column,
                   container: container
                 };
-                carbonCopyNewEditor = AutoCompleteTextEditorForForm.bind({})
+                carbonCopyNewEditor = TextEditorForForm.bind({})
                 carbonCopyNewEditor(args);
 
             - elsif select_tag_field?(column)

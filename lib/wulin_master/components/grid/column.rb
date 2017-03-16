@@ -57,9 +57,8 @@ module WulinMaster
         @options[:choices] = @options[:original_choices].call
       end
 
-      append_choices if @options[:distinct] || @options[:auto_complete]
       # append choices option to all string columns for applying auto_complete features
-      # append_choices if sql_type == :string
+      append_choices if sql_type == :string
 
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
