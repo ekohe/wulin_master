@@ -17,6 +17,7 @@
           :ruby
             column_name = get_column_name(column)
             label = column.options[:form_label] || column.label
+            _klass = model_name.classify
           .field{:name => column_name}
             %label{:for => "#{model_name}_#{column_name}"}
               = label
@@ -71,6 +72,29 @@
                       current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
                     });
                   });
+
+            - elsif column.sql_type.to_s == 'string'
+              = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-column" => column.name
+              :javascript
+                var choices = "/wulin_master/fetch_distinct_options?"
+                                     + "column=#{column_name}"
+                                     + "&grid=#{grid.class}"
+                                     + "&klass=#{_klass}"
+                                     + "&screen=#{screen.class}"
+                                     + "&text_attr=#{column_name}";
+                var container = $(".auto-complete-text-field-#{column_name}");
+                var column = {
+                  auto_complete: true,
+                  width: container.width(),
+                  choices: choices
+                };
+                var args = {
+                  column: column,
+                  container: container
+                };
+                var carbonCopyNewEditor = TextEditorForForm.bind({})
+                carbonCopyNewEditor(args);
+
             - elsif column.options[:file]
               = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-column" => column.name, :style => 'width: 250px'
               = clean_up_tag(column_name)
