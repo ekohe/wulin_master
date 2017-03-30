@@ -740,7 +740,6 @@
 
   ///////////////////////////////////////////////////////////////////////////
   // DateTimeBaseEditor < InputElementEditor < BaseEditor
-  // TODO: Improvement with easy-to-use keyboard features
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateTimeBaseEditor = function(args) {
@@ -858,6 +857,46 @@
   }
 
   DateTimeBaseEditor.prototype = Object.create(InputElementEditor.prototype);
+
+  ///////////////////////////////////////////////////////////////////////////
+  // NewDateTimeEditor < DateTimeBaseEditor < BaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.NewDateTimeEditor = function(args) {
+    DateTimeBaseEditor.call(this, args);
+
+    this.init = function() {
+      this.boxWidth -= 24;
+      this.initElements();
+
+      Inputmask.extendAliases({
+        'wulinDateTime': {
+          alias: 'datetime',
+          placeholder: 'dd/mm/2017 12:00',
+          yearrange: { minyear: 2000, maxyear: 2020 },
+        }
+      });
+
+      this.input.inputmask('wulinDateTime').flatpickr({
+        allowInput: true,
+        enableTime: true,
+        clickOpens: false,
+        dateFormat: 'd/m/Y H:i',
+        maxDate: '31/12/2020',
+        minDate: '01/01/2000',
+      });
+    };
+
+    this.loadValue = function(item) {
+      this.defaultValue = convertDateTimeFormat(item[this.column.field]) || item[this.column.field];
+      this.element.val(this.defaultValue);
+      this.element.select();
+    },
+
+    this.init();
+  }
+
+  NewDateTimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
   // DateTimeEditor < InputElementEditor < BaseEditor

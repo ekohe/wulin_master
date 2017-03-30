@@ -60,6 +60,17 @@
       return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style || 'text-align:center') + "</div>";
     },
 
+    // Display datetime info as 'dd/mm/yyyy hh:ms' format
+    DateTimeFormatter: function(row, cell, value, columnDef, dataContext) {
+      value = convertDateTimeFormat(value);
+
+      if (value === null || value === "") {
+        return "";
+      } else {
+        return ApplyStyle(value, columnDef.style || 'text-align:center');
+      }
+    },
+
     // Display only date info as 'yyyy-mm-dd' format for a datetime column
     OnlyDateFormatter: function(row, cell, value, columnDef, dataContext) {
       if (value === null || value === "") {
@@ -74,6 +85,23 @@
       }
 
       return ApplyStyle(value, columnDef.style || 'text-align:center');
+    },
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Convert datetime format to 'dd/mm/yyyy hh:ms'
+    convertDateTimeFormat: function(dateTimeStr) {
+      var REGEX_DATE = '(\\d{4})\\-(\\d{2})\\-(\\d{2})';    // 'yyyy-mm-dd'
+      var REGEX_TIME = '(\\d{2}):(\\d{2})';                 // 'hh:mm'
+
+      try {
+        var matchedArr = dateTimeStr.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'));
+        return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
+      } catch (err) {
+        return null;
+      }
     },
 
     ///////////////////////////////////////////////////////////////////////////
