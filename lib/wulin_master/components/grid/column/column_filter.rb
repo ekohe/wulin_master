@@ -15,7 +15,7 @@ module WulinMaster
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
 
-      if reflection && query != RolesUser
+      if reflection && (defined?(RolesUser) ? query != RolesUser : true)
         return filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       else
         return filter_without_reflection(query, filtering_value, sql_type, adapter)
