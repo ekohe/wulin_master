@@ -16,11 +16,12 @@ before_script:
   # - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2 --referer=https://bitbucket.org -P /cache/
   # - tar xjf /cache/$PHANTOM_JS.tar.bz2 -C /cache
   # - mv /cache/$PHANTOM_JS /usr/local/share
-  - export PHANTOM_JS="phantomjs-2.1.1"
-  - wget https://github.com/paladox/phantomjs/archive/v2.1.1.tar.gz -P /cache/
-  - tar xjf /cache/$PHANTOM_JS.tar.gz -C /cache
-  - mv /cache/$PHANTOM_JS /usr/local/share
-  - ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+  # - ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+  - export PHANTOM_JS_VERSION="v2.1.1"
+  - wget -q https://github.com/paladox/phantomjs/archive/phantomjs-$PHANTOM_JS_VERSION.tar.gz -P /cache/
+  - tar xjf /cache/phantomjs-$PHANTOM_JS_VERSION.tar.gz -C /cache
+  - mv /cache/phantomjs-$PHANTOM_JS_VERSION /usr/local/share
+  - ln -sf /usr/local/share/phantomjs-$PHANTOM_JS_VERSION/bin/phantomjs /usr/local/bin
   - gem install bundler
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - bundle install --path /cache
