@@ -18,10 +18,10 @@ before_script:
   # - mv /cache/$PHANTOM_JS /usr/local/share
   # - ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
   - export PHANTOM_JS_VERSION="v2.1.1"
-  - wget https://github.com/paladox/phantomjs/archive/$PHANTOM_JS_VERSION.tar.gz -P /cache/
-  - tar xjf /cache/phantomjs-$PHANTOM_JS_VERSION.tar.gz -C /cache
-  - mv /cache/phantomjs-$PHANTOM_JS_VERSION /usr/local/share
-  - ln -sf /usr/local/share/phantomjs-$PHANTOM_JS_VERSION/bin/phantomjs /usr/local/bin
+  - wget https://github.com/paladox/phantomjs/archive/$PHANTOM_JS_VERSION.tar.gz -P /cache/phantomjs/
+  - tar xzf /cache/phantomjs/$PHANTOM_JS_VERSION.tar.gz -C /cache/phantomjs
+  - mv /cache/phantomjs/$PHANTOM_JS_VERSION /usr/local/share/phantomjs
+  - ln -sf /usr/local/share/phantomjs/$PHANTOM_JS_VERSION/bin/phantomjs /usr/local/bin
   - gem install bundler
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - bundle install --path /cache
