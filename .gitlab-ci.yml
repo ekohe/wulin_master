@@ -12,9 +12,13 @@ before_script:
   - apt-get update -qy
   - apt-get install -qy nodejs
   - apt-get install -qy libfontconfig1
-  - export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
-  - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2 --referer=https://bitbucket.org -P /cache/
-  - tar xjf /cache/$PHANTOM_JS.tar.bz2 -C /cache
+  # - export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
+  # - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2 --referer=https://bitbucket.org -P /cache/
+  # - tar xjf /cache/$PHANTOM_JS.tar.bz2 -C /cache
+  # - mv /cache/$PHANTOM_JS /usr/local/share
+  - export PHANTOM_JS="phantomjs-2.1.1"
+  - wget https://github.com/paladox/phantomjs/archive/v2.1.1.tar.gz -P /cache/
+  - tar xjf /cache/$PHANTOM_JS.tar.gz -C /cache
   - mv /cache/$PHANTOM_JS /usr/local/share
   - ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
   - gem install bundler
