@@ -3445,6 +3445,10 @@ if (typeof Slick === "undefined") {
       return columns[cell].selectable;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Move the call of setActiveCellInternal() to WulinMasterGrid()
+
     function gotoCell(row, cell, forceEdit) {
       if (!initialized) { return; }
       if (!canCellBeActive(row, cell)) {
@@ -3459,8 +3463,9 @@ if (typeof Slick === "undefined") {
 
       var newCell = getCellNode(row, cell);
 
+      // Ekohe Delete: Change to call in wulinGotoCell
       // if selecting the 'add new' row, start editing right away
-      setActiveCellInternal(newCell, forceEdit || (row === getDataLength()) || options.autoEdit);
+      // setActiveCellInternal(newCell, forceEdit || (row === getDataLength()) || options.autoEdit);
 
       // if no editor was created, set the focus back on the grid
       if (!currentEditor) {

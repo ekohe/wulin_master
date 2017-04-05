@@ -192,9 +192,7 @@ function Flatpickr(element, config) {
 
 		window.document.addEventListener("click", documentClick);
 
-		// Ekohe Edit: Close calendar when input lost focus
-		// (self.altInput || self.input).addEventListener("blur", documentClick);
-		(self.altInput || self.input).addEventListener("blur", onBlur);
+		(self.altInput || self.input).addEventListener("blur", documentClick);
 
 		if (self.config.clickOpens) (self.altInput || self.input).addEventListener("focus", open);
 
@@ -257,15 +255,6 @@ function Flatpickr(element, config) {
 			// Ekohe Add: Update calendar when KeyUp
 			self.input.addEventListener("keyup", onKeyUp);
 		}
-	}
-
-	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Add: Blur event handler for input
-	/////////////////////////////////////////////////////////////////////////////
-
-	function onBlur(e) {
-		documentClick(e);
-		self.close();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -806,9 +795,22 @@ function Flatpickr(element, config) {
 		return !bool;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////
+	// Ekohe Edit: Add support to close calendar in several situations
+	/////////////////////////////////////////////////////////////////////////////
+
 	function onKeyDown(e) {
 
-		if (e.target === (self.altInput || self.input) && e.which === 13) selectDate(e);else if (self.isOpen || self.config.inline) {
+		// Ekohe Edit: Close calender when use 'Tab'/'Enter'/'ArrowUp'/'ArrowDown' key on input
+		// if (e.target === (self.altInput || self.input) && e.which === 13) {
+			// selectDate(e);
+		if (e.target === (self.altInput || self.input) && [9, 13, 38, 40].includes(e.which)) {
+			self.close();
+		// Ekohe Add: Close calender and set focus on input when 'Enter' on Calendar
+		} else if (e.target !== (self.altInput || self.input) && e.which === 13) {
+			self.close();
+			self.input.focus();
+		} else if (self.isOpen || self.config.inline) {
 			switch (e.key) {
 				case "Enter":
 					if (self.timeContainer && self.timeContainer.contains(e.target)) updateValue();else selectDate(e);
