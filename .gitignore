@@ -8,3 +8,4 @@ doc
 spec/wulin_app/db/log/*.log
 spec/wulin_app/tmp/
 spec/wulin_app/.sass-cache
+spec/wulin_app/config/database.yml
