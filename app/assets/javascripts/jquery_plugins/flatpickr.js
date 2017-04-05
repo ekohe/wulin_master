@@ -154,7 +154,7 @@ function Flatpickr(element, config) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Edit: Add keyup handler to input
+	// Ekohe Edit: Add KeyUp & Blur handler to input field
 	/////////////////////////////////////////////////////////////////////////////
 
 	function bind() {
@@ -191,7 +191,10 @@ function Flatpickr(element, config) {
 		if (window.ontouchstart) window.document.addEventListener("touchstart", documentClick);
 
 		window.document.addEventListener("click", documentClick);
-		(self.altInput || self.input).addEventListener("blur", documentClick);
+
+		// Ekohe Edit: Close calendar when input lost focus
+		// (self.altInput || self.input).addEventListener("blur", documentClick);
+		(self.altInput || self.input).addEventListener("blur", onBlur);
 
 		if (self.config.clickOpens) (self.altInput || self.input).addEventListener("focus", open);
 
@@ -257,7 +260,16 @@ function Flatpickr(element, config) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Add: Update Calendar along with input change
+	// Ekohe Add: Blur event handler for input
+	/////////////////////////////////////////////////////////////////////////////
+
+	function onBlur(e) {
+		documentClick(e);
+		self.close();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////
+	// Ekohe Add: KeyUp event handler for input
 	/////////////////////////////////////////////////////////////////////////////
 
 	function onKeyUp() {
