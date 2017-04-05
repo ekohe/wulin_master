@@ -20,6 +20,8 @@ function Flatpickr(element, config) {
 	self.set = set;
 	self.setDate = setDate;
 	self.toggle = toggle;
+	// Ekohe Add
+	self.update = update;
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Ekohe Edit: Change to always show up time input
@@ -152,7 +154,7 @@ function Flatpickr(element, config) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Edit: Add keyup handler (updateCalendar) to input
+	// Ekohe Edit: Add keyup handler to input
 	/////////////////////////////////////////////////////////////////////////////
 
 	function bind() {
@@ -191,9 +193,7 @@ function Flatpickr(element, config) {
 		window.document.addEventListener("click", documentClick);
 		(self.altInput || self.input).addEventListener("blur", documentClick);
 
-		// Ekohe Edit: Change to open calendar when click the input
-		// if (self.config.clickOpens) (self.altInput || self.input).addEventListener("focus", open);
-		(self.altInput || self.input).addEventListener("click", wulinOpen);
+		if (self.config.clickOpens) (self.altInput || self.input).addEventListener("focus", open);
 
 		if (!self.config.noCalendar) {
 			self.prevMonthNav.addEventListener("click", function () {
@@ -252,26 +252,25 @@ function Flatpickr(element, config) {
 			}
 
 			// Ekohe Add: Update calendar when KeyUp
-			self.input.addEventListener("keyup", updateCalendar);
+			self.input.addEventListener("keyup", onKeyUp);
 		}
-	}
-
-	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Add: Update datetime when open the calendar
-	/////////////////////////////////////////////////////////////////////////////
-
-	function wulinOpen() {
-		self.open();
-		updateCalendar();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Ekohe Add: Update Calendar along with input change
 	/////////////////////////////////////////////////////////////////////////////
 
-	function updateCalendar() {
+	function onKeyUp() {
+		update(self.input.value);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////
+	// Ekohe Add: Update calendar with new input value
+	/////////////////////////////////////////////////////////////////////////////
+
+	function update(date) {
 		var format = self.config.dateFormat;
-		var date = self.parseDate(self.input.value, false, format);
+		var date = self.parseDate(date || self.input.value, false, format);
 
 		if (date) {
 			setSelectedDate(date, format);
@@ -795,19 +794,9 @@ function Flatpickr(element, config) {
 		return !bool;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Edit: Close calender when push 'ENTER' key in the input field
-	/////////////////////////////////////////////////////////////////////////////
-
 	function onKeyDown(e) {
 
-		// Ekohe Modify: Close calender and set focus on input when push 'ENTER' key on calendar
-		// if (e.target === (self.altInput || self.input) && e.which === 13) {
-		if (e.which === 13) {
-			// selectDate(e);
-			self.close();
-			self.input.focus();
-		} else if (self.isOpen || self.config.inline) {
+		if (e.target === (self.altInput || self.input) && e.which === 13) selectDate(e);else if (self.isOpen || self.config.inline) {
 			switch (e.key) {
 				case "Enter":
 					if (self.timeContainer && self.timeContainer.contains(e.target)) updateValue();else selectDate(e);

@@ -868,6 +868,7 @@
     this.init = function() {
       this.boxWidth -= 24;
       this.initElements();
+      var date = this.getDate();
 
       Inputmask.extendAliases({
         'wulinDateTime': {
@@ -884,14 +885,22 @@
         dateFormat: 'd/m/Y H:i',
         maxDate: '31/12/2020',
         minDate: '01/01/2000',
+        onReady: function(selectedDates, dateStr, instance) {
+          instance.open();
+          instance.update(date);
+        },
       });
     };
 
     this.loadValue = function(item) {
-      this.defaultValue = convertDateTimeFormat(item[this.column.field]) || item[this.column.field];
+      this.defaultValue = this.getDate();
       this.element.val(this.defaultValue);
       this.element.select();
     },
+
+    this.getDate = function() {
+      return convertDateTimeFormat(this.args.item[this.column.field]) || this.args.item[this.column.field];
+    }
 
     this.init();
   }
