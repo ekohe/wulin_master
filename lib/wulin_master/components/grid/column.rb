@@ -116,6 +116,8 @@ module WulinMaster
       return query unless ["ASC", "DESC"].include?(direction)
       if @options[:sql_expression]
         query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
+      elsif @options[:source]
+        query.order("#{relation_table_name}.#{@options[:source]} #{direction}, #{model.table_name}.id ASC")
       elsif self.reflection
         query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
@@ -184,6 +186,8 @@ module WulinMaster
     def full_name
       if @options[:option_text_attribute]
        "#{name}_#{@options[:option_text_attribute].to_s}"
+      elsif @options[:source]
+        "#{@options[:through]}_#{@options[:source]}"
       elsif @options[:through]
         "#{@options[:through]}_#{name}"
       elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_s]
