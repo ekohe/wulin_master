@@ -18,11 +18,14 @@
     ///////////////////////////////////////////////////////////////////////////
 
     BaseFormatter: function(row, cell, value, columnDef, dataContext) {
+      var source = columnDef.source;
       var optionTextAttribute = columnDef.optionTextAttribute;
       var inner_formatter = columnDef.inner_formatter;
 
       // Retrive info for relation columns
-      if (optionTextAttribute) {
+      if (source) {
+        value = value[source];
+      } else if (optionTextAttribute) {
         value = value[optionTextAttribute];
       }
 

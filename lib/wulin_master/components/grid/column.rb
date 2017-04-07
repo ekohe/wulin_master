@@ -255,8 +255,13 @@ module WulinMaster
     def json(object)
       case association_type.to_s
       when 'belongs_to'
-        value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute)
-        {reflection.name => {:id => object.send(foreign_key), option_text_attribute => format(value)}}
+        if @options[:source]
+          value = object.send(@options[:through]).try(:send, @options[:source])
+          {reflection.name => {:id => object.send(foreign_key), @options[:source] => format(value)}}
+        else
+          value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute)
+          {reflection.name => {:id => object.send(foreign_key), option_text_attribute => format(value)}}
+        end
       when 'has_one'
         association_object = object.send(@options[:through] || self.name)
         {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
