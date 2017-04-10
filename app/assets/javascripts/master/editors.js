@@ -626,6 +626,99 @@
   TextEditor.prototype = Object.create(InputElementEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
+  // TODO: Remove after Test Auto Complete
+  // Pixabay < InputElementEditor < BaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.Pixabay = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+
+      this.input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      }.bind(this));
+
+      this.input.autoComplete({
+        minChars: 1,
+        source: function(term, response){
+          $.getJSON(args.column.choices, function(data){ response(data); });
+        }
+      });
+    }
+
+    this.validate = function() {
+      var validationResults;
+      var value = this.element.val();
+
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      return { valid: true, msg: null };
+    };
+
+    this.init();
+  }
+
+  Pixabay.prototype = Object.create(InputElementEditor.prototype);
+
+  ///////////////////////////////////////////////////////////////////////////
+  // TODO: Remove after Test Auto Complete
+  // AwesompleteEditor < InputElementEditor < BaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.AwesompleteEditor = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+
+      this.awesomplete = new Awesomplete(this.input[0], {
+        minChars: 1,
+      	maxItems: 5,
+        autoFirst: true
+      });
+
+      this.input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      }.bind(this));
+
+      $.getJSON(args.column.choices, function(data) {
+        this.awesomplete.list = data;
+      }.bind(this));
+    }
+
+    this.validate = function() {
+      var validationResults;
+      var value = this.element.val();
+
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      return { valid: true, msg: null };
+    };
+
+    this.init();
+  }
+
+  AwesompleteEditor.prototype = Object.create(InputElementEditor.prototype);
+
+  ///////////////////////////////////////////////////////////////////////////
   // TextEditorForForm
   ///////////////////////////////////////////////////////////////////////////
 
