@@ -42,7 +42,11 @@ module WulinMaster
       if @options[:sql_expression]
         return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
       else
-        column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
+        if options[:source]
+          column_type = column_type(self.reflection.klass, options[:source])
+        else
+          column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
+        end
         # for special column,
         # ! need to refactor, use common code with filter_without_reflection
         if option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal, :boolean, :date, :datetime].include? column_type
@@ -96,7 +100,11 @@ module WulinMaster
       when 'equals' then 'LIKE'
       when 'not_equals' then 'NOT LIKE'
       end
-      return query.where(["UPPER(cast(#{relation_table_name}.#{self.option_text_attribute} as text)) #{operator} UPPER(?)", value + "%"])
+      if options[:source]
+        return query.where(["UPPER(cast(#{relation_table_name}.#{options[:source]} as text)) #{operator} UPPER(?)", value + "%"])
+      else
+        return query.where(["UPPER(cast(#{relation_table_name}.#{self.option_text_attribute} as text)) #{operator} UPPER(?)", value + "%"])
+      end
     end
 
     def format_filtering_value(value, column_type)

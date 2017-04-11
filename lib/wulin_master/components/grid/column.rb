@@ -267,12 +267,21 @@ module WulinMaster
           {reflection.name => {:id => object.send(foreign_key), option_text_attribute => format(value)}}
         end
       when 'has_one'
-        association_object = object.send(@options[:through] || self.name)
-        {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
+        if @options[:source]
+          association_object = object.send(@options[:through] || @options[:source])
+          {reflection.name => {:id => association_object.try(:id), @options[:source] => format(association_object.try(:send, @options[:source]))}}
+        else
+          association_object = object.send(@options[:through] || self.name)
+          {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
+        end
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(self.reflection.name.to_s))}
       when 'has_many'
-        {reflection.name => format_multiple_objects(object.send(self.name.to_s))}
+        if @options[:source]
+          {reflection.name => format_multiple_objects(object.send(@options[:through]))}
+        else
+          {reflection.name => format_multiple_objects(object.send(self.name.to_s))}
+        end
       else
         self.format(object.send(self.name.to_s))
       end
@@ -332,13 +341,23 @@ module WulinMaster
     end
 
     def format_multiple_objects(objects)
-      value = {:id => [], option_text_attribute => []}
-      objects.each do |obj|
-        value[:id] << obj.id
-        value[option_text_attribute] << format(obj.send(option_text_attribute))
+      if options[:source]
+        value = {:id => [], options[:source] => []}
+        objects.each do |obj|
+          value[:id] << obj.id
+          value[options[:source]] << format(obj.send(options[:source]))
+        end
+        value[options[:source]] = value[options[:source]].join(',')
+        value
+      else
+        value = {:id => [], option_text_attribute => []}
+        objects.each do |obj|
+          value[:id] << obj.id
+          value[option_text_attribute] << format(obj.send(option_text_attribute))
+        end
+        value[option_text_attribute] = value[option_text_attribute].join(',')
+        value
       end
-      value[option_text_attribute] = value[option_text_attribute].join(',')
-      value
     end
   end
 end
