@@ -19,7 +19,7 @@ module WulinMaster
     end
 
     def singular_name
-       @singular_name ||= self.reflection ? ActiveModel::Naming.singular(self.reflection.klass) : name.to_s.singularize
+      @singular_name ||= self.reflection ? ActiveModel::Naming.singular(self.reflection.klass) : self.source.to_s.singularize
     end
 
     def datetime_format
@@ -63,7 +63,17 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
-      h = {:id => full_name, :column_name => self.name, :singular_name => self.singular_name, :name => self.label, :table => table_name, :klass_name => klass_name, :field => field_name, :type => column_type, :sortColumn => sort_col_name}.merge(new_options)
+      h = {
+        :id => full_name,
+        :column_name => self.name,
+        :singular_name => self.singular_name,
+        :name => self.label,
+        :table => table_name,
+        :klass_name => klass_name,
+        :field => field_name,
+        :type => column_type,
+        :sortColumn => sort_col_name
+      }.merge(new_options)
       h.merge!(reflection_options) if reflection
       h
     end
@@ -116,12 +126,10 @@ module WulinMaster
       return query unless ["ASC", "DESC"].include?(direction)
       if @options[:sql_expression]
         query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
-      elsif @options[:source]
-        query.order("#{relation_table_name}.#{@options[:source]} #{direction}, #{model.table_name}.id ASC")
       elsif self.reflection
-        query.order("#{relation_table_name}.#{self.option_text_attribute} #{direction}, #{model.table_name}.id ASC")
+        query.order("#{relation_table_name}.#{self.source} #{direction}, #{model.table_name}.id ASC")
       elsif is_table_column?
-        order_str = "#{model.table_name}.#{@name} #{direction}"
+        order_str = "#{model.table_name}.#{self.source} #{direction}"
         order_str << ", #{model.table_name}.id ASC" if model < ActiveRecord::Base
         query.order(order_str)
       else
@@ -144,11 +152,11 @@ module WulinMaster
     def sql_type
       return :unknown if self.model.blank?
       if reflection
-        options[:inner_sql_type] = reflection.klass.columns.find{|c| c.name.to_s == self.name.to_s}.try(:type)
+        options[:inner_sql_type] = reflection.klass.columns.find{|c| c.name.to_s == self.source.to_s}.try(:type)
         options[:inner_formatter] ||= (options.delete(:formatter) || options[:inner_sql_type])
         return association_type
       end
-      column = model_columns.find {|col| col.name.to_s == self.name.to_s}
+      column = model_columns.find {|col| col.name.to_s == self.source.to_s}
       (column.try(:type) || association_type || self.options[:sql_type] || :unknown ).to_s.to_sym
     end
 
@@ -158,7 +166,13 @@ module WulinMaster
 
     def append_choices
       @options[:choices] ||= begin
-        params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }
+        params_hash = {
+          :grid => @grid_class.name,
+          :column => self.source.to_s,
+          :text_attr => form_name,
+          klass: klass_name,
+          :screen => @options[:screen]
+        }
         "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
       end
     end
@@ -166,30 +180,48 @@ module WulinMaster
     def reflection_options
       @options[:choices] ||= begin
         if self.reflection
-          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => option_text_attribute, :screen => @options[:screen] }
+          params_hash = {
+            :grid => @grid_class.name,
+            :column => @name.to_s,
+            :text_attr => self.source,
+            klass: klass_name,
+            :screen => @options[:screen]
+          }
           "/wulin_master/fetch_options?#{params_hash.to_param}"
         elsif @options[:distinct]
-          params_hash = { :grid => @grid_class.name, :column => @name.to_s, :text_attr => form_name, klass: klass_name, :screen => @options[:screen] }
+          params_hash = {
+            :grid => @grid_class.name,
+            :column => @name.to_s,
+            :text_attr => form_name,
+            klass: klass_name,
+            :screen => @options[:screen]
+          }
           "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
         else
           []
         end
       end
-      { :choices => @options[:choices], :optionTextAttribute => self.option_text_attribute }
+      { :choices => @options[:choices], :source => self.source }
     end
 
-    # For belongs_to association, the name of the attribute to display
-    def option_text_attribute
-      @options[:option_text_attribute].presence || (@options[:through] ? self.name : :name)
+    # Spec: Suppose a post belongs_to an author
+    # - column :author_email, source: :email, through: :author  -> source = :email (of author)
+    # - column :email, through: :author                         -> source = :email (of author)
+    # - column :author                                          -> source = :name  (of author)
+    # - column :title                                           -> source = :title (of post)
+    def source
+      @options[:source].presence || (@options[:through] ? self.name : (self.reflection ? :name : self.name))
     end
 
     def full_name
-      if @options[:option_text_attribute]
-       "#{name}_#{@options[:option_text_attribute].to_s}"
+      if @options[:through]
+        if @options[:source]
+          "#{@options[:through]}_#{@options[:source]}"
+        else
+          "#{@options[:through]}_#{name}"
+        end
       elsif @options[:source]
-        "#{@options[:through]}_#{@options[:source]}"
-      elsif @options[:through]
-        "#{@options[:through]}_#{name}"
+        "#{name}_#{@options[:source]}"
       elsif !model.column_names.include?(name.to_s) && model.reflections[name.to_s]
         "#{name}_name"
       else
@@ -202,16 +234,16 @@ module WulinMaster
     end
 
     def form_name
-      @form_name ||= foreign_key.presence || self.name
+      @form_name ||= foreign_key.presence || self.source
     end
 
     # Returns the sql names used to generate the select
     def sql_names
       if is_table_column?
         if self.reflection
-          [self.model.table_name + "."+ foreign_key, self.reflection.klass.table_name + "." + option_text_attribute.to_s]
+          [self.model.table_name + "." + foreign_key, self.reflection.klass.table_name + "." + self.source.to_s]
         else
-          [self.model.table_name + "." + name.to_s]
+          [self.model.table_name + "." + self.source.to_s]
         end
       else
         nil
@@ -244,14 +276,14 @@ module WulinMaster
     def value(object)
       case association_type.to_s
       when /^belongs_to$|^has_one$/
-        object.send(@options[:through] || self.name).try(:send,option_text_attribute).to_s
+        object.send(@options[:through] || self.name).try(:send, self.source).to_s
       when 'has_and_belongs_to_many'
         ids = object.send("#{self.reflection.klass.name.underscore}_ids")
-        object.send(self.reflection.name.to_s).map{|x| x.send(option_text_attribute)}.join(',')
+        object.send(self.reflection.name.to_s).map{|x| x.send(self.source)}.join(',')
       when 'has_many'
-        object.send(self.name.to_s).collect{|obj| obj.send(option_text_attribute)}
+        object.send(self.source.to_s).collect{|obj| obj.send(self.source)}
       else
-        self.format(object.send(self.name.to_s))
+        self.format(object.send(self.source.to_s))
       end
     end
 
@@ -259,29 +291,15 @@ module WulinMaster
     def json(object)
       case association_type.to_s
       when 'belongs_to'
-        if @options[:source]
-          value = object.send(@options[:through]).try(:send, @options[:source])
-          {reflection.name => {:id => object.send(foreign_key), @options[:source] => format(value)}}
-        else
-          value = "#{self.name}_#{option_text_attribute}" == foreign_key.to_s ? object.send(foreign_key) : object.send(@options[:through] || self.name).try(:send, option_text_attribute)
-          {reflection.name => {:id => object.send(foreign_key), option_text_attribute => format(value)}}
-        end
+        value = object.send(@options[:through] || self.name).try(:send, self.source)
+        {reflection.name => {:id => object.send(foreign_key), self.source => format(value)}}
       when 'has_one'
-        if @options[:source]
-          association_object = object.send(@options[:through] || @options[:source])
-          {reflection.name => {:id => association_object.try(:id), @options[:source] => format(association_object.try(:send, @options[:source]))}}
-        else
-          association_object = object.send(@options[:through] || self.name)
-          {reflection.name => {:id => association_object.try(:id), option_text_attribute => format(association_object.try(:send,option_text_attribute))}}
-        end
+        association_object = object.send(@options[:through] || self.name)
+        {reflection.name => {:id => association_object.try(:id), self.source => format(association_object.try(:send, self.source))}}
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(self.reflection.name.to_s))}
       when 'has_many'
-        if @options[:source]
-          {reflection.name => format_multiple_objects(object.send(@options[:through]))}
-        else
-          {reflection.name => format_multiple_objects(object.send(self.name.to_s))}
-        end
+        {reflection.name => format_multiple_objects(object.send(@options[:through] || self.name))}
       else
         self.format(object.send(self.name.to_s))
       end
@@ -303,18 +321,18 @@ module WulinMaster
     private
 
     def related_column_filterable?
-      reflection and reflection.klass.column_names.include?(option_text_attribute.to_s)
+      reflection and reflection.klass.column_names.include?(self.source.to_s)
     end
 
     def complete_column_name
       if @options[:sql_expression]
         "#{@options[:sql_expression]}"
       elsif is_table_column?
-        "#{model.table_name}.#{self.name}"
+        "#{model.table_name}.#{self.source}"
       elsif self.reflection
-        "#{self.reflection.klass.table_name}.#{self.name}"
+        "#{self.reflection.klass.table_name}.#{self.source}"
       else
-        self.name
+        self.source
       end
     end
 
@@ -341,23 +359,13 @@ module WulinMaster
     end
 
     def format_multiple_objects(objects)
-      if options[:source]
-        value = {:id => [], options[:source] => []}
-        objects.each do |obj|
-          value[:id] << obj.id
-          value[options[:source]] << format(obj.send(options[:source]))
-        end
-        value[options[:source]] = value[options[:source]].join(',')
-        value
-      else
-        value = {:id => [], option_text_attribute => []}
-        objects.each do |obj|
-          value[:id] << obj.id
-          value[option_text_attribute] << format(obj.send(option_text_attribute))
-        end
-        value[option_text_attribute] = value[option_text_attribute].join(',')
-        value
+      value = {:id => [], self.source => []}
+      objects.each do |obj|
+        value[:id] << obj.id
+        value[self.source] << format(obj.send(self.source))
       end
+      value[self.source] = value[self.source].join(', ')
+      value
     end
   end
 end

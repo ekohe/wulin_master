@@ -165,15 +165,15 @@ var Ui = {
         if (!path || !formable) return;
 
         var first_input;
-        var target = $("select[data-column='" + field + "']", scope);
-        var textAttr = target.attr('data-text-attr');
+        var target = $("select[data-field='" + field + "']", scope);
+        var source = target.attr('data-source');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
 
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+                target.append("<option value='" + value.id + "'>" + value[source] + "</option>");
               } else {
                 target.append("<option value='" + value + "'>" + value + "</option>");
               }
@@ -193,15 +193,15 @@ var Ui = {
         if (!path) return;
 
         var first_input;
-        var target = $("select[data-column='" + field + "']", scope);
-        var textAttr = target.attr('data-text-attr');
+        var target = $("select[data-field='" + field + "']", scope);
+        var source = target.attr('data-source');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
 
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
-                target.append("<option value='" + value.id + "'>" + value[textAttr] + "</option>");
+                target.append("<option value='" + value.id + "'>" + value[source] + "</option>");
               } else {
                 target.append("<option value='" + value + "'>" + value + "</option>");
               }
@@ -218,7 +218,7 @@ var Ui = {
         $.each(choicesColumn, function(i, n) {
         var field = n[0];
         var first_input;
-        var target = $("select[data-column='" + field + "']", scope);
+        var target = $("select[data-field='" + field + "']", scope);
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
             $.each(n[1], function(index, value) {

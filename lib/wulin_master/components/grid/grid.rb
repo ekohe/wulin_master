@@ -130,7 +130,7 @@ module WulinMaster
           column.apply_filter(query, filtering_value, filtering_operator)
         else
           if column.reflection
-            self.virtual_filter_columns << ["#{column.options[:through] || column.name}.#{column.option_text_attribute}", filtering_value, filtering_operator]
+            self.virtual_filter_columns << ["#{column.options[:through] || column.name}.#{column.source}", filtering_value, filtering_operator]
           else
             self.virtual_filter_columns << [column_name, filtering_value, filtering_operator]
           end
@@ -151,7 +151,7 @@ module WulinMaster
           column.apply_order(query, order_direction)
         else
           if column.reflection
-            self.virtual_sort_column = ["#{column.options[:through] || column.name}.#{column.option_text_attribute}", order_direction]
+            self.virtual_sort_column = ["#{column.options[:through] || column.name}.#{column.source}", order_direction]
           else
             self.virtual_sort_column = [column_name, order_direction]
           end
@@ -191,7 +191,7 @@ module WulinMaster
     def map_attrs(attrs, type, object)
       new_attrs = {}
       attrs.each do |column_name, value|
-        if column = self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s }
+        if column = self.columns.find{|c| c.full_name == column_name.to_s || c.name.to_s == column_name.to_s || c.options[:through].to_s == column_name.to_s}
           column.assign_attribute(object, value, new_attrs, attrs, type)
         end
       end

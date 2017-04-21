@@ -32,7 +32,7 @@ module WulinMaster
 
             # add association column to self for filtering
             unless self.columns_pool.find {|c| c.full_name == reflection.foreign_key and c.valid_in_screen(options[:screen]) }
-              column reflection.name, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+              column reflection.name, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
               @current_filter_column = reflection.name
             end
 
@@ -68,7 +68,7 @@ module WulinMaster
 
           # add association column
           unless self.columns_pool.find {|c| c.full_name == reflection.foreign_key and c.valid_in_screen(options[:screen]) }
-            column reflection.name, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            column reflection.name, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_filter_column = reflection.foreign_key
           end
 
@@ -87,7 +87,7 @@ module WulinMaster
           # remove it and re-add it, append @current_detail_model as an option
           if @current_filter_column and (same_column = self.columns_pool.find {|c| c.full_name == @current_filter_column and c.options[:only].include?(options[:screen].intern)})
             self.columns_pool.delete(same_column)
-            column @current_filter_column, visible: false, editable: false, formable: false, option_text_attribute: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            column @current_filter_column, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
             @current_detail_model = nil
           end
         end

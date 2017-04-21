@@ -296,7 +296,7 @@
 
       // Append options from choices array
       $.each(this.choices, function(index, value) {
-        this.select.append("<option value='" + value + "'>" + value + "</option>")
+        this.select.append("<option value='" + value.name + "'>" + value.name + "</option>")
       }.bind(this));
 
       this.setAllowSingleDeselect();
@@ -317,7 +317,7 @@
   this.DistinctEditor = function(args) {
     SelectElementEditor.call(this, args);
 
-    this.optionTextAttribute = this.column.optionTextAttribute || 'name';
+    this.source = this.column.source || 'name';
     this.addOptionText = 'Add new Option';
     this.bottomOption = '<option>' + this.addOptionText + '</option>';
 
@@ -416,7 +416,7 @@
   function RelationEditor(args) {
     SelectElementEditor.call(this, args);
 
-    this.optionTextAttribute = this.column.optionTextAttribute || 'name';
+    this.source = this.column.source || 'name';
     this.addOptionText = 'Add new Option';
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
 
@@ -445,11 +445,11 @@
       // when the editor itself has been destroyed
       var obj = {};
       obj["id"] = this.select.val();
-      obj[this.optionTextAttribute] = $('option:selected', this.select).text();
+      obj[this.source] = $('option:selected', this.select).text();
 
       // special case for has_and_belongs_to_many
       if (this.column.type === 'has_and_belongs_to_many') {
-        obj[this.optionTextAttribute] = $.map($('option:selected', this.select), function(n) {
+        obj[this.source] = $.map($('option:selected', this.select), function(n) {
           return $(n).text();
         }).join();
       }
@@ -479,7 +479,7 @@
         var ajaxOptions = [];
         $.each(itemdata, function(index, value) {
           if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
-            ajaxOptions.push("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+            ajaxOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
         }.bind(this));
         this.select.append(ajaxOptions.join(''));
 
@@ -493,7 +493,7 @@
       // this method may get called after the editor itself has been destroyed
       // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
       item[this.column.field].id = state.id;
-      item[this.column.field][this.optionTextAttribute] = state[this.optionTextAttribute];
+      item[this.column.field][this.source] = state[this.source];
     };
   }
 
@@ -517,7 +517,7 @@
       // must append the current value option, otherwise this.serializeValue can't get it
       this.select.append($("<option />"));
       if (this.args.item[this.column.field] && this.args.item[this.column.field].id) {
-        this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.optionTextAttribute] + "</option>");
+        this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.source] + "</option>");
         this.select.val(this.args.item[this.column.field].id);
       }
 
@@ -559,7 +559,7 @@
         this.select.empty();
         this.select.append($("<option />"));
         $.each(itemdata, function(index, value) {
-          this.select.append("<option value='" + value.id + "'>" + value[this.optionTextAttribute] + "</option>");
+          this.select.append("<option value='" + value.id + "'>" + value[this.source] + "</option>");
         }.bind(this));
 
         this.select.val(args.item[this.column.field].id);

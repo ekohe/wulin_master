@@ -31,7 +31,7 @@ module WulinMaster
       when 'not_equals' then 'NOT'
       end
       if self.reflection
-        return query.where("#{relation_table_name}.#{self.option_text_attribute} IS #{operator} NULL")
+        return query.where("#{relation_table_name}.#{self.source} IS #{operator} NULL")
       else
         adapter.null_query(complete_column_name, operator, self)
         return adapter.query
@@ -42,14 +42,9 @@ module WulinMaster
       if @options[:sql_expression]
         return query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value+"%"])
       else
-        if options[:source]
-          column_type = column_type(self.reflection.klass, options[:source])
-        else
-          column_type = column_type(self.reflection.klass, self.option_text_attribute)  # this can also get from options[:inner_sql_type]
-        end
+        column_type = column_type(self.reflection.klass, self.source)
         # for special column,
-        # ! need to refactor, use common code with filter_without_reflection
-        if option_text_attribute =~ /(_)?id$/ or [:integer, :float, :decimal, :boolean, :date, :datetime].include? column_type
+        if self.source =~ /(_)?id$/ or [:integer, :float, :decimal, :boolean, :date, :datetime].include? column_type
           filtering_value = format_filtering_value(filtering_value, column_type)
           if ['equals', 'not_equals'].include? filtering_operator
             return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter)
@@ -66,12 +61,12 @@ module WulinMaster
     def apply_equation_filter(query, operator, value, column_type, adapter)
       if ['date', 'datetime'].include? column_type
         operator = (operator == 'equals') ? 'LIKE' : 'NOT LIKE'
-        return query.where(["to_char(##{relation_table_name}.#{self.option_text_attribute}, 'YYYY-MM-DD') #{operator} UPPER(?)", "#{value}%"])
+        return query.where(["to_char(##{relation_table_name}.#{self.source}, 'YYYY-MM-DD') #{operator} UPPER(?)", "#{value}%"])
       elsif column_type == "boolean"
-        adapter.boolean_query("#{relation_table_name}.#{self.option_text_attribute}", value, self)
+        adapter.boolean_query("#{relation_table_name}.#{self.source}", value, self)
         return adapter.query
       else
-        where_condition = {relation_table_name.to_sym => {self.option_text_attribute.to_sym => value}}
+        where_condition = {relation_table_name.to_sym => {self.source.to_sym => value}}
         if operator == 'equals'
           return query.where(where_condition)
         else
@@ -82,7 +77,7 @@ module WulinMaster
 
     def apply_inclusion_filter(query, operator, value)
       relation_class = self.reflection.klass
-      ids = relation_class.where("#{relation_table_name}.#{self.option_text_attribute} = ?", value).map do |e|
+      ids = relation_class.where("#{relation_table_name}.#{self.source} = ?", value).map do |e|
         real_relation_name = relation_class.reflections.find { |k| k[1].klass.name == model.name }[0]
         e.send(real_relation_name).map(&:id)
       end.flatten.uniq
@@ -100,11 +95,7 @@ module WulinMaster
       when 'equals' then 'LIKE'
       when 'not_equals' then 'NOT LIKE'
       end
-      if options[:source]
-        return query.where(["UPPER(cast(#{relation_table_name}.#{options[:source]} as text)) #{operator} UPPER(?)", value + "%"])
-      else
-        return query.where(["UPPER(cast(#{relation_table_name}.#{self.option_text_attribute} as text)) #{operator} UPPER(?)", value + "%"])
-      end
+      return query.where(["UPPER(cast(#{relation_table_name}.#{self.source} as text)) #{operator} UPPER(?)", value + "%"])
     end
 
     def format_filtering_value(value, column_type)
@@ -121,7 +112,7 @@ module WulinMaster
     def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
       case column_sql_type.to_s
       when 'date', 'datetime'
-        return query.where(["to_char(#{self.name}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
+        return query.where(["to_char(#{self.source}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value+"%"])
       when "boolean"
         true_values = ["y", "yes", "ye", "t", "true"]
         true_or_false = true_values.include?(filtering_value.downcase)
@@ -130,7 +121,7 @@ module WulinMaster
       else
         filtering_value = filtering_value.gsub(/'/, "''")
         if ['integer', 'float', 'decimal'].include? sql_type.to_s and is_table_column?
-          return query.where(self.name => filtering_value)
+          return query.where(self.source => filtering_value)
         else
           adapter.string_query(complete_column_name, filtering_value, self)
           return adapter.query

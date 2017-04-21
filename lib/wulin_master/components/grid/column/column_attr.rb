@@ -166,11 +166,11 @@ module WulinMaster
       end
 
       def field_str
-        @field_str ||= self.name.to_s
+        @field_str ||= (self.options[:through] || self.name).to_s
       end
 
       def field_sym
-        @field_sym ||= self.name.to_sym
+        @field_sym ||= (self.options[:through] || self.name).to_sym
       end
 
       def relation_macro

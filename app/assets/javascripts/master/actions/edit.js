@@ -100,18 +100,18 @@ var fillValues = function(scope, grid, selectedIndexes) {
 
 var loadValue = function(scope, data) {
   for ( var i in data) {
-    if ($('input:text[data-column="' + i + '"]', scope).size() > 0) {
-      $('input[data-column="' + i + '"]', scope).val(data[i]);
-    } else if ($('textarea[data-column="' + i + '"]', scope).size() > 0) {
-      $('textarea[data-column="' + i + '"]', scope).val(data[i]);
-    } else if ($('input:checkbox[data-column="' + i + '"]', scope).size() > 0) {
+    if ($('input:text[data-field="' + i + '"]', scope).size() > 0) {
+      $('input[data-field="' + i + '"]', scope).val(data[i]);
+    } else if ($('textarea[data-field="' + i + '"]', scope).size() > 0) {
+      $('textarea[data-field="' + i + '"]', scope).val(data[i]);
+    } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
-        $('input:checkbox[data-column="' + i + '"]', scope).attr('checked', 'checked');
+        $('input:checkbox[data-field="' + i + '"]', scope).attr('checked', 'checked');
       } else {
-        $('input:checkbox[data-column="' + i + '"]', scope).removeAttr('checked');
+        $('input:checkbox[data-field="' + i + '"]', scope).removeAttr('checked');
       }
-    } else if ($('select[data-column="' + i + '"]', scope).size() > 0) {
-      inputBox = $('select[data-column="' + i + '"]', scope);
+    } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
+      inputBox = $('select[data-field="' + i + '"]', scope);
       if ($.type(data[i]) === 'string') {
         inputBox.val(data[i]);
       } else if ($.type(data[i]) === 'object') {

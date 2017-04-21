@@ -19,14 +19,11 @@
 
     BaseFormatter: function(row, cell, value, columnDef, dataContext) {
       var source = columnDef.source;
-      var optionTextAttribute = columnDef.optionTextAttribute;
       var inner_formatter = columnDef.inner_formatter;
 
       // Retrive info for relation columns
-      if (source) {
+      if (source && typeof value === 'object') {
         value = value[source];
-      } else if (optionTextAttribute) {
-        value = value[optionTextAttribute];
       }
 
       // Apply format for relation columns
@@ -85,7 +82,7 @@
       if (value === null || value === "") {
         return "";
       } else if ($.isPlainObject(value)) {
-        value = value[columnDef.optionTextAttribute];
+        value = value[columnDef.source];
       }
 
       if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
@@ -119,7 +116,7 @@
       if (value === null || value === "") {
         return "";
       } else if ($.isPlainObject(value)) {
-        value = value[columnDef.optionTextAttribute];
+        value = value[columnDef.source];
       }
 
       if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
@@ -135,7 +132,7 @@
       if (value === null || value === "") {
         return "";
       } else if ($.isPlainObject(value)) {
-        value = value[columnDef.optionTextAttribute];
+        value = value[columnDef.source];
       }
 
       if (/^(\d{4}(\-|\/|\.)\d{1,2}(\-|\/|\.)\d{1,2}\s)?\d{1,2}:\d{1,2}$/.test(value)) {
