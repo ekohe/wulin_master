@@ -2484,6 +2484,10 @@ if (typeof Slick === "undefined") {
       trigger(self.onDragEnd, dd, e);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Use column's option to decide if make cell editable when ENTER
+
     function handleKeyDown(e) {
       trigger(self.onKeyDown, {row: activeRow, cell: activeCell, grid: self}, e);
       var handled = e.isImmediatePropagationStopped();
@@ -2491,7 +2495,7 @@ if (typeof Slick === "undefined") {
 
       if (!handled) {
         if (!e.shiftKey && !e.altKey && !e.ctrlKey) {
-		  // editor may specify an array of keys to bubble
+		      // editor may specify an array of keys to bubble
           if (options.editable && currentEditor && currentEditor.keyCaptureList) {
             if (currentEditor.keyCaptureList.indexOf( e.which ) > -1) {
                 return;
@@ -2519,7 +2523,9 @@ if (typeof Slick === "undefined") {
           } else if (e.which == keyCode.TAB) {
             handled = navigateNext();
           } else if (e.which == keyCode.ENTER) {
-            if (options.editable) {
+            // Ekohe Modify: Use editable option form column instead of grid
+            // if (options.editable) {
+            if (isColumnEditable(getColumns()[activeCell])) {
               if (currentEditor) {
                 // adding new row
                 if (activeRow === getDataLength()) {
@@ -2601,7 +2607,7 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Ekohe Modify
-    //   1. Move the call of gotoCell() to WulinMasterGrid() for changing of entry condition
+    //   1. Use column's option to decide if make cell editable
 
     function handleDblClick(e) {
       var cell = getCellFromEvent(e);
@@ -2614,10 +2620,11 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      // Ekohe Delete: Move to WulinMasterGrid for changing of entry condition
+      // Ekohe Modify: Use column's editable option instead of grid's
       // if (options.editable) {
-      //   gotoCell(cell.row, cell.cell, true);
-      // }
+      if (isColumnEditable(getColumns()[cell.cell])) {
+        gotoCell(cell.row, cell.cell, true);
+      }
     }
 
     function handleHeaderMouseEnter(e) {
@@ -3447,7 +3454,7 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Ekohe Modify
-    //   1. Move the call of setActiveCellInternal() to WulinMasterGrid()
+    //   1. Pass new param `column_editable` to judge if set the cell active or not
 
     function gotoCell(row, cell, forceEdit) {
       if (!initialized) { return; }
@@ -3463,9 +3470,15 @@ if (typeof Slick === "undefined") {
 
       var newCell = getCellNode(row, cell);
 
-      // Ekohe Delete: Change to call in wulinGotoCell
       // if selecting the 'add new' row, start editing right away
+
+      // Ekohe Modify: Pass new param `column_editable` to judge if set the cell active or not
       // setActiveCellInternal(newCell, forceEdit || (row === getDataLength()) || options.autoEdit);
+      setActiveCellInternal(
+        newCell,
+        (forceEdit || (row === getDataLength()) || options.autoEdit),
+        isColumnEditable(getColumns()[cell])
+      )
 
       // if no editor was created, set the focus back on the grid
       if (!currentEditor) {
@@ -3611,7 +3624,7 @@ if (typeof Slick === "undefined") {
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Add: Getters/Setters
+    // Ekohe Add
 
     function getRows() {
       return rowsCache;
@@ -3635,6 +3648,14 @@ if (typeof Slick === "undefined") {
 
     function setEditController(c){
       editController = c;
+    }
+
+    function isColumnEditable(column_option) {
+      if(column_option.editable == undefined) {
+        return options.editable;
+      } else {
+        return column_option.editable;
+      }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

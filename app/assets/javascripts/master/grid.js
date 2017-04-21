@@ -41,40 +41,6 @@
       removeInvisibleColumns();
       // Call SlickGrid's finishInitialization()
       _self.finishInitialization()
-      // Use customized handler for `dblclick` event
-      _self.getCanvas().on("dblclick", wulinHandleDblClick)
-    }
-
-    // Ekohe Add: Customization of handleDblClick()
-    //   1. Only work for editable column
-    function wulinHandleDblClick(e) {
-      var columns = _self.getColumns();
-      var cell = _self.getActiveCell();
-
-      // Call SlickGrid's handleDblClick()
-      _self.handleDblClick(e);
-
-      // Ekohe Modify: Only work for editable column
-      if(isColumnEditable(columns[cell.cell])) {
-        wulinGotoCell(cell.row, cell.cell, true);
-      }
-    }
-
-    // Ekohe Add: Customization of gotoCell()
-    //   1. Pass new param `column_editable` to judge if set the cell active or not
-    function wulinGotoCell(row, cell, forceEdit) {
-      var newCell = _self.getCellNode(row, cell);
-      var columns = _self.getColumns();
-
-      // Call SlickGrid's handleDblClick()
-      _self.gotoCell(row, cell, forceEdit);
-
-      // Ekohe Modify: Pass new param `column_editable` to judge if set the cell active or not
-      _self.setActiveCellInternal(
-        newCell,
-        (forceEdit || (row === getDataLength()) || options.autoEdit),
-        isColumnEditable(columns[cell])
-      )
     }
 
     // Ekohe Add: Customization of commitCurrentEdit()
@@ -184,15 +150,6 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // New API for WulinMaster
-
-    // get the editable for a column accoring to self's config and current grid's config
-    function isColumnEditable(column_option) {
-      if(column_option.editable == undefined) {
-        return options.editable;
-      } else {
-        return column_option.editable;
-      }
-    }
 
     // Remove columns which have option of visible:false when initialize the grid
     function removeInvisibleColumns() {
