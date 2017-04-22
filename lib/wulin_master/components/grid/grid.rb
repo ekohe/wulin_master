@@ -163,9 +163,13 @@ module WulinMaster
       end
     end
 
+    def full_includes
+      @full_includes ||= self.columns.map{|col| col.includes}.flatten.uniq
+    end
+
     # Returns the includes to add to the query
     def includes
-      @includes ||= self.columns.map{|col| col.includes}.flatten.uniq
+      @includes ||= remove_through_model(full_includes)
     end
 
     # Returns the joins to add to the query
