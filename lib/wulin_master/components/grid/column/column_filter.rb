@@ -121,7 +121,8 @@ module WulinMaster
       else
         filtering_value = filtering_value.gsub(/'/, "''")
 
-        if self.model.defined_enums.has_key?(self.source.to_s)
+        enums = self.model.try(:defined_enums)
+        if enums && enums.has_key?(self.source.to_s)
           filtering_value = self.model.send(self.source.to_s.pluralize).find {|k, v| v if k.start_with?(filtering_value)}
         end
 
