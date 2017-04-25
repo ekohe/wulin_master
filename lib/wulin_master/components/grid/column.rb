@@ -301,7 +301,7 @@ module WulinMaster
       when 'has_many'
         {reflection.name => format_multiple_objects(object.send(@options[:through] || self.name))}
       else
-        self.format(object.send(self.name.to_s))
+        self.format(object.send(self.source.to_s))
       end
     end
 

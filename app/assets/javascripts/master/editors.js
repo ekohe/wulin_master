@@ -296,7 +296,8 @@
 
       // Append options from choices array
       $.each(this.choices, function(index, value) {
-        this.select.append("<option value='" + value.name + "'>" + value.name + "</option>")
+        value = value.name || value;
+        this.select.append("<option value='" + value + "'>" + value + "</option>")
       }.bind(this));
 
       this.setAllowSingleDeselect();

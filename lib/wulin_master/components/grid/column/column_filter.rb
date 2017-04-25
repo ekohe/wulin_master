@@ -120,6 +120,11 @@ module WulinMaster
         return adapter.query
       else
         filtering_value = filtering_value.gsub(/'/, "''")
+
+        if self.model.defined_enums.has_key?(self.source.to_s)
+          filtering_value = self.model.send(self.source.to_s.pluralize).find {|k, v| v if k.start_with?(filtering_value)}
+        end
+
         if ['integer', 'float', 'decimal'].include? sql_type.to_s and is_table_column?
           return query.where(self.source => filtering_value)
         else
