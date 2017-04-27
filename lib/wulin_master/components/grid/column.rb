@@ -169,7 +169,7 @@ module WulinMaster
         params_hash = {
           :grid => @grid_class.name,
           :column => self.source.to_s,
-          :text_attr => form_name,
+          :source => form_name,
           klass: klass_name,
           :screen => @options[:screen]
         }
@@ -183,7 +183,7 @@ module WulinMaster
           params_hash = {
             :grid => @grid_class.name,
             :column => @name.to_s,
-            :text_attr => self.source,
+            :source => self.source,
             klass: klass_name,
             :screen => @options[:screen]
           }
@@ -192,7 +192,7 @@ module WulinMaster
           params_hash = {
             :grid => @grid_class.name,
             :column => @name.to_s,
-            :text_attr => form_name,
+            :source => form_name,
             klass: klass_name,
             :screen => @options[:screen]
           }

@@ -4,13 +4,13 @@ module WulinMaster
     ForbiddenMessage = "Sorry you can't get anything, please contact administrator."
 
     def index
-      if authorized? and params[:text_attr].present?
-        if klass.column_names.include? params[:text_attr]
-          objects = klass.select("id, #{params[:text_attr]}").order("#{params[:text_attr]} ASC").all
+      if authorized? and params[:source].present?
+        if klass.column_names.include? params[:source]
+          objects = klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
         else
-          objects = klass.all.sort{|x,y| x.send(params[:text_attr]).to_s.downcase <=> y.send(params[:text_attr]).to_s.downcase}
+          objects = klass.all.sort{|x,y| x.send(params[:source]).to_s.downcase <=> y.send(params[:source]).to_s.downcase}
         end
-        self.response_body = objects.collect{|o| {:id => o.id, params[:text_attr].to_sym => o.send(params[:text_attr])} }.to_json
+        self.response_body = objects.collect{|o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
       else
         self.status = 403
         self.response_body = ForbiddenMessage
@@ -38,8 +38,8 @@ module WulinMaster
     end
 
     def fetch_distinct_options
-      if authorized? and params[:text_attr].present?
-        object_arr = klass.select(params[:text_attr]).order("#{params[:text_attr]} ASC").uniq.pluck(params[:text_attr]).delete_if(&:blank?)
+      if authorized? and params[:source].present?
+        object_arr = klass.select(params[:source]).order("#{params[:source]} ASC").uniq.pluck(params[:source]).delete_if(&:blank?)
         self.response_body = object_arr.to_json
       else
         self.status = 403

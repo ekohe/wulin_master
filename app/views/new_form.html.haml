@@ -77,9 +77,9 @@
                 var choices = "/wulin_master/fetch_distinct_options?"
                                      + "column=#{column_name}"
                                      + "&grid=#{grid.class}"
-                                     + "&klass=#{_klass}"
+                                     + "&klass=#{grid.model.name}"
                                      + "&screen=#{screen.class}"
-                                     + "&text_attr=#{column_name}";
+                                     + "&source=#{column_name}";
                 var container = $(".auto-complete-text-field-#{column_name}");
                 var column = {
                   auto_complete: true,

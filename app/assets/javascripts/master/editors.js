@@ -522,7 +522,22 @@
         this.select.val(this.args.item[this.column.field].id);
       }
 
-      this.getOptions();
+      if ($.isArray(this.choices)) {
+        var arrOptions = [];
+        $.each(this.choices, function(index, value) {
+          if (!args.item[this.column.field] || args.item[this.column.field].id != value.id) {
+            arrOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+          }
+        }.bind(this));
+        this.select.append(arrOptions.join(''));
+        this.select.chosen({
+          allow_single_deselect: !args.column['required']
+        });
+      } else {
+        this.getOptions();
+      }
+
+      // this.getOptions();
       this.openDropDrown();
     };
 

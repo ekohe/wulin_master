@@ -61,7 +61,7 @@ module WulinMaster
     def apply_equation_filter(query, operator, value, column_type, adapter)
       if ['date', 'datetime'].include? column_type
         operator = (operator == 'equals') ? 'LIKE' : 'NOT LIKE'
-        return query.where(["to_char(##{relation_table_name}.#{self.source}, 'YYYY-MM-DD') #{operator} UPPER(?)", "#{value}%"])
+        return query.where(["to_char(#{relation_table_name}.#{self.source}, 'YYYY-MM-DD') #{operator} UPPER(?)", "#{value}%"])
       elsif column_type == "boolean"
         adapter.boolean_query("#{relation_table_name}.#{self.source}", value, self)
         return adapter.query
