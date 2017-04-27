@@ -226,14 +226,14 @@ A column can be a real field in the database table of current model, or virtual 
   `:width`
   Controll the column initial width, default is 150.
 
-  `:option_text_attribute`
-  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :option_text_attribute to be the column name,         
+  `:source`
+  Sometimes you may want to show a column from another model, in this case, you can define the column name as the model name, and set :source to be the column name,         
   eg:
 
     class PostGrid < WulinMaster::Grid
       ...
 
-      column :author, option_text_attribute: 'name'
+      column :author, source: 'name'
 
       ...   
     end
