@@ -286,7 +286,43 @@
     SelectElementEditor.call(this, args);
 
     this.init = function() {
+      var choices = this.column.choices;
+      var selectOptions;
+
       this.initElements();
+
+      // get choices options from choices_column value
+      if (!this.choices && this.column.choices_column) {
+        choices = args.item[this.column.choices_column];
+      }
+
+      // construce select option
+      if ($.isArray(choices)) {
+        selectOptions = $.map(choices, function(e, index) {
+          if ($.isPlainObject(e)) {
+            return e;
+          } else {
+            return { id: e, name: e };
+          }
+        });
+      } else if ($.isPlainObject(choices)) {
+        selectOptions = {};
+        for (var i in choices) {
+          if ($.isEmptyObject(choices[i])) {
+            selectOptions[i] = [];
+          } else {
+            var option = $.map(choices[i], function(e, index) {
+              return { id: e, name: e };
+            });
+            selectOptions[i] = option;
+          }
+        }
+      }
+
+      // Filter the choices if it depend on other column's value
+      if (this.column.depend_column) {
+        selectOptions = selectOptions[args.item[this.column.depend_column]];
+      }
 
       // Append the current value option, otherwise this.serializeValue can't get it
       if (args.item[this.column.field]) {
@@ -295,7 +331,7 @@
       }
 
       // Append options from choices array
-      $.each(this.choices, function(index, value) {
+      $.each(selectOptions, function(index, value) {
         value = value.name || value;
         this.select.append("<option value='" + value + "'>" + value + "</option>")
       }.bind(this));

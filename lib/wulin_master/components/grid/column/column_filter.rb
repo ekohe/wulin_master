@@ -102,7 +102,7 @@ module WulinMaster
       formatted_value = if column_type == :integer
         value.to_i
       elsif column_type == :float or column_type == :decimal
-        filtering_value.to_f
+        value.to_f
       elsif column_type == :boolean
         true_values = ["y", "yes", "ye", "t", "true"]
         true_values.include?(value.downcase)
