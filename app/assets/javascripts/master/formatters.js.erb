@@ -66,13 +66,12 @@
 
     // Display datetime info as 'dd/mm/yyyy hh:ms' format
     DateTimeFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'))) {
-        value = convertDateTimeFormat(value);
-      }
-
       if (value === null || value === "") {
         return "";
       } else {
+        if (value.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'))) {
+          value = convertDateTimeFormat(value);
+        }
         return ApplyStyle(value, columnDef.style || 'text-align:center');
       }
     },
