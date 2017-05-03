@@ -157,7 +157,7 @@ module WulinMaster
         return association_type
       end
       column = model_columns.find {|col| col.name.to_s == self.source.to_s}
-      (column.try(:type) || association_type || self.options[:sql_type] || :unknown ).to_s.to_sym
+      (self.enum? ? :enum : (column.try(:type) || association_type || self.options[:sql_type] || :unknown)).to_s.to_sym
     end
 
     def reflection
@@ -314,6 +314,11 @@ module WulinMaster
 
     def sortable?
       @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
+    end
+
+    def enum?
+      enums = self.model.try(:defined_enums)
+      enums && enums.has_key?(self.source.to_s)
     end
 
     alias_method :filterable?, :sortable?

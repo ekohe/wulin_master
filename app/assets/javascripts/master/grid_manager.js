@@ -20,6 +20,8 @@
 
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
+        case "enum":
+          return SelectEditor;
         case "string":
           return TextEditor;
         case "text":

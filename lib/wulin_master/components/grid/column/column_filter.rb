@@ -121,14 +121,13 @@ module WulinMaster
       else
         filtering_value = filtering_value.gsub(/'/, "''")
 
-        enums = self.model.try(:defined_enums)
-        if enums && enums.has_key?(self.source.to_s)
+        if self.enum?
           filtering_value = self.model.send(self.source.to_s.pluralize).find do |key, value|
             value if key.downcase.start_with?(filtering_value.downcase)
           end
         end
 
-        if ['integer', 'float', 'decimal'].include? sql_type.to_s and is_table_column?
+        if ['integer', 'float', 'decimal', 'enum'].include? sql_type.to_s and is_table_column?
           return query.where(self.source => filtering_value)
         else
           adapter.string_query(complete_column_name, filtering_value, self)
