@@ -24,7 +24,7 @@
               = label
             %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
 
-            - if column.sql_type.to_s == 'belongs_to'
+            - if ['belongs_to', 'enum'].include?(column.sql_type.to_s)
               = form.select column_name,                            |
                 select_options(column),                             |
                 { include_blank: !column.presence_required? },      |
