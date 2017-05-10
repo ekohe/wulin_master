@@ -1,149 +1,151 @@
 - if grid.action_names.include?('edit') or grid.action_names.include?('dynamic_edit')
-  :ruby
-    model_name = grid.model.model_name.singular
-    columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+  = render '/form'
 
-    if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
-      columns.select!{|x| version_columns.include?(x.name)}
-    end
-
-    datepicker_str = ''
-    object = grid.model.new
-  .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
-    = form_for object, :url => grid.path do |form|
-      .base_error
-      - columns.each do |column|
-        - if edit_form_able?(column)
-          :ruby
-            column_name = get_column_name(column)
-            label = column.options[:form_label] || column.label
-            _klass = model_name.classify
-            field = column.options[:through] || column.name
-          .field{:name => column_name}
-            %label{:for => "#{model_name}_#{column_name}"}
-              = label
-            %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
-
-            - if ['belongs_to', 'enum'].include?(column.sql_type.to_s)
-              = form.select column_name,                            |
-                select_options(column),                             |
-                { include_blank: !column.presence_required? },      |
-                :style             => "width:250px",                |
-                :disabled          => column.options[:auto_fill],   |
-                "data-required"    => column.presence_required?,    |
-                "data-source"      => column.source,                |
-                "data-target"      => "#{column_name}_target_flag", |
-                "data-field"       => field                         |
-
-            - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
-              = form.select column.reflection.name.to_s,            |
-                select_options(column),                             |
-                { include_blank: !column.presence_required? },      |
-                :multiple          => true,                         |
-                :style             => "width:250px",                |
-                "data-required"    => column.presence_required?,    |
-                "data-source"      => column.source,                |
-                "data-target"      => "#{column_name}_target_flag", |
-                "data-field"       => field,                        |
-                :disabled          => column.options[:auto_fill]    |
-              = clean_up_for(column)
-
-            - elsif column.sql_type.to_s == 'has_one' || select_tag_field?(column)
-              = select_tag "#{model_name}[#{column_name}]",          |
-                select_tag_options(column),                          |
-                :style             => "width:250px",                 |
-                :disabled          => column.options[:auto_fill],    |
-                :include_blank     => !required?(column),            |
-                "data-required"    => required?(column),             |
-                "data-target"      => "#{column_name}_target_flag",  |
-                "data-source"      => column.source,                 |
-                "data-field"       => field                          |
-              - if column.options[:depend_column].present?
-                :javascript
-                  $(function(){
-                    var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
-                    var depend_select = $("select#" + depend_select_id);
-
-                    depend_select.on('change', function(){
-                      var current_select_id = "#{model_name}_#{column_name}";
-                      var current_select = $("select#" + current_select_id);
-                      var key = $(this).val();
-                      current_select.find("option").hide().trigger("liszt:updated");
-                      current_select.val("").trigger("liszt:updated");
-                      current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
-                    });
-                  });
-
-            - elsif column.sql_type.to_s == 'string'
-              = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
-              :javascript
-                var choices = "/wulin_master/fetch_distinct_options?"
-                                     + "column=#{column_name}"
-                                     + "&grid=#{grid.class}"
-                                     + "&klass=#{_klass}"
-                                     + "&screen=#{screen.class}"
-                                     + "&source=#{column_name}";
-                var container = $(".auto-complete-text-field-#{column_name}");
-                var column = {
-                  auto_complete: true,
-                  width: container.width(),
-                  choices: choices
-                };
-                var args = {
-                  column: column,
-                  container: container
-                };
-                var carbonCopyNewEditor = TextEditorForForm.bind({})
-                carbonCopyNewEditor(args);
-
-            - elsif column.options[:file]
-              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
-              = clean_up_tag(column_name)
-            - elsif column.options[:password]
-              = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
-            - else
-              - if column.sql_type.to_s.downcase == 'boolean'
-                = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field
-                = clean_up_for(column)
-              - elsif column.sql_type.to_s.downcase == 'text'
-                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 260px; height: 4em;'
-              - else
-                = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
-            .field_error
-      .submit
-        %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
-
-  :javascript
-    $('##{grid.name}_form select[data-required="true"]').chosen();
-    $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-    $('##{grid.name}_form select').off('change').on('change', function(){
-      var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
-      if (flag.size() > 0) flag.attr('checked', 'checked');
-    });
-
-    $('##{grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('##{grid.name}_form input[data-datetime]').datetimepicker({
-      onlyTime: false,
-      dateFormat: "yy-mm-dd",
-      timeFormat: 'HH:mm',
-      timeOnly: false,
-      stepMinute: 1,
-      minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true },
-      onClose: function() { calendarOpen = false }
-    });
-    $('##{grid.name}_form input[data-time]').timepicker({});
-
-    $(function(){
-      $('##{grid.name}_form .input_clean_up').off('click').on('click', function(){
-        var $input = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
-        var $flagInput = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
-        $flagInput.attr('checked', 'checked');
-        $input.val('');
-        if ($input.is('select')) $input.trigger("liszt:updated");
-        if ($input.is(':checkbox')) {
-          $input.removeAttr('checked');
-          $("##{grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');
-        }
-      });
-    });
+  -# :ruby
+  -#   model_name = grid.model.model_name.singular
+  -#   columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+  -#
+  -#   if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
+  -#     columns.select!{|x| version_columns.include?(x.name)}
+  -#   end
+  -#
+  -#   datepicker_str = ''
+  -#   object = grid.model.new
+  -# .create_form{:id => "#{grid.name}_form", :title => "Update #{model_name.titleize}", data: {action: 'update'}}
+  -#   = form_for object, :url => grid.path do |form|
+  -#     .base_error
+  -#     - columns.each do |column|
+  -#       - if edit_form_able?(column)
+  -#         :ruby
+  -#           column_name = get_column_name(column)
+  -#           label = column.options[:form_label] || column.label
+  -#           _klass = model_name.classify
+  -#           field = column.options[:through] || column.name
+  -#         .field{:name => column_name}
+  -#           %label{:for => "#{model_name}_#{column_name}"}
+  -#             = label
+  -#           %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}/
+  -#
+  -#           - if ['belongs_to', 'enum'].include?(column.sql_type.to_s)
+  -#             = form.select column_name,                            |
+  -#               select_options(column),                             |
+  -#               { include_blank: !column.presence_required? },      |
+  -#               :style             => "width:250px",                |
+  -#               :disabled          => column.options[:auto_fill],   |
+  -#               "data-required"    => column.presence_required?,    |
+  -#               "data-source"      => column.source,                |
+  -#               "data-target"      => "#{column_name}_target_flag", |
+  -#               "data-field"       => field                         |
+  -#
+  -#           - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
+  -#             = form.select column.reflection.name.to_s,            |
+  -#               select_options(column),                             |
+  -#               { include_blank: !column.presence_required? },      |
+  -#               :multiple          => true,                         |
+  -#               :style             => "width:250px",                |
+  -#               "data-required"    => column.presence_required?,    |
+  -#               "data-source"      => column.source,                |
+  -#               "data-target"      => "#{column_name}_target_flag", |
+  -#               "data-field"       => field,                        |
+  -#               :disabled          => column.options[:auto_fill]    |
+  -#             = clean_up_for(column)
+  -#
+  -#           - elsif column.sql_type.to_s == 'has_one' || select_tag_field?(column)
+  -#             = select_tag "#{model_name}[#{column_name}]",          |
+  -#               select_tag_options(column),                          |
+  -#               :style             => "width:250px",                 |
+  -#               :disabled          => column.options[:auto_fill],    |
+  -#               :include_blank     => !required?(column),            |
+  -#               "data-required"    => required?(column),             |
+  -#               "data-target"      => "#{column_name}_target_flag",  |
+  -#               "data-source"      => column.source,                 |
+  -#               "data-field"       => field                          |
+  -#             - if column.options[:depend_column].present?
+  -#               :javascript
+  -#                 $(function(){
+  -#                   var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
+  -#                   var depend_select = $("select#" + depend_select_id);
+  -#
+  -#                   depend_select.on('change', function(){
+  -#                     var current_select_id = "#{model_name}_#{column_name}";
+  -#                     var current_select = $("select#" + current_select_id);
+  -#                     var key = $(this).val();
+  -#                     current_select.find("option").hide().trigger("liszt:updated");
+  -#                     current_select.val("").trigger("liszt:updated");
+  -#                     current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
+  -#                   });
+  -#                 });
+  -#
+  -#           - elsif column.sql_type.to_s == 'string'
+  -#             = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
+  -#             :javascript
+  -#               var choices = "/wulin_master/fetch_distinct_options?"
+  -#                                    + "column=#{column_name}"
+  -#                                    + "&grid=#{grid.class}"
+  -#                                    + "&klass=#{_klass}"
+  -#                                    + "&screen=#{screen.class}"
+  -#                                    + "&source=#{column_name}";
+  -#               var container = $(".auto-complete-text-field-#{column_name}");
+  -#               var column = {
+  -#                 auto_complete: true,
+  -#                 width: container.width(),
+  -#                 choices: choices
+  -#               };
+  -#               var args = {
+  -#                 column: column,
+  -#                 container: container
+  -#               };
+  -#               var carbonCopyNewEditor = TextEditorForForm.bind({})
+  -#               carbonCopyNewEditor(args);
+  -#
+  -#           - elsif column.options[:file]
+  -#             = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
+  -#             = clean_up_tag(column_name)
+  -#           - elsif column.options[:password]
+  -#             = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
+  -#           - else
+  -#             - if column.sql_type.to_s.downcase == 'boolean'
+  -#               = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field
+  -#               = clean_up_for(column)
+  -#             - elsif column.sql_type.to_s.downcase == 'text'
+  -#               = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 260px; height: 4em;'
+  -#             - else
+  -#               = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill],"data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
+  -#           .field_error
+  -#     .submit
+  -#       %input.btn.success.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+  -#
+  -# :javascript
+  -#   $('##{grid.name}_form select[data-required="true"]').chosen();
+  -#   $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+  -#   $('##{grid.name}_form select').off('change').on('change', function(){
+  -#     var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+  -#     if (flag.size() > 0) flag.attr('checked', 'checked');
+  -#   });
+  -#
+  -#   $('##{grid.name}_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
+  -#   $('##{grid.name}_form input[data-datetime]').datetimepicker({
+  -#     onlyTime: false,
+  -#     dateFormat: "yy-mm-dd",
+  -#     timeFormat: 'HH:mm',
+  -#     timeOnly: false,
+  -#     stepMinute: 1,
+  -#     minuteGrid: 0,
+  -#     beforeShow: function() { calendarOpen = true },
+  -#     onClose: function() { calendarOpen = false }
+  -#   });
+  -#   $('##{grid.name}_form input[data-time]').timepicker({});
+  -#
+  -#   $(function(){
+  -#     $('##{grid.name}_form .input_clean_up').off('click').on('click', function(){
+  -#       var $input = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"]').not('.target_flag');
+  -#       var $flagInput = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
+  -#       $flagInput.attr('checked', 'checked');
+  -#       $input.val('');
+  -#       if ($input.is('select')) $input.trigger("liszt:updated");
+  -#       if ($input.is(':checkbox')) {
+  -#         $input.removeAttr('checked');
+  -#         $("##{grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');
+  -#       }
+  -#     });
+  -#   });
