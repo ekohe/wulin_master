@@ -21,13 +21,13 @@ module WulinMaster
         self.screen_classes = args
       end
 
-      def add_callback(name, method_name=nil)
+      def add_callback(name, method_name = nil)
         @callbacks ||= {}
         @callbacks[name] ||= []
-        if block_given?
-          @callbacks[name] << lambda { yield }
-        else
-          @callbacks[name] << method_name
+        @callbacks[name] << if block_given?
+                              -> { yield }
+                            else
+                              method_name
         end
       end
 
@@ -39,7 +39,7 @@ module WulinMaster
     private
 
     def render_index
-      render '/index', :layout => (request.xhr? ? false : 'application'), :locals => {xhr: request.xhr?}
+      render '/index', layout: (request.xhr? ? false : 'application'), locals: {xhr: request.xhr?}
     end
   end
 end

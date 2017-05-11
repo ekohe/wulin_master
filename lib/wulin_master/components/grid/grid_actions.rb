@@ -18,27 +18,27 @@ module WulinMaster
 
     module ClassMethods
       # action DSL, add an action to the actions_pool
-      def action(a_name, options={})
+      def action(a_name, options = {})
         new_action = {name: a_name}.merge(options)
-        self.actions_pool << new_action
+        actions_pool << new_action
         add_hotkey_action(a_name, options)
       end
 
       def add_actions(*args)
         args.each do |arg|
-          self.action(arg)
+          action(arg)
         end
       end
 
       def remove_actions(*args)
         args.each do |arg|
-          self.actions_pool.delete_if { |action| action[:name] == arg.to_s}
+          actions_pool.delete_if { |action| action[:name] == arg.to_s }
         end
       end
 
-      def load_default_actions(options={})
+      def load_default_actions(options = {})
         ORIGINAL_ACTIONS.each do |oa|
-          self.action(oa, options)
+          action(oa, options)
         end
         # special actions needed to be load as default
         # action :hotkey_add, visible: false
@@ -52,54 +52,54 @@ module WulinMaster
 
       def add_hotkey_action(action_name, action_options)
         action_name = action_name.to_s
-        if action_name == 'add' and !self.actions_pool.find{|x| x[:name].to_s == 'hotkey_add'}
-          self.actions_pool << {name: :hotkey_add, visible: false}.merge(action_options) 
-        elsif action_name == 'delete' and !self.actions_pool.find{|x| x[:name].to_s == 'hotkey_delete'}
-          self.actions_pool << {name: :hotkey_delete, visible: false}.merge(action_options) 
+        if (action_name == 'add') && !actions_pool.find { |x| x[:name].to_s == 'hotkey_add' }
+          actions_pool << {name: :hotkey_add, visible: false}.merge(action_options)
+        elsif (action_name == 'delete') && !actions_pool.find { |x| x[:name].to_s == 'hotkey_delete' }
+          actions_pool << {name: :hotkey_delete, visible: false}.merge(action_options)
         end
       end
     end
 
-    # the actions of a grid instance, filtered by screen param from class's actions_pool 
+    # the actions of a grid instance, filtered by screen param from class's actions_pool
     def actions
-      return self.class.actions_pool if self.params["screen"].blank?
-      self.class.actions_pool.select {|action| valid_action?(action)}.uniq {|action| action[:name]}
+      return self.class.actions_pool if params["screen"].blank?
+      self.class.actions_pool.select { |action| valid_action?(action) }.uniq { |action| action[:name] }
     end
 
     # the actions on the toolbar
     def toolbar_actions
-      actions.reject {|action| action[:toolbar_item] == false || action[:visible] == false}
+      actions.reject { |action| action[:toolbar_item] == false || action[:visible] == false }
     end
 
     # the actions on the grid header (not on the toolbar)
     def header_actions
-      actions.select {|action| action[:toolbar_item] == false}
+      actions.select { |action| action[:toolbar_item] == false }
     end
-    
+
     def action_configs
-      actions.map {|a| a.reject{|k,v| k == :only or k == :except} }
+      actions.map { |a| a.reject { |k, _v| (k == :only) || (k == :except) } }
     end
 
     def action_names
-      actions.map {|a| a[:name].to_s}
+      actions.map { |a| a[:name].to_s }
     end
 
     private
 
     def valid_action?(action)
-      valid_action_by_screen_configuration?(action) and 
-      valid_by_screen_authorize_create?(action) and 
-      valid_by_action_authorized?(action)
+      valid_action_by_screen_configuration?(action) &&
+        valid_by_screen_authorize_create?(action) &&
+        valid_by_action_authorized?(action)
     end
 
     # 1. check if this action can be displayed in the screen due to :only or :except configuration
     def valid_action_by_screen_configuration?(action)
-      (action[:only].blank? and action[:except].blank?) ||
-      (action[:only].present? and params[:screen].present? and action[:only].include?(params[:screen].intern)) ||
-      (action[:except].present? and params[:screen].present? and action[:except].exclude?(params[:screen].intern))
+      (action[:only].blank? && action[:except].blank?) ||
+        (action[:only].present? && params[:screen].present? && action[:only].include?(params[:screen].intern)) ||
+        (action[:except].present? && params[:screen].present? && action[:except].exclude?(params[:screen].intern))
     end
 
-    # 2. check if this screen creation authorized for current user if action is cud 
+    # 2. check if this screen creation authorized for current user if action is cud
     def valid_by_screen_authorize_create?(action)
       return true unless current_user
       self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?
@@ -107,14 +107,13 @@ module WulinMaster
 
     # 3. check if this action authorized for current user
     def valid_by_action_authorized?(action)
-      return true unless (action[:authorized?] and current_user)
+      return true unless action[:authorized?] && current_user
       authorized_proc = action.delete(:authorized?)
-      if authorized_proc.kind_of?(Proc)
+      if authorized_proc.is_a?(Proc)
         return authorized_proc.call(current_user)
       else
         return authorized_proc == true
       end
     end
-
   end
 end

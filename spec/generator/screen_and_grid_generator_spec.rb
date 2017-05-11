@@ -22,7 +22,7 @@ describe WulinMaster::ScreenAndGridGenerator do
   end
 
   after :all do
-    #rm_rf self.test_case.destination_root
+    # rm_rf self.test_case.destination_root
   end
 
   specify do

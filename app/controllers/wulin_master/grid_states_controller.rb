@@ -16,16 +16,16 @@ module WulinMaster
             next if state.user_id == uid
             new_state = GridState.where(user_id: uid, name: state.name, grid_name: state.grid_name).first
             if new_state
-              new_state.update_attributes!({state_value: state.state_value})
+              new_state.update_attributes!(state_value: state.state_value)
             else
-              GridState.create!(state.attributes.delete_if{|k,v| ["id", "created_at", "updated_at"].include? k}.merge(user_id: uid))
+              GridState.create!(state.attributes.delete_if { |k, _v| %w(id created_at updated_at).include? k }.merge(user_id: uid))
             end
           end
         end
       end
-      render :json => {success: true}
+      render json: {success: true}
     rescue
-      render :json => {success: false, error_message: $!.message}
+      render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
     protected
@@ -33,25 +33,27 @@ module WulinMaster
     def set_user_ids_for_filtering
       return if params[:filters].blank?
 
-      user_filter = params[:filters].find{|x| x["column"] == "email"}
+      user_filter = params[:filters].find { |x| x["column"] == "email" }
       return if user_filter.blank?
 
-      user_ids = User.all.select{|u| u.email.include?(user_filter["value"])}.map(&:id)
+      user_ids = User.all.select { |u| u.email.include?(user_filter["value"]) }.map(&:id)
 
       params[:filters].delete user_filter
-      @query = @query.where(:user_id => user_ids)
+      @query = @query.where(user_id: user_ids)
     end
 
     def skip_sorting_if_sort_by_user
-      return if params[:sort_col].blank? or params[:sort_col] != "email"
+      return if params[:sort_col].blank? || (params[:sort_col] != "email")
       @skip_order = true
     end
 
     def set_user_ids_for_sorting
-      @query = @query.all.sort do |s1, s2|
-        return 0 if s1.user.nil? || s2.user.nil?
-        params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
-      end if @skip_order
+      if @skip_order
+        @query = @query.all.sort do |s1, s2|
+          return 0 if s1.user.nil? || s2.user.nil?
+          params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
+        end
+      end
     end
 
     def clear_invalid_states_and_users_cache
@@ -61,6 +63,5 @@ module WulinMaster
         WulinMaster::GridState.clear_invalid_states!
       end
     end
-
   end
 end

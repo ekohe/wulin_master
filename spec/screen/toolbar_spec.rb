@@ -4,8 +4,8 @@ require './lib/wulin_master/components/grid/toolbar'
 describe WulinMaster::Toolbar do
   it "should render a toolbar with the toolbar items" do
     pending 'fix'
-    item_1 = WulinMaster::ToolbarItem.new("Excel", :icon => "excel")
-    item_2 = WulinMaster::ToolbarItem.new("Filter", :icon => "filter", :javascript => "alert('filter')")
+    item_1 = WulinMaster::ToolbarItem.new("Excel", icon: "excel")
+    item_2 = WulinMaster::ToolbarItem.new("Filter", icon: "filter", javascript: "alert('filter')")
     view_1 = item_1.render
     view_2 = item_2.render
 

@@ -23,8 +23,8 @@ describe WulinMaster::Menu do
 
   it "should render a the right view template" do
     pending('fix')
-    WulinMaster.stub_chain(:config, :app_title) {"Undefined App"}
-    WulinMaster.stub_chain(:config, :app_title_height) {"40px"}
+    WulinMaster.stub_chain(:config, :app_title) { "Undefined App" }
+    WulinMaster.stub_chain(:config, :app_title_height) { "40px" }
     sub_menu_1 = WulinMaster::SubMenu.new("sports")
     sub_menu_2 = WulinMaster::SubMenu.new("life")
     @menu << sub_menu_1
@@ -39,7 +39,6 @@ describe WulinMaster::Menu do
     view.should match(/sports/)
     view.should match(/life/)
   end
-
 end
 
 # Test SubMenu

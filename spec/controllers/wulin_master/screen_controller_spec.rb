@@ -23,9 +23,8 @@ end
 class Country < ActiveRecord::Base
 end
 
-describe CountriesController, :type => :controller do
-
-  def mock_country(stubs={})
+describe CountriesController, type: :controller do
+  def mock_country(stubs = {})
     @mock_country ||= mock_model(Country, stubs).as_null_object
   end
 
@@ -34,7 +33,7 @@ describe CountriesController, :type => :controller do
       # WulinMaster::ScreenController.load_actions
       # screen = WulinMaster::ScreenController.new
       # @grid = WulinMaster::Grid.new(screen)
-      @grid = double()
+      @grid = double
       # @grid.model(Country)
       @grid.stub(:model) { Country }
       @controller.stub(:grid) { @grid }
@@ -43,7 +42,7 @@ describe CountriesController, :type => :controller do
     describe "get 'index'" do
       it "should render index template if request format :html" do
         pending 'fix'
-        get :index, :format => :html
+        get :index, format: :html
         response.should render_template(:index)
       end
 
@@ -52,7 +51,7 @@ describe CountriesController, :type => :controller do
           Country.stub(:count) { 100 }
           Country.stub(:all) { [] }
           @mock_model = double("Country")
-          controller = double()
+          controller = double
           controller.stub(:query) { @mock_model }
         end
 
@@ -69,7 +68,7 @@ describe CountriesController, :type => :controller do
           controller.should_receive(:fire_callbacks).with(:query_ready)
           @query_origin.should_receive(:count)
           @query_origin.should_receive(:all)
-          get :index, :format => :json
+          get :index, format: :json
         end
 
         it "should assign Country model to @query, @count, @objects" do
@@ -79,7 +78,7 @@ describe CountriesController, :type => :controller do
           controller.stub(:parse_ordering) { true }
           controller.stub(:add_select) { true }
           controller.stub(:render_json) { "" }
-          get :index, :format => :json
+          get :index, format: :json
           assigns(:query).should == controller.grid.model
           assigns(:count).should == 100
           assigns(:objects).should == []
@@ -87,19 +86,19 @@ describe CountriesController, :type => :controller do
 
         it "should render json object as the response" do
           pending 'fix'
-          @json_obj = {:offset => 100, :total => 1000, :count => 100, :rows => ["China", "USA"]}.to_json
+          @json_obj = {offset: 100, total: 1000, count: 100, rows: %w(China USA)}.to_json
           controller.stub(:construct_filters) { true }
           controller.stub(:parse_pagination) { true }
           controller.stub(:parse_ordering) { true }
           controller.stub(:add_select) { true }
-          controller.stub(:render_json) {@json_obj}
-          get :index, :format => :json
+          controller.stub(:render_json) { @json_obj }
+          get :index, format: :json
           response.body.should == @json_obj
         end
 
         it "should apply filter on the grid when calling construct_filters if given filter params" do
           pending 'fix'
-          controller.stub(:params).and_return({:filters => [{:column => "name", :value => "China"}]})
+          controller.stub(:params).and_return(filters: [{column: "name", value: "China"}])
           @grid.should_receive(:apply_filter).with(@mock_model, "name", "China")
           controller.send(:construct_filters)
         end
@@ -114,7 +113,7 @@ describe CountriesController, :type => :controller do
           pending 'fix'
           limited = []
           offseted = []
-          controller.stub(:params).and_return({:count => 100, :offset => 200})
+          controller.stub(:params).and_return(count: 100, offset: 200)
           controller.query.stub(:limit) { limited }
           limited.stub(:offset) { offseted }
           controller.query.should_receive(:limit).with(100)
@@ -136,15 +135,15 @@ describe CountriesController, :type => :controller do
 
         it "should invoke order on query when calling parse_ordering if params given" do
           pending 'fix'
-          @grid.stub(:sql_columns) { ["name", "code"] }
-          controller.stub(:params).and_return({:sort_col => "code", :sort_dir => "DESC"})
+          @grid.stub(:sql_columns) { %w(name code) }
+          controller.stub(:params).and_return(sort_col: "code", sort_dir: "DESC")
           controller.query.should_receive(:order).with("code DESC")
           controller.send(:parse_ordering)
         end
 
         it "should invoke order on query with default value when calling parse_ordering if params not given" do
           pending 'fix'
-          @grid.stub(:sql_columns) { ["name", "code"] }
+          @grid.stub(:sql_columns) { %w(name code) }
           controller.stub(:params).and_return({})
           controller.query.should_receive(:order).with("name ASC")
           controller.send(:parse_ordering)
@@ -158,7 +157,7 @@ describe CountriesController, :type => :controller do
         end
 
         it "should return a json object after calling render_json" do
-          @grid.stub(:arraify) { ["China", "USA"] }
+          @grid.stub(:arraify) { %w(China USA) }
           @grid.should_receive(:arraify)
           result = controller.send(:render_json)
           result.should be_a_kind_of(String)
@@ -175,33 +174,33 @@ describe CountriesController, :type => :controller do
       describe "with valid params" do
         it "assigns a newly created record as @record" do
           pending 'fix'
-          @grid.model.stub(:new).with({'these' => 'params'}) { mock_country(:save => true) }
-          post :create, :country => {'these' => 'params'}
+          @grid.model.stub(:new).with('these' => 'params') { mock_country(save: true) }
+          post :create, params: { country: {'these' => 'params'} }
           assigns(:record).should be(mock_country)
         end
 
         it "render success json if format json" do
           pending 'fix'
-          @grid.model.stub(:new) { mock_country(:save => true) }
-          post :create, :country => {}, :format => :json
-          response.body.should == {:success => true}.to_json
+          @grid.model.stub(:new) { mock_country(save: true) }
+          post :create, params: { country: {}, format: :json }
+          response.body.should == {success: true}.to_json
         end
       end
 
       describe "with invalid params" do
         it "assigns a newly created but unsaved record as @record" do
           pending 'fix'
-          @grid.model.stub(:new).with({'these' => 'params'}) { mock_country(:save => false) }
-          post :create, :country => {'these' => 'params'}
+          @grid.model.stub(:new).with('these' => 'params') { mock_country(save: false) }
+          post :create, params: { country: {'these' => 'params'} }
           assigns(:record).should be(mock_country)
         end
 
         it "render failure json and error message if format json" do
           pending 'fix'
-          @grid.model.stub(:new) { mock_country(:save => false) }
-          mock_country(:save => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
-          post :create, :country => {}, :format => :json
-          response.body.should == {:success => false, :error_message => "country_errors" }.to_json
+          @grid.model.stub(:new) { mock_country(save: false) }
+          mock_country(save: false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
+          post :create, params: { country: {}, format: :json }
+          response.body.should == {success: false, error_message: "country_errors" }.to_json
         end
       end
     end
@@ -211,51 +210,51 @@ describe CountriesController, :type => :controller do
         it "updates the requested record" do
           pending 'fix'
           @grid.model.stub(:find).with("37") { mock_country }
-          mock_country.should_receive(:update_attributes).with({'these' => 'params'})
-          put :update, :id => 37, :item => {'these' => 'params'}
+          mock_country.should_receive(:update_attributes).with('these' => 'params')
+          put :update, params: { id: 37, item: {'these' => 'params'} }
         end
 
         it "assigns the requested record as @record" do
           pending 'fix'
-          @grid.model.stub(:find) { mock_country(:update_attributes => true) }
-          put :update, :id => "1", :item => {'these' => 'params'}
+          @grid.model.stub(:find) { mock_country(update_attributes: true) }
+          put :update, params: { id: "1", item: {'these' => 'params'} }
           assigns(:record).should be(mock_country)
         end
 
         it "render success json if format json" do
           pending 'fix'
-          @grid.model.stub(:find) { mock_country(:update_attributes => true) }
-          put :update, :id => "1", :item => {'these' => 'params'}, :format => :json
-          response.body.should == {:success => true}.to_json
+          @grid.model.stub(:find) { mock_country(update_attributes: true) }
+          put :update, params: { id: "1", item: {'these' => 'params'}, format: :json }
+          response.body.should == {success: true}.to_json
         end
       end
 
       describe "with invalid params" do
         it "assigns the record as @record" do
           pending 'fix'
-          @grid.model.stub(:find) { mock_country(:update_attributes => false) }
-          put :update, :id => "1", :item => {'these' => 'params'}
+          @grid.model.stub(:find) { mock_country(update_attributes: false) }
+          put :update, params: { id: "1", item: {'these' => 'params'} }
           assigns(:record).should be(mock_country)
         end
 
         it "render failure json and error message if format json" do
           pending 'fix'
-          @grid.model.stub(:find) { mock_country(:update_attributes => false) }
-          mock_country(:update_attributes => false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
-          put :update, :id => "1", :item => {'these' => 'params'}, :format => :json
-          response.body.should == {:success => false, :error_message => "country_errors" }.to_json
+          @grid.model.stub(:find) { mock_country(update_attributes: false) }
+          mock_country(update_attributes: false).stub_chain(:errors, :full_messages, :join).with("\n").and_return("country_errors")
+          put :update, params: { id: "1", item: {'these' => 'params'}, format: :json }
+          response.body.should == {success: false, error_message: "country_errors" }.to_json
         end
       end
     end
 
     describe "delete 'destroy'" do
       before :each do
-        #@grid.model.stub(:transaction) { nil }
+        # @grid.model.stub(:transaction) { nil }
       end
 
       it "success to destroy the requested county" do
         pending 'fix'
-        ids = ['37','38']
+        ids = %w(37 38)
         mock_country_1 = double("Country_1")
         mock_country_2 = double("Country_2")
         mock_countries = [mock_country_1, mock_country_2]
@@ -267,13 +266,13 @@ describe CountriesController, :type => :controller do
         mock_country_1.should_receive(:destroy)
         mock_country_2.should_receive(:destroy)
 
-        delete :destroy, :id => "37,38", :format => :json
-        response.body.should == {:success => true}.to_json
+        delete :destroy, params: { id: "37,38", format: :json }
+        response.body.should == {success: true}.to_json
       end
 
       it "fails to destroy the requested county" do
         pending 'fix'
-        ids = ['37','38']
+        ids = %w(37 38)
         mock_country_1 = double("Country_1")
         mock_country_2 = double("Country_2")
         mock_countries = [mock_country_1, mock_country_2]
@@ -288,8 +287,8 @@ describe CountriesController, :type => :controller do
         mock_country_1.should_receive(:destroy)
         mock_country_2.should_not_receive(:destroy)
 
-        delete :destroy, :id => "37,38", :format => :json
-        response.body.should == {:success => false, :error_message => "can't destroy" }.to_json
+        delete :destroy, params: { id: "37,38", format: :json }
+        response.body.should == {success: false, error_message: "can't destroy" }.to_json
       end
     end
   end
@@ -327,7 +326,6 @@ describe CountriesController, :type => :controller do
       @event_grid.controller_class.should == controller.class
     end
 
-
     describe "add callbacks" do
       it 'can add callbacks to the controller' do
         pending 'fix'
@@ -337,7 +335,7 @@ describe CountriesController, :type => :controller do
       it 'should add the method name to callbacks if invoke add_callback without block' do
         pending 'fix'
         mock_method = double("Method")
-        controller.callbacks.should == nil
+        controller.callbacks.should.nil?
         controller.add_callback(:before_query, mock_method)
         controller.callbacks.should == {before_query: [mock_method]}
       end
@@ -345,7 +343,7 @@ describe CountriesController, :type => :controller do
       it 'should save the block to callbacks if invoke add_callback with a block' do
         pending 'fix'
         mock_block = double("Block")
-        controller.callbacks.should == nil
+        controller.callbacks.should.nil?
         controller.add_callback(:before_query) do
           mock_block
         end
@@ -368,7 +366,7 @@ describe CountriesController, :type => :controller do
 
       it 'should do nothing i"f no callbacks existing' do
         pending 'fix'
-        controller.stub(:callbacks) {nil}
+        controller.stub(:callbacks) { nil }
         controller.should_not_receive(:callbacks).with("before_query")
 
         controller.fire_callbacks("before_query")
@@ -376,14 +374,13 @@ describe CountriesController, :type => :controller do
 
       it 'should do nothing if not found specified callbacks or specified callbacks has no callback in it' do
         pending 'fix'
-        controller.stub(:callbacks) {@mock_callbacks}
-        controller.stub(:callbacks).with("before") {@mock_cbs}
-        @mock_cbs.stub(:blank?) {true}
+        controller.stub(:callbacks) { @mock_callbacks }
+        controller.stub(:callbacks).with("before") { @mock_cbs }
+        @mock_cbs.stub(:blank?) { true }
 
         @mock_cbs.should_not_receive(:each)
         controller.fire_callbacks("before")
       end
-
 
       it 'should invoke every callback in the specified callbacks if found' do
         pending 'fix'
@@ -391,19 +388,19 @@ describe CountriesController, :type => :controller do
         @cb_2 = double("callback")
         @cb_3 = double("callback")
 
-        @cb_1.stub(:class) {Proc}
-        controller.stub(:respond_to?).with(@cb_2) {true}
-        controller.stub(:respond_to?).with(@cb_3) {false}
+        @cb_1.stub(:class) { Proc }
+        controller.stub(:respond_to?).with(@cb_2) { true }
+        controller.stub(:respond_to?).with(@cb_3) { false }
 
         @mock_cbs = [@cb_1, @cb_2, @cb_3]
 
-        controller.stub(:callbacks) {@mock_callbacks}
-        controller.stub(:callbacks).with("before") {@mock_cbs}
+        controller.stub(:callbacks) { @mock_callbacks }
+        controller.stub(:callbacks).with("before") { @mock_cbs }
 
         @mock_cbs.should_receive(:each).and_yield(@cb_1).and_yield(@cb_2).and_yield(@cb_3)
-        @cb_1.should_receive(:call)   # should call proc
-        controller.should_receive(:send).with(@cb_2)    # should invoke existing method
-        controller.should_not_receive(:send).with(@cb_3)    # should not invoke not-existing method
+        @cb_1.should_receive(:call) # should call proc
+        controller.should_receive(:send).with(@cb_2) # should invoke existing method
+        controller.should_not_receive(:send).with(@cb_3) # should not invoke not-existing method
 
         controller.fire_callbacks("before")
       end

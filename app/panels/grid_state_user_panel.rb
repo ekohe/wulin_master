@@ -1,3 +1,3 @@
 class GridStateUserPanel < WulinMaster::Panel
-   fill_window false
+  fill_window false
 end

@@ -2,7 +2,7 @@ module WulinMaster
   module Authorization
     # Called as before_action
     def require_authorization
-      return true unless self.respond_to?(:current_user)
+      return true unless respond_to?(:current_user)
       is_authorized = case params[:action]
       when 'index'
         screen.authorized?(current_user)
@@ -15,15 +15,15 @@ module WulinMaster
       else
         true
       end
-      
+
       is_authorized ? authorized : unauthorized
     end
-    
+
     def unauthorized
       Rails.logger.info "Unauthorized #{params[:action].inspect} request to screen #{screen.class}"
       respond_to do |format|
-        format.html { render :text => "Unauthorized", :status => 401}
-        format.json { render :json => {:status => :unauthorized}, :status => 401 }
+        format.html { render text: "Unauthorized", status: 401 }
+        format.json { render json: {status: :unauthorized}, status: 401 }
       end
     end
 

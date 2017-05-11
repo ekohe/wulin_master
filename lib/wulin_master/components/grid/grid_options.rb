@@ -3,7 +3,7 @@
 module WulinMaster
   module GridOptions
     extend ActiveSupport::Concern
-    
+
     included do
       class << self
         attr_accessor :options_pool
@@ -17,9 +17,9 @@ module WulinMaster
       def option(option)
         # turn option["screen"] to option[:only]
         option[:only] = [option[:screen].intern] if option[:screen]
-        self.options_pool << option unless self.options_pool.include?(option)
-      end 
-      
+        options_pool << option unless options_pool.include?(option)
+      end
+
       def options(*args)
         args.each do |arg|
           option(arg)
@@ -27,20 +27,20 @@ module WulinMaster
       end
 
       # helpers
-      def cell_editable(value=true, options={})
-        option({editable: value}.merge options)
+      def cell_editable(value = true, options = {})
+        option({editable: value}.merge(options))
       end
 
-      def column_sortable(value=true, options={})
-        option({sortable: value}.merge options)
+      def column_sortable(value = true, options = {})
+        option({sortable: value}.merge(options))
       end
 
-      def hide_header(value=true, options={})
-        option({hide_header: value}.merge options)
+      def hide_header(value = true, options = {})
+        option({hide_header: value}.merge(options))
       end
 
-      def eager_loading(value=true, options={})
-        option({eagerLoading: value}.merge options)
+      def eager_loading(value = true, options = {})
+        option({eagerLoading: value}.merge(options))
         if value == false
           screens = options[:only] || [options["screen"].try(:intern)].compact
           behavior :disable_toolbar_initially, only: screens
@@ -50,16 +50,16 @@ module WulinMaster
         end
       end
 
-      def multi_select(value=true, options={})
-        option({multiSelect: value}.merge options)
+      def multi_select(value = true, options = {})
+        option({multiSelect: value}.merge(options))
       end
     end
 
     def options
       # make sure the common option comes first so that the specific option for a screen can override it when merging
-      the_options = self.class.options_pool.sort_by{|s| s[:only] || s[:except] || [] }
-      .select {|option| valid_option?(option)}
-      .inject({}) {|h, e| h.merge(e.reject{|k,v| k == :only or k == :except})}
+      the_options = self.class.options_pool.sort_by { |s| s[:only] || s[:except] || [] }.
+                    select { |option| valid_option?(option) }.
+                    inject({}) { |h, e| h.merge(e.reject { |k, _v| (k == :only) || (k == :except) }) }
       set_cell_editable_for_current_user(the_options)
     end
 
@@ -79,9 +79,9 @@ module WulinMaster
     private
 
     def valid_option?(option)
-      (option[:only].blank? and option[:except].blank?) ||
-      (option[:only].present? and params[:screen].present? and option[:only].include?(params[:screen].intern)) ||
-      (option[:except].present? and params[:screen].present? and option[:except].exclude?(params[:screen].intern))
+      (option[:only].blank? && option[:except].blank?) ||
+        (option[:only].present? && params[:screen].present? && option[:only].include?(params[:screen].intern)) ||
+        (option[:except].present? && params[:screen].present? && option[:except].exclude?(params[:screen].intern))
     end
 
     def set_cell_editable_for_current_user(option)
@@ -89,6 +89,5 @@ module WulinMaster
       option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option
     end
-
   end
 end

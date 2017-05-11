@@ -1,9 +1,8 @@
 module WulinMaster
   class ToolbarItem
-
     attr_accessor :title, :javascript, :icon, :options
 
-    def initialize(title, options={})
+    def initialize(title, options = {})
       @title = title
 
       @javascript = options.delete(:javascript)
@@ -16,7 +15,7 @@ module WulinMaster
     def javascript?
       !!@javascript
     end
-    
+
     def icon?
       !!@icon
     end
@@ -24,29 +23,28 @@ module WulinMaster
     def anchor_tag_options
       if icon?
         css_classes = []
-        css_classes += self.options[:class].split(' ') if self.options[:class].present?
-        css_classes << "toolbar_icon_#{self.icon}" unless css_classes.include?("toolbar_icon_#{self.icon}")
-        css_classes << "toolbar_manually_enable" if self.options[:manually_enable]
-        self.options.merge!(:class => css_classes.uniq.join(' '))
+        css_classes += options[:class].split(' ') if options[:class].present?
+        css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
+        css_classes << "toolbar_manually_enable" if options[:manually_enable]
+        options[:class] = css_classes.uniq.join(' ')
       else
-        self.options[:class] = self.options[:class].split(" ").delete_if{|e| e.include?('toolbar_icon')}.join(" ")
+        options[:class] = options[:class].split(" ").delete_if { |e| e.include?('toolbar_icon') }.join(" ")
       end
 
       if javascript?
-        self.options.merge!(:href => '#',
-        :onclick => self.javascript + "; return false;")
+        options.merge!(href: '#',
+                       onclick: javascript + "; return false;")
       else
-        self.options.delete(:href)
-        self.options.delete(:onclick)
+        options.delete(:href)
+        options.delete(:onclick)
       end
-      
-      self.options
+
+      options
     end
 
     # Satisfy render_to_string
     def action_name
       ""
     end
-
   end
 end

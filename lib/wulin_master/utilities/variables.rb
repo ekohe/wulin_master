@@ -25,9 +25,9 @@ module WulinMaster
     def grid
       @grid ||= begin
         if params[:grid]
-          screen.grids.find {|grid| grid.class.name == params[:grid]}
+          screen.grids.find { |grid| grid.class.name == params[:grid] }
         else
-          screen.grids.find {|grid| grid.model.model_name.plural == controller_name}
+          screen.grids.find { |grid| grid.model.model_name.plural == controller_name }
         end || screen.grids.first
       end
     end

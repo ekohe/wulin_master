@@ -9,7 +9,6 @@ require 'sass-rails'
 require 'responders'
 
 module WulinMaster
-
   @javascripts = ['application.js']
   @stylesheets = ['application.css']
 
@@ -44,7 +43,6 @@ module WulinMaster
   def self.default_datetime_format
     @default_datetime_format || :db
   end
-
 end
 
 require 'wulin_master/utilities/utilities'
@@ -57,8 +55,8 @@ require 'wulin_master/components/component'
 require 'wulin_master/components/grid/grid'
 require 'wulin_master/components/panel/panel'
 
-WulinMaster::prepend_javascript 'master/master.js'
-WulinMaster::prepend_stylesheet 'master.css'
+WulinMaster.prepend_javascript 'master/master.js'
+WulinMaster.prepend_stylesheet 'master.css'
 
 Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
 Time::DATE_FORMATS[:date] = "%Y-%m-%d"
