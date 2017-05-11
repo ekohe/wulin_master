@@ -35,7 +35,7 @@ module WulinMaster
 
     def simple_time_format(value)
       if value =~ SIMPLE_TIME_REGEX
-        Time.parse("#{$1}:#{$2}")
+        Time.zone.parse("#{$1}:#{$2}")
       end
     rescue
       nil
