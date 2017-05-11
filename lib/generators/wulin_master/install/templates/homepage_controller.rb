@@ -1,5 +1,5 @@
 class HomepageController < WulinMaster::HomeController
-  menu do |c|
+  menu do |_c|
     submenu 'Default' do
       item 'Default', url: "#"
       # item DefaultScreen

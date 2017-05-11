@@ -15,11 +15,11 @@ module WulinMaster
     class << self
       attr_reader :partial, :title
 
-      def partial(new_partial=nil)
+      def partial(new_partial = nil)
         new_partial ? @partial = new_partial : @partial
       end
 
-      def title(new_title=nil)
+      def title(new_title = nil)
         new_title ? @title = new_title : @title
       end
     end
@@ -29,7 +29,7 @@ module WulinMaster
     end
 
     def partial
-      self.class.partial || self.name
+      self.class.partial || name
     end
 
     def title

@@ -2,7 +2,7 @@ module WulinMasterGridHelper
   def select_options(column)
     choices = column.options[:choices]
     if choices.is_a?(Array)
-      choices.map{|o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
+      choices.map { |o| o.is_a?(Hash) ? [o[:name], o[:id]] : o }
     elsif choices.is_a?(Proc)
       choices.call
     else
@@ -17,34 +17,34 @@ module WulinMasterGridHelper
     elsif choices.is_a?(Proc)
       array_to_options(choices.call)
     elsif choices.is_a?(Hash) # TODO: support hash options
-      choices.map do |k,v|
+      choices.map do |k, v|
         v.inject("<option value=''></option>") do |str, e|
-          if e.is_a?(Array)
-            str << "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
-          else
-            str << "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
+          str << if e.is_a?(Array)
+                   "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
+                 else
+                   "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
           end
         end
-      end.inject(""){|options, x| options << x}.html_safe
+      end.inject("") { |options, x| options << x }.html_safe
     else
       array_to_options([])
     end
   end
 
   def date_column?(column)
-    'true' if column.sql_type.to_s.downcase == 'date' and !column.options[:simple_date] and !column.options[:simple_time]
+    'true' if column.sql_type.to_s.casecmp('date').zero? && !column.options[:simple_date] && !column.options[:simple_time]
   end
 
   def datetime_column?(column)
-    'true' if !time_column?(column) and column.sql_type.to_s.downcase == 'datetime' and !column.options[:simple_date] and !column.options[:simple_time]
+    'true' if !time_column?(column) && column.sql_type.to_s.casecmp('datetime').zero? && !column.options[:simple_date] && !column.options[:simple_time]
   end
 
   def time_column?(column)
-    'true' if column.sql_type.to_s.downcase == 'time' or (column.sql_type.to_s.downcase == 'datetime' and column.options[:editor] == 'TimeEditor')
+    'true' if column.sql_type.to_s.casecmp('time').zero? || (column.sql_type.to_s.casecmp('datetime').zero? && (column.options[:editor] == 'TimeEditor'))
   end
 
   def get_column_name(column)
-    if column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
+    if (column.sql_type.to_s == 'has_and_belongs_to_many') || (column.sql_type.to_s == 'has_many')
       column.reflection.name.to_s
     else
       column.form_name
@@ -56,7 +56,7 @@ module WulinMasterGridHelper
     return [] if states.blank?
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)
-    states.unshift(current).compact.map{|x| [x.name, x.id]}
+    states.unshift(current).compact.map { |x| [x.name, x.id] }
   end
 
   def new_form_able?(column)
@@ -76,7 +76,7 @@ module WulinMasterGridHelper
     editable = column.options[:editable]
     visible  = column.options[:visible]
     return false if FalseClass === editable
-    if editable or editable.nil?
+    if editable || editable.nil?
       return true if formable.nil?
       if formable
         return Array === formable ? formable.include?(:edit) : !!formable
@@ -88,11 +88,11 @@ module WulinMasterGridHelper
   end
 
   def auto_complete_field?(column)
-    return column.options[:auto_complete] ? true : false
+    column.options[:auto_complete] ? true : false
   end
 
   def select_tag_field?(column)
-    return true if (column.options[:distinct] and params[:action] != 'wulin_master_new_form')
+    return true if column.options[:distinct] && (params[:action] != 'wulin_master_new_form')
     return true if column.options[:editor] == 'SelectEditor'
   end
 
@@ -112,8 +112,7 @@ module WulinMasterGridHelper
   end
 
   def array_to_options(arr)
-    options = arr.map{|o| o.is_a?(Hash) ? o : {:id => o, :name => o} }
-    options.inject(''){|options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>"}.html_safe
+    options = arr.map { |o| o.is_a?(Hash) ? o : {id: o, name: o} }
+    options.inject('') { |options, x| options << "<option value='#{x[:id]}'>#{x[:name]}</option>" }.html_safe
   end
-
 end

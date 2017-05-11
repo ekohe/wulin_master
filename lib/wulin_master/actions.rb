@@ -12,13 +12,13 @@ module WulinMaster
     def index
       respond_to do |format|
         format.html do
-          render 'index', :layout => (request.xhr? ? false : 'application')
+          render 'index', layout: (request.xhr? ? false : 'application')
         end
         format.json do
           fire_callbacks :initialize_query
 
           # Create initial query object
-          @query = @query || grid.model
+          @query ||= grid.model
 
           fire_callbacks :query_initialized
 
@@ -60,13 +60,13 @@ module WulinMaster
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
             # @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
-            @count = (@objects.size < @per_page) ? @objects.size : @count_query.size
+            @count = @objects.size < @per_page ? @objects.size : @count_query.size
           end
 
           fire_callbacks :objects_ready
 
           # Render json response
-          render :json => render_json
+          render json: render_json
         end
       end
     end
@@ -84,9 +84,9 @@ module WulinMaster
           end
         end
       end
-      render json: {:success => true}
+      render json: {success: true}
     rescue
-      render json: {:success => false, :error_message => $!.message }
+      render json: {success: false, error_message: $ERROR_INFO.message }
     end
 
     def destroy
@@ -96,20 +96,19 @@ module WulinMaster
       error_message = ""
       grid.model.transaction do
         @records.each do |record|
-          unless record.destroy
-            success = false
-            error_message << record.errors.full_messages.join(",\n")
-            break
-          end
+          next if record.destroy
+          success = false
+          error_message << record.errors.full_messages.join(",\n")
+          break
         end
       end
       if success
-        render json: {:success => true }
+        render json: {success: true }
       else
-        render json: {:success => false, :error_message => error_message}
+        render json: {success: false, error_message: error_message}
       end
     rescue
-      render json: {:success => false, :error_message => $!.message}
+      render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
     def create
@@ -118,14 +117,14 @@ module WulinMaster
       custom_errors = @record.errors
       @record.assign_attributes(attrs)
       message = if !custom_errors.empty?
-        {:success => false, :error_message => custom_errors}
+        {success: false, error_message: custom_errors}
       elsif @record.save
-        {:success => true, :id => @record.id }
+        {success: true, id: @record.id }
       else
-        {:success => false, :error_message => @record.errors}
+        {success: false, error_message: @record.errors}
       end
       respond_to do |format|
-        format.json { render :json => message }
+        format.json { render json: message }
       end
     end
 
@@ -158,7 +157,7 @@ module WulinMaster
 
     def parse_ordering
       @order_column = grid.sql_columns.first
-      if params[:sort_col].present? and (grid.columns.map(&:full_name).map(&:to_s).include?(params[:sort_col]))
+      if params[:sort_col].present? && grid.columns.map(&:full_name).map(&:to_s).include?(params[:sort_col])
         @order_column = params[:sort_col]
       elsif params[:sort_col].present?
         Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:full_name).inspect}"
@@ -175,35 +174,34 @@ module WulinMaster
       # @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
 
-      @query = @query.is_a?(Array) ? @query.from((@page-1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page-1) * @per_page)
+      @query = @query.is_a?(Array) ? @query.from((@page - 1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page - 1) * @per_page)
     end
 
     def add_includes
       includes = grid.includes
-      @query = @query.includes(includes).references(includes) if includes.size > 0 && @query.respond_to?(:includes)
+      @query = @query.includes(includes).references(includes) if !includes.empty? && @query.respond_to?(:includes)
     end
 
     def add_joins
       joins = grid.joins
-      @query = @query.joins(joins) if joins.size > 0 && @query.respond_to?(:joins)
+      @query = @query.joins(joins) if !joins.empty? && @query.respond_to?(:joins)
     end
 
     def render_json
       # Render ruby objects
       t = Time.now
       @object_array = grid.arraify(@objects)
-      json = {:offset => @offset,
-        :total =>  @count,
-        :count =>  @per_page,
-        :rows  =>  @object_array
-      }.to_json
-      Rails.logger.info "----------------- Rendered JSON in #{Time.now-t} sec. ------------------------"
+      json = {offset: @offset,
+              total: @count,
+              count: @per_page,
+              rows: @object_array}.to_json
+      Rails.logger.info "----------------- Rendered JSON in #{Time.now - t} sec. ------------------------"
       json
     end
 
     def get_attributes(attrs, type, object = nil)
       return {} unless attrs.present?
-      attrs.delete_if {|k,v| k == "id" }
+      attrs.delete_if { |k, _v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
       attrs
@@ -227,7 +225,7 @@ module WulinMaster
         if cb.class == Proc
           cb.call
         else
-          self.send(cb) if self.respond_to?(cb, true)
+          send(cb) if respond_to?(cb, true)
         end
       end
     end

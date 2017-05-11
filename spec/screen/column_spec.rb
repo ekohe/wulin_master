@@ -2,7 +2,6 @@ require 'spec_helper'
 require './lib/wulin_master/components/grid/column'
 
 describe WulinMaster::Column do
-
   before :each do
     @mock_grid = double("grid")
     @column = WulinMaster::Column.new("country_name", @mock_grid)
@@ -14,12 +13,12 @@ describe WulinMaster::Column do
 
   it "should has default options" do
     pending 'fix'
-    @column.options.should == {:width => 80, :sortable => true, :editable => true}
+    @column.options.should == {width: 80, sortable: true, editable: true}
   end
 
   it "can has customized options" do
-    @column = WulinMaster::Column.new("country_name", @mock_grid, {:width => 100, :editable => false, :label => "Country Name"})
-    @column.options.should == {:width => 100, :sortable => true, :editable => false, :label => "Country Name"}
+    @column = WulinMaster::Column.new("country_name", @mock_grid, width: 100, editable: false, label: "Country Name")
+    @column.options.should == {width: 100, sortable: true, editable: false, label: "Country Name"}
   end
 
   it "should has a default label" do
@@ -28,7 +27,7 @@ describe WulinMaster::Column do
   end
 
   it "can has customized label" do
-    @column = WulinMaster::Column.new("country_name", @mock_grid, {:label => "Country Name"})
+    @column = WulinMaster::Column.new("country_name", @mock_grid, label: "Country Name")
     @column.label.should == "Country Name"
   end
 
@@ -37,7 +36,7 @@ describe WulinMaster::Column do
     @column.should respond_to(:to_column_model)
     @column.should respond_to(:sql_type)
     @column.stub(:sql_type) { String }
-    @column.to_column_model.should == {:id => "country_name", :name => "Country name", :field => "country_name", :type => String, :width => 80, :sortable => true, :editable => true}
+    @column.to_column_model.should == {id: "country_name", name: "Country name", field: "country_name", type: String, width: 80, sortable: true, editable: true}
   end
 
   it "can apply filter" do

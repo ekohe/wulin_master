@@ -1,6 +1,5 @@
 module WulinMaster
   class Screen
-
     cattr_accessor :screens
 
     # subclass inherited
@@ -15,7 +14,7 @@ module WulinMaster
     end
 
     class << self
-      #alias_method :all, :screens
+      # alias_method :all, :screens
       attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
       attr_accessor :controller_class
 
@@ -24,33 +23,33 @@ module WulinMaster
       end
 
       def path(new_path = nil)
-        new_path ? @path = new_path : @path || self.to_s.gsub(/Screen/, "").underscore.pluralize
+        new_path ? @path = new_path : @path || to_s.gsub(/Screen/, "").underscore.pluralize
         # TODO
         # in last circle of refactoring, the screen path can be the same-named action path of screens_controller
       end
 
       # Add a grid config to a screen
-      def grid(klass, options={})
+      def grid(klass, options = {})
         @components_pool ||= []
         @grid_configs ||= []
         if klass
           @components_pool << klass
           @grid_configs << {class: klass}.merge(options)
           options.each do |k, v|
-            klass.apply_config(k, v, {:screen => self.name})
+            klass.apply_config(k, v, screen: name)
           end
         end
       end
 
       # Add a panel config to a screen
-      def panel(klass, options={})
+      def panel(klass, options = {})
         @components_pool ||= []
         @panel_configs ||= []
         if klass
           @components_pool << klass
           @panel_configs << {class: klass}.merge(options)
           options.each do |k, v|
-            klass.apply_config(k, v, {:screen => self.name})
+            klass.apply_config(k, v, screen: name)
           end
         end
       end
@@ -58,7 +57,7 @@ module WulinMaster
 
     attr_accessor :controller, :params, :current_user
 
-    def initialize(controller_instance=nil)
+    def initialize(controller_instance = nil)
       @controller = controller_instance
       @params = controller_instance.try(:params)
       @current_user = controller_instance.try(:current_user)
@@ -67,11 +66,13 @@ module WulinMaster
     def grids
       return @grids if defined?(@grids)
       @grids = []
-      self.class.grid_configs.each do |grid_config|
-        grid_class = grid_config[:class]
-        config = grid_config.reject{|k,v| k == :class}
-        @grids << grid_class.new(self, config) if grid_class
-      end if self.class.grid_configs
+      if self.class.grid_configs
+        self.class.grid_configs.each do |grid_config|
+          grid_class = grid_config[:class]
+          config = grid_config.reject { |k, _v| k == :class }
+          @grids << grid_class.new(self, config) if grid_class
+        end
+      end
       @grids
     end
 
@@ -79,26 +80,28 @@ module WulinMaster
       return @panels if defined?(@panels)
 
       @panels = []
-      self.class.panel_configs.each do |panel_config|
-        panel_class = panel_config[:class]
-        config = panel_config.reject{|k,v| k == :class}
-        @panels << panel_class.new(self, config) if panel_class
-      end if self.class.panel_configs
+      if self.class.panel_configs
+        self.class.panel_configs.each do |panel_config|
+          panel_class = panel_config[:class]
+          config = panel_config.reject { |k, _v| k == :class }
+          @panels << panel_class.new(self, config) if panel_class
+        end
+      end
       @panels
     end
 
     def components
       @components ||= begin
         grids_and_panels = grids + panels
-        grids_and_panels.sort_by! {|e| self.class.components_pool.index(e.class)}
-        grids_and_panels.select! {|x| x.class.name == params[:grid]} if params[:grid].present?
+        grids_and_panels.sort_by! { |e| self.class.components_pool.index(e.class) }
+        grids_and_panels.select! { |x| x.class.name == params[:grid] } if params[:grid].present?
         grids_and_panels
       end
     end
 
     def path
       # This should be better put together. What if there's already a parameter in the path? that would break
-      self.class.path + "?screen=#{self.class.to_s}"
+      self.class.path + "?screen=#{self.class}"
     end
 
     def name
@@ -106,12 +109,12 @@ module WulinMaster
     end
 
     # Security
-    def authorized?(user=nil)
+    def authorized?(_user = nil)
       true
     end
 
-    alias_method :authorize_create?, :authorized?
-    alias_method :authorize_update?, :authorized?
-    alias_method :authorize_destroy?, :authorized?
+    alias authorize_create? authorized?
+    alias authorize_update? authorized?
+    alias authorize_destroy? authorized?
   end
 end

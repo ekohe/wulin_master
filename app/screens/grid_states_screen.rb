@@ -1,4 +1,4 @@
-if !Module.const_defined? :UserGrid
+unless Module.const_defined? :UserGrid
   begin
     require 'user_grid'
   rescue LoadError; end

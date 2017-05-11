@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20170301095901) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +19,7 @@ ActiveRecord::Schema.define(version: 20170301095901) do
     t.string   "grid_name"
     t.string   "state_value"
     t.string   "name",        default: "default"
-    t.boolean  "current",     default: false,     null: false
+    t.boolean  "current",     default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id"], name: "index_grid_states_on_user_id", using: :btree
@@ -33,5 +32,4 @@ ActiveRecord::Schema.define(version: 20170301095901) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
 end

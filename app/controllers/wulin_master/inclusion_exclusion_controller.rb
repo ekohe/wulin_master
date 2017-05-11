@@ -3,7 +3,11 @@ module WulinMaster
     before_action :get_models
 
     def include
-      if (ids = params[:ids]).present? and (group = @group_model.find params[:group_id] rescue false)
+      if (ids = params[:ids]).present? && (begin
+                                              group = @group_model.find params[:group_id]
+                                            rescue
+                                              false
+                                            end)
         @group_model.transaction do
           ids.each do |id|
             group.send(params[:exclude_model].underscore.pluralize) << @exclude_model.find(id)
@@ -11,16 +15,16 @@ module WulinMaster
           group.save
         end
       end
-      render :json => {:status => 'OK', :message => "Added #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}."}
+      render json: {status: 'OK', message: "Added #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}."}
     rescue
-      render :json => {:status => 'Error', :message => "Adding failed! Error: #{$!.message}"}
+      render json: {status: 'Error', message: "Adding failed! Error: #{$ERROR_INFO.message}"}
     end
 
     def exclude
       if (ids = params[:ids]).present?
         @include_model.where('id IN (?)', ids).destroy_all
       end
-      render :json => {:status => 'OK', :message => "Removed #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}!"}
+      render json: {status: 'OK', message: "Removed #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}!"}
     end
 
     private

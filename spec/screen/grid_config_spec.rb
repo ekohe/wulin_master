@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe 'WulinMaster::GridConfig' do
-
   it "should assign grid name after definition" do
     pending 'fix'
     class TestGrid < WulinMaster::GridConfig
@@ -41,7 +40,7 @@ describe 'WulinMaster::GridConfig' do
     TestGrid.width 300
     TestGrid.height 400
 
-    TestGrid.grid_context.should_receive(:send).with(:column, :code, :editable => false)
-    TestGrid.column :code, :editable => false
+    TestGrid.grid_context.should_receive(:send).with(:column, :code, editable: false)
+    TestGrid.column :code, editable: false
   end
 end

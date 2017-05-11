@@ -20,19 +20,19 @@ module WulinMaster
       end
 
       # Called within the block
-      def submenu(title=nil)
+      def submenu(title = nil)
         if block_given?
           @submenu = SubMenu.new(title)
           yield
-          @menu << @submenu if @submenu.size > 0
+          @menu << @submenu unless @submenu.empty?
           @submenu = nil
         end
-        return @submenu
+        @submenu
       end
 
-      def item(title_or_screen_class, options={})
+      def item(title_or_screen_class, options = {})
         return unless @menu
-        screen_instance = title_or_screen_class.new(context) if title_or_screen_class.kind_of?(Class)
+        screen_instance = title_or_screen_class.new(context) if title_or_screen_class.is_a?(Class)
         authorized_proc = options.delete(:authorized?)
 
         title = options[:label] ||
@@ -41,15 +41,15 @@ module WulinMaster
                (screen_instance.respond_to?(:path) ? screen_instance.path : '/')
 
         if authorized_proc
-          if authorized_proc.kind_of?(Proc)
-            is_authorized = (context && context.respond_to?(:current_user)) ? authorized_proc.call(context.current_user) : authorized_proc.call(nil)
+          if authorized_proc.is_a?(Proc)
+            is_authorized = context && context.respond_to?(:current_user) ? authorized_proc.call(context.current_user) : authorized_proc.call(nil)
             return unless is_authorized
           else
-            return unless (authorized_proc == true)
+            return unless authorized_proc == true
           end
-        elsif title_or_screen_class.kind_of?(Class)
+        elsif title_or_screen_class.is_a?(Class)
           if screen_instance.respond_to?(:authorized?)
-            is_authorized = (context && context.respond_to?(:current_user)) ? screen_instance.authorized?(context.current_user) : screen_instance.authorized?(nil)
+            is_authorized = context && context.respond_to?(:current_user) ? screen_instance.authorized?(context.current_user) : screen_instance.authorized?(nil)
             return unless is_authorized
           end
         end

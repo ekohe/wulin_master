@@ -16,7 +16,7 @@ end
 class HomepageController < WulinMaster::HomeController
 end
 
-describe HomepageController, :type => :controller do
+describe HomepageController, type: :controller do
   def mock_item
     @mock_item ||= mock("Item")
   end
@@ -39,8 +39,8 @@ describe HomepageController, :type => :controller do
   describe "get 'index'" do
     it "should render home partial" do
       pending 'fix'
-      get :index, :format => :html
-      response.should render_template(:home)  # because there is no index template now
+      get :index, format: :html
+      response.should render_template(:home) # because there is no index template now
     end
   end
 

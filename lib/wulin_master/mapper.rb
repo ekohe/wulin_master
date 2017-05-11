@@ -1,6 +1,6 @@
-module WulinMaster 
+module WulinMaster
   module FormResourceRoute
-    def resources(*args, &block)
+    def resources(*args)
       super(*args) do
         yield if block_given?
         collection do

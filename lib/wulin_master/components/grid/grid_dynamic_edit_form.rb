@@ -6,7 +6,7 @@ module WulinMaster
       class_attribute :edit_column_group, instance_writer: false
       self.edit_column_group = {}
     end
-    
+
     module ClassMethods
       # Define dynamic edit form
       #
@@ -24,26 +24,23 @@ module WulinMaster
       #
       # meanwhile two toolbars was defined: version1, version2.
       # the options <code>class: 'version2_toolbar', icon: 'add'</code> is same as +action+ method arguments.
-      def edit_form(*args, &block)
+      def edit_form(*args)
         action :dynamic_edit, visible: false
 
         options = {icon: 'edit'}.merge(args.extract_options!) # Set default icon
-        options[:class] ? options[:class] << ' dynamic_toolbar' : options[:class] = 'dynamic_toolbar'  # Set common class
+        options[:class] ? options[:class] << ' dynamic_toolbar' : options[:class] = 'dynamic_toolbar' # Set common class
 
         args.each do |group_key|
-          options.merge!(data: {version: group_key}) # Add version to the toolbar
-          self.action(group_key, options)
-          self.edit_column_group[group_key] = []
-          yield self.edit_column_group[group_key]
+          options[:data] = {version: group_key} # Add version to the toolbar
+          action(group_key, options)
+          edit_column_group[group_key] = []
+          yield edit_column_group[group_key]
         end
-        
       end
     end
 
     def find_columns_by_version(version)
       edit_column_group.with_indifferent_access[version]
     end
-
   end
-
 end
