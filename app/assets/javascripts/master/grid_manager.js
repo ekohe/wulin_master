@@ -78,6 +78,8 @@
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
+        } else if (type_str == "datetime") {
+          columns[i].formatter = DateTimeFormatter;
         // } else if (type_str == "date") {
         //   columns[i].formatter = StandardDateCellFormatter;
         //   columns[i].DateShowFormat = "yy-mm-dd";
