@@ -119,14 +119,29 @@
   $('##{grid.name}_form select[data-required="true"]').chosen();
   $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
   $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-  $('input[data-datetime]').datetimepicker({
-    onlyTime: false,
-    dateFormat: "yy-mm-dd",
-    timeFormat: 'HH:mm',
-    timeOnly: false,
-    stepMinute: 1,
-    minuteGrid: 0,
-    beforeShow: function() { calendarOpen = true },
-    onClose: function() { calendarOpen = false }
+
+  // Datetime Picker
+
+  Inputmask.extendAliases({
+    'wulinDateTime': {
+      alias: 'datetime',
+      placeholder: 'dd/mm/2017 12:00',
+      yearrange: { minyear: 2000, maxyear: 2020 },
+    }
   });
+
+  $('input[data-datetime]').inputmask('wulinDateTime').flatpickr({
+    allowInput: true,
+    enableTime: true,
+    clickOpens: true,
+    dateFormat: 'd/m/Y H:i',
+    maxDate: '31/12/2020',
+    minDate: '01/01/2000',
+    onOpen: function(selectedDates, dateStr, instance) {
+      instance.update(dateStr);
+    },
+  });
+
+  // Time Picker
+
   $('input[data-time]').timepicker({});

@@ -232,18 +232,18 @@ function Flatpickr(element, config) {
 			self.timeContainer.addEventListener("wheel", self.debouncedChange);
 			self.timeContainer.addEventListener("input", self.triggerChange);
 
-			self.hourElement.addEventListener("focus", function () {
-				self.hourElement.select();
-			});
-			self.minuteElement.addEventListener("focus", function () {
-				self.minuteElement.select();
-			});
-
-			if (self.secondElement) {
-				self.secondElement.addEventListener("focus", function () {
-					self.secondElement.select();
-				});
-			}
+			// self.hourElement.addEventListener("focus", function () {
+			// 	self.hourElement.select();
+			// });
+			// self.minuteElement.addEventListener("focus", function () {
+			// 	self.minuteElement.select();
+			// });
+			//
+			// if (self.secondElement) {
+			// 	self.secondElement.addEventListener("focus", function () {
+			// 		self.secondElement.select();
+			// 	});
+			// }
 
 			if (self.amPM) {
 				self.amPM.addEventListener("click", function (e) {
