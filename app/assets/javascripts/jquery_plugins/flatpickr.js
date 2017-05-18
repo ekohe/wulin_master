@@ -154,7 +154,9 @@ function Flatpickr(element, config) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Edit: Add KeyUp & Blur handler to input field
+	// Ekohe Edit:
+	// 1. Add KeyUp handler to input field
+	// 2. Remove focus event listener to avoid conflict with SlickGrid
 	/////////////////////////////////////////////////////////////////////////////
 
 	function bind() {
@@ -232,6 +234,8 @@ function Flatpickr(element, config) {
 			self.timeContainer.addEventListener("wheel", self.debouncedChange);
 			self.timeContainer.addEventListener("input", self.triggerChange);
 
+			// Ekohe Delete: Avoid conflict to focus event of SlickGrid
+
 			// self.hourElement.addEventListener("focus", function () {
 			// 	self.hourElement.select();
 			// });
@@ -251,10 +255,10 @@ function Flatpickr(element, config) {
 					self.triggerChange(e);
 				});
 			}
-
-			// Ekohe Add: Update calendar when KeyUp
-			self.input.addEventListener("keyup", onKeyUp);
 		}
+
+		// Ekohe Add: Update calendar when KeyUp
+		self.input.addEventListener("keyup", onKeyUp);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -1152,7 +1156,12 @@ function Flatpickr(element, config) {
 			self.hourElement.select();
 		}, 451);
 
-		if (self.config.mode === "single" && !self.config.enableTime) self.close();
+		// Ekohe Edit: Set focus to input after closing calender
+		// if (self.config.mode === "single" && !self.config.enableTime) self.close();
+		if (self.config.mode === "single" && !self.config.enableTime) {
+			self.close();
+			self.input.focus();
+		}
 
 		triggerEvent("Change");
 	}

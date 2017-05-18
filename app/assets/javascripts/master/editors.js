@@ -848,43 +848,45 @@
     InputElementEditor.call(this, args);
 
     this.init = function() {
-      this.setDateTimeFormates();
       this.boxWidth -= 24;
       this.initElements();
+      var date = this.getDate();
+      var dateNow = new Date();
+    	var yearNow = dateNow.getFullYear();
 
-      $.extend(this.datePickerOptions, {
-        dateFormat: this.dateShowFormat
+      Inputmask.extendAliases({
+        'wulinDate': {
+          alias: 'date',
+          placeholder: 'dd/mm/' + yearNow,
+          yearrange: { minyear: 2000, maxyear: 2020 },
+        }
       });
-      this.input.datepicker(this.datePickerOptions);
+
+      this.input.inputmask('wulinDate').flatpickr({
+        allowInput: true,
+        clickOpens: false,
+        dateFormat: 'd/m/Y',
+        maxDate: '31/12/2020',
+        minDate: '01/01/2000',
+        onReady: function(selectedDates, dateStr, instance) {
+          instance.open();
+          instance.update(date);
+        },
+      });
     };
 
     this.loadValue = function(item) {
-      if (item[this.column.field]) {
-        this.defaultValue = item[this.column.field].split(/\s+/)[0];
-        if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(this.defaultValue)) {
-          var thedate = $.datepicker.parseDate(this.dateSourceFormat, this.defaultValue);
-          this.defaultValue = $.datepicker.formatDate(this.dateShowFormat, thedate);
-        } else {
-          this.defaultValue = null;
-        }
-      } else {
-        this.defaultValue = null;
-      }
-      this.input.val(this.defaultValue);
-      this.input[0].defaultValue = this.defaultValue;
-      this.input.select();
-    };
+      this.defaultValue = this.getDate();
+      this.element.val(this.defaultValue);
+      this.element.select();
+    },
 
-    this.validate = function() {
-      return this.validateDateTime('parseDate', 'Date');
-    };
-
-    this.serializeValue = function() {
-      return this.serializeDateTime('parseDate');
-    };
+    this.getDate = function() {
+      return convertDateFormat(this.args.item[this.column.field]) || this.args.item[this.column.field];
+    }
 
     this.init();
-  };
+  }
 
   DateEditor.prototype = Object.create(InputElementEditor.prototype);
 
@@ -1035,8 +1037,6 @@
 
     this.init();
   }
-
-  // TODO: Remove
 
   ///////////////////////////////////////////////////////////////////////////
   // DateTimeBaseEditor < InputElementEditor < BaseEditor
