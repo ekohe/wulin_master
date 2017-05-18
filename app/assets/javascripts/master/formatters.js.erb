@@ -1,7 +1,9 @@
 (function($) {
 
-  var REGEX_DATE = '(\\d{4})\\-(\\d{2})\\-(\\d{2})';    // 'yyyy-mm-dd'
-  var REGEX_TIME = '(\\d{2}):(\\d{2})';                 // 'hh:mm'
+  var REGEXP_BASE_DATE = '(\\d{4})\\-(\\d{2})\\-(\\d{2})';                           // 'yyyy-mm-dd'
+  var REGEXP_BASE_TIME = '(\\d{2}):(\\d{2})';                                        // 'hh:mm'
+  var REGEXP_DATE = '^' + REGEXP_BASE_DATE + '$';                                    // 'yyyy-mm-dd'
+  var REGEXP_DATETIME = '^' + REGEXP_BASE_DATE + '[ \\t]' + REGEXP_BASE_TIME + '$';  // 'yyyy-mm-dd hh:mm'
 
   var SlickFormatter = {
 
@@ -9,8 +11,43 @@
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    ApplyStyle: function(value, style) {
-      return value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";;
+    applyStyle: function(value, style) {
+      return value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";
+    },
+
+    // Convert datetime format
+    convertDateTimeFormat: function(str, type) {
+      try {
+        var matchedArr;
+        switch (type.toLowerCase()) {
+          case 'date':  // 'dd/mm/yyyy'
+            matchedArr = str.match(new RegExp(REGEXP_DATE));
+            return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1];
+          default:      // 'dd/mm/yyyy hh:mm'
+            matchedArr = str.match(new RegExp(REGEXP_DATETIME));
+            return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
+        }
+      } catch (err) {
+        return null;
+      }
+    },
+
+    // Display Date/Time info
+    dateTimeBaseFormatter: function(value, columnDef, type) {
+      if (type.toLowerCase() === 'date') {
+        var regExp = REGEXP_DATE;
+      } else {
+        var regExp = REGEXP_DATETIME;
+      }
+
+      if (value === null || value === '') {
+        return '';
+      } else {
+        if (value.match(new RegExp(regExp))) {
+          value = convertDateTimeFormat(value, type);
+        }
+        return applyStyle(value, columnDef.style || 'text-align:center');
+      }
     },
 
     ///////////////////////////////////////////////////////////////////////////
@@ -36,56 +73,42 @@
       }
 
       // Apply style
-      return ApplyStyle(value, columnDef.style);
+      return applyStyle(value, columnDef.style);
     },
 
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
       var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
-      return ApplyStyle(text, columnDef.style || 'text-align:right');
+      return applyStyle(text, columnDef.style || 'text-align:right');
     },
 
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === null ? "" : (value ? 'Yes' : 'No');
-      return ApplyStyle(text, columnDef.style || 'text-align:center');
+      return applyStyle(text, columnDef.style || 'text-align:center');
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var html = value ? '<%= image_tag "tick.png" %>' : '';
-      return ApplyStyle(html, columnDef.style || 'text-align:center');
+      return applyStyle(html, columnDef.style || 'text-align:center');
     },
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === 0 ? "" : value;
-      return ApplyStyle(text, columnDef.style || 'text-align:right');
+      return applyStyle(text, columnDef.style || 'text-align:right');
     },
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-      return "<div title='" + columnDef.tooltips[value] + "'>" + ApplyStyle(value, columnDef.style || 'text-align:center') + "</div>";
+      return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style || 'text-align:center') + "</div>";
     },
 
     // Display datetime info as 'dd/mm/yyyy hh:ms' format
     DateTimeFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value === null || value === "") {
-        return "";
-      } else {
-        if (value.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'))) {
-          value = convertDateTimeFormat(value);
-        }
-        return ApplyStyle(value, columnDef.style || 'text-align:center');
-      }
+      return dateTimeBaseFormatter(value, columnDef, 'DateTime');
     },
 
     // Display datetime info as 'dd/mm/yyyy' format
     DateFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value === null || value === "") {
-        return "";
-      } else {
-        if (value.match(new RegExp('^' + REGEX_DATE + '$'))) {
-          value = convertDateFormat(value);
-        }
-        return ApplyStyle(value, columnDef.style || 'text-align:center');
-      }
+      return dateTimeBaseFormatter(value, columnDef, 'Date');
     },
 
     // Display only date info as 'yyyy-mm-dd' format for a datetime column
@@ -101,31 +124,7 @@
         value = thedate.format("yyyy-mm-dd");
       }
 
-      return ApplyStyle(value, columnDef.style || 'text-align:center');
-    },
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Helpers
-    ///////////////////////////////////////////////////////////////////////////
-
-    // Convert datetime format to 'dd/mm/yyyy hh:ms'
-    convertDateTimeFormat: function(dateTimeStr) {
-      try {
-        var matchedArr = dateTimeStr.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'));
-        return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
-      } catch (err) {
-        return null;
-      }
-    },
-
-    // Convert date format to 'dd/mm/yyyy'
-    convertDateFormat: function(dateTimeStr) {
-      try {
-        var matchedArr = dateTimeStr.match(new RegExp('^' + REGEX_DATE + '$'));
-        return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1];
-      } catch (err) {
-        return null;
-      }
+      return applyStyle(value, columnDef.style || 'text-align:center');
     },
 
     ///////////////////////////////////////////////////////////////////////////
@@ -182,99 +181,6 @@
         return null;
       }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Removed (Not using after refactoring; For style & relation columns)
-    ///////////////////////////////////////////////////////////////////////////
-
-    // RightFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return value === null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
-    // },
-
-    // CenterFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return value === null ? "" : "<span style='text-align:center;display:block'>" + value + "</span>";
-    // },
-
-    // BelongsToFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   value = value[columnDef.optionTextAttribute];
-    //   if (!columnDef.inner_formatter) return value;
-    //
-    //   // if has inner_formatter
-    //   if (columnDef.inner_formatter == 'boolean') {
-    //     return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
-    //   } else if (typeof(window[columnDef.inner_formatter]) == 'function') {
-    //     return window[columnDef.inner_formatter](row, cell, value, columnDef, dataContext);
-    //   } else {
-    //     return value;
-    //   }
-    // },
-
-    // HasManyFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-    // },
-
-    // HasOneFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return BelongsToFormatter(row, cell, value, columnDef, dataContext);
-    // },
-
-    // Date cell formatter to handle "yy-mm-dd" format (for StandardDateCellEditor)
-    // StandardDateCellFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   if (value === null || value === "") {
-    //     return "";
-    //   }
-    //   value = value.split(/\s+/)[0];
-    //
-    //   if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(value)) {
-    //     var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-    //     return $.datepicker.formatDate(columnDef.DateShowFormat, thedate);
-    //   } else {
-    //     return value;
-    //   }
-    // },
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Not in Use (bss, terra_nova, mrldb, crewlist, mima)
-    ///////////////////////////////////////////////////////////////////////////
-
-    // RawFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return (value === null) ? "" : value;
-    // },
-
-    // SelectorCellFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return (!dataContext ? "" : row);
-    // },
-
-    // YesNoCellFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return value ? "Yes" : "No";
-    // },
-
-    // NeutralMoneyFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   // TODO: make the unit configurable
-    //   //var currency = "";
-    //   var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') ;
-    //   return "<span style='text-align:right;display:block'>" + text + "</span>";
-    // },
-
-    // StarFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
-    // },
-
-    // Simple data formatter,display a date as "MM" format, like "December"
-    // SimpleMonthFormatter: function(row, cell, value, columnDef, dataContext) {
-    //   if (value === null || value === "") {
-    //     return "";
-    //   } else if ($.isPlainObject(value)) {
-    //     value = value[columnDef.optionTextAttribute];
-    //   }
-    //
-    //   if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
-    //     var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-    //     return "<span style='text-align:right;display:block'>" + $.datepicker.formatDate(columnDef.DateShowFormat, thedate) + "</span>";
-    //   } else {
-    //     return "<span style='text-align:right;display:block'>" + value + "</span>";
-    //   }
-    // },
-
   };
 
   $.extend(window, SlickFormatter);

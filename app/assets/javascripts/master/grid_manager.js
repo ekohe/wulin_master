@@ -82,9 +82,6 @@
           columns[i].formatter = DateTimeFormatter;
         } else if (type_str == "date") {
           columns[i].formatter = DateFormatter;
-        // } else if (type_str == "date") {
-        //   columns[i].formatter = StandardDateCellFormatter;
-        //   columns[i].DateShowFormat = "yy-mm-dd";
         }
 
         if (columns[i].simple_date) {
