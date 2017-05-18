@@ -808,7 +808,8 @@ function Flatpickr(element, config) {
 		// Ekohe Edit: Close calender when use 'Tab'/'Enter'/'ArrowUp'/'ArrowDown' key on input
 		// if (e.target === (self.altInput || self.input) && e.which === 13) {
 			// selectDate(e);
-		if (e.target === (self.altInput || self.input) && [9, 13, 38, 40].includes(e.which)) {
+		if ((e.target === (self.altInput || self.input)) && 
+			  (e.which === 9 || e.which === 13 || e.which === 38 || e.which === 40)) {
 			self.close();
 		// Ekohe Add: Close calender and set focus on input when 'Enter' on Calendar
 		} else if (e.target !== (self.altInput || self.input) && e.which === 13) {
