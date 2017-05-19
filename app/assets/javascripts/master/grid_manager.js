@@ -78,10 +78,8 @@
           if (!columns[i].formatter) {
             columns[i].formatter = GraphicBoolCellFormatter;
           }
-        } else if (type_str == "datetime") {
+        } else if (type_str == "datetime" || type_str == "date") {
           columns[i].formatter = DateTimeFormatter;
-        } else if (type_str == "date") {
-          columns[i].formatter = DateFormatter;
         }
 
         if (columns[i].simple_date) {

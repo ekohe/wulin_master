@@ -16,37 +16,18 @@
     },
 
     // Convert datetime format
-    convertDateTimeFormat: function(str, type) {
+    convertDateTimeFormat: function(str) {
       try {
         var matchedArr;
-        switch (type.toLowerCase()) {
-          case 'date':  // 'dd/mm/yyyy'
-            matchedArr = str.match(new RegExp(REGEXP_DATE));
-            return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1];
-          default:      // 'dd/mm/yyyy hh:mm'
-            matchedArr = str.match(new RegExp(REGEXP_DATETIME));
-            return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
+        if (matchedArr = str.match(new RegExp(REGEXP_DATE))) {
+          return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1];
+        } else if (matchedArr = str.match(new RegExp(REGEXP_DATETIME))) {
+          return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
+        } else {
+          return str;
         }
       } catch (err) {
         return null;
-      }
-    },
-
-    // Display Date/Time info
-    dateTimeBaseFormatter: function(value, columnDef, type) {
-      if (type.toLowerCase() === 'date') {
-        var regExp = REGEXP_DATE;
-      } else {
-        var regExp = REGEXP_DATETIME;
-      }
-
-      if (value === null || value === '') {
-        return '';
-      } else {
-        if (value.match(new RegExp(regExp))) {
-          value = convertDateTimeFormat(value, type);
-        }
-        return applyStyle(value, columnDef.style || 'text-align:center');
       }
     },
 
@@ -103,12 +84,12 @@
 
     // Display datetime info as 'dd/mm/yyyy hh:ms' format
     DateTimeFormatter: function(row, cell, value, columnDef, dataContext) {
-      return dateTimeBaseFormatter(value, columnDef, 'DateTime');
-    },
-
-    // Display datetime info as 'dd/mm/yyyy' format
-    DateFormatter: function(row, cell, value, columnDef, dataContext) {
-      return dateTimeBaseFormatter(value, columnDef, 'Date');
+      if (value === null || value === '') {
+        return '';
+      } else {
+        value = convertDateTimeFormat(value);
+        return applyStyle(value, columnDef.style || 'text-align:center');
+      }
     },
 
     // Display only date info as 'yyyy-mm-dd' format for a datetime column
