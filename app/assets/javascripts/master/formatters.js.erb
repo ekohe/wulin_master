@@ -34,7 +34,9 @@
 
       // Set default text-align
       var textAlign, default_style;
-      if (['datetime', 'date', 'time'].includes(columnDef.type) ) {
+      if (columnDef.type == 'datetime' ||
+          columnDef.type == 'date' ||
+          columnDef.type == 'time') {
         textAlign = 'center';
       }
       default_style = textAlign ? 'text-align:' + textAlign : null
