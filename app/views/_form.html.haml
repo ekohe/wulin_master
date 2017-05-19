@@ -167,4 +167,20 @@
 
   // Time Picker
 
-  $('input[data-time]').timepicker({});
+  var inputmaskConfigTime = $.extend({}, initInputmaskConfigForm, {
+    alias: 'hh:mm',
+    placeholder: '12:00',
+  });
+
+  var flatpickrConfigTime = $.extend({}, initFlatpickrConfigForm, {
+    noCalendar: true,
+    enableTime: true,
+    dateFormat: 'H:i',
+    onOpen: function(selectedDates, dateStr, instance) {
+      var time = dateStr || '12:00';
+      instance.update(time);
+    },
+  });
+
+  Inputmask.extendAliases({ 'formTime': inputmaskConfigTime });
+  $('input[data-time]').inputmask('formTime').flatpickr(flatpickrConfigTime);

@@ -822,7 +822,7 @@
   DateTimeBaseEditor.prototype = Object.create(InputElementEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // DateTimeEditor < InputElementEditor < BaseEditor
+  // DateTimeEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateTimeEditor = function(args) {
@@ -850,7 +850,7 @@
   DateTimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // DateEditor < InputElementEditor < BaseEditor
+  // DateEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
   this.DateEditor = function(args) {
@@ -877,52 +877,33 @@
   DateEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   ///////////////////////////////////////////////////////////////////////////
-  // TimeEditor < InputElementEditor < BaseEditor
+  // TimeEditor < DateTimeBaseEditor < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
 
   this.TimeEditor = function(args) {
-    InputElementEditor.call(this, args);
+    DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      this.setDateTimeFormates();
-      this.boxWidth -= 24;
-      this.initElements();
-    };
-
-    this.loadValue = function(item) {
-      BaseEditor.prototype.loadValue.call(this, item);
-
-      $.extend(this.datePickerOptions, {
-        timeFormat: this.timeShowFormat,
-        stepMinute: 5
+      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
+        alias: 'hh:mm',
+        placeholder: '12:00',
       });
 
-      if (item.unit) {
-        if (item.unit.unit == "mn")
-          $.extend(this.datePickerOptions, {
-            minuteGrid: 5
-          });
-        else if (item.unit.unit == 'slot')
-          $.extend(this.datePickerOptions, {
-            minuteGrid: 10
-          });
-      }
+      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+        noCalendar: true,
+        enableTime: true,
+        dateFormat: 'H:i',
+      });
 
-      this.input.timepicker(this.datePickerOptions);
-    };
-
-    this.validate = function() {
-      return this.validateDateTime('parseTime', 'Time');
-    };
-
-    this.serializeValue = function() {
-      return this.serializeDateTime('parseTime');
+      this.initElements();
+      Inputmask.extendAliases({ 'gridTime': inputmaskConfig });
+      this.input.inputmask('gridTime').flatpickr(flatpickrConfig);
     };
 
     this.init();
   }
 
-  TimeEditor.prototype = Object.create(InputElementEditor.prototype);
+  TimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
   // TODO: Remove
   this.SimpleDateEditor = function(args) {
@@ -1023,125 +1004,5 @@
 
     this.init();
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // DateTimeBaseEditor < InputElementEditor < BaseEditor
-  ///////////////////////////////////////////////////////////////////////////
-
-  // this.DateTimeBaseEditor = function(args) {
-  //   InputElementEditor.call(this, args);
-  //
-  //   var REGEX_DATE = '(\\d{4})\\-?(0?[1-9]|1[012])\\-?(0?[1-9]|[12][0-9]|3[01])';
-  //   var REGEX_TIME = '(\\d{2}):?(\\d{2})';
-  //
-  //   this.calendarOpen = false;
-  //   this.dateShowFormat = "yy-mm-dd";
-  //   this.dateSourceFormat = "yy-mm-dd";
-  //   this.timeShowFormat = "HH:mm";
-  //
-  //   this.datePickerOptions = {
-  //     showOn: "button",
-  //     buttonImageOnly: true,
-  //     buttonImage: "/assets/calendar.gif",
-  //     beforeShow: function() {
-  //       this.calendarOpen = true;
-  //     },
-  //     onClose: function() {
-  //       this.calendarOpen = false;
-  //       e = $.Event("keydown");
-  //       e.which = 13;
-  //       $(this).trigger(e);
-  //     }
-  //   };
-  //
-  //   this.setDateTimeFormates = function() {
-  //     if (this.column.DateSourceFormat !== undefined) {
-  //       this.dateSourceFormat = this.column.DateSourceFormat;
-  //     }
-  //     if (this.column.DateShowFormat !== undefined) {
-  //       this.dateShowFormat = this.column.DateShowFormat;
-  //     }
-  //   };
-  //
-  //   this.parseTime = function(timeStr) {
-  //     return timeStr.match(new RegExp('^' + REGEX_TIME + '$'));
-  //   };
-  //
-  //   this.parseDate = function(dateStr) {
-  //     return dateStr.match(new RegExp('^' + REGEX_DATE + '$'));
-  //   };
-  //
-  //   this.parseDateTime = function(dateTimeStr) {
-  //     return dateTimeStr.match(new RegExp('^' + REGEX_DATE + '[ \\t]?' + REGEX_TIME + '$'));
-  //   };
-  //
-  //   this.validateDateTime = function(parser, msg) {
-  //     var validationResults;
-  //     var value = this.element.val();
-  //
-  //     if (this.column.validator) {
-  //       validationResults = this.callValidator(value);
-  //       if (!validationResults.valid) {
-  //         return validationResults;
-  //       }
-  //     }
-  //
-  //     if (value) {
-  //       if (!eval('this.' + parser)(value)) {
-  //         this.element.val(this.defaultValue);
-  //         return {
-  //           valid: false,
-  //           msg: "Please enter a valid " + msg
-  //         };
-  //       }
-  //     }
-  //
-  //     return {
-  //       valid: true,
-  //       msg: null
-  //     };
-  //   };
-  //
-  //   this.serializeDateTime = function(parser) {
-  //     var value = this.element.val();
-  //     var matchedArr = eval('this.' + parser)(value);
-  //
-  //     if (matchedArr) {
-  //       switch(parser) {
-  //         case 'parseDate':
-  //           return matchedArr[1] + '-' + matchedArr[2] + '-' + matchedArr[3];
-  //           break;
-  //         case 'parseTime':
-  //           return matchedArr[1] + ':' + matchedArr[2];
-  //           break;
-  //         default:
-  //           return matchedArr[1] + '-' + matchedArr[2] + '-' + matchedArr[3] + ' ' + matchedArr[4] + ':' + matchedArr[5];
-  //       }
-  //     } else {
-  //       return value;
-  //     }
-  //   }
-  //
-  //   this.destroy = function() {
-  //     $.datepicker.dpDiv.stop(true, true);
-  //     this.input.datetimepicker("hide");
-  //     this.input.datepicker("destroy");
-  //     this.input.remove();
-  //   };
-  //
-  //   this.show = function() {
-  //     if (this.calendarOpen) {
-  //       $.datepicker.dpDiv.stop(true, true).show();
-  //     }
-  //   };
-  //
-  //   this.hide = function() {
-  //     if (this.calendarOpen) {
-  //       $.datepicker.dpDiv.stop(true, true).hide();
-  //     }
-  //   };
-  // }
-
-  // DateTimeBaseEditor.prototype = Object.create(InputElementEditor.prototype);
 
 })(jQuery);
