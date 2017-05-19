@@ -118,29 +118,52 @@
 :javascript
   $('##{grid.name}_form select[data-required="true"]').chosen();
   $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-  $('input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
 
-  // Datetime Picker
+  var dateNow = new Date();
+  var yearNow = dateNow.getFullYear();
 
-  Inputmask.extendAliases({
-    'wulinDateTime': {
-      alias: 'datetime',
-      placeholder: 'dd/mm/2017 12:00',
-      yearrange: { minyear: 2000, maxyear: 2020 },
-    }
-  });
+  var initInputmaskConfigForm = {
+    yearrange: { minyear: 1900, maxyear: 2100 },
+  };
 
-  $('input[data-datetime]').inputmask('wulinDateTime').flatpickr({
+  var initFlatpickrConfigForm = {
     allowInput: true,
-    enableTime: true,
     clickOpens: true,
-    dateFormat: 'd/m/Y H:i',
-    maxDate: '31/12/2020',
-    minDate: '01/01/2000',
+    maxDate: '31/12/2100',
+    minDate: '01/01/1900',
     onOpen: function(selectedDates, dateStr, instance) {
       instance.update(dateStr);
     },
+  };
+
+  // Datetime Picker
+
+  var inputmaskConfigDateTime = $.extend({}, initInputmaskConfigForm, {
+    alias: 'datetime',
+    placeholder: 'dd/mm/' + yearNow + ' 12:00',
   });
+
+  var flatpickrConfigDateTime = $.extend({}, initFlatpickrConfigForm, {
+    enableTime: true,
+    dateFormat: 'd/m/Y H:i',
+  });
+
+  Inputmask.extendAliases({ 'formDateTime': inputmaskConfigDateTime });
+  $('input[data-datetime]').inputmask('formDateTime').flatpickr(flatpickrConfigDateTime);
+
+  // Date Picker
+
+  var inputmaskConfigDate = $.extend({}, initInputmaskConfigForm, {
+    alias: 'date',
+    placeholder: 'dd/mm/' + yearNow,
+  });
+
+  var flatpickrConfigDate = $.extend({}, initFlatpickrConfigForm, {
+    dateFormat: 'd/m/Y',
+  });
+
+  Inputmask.extendAliases({ 'formDate': inputmaskConfigDate });
+  $('input[data-date]').inputmask('formDate').flatpickr(flatpickrConfigDate);
 
   // Time Picker
 
