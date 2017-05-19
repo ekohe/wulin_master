@@ -93,7 +93,9 @@ module WulinMaster
         @datetime_excel_format = 'hh:mm'
         value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
       else
-        if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
+        if (value.class == ActiveSupport::TimeWithZone) ||
+           (value.class == Date) ||
+           (@options[:type] == 'Datetime')
           @datetime_value = value
           if sql_type == :time
             @datetime_excel_format = 'hh:mm'
