@@ -58,7 +58,7 @@ require 'wulin_master/components/panel/panel'
 WulinMaster.prepend_javascript 'master/master.js'
 WulinMaster.prepend_stylesheet 'master.css'
 
-Time::DATE_FORMATS[:no_seconds] = "%Y-%m-%d %H:%M"
-Time::DATE_FORMATS[:date] = "%Y-%m-%d"
+Time::DATE_FORMATS[:no_seconds] = "%d/%m/%Y %H:%M"
+Time::DATE_FORMATS[:date] = "%d/%m/%Y"
 Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds

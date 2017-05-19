@@ -99,10 +99,10 @@ module WulinMaster
             @datetime_excel_format = 'hh:mm'
             value.try(:strftime, "%H:%M")
           elsif sql_type == :date
-            @datetime_excel_format = 'yyyy-mm-dd'
-            value.try(:strftime, "%Y-%m-%d")
+            @datetime_excel_format = 'dd/mm/yyyy'
+            value.try(:strftime, "%d/%m/%Y")
           else
-            @datetime_excel_format = 'yyyy-mm-dd hh:mm'
+            @datetime_excel_format = 'dd/mm/yyyy hh:mm'
             value.to_formatted_s(datetime_format)
           end
         elsif value.class == Time

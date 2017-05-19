@@ -1,10 +1,5 @@
 (function($) {
 
-  var REGEXP_BASE_DATE = '(\\d{4})\\-(\\d{2})\\-(\\d{2})';                           // 'yyyy-mm-dd'
-  var REGEXP_BASE_TIME = '(\\d{2}):(\\d{2})';                                        // 'hh:mm'
-  var REGEXP_DATE = '^' + REGEXP_BASE_DATE + '$';                                    // 'yyyy-mm-dd'
-  var REGEXP_DATETIME = '^' + REGEXP_BASE_DATE + '[ \\t]' + REGEXP_BASE_TIME + '$';  // 'yyyy-mm-dd hh:mm'
-
   var SlickFormatter = {
 
     ///////////////////////////////////////////////////////////////////////////
@@ -13,22 +8,6 @@
 
     applyStyle: function(value, style) {
       return value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";
-    },
-
-    // Convert datetime format
-    convertDateTimeFormat: function(str) {
-      try {
-        var matchedArr;
-        if (matchedArr = str.match(new RegExp(REGEXP_DATE))) {
-          return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1];
-        } else if (matchedArr = str.match(new RegExp(REGEXP_DATETIME))) {
-          return matchedArr[3] + '/' + matchedArr[2] + '/' + matchedArr[1] + ' ' + matchedArr[4] + ':' + matchedArr[5];
-        } else {
-          return str;
-        }
-      } catch (err) {
-        return null;
-      }
     },
 
     ///////////////////////////////////////////////////////////////////////////
@@ -53,8 +32,15 @@
         }
       }
 
+      // Set default text-align
+      var textAlign, default_style;
+      if (['datetime', 'date', 'time'].includes(columnDef.type) ) {
+        textAlign = 'center';
+      }
+      default_style = textAlign ? 'text-align:' + textAlign : null
+
       // Apply style
-      return applyStyle(value, columnDef.style);
+      return applyStyle(value, columnDef.style || default_style);
     },
 
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
@@ -80,16 +66,6 @@
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
       return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style || 'text-align:center') + "</div>";
-    },
-
-    // Display datetime info as 'dd/mm/yyyy hh:ms' format
-    DateTimeFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (value === null || value === '') {
-        return '';
-      } else {
-        value = convertDateTimeFormat(value);
-        return applyStyle(value, columnDef.style || 'text-align:center');
-      }
     },
 
     // Display only date info as 'yyyy-mm-dd' format for a datetime column

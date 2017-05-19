@@ -798,7 +798,7 @@
   function DateTimeBaseEditor(args) {
     InputElementEditor.call(this, args);
 
-    var date = convertDateTimeFormat(this.args.item[this.column.field]);;
+    var date = this.args.item[this.column.field];
     var dateNow = new Date();
     this.yearNow = dateNow.getFullYear();
     this.boxWidth -= 24;
@@ -816,12 +816,6 @@
         instance.open();
         instance.update(date);
       },
-    };
-
-    this.loadValue = function(item) {
-      this.defaultValue = date;
-      this.element.val(this.defaultValue);
-      this.element.select();
     };
   }
 
