@@ -1,4 +1,4 @@
-class CreateGridStates < ActiveRecord::Migration
+class CreateGridStates < ActiveRecord::Migration[5.0]
   def change
     unless table_exists?(:grid_states)
       create_table :grid_states do |t|
