@@ -70,9 +70,9 @@ module WulinMaster
       if params[:grid_name].present? && params[:user_id].present? && (default = GridState.for_user_and_grid(params[:user_id], params[:grid_name]).default.first)
         default.reset!
       end
-      render text: 'ok'
+      render plain: 'ok'
     rescue
-      render text: $ERROR_INFO.message
+      render plain: $ERROR_INFO.message
     end
   end
 end
