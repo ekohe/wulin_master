@@ -1,8 +1,5 @@
 module WulinMaster
   module ColumnAttr
-    SIMPLE_DATE_REGEX = /\A(\d{2})\s?([A-Za-z]{3})\Z/
-    SIMPLE_TIME_REGEX = /\A(\d{2}):?(\d{2})\Z/
-
     def assign_attribute(object, value, new_attrs, attrs, type)
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
