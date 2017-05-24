@@ -84,36 +84,30 @@ module WulinMaster
       @datetime_value = nil
       @datetime_excel_format = nil
 
-      if @options[:simple_date]
+      if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
         @datetime_value = value
-        @datetime_excel_format = 'dd mm'
-        value.respond_to?(:strftime) ? value.strftime('%d %b') : value
-      elsif @options[:simple_time]
+        if sql_type == :time || options[:inner_sql_type] == :time
+          @datetime_excel_format = 'hh:mm'
+          value.try(:strftime, "%H:%M")
+        elsif sql_type == :date || options[:inner_sql_type] == :date
+          @datetime_excel_format = 'dd/mm/yyyy'
+          value.try(:strftime, "%d/%m/%Y")
+        else
+          @datetime_excel_format = 'dd/mm/yyyy hh:mm'
+          value.to_formatted_s(datetime_format)
+        end
+      elsif value.class == Date
+        @datetime_value = value
+        @datetime_excel_format = 'dd/mm/yyyy'
+        value.try(:strftime, "%d/%m/%Y")
+      elsif value.class == Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'
-        value.respond_to?(:strftime) ? value.strftime('%H:%M') : value
+        value.strftime('%H:%M')
+      elsif value.class.name == 'BSON::ObjectId'
+        value.to_s
       else
-        if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
-          @datetime_value = value
-          if sql_type == :time
-            @datetime_excel_format = 'hh:mm'
-            value.try(:strftime, "%H:%M")
-          elsif sql_type == :date
-            @datetime_excel_format = 'yyyy-mm-dd'
-            value.try(:strftime, "%Y-%m-%d")
-          else
-            @datetime_excel_format = 'yyyy-mm-dd hh:mm'
-            value.to_formatted_s(datetime_format)
-          end
-        elsif value.class == Time
-          @datetime_value = value
-          @datetime_excel_format = 'hh:mm'
-          value.strftime('%H:%M')
-        elsif value.class.name == 'BSON::ObjectId'
-          value.to_s
-        else
-          value
-        end
+        value
       end
     end
 

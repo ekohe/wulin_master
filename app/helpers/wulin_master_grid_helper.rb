@@ -32,11 +32,11 @@ module WulinMasterGridHelper
   end
 
   def date_column?(column)
-    'true' if column.sql_type.to_s.casecmp('date').zero? && !column.options[:simple_date] && !column.options[:simple_time]
+    'true' if column.sql_type.to_s.casecmp('date').zero?
   end
 
   def datetime_column?(column)
-    'true' if !time_column?(column) && column.sql_type.to_s.casecmp('datetime').zero? && !column.options[:simple_date] && !column.options[:simple_time]
+    'true' if !time_column?(column) && column.sql_type.to_s.casecmp('datetime').zero?
   end
 
   def time_column?(column)

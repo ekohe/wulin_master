@@ -32,7 +32,7 @@ describe WulinMaster::ScreenAndGridGenerator do
       directory "db" do
         directory "migrate" do
           migration "create_cities" do
-            contains "class CreateCities < ActiveRecord::Migration"
+            contains "class CreateCities < ActiveRecord::Migration[5.0]"
             contains "create_table :cities do |t|"
             contains "t.string :name"
             contains "t.string :country"

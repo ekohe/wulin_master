@@ -154,7 +154,9 @@ function Flatpickr(element, config) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
-	// Ekohe Edit: Add KeyUp & Blur handler to input field
+	// Ekohe Edit:
+	// 1. Add KeyUp handler to input field
+	// 2. Remove focus event listener to avoid conflict with SlickGrid
 	/////////////////////////////////////////////////////////////////////////////
 
 	function bind() {
@@ -232,18 +234,20 @@ function Flatpickr(element, config) {
 			self.timeContainer.addEventListener("wheel", self.debouncedChange);
 			self.timeContainer.addEventListener("input", self.triggerChange);
 
-			self.hourElement.addEventListener("focus", function () {
-				self.hourElement.select();
-			});
-			self.minuteElement.addEventListener("focus", function () {
-				self.minuteElement.select();
-			});
+			// Ekohe Delete: Avoid conflict to focus event of SlickGrid
 
-			if (self.secondElement) {
-				self.secondElement.addEventListener("focus", function () {
-					self.secondElement.select();
-				});
-			}
+			// self.hourElement.addEventListener("focus", function () {
+			// 	self.hourElement.select();
+			// });
+			// self.minuteElement.addEventListener("focus", function () {
+			// 	self.minuteElement.select();
+			// });
+			//
+			// if (self.secondElement) {
+			// 	self.secondElement.addEventListener("focus", function () {
+			// 		self.secondElement.select();
+			// 	});
+			// }
 
 			if (self.amPM) {
 				self.amPM.addEventListener("click", function (e) {
@@ -251,10 +255,10 @@ function Flatpickr(element, config) {
 					self.triggerChange(e);
 				});
 			}
-
-			// Ekohe Add: Update calendar when KeyUp
-			self.input.addEventListener("keyup", onKeyUp);
 		}
+
+		// Ekohe Add: Update calendar when KeyUp
+		self.input.addEventListener("keyup", onKeyUp);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -804,7 +808,8 @@ function Flatpickr(element, config) {
 		// Ekohe Edit: Close calender when use 'Tab'/'Enter'/'ArrowUp'/'ArrowDown' key on input
 		// if (e.target === (self.altInput || self.input) && e.which === 13) {
 			// selectDate(e);
-		if (e.target === (self.altInput || self.input) && [9, 13, 38, 40].includes(e.which)) {
+		if ((e.target === (self.altInput || self.input)) && 
+			  (e.which === 9 || e.which === 13 || e.which === 38 || e.which === 40)) {
 			self.close();
 		// Ekohe Add: Close calender and set focus on input when 'Enter' on Calendar
 		} else if (e.target !== (self.altInput || self.input) && e.which === 13) {
@@ -1152,7 +1157,12 @@ function Flatpickr(element, config) {
 			self.hourElement.select();
 		}, 451);
 
-		if (self.config.mode === "single" && !self.config.enableTime) self.close();
+		// Ekohe Edit: Set focus to input after closing calender
+		// if (self.config.mode === "single" && !self.config.enableTime) self.close();
+		if (self.config.mode === "single" && !self.config.enableTime) {
+			self.close();
+			self.input.focus();
+		}
 
 		triggerEvent("Change");
 	}

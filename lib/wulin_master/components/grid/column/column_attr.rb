@@ -1,8 +1,5 @@
 module WulinMaster
   module ColumnAttr
-    SIMPLE_DATE_REGEX = /\A(\d{2})\s?([A-Za-z]{3})\Z/
-    SIMPLE_TIME_REGEX = /\A(\d{2}):?(\d{2})\Z/
-
     def assign_attribute(object, value, new_attrs, attrs, type)
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
@@ -11,10 +8,6 @@ module WulinMaster
         elsif type == :update
           assign_relation_attr_for_update(new_attrs, value)
         end
-      elsif options[:simple_date]
-        assign_simple_date_attr(new_attrs, value, object)
-      elsif options[:simple_time]
-        assign_simple_time_attr(new_attrs, value, object)
       elsif value.blank? # v == 'null'
         new_attrs[field_sym] = nil
       end
@@ -24,53 +17,7 @@ module WulinMaster
       @model_associations ||= model.reflections
     end
 
-    def simple_date_format(value)
-      if value =~ SIMPLE_DATE_REGEX
-        DateTime.parse("#{Regexp.last_match(1)} #{Regexp.last_match(2)} #{WulinMaster.config.default_year}")
-      end
-    rescue
-      nil
-    end
-    module_function :simple_date_format
-
-    def simple_time_format(value)
-      Time.zone.parse("#{Regexp.last_match(1)}:#{Regexp.last_match(2)}") if value =~ SIMPLE_TIME_REGEX
-    rescue
-      nil
-    end
-    module_function :simple_time_format
-
     private
-
-    def assign_simple_date_attr(new_attrs, value, object)
-      if object && value.present?
-        value_was = object.__send__("#{field_str}_was")
-        if new_date = simple_date_format(value)
-          new_attrs[field_sym] = (value_was.blank? ? new_date : value_was.change(year: new_date.year, month: new_date.month, day: new_date.day).to_s)
-        else
-          new_attrs[field_sym] = value_was
-        end
-      else
-        new_attrs[field_sym] = simple_date_format(value)
-      end
-    rescue
-      new_attrs[field_sym] = value
-    end
-
-    def assign_simple_time_attr(new_attrs, value, object)
-      if object && value.present?
-        value_was = object.__send__("#{field_str}_was")
-        new_attrs[field_sym] = if new_time = simple_time_format(value)
-          (value_was.blank? ? new_time : value_was.change(hour: new_time.hour, min: new_time.min))
-        else
-          value_was
-        end
-      else
-        new_attrs[field_sym] = simple_time_format(value)
-      end
-    rescue
-      new_attrs[field_sym] = value
-    end
 
     def assign_relation_attr_for_create(new_attrs, value)
       if relation_macro == :belongs_to
