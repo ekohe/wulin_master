@@ -21,7 +21,7 @@
           field = column.options[:through] || column.name
         .field{:name => column_name}
           %label{:for => "#{model_name}_#{column_name}"}= label
-          - if ['belongs_to', 'enum'].include?(column.sql_type.to_s)
+          - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
             = form.select column_name,                                      |
               select_options(column),                                       |
               { include_blank: !column.presence_required? },                |
@@ -33,7 +33,7 @@
               "data-target"      => "#{column_name}_target_flag",           |
               "data-field"       => field                                   |
 
-          - elsif column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many'
+          - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
             = form.select column.reflection.name.to_s,                       |
               select_options(column),                                        |
               { include_blank: !column.presence_required? },                 |
@@ -46,7 +46,7 @@
               "data-field"       => field,                                   |
               :disabled          => column.options[:auto_fill]               |
 
-          - elsif select_tag_field?(column)
+          - elsif (select_tag_field?(column) || column.sql_type.to_s == 'has_one')
             = select_tag "#{model_name}[#{column_name}]",                   |
               select_tag_options(column),                                   |
               :style             => "width:250px",                          |
@@ -57,7 +57,7 @@
               "data-target"      => "#{column_name}_target_flag",           |
               "data-source"      => column.source,                          |
               "data-field"       => field                                   |
-            - if column.options[:depend_column].present?
+            - if (column.options[:depend_column].present?)
               :javascript
                 $(function(){
                   var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
@@ -73,7 +73,7 @@
                   });
                 });
 
-          - elsif column.sql_type.to_s == 'string'
+          - elsif (column.sql_type.to_s == 'string')
             = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
 
             :javascript
