@@ -30,13 +30,39 @@
     }
   });
 
-  // Initial Config of flatpickr
+  // Config of flatpickr
 
   this.fpConfigInit = {
     allowInput: true,
     maxDate: '31/12/2100',
     minDate: '01/01/1900',
   };
+
+  this.fpConfigForm = $.extend({}, this.fpConfigInit, {
+    clickOpens: true,
+    onOpen: function(selectedDates, dateStr, instance) {
+      instance.update(dateStr);
+    },
+  });
+
+  this.fpConfigFormDateTime = $.extend({}, this.fpConfigForm, {
+    enableTime: true,
+    dateFormat: 'd/m/Y H:i',
+  });
+
+  this.fpConfigFormDate = $.extend({}, this.fpConfigForm, {
+    dateFormat: 'd/m/Y',
+  });
+
+  this.fpConfigTime = $.extend({}, this.fpConfigForm, {
+    noCalendar: true,
+    enableTime: true,
+    dateFormat: 'H:i',
+    onOpen: function(selectedDates, dateStr, instance) {
+      var time = dateStr || '12:00';
+      instance.update(time);
+    },
+  });
 
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
