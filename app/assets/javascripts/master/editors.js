@@ -1,5 +1,43 @@
 (function($) {
 
+  // Get current year
+
+  var dateNow = new Date();
+  this.yearNow = dateNow.getFullYear();
+
+  // Config of Inputmask
+
+  Inputmask.extendAliases({
+    'wulinDateTime': {
+      alias: 'datetime',
+      placeholder: 'dd/mm/' + this.yearNow + ' 12:00',
+      yearrange: { minyear: 1900, maxyear: 2100 },
+    }
+  });
+
+  Inputmask.extendAliases({
+    'wulinDate': {
+      alias: 'date',
+      placeholder: 'dd/mm/' + this.yearNow,
+      yearrange: { minyear: 1900, maxyear: 2100 },
+    }
+  });
+
+  Inputmask.extendAliases({
+    'wulinTime': {
+      alias: 'hh:mm',
+      placeholder: '12:00',
+    }
+  });
+
+  // Initial Config of flatpickr
+
+  this.fpConfigInit = {
+    allowInput: true,
+    maxDate: '31/12/2100',
+    minDate: '01/01/1900',
+  };
+
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
   ///////////////////////////////////////////////////////////////////////////
@@ -799,24 +837,15 @@
     InputElementEditor.call(this, args);
 
     var date = this.args.item[this.column.field];
-    var dateNow = new Date();
-    this.yearNow = dateNow.getFullYear();
     this.boxWidth -= 24;
 
-    this.initInputmaskConfig = {
-      yearrange: { minyear: 1900, maxyear: 2100 },
-    };
-
-    this.initFlatpickrConfig = {
-      allowInput: true,
+    this.fpConfigGrid = $.extend({}, window.fpConfigInit, {
       clickOpens: false,
-      maxDate: '31/12/2100',
-      minDate: '01/01/1900',
       onReady: function(selectedDates, dateStr, instance) {
         instance.open();
         instance.update(date);
       },
-    };
+    });
   }
 
   DateTimeBaseEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -829,19 +858,13 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'datetime',
-        placeholder: 'dd/mm/' + this.yearNow + ' 12:00',
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var flatpickrConfig = $.extend({}, this.fpConfigGrid, {
         enableTime: true,
         dateFormat: 'd/m/Y H:i',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridDateTime': inputmaskConfig });
-      this.input.inputmask('gridDateTime').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinDateTime').flatpickr(flatpickrConfig);
     };
 
     this.init();
@@ -857,18 +880,12 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'date',
-        placeholder: 'dd/mm/' + this.yearNow,
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var fpConfigGridDate = $.extend({}, this.fpConfigGrid, {
         dateFormat: 'd/m/Y',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridDate': inputmaskConfig });
-      this.input.inputmask('gridDate').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinDate').flatpickr(fpConfigGridDate);
     };
 
     this.init();
@@ -884,20 +901,14 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'hh:mm',
-        placeholder: '12:00',
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var fpConfigGridTime = $.extend({}, this.fpConfigGrid, {
         noCalendar: true,
         enableTime: true,
         dateFormat: 'H:i',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridTime': inputmaskConfig });
-      this.input.inputmask('gridTime').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinTime').flatpickr(fpConfigGridTime);
     };
 
     this.init();
