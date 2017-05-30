@@ -597,8 +597,18 @@
         // set options with AJAX
         var ajaxOptions = [];
         $.each(itemdata, function(index, value) {
-          if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
-            ajaxOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+          if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id) {
+            // ajaxOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+
+            // if (this.source === 'code' || this.source === 'name') {
+            if (this.args.item[this.column.field]['code'] && this.args.item[this.column.field]['name']) {
+              ajaxOptions.push("<option value='" + value.id + "'>" +
+                               value['code'] + ": " + value['name'] +
+                               "</option>");
+            } else {
+              ajaxOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+            }
+          }
         }.bind(this));
         this.select.append(ajaxOptions.join(''));
 
@@ -636,7 +646,25 @@
       // must append the current value option, otherwise this.serializeValue can't get it
       this.select.append($("<option />"));
       if (this.args.item[this.column.field] && this.args.item[this.column.field].id) {
-        this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.source] + "</option>");
+        // this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.source] + "</option>");
+
+        // var currentOptions = [];
+        if (this.args.item[this.column.field]['code'] && this.args.item[this.column.field]['name']) {
+          this.select.append("<option value='" +
+                             this.args.item[this.column.field].id +
+                             "'>" +
+                             this.args.item[this.column.field]['code'] +
+                             ": " +
+                             this.args.item[this.column.field]['name'] +
+                             "</option>");
+        } else {
+          this.select.append("<option value='" +
+                             this.args.item[this.column.field].id +
+                             "'>" +
+                             this.args.item[this.column.field][this.source] +
+                             "</option>");
+        }
+
         this.select.val(this.args.item[this.column.field].id);
       }
 
@@ -644,7 +672,15 @@
         var arrOptions = [];
         $.each(this.choices, function(index, value) {
           if (!args.item[this.column.field] || args.item[this.column.field].id != value.id) {
-            arrOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+            // arrOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+
+            if (this.source === 'code' || this.source === 'name') {
+              arrOptions.push("<option value='" + value.id + "'>" +
+                              value['code'] + ": " + value['name'] +
+                              "</option>");
+            } else {
+              arrOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+            }
           }
         }.bind(this));
         this.select.append(arrOptions.join(''));

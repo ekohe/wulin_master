@@ -283,8 +283,17 @@ module WulinMaster
     def json(object)
       case association_type.to_s
       when 'belongs_to'
-        value = object.send(@options[:through] || name).try(:send, source)
-        {reflection.name => {:id => object.send(foreign_key), source => format(value)}}
+        # value = object.send(@options[:through] || name).try(:send, source)
+        # {reflection.name => {:id => object.send(foreign_key), source => format(value)}}
+
+        association_object = object.send(@options[:through] || name)
+        if [:name, :code].include?(source.to_sym)
+          {reflection.name => {:id => object.send(foreign_key),
+                               :name => format(association_object.try(:name)),
+                               :code => format(association_object.try(:code))}}
+        else
+          {reflection.name => {:id => object.send(foreign_key), source => format(association_object.try(:send, source))}}
+        end
       when 'has_one'
         association_object = object.send(@options[:through] || name)
         {reflection.name => {:id => association_object.try(:id), source => format(association_object.try(:send, source))}}

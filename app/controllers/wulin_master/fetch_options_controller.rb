@@ -6,11 +6,24 @@ module WulinMaster
     def index
       if authorized? && params[:source].present?
         objects = if klass.column_names.include? params[:source]
-          klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          # klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          if ['code', 'name'].include?(params[:source]) &&
+             (['code', 'name'] & klass.column_names) == ['code', 'name']
+            klass.select("id, code, name").order("code ASC").all
+          else
+            klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          end
         else
           klass.all.sort { |x, y| x.send(params[:source]).to_s.downcase <=> y.send(params[:source]).to_s.downcase }
         end
-        self.response_body = objects.collect { |o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
+
+        # self.response_body = objects.collect { |o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
+        if ['code', 'name'].include?(params[:source]) &&
+           (['code', 'name'] & klass.column_names) == ['code', 'name']
+          self.response_body = objects.collect { |o| {:id => o.id, :code => o.code, :name => o.name} }.to_json
+        else
+          self.response_body = objects.collect { |o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
+        end
       else
         self.status = 403
         self.response_body = ForbiddenMessage
