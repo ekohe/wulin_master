@@ -591,7 +591,15 @@
       this.select.select();
     };
 
-    this.getOptions = function(theCurrentValue) {
+    this.applyValue = function(item, state) {
+      // deserialize the value(s) saved to "state" and apply them to the data item
+      // this method may get called after the editor itself has been destroyed
+      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+      item[this.column.field].id = state.id;
+      item[this.column.field][this.source] = state[this.source];
+    };
+
+    this.getOptions = function() {
 
       // dynamic filter by other relational column
       if (this.args.column.depend_column) {
@@ -602,14 +610,6 @@
       $.getJSON(this.choices, function(itemdata) {
         this.setOptions(itemdata);
       }.bind(this));
-    };
-
-    this.applyValue = function(item, state) {
-      // deserialize the value(s) saved to "state" and apply them to the data item
-      // this method may get called after the editor itself has been destroyed
-      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-      item[this.column.field].id = state.id;
-      item[this.column.field][this.source] = state[this.source];
     };
 
     this.setOptions = function(dateset) {
@@ -633,6 +633,22 @@
       this.select.append(this.arrOptions.join(''));
       this.setAllowSingleDeselect();
     };
+
+    this.appendOptions = function(target, value) {
+      if (this.isCodeNameColumn(this.source, this.field)) {
+        target.append(
+          "<option value='" + value.id + "'>" +
+          value['code'] + ": " + value['name'] +
+          "</option>"
+        );
+      } else {
+        target.append(
+          "<option value='" + value.id + "'>" +
+          value[this.source] +
+          "</option>"
+        );
+      }
+    };
   }
 
   RelationEditor.prototype = Object.create(SelectElementEditor.prototype);
@@ -655,19 +671,7 @@
       // must append the current value option, otherwise this.serializeValue can't get it
       this.select.append($("<option />"));
       if (this.field && this.field.id) {
-        if (this.isCodeNameColumn(this.source, this.field)) {
-          this.select.append(
-            "<option value='" + this.field.id + "'>" +
-            this.field['code'] + ": " + this.field['name'] +
-            "</option>"
-          );
-        } else {
-          this.select.append(
-            "<option value='" + this.field.id + "'>" +
-            this.field[this.source] +
-            "</option>"
-          );
-        }
+        this.appendOptions(this.select, this.field);
         this.select.val(this.field.id);
       }
 
@@ -703,24 +707,15 @@
       this.select.empty();
       this.select.append($("<option />"));
 
-      this.getOptions();
-      this.openDropDrown();
-    };
-
-    this.getOptions = function(theCurrentValue) {
       $.getJSON(this.choices, function(itemdata) {
-
-        // set select options with AJAX
-        this.select.empty();
-        this.select.append($("<option />"));
         $.each(itemdata, function(index, value) {
-          this.select.append("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+          this.appendOptions(this.select, value);
         }.bind(this));
-
-        this.select.val(args.item[this.column.field].id);
+        this.select.val(this.field.id);
         this.setAllowSingleDeselect();
-
       }.bind(this));
+
+      this.openDropDrown();
     };
 
     this.applyValue = function(item, state) {
