@@ -71,7 +71,6 @@
   function BaseEditor(args) {
     this.args = args;
     this.column = args.column;
-    this.field = this.args.item[this.column.field];
   }
 
   BaseEditor.prototype = {
@@ -322,6 +321,7 @@
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
+    this.field = this.args.item[this.column.field];
 
     // find originColumn
     for (var k in args.grid.originColumns) {
