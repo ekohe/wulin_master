@@ -543,6 +543,7 @@
 
     this.source = this.column.source || 'name';
     this.addOptionText = 'Add new Option';
+    this.arrOptions = [];
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
 
     this.isValueChanged = function() {
@@ -599,26 +600,7 @@
       }
 
       $.getJSON(this.choices, function(itemdata) {
-        var ajaxOptions = [];
-
-        // set options with AJAX
-        $.each(itemdata, function(index, value) {
-          if (!this.field || this.field.id != value.id) {
-            if (this.isCodeNameColumn(this.source, this.field)) {
-              ajaxOptions.push("<option value='" + value.id + "'>" +
-                               value['code'] + ": " + value['name'] +
-                               "</option>");
-            } else {
-              ajaxOptions.push("<option value='" + value.id + "'>" +
-                               value[this.source] +
-                               "</option>");
-            }
-          }
-        }.bind(this));
-        this.select.append(ajaxOptions.join(''));
-
-        this.setAllowSingleDeselect();
-
+        this.setOptions(itemdata);
       }.bind(this));
     };
 
@@ -628,6 +610,28 @@
       // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
       item[this.column.field].id = state.id;
       item[this.column.field][this.source] = state[this.source];
+    };
+
+    this.setOptions = function(dateset) {
+      $.each(dateset, function(index, value) {
+        if (!this.field || this.field.id != value.id) {
+          if (this.isCodeNameColumn(this.source, this.field)) {
+            this.arrOptions.push(
+              "<option value='" + value.id + "'>" +
+              value['code'] + ": " + value['name'] +
+              "</option>"
+            );
+          } else {
+            this.arrOptions.push(
+              "<option value='" + value.id + "'>" +
+              value[this.source] +
+              "</option>"
+            );
+          }
+        }
+      }.bind(this));
+      this.select.append(this.arrOptions.join(''));
+      this.setAllowSingleDeselect();
     };
   }
 
@@ -652,42 +656,27 @@
       this.select.append($("<option />"));
       if (this.field && this.field.id) {
         if (this.isCodeNameColumn(this.source, this.field)) {
-          this.select.append("<option value='" + this.field.id + "'>" +
-                             this.field['code'] + ": " + this.field['name'] +
-                             "</option>");
+          this.select.append(
+            "<option value='" + this.field.id + "'>" +
+            this.field['code'] + ": " + this.field['name'] +
+            "</option>"
+          );
         } else {
-          this.select.append("<option value='" + this.field.id + "'>" +
-                             this.field[this.source] +
-                             "</option>");
+          this.select.append(
+            "<option value='" + this.field.id + "'>" +
+            this.field[this.source] +
+            "</option>"
+          );
         }
-
-        this.select.val(this.args.item[this.column.field].id);
+        this.select.val(this.field.id);
       }
 
       if ($.isArray(this.choices)) {
-        var arrOptions = [];
-        $.each(this.choices, function(index, value) {
-          if (!this.field || this.field.id != value.id) {
-            if (this.isCodeNameColumn(this.source, this.field)) {
-              arrOptions.push("<option value='" + value.id + "'>" +
-                              value['code'] + ": " + value['name'] +
-                              "</option>");
-            } else {
-              arrOptions.push("<option value='" + value.id + "'>" +
-                              value[this.source] +
-                              "</option>");
-            }
-          }
-        }.bind(this));
-        this.select.append(arrOptions.join(''));
-        this.select.chosen({
-          allow_single_deselect: !args.column['required']
-        });
+        this.setOptions(this.choices);
       } else {
         this.getOptions();
       }
 
-      // this.getOptions();
       this.openDropDrown();
     };
 
