@@ -1,4 +1,5 @@
 When /^(?:|I )press '([^"]*)'$/ do |button|
+  page.execute_script("$('.flatpickr-calendar').removeClass('open')");
   click_button(button)
 end
 

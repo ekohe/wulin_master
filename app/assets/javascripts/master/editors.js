@@ -1,5 +1,74 @@
 (function($) {
 
+  // Get current year
+
+  var dateNow = new Date();
+  this.yearNow = dateNow.getFullYear();
+
+  // Config of Inputmask
+
+  Inputmask.extendAliases({
+    'wulinDateTime': {
+      alias: 'datetime',
+      placeholder: 'dd/mm/' + this.yearNow + ' 12:00',
+      yearrange: { minyear: 1900, maxyear: 2100 },
+    }
+  });
+
+  Inputmask.extendAliases({
+    'wulinDate': {
+      alias: 'date',
+      placeholder: 'dd/mm/' + this.yearNow,
+      yearrange: { minyear: 1900, maxyear: 2100 },
+    }
+  });
+
+  Inputmask.extendAliases({
+    'wulinTime': {
+      alias: 'hh:mm',
+      placeholder: '12:00',
+    }
+  });
+
+  // Config of flatpickr
+
+  this.fpConfigInit = {
+    allowInput: true,
+    maxDate: '31/12/2100',
+    minDate: '01/01/1900',
+  };
+
+  this.fpConfigForm = $.extend({}, this.fpConfigInit, {
+    clickOpens: true,
+    onOpen: function(selectedDates, dateStr, instance) {
+      instance.update(dateStr);
+    },
+  });
+
+  this.fpConfigFormDateTime = $.extend({}, this.fpConfigForm, {
+    enableTime: true,
+    dateFormat: 'd/m/Y H:i',
+  });
+
+  this.fpConfigFormDate = $.extend({}, this.fpConfigForm, {
+    dateFormat: 'd/m/Y',
+  });
+
+  this.fpConfigTime = $.extend({}, this.fpConfigForm, {
+    noCalendar: true,
+    enableTime: true,
+    dateFormat: 'H:i',
+    onOpen: function(selectedDates, dateStr, instance) {
+      var time = dateStr || '12:00';
+      instance.update(time);
+    },
+  });
+
+  this.isCodeNameColumn = function(source, field) {
+    return (source === 'code' || source === 'name') &&
+           (field['code'] && field['name']);
+  };
+
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
   ///////////////////////////////////////////////////////////////////////////
@@ -252,6 +321,7 @@
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
+    this.field = this.args.item[this.column.field];
 
     // find originColumn
     for (var k in args.grid.originColumns) {
@@ -473,6 +543,7 @@
 
     this.source = this.column.source || 'name';
     this.addOptionText = 'Add new Option';
+    this.arrOptions = [];
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
 
     this.isValueChanged = function() {
@@ -520,7 +591,15 @@
       this.select.select();
     };
 
-    this.getOptions = function(theCurrentValue) {
+    this.applyValue = function(item, state) {
+      // deserialize the value(s) saved to "state" and apply them to the data item
+      // this method may get called after the editor itself has been destroyed
+      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
+      item[this.column.field].id = state.id;
+      item[this.column.field][this.source] = state[this.source];
+    };
+
+    this.getOptions = function() {
 
       // dynamic filter by other relational column
       if (this.args.column.depend_column) {
@@ -529,26 +608,46 @@
       }
 
       $.getJSON(this.choices, function(itemdata) {
-
-        // set options with AJAX
-        var ajaxOptions = [];
-        $.each(itemdata, function(index, value) {
-          if (!this.args.item[this.column.field] || this.args.item[this.column.field].id != value.id)
-            ajaxOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
-        }.bind(this));
-        this.select.append(ajaxOptions.join(''));
-
-        this.setAllowSingleDeselect();
-
+        this.setOptions(itemdata);
       }.bind(this));
     };
 
-    this.applyValue = function(item, state) {
-      // deserialize the value(s) saved to "state" and apply them to the data item
-      // this method may get called after the editor itself has been destroyed
-      // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
-      item[this.column.field].id = state.id;
-      item[this.column.field][this.source] = state[this.source];
+    this.setOptions = function(dateset) {
+      $.each(dateset, function(index, value) {
+        if (!this.field || this.field.id != value.id) {
+          if (window.isCodeNameColumn(this.source, this.field)) {
+            this.arrOptions.push(
+              "<option value='" + value.id + "'>" +
+              value['code'] + ": " + value['name'] +
+              "</option>"
+            );
+          } else {
+            this.arrOptions.push(
+              "<option value='" + value.id + "'>" +
+              value[this.source] +
+              "</option>"
+            );
+          }
+        }
+      }.bind(this));
+      this.select.append(this.arrOptions.join(''));
+      this.setAllowSingleDeselect();
+    };
+
+    this.appendOptions = function(target, value) {
+      if (window.isCodeNameColumn(this.source, this.field)) {
+        target.append(
+          "<option value='" + value.id + "'>" +
+          value['code'] + ": " + value['name'] +
+          "</option>"
+        );
+      } else {
+        target.append(
+          "<option value='" + value.id + "'>" +
+          value[this.source] +
+          "</option>"
+        );
+      }
     };
   }
 
@@ -571,27 +670,17 @@
 
       // must append the current value option, otherwise this.serializeValue can't get it
       this.select.append($("<option />"));
-      if (this.args.item[this.column.field] && this.args.item[this.column.field].id) {
-        this.select.append("<option value='" + this.args.item[this.column.field].id + "'>" + this.args.item[this.column.field][this.source] + "</option>");
-        this.select.val(this.args.item[this.column.field].id);
+      if (this.field && this.field.id) {
+        this.appendOptions(this.select, this.field);
+        this.select.val(this.field.id);
       }
 
       if ($.isArray(this.choices)) {
-        var arrOptions = [];
-        $.each(this.choices, function(index, value) {
-          if (!args.item[this.column.field] || args.item[this.column.field].id != value.id) {
-            arrOptions.push("<option value='" + value.id + "'>" + value[this.source] + "</option>");
-          }
-        }.bind(this));
-        this.select.append(arrOptions.join(''));
-        this.select.chosen({
-          allow_single_deselect: !args.column['required']
-        });
+        this.setOptions(this.choices);
       } else {
         this.getOptions();
       }
 
-      // this.getOptions();
       this.openDropDrown();
     };
 
@@ -618,24 +707,15 @@
       this.select.empty();
       this.select.append($("<option />"));
 
-      this.getOptions();
-      this.openDropDrown();
-    };
-
-    this.getOptions = function(theCurrentValue) {
       $.getJSON(this.choices, function(itemdata) {
-
-        // set select options with AJAX
-        this.select.empty();
-        this.select.append($("<option />"));
         $.each(itemdata, function(index, value) {
-          this.select.append("<option value='" + value.id + "'>" + value[this.source] + "</option>");
+          this.appendOptions(this.select, value);
         }.bind(this));
-
-        this.select.val(args.item[this.column.field].id);
+        this.select.val(this.field.id);
         this.setAllowSingleDeselect();
-
       }.bind(this));
+
+      this.openDropDrown();
     };
 
     this.applyValue = function(item, state) {
@@ -799,24 +879,15 @@
     InputElementEditor.call(this, args);
 
     var date = this.args.item[this.column.field];
-    var dateNow = new Date();
-    this.yearNow = dateNow.getFullYear();
     this.boxWidth -= 24;
 
-    this.initInputmaskConfig = {
-      yearrange: { minyear: 1900, maxyear: 2100 },
-    };
-
-    this.initFlatpickrConfig = {
-      allowInput: true,
+    this.fpConfigGrid = $.extend({}, window.fpConfigInit, {
       clickOpens: false,
-      maxDate: '31/12/2100',
-      minDate: '01/01/1900',
       onReady: function(selectedDates, dateStr, instance) {
         instance.open();
         instance.update(date);
       },
-    };
+    });
   }
 
   DateTimeBaseEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -829,19 +900,13 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'datetime',
-        placeholder: 'dd/mm/' + this.yearNow + ' 12:00',
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var flatpickrConfig = $.extend({}, this.fpConfigGrid, {
         enableTime: true,
         dateFormat: 'd/m/Y H:i',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridDateTime': inputmaskConfig });
-      this.input.inputmask('gridDateTime').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinDateTime').flatpickr(flatpickrConfig);
     };
 
     this.init();
@@ -857,18 +922,12 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'date',
-        placeholder: 'dd/mm/' + this.yearNow,
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var fpConfigGridDate = $.extend({}, this.fpConfigGrid, {
         dateFormat: 'd/m/Y',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridDate': inputmaskConfig });
-      this.input.inputmask('gridDate').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinDate').flatpickr(fpConfigGridDate);
     };
 
     this.init();
@@ -884,20 +943,14 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var inputmaskConfig = $.extend({}, this.initInputmaskConfig, {
-        alias: 'hh:mm',
-        placeholder: '12:00',
-      });
-
-      var flatpickrConfig = $.extend({}, this.initFlatpickrConfig, {
+      var fpConfigGridTime = $.extend({}, this.fpConfigGrid, {
         noCalendar: true,
         enableTime: true,
         dateFormat: 'H:i',
       });
 
       this.initElements();
-      Inputmask.extendAliases({ 'gridTime': inputmaskConfig });
-      this.input.inputmask('gridTime').flatpickr(flatpickrConfig);
+      this.input.inputmask('wulinTime').flatpickr(fpConfigGridTime);
     };
 
     this.init();
