@@ -173,7 +173,19 @@ var Ui = {
           $.getJSON(path, function(itemdata){
             $.each(itemdata, function(index, value) {
               if ($.isPlainObject(value)) {
-                target.append("<option value='" + value.id + "'>" + value[source] + "</option>");
+                if (window.isCodeNameColumn(source, value)) {
+                  target.append(
+                    "<option value='" + value.id + "'>" +
+                    value['code'] + ": " + value['name'] +
+                    "</option>"
+                  );
+                } else {
+                  target.append(
+                    "<option value='" + value.id + "'>" +
+                    value[source] +
+                    "</option>"
+                  );
+                }
               } else {
                 target.append("<option value='" + value + "'>" + value + "</option>");
               }

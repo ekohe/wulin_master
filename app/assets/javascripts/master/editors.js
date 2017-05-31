@@ -64,6 +64,11 @@
     },
   });
 
+  this.isCodeNameColumn = function(source, field) {
+    return (source === 'code' || source === 'name') &&
+           (field['code'] && field['name']);
+  };
+
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
   ///////////////////////////////////////////////////////////////////////////
@@ -160,11 +165,6 @@
       } else {
         return eval(this.column.validator)(args, value);
       }
-    },
-
-    isCodeNameColumn: function(source, field) {
-      return (source === 'code' || source === 'name') &&
-             (field['code'] && field['name']);
     },
 
     setOffset: function(element, offsetWith) {
@@ -615,7 +615,7 @@
     this.setOptions = function(dateset) {
       $.each(dateset, function(index, value) {
         if (!this.field || this.field.id != value.id) {
-          if (this.isCodeNameColumn(this.source, this.field)) {
+          if (window.isCodeNameColumn(this.source, this.field)) {
             this.arrOptions.push(
               "<option value='" + value.id + "'>" +
               value['code'] + ": " + value['name'] +
@@ -635,7 +635,7 @@
     };
 
     this.appendOptions = function(target, value) {
-      if (this.isCodeNameColumn(this.source, this.field)) {
+      if (window.isCodeNameColumn(this.source, this.field)) {
         target.append(
           "<option value='" + value.id + "'>" +
           value['code'] + ": " + value['name'] +
