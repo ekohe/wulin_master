@@ -6,7 +6,12 @@ nav {
   background-color: dodgerblue;
 
   .brand-logo {
-    font-size: 1.5rem;
-    margin-left: 15px;
+    font-size: 1.2rem;
+    margin-left: 10px;
+  }
+
+  a i {
+    float: left;
+    margin-right: 10px;
   }
 }

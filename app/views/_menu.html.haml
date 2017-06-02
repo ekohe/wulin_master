@@ -4,9 +4,14 @@
       %i.material-icons menu
     %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
-    %ul#nav-mobile.right.hide-on-med-and-down
+    %ul.right
       %li
-        %a{:href => "#"} ben@ekohe.com
+        %a{:href => logout_path}
+          %i.material-icons account_circle
+          - if defined?(WulinOAuth) && User.current_user
+            %span= User.current_user.email
+          - elsif defined?(WulinAuth) && current_user
+            %span= current_user.email
 
 #navigation
   #menu{style: "top: 10px"}
