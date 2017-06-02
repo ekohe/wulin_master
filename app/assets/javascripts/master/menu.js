@@ -10,22 +10,6 @@ $(document).ready(function () {
     $("#navigation").toggle();
   });
 
-  // $("#navigation #nav_toggle").toggle(function(){
-  //   var $toggle = $(this);
-  //   $("#navigation").animate({width:0});
-  //   $('#content').animate({left:0}, function(){
-  //     $toggle.toggleClass("open");
-  //     $(window).trigger("resize");
-  //   });
-  // },function(){
-  //   var $toggle = $(this);
-  //   $("#navigation").animate({width:199});
-  //   $('#content').animate({left:200}, function(){
-  //     $toggle.toggleClass("open");
-  //     $(window).trigger("resize");
-  //   });
-  // });
-
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {
     $("#content").css('left', $("#navigation").width()+1);
