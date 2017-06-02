@@ -6,6 +6,10 @@ $menu_width: 199px;
   left: 0px !important;
 }
 
+#menu-toggle {
+  padding-left: 20px;
+}
+
 #navigation {
   position: absolute;
   top: $header_height;

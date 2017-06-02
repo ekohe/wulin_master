@@ -1,7 +1,8 @@
 %nav
   .nav-wrapper
-    %a#menu-toggle.brand-logo{:href => "#"}
+    %a#menu-toggle.left{:href => "#"}
       %i.material-icons menu
+    %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
     %ul#nav-mobile.right.hide-on-med-and-down
       %li
