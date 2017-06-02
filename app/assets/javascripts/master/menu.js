@@ -5,25 +5,26 @@ $(document).ready(function () {
 
   $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
 
-  $("#navigation #nav_toggle").hover(function(){
-    $(this).toggleClass("transparent");
+  $("#menu-toggle").click(function(){
+    $('#content').toggleClass('extended-panel');
+    $("#navigation").toggle();
   });
 
-  $("#navigation #nav_toggle").toggle(function(){
-    var $toggle = $(this);
-    $("#navigation").animate({width:0});
-    $('#content').animate({left:0}, function(){
-      $toggle.toggleClass("open");
-      $(window).trigger("resize");
-    });
-  },function(){
-    var $toggle = $(this);
-    $("#navigation").animate({width:199});
-    $('#content').animate({left:200}, function(){
-      $toggle.toggleClass("open");
-      $(window).trigger("resize");
-    });
-  });
+  // $("#navigation #nav_toggle").toggle(function(){
+  //   var $toggle = $(this);
+  //   $("#navigation").animate({width:0});
+  //   $('#content').animate({left:0}, function(){
+  //     $toggle.toggleClass("open");
+  //     $(window).trigger("resize");
+  //   });
+  // },function(){
+  //   var $toggle = $(this);
+  //   $("#navigation").animate({width:199});
+  //   $('#content').animate({left:200}, function(){
+  //     $toggle.toggleClass("open");
+  //     $(window).trigger("resize");
+  //   });
+  // });
 
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {

@@ -2,9 +2,13 @@
 
 $menu_width: 199px;
 
+.extended-panel {
+  left: 0px !important;
+}
+
 #navigation {
   position: absolute;
-  top: 0px;
+  top: $header_height;
   left: 0;
   bottom: 0;
   width: $menu_width;
@@ -164,7 +168,7 @@ $menu_width: 199px;
           margin-left: 6px;
           //:text-transform uppercase
           //:font-weight bold
-       
+
         }
         .loading_bar {
           margin-top: 0px;
@@ -172,7 +176,7 @@ $menu_width: 199px;
           background: image-url("ui/load_indicator_bar_small.gif") no-repeat;
           // :margin-left      auto
           // :margin-right     auto
-       
+
         }
         .loading_stats {
           font-size: 9px;
