@@ -6,11 +6,13 @@
       = WulinMaster.config.app_title
     %ul.right
       %li
-        %a{:href => logout_path}
-          %i.material-icons account_circle
-          - if defined?(WulinOAuth) && User.current_user
+        - if defined?(WulinOAuth) && User.current_user
+          %a{:href => "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}"}
+            %i.material-icons account_circle
             %span= User.current_user.email
-          - elsif defined?(WulinAuth) && current_user
+        - elsif defined?(WulinAuth) && current_user
+          %a{:href => logout_path}
+            %i.material-icons account_circle
             %span= current_user.email
 
 #navigation
