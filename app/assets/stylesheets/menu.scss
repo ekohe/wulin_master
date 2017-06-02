@@ -102,6 +102,8 @@ $menu_width: 199px;
             text-transform: none;
             color: $menu_text_color;
             font-weight: normal;
+            display: flex;
+            align-items: center;
           }
         }
         .item.active {
