@@ -19,7 +19,7 @@ $menu_width: 199px;
   background-color: $menu_background_color;
   //:padding-left               8px
   font-size: 1.2em;
-  border-right: 1px solid #a5a5a5;
+  // border-right: 1px solid #a5a5a5;
   line-height: 1.7em;
   h1 {
     font-size: 1.3em;
@@ -108,6 +108,9 @@ $menu_width: 199px;
             font-weight: normal;
             display: flex;
             align-items: center;
+            span {
+              padding-left: 10px;
+            }
           }
         }
         .item.active {
