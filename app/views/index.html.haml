@@ -4,5 +4,6 @@
     = render :partial => '/panel', :locals => {:panel => component} if component.is_panel?
     - break if component.respond_to?(:fill_window?) and component.fill_window?
 - else
+  = render '/header'
   = render '/menu'
   = render '/content'
