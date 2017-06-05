@@ -10,13 +10,10 @@
               - menu_entry.each do |submenu_entry|
                 %li.item{:style => submenu_entry.is_hidden? ? "display:none" : ""}
                   = link_to submenu_entry.path, data: {'active-url': submenu_entry.active_paths} do
-                    %i.material-icons= submenu_entry.options[:material_icon]
+                    %i.material-icons= submenu_entry.options[:material_icon] || 'view_list'
                     %span= submenu_entry.title
         - else
           %li.item= link_to menu_entry.title, menu_entry.path, data: {'active-url' => menu_entry.active_paths}
-
-  #activity
-    #indicators
 
 -# #navigation
 -#   #nav_toggle.open.transparent
