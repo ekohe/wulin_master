@@ -1,26 +1,3 @@
-%nav
-  .nav-wrapper
-    %a#menu-toggle.left{:href => "#"}
-      %i.material-icons menu
-    %a.brand-logo{:href => root_path}
-      = WulinMaster.config.app_title
-    %ul.right
-      %li
-        = link_to "#" do
-          %i.material-icons help
-      %li
-        = link_to "#" do
-          %i.material-icons notifications
-      %li
-        - if defined?(WulinOAuth) && User.current_user
-          = link_to "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}" do
-            %i.material-icons account_circle
-            %span= User.current_user.email
-        - elsif defined?(WulinAuth) && current_user
-          = link_to logout_path do
-            %i.material-icons account_circle
-            %span= current_user.email
-
 #navigation
   #menu{style: "top: 10px"}
     %ul
