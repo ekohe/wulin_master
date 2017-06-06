@@ -1,52 +1,28 @@
 @import "base";
 
-$toolbar_button_width: 45px;
+$toolbar_button_width: 35px;
 $toolbar_button_height: 30px;
 
 .grid-header {
   .toolbar-wrapper {
-    // position: absolute;
-    // top: 0;
-    // right: 20px;
-    padding: 1rem 3rem 0 10rem;
-    margin: 0;
+    padding: 20px 30px 0 100px;
     overflow: hidden;
     .toolbar-global {
-      // float: right;
-      // position: relative;
-      // padding-top: 1em;
+      i.material-icons {
+        font-size: 18px;
+      }
       ul {
         margin: 0;
-        padding: 0;
-        // float: right;
         li.toolbar_item {
           float: left;
           padding-left: 30px;
-          text-align: center;
-          list-style: none;
           a {
-            position: relative;
-            cursor: pointer;
-            display: block;
-            text-decoration: none;
-            // width: $toolbar_button_width;
-            // height: $toolbar_button_height;
-            text-align: center;
-            color: black;
             font-size: 12px;
-            @include text-shadow(white, 0px, 1px, 0);
             span {
-              // display: block;
-              // float: none;
-              // position: absolute;
-              // display: inline-block;
               float: right;
-              position: relative;
-              padding: 0.2em 1em 0 1em;
-              // bottom: 0px;
-              // left: 0px;
-              // right: 0px;
-              height: 15px;
+              padding-left: 8px;
+              font-weight: bold;
+              text-transform: uppercase;
             }
           }
         }
@@ -54,36 +30,16 @@ $toolbar_button_height: 30px;
     }
     .toolbar-select {
       float: right;
-      position: relative;
+      i.material-icons {
+        font-size: 20px;
+      }
       ul {
         margin: 0;
-        padding: 0;
-        // float: right;
         li.toolbar_item {
           float: left;
-          padding-left: 5px;
-          text-align: center;
-          list-style: none;
           a {
-            position: relative;
-            cursor: pointer;
-            display: block;
-            text-decoration: none;
-            width: $toolbar_button_width;
-            height: $toolbar_button_height;
-            text-align: center;
-            color: black;
-            font-size: 12px;
-            @include text-shadow(white, 0px, 1px, 0);
-            span {
-              display: block;
-              float: none;
-              position: absolute;
-              bottom: 0px;
-              left: 0px;
-              right: 0px;
-              height: 15px;
-            }
+            color: #5d5957;
+            padding-left: 15px;
           }
         }
       }
