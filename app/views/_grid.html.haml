@@ -5,18 +5,29 @@
       toolbar_items.select! do |item|
         grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
+      toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
+        [:Add, :Excel].include?(item.title)
+      end
     .grid-header
       %h2= grid.title
       - grid.header_actions.each do |a|
         = render("/action_partials/#{a[:name]}", :grid => grid) #rescue nil
       %span.tb_prev.hidden
       .toolbar-wrapper
-        .toolbar(data-grid="#{@grid_name}")
+        .toolbar-global(data-grid="#{@grid_name}")
           %ul
-            - toolbar_items.each do |item|
+            - toolbar_items_global.each do |item|
               %li.toolbar_item
                 =link_to 'javascript:void(0);', item.anchor_tag_options do
+                  %i.material-icons= item.icon || 'help'
                   %span= item.title
+        .toolbar-select(data-grid="#{@grid_name}")
+          %ul
+            - toolbar_items_select.each do |item|
+              %li.toolbar_item
+                =link_to 'javascript:void(0);', item.anchor_tag_options do
+                  %i.material-icons= item.icon || 'help'
+                  -# %span= item.title
       %span.tb_next.hidden
   .grid
   .pager

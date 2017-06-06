@@ -24,7 +24,7 @@ module WulinMaster
       if icon?
         css_classes = []
         css_classes += options[:class].split(' ') if options[:class].present?
-        css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
+        # css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
         css_classes << "toolbar_manually_enable" if options[:manually_enable]
         options[:class] = css_classes.uniq.join(' ')
       else
