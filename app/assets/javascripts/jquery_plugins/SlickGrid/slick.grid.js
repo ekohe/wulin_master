@@ -2560,6 +2560,10 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Show selection info on grid header
+
     function handleClick(e) {
       if (!currentEditor) {
         // if this click resulted in some cell child node getting focus,
@@ -2576,6 +2580,12 @@ if (typeof Slick === "undefined") {
       }
 
       trigger(self.onClick, {row: cell.row, cell: cell.cell, grid: self}, e);
+
+      // Ekohe Add: Show selection info on grid header
+      var itemCount = getSelectedRows().length;
+      var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
+      $('.grid-header .selection-info').html(itemInfo + ' selected.');
+
       if (e.isImmediatePropagationStopped()) {
         return;
       }

@@ -4,8 +4,24 @@ $toolbar_button_width: 35px;
 $toolbar_button_height: 30px;
 
 .grid-header {
+  position: relative;
+  height: 70px;
+  h2 {
+    margin-bottom: 0px;
+    padding-top: $margin;
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555555;
+    float: left;
+  }
+  .selection-info {
+    padding-left: 20px;
+    font-size: 12px;
+    color: #039be5;
+  }
   .toolbar-wrapper {
-    padding: 20px 30px 0 100px;
+    padding: 25px 30px 0 100px;
     overflow: hidden;
     .toolbar-global {
       i.material-icons {
