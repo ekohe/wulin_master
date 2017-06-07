@@ -19,15 +19,14 @@
             - toolbar_items_global.each do |item|
               %li.toolbar_item
                 =link_to 'javascript:void(0);', item.anchor_tag_options do
-                  %i.material-icons= item.icon || 'help'
+                  %i.material-icons= item.icon.presence || 'help'
                   %span= item.title
         .toolbar-select(data-grid="#{@grid_name}")
           %ul
             - toolbar_items_select.each do |item|
               %li.toolbar_item
                 =link_to 'javascript:void(0);', item.anchor_tag_options do
-                  %i.material-icons= item.icon || 'help'
-                  -# %span= item.title
+                  %i.material-icons= item.icon.presence || 'help'
       %span.tb_next.hidden
   .grid
   .pager
