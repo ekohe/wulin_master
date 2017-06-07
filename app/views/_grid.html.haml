@@ -28,8 +28,7 @@
                 =link_to 'javascript:void(0);', item.anchor_tag_options do
                   %i.material-icons= item.icon.presence || 'help'
       %span.tb_next.hidden
-      .selection-info
-        -# 1 item selected. X CLEAR
+      %a.selection-info{href: "#"}
   .grid
   .pager
 

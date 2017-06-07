@@ -17,6 +17,10 @@
       selectActiveRow: true
     };
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Add clearing row selection processing
+
     function init(grid) {
       _options = $.extend(true, {}, _defaults, options);
       _grid = grid;
@@ -26,6 +30,11 @@
           wrapHandler(handleKeyDown));
       _handler.subscribe(_grid.onClick,
           wrapHandler(handleClick));
+
+      // Ekohe Add: Clear row selection
+      $('.grid-header .selection-info').click( function() {
+        _self.onSelectedRangesChanged.notify([]);
+      })
     }
 
     function destroy() {

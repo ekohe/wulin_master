@@ -14,6 +14,7 @@ module WulinMaster
         excel: 'file_download',
         edit: 'mode_edit',
         delete: 'delete',
+        filter: 'filter_list',
         audit: 'restore'
       }
 
