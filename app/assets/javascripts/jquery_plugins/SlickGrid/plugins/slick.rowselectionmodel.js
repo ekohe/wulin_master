@@ -32,7 +32,7 @@
           wrapHandler(handleClick));
 
       // Ekohe Add: Clear row selection
-      $('.grid-header .selection-info').click( function() {
+      $("#selection_info_" + grid.name).click( function() {
         _self.onSelectedRangesChanged.notify([]);
         $(this).html('');
         $(grid.getActiveCellNode()).removeClass("active");

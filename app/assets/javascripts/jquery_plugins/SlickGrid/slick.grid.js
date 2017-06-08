@@ -2584,7 +2584,7 @@ if (typeof Slick === "undefined") {
       // Ekohe Add: Show selection info on grid header
       var itemCount = getSelectedRows().length;
       var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-      $('.grid-header .selection-info').html(itemInfo + ' selected. X CLEAR');
+      $("#selection_info_" + self.name).html(itemInfo + ' selected. X CLEAR');
 
       if (e.isImmediatePropagationStopped()) {
         return;
