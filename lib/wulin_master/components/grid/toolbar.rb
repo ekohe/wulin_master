@@ -10,8 +10,8 @@ module WulinMaster
       @items ||= []
 
       default_icons = {
-        add: 'add_box',
-        excel: 'file_download',
+        create: 'add_box',
+        export: 'file_download',
         edit: 'mode_edit',
         delete: 'delete',
         filter: 'filter_list',

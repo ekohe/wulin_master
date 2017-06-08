@@ -1,8 +1,8 @@
-// Toolbar Item 'Add'
+// Toolbar Item 'Create'
 jQuery.event.props.push("cancel");
 
-WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
-  name: 'add',
+WulinMaster.actions.Create = $.extend({}, WulinMaster.actions.BaseAction, {
+  name: 'create',
 
   handler: function(e) {
     var self = this;
@@ -68,4 +68,4 @@ WulinMaster.actions.Add = $.extend({}, WulinMaster.actions.BaseAction, {
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.Add);
+WulinMaster.ActionManager.register(WulinMaster.actions.Create);
