@@ -34,6 +34,7 @@
       // Ekohe Add: Clear row selection
       $('.grid-header .selection-info').click( function() {
         _self.onSelectedRangesChanged.notify([]);
+        $(this).html('');
       })
     }
 
