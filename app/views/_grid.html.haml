@@ -6,7 +6,7 @@
         grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
       toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
-        [:Add, :Excel].include?(item.title)
+        ['add', 'excel'].include?(item.options[:name])
       end
     .grid-header
       %h2= grid.title

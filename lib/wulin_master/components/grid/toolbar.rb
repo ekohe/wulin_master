@@ -22,7 +22,7 @@ module WulinMaster
         item_options = {
           id: "#{action[:name]}_action_on_#{grid_name}",
           class: ("#{action[:name]}_action " << action[:class].to_s),
-          icon: (action[:icon] || default_icons[action[:name]]).to_s,
+          icon: (action[:icon] || default_icons[action[:name].to_sym]).to_s,
           manually_enable: action[:manually_enable]
         }
         item_options = action.merge(item_options)
