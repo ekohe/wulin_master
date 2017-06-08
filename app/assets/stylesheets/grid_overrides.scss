@@ -7,7 +7,7 @@ $column_header_border_color: #dce0e2;
 $odd_row_background: #f5f9fc;
 $selected_row_background: #81abd7;
 
-$pager_background: #eff3f8;
+$pager_background: #efeff0;
 
 /* Grid Column Headers */
 
@@ -98,6 +98,10 @@ $pager_background: #eff3f8;
   }
 }
 
+.grid {
+  box-shadow: 0px 1px 0.1px #c8c2c2;
+}
+
 /* Grid Secondary row, filters */
 
 .slick-header-columns-secondary {
@@ -119,11 +123,10 @@ $pager_background: #eff3f8;
 
 /* Page styling */
 .pager, .slick-pager {
+  border: 0;
+
   background: $pager_background;
-  color: $default_text_color;
-  font-weight: normal;
   font-size: 12px;
-  @include text-shadow(white, 1px, 1px, 0);
 }
 
 /* datapicker */

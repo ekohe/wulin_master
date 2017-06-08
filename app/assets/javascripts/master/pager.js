@@ -130,7 +130,7 @@
 
 
             if (pagingInfo.pageSize == 0)
-                $status.text("Showing all " + pagingInfo.totalRows + " rows");
+                $status.text(pagingInfo.totalRows + " rows found");
             else
                 $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
         }
