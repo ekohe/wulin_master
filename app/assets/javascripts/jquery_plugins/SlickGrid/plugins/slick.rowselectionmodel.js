@@ -35,6 +35,7 @@
       $('.grid-header .selection-info').click( function() {
         _self.onSelectedRangesChanged.notify([]);
         $(this).html('');
+        $(grid.getActiveCellNode()).removeClass("active");
       })
     }
 
