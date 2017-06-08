@@ -3,10 +3,10 @@
 module WulinMaster
   module GridActions
     extend ActiveSupport::Concern
-    
+
     included do
-      ORIGINAL_ACTIONS = %w(add delete edit filter)
-      SENSITIVE_ACTIONS = %w(add delete edit hotkey_add hotkey_delete)
+      ORIGINAL_ACTIONS = %w(create delete edit filter)
+      SENSITIVE_ACTIONS = %w(create delete edit hotkey_add hotkey_delete)
 
       class << self
         attr_reader :actions_pool
