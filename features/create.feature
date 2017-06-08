@@ -8,7 +8,7 @@ Feature: Create objects
     Given I go to the homepage
     When I click on 'People'
     Then I should see the 'People' grid
-    When I click on 'Add'
+    When I click on 'Create'
     Then I should see the 'Create new Person' popup
     When I enter 'Maxime' in 'First name'
     And I enter 'Guilbot' in 'Last name'
