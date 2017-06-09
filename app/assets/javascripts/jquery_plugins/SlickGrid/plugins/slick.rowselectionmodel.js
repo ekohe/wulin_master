@@ -34,8 +34,6 @@
       // Ekohe Add: Clear row selection
       $("#selection_info_" + grid.name).click( function() {
         _self.onSelectedRangesChanged.notify([]);
-        $(this).html('');
-        $(grid.getActiveCellNode()).removeClass("active");
       })
     }
 

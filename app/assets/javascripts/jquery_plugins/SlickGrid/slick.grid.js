@@ -1317,6 +1317,9 @@ if (typeof Slick === "undefined") {
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
         $("#selection_info_" + self.name).html(itemInfo + ' selected. X CLEAR');
+      } else {
+        $("#selection_info_" + self.name).html('');
+        $(getActiveCellNode()).removeClass("active");
       }
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
