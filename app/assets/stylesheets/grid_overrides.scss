@@ -18,7 +18,7 @@ $pager_background: #efeff0;
 }
 
 .slick-header-column.ui-state-default.ui-state-hover {
-  background: image-url("ui/column_header_background_hover.png") repeat-x;
+  background: #efeff0;
 }
 
 .ui-state-default.slick-header-column.slick-header-column-sorted {
@@ -29,7 +29,7 @@ $pager_background: #efeff0;
   display: block;
   position: absolute;
   right: 4px;
-  top: 7px;
+  top: 4px;
   width: 9px;
   height: 8px;
   background: image-url("ui/sort_indicator_desc.png") no-repeat;
@@ -67,14 +67,15 @@ $pager_background: #efeff0;
     background-color: pink;
   }
   &.selected {
-    background: $selected_row_background;
+    background: rgba(129, 182, 215, 0.4);
+    margin-top: -1px;
   }
   &.editable {
     background-color: ivory;
   }
   &.active {
-    // color: white
-    border: black solid 1px;
+    margin-top: -1px;
+    border: rgba(88, 88, 89, 0.37) solid 1px;
     span {
       color: black;
     }
@@ -88,6 +89,7 @@ $pager_background: #efeff0;
 .ui-widget-content.slick-row.ui-state-active.selected {
   background: $selected_row_background;
 }
+
 
 .cell-effort-driven {
   text-align: center;
