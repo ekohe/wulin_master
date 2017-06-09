@@ -74,7 +74,8 @@ $pager_background: #efeff0;
     background-color: ivory;
   }
   &.active {
-    border: rgba(88, 88, 89, 0.37) solid 3px;
+    border: rgba(88, 88, 89, 0.37) solid 2px;
+    border-bottom: rgba(88, 88, 89, 0.37) solid 1.3px;
   }
 }
 

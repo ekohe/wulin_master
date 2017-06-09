@@ -1289,6 +1289,10 @@ if (typeof Slick === "undefined") {
       return sortColumns;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Show selection info on grid header
+
     function handleSelectedRangesChanged(e, ranges) {
       selectedRows = [];
       var hash = {};
@@ -1307,6 +1311,13 @@ if (typeof Slick === "undefined") {
       }
 
       setCellCssStyles(options.selectedCellCssClass, hash);
+
+      // Ekohe Add: Show selection info on grid header
+      var itemCount = getSelectedRows().length;
+      if (itemCount >= 1) {
+        var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
+        $("#selection_info_" + self.name).html(itemInfo + ' selected. X CLEAR');
+      }
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
     }
@@ -2560,10 +2571,6 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Modify
-    //   1. Show selection info on grid header
-
     function handleClick(e) {
       if (!currentEditor) {
         // if this click resulted in some cell child node getting focus,
@@ -2580,11 +2587,6 @@ if (typeof Slick === "undefined") {
       }
 
       trigger(self.onClick, {row: cell.row, cell: cell.cell, grid: self}, e);
-
-      // Ekohe Add: Show selection info on grid header
-      var itemCount = getSelectedRows().length;
-      var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-      $("#selection_info_" + self.name).html(itemInfo + ' selected. X CLEAR');
 
       if (e.isImmediatePropagationStopped()) {
         return;
