@@ -100,7 +100,7 @@ $pager_background: #efeff0;
 }
 
 .grid {
-  box-shadow: 0px 1px 0.1px #c8c2c2;
+  box-shadow: 0px 1px 1px #c8c2c2;
 }
 
 /* Grid Secondary row, filters */
@@ -125,7 +125,7 @@ $pager_background: #efeff0;
 /* Page styling */
 .pager, .slick-pager {
   border: 0;
-  background: $pager_background;
+  background: white;
   font-size: 12px;
 }
 
