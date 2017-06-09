@@ -12,6 +12,6 @@ Feature: List objects
     Given I wait for 0.1 second
     Then 200 rows should be loaded in the 'People' grid
     When I click on the first row of the 'People' grid
-    And I scroll down for 2000px
+    And I scroll down for 2500px
     Given I wait for 0.1 second
     Then 400 rows should be loaded in the 'People' grid
