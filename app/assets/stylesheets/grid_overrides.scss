@@ -53,7 +53,7 @@ $pager_background: #efeff0;
 
 .slick-cell {
   font-size: 12px;
-  line-height: 20px;
+  line-height: 25px;
   .editor-text {
     background: none repeat scroll 0 0 transparent;
     height: 100%;
@@ -74,8 +74,9 @@ $pager_background: #efeff0;
     background-color: ivory;
   }
   &.active {
-    margin-top: -1px;
-    border: rgba(88, 88, 89, 0.37) solid 1px;
+    border-left: rgba(88, 88, 89, 0.37) solid 1px;
+    border-right: rgba(88, 88, 89, 0.37) solid 1px;
+    background: rgba(0, 117, 212, 0.3);
     span {
       color: black;
     }

@@ -12,7 +12,7 @@
       asyncEditorLoading: false,
       autoEdit: false,
       cellFlashingCssClass: "master_flashing",
-      rowHeight: 25
+      rowHeight: 30
     };
 
     function init() {
