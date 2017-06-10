@@ -43,7 +43,7 @@
         // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         $input = $("<input type='checkbox' />")
                   .attr({id: "columnpicker_" + i, name: columns[i].field})
-                  .data("column-id", columns[i].id)
+                  // .data("column-id", columns[i].id)
                   .appendTo($li);
         columnCheckboxes.push($input);
 
@@ -54,8 +54,8 @@
 
         $("<label />")
           .attr("for", "columnpicker_" + i)
-          .html(columns[i].name)
-          // .prepend($input)
+          .text(columns[i].name)
+          // .prepend($input);
           .appendTo($li);
       }
 
@@ -116,43 +116,62 @@
     }
 
     function updateColumn(e) {
+      // Ekohe Delete
       // "Force Fit Columns" checkbox hanlder
-      if ($(e.target).data("option") == "autoresize") {
-        if (e.target.checked) {
-          grid.setOptions({forceFitColumns:true});
-          grid.autosizeColumns();
-        } else {
-          grid.setOptions({forceFitColumns:false});
-        }
-        return;
-      }
+      // if ($(e.target).data("option") == "autoresize") {
+      //   if (e.target.checked) {
+      //     grid.setOptions({forceFitColumns:true});
+      //     grid.autosizeColumns();
+      //   } else {
+      //     grid.setOptions({forceFitColumns:false});
+      //   }
+      //   return;
+      // }
 
+      // Ekohe Delete
       // "Synchronous Resizing" checkbox hanlder
-      if ($(e.target).data("option") == "syncresize") {
-        if (e.target.checked) {
-          grid.setOptions({syncColumnCellResize:true});
-        } else {
-          grid.setOptions({syncColumnCellResize:false});
+      // if ($(e.target).data("option") == "syncresize") {
+      //   if (e.target.checked) {
+      //     grid.setOptions({syncColumnCellResize:true});
+      //   } else {
+      //     grid.setOptions({syncColumnCellResize:false});
+      //   }
+      //   return;
+      // }
+
+      // Ekohe Edit
+      //   Use specifc class to identify columnpicker since e.target
+      //   is recognized as label (should be input) here.
+      //   TODO: Use e.target instead of using columnpicker element
+
+      // // Column checkbox handler
+      // if ($(e.target).is(":checkbox")) {
+      //   var visibleColumns = [];
+      //   $.each(columnCheckboxes, function (i, e) {
+      //     if ($(this).is(":checked")) {
+      //       visibleColumns.push(columns[i]);
+      //     }
+      //   });
+      //
+      //   if (!visibleColumns.length) {
+      //     // Ekohe Edit
+      //     // $(e.target).attr("checked", "checked");
+      //     $(e.target).attr("checked", "checked")
+      //                .addClass("filled-in");
+      //     return;
+      //   }
+      //
+      //   grid.setColumns(visibleColumns);
+      // }
+
+      var visibleColumns = [];
+      $.each($(".wulin-columnpicker li input"), function(i, e) {
+        if ($(this).is(":checked")) {
+          visibleColumns.push(columns[i]);
+          $(this).addClass("filled-in");
         }
-        return;
-      }
-
-      // Column checkbox handler
-      if ($(e.target).is(":checkbox")) {
-        var visibleColumns = [];
-        $.each(columnCheckboxes, function (i, e) {
-          if ($(this).is(":checked")) {
-            visibleColumns.push(columns[i]);
-          }
-        });
-
-        if (!visibleColumns.length) {
-          $(e.target).attr("checked", "checked");
-          return;
-        }
-
-        grid.setColumns(visibleColumns);
-      }
+      });
+      grid.setColumns(visibleColumns);
     }
 
     function getAllColumns() {
