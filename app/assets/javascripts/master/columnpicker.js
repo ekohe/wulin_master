@@ -63,19 +63,19 @@
       var $menu = _self.getMenu();
       var columnCheckboxes = _self.getColumnCheckboxes();
 
-      // Prepend "All/None" checkbox to menu
-      $("<hr/>").prependTo($menu);
-      $li = $("<li />").prependTo($menu);
-      $allNoneInput = $("<input type='checkbox' id='all_none' class='filled-in', checked='checked' />").appendTo($li);
-      $("<label for='all_none'>All/None</label>").appendTo($li);
+      // // Prepend "All/None" checkbox to menu
+      // $("<hr/>").prependTo($menu);
+      // $li = $("<li />").prependTo($menu);
+      // $allNoneInput = $("<input type='checkbox' id='all_none' class='filled-in', checked='checked' />").appendTo($li);
+      // $("<label for='all_none'>All/None</label>").appendTo($li);
 
-      // Add customized attr and handling allNoneInput to columns checkbox
-      $.each(columnCheckboxes, function (i, e) {
-        $(this).attr({id: "columnpicker_" + i, name: columns[i].field})
-        if (grid.getColumnIndex(columns[i].id) == null) {
-          $allNoneInput.removeAttr("checked");
-        }
-      });
+      // // Add customized attr and handling allNoneInput to columns checkbox
+      // $.each(columnCheckboxes, function (i, e) {
+      //   $(this).attr({id: "columnpicker_" + i, name: columns[i].field})
+      //   if (grid.getColumnIndex(columns[i].id) == null) {
+      //     $allNoneInput.removeAttr("checked");
+      //   }
+      // });
     }
 
     // Ekohe Add: Customization of updateColumn()
@@ -84,21 +84,21 @@
       // Call SlickColumnPicker's updateColumn()
       _self.updateColumn(e);
 
-      // Ekohe Add: "All/None" checkbox hanlder
-      var $menu = _self.getMenu();
-      if (e.target.id == 'all_none') {
-        if (e.target.checked) {
-          $menu.find(":checkbox[id^=columnpicker]").attr('checked', 'checked');
-          grid.setColumns(columns);
-        } else {
-          $menu.find(":checkbox[id^=columnpicker]").not("[name='id']").removeAttr('checked');
-          var idColumns = $.grep(grid.getColumns(), function(n, i){
-            return (n.field == 'id');
-          });
-          grid.setColumns(idColumns);
-        }
-        return;
-      }
+      // // Ekohe Add: "All/None" checkbox hanlder
+      // var $menu = _self.getMenu();
+      // if (e.target.id == 'all_none') {
+      //   if (e.target.checked) {
+      //     $menu.find(":checkbox[id^=columnpicker]").attr('checked', 'checked');
+      //     grid.setColumns(columns);
+      //   } else {
+      //     $menu.find(":checkbox[id^=columnpicker]").not("[name='id']").removeAttr('checked');
+      //     var idColumns = $.grep(grid.getColumns(), function(n, i){
+      //       return (n.field == 'id');
+      //     });
+      //     grid.setColumns(idColumns);
+      //   }
+      //   return;
+      // }
     }
 
     // Ekohe Add

@@ -17,7 +17,7 @@
       $menu = $("<span class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
 
       $menu.on("mouseleave", function (e) {
-        $(this).fadeOut(options.fadeSpeed)
+        // $(this).fadeOut(options.fadeSpeed)
       });
       $menu.on("click", updateColumn);
     }
@@ -39,16 +39,23 @@
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
         $li = $("<li />").appendTo($menu);
-        $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+        // Ekohe Edit
+        // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+        $input = $("<input type='checkbox' />")
+                  .attr({id: "columnpicker_" + i, name: columns[i].field})
+                  .data("column-id", columns[i].id)
+                  .appendTo($li);
         columnCheckboxes.push($input);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
-          $input.attr("checked", "checked");
+          $input.attr("checked", "checked")
+                .addClass("filled-in");
         }
 
         $("<label />")
+          .attr("for", "columnpicker_" + i)
           .html(columns[i].name)
-          .prepend($input)
+          // .prepend($input)
           .appendTo($li);
       }
 
