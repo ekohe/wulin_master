@@ -66,7 +66,7 @@
       // Prepend "All/None" checkbox to menu
       $("<hr/>").prependTo($menu);
       $li = $("<li />").prependTo($menu);
-      $allNoneInput = $("<input type='checkbox' id='all_none' checked='checked' />").appendTo($li);
+      $allNoneInput = $("<input type='checkbox' id='all_none' class='filled-in', checked='checked' />").appendTo($li);
       $("<label for='all_none'>All/None</label>").appendTo($li);
 
       // Add customized attr and handling allNoneInput to columns checkbox

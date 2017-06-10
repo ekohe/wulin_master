@@ -14,7 +14,7 @@
 
       // Ekohe Edit
       // $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
-      $menu = $("<span class='card-panel slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
+      $menu = $("<span class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
 
       $menu.on("mouseleave", function (e) {
         $(this).fadeOut(options.fadeSpeed)
