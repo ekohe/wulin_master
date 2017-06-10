@@ -12,7 +12,9 @@
       grid.onColumnsReordered.subscribe(updateColumnOrder);
       options = $.extend({}, defaults, options);
 
-      $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
+      // Ekohe Edit
+      // $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
+      $menu = $("<span class='card-panel slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
 
       $menu.on("mouseleave", function (e) {
         $(this).fadeOut(options.fadeSpeed)
@@ -50,33 +52,37 @@
           .appendTo($li);
       }
 
+      // Ekohe Delete
       // Addpend "Force Fit Columns" checkbox
-      $("<hr/>").appendTo($menu);
-      $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' />").data("option", "autoresize");
-      $("<label />")
-        .text("Force fit columns")
-        .prepend($input)
-        .appendTo($li);
-      if (grid.getOptions().forceFitColumns) {
-        $input.attr("checked", "checked");
-      }
+      // $("<hr/>").appendTo($menu);
+      // $li = $("<li />").appendTo($menu);
+      // $input = $("<input type='checkbox' />").data("option", "autoresize");
+      // $("<label />")
+      //   .text("Force fit columns")
+      //   .prepend($input)
+      //   .appendTo($li);
+      // if (grid.getOptions().forceFitColumns) {
+      //   $input.attr("checked", "checked");
+      // }
 
+      // Ekohe Delete
       // Addpend "Synchronous Resizing" checkbox
-      $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' />").data("option", "syncresize");
-      $("<label />")
-        .text("Synchronous resize")
-        .prepend($input)
-        .appendTo($li);
-      if (grid.getOptions().syncColumnCellResize) {
-        $input.attr("checked", "checked");
-      }
+      // $li = $("<li />").appendTo($menu);
+      // $input = $("<input type='checkbox' />").data("option", "syncresize");
+      // $("<label />")
+      //   .text("Synchronous resize")
+      //   .prepend($input)
+      //   .appendTo($li);
+      // if (grid.getOptions().syncColumnCellResize) {
+      //   $input.attr("checked", "checked");
+      // }
 
+      // Ekohe Edit
       $menu
-        .css("top", e.pageY - 10)
+        // .css("top", e.pageY - 10)
+        .css("top", e.pageY + 10)
         .css("left", e.pageX - 10)
-        .css("max-height", $(window).height() - e.pageY -10)
+        // .css("max-height", $(window).height() - e.pageY -10)
         .fadeIn(options.fadeSpeed);
     }
 
