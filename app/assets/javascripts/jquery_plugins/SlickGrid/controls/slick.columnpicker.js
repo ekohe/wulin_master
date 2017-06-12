@@ -18,7 +18,7 @@
       $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />").appendTo($menuContainer);
 
       $menu.on("mouseleave", function (e) {
-        // $(this).fadeOut(options.fadeSpeed)
+        $(this).fadeOut(options.fadeSpeed)
       });
       $menu.on("click", updateColumn);
     }
@@ -69,7 +69,17 @@
       $a = $("<a id='reset_to_default' href='#' />").appendTo($li);
       $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
-      $a.on("click", function(e){alert("hi")});
+      $a.on("click", function() {
+        if (confirm('Are you sure that you want to reset the default view?')) {
+          $.post('/wulin_master/grid_states_manages/reset_default', {_method: 'PUT', grid_name: '#{grid.name}', user_id: '#{current_user.id}'}, function(data) {
+            if (data == 'ok') {
+              load_page(History.getState().url);
+            } else {
+              displayErrorMessage(data);
+            }
+          });
+        }
+      });
 
       // Ekohe Delete
       // Addpend "Force Fit Columns" checkbox
