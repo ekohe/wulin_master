@@ -1,3 +1,31 @@
-.wulin-columnpicker li {
-  list-style: none;
+.wulin-columnpicker {
+  li {
+    list-style: none;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  hr {
+    border-style: inset;
+    border-width: 0.5px;
+    border-color: rgba(247, 246, 239, 0.39);
+  }
+  #reset_to_default {
+    color: gray;
+    span {
+      float: right;
+      font-size: 12px;
+      padding-left: 10px;
+      padding-top: 4px;
+    }
+  }
+}
+
+.columnpicker-container {
+  .card-panel {
+    padding: 0;
+  }
+}
+
+.column-container {
+  padding-top: 10px;
 }

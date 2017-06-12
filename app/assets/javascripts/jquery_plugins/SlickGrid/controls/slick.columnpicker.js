@@ -14,7 +14,8 @@
 
       // Ekohe Edit
       // $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
-      $menu = $("<span class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />").appendTo(document.body);
+      var $menuContainer = $("<div class='columnpicker-container' />").appendTo(document.body);
+      $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />").appendTo($menuContainer);
 
       $menu.on("mouseleave", function (e) {
         // $(this).fadeOut(options.fadeSpeed)
@@ -36,9 +37,11 @@
 
       var $li, $input, $allNoneInput;
 
+      var $columnContainer = $("<div class='column-container' />").appendTo($menu);
+
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
-        $li = $("<li />").appendTo($menu);
+        $li = $("<li />").appendTo($columnContainer);
         // Ekohe Edit
         // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         $input = $("<input type='checkbox' />")
@@ -58,6 +61,15 @@
           // .prepend($input);
           .appendTo($li);
       }
+
+      // Ekohe Add
+      // Addpend "Reset to defaults" checkbox
+      $("<hr/>").appendTo($menu);
+      $li = $("<li />").appendTo($menu);
+      $a = $("<a id='reset_to_default' href='#' />").appendTo($li);
+      $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
+      $("<span />").html("RESET TO DEFAULTS").appendTo($a);
+      $a.on("click", function(e){alert("hi")});
 
       // Ekohe Delete
       // Addpend "Force Fit Columns" checkbox
