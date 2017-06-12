@@ -7,6 +7,11 @@
       fadeSpeed:250
     };
 
+    // Ekohe Edit: for MD implementation
+    //   1. Add menu container div
+    //   2. Use MaterializedCSS's card-panel class
+    //   3. Use wulin-columnpicker class for customization
+
     function init() {
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
       grid.onColumnsReordered.subscribe(updateColumnOrder);
@@ -29,6 +34,11 @@
       $menu.remove();
     }
 
+    // Ekohe Edit:
+    //  1. Add column-container div for MD implementation
+    //  2. Add "Reset to defaults" feature
+    //  3. Remove "Force Fit Columns" & "Synchronous Resizing" features
+
     function handleHeaderContextMenu(e, args) {
       e.preventDefault();
       $menu.empty();
@@ -37,24 +47,26 @@
 
       var $li, $input, $allNoneInput;
 
+      // Ekohe Edit: Add column-container div for MD implementation
       var $columnContainer = $("<div class='column-container' />").appendTo($menu);
 
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
         $li = $("<li />").appendTo($columnContainer);
-        // Ekohe Edit
+        // Ekohe Edit: MD implementation
         // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         $input = $("<input type='checkbox' />")
                   .attr({id: "columnpicker_" + i, name: columns[i].field})
-                  // .data("column-id", columns[i].id)
                   .appendTo($li);
         columnCheckboxes.push($input);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
           $input.attr("checked", "checked")
+                // Ekohe Add: MD implementation
                 .addClass("filled-in");
         }
 
+        // Ekohe Edit: MD implementation
         $("<label />")
           .attr("for", "columnpicker_" + i)
           .text(columns[i].name)
@@ -71,13 +83,18 @@
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
       $a.on("click", function() {
         if (confirm('Are you sure that you want to reset the default view?')) {
-          $.post('/wulin_master/grid_states_manages/reset_default', {_method: 'PUT', grid_name: '#{grid.name}', user_id: '#{current_user.id}'}, function(data) {
-            if (data == 'ok') {
-              load_page(History.getState().url);
-            } else {
-              displayErrorMessage(data);
-            }
-          });
+          $.post('/wulin_master/grid_states_manages/reset_default',
+                 { _method: 'PUT',
+                   grid_name: '#{grid.name}',
+                   user_id: '#{current_user.id}'
+                 },
+                 function(data) {
+                   if (data == 'ok') {
+                     load_page(History.getState().url);
+                   } else {
+                     displayErrorMessage(data);
+                   }
+                 });
         }
       });
 
@@ -106,7 +123,7 @@
       //   $input.attr("checked", "checked");
       // }
 
-      // Ekohe Edit
+      // Ekohe Edit: MD implementation
       $menu
         // .css("top", e.pageY - 10)
         .css("top", e.pageY + 10)
@@ -136,6 +153,9 @@
       }
       columns = ordered;
     }
+
+    // Ekohe Edit:
+    //  1. Remove "Force Fit Columns" & "Synchronous Resizing" features
 
     function updateColumn(e) {
       // Ekohe Delete
@@ -211,8 +231,7 @@
       return columnCheckboxes;
     }
 
-    // Ekohe Delete: Will be called in WulinMasterColumnPicker
-    // init();
+    init();
 
     // Ekohe Modify: Use extend instead of return to set APIs to this
     $.extend(this, {
@@ -222,7 +241,7 @@
       "init": init,                                       // Ekohe Add
       "updateColumn": updateColumn,                       // Ekohe Add
       "handleHeaderContextMenu": handleHeaderContextMenu, // Ekohe Add
-      // "destroy": destroy // Ekohe Delete (should use WulinMasterColumnPicker's API)
+      "destroy": destroy,
       "getAllColumns": getAllColumns
     });
   }
