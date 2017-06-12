@@ -77,8 +77,7 @@
       // Ekohe Add
       // Addpend "Reset to defaults" checkbox
       $("<hr/>").appendTo($menu);
-      $li = $("<li />").appendTo($menu);
-      $a = $("<a id='reset_to_default' href='#' />").appendTo($li);
+      $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
       $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
       $a.on("click", function() {
