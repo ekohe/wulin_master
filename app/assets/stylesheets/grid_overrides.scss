@@ -11,6 +11,11 @@ $pager_background: #efeff0;
 
 /* Grid Column Headers */
 
+.new-header-column {
+  display: inline-block;
+  float: left;
+}
+
 .slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
   height: $column_header_height - $column_header_padding * 2;
   border: none;
