@@ -24,7 +24,9 @@ Given(/^I go to the homepage$/) do
 end
 
 When(/^I enter '([^"]*)' in '([^"]*)'$/) do |content, field|
-  fill_in field, with: content
+  within(:css, ".ui-dialog") do
+    fill_in field, with: content
+  end
 end
 
 When(/^I press the '([^"]*)' key$/) do |key_code|
