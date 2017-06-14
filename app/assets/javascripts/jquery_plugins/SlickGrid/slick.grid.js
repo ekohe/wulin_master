@@ -126,7 +126,6 @@ if (typeof Slick === "undefined") {
     var $focusSink, $focusSink2;
     var $headerScroller;
     var $headers;
-    var $newHeaders; // Ekohe Add
     var $headerRow, $headerRowScroller, $headerRowSpacer;
     var $footerRow, $footerRowScroller, $footerRowSpacer;
     var $topPanelScroller;
@@ -259,13 +258,7 @@ if (typeof Slick === "undefined") {
 
       $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
 
-      // Ekohe Add: New headers with MD
-      $newHeaders = $("<div class='new-header-columns' style='left:-1000px' />").appendTo($headerScroller);
-      $newHeaders.width(getHeadersWidth());
-
-      // Ekohe Edit: Hide original headers
-      // $headers = $("<div class='slick-header-columns' style='left:-1000px' />").appendTo($headerScroller);
-      $headers = $("<div class='slick-header-columns' style='display:none;left:-1000px' />").appendTo($headerScroller);
+      $headers = $("<div class='slick-header-columns' style='left:-1000px' />").appendTo($headerScroller);
       $headers.width(getHeadersWidth());
 
       $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
@@ -665,26 +658,31 @@ if (typeof Slick === "undefined") {
         var m = columns[i];
         columnsById[m.id] = i;
 
-        // Ekohe Add: new header for MD
-        var newHeader = $("<div class='new-header-column input-field' />")
-            .width(m.width - headerColumnWidthDiff)
-            .appendTo($newHeaders);
-        var headerColInput = $("<input type='text' />")
-            .attr("id", "" + m.id)
-            .appendTo(newHeader);
-        var headerColLabel = $("<label />")
-            .html(m.name)
-            .attr("for", "" + m.id)
-            .appendTo(newHeader);
+        // Ekohe Edit: Use new MD headers
 
-        var header = $("<div class='ui-state-default slick-header-column' />")
-            .html("<span class='slick-column-name'>" + m.name + "</span>")
+        // var header = $("<div class='ui-state-default slick-header-column' />")
+        //     .html("<span class='slick-column-name'>" + m.name + "</span>")
+        //     .width(m.width - headerColumnWidthDiff)
+        //     .attr("id", "" + uid + m.id)
+        //     .attr("title", m.toolTip || "")
+        //     .data("column", m)
+        //     .addClass(m.headerCssClass || "")
+        //     .appendTo($headers);
+
+        var header = $("<div class='ui-state-default slick-header-column input-field' />")
             .width(m.width - headerColumnWidthDiff)
             .attr("id", "" + uid + m.id)
             .attr("title", m.toolTip || "")
             .data("column", m)
             .addClass(m.headerCssClass || "")
             .appendTo($headers);
+        var headerColInput = $("<input type='text' />")
+            .attr("id", "" + m.id)
+            .appendTo(header);
+        var headerColLabel = $("<label />")
+            .html(m.name)
+            .attr("for", "" + m.id)
+            .appendTo(header);
 
         if (options.enableColumnReorder || m.sortable) {
           header
@@ -3661,8 +3659,8 @@ if (typeof Slick === "undefined") {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Ekohe Add
 
-    function getNewHeaders() {
-      return $newHeaders[0];
+    function getHeaders() {
+      return $headers[0];
     }
 
     function getRows() {
@@ -3828,7 +3826,7 @@ if (typeof Slick === "undefined") {
       "getEditController": getEditController,
 
       // Ekohe Add: New APIs
-      "getNewHeaders": getNewHeaders,
+      "getHeaders": getHeaders,
       "getRows": getRows,
       "getRowAt": getRowAt,
       "getCanvas": getCanvas,

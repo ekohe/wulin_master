@@ -26,10 +26,10 @@
         generateFilters();
       });
 
-      if (currentFilters) {
-        // Ekohe Delete
-        // $grid.setHeaderRowVisibility(true);
-      }
+      // Ekohe Delete: Use new MD headers instead of headerRow
+      // if (currentFilters) {
+      //   $grid.setHeaderRowVisibility(true);
+      // }
 
       triggerElement.click(function() {
         if($(this).hasClass('toolbar_icon_disabled')) return false;
@@ -67,9 +67,9 @@
         };
       })();
 
-      // Ekohe Edit: Use new headers instead of headerRow
+      // Ekohe Edit: Use new MD headers instead of headerRow
       // $input = $("input", $($grid.getHeaderRow()));
-      $input = $("input", $($grid.getNewHeaders()));
+      $input = $("input", $($grid.getHeaders()));
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
@@ -122,7 +122,8 @@
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
-      var $newHeaders = $($grid.getNewHeaders()); // Ekohe Add
+      // Ekohe Add: Use new MD headers instead of headerRow
+      var $headers = $($grid.getHeaders());
       var headerWidth = $($grid.getCanvasNode()).width() + 16;      // 16 is the vertical scrollbar width
       var ua = navigator.userAgent.toLowerCase();
 
@@ -133,10 +134,10 @@
       applyCurrentFilters(currentFilters);
       setOriginalFilter();
 
-      // Ekohe Add
+      // Ekohe Add: Use new MD headers instead of headerRow
       if (currentFiltersApplied.length > 0) {
         $.each(currentFiltersApplied, function(i, v) {
-          var filteredHeaderCol = $newHeaders.find('input#' + v.id);
+          var filteredHeaderCol = $headers.find('input#' + v.id);
           filteredHeaderCol.focus();
           filteredHeaderCol.val(v.value);
         })
@@ -183,9 +184,9 @@
     //  generate the filters boxes with the same values
     function updateCurrentFilters() {
       currentFilters = {};
-      // Ekohe Edit
+      // Ekohe Edit: Use new MD headers instead of headerRow
       // $.each($("input", $($grid.getHeaderRow())), function() {
-      $.each($("input", $($grid.getNewHeaders())), function() {
+      $.each($("input", $($grid.getHeaders())), function() {
         if ($(this).val() !== '') {
           currentFilters[$(this).attr('id')] = $(this).val();
         }
