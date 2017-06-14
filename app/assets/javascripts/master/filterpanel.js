@@ -5,7 +5,10 @@
           FilterPanel: FilterPanel
       }
   });
-  function FilterPanel(grid, loader, triggerElement, currentFilters) {
+
+  // Ekohe Edit: Remove triggerElement form params
+  // function FilterPanel(grid, loader, triggerElement, currentFilters) {
+  function FilterPanel(grid, loader, currentFilters) {
     var filterWidthOffset = -3; // 2 pixels padding on the left and one pixel for the border on the left
     // private
     var $grid;
@@ -27,29 +30,30 @@
       });
 
       // Ekohe Delete: Use new MD headers instead of headerRow
+
       // if (currentFilters) {
       //   $grid.setHeaderRowVisibility(true);
       // }
 
-      triggerElement.click(function() {
-        if($(this).hasClass('toolbar_icon_disabled')) return false;
-
-        if ($($grid.getHeaderRow()).is(":visible")) {
-            $grid.setHeaderRowVisibility(false);
-            currentFilters = null;
-            trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
-        } else {
-            $grid.setHeaderRowVisibility(true);
-            // This corrects the scrollLeft of the filter secondary header row.
-            // The problem is that if the user scrolls on the left then click on filter, the
-            //   filters wouldn't have scrolled while there were hidden so they appear shifted.
-            // This corrects this problem by setting the scrollLeft value of the filters panel
-            //   to the scrollLeft of the header row
-            headerScroller = $($grid.getHeaderRow()).parent()[0];
-            headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
-        }
-        return false;
-      });
+      // triggerElement.click(function() {
+      //   if($(this).hasClass('toolbar_icon_disabled')) return false;
+      //
+      //   if ($($grid.getHeaderRow()).is(":visible")) {
+      //       $grid.setHeaderRowVisibility(false);
+      //       currentFilters = null;
+      //       trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
+      //   } else {
+      //       $grid.setHeaderRowVisibility(true);
+      //       // This corrects the scrollLeft of the filter secondary header row.
+      //       // The problem is that if the user scrolls on the left then click on filter, the
+      //       //   filters wouldn't have scrolled while there were hidden so they appear shifted.
+      //       // This corrects this problem by setting the scrollLeft value of the filters panel
+      //       //   to the scrollLeft of the header row
+      //       headerScroller = $($grid.getHeaderRow()).parent()[0];
+      //       headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
+      //   }
+      //   return false;
+      // });
 
       var delay = (function(){
         var timer = 0;
