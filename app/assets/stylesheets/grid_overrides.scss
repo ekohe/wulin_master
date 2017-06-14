@@ -1,6 +1,6 @@
 @import "base";
 
-$column_header_height: 35px;
+$column_header_height: 52px;
 $column_header_padding: 4px;
 $column_header_border_color: #dce0e2;
 
@@ -11,9 +11,13 @@ $pager_background: #efeff0;
 
 /* Grid Column Headers */
 
-.new-header-column {
-  display: inline-block;
-  float: left;
+.slick-header {
+  padding-bottom: 5px;
+  .slick-header-column.input-field {
+    label {
+      top: 25px;
+    }
+  }
 }
 
 .slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
@@ -22,9 +26,9 @@ $pager_background: #efeff0;
   position: relative;
 }
 
-.slick-header-column.ui-state-default.ui-state-hover {
-  background: #efeff0;
-}
+// .slick-header-column.ui-state-default.ui-state-hover {
+//   background: #efeff0;
+// }
 
 .ui-state-default.slick-header-column.slick-header-column-sorted {
   font-style: normal;
