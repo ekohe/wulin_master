@@ -27,7 +27,8 @@
       });
 
       if (currentFilters) {
-        $grid.setHeaderRowVisibility(true);
+        // Ekohe Delete
+        // $grid.setHeaderRowVisibility(true);
       }
 
       triggerElement.click(function() {
@@ -66,7 +67,10 @@
         };
       })();
 
-      $input = $("input", $($grid.getHeaderRow()));
+      // Ekohe Edit: Use new headers instead of headerRow
+      // $input = $("input", $($grid.getHeaderRow()));
+      $input = $("input", $($grid.getNewHeaders()));
+
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
       $input.off('keyup').on('keyup', function(e) {
@@ -118,6 +122,7 @@
     function generateFilters() {
       var inputWidth, columns, inputElement;
       var $headerRow = $($grid.getHeaderRow());
+      var $newHeaders = $($grid.getNewHeaders()); // Ekohe Add
       var headerWidth = $($grid.getCanvasNode()).width() + 16;      // 16 is the vertical scrollbar width
       var ua = navigator.userAgent.toLowerCase();
 
@@ -127,6 +132,15 @@
 
       applyCurrentFilters(currentFilters);
       setOriginalFilter();
+
+      // Ekohe Add
+      if (currentFiltersApplied.length > 0) {
+        $.each(currentFiltersApplied, function(i, v) {
+          var filteredHeaderCol = $newHeaders.find('input#' + v.id);
+          filteredHeaderCol.focus();
+          filteredHeaderCol.val(v.value);
+        })
+      }
 
       $.each(columns, function(i, v) {
         var field = v.id, inputHtml = '', inputWidth, cssClass = "";
@@ -169,7 +183,9 @@
     //  generate the filters boxes with the same values
     function updateCurrentFilters() {
       currentFilters = {};
-      $.each($("input", $($grid.getHeaderRow())), function() {
+      // Ekohe Edit
+      // $.each($("input", $($grid.getHeaderRow())), function() {
+      $.each($("input", $($grid.getNewHeaders())), function() {
         if ($(this).val() !== '') {
           currentFilters[$(this).attr('id')] = $(this).val();
         }
