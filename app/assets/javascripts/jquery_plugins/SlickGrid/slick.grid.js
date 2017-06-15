@@ -605,10 +605,16 @@ if (typeof Slick === "undefined") {
     function createColumnHeaders() {
       function onMouseEnter() {
         $(this).addClass("ui-state-hover");
+        // Ekohe Add: Controle visibility of sort button
+        $(".slick-sort-indicator").css("opacity", "0.5");
+        $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       function onMouseLeave() {
         $(this).removeClass("ui-state-hover");
+        // Ekohe Add: Controle visibility of sort button
+        $(".slick-sort-indicator").css("opacity", "0.0");
+        $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       $headers.find(".slick-header-column")
@@ -732,7 +738,9 @@ if (typeof Slick === "undefined") {
     }
 
     function setupColumnSort() {
-      $headers.click(function (e) {
+      // Ekohe Edit
+      // $headers.click(function (e) {
+      $(".slick-sort-indicator").click(function (e) {
         // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
         e.metaKey = e.metaKey || e.ctrlKey;
 
