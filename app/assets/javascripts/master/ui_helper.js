@@ -94,6 +94,8 @@ var Ui = {
           $(".ui-dialog-titlebar").hide();
           $(".ui-resizable-handle").hide();
           $(".chzn-container").width('100%');
+          $(".chzn-drop").width('100%');
+          $(".chzn-search input").width('94%');
           $(".btn-flat.close").on('click', function() {
             scope.dialog('destroy');
             scope.remove();

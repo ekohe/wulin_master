@@ -18,7 +18,27 @@
     }
     .chzn-container {
       display: block;
-      padding-top: 1em;
+      .chzn-drop {
+        border: oldlace;
+        li {
+          padding: 0.2em 1em 0.2em 1em;
+        }
+        .chzn-search {
+          input {
+            padding: 0 1.2em 0 1em;
+            border: 0;
+            background: none;
+          }
+        }
+      }
+      .chzn-single {
+        border: 0;
+        background-image: none;
+        div {
+          background: none;
+          border: 0
+        }
+      }
     }
   }
   .submit {
