@@ -3,7 +3,7 @@ Then(/^I should see the '([^"]*)' grid$/) do |grid_name|
 end
 
 Then(/^I should see the '([^"]*)' popup$/) do |dialog_title|
-  expect(page).to have_xpath('//span[@class="ui-dialog-title"]', text: dialog_title)
+  expect(page).to have_xpath('//h5[@class="title"]', text: dialog_title)
 end
 
 Then(/^I should see the notice '([^"]*)'$/) do |notice|
