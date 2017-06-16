@@ -102,7 +102,7 @@
             - if column.sql_type.to_s.downcase == 'boolean'
               = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field
             - elsif column.sql_type.to_s.downcase == 'text'
-              = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 260px; height: 4em;'
+              = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
             - else
               = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
           .field_error
