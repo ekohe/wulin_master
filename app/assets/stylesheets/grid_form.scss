@@ -18,6 +18,10 @@
     }
     .chzn-container {
       display: block;
+      .chzn-choices {
+        background: none;
+        border: 0;
+      }
       .chzn-drop {
         border: oldlace;
         li {
