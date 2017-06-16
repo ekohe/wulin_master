@@ -78,7 +78,7 @@ var Ui = {
       scope = $( '#' + name + '_form');
 
       if (options) {
-        width = options.form_dialog_width || 500;
+        width = options.form_dialog_width || 600;
         height = options.form_dialog_height || (scope.outerHeight() + 40);
       } else {
         width = 600;
@@ -92,6 +92,8 @@ var Ui = {
         create: function(event, ui) {
           Ui.setupForm(grid, false);
           $(".ui-dialog-titlebar").hide();
+          $(".ui-resizable-handle").hide();
+          $(".chzn-container").width('100%');
           $(".btn-flat.close").on('click', function() {
             scope.dialog('destroy');
             scope.remove();
