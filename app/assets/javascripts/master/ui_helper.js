@@ -91,6 +91,7 @@ var Ui = {
         modal: true,
         create: function(event, ui) {
           Ui.setupForm(grid, false);
+          $(".create_form .field").addClass('input-field');
           $(".ui-dialog-titlebar").hide();
           $(".ui-resizable-handle").hide();
           $(".chzn-container").width('100%');
