@@ -775,6 +775,8 @@
 
     this.init = function() {
       this.initAwesomplete(args.container);
+      $(args.container).closest('.field').addClass('input-field');
+      $('label[for="'+ $(args.container).attr('id') +'"]').addClass('active');
     };
 
     this.init();

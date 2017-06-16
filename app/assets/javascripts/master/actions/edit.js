@@ -47,6 +47,12 @@ var batchUpdateByAjax = function(grid, version) {
         create: function(event, ui) {
           Ui.setupForm(grid, true);
 
+          $(".ui-dialog-titlebar").hide();
+          $(".btn-flat.close").on('click', function() {
+            scope.dialog('destroy');
+            scope.remove();
+          });
+
           // Check the checkbox when update the file
           checkTheBox(name);
 
@@ -250,7 +256,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
           } else {
             displayNewNotification('1 record updated!');
           }
-          
+
         } else {
           displayErrorMessage(msg.error_message);
           grid.loader.reloadData();
