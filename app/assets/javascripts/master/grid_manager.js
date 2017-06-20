@@ -89,7 +89,7 @@
       }
     }
 
-    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options) {
+    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, user_id) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
       originColumns = deep_clone(columns);
@@ -149,7 +149,7 @@
 
       // Set ColumnPicker
       // var columnpicker = new WulinMaster.ColumnPicker(columns, grid, options);
-      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
 
       // Set FilterPanel
       var filterPanel = new WulinMaster.FilterPanel(grid, grid.loader, grid.states["filter"]);

@@ -43,7 +43,8 @@
                              #{grid.states_for_user.html_safe},
                              #{grid.action_configs.to_json.html_safe},
                              #{grid.behavior_configs.to_json.html_safe},
-                             #{grid.options.to_json.html_safe});
+                             #{grid.options.to_json.html_safe},
+                             #{current_user.id});
 
   // Initial adjusting toolbar
   WulinMaster.dynamicToolbar.reset('#{grid.name}', true);

@@ -1,5 +1,5 @@
 (function ($) {
-  function SlickColumnPicker(columns, grid, options) {
+  function SlickColumnPicker(columns, grid, user_id, options) {
     var $menu;
     var columnCheckboxes;
 
@@ -84,8 +84,8 @@
         if (confirm('Are you sure that you want to reset the default view?')) {
           $.post('/wulin_master/grid_states_manages/reset_default',
                  { _method: 'PUT',
-                   grid_name: '#{grid.name}',
-                   user_id: '#{current_user.id}'
+                   grid_name: grid.name,
+                   user_id: user_id
                  },
                  function(data) {
                    if (data == 'ok') {
