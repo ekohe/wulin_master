@@ -1,41 +1,47 @@
-.grid_states_switcher {
-  min-width: 250px;
+.grid_states_switcher.input-field {
   float: left;
-  font-size: 14px;
-  margin-left: 30px;
-  padding-top: 15px;
-  select {
-    width: 120px;
-  }
-  a.manage, a.reset {
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-  a.reset { margin-left: 5px; }
+  margin-left: 2rem;
+  margin-top: 0.2rem;
 }
 
-.states_manage_form {
-  background-color: #EDEDED !important;
-  form {
-    padding-top: 20px;
-    padding-left: 40px;
-    .state_field {
-      padding: 5px 0;
-    }
-    input[type="text"] {
-      padding: 3px 2px;
-    }
-    .state_submit {
-      margin-left: 55px;
-      margin-top: 10px;
-    }
-    .error_message {
-      color: red;
-      padding-left: 55px;
-      margin-top: 5px;
-      display: block;
-    }
-  }
-}
+// .grid_states_switcher {
+//   min-width: 250px;
+//   float: left;
+//   font-size: 14px;
+//   margin-left: 30px;
+//   padding-top: 15px;
+//   select {
+//     width: 120px;
+//   }
+//   a.manage, a.reset {
+//     height: 20px;
+//     width: 20px;
+//     display: inline-block;
+//     vertical-align: middle;
+//   }
+//   a.reset { margin-left: 5px; }
+// }
+//
+// .states_manage_form {
+//   background-color: #EDEDED !important;
+//   form {
+//     padding-top: 20px;
+//     padding-left: 40px;
+//     .state_field {
+//       padding: 5px 0;
+//     }
+//     input[type="text"] {
+//       padding: 3px 2px;
+//     }
+//     .state_submit {
+//       margin-left: 55px;
+//       margin-top: 10px;
+//     }
+//     .error_message {
+//       color: red;
+//       padding-left: 55px;
+//       margin-top: 5px;
+//       display: block;
+//     }
+//   }
+// }

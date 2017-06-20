@@ -1,14 +1,20 @@
 - WulinMaster::GridState.create_default(current_user.id, grid.name)
 
-.grid_states_switcher
-  =label_tag "grid_states", "Custom Views:"
-  =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
-  %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
-  %a{:href => "javascript:void(0);", :class => "reset_icon_s reset"}
+.grid_states_switcher.input-field
+  -# =label_tag "grid_states", "Custom Views:"
+  -# =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
+  -# %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
+  -# %a{:href => "javascript:void(0);", :class => "reset_icon_s reset"}
 
+  =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
+  -# %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
 
 :javascript
+
   $(function(){
+    $('.grid_states_switcher select').material_select();
+
+    /*
     $("a.manage").click(function(){
       $.get('wulin_master/grid_states_manages/manage?' + "grid=#{grid.name}", function(data){
         $('body').append(data);
@@ -38,4 +44,5 @@
         });
       }
     });
+    */
   });

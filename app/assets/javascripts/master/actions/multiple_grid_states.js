@@ -11,7 +11,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
     if($switcher.length === 0) return false;
 
     // chosen the dropdown
-    $switcher.chosen();
+    // $switcher.chosen();
 
     // main event, change grid state template
     $switcher.bind("change", function(){
