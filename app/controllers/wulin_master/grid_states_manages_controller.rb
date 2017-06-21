@@ -8,17 +8,19 @@ module WulinMaster
     append_view_path "#{WulinMaster::Engine.root}/app/views"
 
     def create
-      grid_state = GridState.new(
+      new_state = GridState.new(
         user_id: current_user.id,
         grid_name: params[:grid_name],
         name: params[:grid_states][:name],
         current: true
       )
-      self.response_body = if grid_state.save
-        {status: "success", data: {id: grid_state.id, name: grid_state.name}}.to_json
-      else
-        {status: "failed", data: current_state.errors.full_messages.join('\n')}.to_json
+      GridState.transaction do
+        new_state.save!
+        new_state.brother_states.update_all(current: false)
       end
+      self.response_body = "success"
+    rescue
+      self.response_body = $ERROR_INFO.message
     end
 
     def save

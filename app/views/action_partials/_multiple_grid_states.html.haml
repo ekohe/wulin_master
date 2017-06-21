@@ -9,11 +9,6 @@
   object = WulinMaster::GridState.new
 
 .grid_states_switcher
-  -# =label_tag "grid_states", "Custom Views:"
-  -# =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
-  -# %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
-  -# %a{:href => "javascript:void(0);", :class => "reset_icon_s reset"}
-
   %a.current-view.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", :href => "#"}
     = current_state.name
     %i.material-icons.right arrow_drop_down
@@ -34,9 +29,9 @@
       = hidden_field_tag 'grid_name', grid.name
       .input-field
         = f.label :name, 'View Name'
-        = f.text_field :name
+        = f.text_field :name, required: true
         .modal-footer
-          .modal-close.right= f.submit 'Create', class: "btn"
+          .modal-close.right= f.submit 'Create', class: 'btn disabled'
           .modal-close.btn-flat Cancel
 
 :javascript
@@ -45,6 +40,16 @@
 
     $('.dropdown-button').dropdown();
     $('#create-view.modal').modal();
+
+    var $submit = $("#create-view.modal input[type='submit']");
+    $("#create-view.modal input[type='text']").on('blur', function() {
+      if (!!$(this).val()) {
+        $submit.removeClass('disabled');
+      }
+    });
+    $submit.on('click', function() {
+      location.reload();
+    });
 
     /*
     $("a.manage").click(function(){
