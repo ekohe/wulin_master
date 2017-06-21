@@ -5,6 +5,13 @@
   .btn {
     text-transform: none;
     color: grey;
+    width: 12rem;
+  }
+  .dropdown-content {
+    width: 12rem;
+    li > a > i {
+      margin-right: 1rem;
+    }
   }
 }
 
