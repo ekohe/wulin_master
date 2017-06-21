@@ -35,39 +35,16 @@
       .input-field
         = f.label :name, 'View Name'
         = f.text_field :name
-      .modal-close= f.submit
-  .modal-footer
-    %a.modal-action.modal-close.btn{type: "submit"} Create
-    %a.modal-action.modal-close.btn-flat Cancel
+        .modal-footer
+          .modal-close.right= f.submit 'Create', class: "btn"
+          .modal-close.btn-flat Cancel
 
 :javascript
 
   $(function(){
 
-    $('.dropdown-button').dropdown({
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: false, // Does not change width of dropdown to that of the activator
-      hover: true, // Activate on hover
-      gutter: 0, // Spacing from edge
-      belowOrigin: false, // Displays dropdown below the button
-      alignment: 'left', // Displays dropdown with edge aligned to the left of button
-      stopPropagation: false // Stops event propagation
-    });
-
-    $('#create-view.modal').modal({
-      dismissible: true, // Modal can be dismissed by clicking outside of the modal
-      opacity: .5, // Opacity of modal background
-      inDuration: 300, // Transition in duration
-      outDuration: 200, // Transition out duration
-      startingTop: '4%', // Starting top style attribute
-      endingTop: '10%', // Ending top style attribute
-      ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-      },
-      complete: function() {
-        location.reload();
-      }
-    });
+    $('.dropdown-button').dropdown();
+    $('#create-view.modal').modal();
 
     /*
     $("a.manage").click(function(){
