@@ -1,18 +1,45 @@
 - WulinMaster::GridState.create_default(current_user.id, grid.name)
 
-.grid_states_switcher.input-field
+:ruby
+  options = grid_states_options(current_user.id, grid.name)
+  default_options, custom_options = options.partition do |option|
+    option[0] == 'default'
+  end
+  current_state = WulinMaster::GridState.current(current_user.id, grid.name)
+
+.grid_states_switcher
   -# =label_tag "grid_states", "Custom Views:"
   -# =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
   -# %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
   -# %a{:href => "javascript:void(0);", :class => "reset_icon_s reset"}
 
-  =select_tag "grid_states", options_for_select(grid_states_options(current_user.id, grid.name))
-  -# %a{:href => "javascript:void(0);", :class => "configure_icon_s manage"}
+  %a.current-view.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", :href => "#"}
+    = current_state.name
+    %i.material-icons.right arrow_drop_down
+  %ul#grid_states.dropdown-content
+    - options.each do |option|
+      %li
+        %a.grid-state-view{"data-state-id" => option[1], :href => "#!"}= option[0]
+    %li.divider
+    %li
+      %a{:href => "#!"}
+        %i.material-icons.left add_box
+        ADD VIEW
 
 :javascript
 
   $(function(){
-    $('.grid_states_switcher select').material_select();
+
+    $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrainWidth: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: false, // Displays dropdown below the button
+      alignment: 'left', // Displays dropdown with edge aligned to the left of button
+      stopPropagation: false // Stops event propagation
+    });
 
     /*
     $("a.manage").click(function(){

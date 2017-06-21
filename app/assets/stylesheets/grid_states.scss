@@ -1,7 +1,11 @@
-.grid_states_switcher.input-field {
+.grid_states_switcher {
   float: left;
-  margin-left: 2rem;
-  margin-top: 0.2rem;
+  margin-left: 30px;
+  padding-top: 15px;
+  .btn {
+    text-transform: none;
+    color: grey;
+  }
 }
 
 // .grid_states_switcher {
