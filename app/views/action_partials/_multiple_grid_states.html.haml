@@ -22,9 +22,20 @@
         %a.grid-state-view{"data-state-id" => option[1], :href => "#!"}= option[0]
     %li.divider
     %li
-      %a{:href => "#!"}
+      %a{:href => "#create-view"}
         %i.material-icons.left add_box
         ADD VIEW
+
+  / Modal Structure
+  #create-view.modal
+    .modal-content
+      %h4 Create a new view
+      .input-field.col.s6
+        %input#last_name.validate{:type => "text"}
+        %label{:for => "last_name"} View Name
+    .modal-footer
+      %a.modal-action.modal-close.btn{:href => "#!"} Create
+      %a.modal-action.modal-close.btn-flat{:href => "#!"} Cancel
 
 :javascript
 
@@ -40,6 +51,7 @@
       alignment: 'left', // Displays dropdown with edge aligned to the left of button
       stopPropagation: false // Stops event propagation
     });
+    $('.modal').modal();
 
     /*
     $("a.manage").click(function(){
