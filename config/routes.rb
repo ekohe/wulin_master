@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   namespace :wulin_master do
+    post "grid_states_manages/create"
     post "grid_states_manages/save"
     post "grid_states_manages/update"
     get "grid_states_manages/manage"

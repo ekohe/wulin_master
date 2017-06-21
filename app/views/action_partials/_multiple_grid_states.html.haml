@@ -6,6 +6,7 @@
     option[0] == 'default'
   end
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
+  object = WulinMaster::GridState.new
 
 .grid_states_switcher
   -# =label_tag "grid_states", "Custom Views:"
@@ -26,16 +27,18 @@
         %i.material-icons.left add_box
         ADD VIEW
 
-  / Modal Structure
-  #create-view.modal
-    .modal-content
-      %h4 Create a new view
-      .input-field.col.s6
-        %input#last_name.validate{:type => "text"}
-        %label{:for => "last_name"} View Name
-    .modal-footer
-      %a.modal-action.modal-close.btn{:href => "#!"} Create
-      %a.modal-action.modal-close.btn-flat{:href => "#!"} Cancel
+#create-view.modal
+  .modal-content
+    %h5 Create a new view
+    = form_for :grid_states, url: '/wulin_master/grid_states_manages/create', remote: true do |f|
+      = hidden_field_tag 'grid_name', grid.name
+      .input-field
+        = f.label :name, 'View Name'
+        = f.text_field :name
+      .modal-close= f.submit
+  .modal-footer
+    %a.modal-action.modal-close.btn{type: "submit"} Create
+    %a.modal-action.modal-close.btn-flat Cancel
 
 :javascript
 
@@ -51,7 +54,20 @@
       alignment: 'left', // Displays dropdown with edge aligned to the left of button
       stopPropagation: false // Stops event propagation
     });
-    $('.modal').modal();
+
+    $('#create-view.modal').modal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      inDuration: 300, // Transition in duration
+      outDuration: 200, // Transition out duration
+      startingTop: '4%', // Starting top style attribute
+      endingTop: '10%', // Ending top style attribute
+      ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+      },
+      complete: function() {
+        location.reload();
+      }
+    });
 
     /*
     $("a.manage").click(function(){
