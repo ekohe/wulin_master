@@ -14,7 +14,7 @@
     - options.each do |option|
       %li
         %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
-        %a.editable-view.right{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
+        %a.edit-icon-container.right.hide{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
           %i.material-icons.right mode_edit
     %li.divider
     %li
@@ -78,11 +78,20 @@
       });
     });
 
-    $('.editable-view').on('click', function() {
+    $('.edit-icon-container').on('click', function() {
       id = $(this).attr('data-state-id');
       oldName = $(this).attr('data-state-name');
       $('#view-name-label-edit').addClass('active');
       $('#view-name-input-edit').val(oldName);
+    });
+
+    $('#grid_states li').on({
+      mouseenter: function () {
+        $(this).children('.edit-icon-container').removeClass('hide');
+      },
+      mouseleave: function () {
+        $(this).children('.edit-icon-container').addClass('hide');
+      }
     });
 
     $("#view-name-input-edit").on('keydown', function(e) {
