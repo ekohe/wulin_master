@@ -41,8 +41,7 @@ module WulinMaster
     def update
       new_state = GridState.find(params[:id])
       GridState.transaction do
-        new_state.brother_states.update_all(current: false)
-        new_state.update_attributes!(current: true)
+        new_state.update_attributes!(name: params[:name])
       end
       self.response_body = "success"
     rescue

@@ -6,23 +6,24 @@
     option[0] == 'default'
   end
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
-  object = WulinMaster::GridState.new
 
 .grid_states_switcher
-  %a.current-view.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", :href => "#"}
+  %a.current-view.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
     = current_state.name
     %i.material-icons.right arrow_drop_down
   %ul#grid_states.dropdown-content
     - options.each do |option|
       %li
-        %a.grid-state-view{"data-state-id" => option[1], :href => "#!"}= option[0]
+        %a.grid-state-view{"data-state-id" => option[1], href: '#!'}= option[0]
+        %a.editable-view.right{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
+          %i.material-icons.right mode_edit
     %li.divider
     %li
-      %a{:href => "#create-view"}
+      %a{href: '#create-modal'}
         %i.material-icons.left add_box
         ADD VIEW
 
-#create-view.modal
+#create-modal.view-modal.modal
   .modal-content
     %h5 Create a new view
     = form_for :grid_states, url: '/wulin_master/grid_states_manages/create', remote: true do |f|
@@ -31,24 +32,66 @@
         = f.label :name, 'View Name'
         = f.text_field :name, required: true
         .modal-footer
-          .modal-close.right= f.submit 'Create', class: 'btn disabled'
+          #create-btn.disabled.right= f.submit 'Create', class: 'btn disabled'
           .modal-close.btn-flat Cancel
+
+#edit-modal.modal
+  .modal-content
+    %h5 Edit view
+    .input-field
+      %input#view-name-input-edit{type: 'text'}
+      %label#view-name-label-edit{for: 'view-name-input-edit'} View Name
+  .modal-footer
+    #update-btn.btn.right.disabled Update
+    #delte-btn.btn-flat.red-text.modal-close.right Delete
+    .modal-close.btn-flat Cancel
 
 :javascript
 
   $(function(){
 
     $('.dropdown-button').dropdown();
-    $('#create-view.modal').modal();
+    $('.modal').modal();
 
-    var $submit = $("#create-view.modal input[type='submit']");
-    $("#create-view.modal input[type='text']").on('blur', function() {
+    var id;
+    var oldName;
+    var newName;
+
+    $(".view-modal .input-field input").on('blur', function() {
       if (!!$(this).val()) {
-        $submit.removeClass('disabled');
+        $('#create-btn').removeClass('disabled');
       }
     });
-    $submit.on('click', function() {
-      location.reload();
+
+    $('#create-btn').on('click', function() {
+      if (!$(this).hasClass('disabled')) {
+        $('#create-modal').modal('close');
+        location.reload();
+      }
+    });
+
+    $('.editable-view').on('click', function() {
+      id = $(this).attr('data-state-id');
+      oldName = $(this).attr('data-state-name');
+      $('#view-name-label-edit').addClass('active');
+      $('#view-name-input-edit').val(oldName);
+    });
+
+    $("#view-name-input-edit").on('blur', function() {
+      newName = $('#view-name-input-edit').val();
+      if (!!newName && oldName != newName) {
+        $('#update-btn').removeClass('disabled');
+      }
+    });
+
+    $('#update-btn').on('click', function() {
+      var data = { id: id, name: newName }
+      $.post('/wulin_master/grid_states_manages/update', data, function(response){
+        if (response == 'success') {
+          $('#edit-modal').modal('close');
+          location.reload();
+        }
+      });
     });
 
     /*
@@ -82,4 +125,5 @@
       }
     });
     */
+
   });
