@@ -55,7 +55,7 @@
     var oldName;
     var newName;
 
-    $("#view-name-input-create").on('blur', function() {
+    $("#view-name-input-create").on('input', function() {
       if (!!$(this).val()) {
         $('#create-btn').removeClass('disabled');
       }
@@ -82,7 +82,7 @@
       $('#view-name-input-edit').val(oldName);
     });
 
-    $("#view-name-input-edit").on('blur', function() {
+    $("#view-name-input-edit").on('input', function() {
       newName = $('#view-name-input-edit').val();
       if (!!newName && oldName != newName) {
         $('#update-btn').removeClass('disabled');
