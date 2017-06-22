@@ -55,11 +55,7 @@
     var newName;
 
     $("#view-name-input-create").on('input', function() {
-      if (!!$(this).val()) {
-        $('#create-btn').removeClass('disabled');
-      } else {
-        $('#create-btn').addClass('disabled');
-      }
+      $('#create-btn').toggleClass('disabled', !$(this).val());
     });
 
     $("#view-name-input-create").on('keydown', function(e) {
@@ -97,11 +93,7 @@
 
     $("#view-name-input-edit").on('input', function() {
       newName = $('#view-name-input-edit').val();
-      if (!!newName && oldName != newName) {
-        $('#update-btn').removeClass('disabled');
-      } else {
-        $('#update-btn').addClass('disabled');
-      }
+      $('#update-btn').toggleClass('disabled', !newName || oldName == newName);
     });
 
     $('#update-btn').on('click', function() {
