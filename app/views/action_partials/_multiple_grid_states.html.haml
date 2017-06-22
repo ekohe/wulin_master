@@ -1,9 +1,10 @@
 :ruby
   WulinMaster::GridState.create_default(current_user.id, grid.name)
-  options = grid_states_options(current_user.id, grid.name)
-  default_options, custom_options = options.partition do |option|
-    option[0] == 'default'
+  states = grid_states_options(current_user.id, grid.name)
+  default_states, custom_states = states.partition do |state|
+    state[0] == 'default'
   end
+  custom_states.sort_by! { |state| state[1] }
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
 
 .grid_states_switcher
@@ -11,7 +12,11 @@
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
   %ul#grid_states.dropdown-content
-    - options.each do |option|
+    - default_states.each do |option|
+      %li
+        %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
+    %li.divider
+    - custom_states.each do |option|
       %li
         %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
         %a.edit-icon-container.right.hide{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
