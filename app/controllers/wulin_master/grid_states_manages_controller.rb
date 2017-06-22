@@ -6,6 +6,7 @@ module WulinMaster
     include ActionView::Layouts
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
+    before_action :set_state, only: [:update, :destroy, :set_current]
 
     def create
       new_state = GridState.new(
@@ -39,18 +40,23 @@ module WulinMaster
     end
 
     def update
-      new_state = GridState.find(params[:id])
-      new_state.update_attributes!(name: params[:name])
+      @state.update_attributes!(name: params[:name])
+      self.response_body = "success"
+    rescue
+      self.response_body = $ERROR_INFO.message
+    end
+
+    def destroy
+      @state.destroy
       self.response_body = "success"
     rescue
       self.response_body = $ERROR_INFO.message
     end
 
     def set_current
-      new_state = GridState.find(params[:id])
       GridState.transaction do
-        new_state.brother_states.update_all(current: false)
-        new_state.update_attributes!(current: true)
+        @state.brother_states.update_all(current: false)
+        @state.update_attributes!(current: true)
       end
       self.response_body = "success"
     rescue
@@ -97,6 +103,12 @@ module WulinMaster
       render plain: 'ok'
     rescue
       render plain: $ERROR_INFO.message
+    end
+
+    private
+
+    def set_state
+      @state = GridState.find(params[:id])
     end
   end
 end

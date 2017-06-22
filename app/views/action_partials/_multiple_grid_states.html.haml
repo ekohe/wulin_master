@@ -1,6 +1,5 @@
-- WulinMaster::GridState.create_default(current_user.id, grid.name)
-
 :ruby
+  WulinMaster::GridState.create_default(current_user.id, grid.name)
   options = grid_states_options(current_user.id, grid.name)
   default_options, custom_options = options.partition do |option|
     option[0] == 'default'
@@ -14,7 +13,7 @@
   %ul#grid_states.dropdown-content
     - options.each do |option|
       %li
-        %a.grid-state-view{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
+        %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
         %a.editable-view.right{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
           %i.material-icons.right mode_edit
     %li.divider
@@ -41,7 +40,7 @@
       %label#view-name-label-edit{for: 'view-name-input-edit'} View Name
   .modal-footer
     #update-btn.btn.right.disabled Update
-    #delte-btn.btn-flat.red-text.modal-close.right Delete
+    #delete-btn.btn-flat.red-text.modal-close.right Delete
     .modal-close.btn-flat Cancel
 
 :javascript
@@ -118,36 +117,14 @@
       });
     });
 
-    /*
-    $("a.manage").click(function(){
-      $.get('wulin_master/grid_states_manages/manage?' + "grid=#{grid.name}", function(data){
-        $('body').append(data);
-        var scope = $(".states_manage_form");
-
-        scope.dialog({
-          height: 250,
-          width: 400,
-          show: "blind",
-          modal: true,
-          close: function(event, ui) {
-            scope.dialog('destroy');
-            scope.remove();
-          }
-        });
+    $('#delete-btn').on('click', function() {
+      var data = { id: id }
+      $.post('/wulin_master/grid_states_manages/destroy', data, function(response){
+        if (response == 'success') {
+          $('#edit-modal').modal('close');
+          location.reload();
+        }
       });
     });
-
-    $('.grid_states_switcher a.reset').on('click', function(){
-      if (confirm('Are you sure that you want to reset the default view?')) {
-        $.post('#{wulin_master_grid_states_manages_reset_default_path}', {_method: 'PUT', grid_name: '#{grid.name}', user_id: '#{current_user.id}'}, function(data) {
-          if (data == 'ok') {
-            load_page(History.getState().url);
-          } else {
-            displayErrorMessage(data);
-          }
-        });
-      }
-    });
-    */
 
   });

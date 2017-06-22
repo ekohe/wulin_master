@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     post "grid_states_manages/create"
     post "grid_states_manages/save"
     post "grid_states_manages/update"
+    post "grid_states_manages/destroy"
     post "grid_states_manages/set_current"
     get "grid_states_manages/manage"
     post "grid_states_manages/batch_update"
