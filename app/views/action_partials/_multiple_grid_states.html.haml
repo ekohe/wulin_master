@@ -58,6 +58,14 @@
     $("#view-name-input-create").on('input', function() {
       if (!!$(this).val()) {
         $('#create-btn').removeClass('disabled');
+      } else {
+        $('#create-btn').addClass('disabled');
+      }
+    });
+
+    $("#view-name-input-create").on('keydown', function(e) {
+      if(e.keyCode == 13 && !$('#create-btn').hasClass('disabled')) {
+        $('#create-btn').click();
       }
     });
 
@@ -82,10 +90,18 @@
       $('#view-name-input-edit').val(oldName);
     });
 
+    $("#view-name-input-edit").on('keydown', function(e) {
+      if(e.keyCode == 13 && !$('#update-btn').hasClass('disabled')) {
+        $('#update-btn').click();
+      }
+    });
+
     $("#view-name-input-edit").on('input', function() {
       newName = $('#view-name-input-edit').val();
       if (!!newName && oldName != newName) {
         $('#update-btn').removeClass('disabled');
+      } else {
+        $('#update-btn').addClass('disabled');
       }
     });
 
