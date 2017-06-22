@@ -11,7 +11,7 @@ module WulinMaster
       new_state = GridState.new(
         user_id: current_user.id,
         grid_name: params[:grid_name],
-        name: params[:grid_states][:name],
+        name: params[:state_name],
         current: true
       )
       GridState.transaction do

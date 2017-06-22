@@ -23,17 +23,15 @@
         %i.material-icons.left add_box
         ADD VIEW
 
-#create-modal.view-modal.modal
+#create-modal.modal
   .modal-content
     %h5 Create a new view
-    = form_for :grid_states, url: '/wulin_master/grid_states_manages/create', remote: true do |f|
-      = hidden_field_tag 'grid_name', grid.name
-      .input-field
-        = f.label :name, 'View Name'
-        = f.text_field :name, required: true
-        .modal-footer
-          #create-btn.disabled.right= f.submit 'Create', class: 'btn disabled'
-          .modal-close.btn-flat Cancel
+    .input-field
+      %input#view-name-input-create{type: 'text'}
+      %label#view-name-label-create{for: 'view-name-input-create'} View Name
+  .modal-footer
+    #create-btn.btn.right.disabled Create
+    .modal-close.btn-flat Cancel
 
 #edit-modal.modal
   .modal-content
@@ -57,17 +55,24 @@
     var oldName;
     var newName;
 
-    $(".view-modal .input-field input").on('blur', function() {
+    $("#view-name-input-create").on('blur', function() {
       if (!!$(this).val()) {
         $('#create-btn').removeClass('disabled');
       }
     });
 
     $('#create-btn').on('click', function() {
-      if (!$(this).hasClass('disabled')) {
-        $('#create-modal').modal('close');
-        location.reload();
-      }
+      var data = {
+        grid_name: "#{grid.name}",
+        state_name: $("#view-name-input-create").val()
+      };
+
+      $.post('/wulin_master/grid_states_manages/create', data, function(response){
+        if (response == 'success') {
+          $('#create-modal').modal('close');
+          location.reload();
+        }
+      });
     });
 
     $('.editable-view').on('click', function() {
