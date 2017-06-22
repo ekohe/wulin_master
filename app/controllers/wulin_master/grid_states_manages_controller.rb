@@ -40,12 +40,21 @@ module WulinMaster
 
     def update
       new_state = GridState.find(params[:id])
-      GridState.transaction do
-        new_state.update_attributes!(name: params[:name])
-      end
+      new_state.update_attributes!(name: params[:name])
       self.response_body = "success"
     rescue
       self.response_body = $ERROR_INFO.message
+    end
+
+    def set_current
+      new_state = GridState.find(params[:id])
+      GridState.transaction do
+        new_state.brother_states.update_all(current: false)
+        new_state.update_attributes!(current: true)
+      end
+      self.response_body = "success"
+    rescue
+      self.response_body = $!.message
     end
 
     def manage

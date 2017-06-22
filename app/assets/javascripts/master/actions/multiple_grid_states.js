@@ -7,15 +7,15 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
     var grid = this.getGrid();
     if(!grid) return false;
 
-    var $switcher = $(".grid_states_switcher a.grid-state-view");
-    if($switcher.length === 0) return false;
+    var $stateItems = $('.grid_states_switcher .grid-state-item');
+    if($stateItems.length === 0) return false;
 
     // main event, change grid state template
-    $switcher.on("click", function(){
+    $stateItems.on("click", function(){
       var stateId = $(this).attr('data-state-id');
       $.ajax({
         type: 'POST',
-        url:  '/wulin_master/grid_states_manages/update',
+        url:  '/wulin_master/grid_states_manages/set_current',
         data: { id: stateId, authenticity_token: decodeURIComponent(window._token) },
         success: function(msg) {
           if(msg == "success") {

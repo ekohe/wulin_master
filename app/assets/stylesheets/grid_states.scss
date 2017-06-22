@@ -6,10 +6,13 @@
     text-transform: none;
     color: grey;
     width: 12rem;
+    font-size: 1rem;
   }
   .dropdown-content {
     width: 12rem;
     li > a {
+      color: grey;
+      font-size: 1rem;
       display: inline-block;
       padding-right: 0.1rem;
       i {
