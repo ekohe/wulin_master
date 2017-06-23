@@ -8,9 +8,10 @@
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
 
 .grid_states_switcher
-  %a.current-view.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
+  %a#current-state.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
+    -# %i.material-icons.right.hide arrow_drop_up
   %ul#grid_states.dropdown-content
     - default_states.each do |option|
       %li
@@ -58,6 +59,13 @@
     var id;
     var oldName;
     var newName;
+
+    $("#current-state").click(function() {
+      var $icon = $(this).children('.material-icons');
+      var up = 'arrow_drop_up'
+      var down = 'arrow_drop_down'
+      $icon.html($icon.text() == up ? down : up);
+    });
 
     $("#view-name-input-create").on('input', function() {
       $('#create-btn').toggleClass('disabled', !$(this).val());
@@ -114,9 +122,10 @@
       var data = { id: id, name: newName }
       $.post('/wulin_master/grid_states_manages/update', data, function(response){
         if (response == 'success') {
-          $('#grid-state-' + id).html(newName);
+          $('#view-name-input-edit').text(newName);
+          $('#grid-state-' + id).text(newName);
           if ("#{current_state.id}" == id) {
-            $('.current-view span').html(newName);
+            $('#current-state span').text(newName);
           }
           $('#edit-modal').modal('close');
         }

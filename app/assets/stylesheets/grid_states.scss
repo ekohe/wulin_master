@@ -4,10 +4,11 @@
   padding-top: 15px;
   .btn {
     text-transform: none;
+    text-align: left;
     color: grey;
     width: 13rem;
     font-size: 1rem;
-    padding: 0 1rem 0 0;
+    padding: 0 1rem 0 1.1rem;
     span {
       padding-left: 0;
     }
@@ -29,8 +30,14 @@
 
 #create-modal,#edit-modal {
   width: 35rem;
+  .input-field {
+    margin-top: 1.5rem;
+  }
   .modal-close {
     margin-right: 1rem;
+  }
+  .modal-footer {
+    padding-right: 1.7rem;
   }
 }
 
