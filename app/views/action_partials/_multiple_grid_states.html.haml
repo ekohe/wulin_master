@@ -11,7 +11,6 @@
   %a#current-state.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
-    -# %i.material-icons.right.hide arrow_drop_up
   %ul#grid_states.dropdown-content
     - default_states.each do |option|
       %li

@@ -1,8 +1,9 @@
 notifications = []
 duration = 3 # Seconds
+window.messages = []
 
 container = ->
-  $('#notificationContainer')  
+  $('#notificationContainer')
 
 isContainerCreated = ->
   container().length > 0
@@ -13,20 +14,21 @@ buildNotificationHtml = (message) ->
   component.html(message)
   component.css('display', 'none')
   component
-  
+
 initializeContainer = ->
   if isContainerCreated()
     return true
   containerElement = $('<div/>')
   containerElement.attr('id', 'notificationContainer')
   $('body').append(containerElement)
-  
+
 discardNotification = (notification) ->
   removeNotification = ->
-    notification.remove() 
+    notification.remove()
   notification.slideUp('fast', -> removeNotification())
-    
+
 window.displayNewNotification = (message, always) ->
+  window.messages.push(message)
   initializeContainer()
   notification = buildNotificationHtml(message)
   container().append(notification)

@@ -9,8 +9,9 @@
         = link_to "#" do
           %i.material-icons help
       %li
-        = link_to "#" do
+        %a#notifications-btn.dropdown-button{"data-activates" => "message-list", "data-beloworigin" => "true", href: "#"}
           %i.material-icons notifications
+        %ul#message-list.dropdown-content
       %li
         - if defined?(WulinOAuth) && User.current_user
           = link_to "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}" do
@@ -20,3 +21,15 @@
           = link_to logout_path do
             %i.material-icons account_circle
             %span= current_user.email
+
+:javascript
+
+  $(function(){
+
+    $('#notifications-btn').on('click', function() {
+      $.each(window.messages, function( index, value ) {
+        $('<li class="notification-item">' + value + '</li>').appendTo($('#message-list'));
+      });
+    });
+
+  });
