@@ -1,6 +1,7 @@
 #notification-btn {
-  background-color: transparent;
+  background-color: transparent !important;
   box-shadow: none;
+  padding: 0;
 }
 
 #notification-list {
@@ -10,6 +11,9 @@
     i {
       height: 1rem;
       line-height: 1.8rem;
+    }
+    div {
+      float: left;
     }
   }
 }

@@ -9,21 +9,9 @@
         = link_to "#" do
           %i.material-icons help
       %li
-        %a#notification-btn.dropdown-button.btn{'data-activates' => 'notification-list', href: '#'}
+        %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
           %i.material-icons notifications
-        %ul#notification-list.dropdown-content.collection
-          %li.collection-item
-            %i.material-icons.left.red-text error
-            Error updating location
-            .right 11:30 
-          %li.collection-item
-            %i.material-icons.left.green-text done
-            Location successfully created
-            .right 11:15
-          %li.collection-item
-            %i.material-icons.left error_outline
-            Location screen loaded
-            .right 11:00
+        %ul#notification-list.dropdown-content.collection.hide
 
       %li
         - if defined?(WulinOAuth) && User.current_user
@@ -46,9 +34,7 @@
     });
 
     $('#notification-btn').on('click', function() {
-      $.each(window.messages, function( index, value ) {
-        $('<li class="notification-item">' + value + '</li>').appendTo($('#message-list'));
-      });
+      $('#notification-list').toggleClass('hide');
     });
 
   });

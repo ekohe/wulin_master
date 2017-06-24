@@ -1,6 +1,5 @@
 notifications = []
 duration = 3 # Seconds
-window.messages = []
 
 container = ->
   $('#notificationContainer')
@@ -27,8 +26,23 @@ discardNotification = (notification) ->
     notification.remove()
   notification.slideUp('fast', -> removeNotification())
 
-window.displayNewNotification = (message, always) ->
-  window.messages.push(message)
+saveMessage = (content, type) ->
+  nowDate = new Date();
+  message = {
+    content: content,
+    type: type || 'info',
+    time: nowDate.getHours() + ':' + nowDate.getMinutes()
+  }
+  $li = $('<li class="notification-item collection-item"></li>').prependTo($('#notification-list'))
+  $icon = $('<i class="material-icons left"></i>').appendTo($li)
+  $('<div>' + message.content + '</div>').appendTo($li)
+  $('<div class="right">' + message.time + '</div>').appendTo($li)
+  $('#notification-btn').removeClass('disabled')
+  if message.type == 'info'
+    $icon.text('error_outline')
+
+window.displayNewNotification = (message, type, always) ->
+  saveMessage(message, type)
   initializeContainer()
   notification = buildNotificationHtml(message)
   container().append(notification)
