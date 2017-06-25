@@ -105,7 +105,15 @@ module WulinMaster
     end
 
     def path
-      uri = URI.parse(self.class.path)
+      # patch to support models from other schema
+      # Exemple: set.table_name = 'myschema.tablename'
+      # sql needs schema info but routes dont support schema info
+      # here we remove it from the data loader url
+      if self.class.path.include?('.') then
+        uri = URI.parse(self.class.path.split('.')[1])
+      else 
+        uri = URI.parse(self.class.path)
+      end
       uri.query = [uri.query, "grid=#{self.class.to_s}"].compact.join('&')
       uri.to_s
     end
