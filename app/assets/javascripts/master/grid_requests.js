@@ -25,7 +25,7 @@ var Requests = {
               setTimeout(function(){ Ui.closeDialog(grid.name); }, 100);
             }
           }
-          displayNewNotification('Record successfully created!');
+          displayNewNotification(grid.model + ' successfully created');
         } else {
           for(var k in request.error_message){
             createFormElement.find(".field[name=" + k + "]").find(".field_error").text(request.error_message[k].join());
@@ -85,9 +85,9 @@ var Requests = {
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
-            message = recordSize+" records deleted.";
+            message = recordSize + ' ' + grid.model.toLowerCase() + 's deleted';
           } else {
-            message = "1 record deleted.";
+            message = '1 ' + grid.model.toLowerCase() + ' deleted';
           }
           displayNewNotification(message);
         } else if(msg.confirm) {

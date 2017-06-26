@@ -256,9 +256,9 @@ var submitForm = function(grid, ids, selectedIndexes) {
 
           grid.loader.reloadData();
           if (selectedIndexes.length > 1) {
-            displayNewNotification(selectedIndexes.length + ' records updated!');
+            displayNewNotification(selectedIndexes.length + ' ' + grid.model.toLowerCase() + 's updated');
           } else {
-            displayNewNotification('1 record updated!');
+            displayNewNotification('1 ' + grid.model.toLowerCase() + ' updated');
           }
 
         } else {
