@@ -263,6 +263,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
 
         } else {
           displayErrorMessage(msg.error_message);
+          saveMessage('Error updating ' + grid.model.toLowerCase(), 'error');
           grid.loader.reloadData();
         }
         $scope.dialog("destroy");

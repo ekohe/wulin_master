@@ -33,6 +33,7 @@ var Requests = {
           if (request.error_message['base']) {
             $('.base_error', createFormElement).text(request.error_message['base']);
           }
+          saveMessage('Error creating ' + grid.model.toLowerCase(), 'error');
         }
       }
     };
