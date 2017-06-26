@@ -6,6 +6,11 @@ module WulinMaster
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
 
+    def current_user
+      session[:user_id] ? User.find(session[:user_id]) : nil
+    end
+    
+
     def save
       current_state = GridState.current(current_user.id, params[:grid_name])
       if current_state
