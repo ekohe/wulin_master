@@ -26,11 +26,11 @@ discardNotification = (notification) ->
     notification.remove()
   notification.slideUp('fast', -> removeNotification())
 
-saveMessage = (content, type) ->
+window.saveMessage = (content, type) ->
   nowDate = new Date();
   message = {
     content: content,
-    type: type || 'info',
+    type: type || 'success',
     time: nowDate.getHours() + ':' + nowDate.getMinutes()
   }
   $li = $('<li class="notification-item collection-item"></li>').prependTo($('#notification-list'))
@@ -40,9 +40,15 @@ saveMessage = (content, type) ->
   $('#notification-btn').removeClass('disabled')
   if message.type == 'info'
     $icon.text('error_outline')
+  else if message.type == 'success'
+    $icon.text('done')
+    $icon.addClass('green-text')
+  else
+    $icon.text('error')
+    $icon.addClass('red-text')
 
 window.displayNewNotification = (message, type, always) ->
-  saveMessage(message, type)
+  window.saveMessage(message, type)
   initializeContainer()
   notification = buildNotificationHtml(message)
   container().append(notification)

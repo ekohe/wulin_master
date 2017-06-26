@@ -112,6 +112,7 @@ var Requests = {
           });
         } else {
           displayErrorMessage(msg.error_message);
+          saveMessage('Error deleting ' + grid.model.toLowerCase(), 'error');
         }
       }
     });
