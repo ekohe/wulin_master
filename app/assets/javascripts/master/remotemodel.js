@@ -72,7 +72,6 @@
 
       grid.updateRowCount();
       grid.render();
-      displayNewNotification(grid.model + ' screen updated');
 
       onDataLoaded.notify();
     }

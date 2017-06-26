@@ -176,6 +176,7 @@
 
       // Load the first page
       grid.onViewportChanged.notify();
+      displayNewNotification(grid.model + ' screen loaded');
 
       // Delete old grid if exsisting, then add grid
       for(var i in grids){
