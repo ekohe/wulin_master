@@ -14,7 +14,7 @@ Feature: Create objects
     And I enter 'Guilbot' in 'Last name'
     And I enter '28/08/1982' in 'Birthdate'
     When I press ' Create '
-    Then I should see the notice 'People successfully created'
+    Then I should see the notice 'Person successfully created'
     Then take a screenshot
     And I should see 'Maxime' in the 'People' grid
     And I should see 'Guilbot' in the 'People' grid
