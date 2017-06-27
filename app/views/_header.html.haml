@@ -1,3 +1,6 @@
+:ruby
+  wikis = WulinWiki::Wiki.all
+
 %nav
   .nav-wrapper
     %a#menu-toggle.left{href: '#'}
@@ -6,7 +9,7 @@
       = WulinMaster.config.app_title
     %ul.right
       %li
-        %a{href: '#help-list'}
+        %a#help-btn{href: '#help-modal'}
           %i.material-icons help
       %li
         %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
@@ -22,54 +25,31 @@
             %i.material-icons account_circle
             %span= current_user.email
 
-#help-list.modal
+#help-modal.modal
   .modal-header
     %span Help
     %i.modal-close.material-icons.right close
   .modal-content
-    %ul
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span Import Orders
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span CSC View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
-      %li
-        %a{href: '#'}
-          %i.material-icons.left live_help
-          %span MCR View
+    %ul#help-list
+      - wikis.each do |wiki|
+        %li
+          %a{"data-wiki-content" => wiki.content, href: '#'}
+            %i.material-icons.left live_help
+            %span= (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
+    #help-content.hide
 
 :javascript
 
   $(function(){
 
     $('.modal').modal();
+
+    $('#help-list li a').on('click', function() {
+      var wikiContent = $(this).attr('data-wiki-content');
+      $('#help-content').html(wikiContent);
+      $('#help-list').addClass('hide');
+      $('#help-content').removeClass('hide');
+    });
 
     $('#notification-btn').dropdown({
       constrainWidth: false, // Does not change width of dropdown to that of the activator

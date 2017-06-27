@@ -18,7 +18,7 @@
   }
 }
 
-#help-list {
+#help-modal {
   border-radius: 0;
   .modal-header {
     padding: 1rem;
@@ -28,14 +28,19 @@
       font-size: 1.3rem;
     }
   }
-  li {
-    display: flex;
-    padding: 0.5rem 0 0.5rem 0;
-    a {
-      color: grey;
-      span {
-        font-size: 1rem;
+  .modal-content {
+    #help-list li {
+      display: flex;
+      padding: 0.5rem 0 0.5rem 0;
+      a {
+        color: grey;
+        span {
+          font-size: 1rem;
+        }
       }
+    }
+    #help-content {
+      font-size: 1rem;
     }
   }
 }
