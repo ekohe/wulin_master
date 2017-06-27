@@ -6,13 +6,12 @@
       = WulinMaster.config.app_title
     %ul.right
       %li
-        = link_to "#" do
+        %a{href: '#help-list'}
           %i.material-icons help
       %li
         %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
           %i.material-icons notifications
         %ul#notification-list.dropdown-content.collection.hide
-
       %li
         - if defined?(WulinOAuth) && User.current_user
           = link_to "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}" do
@@ -23,9 +22,54 @@
             %i.material-icons account_circle
             %span= current_user.email
 
+#help-list.modal
+  .modal-header
+    %span Help
+    %i.modal-close.material-icons.right close
+  .modal-content
+    %ul
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span Import Orders
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span CSC View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+      %li
+        %a{href: '#'}
+          %i.material-icons.left live_help
+          %span MCR View
+
 :javascript
 
   $(function(){
+
+    $('.modal').modal();
 
     $('#notification-btn').dropdown({
       constrainWidth: false, // Does not change width of dropdown to that of the activator
