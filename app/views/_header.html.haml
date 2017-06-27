@@ -1,5 +1,5 @@
 :ruby
-  wikis = WulinWiki::Wiki.all
+  wikis = WulinWiki::Wiki.all if defined?(WulinWiki)
 
 %nav
   .nav-wrapper
@@ -8,9 +8,10 @@
     %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
     %ul.right
-      %li
-        %a#help-btn{href: '#help-modal'}
-          %i.material-icons help
+      - if wikis
+        %li
+          %a#help-btn{href: '#help-modal'}
+            %i.material-icons help
       %li
         %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
           %i.material-icons notifications
@@ -25,18 +26,20 @@
             %i.material-icons account_circle
             %span= current_user.email
 
-#help-modal.modal
-  .modal-header
-    %span Help
-    %i.modal-close.material-icons.right close
-  .modal-content
-    %ul#help-list
-      - wikis.each do |wiki|
-        %li
-          %a{"data-wiki-content" => wiki.content, href: '#'}
-            %i.material-icons.left live_help
-            %span= (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
-    #help-content.hide
+
+- if wikis
+  #help-modal.modal
+    .modal-header
+      %span Help
+      %i.modal-close.material-icons.right close
+    .modal-content
+      %ul#help-list
+        - wikis.each do |wiki|
+          %li
+            %a{"data-wiki-content" => wiki.content, href: '#'}
+              %i.material-icons.left live_help
+              %span= (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
+      #help-content.hide
 
 :javascript
 
