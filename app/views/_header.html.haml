@@ -26,42 +26,61 @@
             %i.material-icons account_circle
             %span= current_user.email
 
-
 - if wikis
   #help-modal.modal
     .modal-header
-      %span Help
+      %span#help-title Help
       %i.modal-close.material-icons.right close
     .modal-content
       %ul#help-list
         - wikis.each do |wiki|
+          - wiki_title = (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
           %li
-            %a{"data-wiki-content" => wiki.content, href: '#'}
+            %a{"data-wiki-content" => wiki.content, "data-wiki-title" => wiki_title, href: '#'}
               %i.material-icons.left live_help
-              %span= (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
-      #help-content.hide
+              %span= wiki_title
+      #help-content-container.hide
+        #help-content
+        %a#help-menu-link{href: '#'}
+          %i.material-icons dns
+          %span BROWSE ALL ARTICLES
 
 :javascript
 
   $(function(){
 
     $('.modal').modal();
-
-    $('#help-list li a').on('click', function() {
-      var wikiContent = $(this).attr('data-wiki-content');
-      $('#help-content').html(wikiContent);
-      $('#help-list').addClass('hide');
-      $('#help-content').removeClass('hide');
-    });
-
     $('#notification-btn').dropdown({
       constrainWidth: false, // Does not change width of dropdown to that of the activator
       hover: false, // Activate on hover
       belowOrigin: true, // Displays dropdown below the button
     });
 
+    $('#help-btn').on('click', function() {
+      showHelpList();
+    });
+
+    $('#help-menu-link').on('click', function() {
+      showHelpList();
+    });
+
+    $('#help-list li a').on('click', function() {
+      var wikiTitle = 'Help - ' + $(this).attr('data-wiki-title');
+      var wikiContent = $(this).attr('data-wiki-content');
+      $('#help-content').html(wikiContent);
+      $('#help-title').text(wikiTitle);
+      $('#help-list').addClass('hide');
+      $('#help-content-container').removeClass('hide');
+    });
+
     $('#notification-btn').on('click', function() {
       $('#notification-list').toggleClass('hide');
     });
+
+    function showHelpList() {
+      $('#help-list').removeClass('hide');
+      $('#help-content-container').addClass('hide');
+      $('#help-title').text('Help');
+    };
 
   });

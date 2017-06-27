@@ -29,18 +29,22 @@
     }
   }
   .modal-content {
+    font-size: 1rem;
     #help-list li {
       display: flex;
       padding: 0.5rem 0 0.5rem 0;
       a {
         color: grey;
-        span {
-          font-size: 1rem;
-        }
       }
     }
-    #help-content {
-      font-size: 1rem;
+    #help-menu-link {
+      i {
+        float: left;
+        margin-right: 0.5rem;
+      }
+      span {
+        font-size: 0.8rem;
+      }
     }
   }
 }
