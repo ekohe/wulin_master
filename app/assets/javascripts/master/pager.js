@@ -5,6 +5,7 @@
     function init() {
       dataView.onPagingInfoChanged.subscribe(function(e,pagingInfo) {
         updatePager(pagingInfo);
+        $('.slick-header .progress').hide();
       });
 
       constructPagerUI();
