@@ -2188,43 +2188,6 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    // Ekohe Add: Render temporary grid for loading page
-    function renderLoadingGrid() {
-      var stringArray = [];
-      var rowCount = 30;
-      var colCount = $headers.children().length;
-
-      // Rows
-      for (var i = 0, ii = rowCount; i < ii; i++) {
-        var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
-        stringArray.push(
-          "<div class='ui-widget-content " + rowCss +
-          "' style='top:" + getRowTop(i) + "px'>"
-        );
-
-        // Columns
-        var colspan;
-        for (var j = 0, jj = colCount; j < jj; j++) {
-          colspan = 1;
-          var cellCss = "slick-cell loading l" + j +
-                        " r" + Math.min(colCount - 1, j + colspan - 1);
-          stringArray.push("<div style='height:10px' class='" + cellCss + "'></div>");
-          if (colspan > 1) {
-            i += (colspan - 1);
-          }
-        }
-
-        stringArray.push("</div>");
-      }
-
-      var gridElement = document.createElement("div");
-      gridElement.innerHTML = stringArray.join("");
-
-      for (var i = 0, ii = rowCount; i < ii; i++) {
-        $canvas[0].appendChild(gridElement.firstChild);
-      }
-    }
-
     function startPostProcessing() {
       if (!options.enableAsyncPostRender) {
         return;
@@ -3742,6 +3705,42 @@ if (typeof Slick === "undefined") {
         return options.editable;
       } else {
         return column_option.editable;
+      }
+    }
+
+    function renderLoadingGrid() {
+      var stringArray = [];
+      var rowCount = 30;
+      var colCount = $headers.children().length;
+
+      // Rows
+      for (var i = 0, ii = rowCount; i < ii; i++) {
+        var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
+        stringArray.push(
+          "<div class='ui-widget-content " + rowCss +
+          "' style='top:" + getRowTop(i) + "px'>"
+        );
+
+        // Columns
+        var colspan;
+        for (var j = 0, jj = colCount; j < jj; j++) {
+          colspan = 1;
+          var cellCss = "slick-cell loading l" + j +
+                        " r" + Math.min(colCount - 1, j + colspan - 1);
+          stringArray.push("<div style='height:10px' class='" + cellCss + "'></div>");
+          if (colspan > 1) {
+            i += (colspan - 1);
+          }
+        }
+
+        stringArray.push("</div>");
+      }
+
+      var gridElement = document.createElement("div");
+      gridElement.innerHTML = stringArray.join("");
+
+      for (var i = 0, ii = rowCount; i < ii; i++) {
+        $canvas[0].appendChild(gridElement.firstChild);
       }
     }
 
