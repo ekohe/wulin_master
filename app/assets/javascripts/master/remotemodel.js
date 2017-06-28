@@ -256,8 +256,8 @@
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
 
-      // Hide loading effects
-      $('.slick-header .progress').hide();
+      // Stop loading effects
+      $('.slick-header .progress').remove();
       $('.slick-cell').removeClass('loading');
 
       // Display Notification

@@ -2188,31 +2188,27 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    // Ekohe Add: Render grid for loading page
+    // Ekohe Add: Render temporary grid for loading page
     function renderLoadingGrid() {
-      var parentNode = $canvas[0],
-          stringArray = [],
-          rows = [],
-          dataLength = 22;
+      var stringArray = [];
+      var rowCount = 30;
+      var colCount = $headers.children().length;
 
-      for (var i = 0, ii = 22; i <= ii; i++) {
-        rows.push(i);
+      // Rows
+      for (var i = 0, ii = rowCount; i < ii; i++) {
+        var rowCss = "slick-row" + (i % 2 == 1 ? " odd" : " even");
+        stringArray.push(
+          "<div class='ui-widget-content " + rowCss +
+          "' style='top:" + getRowTop(i) + "px'>"
+        );
 
-        var rowCss = "slick-row" +
-            (i % 2 == 1 ? " odd" : " even");
-        rowCss += " " + options.addNewRowCssClass;
-
-        stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(i) + "px'>");
-
-        var colspan, m;
-        for (var j = 0, jj = $headers.children().length; j < jj; j++) {
+        // Columns
+        var colspan;
+        for (var j = 0, jj = colCount; j < jj; j++) {
           colspan = 1;
-
-          var cellCss = "slick-cell l" + j + " r" + Math.min($headers.children().length - 1, j + colspan - 1) + ' loading';
-
-          stringArray.push("<div style='height:10px' class='" + cellCss + "'>");
-          stringArray.push("</div>");
-
+          var cellCss = "slick-cell loading l" + j +
+                        " r" + Math.min(colCount - 1, j + colspan - 1);
+          stringArray.push("<div style='height:10px' class='" + cellCss + "'></div>");
           if (colspan > 1) {
             i += (colspan - 1);
           }
@@ -2221,11 +2217,11 @@ if (typeof Slick === "undefined") {
         stringArray.push("</div>");
       }
 
-      var x = document.createElement("div");
-      x.innerHTML = stringArray.join("");
+      var gridElement = document.createElement("div");
+      gridElement.innerHTML = stringArray.join("");
 
-      for (var i = 0, ii = rows.length; i < ii; i++) {
-        parentNode.appendChild(x.firstChild);
+      for (var i = 0, ii = rowCount; i < ii; i++) {
+        $canvas[0].appendChild(gridElement.firstChild);
       }
     }
 
