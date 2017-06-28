@@ -2196,7 +2196,7 @@ if (typeof Slick === "undefined") {
 
       // Rows
       for (var i = 0, ii = rowCount; i < ii; i++) {
-        var rowCss = "slick-row" + (i % 2 == 1 ? " odd" : " even");
+        var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
         stringArray.push(
           "<div class='ui-widget-content " + rowCss +
           "' style='top:" + getRowTop(i) + "px'>"

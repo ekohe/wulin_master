@@ -71,6 +71,10 @@
       }
 
       grid.updateRowCount();
+
+      // Ekohe Add: Remove loading grid
+      $('.slick-row.loading').remove();
+
       grid.render();
 
       onDataLoaded.notify();
@@ -258,7 +262,6 @@
 
       // Stop loading effects
       $('.slick-header .progress').remove();
-      $('.slick-cell').removeClass('loading');
 
       // Display Notification
       displayNewNotification(grid.model + ' screen loaded', 'info');
