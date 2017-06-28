@@ -334,6 +334,7 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         bindAncestorScrollEvents();
+        renderLoadingGrid(); // Ekohe Add
 
         $container
             .on("resize.slickgrid", resizeCanvas);
@@ -1031,11 +1032,11 @@ if (typeof Slick === "undefined") {
       var h = ["borderLeftWidth", "borderRightWidth", "paddingLeft", "paddingRight"];
       var v = ["borderTopWidth", "borderBottomWidth", "paddingTop", "paddingBottom"];
 
-	  // jquery prior to version 1.8 handles .width setter/getter as a direct css write/read
-	  // jquery 1.8 changed .width to read the true inner element width if box-sizing is set to border-box, and introduced a setter for .outerWidth
-	  // so for equivalent functionality, prior to 1.8 use .width, and after use .outerWidth
-	  var verArray = $.fn.jquery.split('.');
-	  jQueryNewWidthBehaviour = (verArray[0]==1 && verArray[1]>=8) ||  verArray[0] >=2;
+  	  // jquery prior to version 1.8 handles .width setter/getter as a direct css write/read
+  	  // jquery 1.8 changed .width to read the true inner element width if box-sizing is set to border-box, and introduced a setter for .outerWidth
+  	  // so for equivalent functionality, prior to 1.8 use .width, and after use .outerWidth
+  	  var verArray = $.fn.jquery.split('.');
+  	  jQueryNewWidthBehaviour = (verArray[0]==1 && verArray[1]>=8) ||  verArray[0] >=2;
 
       el = $("<div class='ui-state-default slick-header-column' style='visibility:hidden'>-</div>").appendTo($headers);
       headerColumnWidthDiff = headerColumnHeightDiff = 0;
@@ -2184,6 +2185,47 @@ if (typeof Slick === "undefined") {
 
       if (needToReselectCell) {
         activeCellNode = getCellNode(activeRow, activeCell);
+      }
+    }
+
+    // Ekohe Add: Render grid for loading page
+    function renderLoadingGrid() {
+      var parentNode = $canvas[0],
+          stringArray = [],
+          rows = [],
+          dataLength = 22;
+
+      for (var i = 0, ii = 22; i <= ii; i++) {
+        rows.push(i);
+
+        var rowCss = "slick-row" +
+            (i % 2 == 1 ? " odd" : " even");
+        rowCss += " " + options.addNewRowCssClass;
+
+        stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(i) + "px'>");
+
+        var colspan, m;
+        for (var j = 0, jj = $headers.children().length; j < jj; j++) {
+          colspan = 1;
+
+          var cellCss = "slick-cell l" + j + " r" + Math.min($headers.children().length - 1, j + colspan - 1) + ' loading';
+
+          stringArray.push("<div style='height:10px' class='" + cellCss + "'>");
+          stringArray.push("</div>");
+
+          if (colspan > 1) {
+            i += (colspan - 1);
+          }
+        }
+
+        stringArray.push("</div>");
+      }
+
+      var x = document.createElement("div");
+      x.innerHTML = stringArray.join("");
+
+      for (var i = 0, ii = rows.length; i < ii; i++) {
+        parentNode.appendChild(x.firstChild);
       }
     }
 

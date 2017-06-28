@@ -255,6 +255,13 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
+
+      // Hide loading effects
+      $('.slick-header .progress').hide();
+      $('.slick-cell').removeClass('loading');
+
+      // Display Notification
+      displayNewNotification(grid.model + ' screen loaded', 'info');
     }
 
     function getColumns() {

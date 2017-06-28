@@ -98,6 +98,22 @@ $pager_background: #efeff0;
   }
 }
 
+.slick-row.even {
+  .slick-cell.loading {
+    background-color: #f7f7f7;
+  }
+}
+
+.slick-row.odd {
+  .slick-cell.loading {
+    background-color: #e5e3e9;
+  }
+}
+
+.slick-cell.loading {
+  margin: 10px;
+}
+
 .slick-cell, .slick-headerrow-column , .slick-footerrow-column {
   border: 1px solid transparent;
 }
