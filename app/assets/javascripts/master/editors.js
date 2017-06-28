@@ -220,6 +220,28 @@
       }.bind(this));
     };
 
+    this.initMdAutoComplete = function($input) {
+      $input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      });
+
+      $.getJSON(args.column.choices, function(dataArray) {
+        var dataObject = {};
+        for (var i = 0; i < dataArray.length; ++i) {
+          dataObject[dataArray[i]] = null;
+        }
+
+        $input.addClass('autocomplete');
+        $input.autocomplete({
+          data: dataObject,
+          limit: 5,
+          minLength: 1,
+        });
+      }.bind(this));
+    };
+
     this.isValueChanged = function() {
       return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);
     };
@@ -744,7 +766,8 @@
     this.init = function() {
       this.initElements();
       this.setOffset(this.input, this.offsetWith);
-      this.initAwesomplete(this.input);
+      // this.initAwesomplete(this.input);
+      this.initMdAutoComplete(this.input);
     };
 
     this.validate = function() {
@@ -774,9 +797,8 @@
     InputElementEditor.call(this, args);
 
     this.init = function() {
-      this.initAwesomplete(args.container);
-      $(args.container).closest('.field').addClass('input-field');
-      $('label[for="'+ $(args.container).attr('id') +'"]').addClass('active');
+      $(args.container).attr('autocomplete', 'off');
+      this.initMdAutoComplete(args.container);
     };
 
     this.init();
