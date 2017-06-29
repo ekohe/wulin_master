@@ -125,18 +125,35 @@ $pager_background: #efeff0;
 
 .slick-row.even {
   .slick-cell.loading {
-    background-color: #f7f7f7;
+    background: linear-gradient(to right, #f7f7f7 8%, #ecf2f4 18%, #f7f7f7 33%);
   }
 }
 
 .slick-row.odd {
   .slick-cell.loading {
-    background-color: #e5e3e9;
+    background: linear-gradient(to right, #e5e3e9 8%, #dddddd 18%, #e5e3e9 33%);
+  }
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+    background-position: -468px 0
+  }
+  100%{
+    background-position: 468px 0
   }
 }
 
 .slick-cell.loading {
   margin: 10px;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  // background: linear-gradient(to right, #e5ebed 8%, #dddddd 18%, #e5ebed 33%);
+  background-size: 800px 104px;
+  height: 96px;
 }
 
 .slick-cell, .slick-headerrow-column , .slick-footerrow-column {
@@ -146,7 +163,6 @@ $pager_background: #efeff0;
 .ui-widget-content.slick-row.ui-state-active.selected {
   background: $selected_row_background;
 }
-
 
 .cell-effort-driven {
   text-align: center;
