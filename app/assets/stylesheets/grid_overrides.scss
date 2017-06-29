@@ -105,6 +105,20 @@ $pager_background: #efeff0;
   .autocomplete-content {
     margin-top: 0;
   }
+  .chzn-container {
+    top: 0;
+    .chzn-single {
+      margin-right: 4px;
+      margin-bottom: 8px;
+    }
+    .chzn-drop {
+      margin-right: 4px;
+      margin-left: -2px;
+    }
+    .chzn-choices {
+      box-shadow: none;
+    }
+  }
 }
 
 .slick-row.even {

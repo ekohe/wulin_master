@@ -357,7 +357,7 @@
     this.offsetWith = this.boxWidth + 28;
 
     this.initElements = function() {
-      this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:3px;margin:-3px 0 0 -7px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+      this.wrapper = $("<div />");
       this.setWrapper(this.wrapper);
       this.wrapper.appendTo(this.args.container);
 

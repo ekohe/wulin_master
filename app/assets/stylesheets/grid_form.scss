@@ -16,57 +16,6 @@
         margin: 0;
       }
     }
-    .chzn-container {
-      top: 20px;
-      .chzn-choices {
-        background: none;
-        border: 0;
-        .search-choice {
-          border-radius: 1em;
-        }
-        .search-field {
-          input {
-            height: 1em;
-            padding: 0.2em 0.2em 1em 0;
-            color: black;
-            border: 0;
-            box-shadow: none;
-          }
-        }
-      }
-      .chzn-drop {
-        border: oldlace;
-        border-radius: 0;
-        li {
-          padding: 0.5em 1em 0.5em 1em;
-        }
-        li.highlighted {
-          color: black;
-          background-color: #eee;
-        }
-        .chzn-search {
-          input {
-            height: 2em;
-            padding: 0 1.2em 0 1em;
-            border: 0;
-            background: none;
-          }
-        }
-      }
-      .chzn-single {
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        background-image: none;
-        div {
-          background: none;
-          border: 0;
-        }
-      }
-      .chzn-single-with-drop {
-        padding-left: 1em;
-      }
-    }
   }
   .submit {
     float: right;
