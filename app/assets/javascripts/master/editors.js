@@ -307,10 +307,13 @@
     BaseEditor.call(this, args);
 
     this.init = function() {
-      this.checkbox = $("<INPUT type=checkbox class='editor-checkbox' hideFocus>");
+      var id = 'checkbox-' + this.args.item.id;
+      this.checkbox = $('<input type="checkbox">')
+        .addClass('filled-in')
+        .attr('id', id)
+        .appendTo(this.args.container);
+      $('<label />').attr('for', id).appendTo(this.args.container);
       this.setElement(this.checkbox);
-      this.checkbox.appendTo(this.args.container);
-      this.checkbox.focus().select();
     };
 
     this.loadValue = function(item) {
