@@ -1347,10 +1347,11 @@ if (typeof Slick === "undefined") {
       var itemCount = getSelectedRows().length;
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-        $("#selection_info_" + self.name).html(itemInfo + ' selected. X CLEAR');
+        $('#selection_info_' + self.name).html(itemInfo + ' selected. X CLEAR');
+        $('.toolbar-select').removeClass('hide');
       } else {
-        $("#selection_info_" + self.name).html('');
-        $(getActiveCellNode()).removeClass("active");
+        $('#selection_info_' + self.name).html('');
+        $(getActiveCellNode()).removeClass('active');
       }
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
