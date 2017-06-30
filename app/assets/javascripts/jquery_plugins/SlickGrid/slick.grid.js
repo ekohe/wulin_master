@@ -607,15 +607,19 @@ if (typeof Slick === "undefined") {
       function onMouseEnter() {
         $(this).addClass("ui-state-hover");
         // Ekohe Add: Controle visibility of sort button
-        $(".slick-sort-indicator").css("opacity", "0.5");
-        $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
+        if (!$(this).hasClass('slick-header-column-sorted')) {
+          $(this).find('.slick-sort-indicator').css("opacity", "0.5");
+        }
+        // $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       function onMouseLeave() {
         $(this).removeClass("ui-state-hover");
         // Ekohe Add: Controle visibility of sort button
-        $(".slick-sort-indicator").css("opacity", "0.0");
-        $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
+        if (!$(this).hasClass('slick-header-column-sorted')) {
+          $(this).find('.slick-sort-indicator').css("opacity", "0.0");
+        }
+        // $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       $headers.find(".slick-header-column")
