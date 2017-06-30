@@ -42,20 +42,20 @@ $pager_background: #efeff0;
 .slick-sort-indicator {
   display: block;
   position: absolute;
-  right: 10px;
-  top: 25px;
+  right: 20px;
+  top: 20px;
   width: 9px;
   height: 8px;
-  background: image-url("ui/sort_indicator_desc.png") no-repeat;
+  background: none;
   opacity: 0;
+  i.material-icons {
+    font-size: 16px;
+  }
 }
 
 .slick-sort-indicator-desc,.slick-sort-indicator-asc {
-  opacity: 1.0;
-}
-
-.slick-sort-indicator.slick-sort-indicator-asc {
-  background: image-url("ui/sort_indicator_asc.png") no-repeat;
+  opacity: 0.5;
+  background: none;
 }
 
 /* Grid Rows Headers */

@@ -610,7 +610,6 @@ if (typeof Slick === "undefined") {
         if (!$(this).hasClass('slick-header-column-sorted')) {
           $(this).find('.slick-sort-indicator').css("opacity", "0.5");
         }
-        // $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       function onMouseLeave() {
@@ -619,7 +618,6 @@ if (typeof Slick === "undefined") {
         if (!$(this).hasClass('slick-header-column-sorted')) {
           $(this).find('.slick-sort-indicator').css("opacity", "0.0");
         }
-        // $(".slick-header-column-sorted .slick-sort-indicator").css("opacity", "1.0");
       }
 
       $headers.find(".slick-header-column")
@@ -703,7 +701,11 @@ if (typeof Slick === "undefined") {
 
         if (m.sortable) {
           header.addClass("slick-header-sortable");
-          header.append("<span class='slick-sort-indicator' />");
+          // Ekohe Edit
+          // header.append("<span class='slick-sort-indicator' />");
+          var $initSortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
+          var $iconWrapper = $('<div />').addClass('slick-sort-indicator').append($initSortIcon);
+          header.append($iconWrapper);
         }
 
         trigger(self.onHeaderCellRendered, {
@@ -1304,7 +1306,8 @@ if (typeof Slick === "undefined") {
       headerColumnEls
           .removeClass("slick-header-column-sorted")
           .find(".slick-sort-indicator")
-              .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
+            .css('opacity', '0') // Ekohe Add: Use mateiral icon for sort indicators
+            .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
 
       $.each(sortColumns, function(i, col) {
         if (col.sortAsc == null) {
@@ -1312,10 +1315,24 @@ if (typeof Slick === "undefined") {
         }
         var columnIndex = getColumnIndex(col.columnId);
         if (columnIndex != null) {
+
+          // Ekohe Edit: Use mateiral icon for sort indicators
+
+          // headerColumnEls.eq(columnIndex)
+          //     .addClass("slick-header-column-sorted")
+          //     .find(".slick-sort-indicator")
+          //         .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
+
+          headerColumnEls.eq(columnIndex).find('.material-icons').remove();
+
+          var $sortIcon = $('<i class="material-icons"></i>');
+          $sortIcon.text(col.sortAsc ? 'arrow_upward' : 'arrow_downward')
           headerColumnEls.eq(columnIndex)
-              .addClass("slick-header-column-sorted")
-              .find(".slick-sort-indicator")
-                  .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
+            .addClass("slick-header-column-sorted")
+            .find(".slick-sort-indicator")
+              .css('opacity', '0.5')
+              .append($sortIcon)
+              .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
         }
       });
     }
