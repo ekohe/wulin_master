@@ -822,19 +822,21 @@
     this.offsetWith = this.boxWidth + 18;
 
     this.init = function() {
-      this.wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>");
+      this.wrapper = $('<div />').addClass('textarea-wrapper');
       this.setWrapper(this.wrapper);
       this.wrapper.appendTo($("body"));
 
-      this.textArea = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:" + this.boxWidth + "px;height:80px;border:0;outline:0'>");
+      this.textArea = $("<textarea hidefocus rows=5>").addClass('textarea-in-grid');
+      this.textArea.css('width', this.boxWidth);
       this.setElement(this.textArea);
       this.textArea.appendTo(this.wrapper);
 
-      $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
-        .appendTo(this.wrapper);
+      var $btnSave = $('<button />').text('Save').addClass('btn btn-small right');
+      var $btnCancel = $('<button />').text('Cancel').addClass('btn btn-small right');
+      $('<div />').append($btnCancel).append($btnSave).appendTo(this.wrapper);
 
-      this.wrapper.find("button:first").on("click", this.save);
-      this.wrapper.find("button:last").on("click", this.cancel);
+      $btnSave.on("click", this.save);
+      $btnCancel.on("click", this.cancel);
       this.textArea.on("keydown", this.handleKeyDown);
 
       this.position(args.position);
