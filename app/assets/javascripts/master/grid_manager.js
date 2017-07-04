@@ -176,6 +176,7 @@
 
       // Load the first page
       grid.onViewportChanged.notify();
+      $('#content-loader').remove();
 
       // Delete old grid if exsisting, then add grid
       for(var i in grids){
