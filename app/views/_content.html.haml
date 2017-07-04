@@ -1,5 +1,6 @@
 #content.valign-wrapper
-  #content-loader
+  - unless params[:screen].nil?
+    #content-loader
   #screen_content
     - begin
       = render :template => 'homepage/dashboard'
