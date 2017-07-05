@@ -2,12 +2,17 @@
   function ConnectionManager(remoteModel) {
     // Keeps all the requests available in an array
     var requests = [];
+    var $progress_bar;
 
     function createConnection(grid, url, indicator, clientOnSuccess, clientOnError, currentRequestVersionNumber) {
       var existingRequest = getConnection(url);
 
       // Just return if connection already exists.
       if (existingRequest !== null) { return; }
+
+      // Ekohe Add: Use progress bar in grid header as indicator
+      var $header = grid.container.find('.slick-header');
+      $progress_bar = $('<div class="progress"><div class="indeterminate"></div></div>').appendTo($header);
 
       var newRequest = $.ajax({url: url,
                            success: onSuccess,
@@ -17,15 +22,15 @@
 
       newRequest.clientOnSuccess = clientOnSuccess;
       newRequest.clientOnError = clientOnError;
-      newRequest.indicator = indicator;
+      // Ekohe Edit: Use progress bar in grid header as indicator
+      // newRequest.indicator = indicator;
+      newRequest.indicator = $progress_bar;
       newRequest.url = url;
       newRequest.loader = grid.loader;
       newRequest.versionNumber = currentRequestVersionNumber; // Set the version number
 
-      showIndicator(indicator);
-
-      // Ekohe Add: Show Progress Bar
-      $('<div class="progress"><div class="indeterminate"></div></div>').appendTo($('.slick-header'));
+      // Ekohe Delete: Use progress bar in grid header as indicator
+      // showIndicator(indicator);
 
       requests.push(newRequest);
     }
@@ -40,9 +45,9 @@
     }
 
     function onSuccess(data, textStatus, request) {
-      hideIndicator(request.indicator);
-      // Ekohe Add: Remove Progress Bar
-      $('.slick-header .progress').remove();
+      // Ekohe Edit: Use progress bar in grid header as indicator
+      // hideIndicator(request.indicator);
+      $progress_bar.remove();
       if (request.versionNumber < request.loader.lastRequestVersionNumber) {
         return;
       }

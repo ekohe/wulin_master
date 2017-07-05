@@ -207,8 +207,9 @@
       var url = urlData[0];
       var normalLoading = urlData[1];
 
+      // Ekohe Edit: Stop passing indicator to connection (Create progress bar as indicator in connection instead)
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
-      loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
+      // loadingIndicator.loadingSize = (pageSize === 0 ? loadingSize : pageSize);
       connectionManager.createConnection(grid, url, loadingIndicator, onSuccess, onError, currentRequestVersionNumber);
     }
 

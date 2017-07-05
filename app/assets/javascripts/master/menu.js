@@ -43,22 +43,25 @@ function loadPageForHistoryState() {
 function load_page(url) {
   $("#screen_content").empty();
 
-  var indicators = $("#activity #indicators");
-  indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
-  indicators.find("#init_menu").show();
+  // Ekohe Delete: Use screen_content_loader defined in content view as new indicator
+  // var indicators = $("#activity #indicators");
+  // indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
+  // indicators.find("#init_menu").show();
 
   $.ajax({
     type: 'GET',
     dataType: 'html',
     url: url,
     success: function(html) {
-      indicators.find("#init_menu_indicator").fadeOut();
+      // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
+      // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader').remove();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
     },
     error: function() {
-      indicators.find("#init_menu_indicator").fadeOut();
+      // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
+      // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader').remove();
       // displayErrorMessage("An error occured while trying to load page. Please try again.");
     }

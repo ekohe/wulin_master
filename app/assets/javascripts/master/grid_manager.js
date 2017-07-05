@@ -158,9 +158,10 @@
       // Load data into grid
       loader.setGrid(grid);
 
+      // Ekohe Delete: Stop setting indicator (Create progress bar as indicator in connection instead)
       // Create loading indicator on the activity panel, if not eager loading, hide the indicator
-      var isHide = (grid.options.eagerLoading === false);
-      loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
+      // var isHide = (grid.options.eagerLoading === false);
+      // loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
 
       // Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
