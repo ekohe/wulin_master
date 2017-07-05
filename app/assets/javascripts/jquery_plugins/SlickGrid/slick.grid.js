@@ -740,9 +740,6 @@ if (typeof Slick === "undefined") {
       setSortColumns(sortColumns);
       setupColumnResize();
 
-      // Ekohe Add: Processing Bar
-      $('<div class="progress"><div class="indeterminate"></div></div>').appendTo($headerScroller);
-
       if (options.enableColumnReorder) {
         setupColumnReorder();
       }

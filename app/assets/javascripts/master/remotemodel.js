@@ -260,9 +260,6 @@
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
 
-      // Stop loading effects
-      $('.slick-header .progress').remove();
-
       // Display Notification
       displayNewNotification(grid.model + ' screen loaded', 'info');
     }
