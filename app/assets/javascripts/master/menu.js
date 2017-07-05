@@ -53,12 +53,13 @@ function load_page(url) {
     url: url,
     success: function(html) {
       indicators.find("#init_menu_indicator").fadeOut();
-      $('#content-loader').remove();
+      $('#screen_content_loader').remove();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
     },
     error: function() {
       indicators.find("#init_menu_indicator").fadeOut();
+      $('#screen_content_loader').remove();
       // displayErrorMessage("An error occured while trying to load page. Please try again.");
     }
   });
