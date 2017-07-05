@@ -334,7 +334,7 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         bindAncestorScrollEvents();
-        renderLoadingGrid(); // Ekohe Add
+        renderLoadingRows({top: 0, bottom: 30}); // Ekohe Add
 
         $container
             .on("resize.slickgrid", resizeCanvas);
@@ -3730,13 +3730,12 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function renderLoadingGrid() {
+    function renderLoadingRows(range) {
       var stringArray = [];
-      var rowCount = 30;
       var colCount = $headers.children().length;
 
       // Rows
-      for (var i = 0, ii = rowCount; i < ii; i++) {
+      for (var i = range.top, ii = range.bottom; i < ii; i++) {
         var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
         stringArray.push(
           "<div class='ui-widget-content " + rowCss +
@@ -3761,7 +3760,7 @@ if (typeof Slick === "undefined") {
       var gridElement = document.createElement("div");
       gridElement.innerHTML = stringArray.join("");
 
-      for (var i = 0, ii = rowCount; i < ii; i++) {
+      for (var i = range.top, ii = range.bottom; i < ii; i++) {
         $canvas[0].appendChild(gridElement.firstChild);
       }
     }
