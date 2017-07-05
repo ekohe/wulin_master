@@ -44,7 +44,6 @@ function load_page(url) {
   $("#screen_content").empty();
 
   var indicators = $("#activity #indicators");
-  // init grid loader
   indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
   indicators.find("#init_menu").show();
 
@@ -54,6 +53,7 @@ function load_page(url) {
     url: url,
     success: function(html) {
       indicators.find("#init_menu_indicator").fadeOut();
+      $('#content-loader').remove();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
     },

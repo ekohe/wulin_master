@@ -176,7 +176,6 @@
 
       // Load the first page
       grid.onViewportChanged.notify();
-      $('#content-loader').remove();
 
       // Delete old grid if exsisting, then add grid
       for(var i in grids){
@@ -196,12 +195,11 @@
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
-      parent = gridElement.parent(".grid_container"),
-      id = parent.attr("id"),
-      title = $.trim(parent.find(".grid-header h2").text()),
-
-      indicators = $("#activity #indicators"),
-      indicator;
+          parent = gridElement.parent(".grid_container"),
+          id = parent.attr("id"),
+          title = $.trim(parent.find(".grid-header h2").text()),
+          indicators = $("#activity #indicators"),
+          indicator;
 
       if (title.length > truncateThreshold) {
         title = title.substring(0, truncateThreshold-2) + "...";
