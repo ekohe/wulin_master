@@ -34,11 +34,13 @@ h1 {
   bottom: 0;
   right: 0;
   text-align: center;
-  // background: $background_color image-url("ui/content_background.png") repeat-x top left;
+}
+
+#screen_content_loader_container {
+  margin-left: 45%;
 }
 
 #screen_content_loader {
-  margin: auto;
   border: 8px solid #f3f3f3; /* Light grey */
   border-top: 8px solid #3498db; /* Blue */
   border-radius: 50%;
@@ -55,10 +57,10 @@ h1 {
 #screen_content {
   text-align: left;
   height: 100%;
-  // width: 100%;
-  // overflow-x: auto;
-  // overflow-y: hidden;
-  // position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
 }
 
 h2 {
