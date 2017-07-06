@@ -72,9 +72,6 @@
 
       grid.updateRowCount();
 
-      // Ekohe Add: Remove loading grid
-      $('.slick-row.loading').remove();
-
       grid.render();
 
       onDataLoaded.notify();

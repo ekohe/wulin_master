@@ -334,7 +334,6 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         bindAncestorScrollEvents();
-        renderLoadingRows({top: 0, bottom: 30}); // Ekohe Add
 
         $container
             .on("resize.slickgrid", resizeCanvas);
@@ -3904,6 +3903,7 @@ if (typeof Slick === "undefined") {
       "finishInitialization": finishInitialization,
       "handleDblClick": handleDblClick,
       "makeActiveCellNormal": makeActiveCellNormal,
+      "renderLoadingRows": renderLoadingRows,
       "trigger": trigger
     });
 
