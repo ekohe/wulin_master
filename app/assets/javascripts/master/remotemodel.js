@@ -257,9 +257,6 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
-
-      // Display Notification
-      displayNewNotification(grid.model + ' screen loaded', 'info');
     }
 
     function getColumns() {
