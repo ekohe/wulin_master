@@ -27,11 +27,13 @@ discardNotification = (notification) ->
   notification.slideUp('fast', -> removeNotification())
 
 window.saveMessage = (content, type) ->
-  nowDate = new Date();
+  nowDate = new Date()
+  hour = ('0' + nowDate.getHours()).slice(-2)
+  minute = ('0' + nowDate.getMinutes()).slice(-2)
   message = {
     content: content,
     type: type || 'success',
-    time: nowDate.getHours() + ':' + nowDate.getMinutes()
+    time: hour + ':' + minute
   }
   $li = $('<li class="notification-item collection-item"></li>').prependTo($('#notification-list'))
   $icon = $('<i class="material-icons left"></i>').appendTo($li)
