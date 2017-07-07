@@ -43,10 +43,15 @@ function loadPageForHistoryState() {
 function load_page(url) {
   $("#screen_content").empty();
 
-  // Ekohe Delete: Use screen_content_loader defined in content view as new indicator
+  // Ekohe Edit: Use screen_content_loader as new indicator
+
   // var indicators = $("#activity #indicators");
   // indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
   // indicators.find("#init_menu").show();
+
+  $('<div />').attr('id', 'screen_content_loader_container')
+              .append($('<div />').attr('id', 'screen_content_loader'))
+              .prependTo($('#content'));
 
   $.ajax({
     type: 'GET',
@@ -101,9 +106,12 @@ function initialize_menu() {
     $(this).parent().addClass("active");
     // State management
     History.pushState(null, null, currentUrl);
+
+    // Ekohe Delete
     // Since History.pushState triggers statechange event which calls load_page,
     // We do not need to load_page here.
     // load_page(currentUrl);
+
     return false;
   });
 
