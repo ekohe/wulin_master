@@ -101,7 +101,9 @@ function initialize_menu() {
     $(this).parent().addClass("active");
     // State management
     History.pushState(null, null, currentUrl);
-    load_page(currentUrl);
+    // Since History.pushState triggers statechange event which calls load_page,
+    // We do not need to load_page here.
+    // load_page(currentUrl);
     return false;
   });
 
