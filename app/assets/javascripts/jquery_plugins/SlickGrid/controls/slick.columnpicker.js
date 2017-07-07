@@ -2,6 +2,7 @@
   function SlickColumnPicker(columns, grid, user_id, options) {
     var $menu;
     var columnCheckboxes;
+    var _self = this;   // Ekohe Add
 
     var defaults = {
       fadeSpeed:250
@@ -26,6 +27,20 @@
         $(this).fadeOut(options.fadeSpeed)
       });
       $menu.on("click", updateColumn);
+
+      // Ekohe Add: bind the column pick event
+      $menu.bind("click", handleColumnPick);
+      bindGrid();
+    }
+
+    // Ekohe Add: Assign the picker itself to grid
+    function bindGrid() {
+      grid.picker = _self;
+    }
+
+    // Ekohe Add: Bind the column pick event
+    function handleColumnPick(e, args) {
+      _self.onColumnsPick.notify({});
     }
 
     function destroy() {
@@ -235,6 +250,8 @@
     // Ekohe Modify: Use extend instead of return to set APIs to this
     $.extend(this, {
     // return {
+      "onColumnsPick": new Slick.Event(),                 // Ekohe Add
+
       "getMenu": getMenu,                                 // Ekohe Add
       "getColumnCheckboxes": getColumnCheckboxes,         // Ekohe Add
       "init": init,                                       // Ekohe Add
@@ -243,6 +260,7 @@
       "destroy": destroy,
       "getAllColumns": getAllColumns
     });
+
   }
 
   // Slick.Controls.ColumnPicker
