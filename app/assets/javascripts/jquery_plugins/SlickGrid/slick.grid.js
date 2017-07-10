@@ -2865,7 +2865,9 @@ if (typeof Slick === "undefined") {
           opt_editMode = (activeRow == getDataLength()) || options.autoEdit;
         }
 
-        $(activeCellNode).addClass("active");
+        // Ekohe Edit: Layput Adjust
+        // $(activeCellNode).addClass("active");
+        $(activeCellNode).addClass("active").css('height', '31px');
         $(rowsCache[activeRow].rowNode).addClass("active");
 
         // Ekohe Add: Use new parameter `column_editable` to judge if make active or not

@@ -91,12 +91,11 @@ $pager_background: #efeff0;
     margin-top: -1px;
   }
   &.editable {
-    background-color: ivory;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
   &.active {
     border: #88bcfb solid 1px;
     background-color: rgba(#c2e8ff, 0.7);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
   input[type=text]:focus:not([readonly]) {
     padding-left: .2rem;
