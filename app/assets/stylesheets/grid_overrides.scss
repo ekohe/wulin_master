@@ -110,11 +110,9 @@ $pager_background: #efeff0;
   .chzn-container {
     top: 0;
     .chzn-single {
+      box-shadow: none;
       margin-right: 4px;
       margin-bottom: 8px;
-    }
-    .chzn-single-with-drop {
-      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
     .chzn-drop {
       margin-right: 4px;
