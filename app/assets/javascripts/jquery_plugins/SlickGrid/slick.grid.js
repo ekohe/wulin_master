@@ -1077,6 +1077,7 @@ if (typeof Slick === "undefined") {
         "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
         "." + uid + " .slick-footerrow-columns { height:" + options.footerRowHeight + "px; }",
         "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
+        "." + uid + " .slick-cell.active { height:" + (rowHeight + 1) + "px; }", // Ekohe Add: Active Cell Layout
         "." + uid + " .slick-row { height:" + options.rowHeight + "px; }"
       ];
 
@@ -2866,9 +2867,7 @@ if (typeof Slick === "undefined") {
           opt_editMode = (activeRow == getDataLength()) || options.autoEdit;
         }
 
-        // Ekohe Edit: Layput Adjust
-        // $(activeCellNode).addClass("active");
-        $(activeCellNode).addClass("active").css('height', '31px');
+        $(activeCellNode).addClass("active");
         $(rowsCache[activeRow].rowNode).addClass("active");
 
         // Ekohe Add: Use new parameter `column_editable` to judge if make active or not
