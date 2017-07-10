@@ -1369,6 +1369,7 @@ if (typeof Slick === "undefined") {
       } else {
         $('#selection_info_' + self.name).html('');
         $(getActiveCellNode()).removeClass('active');
+        activeCell, activeRow = null;
       }
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
