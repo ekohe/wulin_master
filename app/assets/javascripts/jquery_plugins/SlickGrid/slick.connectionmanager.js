@@ -12,7 +12,10 @@
       // Ekohe Add: Use progress bar in grid header as indicator
       var $header = grid.container.find('.slick-header');
       var $progress_bar = $('<div class="progress"><div class="indeterminate"></div></div>').appendTo($header);
-      grid.renderLoadingRows({top: 0, bottom: 30});
+      if ($('.slick-row').length == 0) {
+        grid.renderLoadingRows({top: 0, bottom: 30});
+
+      }
       var $loadingRows = grid.container.find('.slick-row.loading');
 
       var newRequest = $.ajax({url: url,
