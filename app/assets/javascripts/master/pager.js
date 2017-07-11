@@ -1,6 +1,8 @@
 (function($) {
   function SlickGridPager(dataView, grid, $container) {
     var $status, $contextMenu;
+    // Ekohe Add
+    var $clearFilterLink;
 
     function init() {
       dataView.onPagingInfoChanged.subscribe(function(e,pagingInfo) {
@@ -56,7 +58,11 @@
     function constructPagerUI() {
       $container.empty();
       $status = $("<span class='slick-pager-status' />").appendTo($container);
+      $clearFilterLink = $("<a class='right slick-pager-clear-filter' />").appendTo($container);
       $container.children().wrapAll("<div class='slick-pager' />");
+      $clearFilterLink.on('click', function() {
+        $('.slick-header-column input').val('');
+      })
     }
 
     // Ekohe Edit: Show row count without filter
@@ -67,8 +73,16 @@
       //   $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
 
       if (pagingInfo.pageSize == 0) {
-        var rowsWithoutFilterInfo = (pagingInfo.rowsWithoutFilter <= pagingInfo.totalRows) ? '' : (' of ' + pagingInfo.rowsWithoutFilter);
-        $status.text(pagingInfo.totalRows + rowsWithoutFilterInfo + " rows found");
+        if (pagingInfo.rowsWithoutFilter <= pagingInfo.totalRows) {
+          $status.text(pagingInfo.totalRows + " rows found");
+        } else {
+          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
+        }
+        if (pagingInfo.rowsWithoutFilter != pagingInfo.totalRows) {
+          $clearFilterLink.text('X CLEAR FILTER');
+        } else {
+          $clearFilterLink.text('');
+        }
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
       }

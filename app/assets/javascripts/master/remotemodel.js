@@ -8,7 +8,7 @@
     var pageSize = 0;
     var pageNum = 0;
     var totalRows = 0;
-    var rowsWithoutFilter = 0; // Ekohe Add
+    var rowsWithoutFilter = -1; // Ekohe Add
     var data = {length:0};
     var oldData = {length:0};
     var sortcol = null;
