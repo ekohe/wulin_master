@@ -249,6 +249,8 @@
         'onFilterPanelClosed':                new Slick.Event(),
 
         // Methods
+        'trigger':                            trigger,          // Ekohe Add
+        'setCurrentFilter':                   setCurrentFilter, // Ekohe Add
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters

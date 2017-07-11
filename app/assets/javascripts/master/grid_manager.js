@@ -109,10 +109,6 @@
       // Set Loader
       loader = new WulinMaster.Data.RemoteModel(path, filters, columns);
 
-      // Set Pager
-      pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      pager = new WulinMaster.Pager(loader, grid, pagerElement);
-
       // Restore the order states to columns
       columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
       // Restore the visibility states to columns
@@ -157,6 +153,10 @@
 
       // Load data into grid
       loader.setGrid(grid);
+
+      // Set Pager
+      pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
+      pager = new WulinMaster.Pager(loader, grid, pagerElement);
 
       // Ekohe Delete: Stop setting indicator (Create progress bar as indicator in connection instead)
       // Create loading indicator on the activity panel, if not eager loading, hide the indicator

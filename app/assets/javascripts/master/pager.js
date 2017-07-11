@@ -58,10 +58,16 @@
     function constructPagerUI() {
       $container.empty();
       $status = $("<span class='slick-pager-status' />").appendTo($container);
+
+      // Ekohe Add: Clear Filter
       $clearFilterLink = $("<a class='right slick-pager-clear-filter' />").appendTo($container);
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function() {
-        $('.slick-header-column input').val('');
+        grid.container.find('.slick-header-column input').val('').focusout();
+        grid.filterPanel.updateCurrentFilters();
+        grid.filterPanel.applyCurrentFilters([]);
+        grid.filterPanel.setCurrentFilter();
+        grid.filterPanel.trigger(grid.filterPanel.onFilterLoaded, {filterData:[]});
       })
     }
 
