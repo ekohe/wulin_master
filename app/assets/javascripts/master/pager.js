@@ -60,7 +60,7 @@
       $status = $("<span class='slick-pager-status' />").appendTo($container);
 
       // Ekohe Add: Clear Filter
-      $clearFilterLink = $("<a class='right slick-pager-clear-filter' />").appendTo($container);
+      $clearFilterLink = $("<a class='right slick-pager-clear-filter' href='#' />").appendTo($container);
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function() {
         grid.container.find('.slick-header-column input').val('').focusout();
@@ -85,8 +85,10 @@
           $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
         }
         if (pagingInfo.rowsWithoutFilter != pagingInfo.totalRows) {
+          $status.addClass('with-filter');
           $clearFilterLink.text('X CLEAR FILTER');
         } else {
+          $status.removeClass('with-filter');
           $clearFilterLink.text('');
         }
       } else {

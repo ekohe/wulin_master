@@ -204,6 +204,11 @@ $pager_background: #efeff0;
   border: 0;
   background: white;
   font-size: 12px;
+  .slick-pager-status.with-filter, .slick-pager-clear-filter {
+    color: #43a047;
+    display: inline-block;
+    padding: 6px;
+  }
 }
 
 /* datapicker */
