@@ -59,11 +59,19 @@
       $container.children().wrapAll("<div class='slick-pager' />");
     }
 
+    // Ekohe Edit: Show row count without filter
     function updatePager(pagingInfo) {
-      if (pagingInfo.pageSize == 0)
-        $status.text(pagingInfo.totalRows + " rows found");
-      else
+      // if (pagingInfo.pageSize == 0)
+      //   $status.text(pagingInfo.totalRows + " rows found");
+      // else
+      //   $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
+
+      if (pagingInfo.pageSize == 0) {
+        var rowsWithoutFilterInfo = (pagingInfo.rowsWithoutFilter <= pagingInfo.totalRows) ? '' : (' of ' + pagingInfo.rowsWithoutFilter);
+        $status.text(pagingInfo.totalRows + rowsWithoutFilterInfo + " rows found");
+      } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
+      }
     }
 
     function resetPager() {

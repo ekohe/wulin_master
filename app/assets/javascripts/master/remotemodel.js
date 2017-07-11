@@ -8,6 +8,7 @@
     var pageSize = 0;
     var pageNum = 0;
     var totalRows = 0;
+    var rowsWithoutFilter = 0; // Ekohe Add
     var data = {length:0};
     var oldData = {length:0};
     var sortcol = null;
@@ -65,10 +66,15 @@
     }
 
     function dataIsLoaded(args) {
-      //for (var i = args.from; i <= args.to; i++) {
       for (var i = args.from; i < args.to; i++) {
         grid.invalidateRow(i);
       }
+
+      // Ekohe Add: Set data length without filter
+      if (grid.loader.getFilters().length == 0) {
+        grid.setDataLengthWithoutFilter(grid.getDataLength());
+      }
+      rowsWithoutFilter = grid.getDataLengthWithoutFilter();
 
       grid.updateRowCount();
 
@@ -494,7 +500,14 @@
     }
 
     function getPagingInfo() {
-      return {pageSize:pageSize, pageNum:pageNum, totalRows:totalRows};
+      // Ekohe Edit: Add rowsWithoutFilter
+      // return {pageSize:pageSize, pageNum:pageNum, totalRows:totalRows};
+      return {
+        pageSize: pageSize,
+        pageNum: pageNum,
+        totalRows: totalRows,
+        rowsWithoutFilter: rowsWithoutFilter
+      };
     }
 
     return {
