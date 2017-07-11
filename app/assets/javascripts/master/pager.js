@@ -60,7 +60,12 @@
       $status = $("<span class='slick-pager-status' />").appendTo($container);
 
       // Ekohe Add: Clear Filter
-      $clearFilterLink = $("<a class='right slick-pager-clear-filter' href='#' />").appendTo($container);
+      // $clearFilterLink = $("<a class='right slick-pager-clear-filter' href='#' />").appendTo($container);
+      $clearFilterLink = $("<a href='#' />")
+        .addClass('slick-pager-clear-filter right hide')
+        .append($('<i class="material-icons">close</i>'))
+        .append($('<span>CLEAR FILTER</span>'))
+        .appendTo($container);
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function() {
         grid.container.find('.slick-header-column input').val('').focusout();
@@ -86,10 +91,10 @@
         }
         if (pagingInfo.rowsWithoutFilter != pagingInfo.totalRows) {
           $status.addClass('with-filter');
-          $clearFilterLink.text('X CLEAR FILTER');
+          $clearFilterLink.removeClass('hide');
         } else {
           $status.removeClass('with-filter');
-          $clearFilterLink.text('');
+          $clearFilterLink.addClass('hide');
         }
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
