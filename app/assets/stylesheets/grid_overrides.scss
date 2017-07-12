@@ -1,6 +1,6 @@
 @import "base";
 
-$column_header_height: 52px;
+$column_header_height: 60px;
 $column_header_padding: 4px;
 $column_header_border_color: #dce0e2;
 
@@ -15,13 +15,18 @@ $pager_background: #efeff0;
   padding-bottom: 5px;
   .slick-header-column.input-field {
     label {
-      top: 25px;
+      top: 20px;
     }
     label.active {
       color: #43a047;
     }
     input[type=text] {
-      border-bottom-color: #43a047;
+      margin-bottom: 10px;
+      border-bottom: none;
+    }
+    input[type=text]:focus:not([readonly]) {
+      border-bottom: 1px solid #43a047;
+      box-shadow: 0 1px 0 0 #43a047;
     }
   }
   .progress {
@@ -96,12 +101,12 @@ $pager_background: #efeff0;
     background: rgba(#b6dbf1, 0.7);
     margin-top: -1px;
   }
-  &.editable {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
   &.active {
     border: #88bcfb solid 1px;
     background-color: rgba(#c2e8ff, 0.7);
+  }
+  &.editable {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
   input[type=text]:focus:not([readonly]) {
     padding-left: .2rem;
