@@ -17,6 +17,12 @@ $pager_background: #efeff0;
     label {
       top: 25px;
     }
+    label.active {
+      color: #43a047;
+    }
+    input[type=text] {
+      border-bottom-color: #43a047;
+    }
   }
   .progress {
     bottom: -0.4rem;
