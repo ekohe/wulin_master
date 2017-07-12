@@ -86,6 +86,9 @@ $pager_background: #efeff0;
   &.master_flashing {
     background-color: pink;
   }
+  &.filtered {
+    background: rgba(194, 214, 196, 0.7);;
+  }
   &.selected {
     background: rgba(#b6dbf1, 0.7);
     margin-top: -1px;

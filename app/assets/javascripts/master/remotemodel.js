@@ -70,15 +70,26 @@
         grid.invalidateRow(i);
       }
 
-      // Ekohe Add: Set data length without filter
-      if (grid.loader.getFilters().length == 0) {
-        grid.setDataLengthWithoutFilter(grid.getDataLength());
-      }
-      rowsWithoutFilter = grid.getDataLengthWithoutFilter();
-
       grid.updateRowCount();
 
       grid.render();
+
+      // Ekohe Add
+      if (grid.loader.getFilters().length == 0) {
+        grid.setDataLengthWithoutFilter(grid.getDataLength());
+      } else {
+        // Find non empty input elements on header
+        var $filteredInputs = grid.container
+          .find('.slick-header-column input[type="text"]')
+          .filter(function () { return !!this.value; });
+        // Use 'r_' class to identidy the cell
+        $.each($filteredInputs, function( index, value ) {
+          grid.container
+            .find('.slick-cell.' + value.getAttribute('data-col'))
+            .addClass('filtered');
+        });
+      }
+      rowsWithoutFilter = grid.getDataLengthWithoutFilter();
 
       onDataLoaded.notify();
     }
