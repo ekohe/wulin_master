@@ -7,6 +7,8 @@ require 'jquery-ui-rails'
 require 'coffee-rails'
 require 'sass-rails'
 require 'responders'
+require 'materialize-sass'
+require 'material_icons'
 
 module WulinMaster
   @javascripts = ['application.js']
