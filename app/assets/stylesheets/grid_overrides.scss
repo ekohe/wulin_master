@@ -5,6 +5,7 @@ $column_header_padding: 4px;
 $column_header_border_color: #dce0e2;
 
 $filter_green: #4CAF50;
+$grid_border_color: #E0E0E0;
 
 $odd_row_background: $menu_background_color;
 $selected_row_background: #fedecf;
@@ -14,7 +15,7 @@ $pager_background: #efeff0;
 /* Grid Column Headers */
 
 .slick-header.ui-state-default {
-  border-bottom: 1px solid silver;
+  border-bottom: 1px solid $grid_border_color;
 }
 
 .slick-header {
@@ -81,6 +82,7 @@ $pager_background: #efeff0;
 .slick-cell {
   font-size: 12px;
   line-height: 25px;
+  border-bottom-color: $grid_border_color;
   .editor-text {
     background: none repeat scroll 0 0 transparent;
     height: 100%;
@@ -94,7 +96,7 @@ $pager_background: #efeff0;
     background-color: pink;
   }
   &.selected {
-    background: rgba(#b6dbf1, 0.7);
+    background: #E3F2FD;
   }
   &.active {
     margin-top: -1px;
@@ -132,13 +134,13 @@ $pager_background: #efeff0;
 }
 
 .slick-row.loading {
-  border-bottom: 1px solid silver;
+  border-bottom: 1px solid $grid_border_color;
   .slick-cell.loading {
     border: none;
   }
 }
 
-.slick-row.even {
+.ui-widget-content.slick-row.even {
   .slick-cell.loading {
     background: linear-gradient(to right, #f7f7f7 8%, #ecf2f4 18%, #f7f7f7 33%);
   }
@@ -150,7 +152,8 @@ $pager_background: #efeff0;
   }
 }
 
-.slick-row.odd {
+.ui-widget-content.slick-row.odd {
+  background: #F5F5F5;
   .slick-cell.loading {
     background: linear-gradient(to right, #e5e3e9 8%, #dddddd 18%, #e5e3e9 33%);
   }
