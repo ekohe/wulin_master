@@ -1367,12 +1367,19 @@ if (typeof Slick === "undefined") {
 
       // Ekohe Add: Show selection info on grid header
       var itemCount = getSelectedRows().length;
+      var $gridContainer = $container.parent();
+      var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-        $('#selection_info_' + self.name).html(itemInfo + ' selected. X CLEAR');
-        $('.toolbar-select').removeClass('hide');
+        $gridContainer.find('.selection-info').text(itemInfo + ' selected. X CLEAR');
+        $gridContainer.find('.toolbar-select').removeClass('hide');
+        if (itemCount > 1) {
+          $gridHeader.addClass('multi-selected');
+        } else {
+          $gridHeader.removeClass('multi-selected');
+        }
       } else {
-        $('#selection_info_' + self.name).html('');
+        $gridContainer.find('.selection-info').text('');
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
       }

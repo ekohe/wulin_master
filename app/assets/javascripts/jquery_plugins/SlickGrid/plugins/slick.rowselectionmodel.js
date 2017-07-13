@@ -32,8 +32,9 @@
           wrapHandler(handleClick));
 
       // Ekohe Add: Clear row selection
-      $('#selection_info_' + grid.name).click( function() {
-        $('.toolbar-select').addClass('hide');
+      grid.container.find('.selection-info').on('click', function() {
+        grid.container.find('.toolbar-select').addClass('hide');
+        grid.container.find('.grid-header').removeClass('multi-selected');
         _self.onSelectedRangesChanged.notify([]);
       })
     }
