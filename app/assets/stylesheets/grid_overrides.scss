@@ -99,7 +99,7 @@ $pager_background: #efeff0;
   &.active {
     margin-top: -1px;
     border: #88bcfb solid 1px;
-    background-color: rgba(#c2e8ff, 0.7) !important;
+    background-color: rgba(#c2e8ff, 0.7);
   }
   &.editable {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -143,7 +143,10 @@ $pager_background: #efeff0;
     background: linear-gradient(to right, #f7f7f7 8%, #ecf2f4 18%, #f7f7f7 33%);
   }
   .slick-cell.filtered {
-    background: rgba(232, 245, 233, 1.0);
+    background: #E8F5E9;
+  }
+  .slick-cell.filtered.selected {
+    background: #CEE8E7;
   }
 }
 
@@ -152,7 +155,10 @@ $pager_background: #efeff0;
     background: linear-gradient(to right, #e5e3e9 8%, #dddddd 18%, #e5e3e9 33%);
   }
   .slick-cell.filtered {
-    background: rgba(222, 235, 223, 1.0);
+    background: #DEEBDF;
+  }
+  .slick-cell.filtered.selected {
+    background: #CEE8E7;
   }
 }
 
