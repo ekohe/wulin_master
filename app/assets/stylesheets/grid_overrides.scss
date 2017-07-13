@@ -1,6 +1,6 @@
 @import "base";
 
-$column_header_height: 60px;
+$column_header_height: 54px;
 $column_header_padding: 4px;
 $column_header_border_color: #dce0e2;
 
@@ -10,6 +10,10 @@ $selected_row_background: #fedecf;
 $pager_background: #efeff0;
 
 /* Grid Column Headers */
+
+.slick-header.ui-state-default {
+  border-bottom: 1px solid silver;
+}
 
 .slick-header {
   padding-bottom: 5px;
@@ -21,8 +25,9 @@ $pager_background: #efeff0;
       color: #43a047;
     }
     input[type=text] {
-      margin-bottom: 10px;
+      margin-bottom: none;
       border-bottom: none;
+      height: 40px;
     }
     input[type=text]:focus:not([readonly]) {
       border-bottom: 1px solid #43a047;
@@ -41,15 +46,10 @@ $pager_background: #efeff0;
   position: relative;
 }
 
-// .slick-header-column.ui-state-default.ui-state-hover {
-//   background: #efeff0;
-// }
-
 .ui-state-default.slick-header-column.slick-header-column-sorted {
   font-style: normal;
 }
 
-// .slick-sort-indicator,.slick-sort-indicator-desc,.slick-sort-indicator-asc {
 .slick-sort-indicator {
   display: block;
   position: absolute;
@@ -72,12 +72,6 @@ $pager_background: #efeff0;
 
 /* Grid Rows Headers */
 
-//.ui-widget-content.slick-row.even,.ui-widget-content.slick-row.odd
-
-.slick-row.ui-widget-content {
-  border-top: 1px solid #babfce;
-}
-
 .ui-widget-content.slick-row.odd {
   background: $odd_row_background;
 }
@@ -99,11 +93,11 @@ $pager_background: #efeff0;
   }
   &.selected {
     background: rgba(#b6dbf1, 0.7);
-    margin-top: -1px;
   }
   &.active {
+    margin-top: -1px;
     border: #88bcfb solid 1px;
-    background-color: rgba(#c2e8ff, 0.7);
+    background-color: rgba(#c2e8ff, 0.7) !important;
   }
   &.editable {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
