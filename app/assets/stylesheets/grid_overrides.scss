@@ -4,6 +4,8 @@ $column_header_height: 54px;
 $column_header_padding: 4px;
 $column_header_border_color: #dce0e2;
 
+$filter_green: #4CAF50;
+
 $odd_row_background: $menu_background_color;
 $selected_row_background: #fedecf;
 
@@ -21,17 +23,17 @@ $pager_background: #efeff0;
     label {
       top: 20px;
     }
-    label.active {
-      color: #43a047;
-    }
     input[type=text] {
       margin-bottom: none;
       border-bottom: none;
       height: 40px;
     }
     input[type=text]:focus:not([readonly]) {
-      border-bottom: 1px solid #43a047;
-      box-shadow: 0 1px 0 0 #43a047;
+      border-bottom: 1px solid $filter_green;
+      box-shadow: 0 1px 0 0 $filter_green;
+    }
+    input[type=text]:focus:not([readonly]) + label {
+      color: $filter_green;
     }
   }
   .progress {
@@ -222,12 +224,12 @@ $pager_background: #efeff0;
   background: white;
   font-size: 12px;
   .slick-pager-status.with-filter, .slick-pager-clear-filter {
-    color: #43a047;
+    color: $filter_green;
     display: inline-block;
-    padding: 6px;
+    padding: 6px 15px 6px 15px;
     .material-icons {
       font-size: 16px;
-      padding: 1px 5px 0 0;
+      padding-top: 1px;
     }
     span {
       float: right;
