@@ -19,13 +19,15 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency 'rails', '~> 5.1.0'
-  s.add_runtime_dependency 'jquery-rails'
-  s.add_runtime_dependency 'jquery-ui-rails'
-  s.add_runtime_dependency 'haml-rails'
-  s.add_runtime_dependency 'coffee-rails'
-  s.add_runtime_dependency 'sass-rails'
-  s.add_runtime_dependency 'responders'
+  s.add_dependency 'rails', '~> 5.1.0'
+  s.add_dependency 'jquery-rails'
+  s.add_dependency 'jquery-ui-rails'
+  s.add_dependency 'haml-rails'
+  s.add_dependency 'coffee-rails'
+  s.add_dependency 'sass-rails'
+  s.add_dependency 'responders'
+  s.add_dependency 'materialize-sass'
+  s.add_dependency 'material_icons'
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'spring'
   s.add_development_dependency 'spring-commands-rspec'
