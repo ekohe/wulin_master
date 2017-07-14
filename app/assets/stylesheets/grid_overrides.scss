@@ -15,11 +15,11 @@ $pager_background: #efeff0;
 /* Grid Column Headers */
 
 .slick-header.ui-state-default {
-  border-bottom: 1px solid $grid_border_color;
-  padding-top: 5px;
+  // border-bottom: 1px solid $grid_border_color;
 }
 
 .slick-header {
+  padding-top: 5px;
   padding-bottom: 5px;
   .slick-header-column.input-field {
     label {
@@ -202,6 +202,7 @@ $pager_background: #efeff0;
 
 .grid-canvas {
   background: white;
+  border-top: 1px solid $grid_border_color;
   .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     color: white;
   }
