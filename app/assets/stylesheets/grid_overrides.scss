@@ -110,12 +110,12 @@ $pager_background: #efeff0;
     box-shadow: none;
     font-size: .9rem;
   }
-  input[type=text]:not(.browser-defaul) {
+  input[type=text]:not(.browser-default) {
     height: 100%;
     margin-bottom: 5px;
   }
   .autocomplete-content {
-    margin-top: 5px;
+    margin-top: 2px;
     margin-left: -2px;
     width: 102%;
   }
@@ -131,6 +131,7 @@ $pager_background: #efeff0;
       margin-left: -2px;
     }
     .chzn-choices {
+      margin-bottom: -5px;
       box-shadow: none;
     }
   }
