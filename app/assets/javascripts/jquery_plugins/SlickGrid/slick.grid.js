@@ -1081,7 +1081,6 @@ if (typeof Slick === "undefined") {
         "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
         "." + uid + " .slick-footerrow-columns { height:" + options.footerRowHeight + "px; }",
         "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
-        "." + uid + " .slick-cell.active { height:" + (rowHeight + 1) + "px; }",   // Ekohe Add
         "." + uid + " .slick-row { height:" + options.rowHeight + "px; }"
       ];
 
