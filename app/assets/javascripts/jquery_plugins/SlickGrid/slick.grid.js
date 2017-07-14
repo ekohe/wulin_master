@@ -704,7 +704,7 @@ if (typeof Slick === "undefined") {
 
         if (m.sortable) {
           header.addClass("slick-header-sortable");
-          // Ekohe Edit
+          // Ekohe Edit: Use material icon for sort indicator
           // header.append("<span class='slick-sort-indicator' />");
           var $initSortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
           var $iconWrapper = $('<div />').addClass('slick-sort-indicator').append($initSortIcon);

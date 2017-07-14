@@ -26,14 +26,19 @@ var Ui = {
     });
   },
 
-  // Check if filter panel is open
+  // Check if filter panel is open (Not in use since Material Design implementation)
   filterPanelOpen: function() {
     return ($('.slick-headerrow-columns:visible').size() > 0 && $( document.activeElement ).parent().attr('class') === 'slick-headerrow-columns');
   },
 
+  // Check if the grid is being filtered
+  isFiltering: function() {
+    return $(document.activeElement).parent().hasClass('slick-header-column');
+  },
+
   // Check if can add or delete records
   addOrDeleteLocked: function() {
-    return this.isEditing() || this.isOpen() || this.filterPanelOpen();
+    return this.isEditing() || this.isOpen() || this.isFiltering();
   },
 
   // Select grid names
