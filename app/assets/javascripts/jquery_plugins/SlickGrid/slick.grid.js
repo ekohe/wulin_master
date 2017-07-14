@@ -1872,12 +1872,14 @@ if (typeof Slick === "undefined") {
 
     function getViewportHeight() {
       return parseFloat($.css($container[0], "height", true)) -
-          parseFloat($.css($container[0], "paddingTop", true)) -
-          parseFloat($.css($container[0], "paddingBottom", true)) -
-          parseFloat($.css($headerScroller[0], "height")) - getVBoxDelta($headerScroller) -
-          (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -
-          (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0) -
-          (options.createFooterRow && options.showFooterRow ? options.footerRowHeight + getVBoxDelta($footerRowScroller) : 0);
+        parseFloat($.css($container[0], "paddingTop", true)) -
+        parseFloat($.css($container[0], "paddingBottom", true)) -
+        // Ekohe Edit
+        // parseFloat($.css($headerScroller[0], "height", true)) - getVBoxDelta($headerScroller) -
+        parseFloat($.css($headers[0], "height", true)) - getVBoxDelta($headerScroller) -
+        (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -
+        (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0) -
+        (options.createFooterRow && options.showFooterRow ? options.footerRowHeight + getVBoxDelta($footerRowScroller) : 0);
     }
 
     function resizeCanvas() {
