@@ -1,4 +1,4 @@
-- if grid.action_names.include?('add') || grid.action_names.include?('hotkey_add')
+- if grid.action_names.include?('create') || grid.action_names.include?('hotkey_create')
   :ruby
     model_name = grid.model.model_name.singular
     columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }

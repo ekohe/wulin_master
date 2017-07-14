@@ -6,7 +6,7 @@ module WulinMaster
 
     included do
       ORIGINAL_ACTIONS = %w(create delete edit filter)
-      SENSITIVE_ACTIONS = %w(create delete edit hotkey_add hotkey_delete)
+      SENSITIVE_ACTIONS = %w(create delete edit hotkey_create hotkey_delete)
 
       class << self
         attr_reader :actions_pool
@@ -52,8 +52,8 @@ module WulinMaster
 
       def add_hotkey_action(action_name, action_options)
         action_name = action_name.to_s
-        if (action_name == 'add') && !actions_pool.find { |x| x[:name].to_s == 'hotkey_add' }
-          actions_pool << {name: :hotkey_add, visible: false}.merge(action_options)
+        if (action_name == 'create') && !actions_pool.find { |x| x[:name].to_s == 'hotkey_create' }
+          actions_pool << {name: :hotkey_create, visible: false}.merge(action_options)
         elsif (action_name == 'delete') && !actions_pool.find { |x| x[:name].to_s == 'hotkey_delete' }
           actions_pool << {name: :hotkey_delete, visible: false}.merge(action_options)
         end

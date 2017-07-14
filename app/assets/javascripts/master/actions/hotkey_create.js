@@ -1,8 +1,8 @@
-// Hotkey 'C' to add record
+// Hotkey 'C' to create record
 
-WulinMaster.actions.HotkeyAdd = $.extend({}, WulinMaster.actions.BaseAction, {
-  name: 'hotkey_add',
-  event: 'keypress.add',
+WulinMaster.actions.HotkeyCreate = $.extend({}, WulinMaster.actions.BaseAction, {
+  name: 'hotkey_create',
+  event: 'keypress.create',
   triggerElementIdentifier: '.grid_container',
 
   handler: function(e, args) {
@@ -27,5 +27,4 @@ WulinMaster.actions.HotkeyAdd = $.extend({}, WulinMaster.actions.BaseAction, {
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyAdd);
-
+WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyCreate);
