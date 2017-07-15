@@ -3,7 +3,11 @@
     - begin
       = render :template => 'homepage/dashboard'
     - rescue
-  #confirm_dialog.ui-state-highlight{:style => "display: none;", :title => "Confirmation"}
-    %h4
-      %span.ui-icon.ui-icon-alert{:style => "float: left; margin-right: .2em;"}
-      #confirm_content="Are you sure to do this ?"
+
+#confirm-modal.modal
+  .modal-content
+    %h5 Confirmation
+    #confirm-content Are you sure to do this ?
+  .modal-footer
+    #confirmed-btn.btn.right Yes
+    .modal-close.btn-flat No
