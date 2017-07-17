@@ -93,8 +93,14 @@ form {
 
 #confirm-modal {
   width: 400px;
+  .modal-footer {
+    padding-right: 25px;
+    .btn, .btn-flat {
+      margin-left: 15px;
+    }
+  }
 }
 
 #confirm-content {
-  font-size: 1rem;  
+  font-size: 1rem;
 }
