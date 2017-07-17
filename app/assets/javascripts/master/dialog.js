@@ -7,33 +7,24 @@ function displayErrorMessage(message, title, width) {
     message = "An unexpected error occured.";
   if (width === undefined)
     width = 300;
-    
-  dialogId = "dialog_"+dialogIndex;
-  
-  dialogHtml = $("<div/>").
-                  attr('id', dialogId).
-                  attr('title', title).
-                  append("<h4>").
-                  append('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>').
-                  append(message).
-                  append("</h4>").
-                  addClass('ui-state-highlight').
-                  css('display', 'none');
-  
-  $('body').append(dialogHtml);
 
-  $('#'+dialogId).dialog({
-    autoOpen: true,
-    width: width,
-    buttons: {
-      "Ok": function() {
-        $(this).dialog("destroy");
-      }
-    },
-    modal: true
-  });
-  
-  dialogIndex++;
+  var $content = $('<div/>')
+    .addClass('modal-content')
+    .append($('<h5/>').text(title).addClass('modal-title'))
+    .append($('<div/>').text(message).addClass('modal-message'));
+  var $footer = $('<div/>')
+    .addClass('modal-footer')
+    .append($('<div/>').text('OK').addClass('btn right modal-close'));
+
+  var $errorModal = $("<div/>")
+    .attr('title', title)
+    .addClass('modal info-modal')
+    .append($content)
+    .append($footer)
+    .appendTo($('body'));
+
+  $('.modal').modal('close');
+  $errorModal.modal('open');
 }
 
 function displayConfirmationDialog(message, title, confirmCallback, cancelCallback) {
@@ -45,9 +36,9 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
     confirmCallback = function() {};
   if (cancelCallback === undefined)
     cancelCallback = function() {};
-    
+
   dialogId = "dialog_"+dialogIndex;
-  
+
   dialogHtml = $("<div/>").
                   attr('id', dialogId).
                   attr('title', title).
@@ -56,7 +47,7 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
                   append("</h4>").
                   addClass('ui-state-highlight').
                   css('display', 'none');
-  
+
   $('body').append(dialogHtml);
 
   $('#'+dialogId).dialog({
@@ -73,6 +64,6 @@ function displayConfirmationDialog(message, title, confirmCallback, cancelCallba
     },
     modal: true
   });
-  
+
   dialogIndex++;
 }

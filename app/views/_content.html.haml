@@ -4,10 +4,10 @@
       = render :template => 'homepage/dashboard'
     - rescue
 
-#confirm-modal.modal
+#confirm-modal.info-modal.modal
   .modal-content
-    %h5 Confirmation
-    #confirm-content Are you sure to do this ?
+    %h5.modal-title Confirmation
+    #confirm-content.modal-message Are you sure to do this ?
   .modal-footer
     #confirmed-btn.btn.right Yes
     .modal-close.btn-flat.waves-effect No

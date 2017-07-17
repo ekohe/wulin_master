@@ -91,16 +91,18 @@ form {
   }
 }
 
-#confirm-modal {
+.info-modal {
   width: 400px;
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  .modal-message {
+    font-size: 1rem;
+  }
   .modal-footer {
     padding-right: 25px;
     .btn, .btn-flat {
       margin-left: 15px;
     }
   }
-}
-
-#confirm-content {
-  font-size: 1rem;
 }
