@@ -74,8 +74,20 @@ WulinMaster.actions.BaseAction = {
     });
   },
 
+  // Handle delete confirm with dialog
+  deleteGridRecords: function(grid, ids) {
+    var self = this;
+    $('#confirm-modal').modal('open');
+    $('#confirmed-btn').on('click', function() {
+      Requests.deleteByAjax(grid, ids);
+      $('#confirm-modal').modal('close');
+      // reload the master grid (for dettach detail action)
+      if(self.reload_master && grid.master_grid) {
+        grid.master_grid.loader.reloadData();
+      }
+    })
+  },
+
   // override this to define what the action to do
   handler: $.noop
 };
-
-
