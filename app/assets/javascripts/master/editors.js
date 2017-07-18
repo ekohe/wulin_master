@@ -64,11 +64,6 @@
     },
   });
 
-  this.isCodeNameColumn = function(source, field) {
-    return (source === 'code' || source === 'name') &&
-           (field['code'] && field['name']);
-  };
-
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
   ///////////////////////////////////////////////////////////////////////////
@@ -572,7 +567,6 @@
   function RelationEditor(args) {
     SelectElementEditor.call(this, args);
 
-    // this.source = this.column.source || 'name';
     this.source = this.column.editor.source || this.column.source || 'name';
     this.addOptionText = 'Add new Option';
     this.arrOptions = [];
@@ -632,7 +626,6 @@
     };
 
     this.getOptions = function() {
-
       // dynamic filter by other relational column
       if (this.args.column.depend_column) {
         var relation_id = this.args.item[this.args.column.depend_column].id;
@@ -647,19 +640,11 @@
     this.setOptions = function(dateset) {
       $.each(dateset, function(index, value) {
         if (!this.field || this.field.id != value.id) {
-          // if (window.isCodeNameColumn(this.source, this.field)) {
-          //   this.arrOptions.push(
-          //     "<option value='" + value.id + "'>" +
-          //     value['code'] + ": " + value['name'] +
-          //     "</option>"
-          //   );
-          // } else {
-            this.arrOptions.push(
-              "<option value='" + value.id + "'>" +
-              value[this.source] +
-              "</option>"
-            );
-          // }
+          this.arrOptions.push(
+            "<option value='" + value.id + "'>" +
+            value[this.source] +
+            "</option>"
+          );
         }
       }.bind(this));
       this.select.append(this.arrOptions.join(''));
@@ -667,19 +652,11 @@
     };
 
     this.appendOptions = function(target, value) {
-      // if (window.isCodeNameColumn(this.source, this.field)) {
-      //   target.append(
-      //     "<option value='" + value.id + "'>" +
-      //     value['code'] + ": " + value['name'] +
-      //     "</option>"
-      //   );
-      // } else {
-        target.append(
-          "<option value='" + value.id + "'>" +
-          value[this.source] +
-          "</option>"
-        );
-      // }
+      target.append(
+        "<option value='" + value.id + "'>" +
+        value[this.source] +
+        "</option>"
+      );
     };
   }
 
