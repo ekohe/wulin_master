@@ -58,8 +58,10 @@
 
         // 1. append editor
 
-        if (columns[i].editor) {
+        if (typeof columns[i].editor === 'string') {
           columns[i].editor = eval(columns[i].editor);
+        } else if (typeof columns[i].editor === 'object') {
+          columns[i].editor = columns[i].editor;
         } else if (columns[i].distinct) {
           columns[i].editor = DistinctEditor;
         } else {
@@ -260,6 +262,7 @@
       "grids": grids,
 
       // methods
+      "getEditorForType": getEditorForType,
       "createNewGrid": createNewGrid,
       "getGrid": getGrid,
       "resizeGrids": resizeGrids,

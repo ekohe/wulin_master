@@ -1615,8 +1615,12 @@ if (typeof Slick === "undefined") {
       var columnMetadata = rowMetadata && rowMetadata.columns;
 
       // Ekohe Add: Support to specify editor type
-      if (column.editor.type) {
-        return eval(column.editor.type)
+      if (typeof column.editor === 'object') {
+        if (column.editor.type) {
+          return eval(column.editor.type);
+        } else {
+          return gridManager.getEditorForType(column.type);
+        }
       }
 
       if (columnMetadata && columnMetadata[column.id] && columnMetadata[column.id].editor !== undefined) {
