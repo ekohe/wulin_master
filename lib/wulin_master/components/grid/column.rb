@@ -281,18 +281,15 @@ module WulinMaster
 
     # Returns the json for the object in argument
     def json(object)
+      reflection_obj = {}
       case association_type.to_s
       when 'belongs_to'
         association_object = object.send(@options[:through] || name)
         editor_source = @options[:editor][:source]
-        if editor_source
-          {reflection.name => {:id => object.send(foreign_key),
-                               source => format(association_object.try(:send, source)),
-                               editor_source => format(association_object.try(:send, editor_source))}}
-        else
-          {reflection.name => {:id => object.send(foreign_key),
-                               source => format(association_object.try(:send, source))}}
-        end
+        reflection_obj[:id] = object.send(foreign_key)
+        reflection_obj[source] = format(association_object.try(:send, source))
+        reflection_obj[editor_source] = format(association_object.try(:send, editor_source)) if editor_source
+        { reflection.name => reflection_obj }
       when 'has_one'
         association_object = object.send(@options[:through] || name)
         if [:name, :code].include?(source.to_sym)
