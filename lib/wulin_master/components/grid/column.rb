@@ -283,7 +283,7 @@ module WulinMaster
     def json(object)
       reflection_info = {}
       association_object = object.send(@options[:through] || name)
-      editor_source = @options[:editor][:source] if @options[:editor]
+      editor_source = @options[:editor][:source] if @options[:editor].is_a?(Hash)
 
       if reflection
         reflection_info[:id] = association_object.try(:id)
