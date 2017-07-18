@@ -346,6 +346,12 @@
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
+    if (!!this.column.editor.source) {
+      var match = /^.*(source=.*)$/igm.exec(this.column.choices);
+      var grid_source = match[1];
+      this.choices = this.column.choices.replace(grid_source, 'source=' + this.column.editor.source);
+    }
+
     this.field = this.args.item[this.column.field];
 
     // find originColumn
@@ -566,7 +572,8 @@
   function RelationEditor(args) {
     SelectElementEditor.call(this, args);
 
-    this.source = this.column.source || 'name';
+    // this.source = this.column.source || 'name';
+    this.source = this.column.editor.source || this.column.source || 'name';
     this.addOptionText = 'Add new Option';
     this.arrOptions = [];
     this.relationColumn = (this.column.type === 'has_and_belongs_to_many') || (this.column.type === 'has_many');
@@ -640,19 +647,19 @@
     this.setOptions = function(dateset) {
       $.each(dateset, function(index, value) {
         if (!this.field || this.field.id != value.id) {
-          if (window.isCodeNameColumn(this.source, this.field)) {
-            this.arrOptions.push(
-              "<option value='" + value.id + "'>" +
-              value['code'] + ": " + value['name'] +
-              "</option>"
-            );
-          } else {
+          // if (window.isCodeNameColumn(this.source, this.field)) {
+          //   this.arrOptions.push(
+          //     "<option value='" + value.id + "'>" +
+          //     value['code'] + ": " + value['name'] +
+          //     "</option>"
+          //   );
+          // } else {
             this.arrOptions.push(
               "<option value='" + value.id + "'>" +
               value[this.source] +
               "</option>"
             );
-          }
+          // }
         }
       }.bind(this));
       this.select.append(this.arrOptions.join(''));
@@ -660,19 +667,19 @@
     };
 
     this.appendOptions = function(target, value) {
-      if (window.isCodeNameColumn(this.source, this.field)) {
-        target.append(
-          "<option value='" + value.id + "'>" +
-          value['code'] + ": " + value['name'] +
-          "</option>"
-        );
-      } else {
+      // if (window.isCodeNameColumn(this.source, this.field)) {
+      //   target.append(
+      //     "<option value='" + value.id + "'>" +
+      //     value['code'] + ": " + value['name'] +
+      //     "</option>"
+      //   );
+      // } else {
         target.append(
           "<option value='" + value.id + "'>" +
           value[this.source] +
           "</option>"
         );
-      }
+      // }
     };
   }
 

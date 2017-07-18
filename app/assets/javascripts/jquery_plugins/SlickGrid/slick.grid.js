@@ -2994,7 +2994,9 @@ if (typeof Slick === "undefined") {
       getEditorLock().activate(editController);
       $(activeCellNode).addClass("editable");
 
-  	  var useEditor = editor || getEditor(activeRow, activeCell);
+      // Ekohe Edit: Add source info to editor's definition
+  	  // var useEditor = editor || getEditor(activeRow, activeCell);
+      var useEditor = editor || eval(getEditor(activeRow, activeCell).type);
 
       // don't clear the cell if a custom editor is passed through
       if (!editor && !useEditor.suppressClearOnEdit) {
