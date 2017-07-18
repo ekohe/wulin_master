@@ -1614,6 +1614,11 @@ if (typeof Slick === "undefined") {
       var rowMetadata = data.getItemMetadata && data.getItemMetadata(row);
       var columnMetadata = rowMetadata && rowMetadata.columns;
 
+      // Ekohe Add: Support to specify editor type
+      if (column.editor.type) {
+        return eval(column.editor.type)
+      }
+
       if (columnMetadata && columnMetadata[column.id] && columnMetadata[column.id].editor !== undefined) {
         return columnMetadata[column.id].editor;
       }
@@ -2994,9 +2999,7 @@ if (typeof Slick === "undefined") {
       getEditorLock().activate(editController);
       $(activeCellNode).addClass("editable");
 
-      // Ekohe Edit: Add source info to editor's definition
-  	  // var useEditor = editor || getEditor(activeRow, activeCell);
-      var useEditor = editor || eval(getEditor(activeRow, activeCell).type);
+  	  var useEditor = editor || getEditor(activeRow, activeCell);
 
       // don't clear the cell if a custom editor is passed through
       if (!editor && !useEditor.suppressClearOnEdit) {

@@ -281,24 +281,21 @@ module WulinMaster
 
     # Returns the json for the object in argument
     def json(object)
-      reflection_obj = {}
+      reflection_info = {}
+      association_object = object.send(@options[:through] || name)
+      editor_source = @options[:editor][:source] if @options[:editor]
+
+      if reflection
+        reflection_info[:id] = association_object.try(:id)
+        reflection_info[source] = format(association_object.try(:send, source))
+        reflection_info[editor_source] = format(association_object.try(:send, editor_source)) if editor_source
+      end
+
       case association_type.to_s
       when 'belongs_to'
-        association_object = object.send(@options[:through] || name)
-        editor_source = @options[:editor][:source]
-        reflection_obj[:id] = object.send(foreign_key)
-        reflection_obj[source] = format(association_object.try(:send, source))
-        reflection_obj[editor_source] = format(association_object.try(:send, editor_source)) if editor_source
-        { reflection.name => reflection_obj }
+        { reflection.name => reflection_info }
       when 'has_one'
-        association_object = object.send(@options[:through] || name)
-        if [:name, :code].include?(source.to_sym)
-          {reflection.name => {:id => association_object.try(:id),
-                               :name => format(association_object.try(:name)),
-                               :code => format(association_object.try(:code))}}
-        else
-          {reflection.name => {:id => association_object.try(:id), source => format(association_object.try(:send, source))}}
-        end
+        { reflection.name => reflection_info }
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(reflection.name.to_s))}
       when 'has_many'
