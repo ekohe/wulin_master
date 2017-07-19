@@ -10,7 +10,6 @@
       });
 
       constructPagerUI();
-      $status.text('Loading...');
     }
 
     function getNavState() {

@@ -16,6 +16,7 @@
       if ($('.slick-row').length == 0) {
         grid.renderLoadingRows({top: 0, bottom: 30});
       }
+      grid.container.find('.slick-pager-status').text('Loading...');
       var $loadingRows = grid.container.find('.slick-row.loading');
 
       var newRequest = $.ajax({url: url,

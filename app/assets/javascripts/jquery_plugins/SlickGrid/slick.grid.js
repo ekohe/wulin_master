@@ -202,7 +202,7 @@ if (typeof Slick === "undefined") {
     var oldProps = [];
 
     // Ekohe Add
-    var dataLengthWithoutFilter = 0;
+    var dataLengthWithoutFilter = -1;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization

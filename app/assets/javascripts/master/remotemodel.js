@@ -45,7 +45,7 @@
     function setGrid(newGrid) {
       grid = newGrid;
 
-      //  Connect the grid and the loader
+      // Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
         // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
@@ -75,7 +75,12 @@
       grid.render();
 
       // Ekohe Add
-      if (grid.loader.getFilters().length == 0) {
+      var filterCount = grid.container
+        .find('.slick-header-column input:text')
+        .filter(function() { return $(this).val() != ""; })
+        .length;
+
+      if (filterCount == 0) {
         grid.setDataLengthWithoutFilter(grid.getDataLength());
       } else {
         // Find non empty input elements on header
