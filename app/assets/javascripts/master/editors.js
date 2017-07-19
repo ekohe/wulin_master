@@ -341,7 +341,7 @@
     BaseEditor.call(this, args);
 
     this.choices = this.column.choices;
-    if (!!this.column.editor.source) {
+    if (this.column.editor.source) {
       var match = /^.*(source=.*)$/igm.exec(this.column.choices);
       var grid_source = match[1];
       this.choices = this.column.choices.replace(grid_source, 'source=' + this.column.editor.source);

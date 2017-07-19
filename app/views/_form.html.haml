@@ -20,6 +20,7 @@
           label = column.options[:form_label] || column.label
           _klass = model_name.classify
           field = column.options[:through] || column.name
+          source = column.editor_source || column.source
         .field{:name => column_name}
           %label{:for => "#{model_name}_#{column_name}"}= label
           - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
@@ -29,7 +30,7 @@
               :class             => 'chzn-select',                          |
               :disabled          => column.options[:auto_fill],             |
               "data-required"    => column.presence_required?,              |
-              "data-source"      => column.source,                          |
+              "data-source"      => source,                                 |
               "data-target"      => "#{column_name}_target_flag",           |
               "data-field"       => field                                   |
 
@@ -40,7 +41,7 @@
               :multiple          => true,                                    |
               :class             => 'chzn-select',                           |
               "data-required"    => column.presence_required?,               |
-              "data-source"      => column.source,                           |
+              "data-source"      => source,                                  |
               "data-target"      => "#{column_name}_target_flag",            |
               "data-field"       => field,                                   |
               :disabled          => column.options[:auto_fill]               |
@@ -53,7 +54,7 @@
               :include_blank     => !column.presence_required?,             |
               "data-required"    => column.presence_required?,              |
               "data-target"      => "#{column_name}_target_flag",           |
-              "data-source"      => column.source,                          |
+              "data-source"      => source,                                 |
               "data-field"       => field                                   |
             - if (column.options[:depend_column].present?)
               :javascript

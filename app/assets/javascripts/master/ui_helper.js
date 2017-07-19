@@ -96,16 +96,6 @@ var Ui = {
         modal: true,
         create: function(event, ui) {
           Ui.setupForm(grid, false);
-          $(".create_form .field").addClass('input-field');
-          $(".ui-dialog-titlebar").hide();
-          $(".ui-resizable-handle").hide();
-          $(".chzn-container").width('100%');
-          $(".chzn-drop").width('100%');
-          $(".chzn-search input").width('94%');
-          $(".btn-flat.close").on('click', function() {
-            scope.dialog('destroy');
-            scope.remove();
-          });
           if ($.isFunction(callback))
             callback();
         },
@@ -164,7 +154,16 @@ var Ui = {
           distinctColumn.push([n.field, n['choices']]);
         } else {
           var formable = n.formable === false ? false : true;
-          remotePath.push([n.field, n['choices'], formable]);
+
+          var editorChoices = n.choices;
+          // Use editor's source instead of grid's source
+          if (n.editor.source) {
+            var match = /^.*(source=.*)$/igm.exec(n.choices);
+            var grid_source = match[1];
+            editorChoices = n.choices.replace(grid_source, 'source=' + n.editor.source);
+          }
+
+          remotePath.push([n.field, editorChoices, formable]);
         }
       } else if (currentData && n['choices_column']) {
         choicesColumn.push([n.field, currentData[n['choices_column']]]);
@@ -252,6 +251,18 @@ var Ui = {
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
+
+    // Layout
+    $(".create_form .field").addClass('input-field');
+    $(".ui-dialog-titlebar").hide();
+    $(".ui-resizable-handle").hide();
+    $(".chzn-container").width('100%');
+    $(".chzn-drop").width('100%');
+    $(".chzn-search input").width('94%');
+    $(".btn-flat.close").on('click', function() {
+      scope.dialog('destroy');
+      scope.remove();
+    });
   },
 
   setupChosen: function(dom, monitor) {
