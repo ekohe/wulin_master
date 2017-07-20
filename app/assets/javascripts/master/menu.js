@@ -82,11 +82,10 @@ function trackGoogleAnalytics() {
 function deselectMenuItems() { $(".active").removeClass("active"); }
 
 function selectMenuItem(url) {
+  rootUrl = History.getRootUrl(),
+  relativeUrl = url.replace(rootUrl,'/');
   deselectMenuItems();
-  var $currentLink = $('#menu li.item a[data-active-url*="' + url + '"]');
-  if ($currentLink.size() === 0) {
-    $currentLink = $('#menu li.item a[href="' + url + '"]');
-  }
+  $currentLink = $('#menu li.item a[href="' + relativeUrl + '"]');
   $currentLink.parent().addClass('active');
 }
 
@@ -102,8 +101,6 @@ function initialize_menu() {
       return;
     }
 
-    $("#menu .active").removeClass("active");
-    $(this).parent().addClass("active");
     // State management
     History.pushState(null, null, currentUrl);
 

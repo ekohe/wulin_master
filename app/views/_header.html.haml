@@ -10,7 +10,7 @@
     %ul.right
       - if wikis
         %li
-          %a#help-btn{href: '#help-modal'}
+          %a#help-btn.btn{href: '#help-modal'}
             %i.material-icons help
       %li
         %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
@@ -26,24 +26,23 @@
             %i.material-icons account_circle
             %span= current_user.email
 
-- if wikis
-  #help-modal.modal
-    .modal-header
-      %span#help-title Help
-      %i.modal-close.material-icons.right close
-    .modal-content
-      %ul#help-list
-        - wikis.each do |wiki|
-          - wiki_title = (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
-          %li
-            %a{"data-wiki-content" => wiki.content, "data-wiki-title" => wiki_title, href: '#'}
-              %i.material-icons.left live_help
-              %span= wiki_title
-      #help-content-container.hide
-        #help-content
-        %a#help-menu-link{href: '#'}
-          %i.material-icons dns
-          %span BROWSE ALL ARTICLES
+#help-modal.modal
+  .modal-header
+    %span#help-title Help
+    %i.modal-close.material-icons.right close
+  .modal-content
+    %ul#help-list
+      - wikis.each do |wiki|
+        - wiki_title = (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
+        %li
+          %a{"data-wiki-content" => wiki.content, "data-wiki-title" => wiki_title, href: '#'}
+            %i.material-icons.left live_help
+            %span= wiki_title
+    #help-content-container.hide
+      #help-content
+      %a#help-menu-link{href: '#'}
+        %i.material-icons dns
+        %span BROWSE ALL ARTICLES
 
 :javascript
 
