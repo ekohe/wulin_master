@@ -104,11 +104,16 @@
       updatePager({pageSize:0, pageNum:0, totalRows:0});
     }
 
+    function clearPager() {
+      $status.text('');
+    }
+
     init();
 
     return {
       // methods
-      "resetPager": resetPager
+      "resetPager": resetPager,
+      "clearPager": clearPager
     };
   }
 

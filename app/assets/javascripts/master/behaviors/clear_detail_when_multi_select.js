@@ -29,7 +29,7 @@ WulinMaster.behaviors.ClearDetailWhenMultiSelect = $.extend({}, WulinMaster.beha
         var detailGrid = this.detail_grids[i];
         detailGrid.resetActiveCell();
         detailGrid.loader.clear();
-        // detailGrid.pager.resetPager();
+        detailGrid.pager.clearPager();
         detailGrid.render();
       }
     }
