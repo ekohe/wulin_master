@@ -711,6 +711,11 @@ if (typeof Slick === "undefined") {
           header.append($iconWrapper);
         }
 
+        // Ekohe Add: Make filter input disabled when 'filterable: false'
+        if (m.filterable == false) {
+          headerColInput.remove();
+        }
+
         trigger(self.onHeaderCellRendered, {
           "node": header[0],
           "column": m,
