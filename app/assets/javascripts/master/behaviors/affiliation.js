@@ -10,7 +10,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
     if(this.detail_grids.indexOf(target) < 0) {
       this.detail_grids.push(target);
     }
-    
+
     this.master_grid = gridManager.getGrid(self.master_grid_name);
     if(this.master_grid) {
       this.master_grid[this.event].subscribe(function(){ self.handler(); });
@@ -53,6 +53,17 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       } else {
         detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);
       }
+
+      // Set detail grid's style
+      detailGrid.container.addClass('detail-grid');
+
+      // Set detail grid's title
+      var $detailGridTitle = detailGrid.container.find('.grid-header h2');
+      $detailGridTitle.html(
+        this.master_grid.model + ' #' + masterIds[0] +
+        ' > <span style="color:#3B78E7" >' +
+        detailGrid.model + 's</span>'
+      );
     }
   }
 

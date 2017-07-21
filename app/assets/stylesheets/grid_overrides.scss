@@ -14,10 +14,6 @@ $pager_background: #efeff0;
 
 /* Grid Column Headers */
 
-.slick-header.ui-state-default {
-  // border-bottom: 1px solid $grid_border_color;
-}
-
 .slick-header {
   padding-top: 5px;
   padding-bottom: 5px;
@@ -210,7 +206,25 @@ $pager_background: #efeff0;
 }
 
 .grid {
-  box-shadow: 0px 1px 1px #c8c2c2;
+  box-shadow: 0px 1px 1px $grid_border_color;
+}
+
+/* Master / Detail Grid */
+
+.detail-grid {
+  background-color: #F5F5F5;
+  .slick-header {
+    background-color: #F5F5F5;
+    .slick-header-column {
+      background-color: #F5F5F5;
+    }
+  }
+  .ui-widget-content.slick-row.even {
+    background-color: #F8F8F8;
+  }
+  .pager {
+    background-color: #EDEEF2;
+  }
 }
 
 /* Grid Secondary row, filters */
