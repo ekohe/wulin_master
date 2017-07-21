@@ -711,7 +711,7 @@ if (typeof Slick === "undefined") {
           header.append($iconWrapper);
         }
 
-        // Ekohe Add: Make filter input disabled when 'filterable: false'
+        // Ekohe Add: Disable filter input when 'filterable: false'
         if (m.filterable == false) {
           headerColInput.remove();
         }
