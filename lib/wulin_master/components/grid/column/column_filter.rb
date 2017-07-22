@@ -61,7 +61,7 @@ module WulinMaster
     def apply_equation_filter(query, operator, value, column_type, adapter)
       if %w(date datetime).include? column_type
         operator = operator == 'equals' ? 'LIKE' : 'NOT LIKE'
-        query.where(["to_char(#{relation_table_name}.#{source}, 'YYYY-MM-DD') #{operator} UPPER(?)", "#{value}%"])
+        query.where(["to_char(#{relation_table_name}.#{source}, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
       elsif column_type == "boolean"
         adapter.boolean_query("#{relation_table_name}.#{source}", value, self)
         adapter.query
@@ -106,13 +106,15 @@ module WulinMaster
       elsif column_type == :boolean
         true_values = %w(y yes ye t true)
         true_values.include?(value.downcase)
+      else
+        value
       end
     end
 
     def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
       case column_sql_type.to_s
       when 'date', 'datetime'
-        return query.where(["to_char(#{source}, 'YYYY-MM-DD') LIKE UPPER(?)", filtering_value + "%"])
+        return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
       when "boolean"
         true_values = %w(y yes ye t true)
         true_or_false = true_values.include?(filtering_value.downcase)
