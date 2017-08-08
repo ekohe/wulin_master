@@ -84,12 +84,7 @@
       //   $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
 
       if (pagingInfo.pageSize == 0) {
-        var filterCount = grid.container
-          .find('.slick-header-column input:text')
-          .filter(function() { return $(this).val() != ""; })
-          .length;
-
-        if (filterCount == 0) {
+        if (grid.getFilteredInputs().length == 0) {
           $status.text(pagingInfo.totalRows + " rows found");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');

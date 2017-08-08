@@ -3797,6 +3797,12 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    function getFilteredInputs(){
+      return $container
+        .find('.slick-header-column input:text')
+        .filter(function () { return !!this.value; });
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Public API
 
@@ -3942,6 +3948,7 @@ if (typeof Slick === "undefined") {
       "handleDblClick": handleDblClick,
       "makeActiveCellNormal": makeActiveCellNormal,
       "renderLoadingRows": renderLoadingRows,
+      "getFilteredInputs": getFilteredInputs,
       "trigger": trigger
     });
 

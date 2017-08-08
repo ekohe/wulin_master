@@ -74,19 +74,11 @@
 
       grid.render();
 
-      // Ekohe Add
-      var filterCount = grid.container
-        .find('.slick-header-column input:text')
-        .filter(function() { return $(this).val() != ""; })
-        .length;
-
-      if (filterCount == 0) {
+      // Ekohe Add: Add special class to filtered columns
+      var $filteredInputs = grid.getFilteredInputs();
+      if ($filteredInputs.length == 0) {
         grid.setDataLengthWithoutFilter(grid.getDataLength());
       } else {
-        // Find non empty input elements on header
-        var $filteredInputs = grid.container
-          .find('.slick-header-column input[type="text"]')
-          .filter(function () { return !!this.value; });
         // Use 'r_' class to identidy the cell
         $.each($filteredInputs, function( index, value ) {
           grid.container
