@@ -65,6 +65,7 @@
         .append($('<i class="material-icons">close</i>'))
         .append($('<span>CLEAR FILTER</span>'))
         .appendTo($container);
+
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function() {
         grid.container.find('.slick-header-column input').val('').focusout();
@@ -83,18 +84,21 @@
       //   $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
 
       if (pagingInfo.pageSize == 0) {
-        if (pagingInfo.rowsWithoutFilter <= pagingInfo.totalRows) {
+        var filterCount = grid.container
+          .find('.slick-header-column input:text')
+          .filter(function() { return $(this).val() != ""; })
+          .length;
+
+        if (filterCount == 0) {
           $status.text(pagingInfo.totalRows + " rows found");
-        } else {
-          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
-        }
-        if (pagingInfo.rowsWithoutFilter != pagingInfo.totalRows) {
-          $status.addClass('with-filter');
-          $clearFilterLink.removeClass('hide');
-        } else {
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
+        } else {
+          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
+          $status.addClass('with-filter');
+          $clearFilterLink.removeClass('hide');
         }
+
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
       }
