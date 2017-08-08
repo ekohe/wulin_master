@@ -2291,6 +2291,19 @@ if (typeof Slick === "undefined") {
       lastRenderedScrollTop = scrollTop;
       lastRenderedScrollLeft = scrollLeft;
       h_render = null;
+
+      // Ekohe Add: Add special class to filtered columns
+      var $filteredInputs = getFilteredInputs();
+      if ($filteredInputs.length == 0) {
+        setDataLengthWithoutFilter(getDataLength());
+      } else {
+        // Use 'r_' class to identidy the cell
+        $.each($filteredInputs, function( index, value ) {
+          $container
+            .find('.slick-cell.' + value.getAttribute('data-col'))
+            .addClass('filtered');
+        });
+      }
     }
 
     function handleHeaderRowScroll() {

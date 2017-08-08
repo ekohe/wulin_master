@@ -75,17 +75,6 @@
       grid.render();
 
       // Ekohe Add: Add special class to filtered columns
-      var $filteredInputs = grid.getFilteredInputs();
-      if ($filteredInputs.length == 0) {
-        grid.setDataLengthWithoutFilter(grid.getDataLength());
-      } else {
-        // Use 'r_' class to identidy the cell
-        $.each($filteredInputs, function( index, value ) {
-          grid.container
-            .find('.slick-cell.' + value.getAttribute('data-col'))
-            .addClass('filtered');
-        });
-      }
       rowsWithoutFilter = grid.getDataLengthWithoutFilter();
 
       onDataLoaded.notify();
