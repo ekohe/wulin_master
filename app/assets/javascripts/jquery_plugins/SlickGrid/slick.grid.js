@@ -201,9 +201,6 @@ if (typeof Slick === "undefined") {
     var $hiddenParents;
     var oldProps = [];
 
-    // Ekohe Add
-    var dataLengthWithoutFilter = -1;
-
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
 
@@ -2294,9 +2291,7 @@ if (typeof Slick === "undefined") {
 
       // Ekohe Add: Add special class to filtered columns
       var $filteredInputs = getFilteredInputs();
-      if ($filteredInputs.length == 0) {
-        setDataLengthWithoutFilter(getDataLength());
-      } else {
+      if ($filteredInputs.length != 0) {
         // Use 'r_' class to identidy the cell
         $.each($filteredInputs, function( index, value ) {
           $container
@@ -3759,14 +3754,6 @@ if (typeof Slick === "undefined") {
       editController = c;
     }
 
-    function getDataLengthWithoutFilter(){
-      return dataLengthWithoutFilter;
-    }
-
-    function setDataLengthWithoutFilter(c){
-      dataLengthWithoutFilter = c;
-    }
-
     function isColumnEditable(column_option) {
       if(column_option.editable == undefined) {
         return options.editable;
@@ -3955,8 +3942,6 @@ if (typeof Slick === "undefined") {
       "setColumnsById": setColumnsById,
       "setEditController": setEditController,
       "setActiveCellInternal": setActiveCellInternal,
-      "getDataLengthWithoutFilter": getDataLengthWithoutFilter,
-      "setDataLengthWithoutFilter": setDataLengthWithoutFilter,
       "finishInitialization": finishInitialization,
       "handleDblClick": handleDblClick,
       "makeActiveCellNormal": makeActiveCellNormal,
