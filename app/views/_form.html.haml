@@ -120,6 +120,10 @@
   $('##{grid.name}_form select[data-required="true"]').chosen();
   $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
 
+  $('##{grid.name}_form .field').filter(function () {
+    return !!$(this).find('input').val();
+  }).find('label').addClass('active');
+
   $('input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
   $('input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
   $('input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);
