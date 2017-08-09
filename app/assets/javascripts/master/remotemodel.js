@@ -45,9 +45,6 @@
     function setGrid(newGrid) {
       grid = newGrid;
 
-      // Ekohe Add: Set data length withtout filter
-      connectionManager.createConnection(grid, path, loadingIndicator, onGetAllDataSuccess, onError, currentRequestVersionNumber);
-
       // Connect the grid and the loader
       grid.onViewportChanged.subscribe(function(e, args) {
         var vp = grid.getViewport();
@@ -221,6 +218,11 @@
       var from;
       var to;
 
+      // Ekohe Add: Save row length without filter
+      if (grid.getFilteredInputs().length == 0) {
+        rowsWithoutFilter = parseInt(resp.total, 10);
+      }
+
       if (pageSize === 0) {
         from = resp.offset;
         to = resp.offset + resp.count;
@@ -259,11 +261,6 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
-    }
-
-    // Ekohe Add: Get data length witout filters
-    function onGetAllDataSuccess(resp, textStatus, request) {
-      rowsWithoutFilter = parseInt(resp.total, 10);
     }
 
     function getColumns() {

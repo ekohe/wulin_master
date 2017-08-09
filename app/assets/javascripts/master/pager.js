@@ -89,11 +89,11 @@
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
+          var rowsWithoutFilter = pagingInfo.rowsWithoutFilter == -1 ? pagingInfo.totalRows : pagingInfo.rowsWithoutFilter;
+          $status.text(pagingInfo.totalRows + " of " + rowsWithoutFilter + " rows found");
           $status.addClass('with-filter');
           $clearFilterLink.removeClass('hide');
         }
-
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
       }
