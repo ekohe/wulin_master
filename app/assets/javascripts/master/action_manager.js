@@ -81,6 +81,7 @@ WulinMaster.actions.BaseAction = {
     $('#confirmed-btn').on('click', function() {
       Requests.deleteByAjax(grid, ids);
       $('#confirm-modal').modal('close');
+      ids = [];
       // reload the master grid (for dettach detail action)
       if(self.reload_master && grid.master_grid) {
         grid.master_grid.loader.reloadData();
