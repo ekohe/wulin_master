@@ -84,6 +84,7 @@ var Requests = {
           var from = parseInt(range[0] / 200, 10) * 200;
           var to = range[1]+1;
           grid.loader.reloadData(from, to);
+          grid.container.find('.toolbar-select').addClass('hide');
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
