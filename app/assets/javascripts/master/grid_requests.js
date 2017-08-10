@@ -73,6 +73,7 @@ var Requests = {
     }
     if(force === undefined) force = false;
     var range = this.getCurrentRows(grid, ids);
+    if (ids.length == 0) return;
     $.ajax({
       type: 'POST',
       url: grid.path + '/' + ids + '.json' + grid.query + '&force=' + force,
