@@ -6,34 +6,65 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
   handler: function(e) {
     var self = this;
     var masterId = this.target.master.filter_value;
-    var options = {
-      autoOpen: true,
-      width: 750,
-      height: 600,
-      buttons: {
-        Attach: function() {
-          self.appendNewRecordToMiddleTable(masterId, $modelDialog);
-        },
-        Cancel: function() {
-          $(this).dialog( "destroy" );
-          $modelDialog.remove();
-        }
+
+    // var options = {
+    //   autoOpen: true,
+    //   width: 750,
+    //   height: 600,
+    //   buttons: {
+    //     Attach: function() {
+    //       self.appendNewRecordToMiddleTable(masterId, $modelDialog);
+    //     },
+    //     Cancel: function() {
+    //       $(this).dialog( "destroy" );
+    //       $modelDialog.remove();
+    //     }
+    //   },
+    //   close: function() {
+    //     $(this).dialog("destroy");
+    //     $modelDialog.remove();
+    //   },
+    //   open: function(event, ui) {
+    //     self.getModelGrid(masterId, $modelDialog);
+    //   }
+    // };
+    //
+    // var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
+    // if (this.dialog_options && $.isPlainObject(this.dialog_options)) {
+    //   $.extend(options, this.dialog_options);
+    // }
+    // $modelDialog.dialog(options);
+
+    var $modelModal = $('<div/>')
+      .addClass('modal modal-fixed-footer')
+      .appendTo($('body'));
+    var $modalGrid = $('<div/>')
+    var $modalContent = $('<div/>')
+      .addClass('modal-content')
+      .append($('<h5/>').text('Attach'))
+      .append($modalGrid)
+      .appendTo($modelModal);
+    var $modalFooter = $('<div/>')
+      .addClass('modal-footer')
+      .append($('<div/>').addClass('attach-btn btn right modal-close').text('Attach'))
+      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
+      .appendTo($modelModal);
+
+    $modalFooter.find('.attach-btn').on('click', function() {
+      self.appendNewRecordToMiddleTable(masterId, $modalContent);
+    });
+
+    $modelModal.modal({
+      ready: function(modal, trigger) {
+        self.getModelGrid(masterId, $modalGrid);
       },
-      close: function() {
-        $(this).dialog("destroy");
-        $modelDialog.remove();
-      },
-      open: function(event, ui) {
-        self.getModelGrid(masterId, $modelDialog);
+      complete: function() {
+        $modelModal.remove();
       }
-    };
-    var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
-    if (this.dialog_options && $.isPlainObject(this.dialog_options)) {
-      $.extend(options, this.dialog_options);
-    }
-    $modelDialog.dialog(options);
+    });
+    $modelModal.modal('open');
   },
-  
+
   getModelGrid: function(masterId, dialogDom) {
     var master = $.extend({}, this.target.master);
     var screen = this.screen;
@@ -58,7 +89,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       });
     });
   },
-  
+
   // Attach
   appendNewRecordToMiddleTable: function(masterId, dialogDom) {
     var self = this;
@@ -66,7 +97,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var detailGridName = dialogDom.find(".grid_container").attr("name");
     var detailGrid = gridManager.getGrid(detailGridName);
     var detailIds = detailGrid.getSelectedIds();
-    
+
     if(detailIds.length === 0) {
       displayErrorMessage("Please select at least one item.");
     } else {
