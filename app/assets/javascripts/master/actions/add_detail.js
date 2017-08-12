@@ -21,7 +21,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       .appendTo($modelModal);
     var $modalFooter = $('<div/>')
       .addClass('modal-footer')
-      .append($('<div/>').addClass('attach-btn btn right').text('Attach'))
+      .append($('<div/>').addClass('attach-btn btn right disabled').text('Attach'))
       .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
       .appendTo($modelModal);
 
@@ -84,21 +84,16 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var detailGridName = dialogDom.find(".grid_container").attr("name");
     var detailGrid = gridManager.getGrid(detailGridName);
     var detailIds = detailGrid.getSelectedIds();
-
-    if(detailIds.length === 0) {
-      displayErrorMessage("Please select at least one item.");
-    } else {
-      var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel};
-      $.post('/wulin_master/attach_details', data, function(response){
-        displayNewNotification(response.message);
-        dialogDom.parent().modal('close');
-        self.target.loader.reloadData();
-        // reload master grid (in some cases, attaching a detail will affect the master record's data)
-        if(self.reload_master && self.target.master_grid) {
-          self.target.master_grid.loader.reloadData();
-        }
-      });
-    }
+    var data = {master_column: this.target.master.filter_column, master_id: masterId, detail_model: this.model, detail_ids: detailIds, model: middleModel};
+    $.post('/wulin_master/attach_details', data, function(response){
+      displayNewNotification(response.message);
+      dialogDom.parent().modal('close');
+      self.target.loader.reloadData();
+      // reload master grid (in some cases, attaching a detail will affect the master record's data)
+      if(self.reload_master && self.target.master_grid) {
+        self.target.master_grid.loader.reloadData();
+      }
+    });
   }
 });
 

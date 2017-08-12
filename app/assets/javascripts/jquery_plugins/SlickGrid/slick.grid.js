@@ -1374,6 +1374,7 @@ if (typeof Slick === "undefined") {
         var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
         $gridContainer.find('.selection-info').text(itemInfo + ' selected. X CLEAR');
         $gridContainer.find('.toolbar-select').removeClass('hide');
+        $gridContainer.closest('.attach-modal').find('.attach-btn').removeClass('disabled');
         if (itemCount > 1) {
           $gridHeader.addClass('multi-selected');
         } else {
@@ -1381,6 +1382,7 @@ if (typeof Slick === "undefined") {
         }
       } else {
         $gridContainer.find('.selection-info').text('');
+        $gridContainer.closest('.attach-modal').find('.attach-btn').addClass('disabled');
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
       }
