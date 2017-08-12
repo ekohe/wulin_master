@@ -7,42 +7,17 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
 
-    // var options = {
-    //   autoOpen: true,
-    //   width: 750,
-    //   height: 600,
-    //   buttons: {
-    //     Attach: function() {
-    //       self.appendNewRecordToMiddleTable(masterId, $modelDialog);
-    //     },
-    //     Cancel: function() {
-    //       $(this).dialog( "destroy" );
-    //       $modelDialog.remove();
-    //     }
-    //   },
-    //   close: function() {
-    //     $(this).dialog("destroy");
-    //     $modelDialog.remove();
-    //   },
-    //   open: function(event, ui) {
-    //     self.getModelGrid(masterId, $modelDialog);
-    //   }
-    // };
-    //
-    // var $modelDialog = $("<div/>").attr({id: this.model + '_dialog', title: "Attach"}).css('display', 'none').appendTo($('body'));
-    // if (this.dialog_options && $.isPlainObject(this.dialog_options)) {
-    //   $.extend(options, this.dialog_options);
-    // }
-    // $modelDialog.dialog(options);
-
     var $modelModal = $('<div/>')
-      .addClass('modal modal-fixed-footer')
+      .addClass('modal modal-fixed-footer attach-modal')
+      .css({overflow: 'hidden'})
       .appendTo($('body'));
-    var $modalGrid = $('<div/>')
+    var $modalHeader = $('<div/>')
+      .addClass('modal-header')
+      .append($('<span/>').text('Attach'))
+      .append($('<i/>').text('close').addClass('modal-close material-icons right'))
+      .appendTo($modelModal);
     var $modalContent = $('<div/>')
       .addClass('modal-content')
-      .append($('<h5/>').text('Attach'))
-      .append($modalGrid)
       .appendTo($modelModal);
     var $modalFooter = $('<div/>')
       .addClass('modal-footer')
@@ -56,7 +31,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
 
     $modelModal.modal({
       ready: function(modal, trigger) {
-        self.getModelGrid(masterId, $modalGrid);
+        self.getModelGrid(masterId, $modalContent);
       },
       complete: function() {
         $modelModal.remove();
@@ -77,6 +52,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       })
       .success(function(response){
         dialogDom.html(response);
+
         // copy the target's master to detail grid, just replace the operator to 'exclude'
         var gridName = dialogDom.find(".grid_container").attr("name");
         var grid = gridManager.getGrid(gridName);
@@ -86,6 +62,17 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         } else {
           grid.master = master;
         }
+
+        // calculate height for grid related elements
+        var gridCanvasHeight = dialogDom.parent().height() -
+                               dialogDom.parent().find('.modal-header').outerHeight() -
+                               dialogDom.parent().find('.modal-footer').outerHeight() -
+                               dialogDom.find('.grid-header').outerHeight() -
+                               dialogDom.find('.slick-header').outerHeight() -
+                               dialogDom.find('.pager').outerHeight();
+        dialogDom.find('.slick-viewport').height(gridCanvasHeight + 'px');
+        dialogDom.find('.grid-canvas').height('auto');
+        dialogDom.find('.grid').height('auto');
       });
     });
   },
