@@ -693,6 +693,11 @@ if (typeof Slick === "undefined") {
             .attr("for", "" + m.id)
             .appendTo(header);
 
+        // Ekohe Add: Add left padding to the first columns
+        if (i == 0) {
+          header.css({'margin-left': '10px'}).width(header.width() - 10);
+        }
+
         if (options.enableColumnReorder || m.sortable) {
           header
             .on('mouseenter', onMouseEnter)
