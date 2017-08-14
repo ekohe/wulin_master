@@ -1,9 +1,20 @@
-.modal-header {
+.modal {
   padding: 1rem;
-  background-color: dodgerblue;
-  color: white;
-  span {
-    font-size: 1.3rem;
+  .modal-header {
+    padding: 1rem;
+    background-color: dodgerblue;
+    color: white;
+    span {
+      font-size: 1.3rem;
+    }
+  }
+  .modal-content {
+    h5 {
+      margin-bottom: 3rem;
+    }
+  }
+  .modal-footer {
+    padding-right: 1.5rem;
   }
 }
 
