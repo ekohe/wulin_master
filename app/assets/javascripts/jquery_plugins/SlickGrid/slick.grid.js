@@ -2296,16 +2296,20 @@ if (typeof Slick === "undefined") {
       lastRenderedScrollLeft = scrollLeft;
       h_render = null;
 
-      // Ekohe Add: Add special class to filtered columns
+      // Ekohe Add: Format processing
+
+      // Filtered columns
       var $filteredInputs = getFilteredInputs();
       if ($filteredInputs.length != 0) {
-        // Use 'r_' class to identidy the cell
         $.each($filteredInputs, function( index, value ) {
           $container
             .find('.slick-cell.' + value.getAttribute('data-col'))
             .addClass('filtered');
         });
       }
+
+      // First column cells
+      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
     }
 
     function handleHeaderRowScroll() {

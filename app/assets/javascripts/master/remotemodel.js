@@ -259,9 +259,6 @@
       // Loading data
       dataIsLoaded({from:from, to:to});
 
-      // Ekohe Add: Add left padding to the first columns
-      grid.container.find('.slick-cell.l0').css({'padding-left': '10px'});
-
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
     }
