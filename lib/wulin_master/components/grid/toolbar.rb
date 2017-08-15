@@ -11,10 +11,11 @@ module WulinMaster
 
       default_icons = {
         create: 'add_box',
+        add_detail: 'add_box',
         export: 'file_download',
+        send_mail: 'mail',
         edit: 'mode_edit',
         delete: 'delete',
-        filter: 'filter_list',
         audit: 'restore'
       }
 

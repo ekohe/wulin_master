@@ -5,7 +5,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      ORIGINAL_ACTIONS = %w(create delete edit filter)
+      ORIGINAL_ACTIONS = %w(create delete edit)
       SENSITIVE_ACTIONS = %w(create delete edit hotkey_create hotkey_delete)
 
       class << self
