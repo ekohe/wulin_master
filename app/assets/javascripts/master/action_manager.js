@@ -89,6 +89,19 @@ WulinMaster.actions.BaseAction = {
     })
   },
 
+  // Set height for grid related elements in Modal
+  setGridHeightInModal: function(modalDom) {
+    var gridCanvasHeight = modalDom.height() -
+                           modalDom.find('.modal-header').outerHeight() -
+                           modalDom.find('.modal-content .grid-header').outerHeight() -
+                           modalDom.find('.modal-content .slick-header').outerHeight() -
+                           modalDom.find('.modal-footer').outerHeight() -
+                           modalDom.find('.pager').outerHeight();
+    modalDom.find('.modal-content .slick-viewport').height(gridCanvasHeight + 'px');
+    modalDom.find('.modal-content .grid-canvas').height('auto');
+    modalDom.find('.modal-content .grid').height('auto');
+  },
+
   // override this to define what the action to do
   handler: $.noop
 };

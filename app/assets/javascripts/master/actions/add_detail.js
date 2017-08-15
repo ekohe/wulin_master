@@ -37,13 +37,15 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         $modelModal.remove();
       }
     });
+
     $modelModal.modal('open');
   },
 
-  getModelGrid: function(masterId, dialogDom) {
+  getModelGrid: function(masterId, modalContentDom) {
+    var self = this;
     var master = $.extend({}, this.target.master);
     var screen = this.screen;
-    // first get controller of the detail model, then open the dialog fill the detail grid
+
     $.get('/wulin_master/get_detail_controller?model=' + this.model + '&middle_model=' + this.target.model, function(data){
       var url = "/" + data.controller + "?screen=" + screen + "&filters[][column]=" + master.filter_column + "&filters[][value]=" + masterId + "&filters[][operator]=exclude";
       $.ajax({
@@ -51,10 +53,10 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         url: url
       })
       .success(function(response){
-        dialogDom.html(response);
+        modalContentDom.html(response);
 
         // copy the target's master to detail grid, just replace the operator to 'exclude'
-        var gridName = dialogDom.find(".grid_container").attr("name");
+        var gridName = modalContentDom.find(".grid_container").attr("name");
         var grid = gridManager.getGrid(gridName);
         master["filter_operator"] = 'exclude';
         if(grid.master && grid.master instanceof Array) {
@@ -63,16 +65,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
           grid.master = master;
         }
 
-        // calculate height for grid related elements
-        var gridCanvasHeight = dialogDom.parent().height() -
-                               dialogDom.parent().find('.modal-header').outerHeight() -
-                               dialogDom.parent().find('.modal-footer').outerHeight() -
-                               dialogDom.find('.grid-header').outerHeight() -
-                               dialogDom.find('.slick-header').outerHeight() -
-                               dialogDom.find('.pager').outerHeight();
-        dialogDom.find('.slick-viewport').height(gridCanvasHeight + 'px');
-        dialogDom.find('.grid-canvas').height('auto');
-        dialogDom.find('.grid').height('auto');
+        self.setGridHeightInModal(modalContentDom.parent());
       });
     });
   },
