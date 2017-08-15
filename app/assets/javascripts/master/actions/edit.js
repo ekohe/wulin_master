@@ -96,6 +96,11 @@ var fillValues = function(scope, grid, selectedIndexes) {
     });
     loadValue(scope, comm);
   }
+
+  // Avoid label overlapping input to MD textfield
+  $('#' + grid.name + '_form .field').filter(function () {
+    return !!$(this).find('input').val();
+  }).find('label').addClass('active');
 };
 
 var loadValue = function(scope, data) {
