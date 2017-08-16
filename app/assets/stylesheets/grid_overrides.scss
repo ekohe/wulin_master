@@ -12,6 +12,25 @@ $selected_row_background: #fedecf;
 
 $pager_background: #efeff0;
 
+// Color themes
+$themes: (
+  theme-teal: #009688
+);
+
+// Helper theme mixin
+@mixin theme($name, $color) {
+  .#{$name} {
+    .slick-header-column label {
+      color: $color;
+    }
+  }
+}
+
+// Including themes
+@each $key, $value in $themes {
+  @include theme($key, $value);
+}
+
 /* Grid Column Headers */
 
 .slick-header {
