@@ -1,12 +1,8 @@
 %fieldset.panel_wrapper
-  .panel_btns{:"data-inclusion-grid" => panel.inclusion_grid, :"data-exclusion-grid" => panel.exclusion_grid }
+  .panel_btns.center-align{:"data-inclusion-grid" => panel.inclusion_grid, :"data-exclusion-grid" => panel.exclusion_grid }
     - component_names = panel.screen.components.map(&:name)
-    - if component_names.index(panel.inclusion_grid) < component_names.index(panel.exclusion_grid)
-      = button_tag '<- Add', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
-      = button_tag 'Remove ->', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
-    - else
-      = button_tag 'Add ->', type: 'button', class: 'btn success', id: 'add_btn', disabled: true
-      = button_tag '<- Remove', type: 'button', class: 'btn danger', id: 'remove_btn', disabled: true
+    %i#add_btn.material-icons.disabled arrow_back
+    %i#remove_btn.material-icons.disabled arrow_forward
 
 :javascript
   $(function(){
@@ -14,7 +10,7 @@
     $(".panel_btns #add_btn").off('click').on('click', function(){
       btnHander('add');
     });
-    
+
     // Exclude record
     $(".panel_btns #remove_btn").off('click').on('click', function(){
       btnHander('remove');
@@ -31,16 +27,16 @@
       if(!inclusionGrid || !exclusionGrid) return false;
 
       if (type == 'add') {
-        ids = exclusionGrid.getSelectedIds(); 
+        ids = exclusionGrid.getSelectedIds();
       } else if (type == 'remove') {
         ids = inclusionGrid.getSelectedIds();
       }
-      
+
       if (ids.length > 0) {
         setupRequest(type, ids, inclusionGrid, exclusionGrid);
       }
     }
-    
+
     function setupRequest(type, ids, inclusionGrid, exclusionGrid) {
       var groupGrid;
       for(var i in inclusionGrid.behaviors) {
@@ -53,7 +49,7 @@
 
       var groupId = groupGrid.getSelectedIds()[0];
       if(!groupId) return false;
-      
+
       // Start the request
       $('.panel_btns button').attr('disabled', 'disabled');
 

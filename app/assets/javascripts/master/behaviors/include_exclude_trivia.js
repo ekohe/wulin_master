@@ -25,16 +25,16 @@ WulinMaster.behaviors.IncludeExcludeTrivia = $.extend({}, WulinMaster.behaviors.
     var exclusionGrid = gridManager.getGrid(exclusionGridName);
 
     if(this.grid.name == inclusionGridName && this.grid.getSelectedRows().length > 0) {
-      addButton.attr('disabled', 'disabled');
-      removeButton.removeAttr('disabled');
+      addButton.addClass('disabled');
+      removeButton.removeClass('disabled');
       exclusionGrid.resetActiveCell();   // remove highlight
     } else if(this.grid.name == exclusionGridName && this.grid.getSelectedRows().length > 0) {
-      removeButton.attr('disabled', 'disabled');
-      addButton.removeAttr('disabled');
+      removeButton.addClass('disabled');
+      addButton.removeClass('disabled');
       inclusionGrid.resetActiveCell();   // remove highlight
     } else if(inclusionGrid.getSelectedRows().length === 0 && exclusionGrid.getSelectedRows().length === 0) {
-      addButton.attr('disabled', 'disabled');
-      removeButton.attr('disabled', 'disabled');
+      addButton.addClass('disabled');
+      removeButton.addClass('disabled');
     }
   }
 

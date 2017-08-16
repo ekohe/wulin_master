@@ -3,17 +3,24 @@
 .panel_container {
   float: left;
   fieldset.panel_wrapper {
-    height: 101%;
-    margin: -1% 0 0 0;
+    height: 100%;
+    margin: 0;
     padding: 0;
     position: relative;
+    border: 1px solid #E0E0E0;
     .panel_btns {
       margin-left: auto;
       margin-right: auto;
-      width: 80%;
-      button {
+      width: 100%;
+      i {
         width: 100%;
         margin-top: 10px;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+      i.disabled {
+        cursor: default;
+        opacity: 0.3;
       }
     }
   }
