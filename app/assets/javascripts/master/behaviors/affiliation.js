@@ -55,7 +55,8 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       }
 
       // Set detail grid's style
-      detailGrid.container.addClass('detail-grid');
+      var colorTheme = detailGrid.options['colorTheme'] || 'theme-teal';
+      detailGrid.container.addClass('detail-grid').addClass(colorTheme);
 
       // Set master grid's selection background color using detail grid's color theme
       var baseColor = detailGrid.container.find('.slick-pager-status').css('color');
