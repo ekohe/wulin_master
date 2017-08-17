@@ -57,6 +57,16 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       // Set detail grid's style
       detailGrid.container.addClass('detail-grid');
 
+      // Set master grid's selection background color using detail grid's color theme
+      var baseColor = detailGrid.container.find('.slick-pager-status').css('color');
+      var $tmpEleToGetBgColor = $('<div />')
+        .addClass('slick-cell selected hide')
+        .appendTo(detailGrid.container);
+      var bgColor = $tmpEleToGetBgColor.css('background');
+      this.master_grid.container.find('.slick-cell.selected').css('background', bgColor);
+      this.master_grid.container.find('.slick-cell.active').css('border-color', baseColor);
+      $tmpEleToGetBgColor.remove();
+
       // Set detail grid's title
       var $detailGridTitle = detailGrid.container.find('.grid-header h2');
       $detailGridTitle.html(
@@ -65,6 +75,11 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
         detailGrid.model + 's</span>'
       );
     }
+  },
+
+  shadeRGBColor: function (color, percent) {
+    var f=color.split(","),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=parseInt(f[0].slice(4)),G=parseInt(f[1]),B=parseInt(f[2]);
+    return "rgb("+(Math.round((t-R)*p)+R)+","+(Math.round((t-G)*p)+G)+","+(Math.round((t-B)*p)+B)+")";
   }
 
 });

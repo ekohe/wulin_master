@@ -40,6 +40,14 @@ $themes: (
     .slick-pager-status {
       color: $color;
     }
+    .slick-cell {
+      &.selected {
+        background: lighten($color, 60%);
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
   }
 }
 
