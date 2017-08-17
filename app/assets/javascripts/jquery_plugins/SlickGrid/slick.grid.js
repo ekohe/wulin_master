@@ -208,7 +208,9 @@ if (typeof Slick === "undefined") {
       $container = $(container);
 
       // Ekohe Add: Add color-theme class to grid container
-      $container.parent('.grid_container').addClass('theme-' + options['colorTheme']);
+      if (options['colorTheme']) {
+        $container.parent('.grid_container').addClass('theme-' + options['colorTheme']);
+      }
 
       if ($container.length < 1) {
         throw new Error("SlickGrid requires a valid container, " + container + " does not exist in the DOM.");
