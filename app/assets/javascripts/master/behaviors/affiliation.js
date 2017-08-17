@@ -61,7 +61,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       var $detailGridTitle = detailGrid.container.find('.grid-header h2');
       $detailGridTitle.html(
         this.master_grid.model + ' #' + masterIds[0] +
-        ' > <span style="color:#3B78E7" >' +
+        ' > <span class="detail-grid-title">' +
         detailGrid.model + 's</span>'
       );
     }

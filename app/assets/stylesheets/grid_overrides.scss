@@ -20,7 +20,21 @@ $themes: (
 // Helper theme mixin
 @mixin theme($name, $color) {
   .#{$name} {
+    .grid-header {
+      span.detail-grid-title {
+        color: $color;
+      }
+      .toolbar-global .toolbar_item a {
+        color: $color;
+      }
+      .selection-info {
+        color: $color;
+      }
+    }
     .slick-header-column label {
+      color: $color;
+    }
+    .slick-pager-status {
       color: $color;
     }
   }
