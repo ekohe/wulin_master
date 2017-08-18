@@ -58,16 +58,6 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       var colorTheme = detailGrid.options['colorTheme'] || 'theme-teal';
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
 
-      // Set master grid's selection background color using detail grid's color theme
-      var baseColor = detailGrid.container.find('.slick-pager-status').css('color');
-      var $tmpEleToGetBgColor = $('<div />')
-        .addClass('slick-cell selected hide')
-        .appendTo(detailGrid.container);
-      var bgColor = $tmpEleToGetBgColor.css('background');
-      this.master_grid.container.find('.slick-cell.selected').css('background', bgColor);
-      this.master_grid.container.find('.slick-cell.active').css('border-color', baseColor);
-      $tmpEleToGetBgColor.remove();
-
       // Set detail grid's title
       var $detailGridTitle = detailGrid.container.find('.grid-header h2');
       $detailGridTitle.html(
