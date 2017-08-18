@@ -1,17 +1,8 @@
 @import "base";
 @import 'materialize/components/color';
 
-$column_header_height: 52px;
-$column_header_padding: 4px;
-$column_header_border_color: #dce0e2;
-
-$filter_green: #4CAF50;
-$grid_border_color: #E0E0E0;
-
-$odd_row_background: $menu_background_color;
-$selected_row_background: #fedecf;
-
-$pager_background: #efeff0;
+$filter_green: color('green', 'base');
+$grid_border_color: color('grey', 'lighten-2');
 
 // Color themes
 $themes: (
@@ -86,7 +77,7 @@ $themes: (
 }
 
 .slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
-  height: $column_header_height - $column_header_padding * 2;
+  height: 44px;
   border: none;
   position: relative;
 }
@@ -113,12 +104,6 @@ $themes: (
 .slick-sort-indicator-desc,.slick-sort-indicator-asc {
   opacity: 0.5;
   background: none;
-}
-
-/* Grid Rows Headers */
-
-.ui-widget-content.slick-row.odd {
-  background: $odd_row_background;
 }
 
 .slick-cell {
@@ -234,10 +219,6 @@ $themes: (
   border-right: none;
 }
 
-.ui-widget-content.slick-row.ui-state-active.selected {
-  background: $selected_row_background;
-}
-
 .cell-effort-driven {
   text-align: center;
 }
@@ -269,25 +250,6 @@ $themes: (
   }
   .pager {
     background-color: #EDEEF2;
-  }
-}
-
-/* Grid Secondary row, filters */
-
-.slick-header-columns-secondary {
-  height: 21px;
-  input {
-    border-top: none;
-    border-bottom: 1px solid $column_header_border_color;
-    border-right: none;
-    border-left: 1px solid $column_header_border_color;
-    height: 20px;
-    padding-left: 2px;
-    padding-right: 0;
-    margin: 0;
-  }
-  input.lastColumn {
-    border-right: 1px solid $column_header_border_color;
   }
 }
 
