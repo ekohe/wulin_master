@@ -54,8 +54,12 @@ module WulinMaster
         option({multiSelect: value}.merge(options))
       end
 
-      def color_theme(value = :default, options = {})
+      def color_theme(value = :teal, options = {})
         option({colorTheme: value}.merge(options))
+      end
+
+      def selection_color(value = :blue, options = {})
+        option({selectionColor: value}.merge(options))
       end
     end
 

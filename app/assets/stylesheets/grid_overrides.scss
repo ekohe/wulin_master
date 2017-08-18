@@ -8,7 +8,7 @@ $grid_border_color: color('grey', 'lighten-2');
 $themes: (
   theme-teal: color('teal', 'base'),
   theme-blue-grey: color('blue-grey', 'base'),
-  theme-indigo: color('indigo', 'lighten-1')
+  theme-indigo: color('indigo', 'base')
 );
 
 // Helper theme mixin
@@ -45,6 +45,31 @@ $themes: (
 // Including themes
 @each $key, $value in $themes {
   @include theme($key, $value);
+}
+
+/* Selection colors */
+
+$selection_colors: (
+  selection-teal: color('teal', 'base'),
+  selection-blue-grey: color('blue-grey', 'base'),
+  selection-indigo: color('indigo', 'base')
+);
+
+@mixin selection_colors($name, $color) {
+  .#{$name} {
+    .slick-cell {
+      &.selected {
+        background: lighten($color, 60%);
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+@each $key, $value in $selection_colors {
+  @include selection_colors($key, $value);
 }
 
 /* Grid Column Headers */

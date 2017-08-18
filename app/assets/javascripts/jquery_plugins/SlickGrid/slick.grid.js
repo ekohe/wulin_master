@@ -211,6 +211,9 @@ if (typeof Slick === "undefined") {
       if (options['colorTheme']) {
         $container.parent('.grid_container').addClass('theme-' + options['colorTheme']);
       }
+      if (options['selectionColor']) {
+        $container.parent('.grid_container').addClass('selection-' + options['selectionColor']);
+      }
 
       if ($container.length < 1) {
         throw new Error("SlickGrid requires a valid container, " + container + " does not exist in the DOM.");
