@@ -1,4 +1,4 @@
-@import "base";
+@import 'base';
 @import 'materialize/components/color';
 
 $filter_green: color('green', 'base');
@@ -270,19 +270,6 @@ $themes: (
       float: right;
     }
   }
-}
-
-/* datapicker */
-.ui-datepicker {
-  min-width: 17em;
-  width: auto !important;
-}
-
-/* datapicker icon */
-.ui-datepicker-trigger {
-  margin-top: 2px;
-  padding: 0;
-  vertical-align: top;
 }
 
 .slick-viewport {
