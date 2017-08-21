@@ -33,7 +33,7 @@ $themes: (
     }
     .slick-cell {
       &.selected {
-        background: lighten($color, 60%);
+        background: lighten($color, 45%);
       }
       &.active {
         border: $color solid 1px;
@@ -59,7 +59,7 @@ $selection_colors: (
   .#{$name} {
     .slick-cell {
       &.selected {
-        background: lighten($color, 60%);
+        background: lighten($color, 45%);
       }
       &.active {
         border: $color solid 1px;
