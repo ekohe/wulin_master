@@ -80,6 +80,9 @@ $themes: (
 @mixin theme($name, $color) {
   .#{$name} {
     .grid-header {
+      &.multi-selected {
+        background: lighten(rgba($color, .2), 10%) !important;
+      }
       span.detail-grid-title {
         color: $color;
       }
