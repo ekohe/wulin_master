@@ -54,6 +54,10 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
         detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);
       }
 
+      // Set master grid's style for selection
+      var selectionColor = this.master_grid.options['selectionColor'] || 'selection-teal';
+      this.master_grid.container.addClass(selectionColor);
+
       // Set detail grid's style
       var colorTheme = detailGrid.options['colorTheme'] || 'theme-teal';
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
