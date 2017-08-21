@@ -55,12 +55,14 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       }
 
       // Set master grid's style for selection
-      var selectionColor = this.master_grid.options['selectionColor'] || 'selection-teal';
+      var selectionColor = 'selection-' + (this.master_grid.options['selectionColor'] || 'teal');
       this.master_grid.container.addClass(selectionColor);
 
       // Set detail grid's style
-      var colorTheme = detailGrid.options['colorTheme'] || 'theme-teal';
+      var colorTheme = 'theme-' + (detailGrid.options['colorTheme'] || 'teal');
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
+      var bgColor = 'bg-' + (detailGrid.options['bgColor'] || 'teal');
+      detailGrid.container.addClass(bgColor);
 
       // Set detail grid's title
       var $detailGridTitle = detailGrid.container.find('.grid-header h2');

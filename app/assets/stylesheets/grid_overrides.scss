@@ -4,6 +4,71 @@
 $filter_green: color('green', 'base');
 $grid_border_color: color('grey', 'lighten-2');
 
+/* Selection colors */
+
+$selection_colors: (
+  selection-teal: color('teal', 'base'),
+  selection-blue-grey: color('blue-grey', 'base'),
+  selection-indigo: color('indigo', 'base')
+);
+
+@mixin selection_colors($name, $color) {
+  .#{$name} {
+    .slick-cell {
+      &.selected {
+        background: lighten(rgba($color, .2), 10%);
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+@each $key, $value in $selection_colors {
+  @include selection_colors($key, $value);
+}
+
+/* Background colors */
+
+$bg_colors: (
+  bg-teal: color('teal', 'base'),
+  bg-blue-grey: color('blue-grey', 'base'),
+  bg-indigo: color('indigo', 'base')
+);
+
+@mixin bg_colors($name, $color) {
+  .#{$name} {
+    .grid-header {
+      background: rgba($color, .1);
+      // background: lighten($color, 65%);
+    }
+    .slick-header {
+      background: rgba($color, .1);
+    }
+    .slick-header-column {
+      background: none;
+    }
+    .slick-pager {
+      background: rgba($color, .1);
+    }
+    .slick-row.even {
+      .slick-cell {
+        background: rgba($color, .1);
+      }
+    }
+    .slick-row.odd {
+      .slick-cell {
+        background: rgba($color, .2);
+      }
+    }
+  }
+}
+
+@each $key, $value in $bg_colors {
+  @include bg_colors($key, $value);
+}
+
 // Color themes
 $themes: (
   theme-teal: color('teal', 'base'),
@@ -33,7 +98,7 @@ $themes: (
     }
     .slick-cell {
       &.selected {
-        background: lighten($color, 45%);
+        background: lighten(rgba($color, .2), 10%) !important;
       }
       &.active {
         border: $color solid 1px;
@@ -45,31 +110,6 @@ $themes: (
 // Including themes
 @each $key, $value in $themes {
   @include theme($key, $value);
-}
-
-/* Selection colors */
-
-$selection_colors: (
-  selection-teal: color('teal', 'base'),
-  selection-blue-grey: color('blue-grey', 'base'),
-  selection-indigo: color('indigo', 'base')
-);
-
-@mixin selection_colors($name, $color) {
-  .#{$name} {
-    .slick-cell {
-      &.selected {
-        background: lighten($color, 45%);
-      }
-      &.active {
-        border: $color solid 1px;
-      }
-    }
-  }
-}
-
-@each $key, $value in $selection_colors {
-  @include selection_colors($key, $value);
 }
 
 /* Grid Column Headers */
@@ -262,21 +302,21 @@ $selection_colors: (
 
 /* Master / Detail Grid */
 
-.detail-grid {
-  background-color: #F5F5F5;
-  .slick-header {
-    background-color: #F5F5F5;
-    .slick-header-column {
-      background-color: #F5F5F5;
-    }
-  }
-  .ui-widget-content.slick-row.even {
-    background-color: #F8F8F8;
-  }
-  .pager {
-    background-color: #EDEEF2;
-  }
-}
+// .detail-grid {
+//   background-color: #F5F5F5;
+//   .slick-header {
+//     background-color: #F5F5F5;
+//     .slick-header-column {
+//       background-color: #F5F5F5;
+//     }
+//   }
+//   .ui-widget-content.slick-row.even {
+//     background-color: #F8F8F8;
+//   }
+//   .pager {
+//     background-color: #EDEEF2;
+//   }
+// }
 
 /* Page styling */
 .pager, .slick-pager {

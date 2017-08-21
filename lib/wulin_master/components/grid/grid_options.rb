@@ -61,6 +61,10 @@ module WulinMaster
       def selection_color(value = :blue, options = {})
         option({selectionColor: value}.merge(options))
       end
+
+      def background_color(value = :teal, options = {})
+        option({bgColor: value}.merge(options))
+      end
     end
 
     def options
