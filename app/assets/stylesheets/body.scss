@@ -92,7 +92,7 @@ form {
   }
 }
 
-.info-modal {
+.modal.info-modal {
   width: 400px;
   .modal-title {
     font-size: 1.5rem;
@@ -101,7 +101,7 @@ form {
     font-size: 1rem;
   }
   .modal-footer {
-    padding-right: 25px;
+    padding-right: 0;
     .btn, .btn-flat {
       margin-left: 15px;
     }

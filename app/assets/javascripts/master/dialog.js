@@ -1,30 +1,11 @@
 var dialogIndex = 1;
 
 function displayErrorMessage(message, title, width) {
-  if (title === undefined)
-    title = "Error";
-  if (message === undefined)
+  if (message === undefined) {
     message = "An unexpected error occured.";
-  if (width === undefined)
-    width = 300;
-
-  var $content = $('<div/>')
-    .addClass('modal-content')
-    .append($('<h5/>').text(title).addClass('modal-title'))
-    .append($('<div/>').text(message).addClass('modal-message'));
-  var $footer = $('<div/>')
-    .addClass('modal-footer')
-    .append($('<div/>').text('OK').addClass('btn right modal-close'));
-
-  var $errorModal = $("<div/>")
-    .attr('title', title)
-    .addClass('modal info-modal')
-    .append($content)
-    .append($footer)
-    .appendTo($('body'));
-
-  $('.modal').modal('close');
-  $errorModal.modal('open');
+  }
+  $('#error-content').text(message);
+  $('#error-modal').modal('open');
 }
 
 function displayConfirmationDialog(message, title, confirmCallback, cancelCallback) {

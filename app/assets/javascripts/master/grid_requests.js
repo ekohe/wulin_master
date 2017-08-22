@@ -95,16 +95,9 @@ var Requests = {
           displayNewNotification(message);
         } else if(msg.confirm) {
           if(msg.warning_message) $('#confirm-content').text(msg.warning_message);
-          $('#confirm-modal').modal({
-              complete: function() {
-                $('this').find('#confirm-content').text('Are you sure to do this ?');
-              } // Callback for Modal close
-            }
-          );
           $('#confirm-modal').modal('open');
           $('#confirmed-btn').on('click', function() {
             Requests.deleteByAjax(grid, ids, true);
-            $('#confirm-modal').modal('close');
           });
         } else {
           displayErrorMessage(msg.error_message);
