@@ -54,14 +54,15 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
         detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);
       }
 
+      var default_color = 'blue-grey';
       // Set master grid's style for selection
-      var selectionColor = 'selection-' + (this.master_grid.options['selectionColor'] || 'teal');
+      var selectionColor = 'selection-' + (this.master_grid.options['selectionColor'] || default_color);
       this.master_grid.container.addClass(selectionColor);
 
       // Set detail grid's style
-      var colorTheme = 'theme-' + (detailGrid.options['colorTheme'] || 'teal');
+      var colorTheme = 'theme-' + (detailGrid.options['colorTheme'] || default_color);
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
-      var bgColor = 'bg-' + (detailGrid.options['bgColor'] || 'teal');
+      var bgColor = 'bg-' + (detailGrid.options['bgColor'] || default_color);
       detailGrid.container.addClass(bgColor);
 
       // Set detail grid's title
