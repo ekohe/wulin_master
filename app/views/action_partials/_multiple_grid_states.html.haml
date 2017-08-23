@@ -15,15 +15,15 @@
     - default_states.each do |option|
       %li
         %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
-    %li.divider
+      %li.divider
     - custom_states.each do |option|
       %li
         %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
-        %a.edit-icon-container.right.hide{"data-state-id" => option[1], "data-state-name" => option[0], href: '#edit-modal'}
+        %a.edit-icon-container.right.hide{"data-state-id" => option[1], "data-state-name" => option[0]}
           %i.material-icons.right mode_edit
-    %li.divider
+      %li.divider
     %li
-      %a{href: '#create-modal'}
+      %a{id: 'add-view-btn'}
         %i.material-icons.left add_box
         ADD VIEW
 
@@ -59,7 +59,11 @@
     var oldName;
     var newName;
 
-    $("#current-state").click(function() {
+    $("#add-view-btn").on('click', function() {
+      $('#create-modal').modal('open');
+    });
+
+    $("#current-state").on('click', function() {
       var $icon = $(this).children('.material-icons');
       var up = 'arrow_drop_up'
       var down = 'arrow_drop_down'
@@ -91,6 +95,7 @@
     });
 
     $('.edit-icon-container').on('click', function() {
+      $('#edit-modal').modal('open');
       id = $(this).attr('data-state-id');
       oldName = $(this).attr('data-state-name');
       $('#view-name-label-edit').addClass('active');
