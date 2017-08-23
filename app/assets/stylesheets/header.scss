@@ -5,7 +5,8 @@
 }
 
 #notification-list {
-  width: 30rem;
+  width: 30rem !important;
+  top: 3.2rem !important;
   li {
     font-size: .8rem;
     i {

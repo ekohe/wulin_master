@@ -50,11 +50,6 @@
   $(function(){
 
     $('.modal').modal();
-    $('#notification-btn').dropdown({
-      constrainWidth: false, // Does not change width of dropdown to that of the activator
-      hover: false, // Activate on hover
-      belowOrigin: true, // Displays dropdown below the button
-    });
 
     $('#help-btn').on('click', function() {
       showHelpList();
@@ -74,7 +69,7 @@
     });
 
     $('#notification-btn').on('click', function() {
-      $('#notification-list').toggleClass('hide');
+      $('#notification-list').removeClass('hide');
     });
 
     function showHelpList() {
