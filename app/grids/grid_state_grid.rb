@@ -10,5 +10,4 @@ class GridStateGrid < WulinMaster::Grid
   column :name
 
   action :delete
-  action :filter
 end
