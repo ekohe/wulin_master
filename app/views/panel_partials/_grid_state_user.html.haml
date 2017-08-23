@@ -1,8 +1,8 @@
 %fieldset.panel_wrapper
-  .panel_btns
-    %span.copy_btn
-    %span.text="copy"
-    / =button_tag image_tag("copy.png"), type: 'button', class: 'btn copy_btn'
+  .panel_btns.center-align
+    %i.copy_btn.material-icons content_copy
+    -# %span.copy_btn
+    -# %span.text="copy"
 
 
 :javascript
@@ -10,7 +10,7 @@
     var $copyButton = $("#panel_grid_state_user .copy_btn");
     $copyButton.on("click", function(){
       if($(this).attr("disabled") == "disabled") return false;
-      
+
       $(this).attr("disabled", true);
       var state_grid = gridManager.getGrid("state_grid_in_grid_states");
       var user_grid = gridManager.getGrid("user_in_grid_states");
