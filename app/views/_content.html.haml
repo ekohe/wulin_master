@@ -18,3 +18,12 @@
     #error-content.modal-message Something happened.
   .modal-footer
     .modal-close.btn.right OK
+
+:javascript
+  $(function(){
+    $('.info-modal').modal({
+      ready: function(modal, trigger) {
+        modal.css('z-index', '9999');
+      }
+    });
+  });
