@@ -1036,6 +1036,10 @@ if (typeof Slick === "undefined") {
                   invalidateAllRows();
                 }
               }
+
+              // Ekohe Add: Add space to the the left for 1st column
+              columns[0].width += 10;
+
               updateCanvasWidth(true);
               render();
               trigger(self.onColumnsResized, {grid: self});
