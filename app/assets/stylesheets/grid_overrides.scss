@@ -329,7 +329,6 @@ $themes: (
   .slick-pager-status.with-filter, .slick-pager-clear-filter {
     color: $filter_green;
     display: inline-block;
-    padding: 6px 15px 6px 15px;
     .material-icons {
       font-size: 16px;
       padding-top: 1px;
@@ -337,6 +336,9 @@ $themes: (
     span {
       float: right;
     }
+  }
+  .slick-pager-clear-filter {
+    padding: 6px 15px 6px;    
   }
 }
 
