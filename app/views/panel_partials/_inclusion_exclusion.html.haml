@@ -1,8 +1,12 @@
 %fieldset.panel_wrapper
   .panel_btns.center-align{:"data-inclusion-grid" => panel.inclusion_grid, :"data-exclusion-grid" => panel.exclusion_grid }
     - component_names = panel.screen.components.map(&:name)
-    %i#add_btn.material-icons.disabled arrow_back
-    %i#remove_btn.material-icons.disabled arrow_forward
+    - if component_names.index(panel.inclusion_grid) < component_names.index(panel.exclusion_grid)
+      %i#add_btn.material-icons.disabled arrow_back
+      %i#remove_btn.material-icons.disabled arrow_forward
+    - else
+      %i#add_btn.material-icons.disabled arrow_forward
+      %i#remove_btn.material-icons.disabled arrow_back
 
 :javascript
   $(function(){
