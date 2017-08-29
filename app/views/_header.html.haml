@@ -49,9 +49,10 @@
 
   $(function(){
 
-    $('.modal').modal();
+    $('#help-modal').modal();
 
     $('#help-btn').on('click', function() {
+      $('#help-modal').modal('open');
       showHelpList();
     });
 

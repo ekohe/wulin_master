@@ -21,14 +21,15 @@
 
 #help-modal {
   border-radius: 0;
+  padding: 0;
   .modal-header {
     background-color: grey;
   }
   .modal-content {
     font-size: 1rem;
+    padding: 0.5rem 1rem;
     #help-list li {
       display: flex;
-      padding: 0.5rem 0 0.5rem 0;
       a {
         color: grey;
       }
@@ -39,7 +40,8 @@
         margin-right: 0.5rem;
       }
       span {
-        font-size: 0.8rem;
+        display: block;
+        padding-top: 0.1rem;
       }
     }
   }
