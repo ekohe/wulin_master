@@ -5,24 +5,9 @@ $(document).ready(function () {
 
   $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
 
-  $("#navigation #nav_toggle").hover(function(){
-    $(this).toggleClass("transparent");
-  });
-
-  $("#navigation #nav_toggle").toggle(function(){
-    var $toggle = $(this);
-    $("#navigation").animate({width:0});
-    $('#content').animate({left:0}, function(){
-      $toggle.toggleClass("open");
-      $(window).trigger("resize");
-    });
-  },function(){
-    var $toggle = $(this);
-    $("#navigation").animate({width:199});
-    $('#content').animate({left:200}, function(){
-      $toggle.toggleClass("open");
-      $(window).trigger("resize");
-    });
+  $("#menu-toggle").click(function(){
+    $('#content').toggleClass('extended-panel');
+    $("#navigation").toggle();
   });
 
   // On resize of the left side panel, resize the grid
@@ -58,22 +43,31 @@ function loadPageForHistoryState() {
 function load_page(url) {
   $("#screen_content").empty();
 
-  var indicators = $("#activity #indicators");
-  // init grid loader
-  indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
-  indicators.find("#init_menu").show();
+  // Ekohe Edit: Use screen_content_loader as new indicator
+
+  // var indicators = $("#activity #indicators");
+  // indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
+  // indicators.find("#init_menu").show();
+
+  $('<div />').attr('id', 'screen_content_loader_container')
+              .append($('<div />').attr('id', 'screen_content_loader'))
+              .prependTo($('#content'));
 
   $.ajax({
     type: 'GET',
     dataType: 'html',
     url: url,
     success: function(html) {
-      indicators.find("#init_menu_indicator").fadeOut();
+      // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
+      // indicators.find("#init_menu_indicator").fadeOut();
+      $('#screen_content_loader_container').remove();
       $("#screen_content").html(html);
       setTimeout(function() { trackGoogleAnalytics(); }, 250);
     },
     error: function() {
-      indicators.find("#init_menu_indicator").fadeOut();
+      // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
+      // indicators.find("#init_menu_indicator").fadeOut();
+      $('#screen_content_loader_container').remove();
       // displayErrorMessage("An error occured while trying to load page. Please try again.");
     }
   });
@@ -88,11 +82,10 @@ function trackGoogleAnalytics() {
 function deselectMenuItems() { $(".active").removeClass("active"); }
 
 function selectMenuItem(url) {
+  rootUrl = History.getRootUrl(),
+  relativeUrl = url.replace(rootUrl,'/');
   deselectMenuItems();
-  var $currentLink = $('#menu li.item a[data-active-url*="' + url + '"]');
-  if ($currentLink.size() === 0) {
-    $currentLink = $('#menu li.item a[href="' + url + '"]');
-  }
+  $currentLink = $('#menu li.item a[href="' + relativeUrl + '"]');
   $currentLink.parent().addClass('active');
 }
 
@@ -108,11 +101,14 @@ function initialize_menu() {
       return;
     }
 
-    $("#menu .active").removeClass("active");
-    $(this).parent().addClass("active");
     // State management
     History.pushState(null, null, currentUrl);
-    load_page(currentUrl);
+
+    // Ekohe Delete
+    // Since History.pushState triggers statechange event which calls load_page,
+    // We do not need to load_page here.
+    // load_page(currentUrl);
+
     return false;
   });
 
