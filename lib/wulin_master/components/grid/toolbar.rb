@@ -16,6 +16,7 @@ module WulinMaster
         send_mail: 'mail',
         edit: 'mode_edit',
         delete: 'delete',
+        switch: 'launch',
         audit: 'restore'
       }
 

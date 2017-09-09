@@ -6,7 +6,7 @@
         grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
       toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
-        [:create, :export, :add_detail].include?(item.options[:name].to_sym) || item.options[:global]
+        [:create, :export, :add_detail, :switch].include?(item.options[:name].to_sym) || item.options[:global]
       end
       user_id = respond_to?(:current_user) ? current_user.id : -1
     .grid-header
