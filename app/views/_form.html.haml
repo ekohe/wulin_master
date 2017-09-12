@@ -109,12 +109,12 @@
               = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
           .field_error
     .submit
-      .btn-flat.close CANCEL
+      .btn-flat.modal-close CANCEL
       - if is_new
-        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
+        %input.btn.modal-close{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
       - else
-        %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn.modal-close.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
 
 :javascript
   $('##{grid.name}_form select[data-required="true"]').chosen();

@@ -76,34 +76,26 @@ var Ui = {
     name = grid.name;
 
     $.get(grid.path + '/' + action + grid.query, function(data){
-      $( '#' + name + '_form').remove();
+      var $formModal = $('<div/>')
+        .addClass('modal')
+        .css({ overflow: 'hidden', width: '600px' })
+        .appendTo($('body'));
+      var $modalContent = $('<div/>')
+        .addClass('modal-content')
+        .appendTo($formModal);
 
-      $('body').append(data);
+      $modalContent.append(data);
 
-      scope = $( '#' + name + '_form');
-
-      if (options) {
-        width = options.form_dialog_width || 600;
-        height = options.form_dialog_height || (scope.outerHeight() + 40);
-      } else {
-        width = 600;
-        height = (scope.outerHeight() + 40);
-      }
-      scope.dialog({
-        height: height,
-        width: width,
-        show: "blind",
-        modal: true,
-        create: function(event, ui) {
+      $formModal.modal({
+        ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
-          if ($.isFunction(callback))
-            callback();
         },
-        close: function(event, ui) {
-          scope.dialog('destroy');
-          scope.remove();
+        complete: function() {
+          $formModal.remove();
         }
       });
+
+      $formModal.modal('open');
     });
   },
 

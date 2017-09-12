@@ -12,6 +12,11 @@
   }
 }
 
+.chzn-container-multi .chzn-choices .search-field .default {
+  font-size: 13px;
+  color: #444;
+}
+
 .chzn-container {
   top: 25px;
   .chzn-choices {
@@ -23,7 +28,7 @@
     .search-field {
       input {
         height: 1rem;
-        padding: 0.2rem 0.2rem 1rem 0.2rem;
+        padding: 0.2rem 0.2rem 1rem 0rem;
         color: black;
         border: 0;
         box-shadow: none;
