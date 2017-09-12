@@ -24,7 +24,7 @@ Given(/^I go to the homepage$/) do
 end
 
 When(/^I enter '([^"]*)' in '([^"]*)'$/) do |content, field|
-  within(:css, ".ui-dialog") do
+  within(:css, ".modal") do
     fill_in field, with: content
   end
 end
