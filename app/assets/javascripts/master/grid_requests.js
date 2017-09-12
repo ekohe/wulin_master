@@ -22,7 +22,7 @@ var Requests = {
             }
           } else {
             if (grid.loader.isDataLoaded()) {
-              setTimeout(function(){ Ui.closeDialog(grid.name); }, 100);
+              setTimeout(function(){ Ui.closeModal(grid.name); }, 100);
             }
           }
           displayNewNotification(grid.model + ' successfully created');

@@ -272,14 +272,10 @@ var Ui = {
     }, 100);
   },
 
-  // Close dialog
-  closeDialog: function(name) {
+  // Close Modal
+  closeModal: function(name) {
     var $form = $( '#' + name + '_form' );
-
     window._focused = {};
-
-    // $form.dialog("destroy");
-    // $form.remove();
     $form.closest('.modal').modal('close');
     $form.closest('.modal').remove();
   },
