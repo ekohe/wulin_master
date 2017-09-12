@@ -133,6 +133,8 @@ $themes: (
     input[type=text]:focus:not([readonly]) {
       border-bottom: 1px solid $filter_green;
       box-shadow: 0 1px 0 0 $filter_green;
+      font-size: 12px;
+      margin-left: -2px;
     }
     input[type=text]:focus:not([readonly]) + label {
       color: $filter_green;
@@ -157,15 +159,29 @@ $themes: (
 .slick-sort-indicator {
   display: block;
   position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 9px;
-  height: 8px;
+  right: 25px;
+  top: 25px;
   background: none;
   opacity: 0;
   cursor: pointer;
   i.material-icons {
-    font-size: 16px;
+    font-size: 14px;
+  }
+}
+
+.slick-drag-indicator:first {
+}
+
+.slick-drag-indicator {
+  display: block;
+  position: absolute;
+  right: 5px;
+  top: 30px;
+  background: none;
+  opacity: 0;
+  cursor: move;
+  i.material-icons {
+    font-size: 14px;
   }
 }
 

@@ -618,6 +618,7 @@ if (typeof Slick === "undefined") {
       function onMouseEnter() {
         $(this).addClass("ui-state-hover");
         // Ekohe Add: Controle visibility of sort button
+        $(this).find('.slick-drag-indicator').css("opacity", "0.5");
         if (!$(this).hasClass('slick-header-column-sorted')) {
           $(this).find('.slick-sort-indicator').css("opacity", "0.5");
         }
@@ -626,6 +627,7 @@ if (typeof Slick === "undefined") {
       function onMouseLeave() {
         $(this).removeClass("ui-state-hover");
         // Ekohe Add: Controle visibility of sort button
+        $(this).find('.slick-drag-indicator').css("opacity", "0.0");
         if (!$(this).hasClass('slick-header-column-sorted')) {
           $(this).find('.slick-sort-indicator').css("opacity", "0.0");
         }
@@ -678,7 +680,7 @@ if (typeof Slick === "undefined") {
         var m = columns[i];
         columnsById[m.id] = i;
 
-        // Ekohe Edit: Use new MD headers
+        // Ekohe Edit: Use new Material Design headers
 
         // var header = $("<div class='ui-state-default slick-header-column' />")
         //     .html("<span class='slick-column-name'>" + m.name + "</span>")
@@ -709,6 +711,7 @@ if (typeof Slick === "undefined") {
         if (i == 0) {
           header.css({'margin-left': '10px'}).width(header.width() - 10);
         }
+        headerColInput.width(header.width() - 30);
 
         if (options.enableColumnReorder || m.sortable) {
           header
@@ -720,10 +723,15 @@ if (typeof Slick === "undefined") {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator
           // header.append("<span class='slick-sort-indicator' />");
-          var $initSortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
-          var $iconWrapper = $('<div />').addClass('slick-sort-indicator').append($initSortIcon);
-          header.append($iconWrapper);
+          var $sortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
+          var $sortIndicator = $('<div />').addClass('slick-sort-indicator').append($sortIcon);
+          header.append($sortIndicator);
         }
+
+        // Ekohe Add: Drag indicator for reordering columns
+        var $dragIcon = $('<i />').addClass('material-icons').text('pause');
+        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
+        header.append($dragIndicator);
 
         // Ekohe Add: Disable filter input when 'filterable: false'
         if (m.filterable == false) {
