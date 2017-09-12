@@ -1354,7 +1354,7 @@ if (typeof Slick === "undefined") {
           //     .find(".slick-sort-indicator")
           //         .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
 
-          headerColumnEls.eq(columnIndex).find('.material-icons').remove();
+          headerColumnEls.eq(columnIndex).find('.slick-sort-indicator .material-icons').remove();
 
           var $sortIcon = $('<i class="material-icons"></i>');
           $sortIcon.text(col.sortAsc ? 'arrow_upward' : 'arrow_downward')

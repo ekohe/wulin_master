@@ -157,19 +157,17 @@ $themes: (
 }
 
 .slick-sort-indicator {
+  margin-bottom: 0;
   display: block;
   position: absolute;
   right: 25px;
-  top: 25px;
+  top: 24px;
   background: none;
   opacity: 0;
   cursor: pointer;
   i.material-icons {
     font-size: 14px;
   }
-}
-
-.slick-drag-indicator:first {
 }
 
 .slick-drag-indicator {
