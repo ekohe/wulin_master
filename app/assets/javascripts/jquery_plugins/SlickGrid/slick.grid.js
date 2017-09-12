@@ -729,7 +729,7 @@ if (typeof Slick === "undefined") {
         }
 
         // Ekohe Add: Drag indicator for reordering columns
-        var $dragIcon = $('<i />').addClass('material-icons').text('pause');
+        var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
         var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
         header.append($dragIndicator);
 
