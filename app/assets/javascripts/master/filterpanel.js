@@ -24,6 +24,7 @@
       $grid.onColumnsReordered.subscribe(function(){
         // Ekohe Add: Event hander defined in init() not works onColumnsReordered
         setupEventHander();
+        $grid.setupColumnSort();
         generateFilters();
       });
       $grid.onColumnsResized.subscribe(function(){

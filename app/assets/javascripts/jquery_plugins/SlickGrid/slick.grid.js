@@ -3982,6 +3982,7 @@ if (typeof Slick === "undefined") {
       "makeActiveCellNormal": makeActiveCellNormal,
       "renderLoadingRows": renderLoadingRows,
       "getFilteredInputs": getFilteredInputs,
+      "setupColumnSort": setupColumnSort,
       "trigger": trigger
     });
 
