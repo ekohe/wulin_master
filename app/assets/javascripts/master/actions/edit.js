@@ -29,46 +29,36 @@ var batchUpdateByAjax = function(grid, version) {
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
-      $('body').append(data);
-      scope = $( '#' + name + '_form');
 
-      if (grid.options) {
-        width = grid.options.form_dialog_width || 600;
-        height = grid.options.form_dialog_height || (scope.outerHeight() + 40);
-      } else {
-        width = 600;
-        height = (scope.outerHeight() + 40);
-      }
-      scope.dialog({
-        height: height,
-        width: width,
-        show: "blind",
-        modal: true,
-        create: function(event, ui) {
+      var $editModal = $('<div/>')
+        .addClass('modal')
+        .css({ overflow: 'hidden', width: '600px' })
+        .appendTo($('body'));
+      var $modalContent = $('<div/>')
+        .addClass('modal-content')
+        .appendTo($editModal);
+
+      $modalContent.append(data);
+      var scope = $( '#' + name + '_form');
+
+      $editModal.modal({
+        ready: function(modal, trigger) {
           Ui.setupForm(grid, true);
-
-          // Check the checkbox when update the file
           checkTheBox(name);
-
-          // Submit the form
           submitForm(grid, ids, selectedIndexes);
-        },
-        open: function(event, ui) {
-
-          // Fill values
           setTimeout(function(){
             fillValues(scope, grid, selectedIndexes);
           }, 1000);
-
           showFlagCheckBox(scope, ids);
         },
-        close: function(event, ui) {
-          scope.dialog('destroy');
-          scope.remove();
+        complete: function() {
+          $editModal.remove();
         }
       });
-    });
 
+      $editModal.modal('open');
+
+    });
   }
 };
 
@@ -225,16 +215,6 @@ var checkTheBox = function(name) {
   });
 };
 
-var grepValues = function(formData, jqForm, options) {
-  var flagDom;
-  for(var i = formData.length - 1; i >= 0; i--) {
-    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', scope);
-    if(flagDom.not(':checked').size() > 0) {
-      formData.splice(i, 1);
-    }
-  }
-};
-
 var submitForm = function(grid, ids, selectedIndexes) {
   var name = grid.name,
   $scope = $( '#' + name + '_form'),
@@ -244,11 +224,9 @@ var submitForm = function(grid, ids, selectedIndexes) {
       dateType: 'json',
       url: grid.path + "/" + ids + ".json"+grid.query,
       data: {_method: 'PUT'},
-      beforeSubmit: grepValues,
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
-
           grid.loader.reloadData();
           if (selectedIndexes.length > 1) {
             displayNewNotification(selectedIndexes.length + ' ' + grid.model.toLowerCase() + 's updated');
@@ -261,8 +239,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
           saveMessage('Error updating ' + grid.model.toLowerCase(), 'error');
           grid.loader.reloadData();
         }
-        $scope.dialog("destroy");
-        $scope.remove();
+        $scope.closest('.modal').modal('close');
       }
     };
     $form.ajaxSubmit(options);
@@ -286,7 +263,5 @@ var compareArray = function(x, y) {
     return x === y;
   }
 };
-
-
 
 WulinMaster.ActionManager.register(WulinMaster.actions.Edit);

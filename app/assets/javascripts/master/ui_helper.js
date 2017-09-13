@@ -72,30 +72,27 @@ var Ui = {
 
   // Create and open dialog
   openDialog: function(grid, action, options, callback) {
-    var scope, width, height, name;
-    name = grid.name;
-
     $.get(grid.path + '/' + action + grid.query, function(data){
-      var $formModal = $('<div/>')
+      var $createModal = $('<div/>')
         .addClass('modal')
         .css({ overflow: 'hidden', width: '600px' })
         .appendTo($('body'));
       var $modalContent = $('<div/>')
         .addClass('modal-content')
-        .appendTo($formModal);
+        .appendTo($createModal);
 
       $modalContent.append(data);
 
-      $formModal.modal({
+      $createModal.modal({
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
         },
         complete: function() {
-          $formModal.remove();
+          $createModal.remove();
         }
       });
 
-      $formModal.modal('open');
+      $createModal.modal('open');
     });
   },
 
