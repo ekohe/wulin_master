@@ -1,12 +1,11 @@
 (function($) {
   // WulinMaster.FilterPanel
   $.extend(true, window, {
-      WulinMaster: {
-          FilterPanel: FilterPanel
-      }
+    WulinMaster: {
+      FilterPanel: FilterPanel
+    }
   });
 
-  // Ekohe Edit: Remove triggerElement form params
   // function FilterPanel(grid, loader, triggerElement, currentFilters) {
   function FilterPanel(grid, loader, currentFilters) {
     var filterWidthOffset = -3; // 2 pixels padding on the left and one pixel for the border on the left
@@ -23,47 +22,22 @@
       generateFilters();
 
       $grid.onColumnsReordered.subscribe(function(){
+        // Ekohe Add: Event hander defined in init() not works onColumnsReordered
+        setupEventHander();
         generateFilters();
       });
       $grid.onColumnsResized.subscribe(function(){
         generateFilters();
       });
 
-      // Ekohe Delete: Use new MD headers instead of headerRow
+      // Ekohe Edit: Abstract event handers to method
+      setupEventHander();
+    }
 
-      // if (currentFilters) {
-      //   $grid.setHeaderRowVisibility(true);
-      // }
-
-      // triggerElement.click(function() {
-      //   if($(this).hasClass('toolbar_icon_disabled')) return false;
-      //
-      //   if ($($grid.getHeaderRow()).is(":visible")) {
-      //       $grid.setHeaderRowVisibility(false);
-      //       currentFilters = null;
-      //       trigger(self.onFilterPanelClosed, {filterData:currentFiltersApplied});
-      //   } else {
-      //       $grid.setHeaderRowVisibility(true);
-      //       // This corrects the scrollLeft of the filter secondary header row.
-      //       // The problem is that if the user scrolls on the left then click on filter, the
-      //       //   filters wouldn't have scrolled while there were hidden so they appear shifted.
-      //       // This corrects this problem by setting the scrollLeft value of the filters panel
-      //       //   to the scrollLeft of the header row
-      //       headerScroller = $($grid.getHeaderRow()).parent()[0];
-      //       headerScroller.scrollLeft = $(headerScroller).prev()[0].scrollLeft;
-      //   }
-      //   return false;
-      // });
+    // Ekohe Add
+    function setupEventHander() {
 
       var delay = (function(){
-        var timer = 0;
-        return function(callback, ms){
-          clearTimeout (timer);
-          timer = setTimeout(callback, ms);
-        };
-      })();
-
-      var repositionDelay = (function(){
         var timer = 0;
         return function(callback, ms){
           clearTimeout (timer);
@@ -97,30 +71,13 @@
           }, 1000);
         }
       });
-
-      // Bind mousemove event to body to adjust reset filter panel position
-      $input.on('focus', function(){
-        var $headerRowScroller = $($grid.getHeaderRow()).parent();
-        var $viewPort = $($grid.getCanvasNode()).parent();
-        $('body').on('mousemove', function(){
-          repositionDelay(function(){
-            $headerRowScroller[0].scrollLeft = $viewPort[0].scrollLeft;
-          }, 300);
-        });
-      });
-
-      // Unbind mousemove event of body
-      $input.on('blur', function(){
-        $('body').off('mousemove');
-      });
-
     }
 
     function trigger(evt, args, e) {
-        e = e || new Slick.EventData();
-        args = args || {};
-        args.filterPanel = self;
-        return evt.notify(args, e, self);
+      e = e || new Slick.EventData();
+      args = args || {};
+      args.filterPanel = self;
+      return evt.notify(args, e, self);
     }
 
     function generateFilters() {
@@ -178,9 +135,8 @@
       });
 
       // Fills up and display the secondary row
-      $headerRow.width(headerWidth);
-      $headerRow.html(html).show();
-
+      // $headerRow.width(headerWidth);
+      // $headerRow.html(html).show();
     }
 
     // This method update the current filters applied to the currentFiltersApplied array
