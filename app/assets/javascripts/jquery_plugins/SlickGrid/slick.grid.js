@@ -616,24 +616,25 @@ if (typeof Slick === "undefined") {
 
     function createColumnHeaders() {
       function onMouseEnter() {
-        $(this).addClass("ui-state-hover");
-        // Ekohe Add: Controle visibility of sort button
-        $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
-        $(this).find('.slick-sort-indicator').show();
-        if ($(this).hasClass('slick-header-column-sorted')) {
-          $(this).find('.slick-sort-indicator').css({ right: '30px' });
+        // Ekohe Edit: Controle visibility of sort/drag buttons
+        if (!$(this).find('input').is(':focus')) {
+          $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
+          $(this).find('.slick-sort-indicator').show();
+          if ($(this).hasClass('slick-header-column-sorted')) {
+            $(this).find('.slick-sort-indicator').css({ right: '30px' });
+          }
         }
       }
 
       function onMouseLeave() {
-        $(this).removeClass("ui-state-hover");
-        // Ekohe Add: Controle visibility of sort/drag button
-        if ($(this).hasClass('slick-header-column-sorted')) {
-          $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
-          $(this).find('.slick-sort-indicator').css({ right: '15px' });
-        } else {
-          $(this).find('.slick-drag-indicator').hide();
-          $(this).find('.slick-sort-indicator').hide();
+        // Ekohe Edit: Controle visibility of sort/drag button
+        if (!$(this).find('input').is(':focus')) {
+          if ($(this).hasClass('slick-header-column-sorted')) {
+            $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
+            $(this).find('.slick-sort-indicator').css({ right: '15px' });
+          } else {
+            $(this).find('.slick-drag-indicator, .slick-sort-indicator').hide();
+          }
         }
       }
 
@@ -741,6 +742,12 @@ if (typeof Slick === "undefined") {
         if (m.filterable == false) {
           headerColInput.remove();
         }
+
+        // Ekohe Add: Text field takes over the full row width and the icons disappear
+        headerColInput.on('focus', function() {
+          $(this).siblings('.slick-sort-indicator, .slick-drag-indicator').hide();
+          $(this).width($(this).parent().width());
+        })
 
         trigger(self.onHeaderCellRendered, {
           "node": header[0],
