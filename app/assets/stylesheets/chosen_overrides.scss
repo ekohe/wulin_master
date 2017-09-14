@@ -1,23 +1,5 @@
 .chzn-container {
   vertical-align: middle;
-  .chzn-drop {
-    z-index: 99999 + 1;
-  }
-  .chzn-results li {
-    line-height: 125%;
-    padding: 5px 7px;
-  }
-  .chzn-results .disabled {
-    color: #CCC;
-  }
-}
-
-.chzn-container-multi .chzn-choices .search-field .default {
-  font-size: 13px;
-  color: #444;
-}
-
-.chzn-container {
   top: 25px;
   .chzn-choices {
     background: none;
@@ -36,6 +18,7 @@
     }
   }
   .chzn-drop {
+    z-index: 100000;
     border: oldlace;
     border-radius: 0;
     li {
@@ -67,6 +50,24 @@
   }
   .chzn-single-with-drop {
     padding-left: 0.2rem;
+  }
+  .chzn-results li {
+    line-height: 125%;
+    padding: 5px 7px;
+  }
+  .chzn-results .disabled {
+    color: #CCC;
+  }
+}
+
+.chzn-container-multi {
+  .chzn-choices {
+    .search-field {
+      .default {
+        font-size: 13px;
+        color: #444;
+      }
+    }
   }
 }
 

@@ -32,7 +32,7 @@ var batchUpdateByAjax = function(grid, version) {
 
       var $editModal = $('<div/>')
         .addClass('modal')
-        .css({ overflow: 'hidden', width: '600px' })
+        .width('600px')
         .appendTo($('body'));
       var $modalContent = $('<div/>')
         .addClass('modal-content')

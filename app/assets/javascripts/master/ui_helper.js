@@ -75,7 +75,7 @@ var Ui = {
     $.get(grid.path + '/' + action + grid.query, function(data){
       var $createModal = $('<div/>')
         .addClass('modal')
-        .css({ overflow: 'hidden', width: '600px' })
+        .width('600px')
         .appendTo($('body'));
       var $modalContent = $('<div/>')
         .addClass('modal-content')
