@@ -618,18 +618,22 @@ if (typeof Slick === "undefined") {
       function onMouseEnter() {
         $(this).addClass("ui-state-hover");
         // Ekohe Add: Controle visibility of sort button
-        $(this).find('.slick-drag-indicator').css("opacity", "0.5");
-        if (!$(this).hasClass('slick-header-column-sorted')) {
-          $(this).find('.slick-sort-indicator').css("opacity", "0.5");
+        $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
+        $(this).find('.slick-sort-indicator').show();
+        if ($(this).hasClass('slick-header-column-sorted')) {
+          $(this).find('.slick-sort-indicator').css({ right: '30px' });
         }
       }
 
       function onMouseLeave() {
         $(this).removeClass("ui-state-hover");
-        // Ekohe Add: Controle visibility of sort button
-        $(this).find('.slick-drag-indicator').css("opacity", "0.0");
-        if (!$(this).hasClass('slick-header-column-sorted')) {
-          $(this).find('.slick-sort-indicator').css("opacity", "0.0");
+        // Ekohe Add: Controle visibility of sort/drag button
+        if ($(this).hasClass('slick-header-column-sorted')) {
+          $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
+          $(this).find('.slick-sort-indicator').css({ right: '15px' });
+        } else {
+          $(this).find('.slick-drag-indicator').hide();
+          $(this).find('.slick-sort-indicator').hide();
         }
       }
 
@@ -719,6 +723,11 @@ if (typeof Slick === "undefined") {
             .on('mouseleave', onMouseLeave);
         }
 
+        // Ekohe Add: Drag indicator for reordering columns
+        var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
+        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').hide().append($dragIcon);
+        header.append($dragIndicator);
+
         if (m.sortable) {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator
@@ -727,11 +736,6 @@ if (typeof Slick === "undefined") {
           var $sortIndicator = $('<div />').addClass('slick-sort-indicator').append($sortIcon);
           header.append($sortIndicator);
         }
-
-        // Ekohe Add: Drag indicator for reordering columns
-        var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
-        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
-        header.append($dragIndicator);
 
         // Ekohe Add: Disable filter input when 'filterable: false'
         if (m.filterable == false) {
@@ -1337,7 +1341,7 @@ if (typeof Slick === "undefined") {
       headerColumnEls
           .removeClass("slick-header-column-sorted")
           .find(".slick-sort-indicator")
-            .css('opacity', '0') // Ekohe Add: Use mateiral icon for sort indicators
+            .hide() // Ekohe Add: Use mateiral icon for sort indicators
             .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
 
       $.each(sortColumns, function(i, col) {
@@ -1355,13 +1359,16 @@ if (typeof Slick === "undefined") {
           //         .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
 
           headerColumnEls.eq(columnIndex).find('.slick-sort-indicator .material-icons').remove();
+          headerColumnEls.eq(columnIndex).find('.slick-drag-indicator').show();
+          headerColumnEls.eq(columnIndex).find('.slick-drag-indicator .material-icons').text('');
 
           var $sortIcon = $('<i class="material-icons"></i>');
           $sortIcon.text(col.sortAsc ? 'arrow_upward' : 'arrow_downward')
           headerColumnEls.eq(columnIndex)
             .addClass("slick-header-column-sorted")
             .find(".slick-sort-indicator")
-              .css('opacity', '0.5')
+              .css({ right: '15px' })
+              .show()
               .append($sortIcon)
               .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
         }

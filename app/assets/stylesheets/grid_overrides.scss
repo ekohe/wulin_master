@@ -179,33 +179,39 @@ $themes: (
   margin-bottom: 0;
   display: block;
   position: absolute;
-  right: 25px;
-  top: 24px;
-  background: none;
-  opacity: 0;
+  right: 30px;
+  top: 22px;
   cursor: pointer;
   i.material-icons {
     font-size: 14px;
+    color: grey;
+    background-color: white;
   }
 }
 
 .slick-drag-indicator {
   display: block;
   position: absolute;
-  right: 5px;
-  top: 29px;
-  background: none;
-  opacity: 0;
+  right: 10px;
+  top: 28px;
+  background-color: white;
   cursor: move;
   i.material-icons {
     font-size: 14px;
+    color: grey;
     transform: rotate(90deg);
   }
 }
 
+.slick-resizable-handle {
+  width: 10px;
+  background-color: white;
+}
+
 .slick-sort-indicator-desc,.slick-sort-indicator-asc {
-  opacity: 0.5;
+  // opacity: 0.5;
   background: none;
+  background-color: white;
 }
 
 .slick-cell {
