@@ -49,37 +49,28 @@ body {
   animation: spin 2s linear infinite;
 }
 
-// Form
+// GridStateUserPanel
 
-form {
-  .field_error {
-    color: red;
-    font-size: 11px;
-    display: inline-block;
-    margin-left: 5px;
-    max-width: 85px;
+#panel_grid_state_user {
+  span {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .base_error {
-    padding-left: 130px;
-    line-height: 30px;
-    color: red;
-  }
-}
-
-// Confirm & Error Modal
-
-.modal.info-modal {
-  width: 400px;
-  .modal-title {
-    font-size: 1.5rem;
-  }
-  .modal-message {
-    font-size: 1rem;
-  }
-  .modal-footer {
-    padding-right: 0;
-    .btn, .btn-flat {
-      margin-left: 15px;
+  i.copy_btn {
+    width: 32px;
+    height: 32px;
+    margin-top: 15px;
+    cursor: pointer;
+    &[disabled] {
+      cursor: default;
+      opacity: 0.4;
     }
+  }
+  span.text {
+    font-size: 1.5em;
+    color: #555;
+    margin-top: 3px;
+    width: 32px;
   }
 }
