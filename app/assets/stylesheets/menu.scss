@@ -17,9 +17,8 @@ $menu_item_active_text: #2196F3;
   left: 0;
   bottom: 0;
   width: $menu_width;
-  font-size: 1.2em;
+  font-size: 12px;
   border-right: 1px solid #cdc9c9;
-  line-height: 1.7em;
   z-index: -1;
   h1 {
     font-size: 1.3em;
@@ -79,7 +78,7 @@ $menu_item_active_text: #2196F3;
       li {
         position: relative;
         &.submenu {}
-        font-weight: bold;
+        // font-weight: bold;
         margin-bottom: 2px;
         a {
           .indicator {

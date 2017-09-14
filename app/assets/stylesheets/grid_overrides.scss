@@ -115,6 +115,25 @@ $themes: (
   @include theme($key, $value);
 }
 
+/* Grid Container */
+
+.grid_container {
+  float: left;
+  width: 100%;
+  .pager {
+    height: 27px;
+  }
+}
+
+/* Grid Header */
+
+.grid-header {
+  background: rgba(255, 255, 255, 0.1);
+  h2 {
+    margin-top: 7px;
+  }
+}
+
 /* Grid Column Headers */
 
 .slick-header {
