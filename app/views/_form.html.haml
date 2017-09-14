@@ -1,6 +1,9 @@
 :ruby
   model_name = grid.model.model_name.singular
   columns = grid.columns.dup.delete_if {|x| x.name.to_s == 'id' }
+  if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
+    columns.select!{|x| version_columns.include?(x.name)}
+  end
   datepicker_str = ''
   object = grid.model.new
   is_new = params["action"] === 'wulin_master_new_form'
