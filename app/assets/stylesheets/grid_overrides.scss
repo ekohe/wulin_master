@@ -41,13 +41,18 @@ $bg_colors: (
   .#{$name} {
     .grid-header {
       background: rgba($color, .1);
-      // background: lighten($color, 65%);
     }
     .slick-header {
       background: rgba($color, .1);
     }
     .slick-header-column {
       background: none;
+      .slick-drag-indicator,.slick-resizable-handle {
+        background: rgba($color, .0);
+      }
+      i.material-icons {
+        background: rgba($color, .0);
+      }
     }
     .slick-pager {
       background: rgba($color, .1);
@@ -205,12 +210,6 @@ $themes: (
 
 .slick-resizable-handle {
   width: 10px;
-  background-color: white;
-}
-
-.slick-sort-indicator-desc,.slick-sort-indicator-asc {
-  // opacity: 0.5;
-  background: none;
   background-color: white;
 }
 

@@ -1348,8 +1348,9 @@ if (typeof Slick === "undefined") {
       headerColumnEls
           .removeClass("slick-header-column-sorted")
           .find(".slick-sort-indicator")
-            .hide() // Ekohe Add: Use mateiral icon for sort indicators
-            .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
+             // Ekohe EDIT: Use mateiral icon for sort indicators
+             // .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
+            .hide();
 
       $.each(sortColumns, function(i, col) {
         if (col.sortAsc == null) {
@@ -1376,8 +1377,7 @@ if (typeof Slick === "undefined") {
             .find(".slick-sort-indicator")
               .css({ right: '15px' })
               .show()
-              .append($sortIcon)
-              .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
+              .append($sortIcon);
         }
       });
     }
