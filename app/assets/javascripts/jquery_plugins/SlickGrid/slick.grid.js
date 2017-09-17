@@ -619,10 +619,7 @@ if (typeof Slick === "undefined") {
         // Ekohe Edit: Controle visibility of sort/drag buttons
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
-          $(this).find('.slick-sort-indicator').show();
-          if ($(this).hasClass('slick-header-column-sorted')) {
-            $(this).find('.slick-sort-indicator').css({ right: '30px' });
-          }
+          $(this).find('.slick-sort-indicator').css({ right: '30px' }).show();
         }
       }
 
@@ -1346,11 +1343,11 @@ if (typeof Slick === "undefined") {
 
       var headerColumnEls = $headers.children();
       headerColumnEls
-          .removeClass("slick-header-column-sorted")
-          .find(".slick-sort-indicator")
-             // Ekohe EDIT: Use mateiral icon for sort indicators
-             // .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
-            .hide();
+        .removeClass("slick-header-column-sorted")
+        .find(".slick-sort-indicator")
+           // Ekohe EDIT: Use mateiral icon for sort indicators
+           // .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
+          .hide();
 
       $.each(sortColumns, function(i, col) {
         if (col.sortAsc == null) {
@@ -1367,17 +1364,20 @@ if (typeof Slick === "undefined") {
           //         .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
 
           headerColumnEls.eq(columnIndex).find('.slick-sort-indicator .material-icons').remove();
-          headerColumnEls.eq(columnIndex).find('.slick-drag-indicator').show();
-          headerColumnEls.eq(columnIndex).find('.slick-drag-indicator .material-icons').text('');
 
           var $sortIcon = $('<i class="material-icons"></i>');
           $sortIcon.text(col.sortAsc ? 'arrow_upward' : 'arrow_downward')
           headerColumnEls.eq(columnIndex)
             .addClass("slick-header-column-sorted")
             .find(".slick-sort-indicator")
-              .css({ right: '15px' })
               .show()
               .append($sortIcon);
+
+          // Move the sort indicator to right when grid first loaded
+          var $sortIndicator = $sortIcon.parent();
+          if (!$sortIndicator.siblings('.slick-drag-indicator').is(':visible')) {
+            $sortIndicator.css({right: '15px'})
+          }
         }
       });
     }
