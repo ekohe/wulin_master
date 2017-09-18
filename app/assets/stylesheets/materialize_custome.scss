@@ -10,7 +10,7 @@
     }
   }
   .modal-content {
-    padding: 0;
+    padding: 0 1.5rem;
     h5 {
       margin-bottom: 3rem;
     }
@@ -19,7 +19,8 @@
     }
   }
   .modal-footer {
-    padding-right: 1.5rem;
+    padding: 0 1.5rem;
+    background-color: white;
   }
 }
 

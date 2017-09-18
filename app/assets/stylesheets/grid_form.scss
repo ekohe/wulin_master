@@ -2,7 +2,6 @@
 
 .modal-content {
   .create_form {
-    padding: 0 2rem;
     .title {
       padding-top: 1em;
       padding-bottom: 1em;
@@ -10,7 +9,6 @@
       margin-bottom: 0;
     }
     .field {
-      // padding: 1em 0 1em 0;
       margin: 0;
       .chzn-container {
         top: 2.5rem;
@@ -24,12 +22,6 @@
       float: right;
       padding: 3em 0;
     }
-  }
-}
-
-.ui-dialog {
-  .create_form.ui-dialog-content {
-    padding: 1em 3em;
   }
 }
 
@@ -54,49 +46,3 @@
     }
   }
 }
-
-// .create_form {
-//   display: none;
-//   // background-color: #ededed !important;
-//   // overflow-y: auto !important
-//   form {
-//     padding: 20px 0;
-//     .field {
-//       padding: 5px 0;
-//       label {
-//         width: 120px;
-//         margin-right: 5px;
-//         text-align: right;
-//         display: inline-block;
-//         padding-top: 5px;
-//         vertical-align: top;
-//       }
-//       input[type=text] {
-//         width: 220px;
-//         padding: 3px 2px;
-//       }
-//
-//
-//     }
-//     .submit {
-//       padding: 10px 0 10px 130px;
-//     }
-//     .actions {
-//       margin-top: 5px;
-//       padding: 0 50px;
-//     }
-//   }
-// }
-//
-// .input_clean_up {
-//   display: inline-block;
-//   vertical-align: middle;
-//   width: 12px;
-//   height: 13px;
-//   font-size: 1px;
-//   background: image-url('chosen-sprite.png') right top no-repeat;
-//
-//   &:hover {
-//     background-position: right -11px;
-//   }
-// }

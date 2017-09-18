@@ -7,7 +7,7 @@
   custom_states.sort_by! { |state| state[1] }
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
 
-.grid_states_switcher
+.grid-states-switcher
   %a#current-state.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
@@ -27,7 +27,7 @@
         %i.material-icons.left add_box
         ADD VIEW
 
-#create-modal.modal
+#create-state-modal.grid-states-modal.modal
   .modal-content
     %h5 Create a new view
     .input-field
@@ -37,7 +37,7 @@
     #create-btn.btn.right.disabled Create
     .modal-close.btn-flat Cancel
 
-#edit-modal.modal
+#edit-state-modal.grid-states-modal.modal
   .modal-content
     %h5 Edit view
     .input-field
@@ -60,7 +60,7 @@
     var newName;
 
     $("#add-view-btn").on('click', function() {
-      $('#create-modal').modal('open');
+      $('#create-state-modal').modal('open');
     });
 
     $("#current-state").on('click', function() {
@@ -88,14 +88,14 @@
 
       $.post('/wulin_master/grid_states_manages/create', data, function(response){
         if (response == 'success') {
-          $('#create-modal').modal('close');
+          $('#create-state-modal').modal('close');
           location.reload();
         }
       });
     });
 
     $('.edit-icon-container').on('click', function() {
-      $('#edit-modal').modal('open');
+      $('#edit-state-modal').modal('open');
       id = $(this).attr('data-state-id');
       oldName = $(this).attr('data-state-name');
       $('#view-name-label-edit').addClass('active');
@@ -131,7 +131,7 @@
           if ("#{current_state.id}" == id) {
             $('#current-state span').text(newName);
           }
-          $('#edit-modal').modal('close');
+          $('#edit-state-modal').modal('close');
         }
       });
     });
@@ -140,7 +140,7 @@
       var data = { id: id }
       $.post('/wulin_master/grid_states_manages/destroy', data, function(response){
         if (response == 'success') {
-          $('#edit-modal').modal('close');
+          $('#edit-state-modal').modal('close');
           location.reload();
         }
       });
