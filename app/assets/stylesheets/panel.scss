@@ -5,29 +5,21 @@
   fieldset.panel_wrapper {
     height: 100%;
     margin: 0;
-    padding: 0;
-    position: relative;
     border: 1px solid #E0E0E0;
     .panel_btns {
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
       i {
-        width: 100%;
-        margin-top: 10px;
         cursor: pointer;
         opacity: 0.7;
       }
       i.disabled {
         cursor: default;
-        opacity: 0.3;
+        opacity: 0.4;
       }
     }
   }
   .panel-header {
     position: relative;
     height: 40px;
-    background: image-url("ui/panel_bar_bg.png");
     h2 {
       padding-top: 10px;
       padding-left: 10px;
@@ -35,7 +27,6 @@
       font-weight: bold;
       color: #555555;
       float: left;
-      @include text-shadow(#efefef 1px 1px 0);
     }
   }
 }
