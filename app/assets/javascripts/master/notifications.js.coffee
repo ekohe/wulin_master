@@ -2,7 +2,7 @@ notifications = []
 duration = 3 # Seconds
 
 container = ->
-  $('#notificationContainer')
+  $('#notification-container')
 
 isContainerCreated = ->
   container().length > 0
@@ -18,7 +18,7 @@ initializeContainer = ->
   if isContainerCreated()
     return true
   containerElement = $('<div/>')
-  containerElement.attr('id', 'notificationContainer')
+  containerElement.attr('id', 'notification-container')
   $('body').append(containerElement)
 
 discardNotification = (notification) ->

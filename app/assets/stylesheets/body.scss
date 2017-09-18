@@ -74,3 +74,20 @@ body {
     width: 32px;
   }
 }
+
+// Notification
+
+#notification-container {
+  position: absolute;
+  bottom: 0;
+  left: 60%;
+  margin-left: -250px;
+  width: 300px;
+  z-index: 1002;
+  .notification {
+    padding: 13px 20px 13px 20px;
+    background: #333333;
+    box-shadow: 1px 2px 5px black;
+    color: white;
+  }
+}
