@@ -13,8 +13,6 @@ $(document).ready(function () {
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {
     $("#content").css('left', $("#navigation").width()+1);
-    $("#activity").css('width', $("#navigation").width());
-    $("#user_nav").css('width', $("#navigation").width());
     $("#navigation").css('height', '100%');
   });
 
