@@ -13,7 +13,6 @@
       %h2= grid.title
       - grid.header_actions.each do |a|
         = render("/action_partials/#{a[:name]}", :grid => grid) #rescue nil
-      %span.tb_prev.hidden
       .toolbar-wrapper
         .toolbar-global(data-grid="#{@grid_name}")
           %ul
@@ -28,7 +27,6 @@
               %li.toolbar_item
                 =link_to 'javascript:void(0);', item.anchor_tag_options do
                   %i.material-icons= item.icon.presence || 'help'
-      %span.tb_next.hidden
       %a.selection-info{href: "#"}
   .grid
   .pager
@@ -46,6 +44,3 @@
                              #{grid.behavior_configs.to_json.html_safe},
                              #{grid.options.to_json.html_safe},
                              #{user_id});
-
-  // Initial adjusting toolbar
-  WulinMaster.dynamicToolbar.reset('#{grid.name}', true);

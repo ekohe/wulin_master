@@ -4,10 +4,11 @@ $toolbar_button_width: 35px;
 $toolbar_button_height: 30px;
 
 .grid-header {
-  position: relative;
   height: 70px;
+  &.multi-selected {
+    background-color: rgba(0, 192, 212, 0.1);
+  }
   h2 {
-    margin-bottom: 0px;
     padding-top: $margin;
     padding-left: 20px;
     font-size: 16px;
@@ -64,43 +65,4 @@ $toolbar_button_height: 30px;
       }
     }
   }
-  span.tb_prev, span.tb_next {
-    position: absolute;
-    cursor: default;
-    top: 20px;
-    width: 16px;
-    height: 16px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  span.tb_prev {
-    background: image-url("ui/prev_icon.png") no-repeat top center;
-    float: left;
-  }
-  span.tb_next {
-    background: image-url("ui/next_icon.png") no-repeat top center;
-    right: 5px;
-  }
-}
-
-.grid-header.multi-selected {
-  background-color: rgba(0, 192, 212, 0.1);
-}
-
-.toolbar_icon_disabled {
-  color: #8dcdeb;
-  cursor: default !important;
-}
-
-.add_detail_action {
-  min-width: 75px;
-}
-
-.configure_icon_s {
-  background: image-url("ui/configure_icon_s.png") no-repeat top center;
-}
-
-.reset_icon_s {
-  background: image-url("ui/reset_icon_s.png") no-repeat top center;
 }
