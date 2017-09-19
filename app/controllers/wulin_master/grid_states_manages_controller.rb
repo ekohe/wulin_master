@@ -63,13 +63,6 @@ module WulinMaster
       self.response_body = $!.message
     end
 
-    def manage
-      @current_user = current_user
-      @grid_name = params[:grid]
-      @states_options = grid_states_options(@current_user.id, @grid_name)
-      render '/manage_grid_states', layout: nil
-    end
-
     def batch_update
       params[:grid_states] ||= {}
       all_states = GridState.for_user_and_grid(current_user.id, params[:grid_name])
