@@ -58,5 +58,5 @@ window.displayNewNotification = (message, type, always) ->
   notification.bind('click', -> discardNotification(notification))
   timedDiscard = ->
     discardNotification(notification)
-  setTimeout(timedDiscard, duration*1000) unless always
+  setTimeout(timedDiscard, duration*2000) unless always
   true

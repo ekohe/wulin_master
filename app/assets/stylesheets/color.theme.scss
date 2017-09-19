@@ -1,0 +1,123 @@
+@import 'base';
+@import 'materialize/components/color';
+
+//////////////////////
+// Grid Color Themes
+//////////////////////
+
+/* Selection colors */
+
+$selection_colors: (
+  selection-teal: color('teal', 'base'),
+  selection-blue-grey: color('blue-grey', 'base'),
+  selection-indigo: color('indigo', 'base')
+);
+
+@mixin selection_colors($name, $color) {
+  .#{$name} {
+    .slick-cell {
+      &.selected {
+        background: lighten(rgba($color, .2), 10%);
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+@each $key, $value in $selection_colors {
+  @include selection_colors($key, $value);
+}
+
+/* Background colors */
+
+$bg_colors: (
+  bg-teal: color('teal', 'base'),
+  bg-blue-grey: color('blue-grey', 'base'),
+  bg-indigo: color('indigo', 'base')
+);
+
+@mixin bg_colors($name, $color) {
+  .#{$name} {
+    .grid-header {
+      background: rgba($color, .1);
+    }
+    .slick-header {
+      background: rgba($color, .1);
+    }
+    .slick-header-column {
+      background: none;
+      .slick-drag-indicator,.slick-resizable-handle {
+        background: rgba($color, .0);
+      }
+      i.material-icons {
+        background: rgba($color, .0);
+      }
+    }
+    .slick-pager {
+      background: rgba($color, .1);
+    }
+    .slick-row.even {
+      .slick-cell {
+        background: rgba($color, .1);
+      }
+    }
+    .slick-row.odd {
+      .slick-cell {
+        background: rgba($color, .2);
+      }
+    }
+  }
+}
+
+@each $key, $value in $bg_colors {
+  @include bg_colors($key, $value);
+}
+
+// Color themes
+
+$themes: (
+  theme-teal: color('teal', 'base'),
+  theme-blue-grey: color('blue-grey', 'base'),
+  theme-indigo: color('indigo', 'base')
+);
+
+// Helper theme mixin
+@mixin theme($name, $color) {
+  .#{$name} {
+    .grid-header {
+      &.multi-selected {
+        background: lighten(rgba($color, .2), 10%) !important;
+      }
+      span.detail-grid-title {
+        color: $color;
+      }
+      .toolbar-global .toolbar_item a {
+        color: $color;
+      }
+      .selection-info {
+        color: $color;
+      }
+    }
+    .slick-header-column label {
+      color: $color;
+    }
+    .slick-pager-status {
+      color: $color;
+    }
+    .slick-cell {
+      &.selected {
+        background: lighten(rgba($color, .2), 10%) !important;
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+// Including themes
+@each $key, $value in $themes {
+  @include theme($key, $value);
+}
