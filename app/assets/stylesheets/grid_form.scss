@@ -1,27 +1,25 @@
 @import "base";
 
-.modal-content {
-  .create_form {
-    .title {
-      padding-top: 1em;
-      padding-bottom: 1em;
-      margin-top: 0;
-      margin-bottom: 0;
+.create_form {
+  .title {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .field {
+    margin: 0;
+    .chzn-container {
+      top: 2.5rem;
+      margin-bottom: 1rem;
     }
-    .field {
-      margin: 0;
-      .chzn-container {
-        top: 2.5rem;
-        margin-bottom: 1rem;
-      }
-      input[type=text]:not(.browser-default) {
-        margin-bottom: 0.5rem;
-      }
+    input[type=text]:not(.browser-default) {
+      margin-bottom: 0.5rem;
     }
-    .submit {
-      float: right;
-      padding: 3em 0;
-    }
+  }
+  .submit {
+    float: right;
+    padding: 3em 0;
   }
 }
 
