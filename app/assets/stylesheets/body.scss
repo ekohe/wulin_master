@@ -65,3 +65,15 @@ body {
     color: white;
   }
 }
+
+// Confirm & Error Modal
+
+.modal.info-modal {
+  width: 400px;
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  .modal-message {
+    font-size: 1rem;
+  }
+}
