@@ -7,7 +7,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
     var grid = this.getGrid();
     if(!grid) return false;
 
-    var $stateItems = $('.grid_states_switcher .grid-state-item');
+    var $stateItems = $('.grid-states-switcher .grid-state-item');
     if($stateItems.length === 0) return false;
 
     // main event, change grid state template
