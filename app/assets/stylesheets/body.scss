@@ -58,7 +58,7 @@ body {
   .notification {
     padding: $notification-padding;
     background: $notification-bg-color;
-    box-shadow: 1px 2px 5px black;
+    box-shadow: $notification-box-shadow;
     color: $notification-color;
   }
 }

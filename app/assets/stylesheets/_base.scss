@@ -39,6 +39,7 @@ $notification-width: 300px;
 $notification-padding: 13px 20px;
 $notification-color: white;
 $notification-bg-color: color('grey', 'darken-4');
+$notification-box-shadow: 1px 2px 5px black;
 
 // Confirm & Error Modal
 
@@ -48,3 +49,10 @@ $info-modal-width: 400px;
 
 $filter-green: color('green', 'base');
 $grid-border-color: color('grey', 'lighten-2');
+
+// Grid Editor
+
+$grid-textarea-height: 80px;
+$grid-textarea-padding: 5px;
+$grid-textarea-bg-color: white;
+$grid-textarea-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

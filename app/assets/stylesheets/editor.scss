@@ -1,13 +1,15 @@
+@import 'base';
+
 .textarea-wrapper {
   z-index: 10000;
   position: absolute;
-  background: white;
-  padding: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: $grid-textarea-bg-color;
+  padding: $grid-textarea-padding;
+  box-shadow: $grid-textarea-box-shadow;
 }
 
 .textarea-in-grid {
-  height: 80px;
+  height: $grid-textarea-height;
   border: 0;
   outline: 0;
 }
