@@ -1,40 +1,40 @@
-@import "base";
+@import 'base';
 
 form {
   .field_error {
-    color: red;
-    font-size: 11px;
+    color: $error-color;
+    font-size: $font-size-small;
     display: inline-block;
     margin-left: 5px;
-    max-width: 85px;
+    max-width: $error-max-width;
   }
   .base_error {
     padding-left: 130px;
     line-height: 30px;
-    color: red;
+    color: $error-color;
   }
 }
 
 .create_form {
-  .title {
-    padding-top: 1em;
-    padding-bottom: 1em;
+  h5.title {
+    padding-top: $form-title-padding;
+    padding-bottom: $form-title-padding;
     margin-top: 0;
     margin-bottom: 0;
   }
   .field {
     margin: 0;
     .chzn-container {
-      top: 2.5rem;
-      margin-bottom: 1rem;
+      top: 40px;
+      margin-bottom: 16px;
     }
     input[type=text]:not(.browser-default) {
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
     }
   }
   .submit {
     float: right;
-    padding: 3em 0;
+    padding: $form-submit-padding 0;
   }
 }
 
