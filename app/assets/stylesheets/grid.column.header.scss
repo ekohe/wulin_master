@@ -33,43 +33,39 @@
     input[type=text]:focus:not([readonly]) + label {
       color: $filter_green;
     }
+    .slick-sort-indicator, .slick-drag-indicator {
+      display: block;
+      position: absolute;
+      i.material-icons {
+        font-size: 14px;
+        color: grey;
+      }
+    }
+    .slick-sort-indicator {
+      margin-bottom: 0;
+      right: 30px;
+      top: 22px;
+      cursor: pointer;
+      i.material-icons {
+        background-color: white;
+      }
+    }
+    .slick-drag-indicator {
+      right: 10px;
+      top: 28px;
+      background-color: white;
+      cursor: move;
+      i.material-icons {
+        transform: rotate(90deg);
+      }
+    }
+    .slick-resizable-handle {
+      width: 10px;
+      background-color: white;
+    }
   }
   .progress {
     bottom: -0.4rem;
     margin: 0;
   }
-}
-
-.slick-sort-indicator, .slick-drag-indicator {
-  display: block;
-  position: absolute;
-  i.material-icons {
-    font-size: 14px;
-    color: grey;
-  }
-}
-
-.slick-sort-indicator {
-  margin-bottom: 0;
-  right: 30px;
-  top: 22px;
-  cursor: pointer;
-  i.material-icons {
-    background-color: white;
-  }
-}
-
-.slick-drag-indicator {
-  right: 10px;
-  top: 28px;
-  background-color: white;
-  cursor: move;
-  i.material-icons {
-    transform: rotate(90deg);
-  }
-}
-
-.slick-resizable-handle {
-  width: 10px;
-  background-color: white;
 }

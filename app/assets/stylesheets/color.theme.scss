@@ -91,14 +91,16 @@ $bg_colors: (
     }
     .slick-header {
       background: rgba($color, .1);
-    }
-    .slick-header-column {
-      background: none;
-      .slick-drag-indicator,.slick-resizable-handle {
-        background: rgba($color, .0);
-      }
-      i.material-icons {
-        background: rgba($color, .0);
+      .slick-header-column {
+        background: none;
+        &.input-field {
+          .slick-sort-indicator, .slick-drag-indicator, .slick-resizable-handle {
+            background: rgba($color, .0);
+            i.material-icons {
+              background: rgba($color, .0);
+            }
+          }
+        }
       }
     }
     .slick-pager {
