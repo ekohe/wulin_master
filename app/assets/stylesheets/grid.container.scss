@@ -1,0 +1,35 @@
+@import 'base';
+
+/* Grid Container */
+
+.grid_container {
+  float: left;
+  // Grid
+  .grid {
+    box-shadow: 0px 1px 1px $grid_border_color;
+    .slick-viewport {
+      .grid-canvas {
+        border-top: 1px solid $grid_border_color;
+      }
+    }
+  }
+  // Footer
+  .slick-pager {
+    border: 0;
+    background: none;
+    font-size: 12px;
+    .slick-pager-status.with-filter, .slick-pager-clear-filter {
+      color: $filter_green;
+      .material-icons {
+        font-size: 16px;
+        padding-top: 1px;
+      }
+      span {
+        float: right;
+      }
+    }
+    .slick-pager-clear-filter {
+      padding: 6px 15px 6px;
+    }
+  }
+}
