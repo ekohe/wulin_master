@@ -5,6 +5,52 @@
 // Grid Color Themes
 //////////////////////
 
+// Color themes
+
+$themes: (
+  theme-teal: color('teal', 'base'),
+  theme-blue-grey: color('blue-grey', 'base'),
+  theme-indigo: color('indigo', 'base')
+);
+
+@mixin theme($name, $color) {
+  .#{$name} {
+    .grid-header {
+      &.multi-selected {
+        background: lighten(rgba($color, .2), 10%) !important;
+      }
+      span.detail-grid-title {
+        color: $color;
+      }
+      .toolbar-global .toolbar_item a {
+        color: $color;
+      }
+      .selection-info {
+        color: $color;
+      }
+    }
+    .slick-header-column label {
+      color: $color;
+    }
+    .slick-pager-status {
+      color: $color;
+    }
+    .slick-cell {
+      &.selected {
+        background: lighten(rgba($color, .2), 10%) !important;
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+// Including themes
+@each $key, $value in $themes {
+  @include theme($key, $value);
+}
+
 /* Selection colors */
 
 $selection_colors: (
@@ -73,51 +119,4 @@ $bg_colors: (
 
 @each $key, $value in $bg_colors {
   @include bg_colors($key, $value);
-}
-
-// Color themes
-
-$themes: (
-  theme-teal: color('teal', 'base'),
-  theme-blue-grey: color('blue-grey', 'base'),
-  theme-indigo: color('indigo', 'base')
-);
-
-// Helper theme mixin
-@mixin theme($name, $color) {
-  .#{$name} {
-    .grid-header {
-      &.multi-selected {
-        background: lighten(rgba($color, .2), 10%) !important;
-      }
-      span.detail-grid-title {
-        color: $color;
-      }
-      .toolbar-global .toolbar_item a {
-        color: $color;
-      }
-      .selection-info {
-        color: $color;
-      }
-    }
-    .slick-header-column label {
-      color: $color;
-    }
-    .slick-pager-status {
-      color: $color;
-    }
-    .slick-cell {
-      &.selected {
-        background: lighten(rgba($color, .2), 10%) !important;
-      }
-      &.active {
-        border: $color solid 1px;
-      }
-    }
-  }
-}
-
-// Including themes
-@each $key, $value in $themes {
-  @include theme($key, $value);
 }

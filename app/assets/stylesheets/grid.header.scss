@@ -1,14 +1,15 @@
 @import "base";
+@import 'materialize/components/color';
 
-$toolbar_button_width: 35px;
-$toolbar_button_height: 30px;
+/* Grid Header */
 
 .grid-header {
   height: 70px;
   &.multi-selected {
-    background-color: rgba(0, 192, 212, 0.1);
+    background-color: color('blue', 'lighten-5');
   }
   h2 {
+    margin-top: 7px;
     padding-top: $margin;
     padding-left: 20px;
     font-size: 16px;
@@ -19,7 +20,6 @@ $toolbar_button_height: 30px;
   .selection-info {
     position: absolute;
     display: block;
-    margin-top: 8px;
     padding-left: 20px;
     font-size: 12px;
     color: #039be5;
