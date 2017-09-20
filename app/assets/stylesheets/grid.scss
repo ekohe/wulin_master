@@ -16,6 +16,9 @@ $grid_border_color: color('grey', 'lighten-2');
   padding-top: 5px;
   padding-bottom: 5px;
   .slick-header-column.input-field {
+    &.slick-header-column-sorted {
+      font-style: normal;
+    }
     label {
       top: 15px;
       font-size: 0.9rem;
@@ -45,10 +48,6 @@ $grid_border_color: color('grey', 'lighten-2');
   height: 44px;
   border: none;
   position: relative;
-}
-
-.ui-state-default.slick-header-column.slick-header-column-sorted {
-  font-style: normal;
 }
 
 .slick-sort-indicator {
@@ -212,24 +211,6 @@ $grid_border_color: color('grey', 'lighten-2');
 .grid {
   box-shadow: 0px 1px 1px $grid_border_color;
 }
-
-/* Master / Detail Grid */
-
-// .detail-grid {
-//   background-color: #F5F5F5;
-//   .slick-header {
-//     background-color: #F5F5F5;
-//     .slick-header-column {
-//       background-color: #F5F5F5;
-//     }
-//   }
-//   .ui-widget-content.slick-row.even {
-//     background-color: #F8F8F8;
-//   }
-//   .pager {
-//     background-color: #EDEEF2;
-//   }
-// }
 
 /* Page styling */
 .pager, .slick-pager {
