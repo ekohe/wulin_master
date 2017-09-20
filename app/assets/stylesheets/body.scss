@@ -1,8 +1,5 @@
 @import "base";
 
-$grid_width: 800px;
-$margin: 10px;
-
 body {
   background: $background_color;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -13,8 +10,8 @@ body {
 
 #content {
   position: absolute;
-  top: $header_height;
-  left: 250px;
+  top: $nav-height;
+  left: $menu-width;
   bottom: 0;
   right: 0;
   text-align: center;
@@ -41,11 +38,11 @@ body {
 }
 
 #screen_content_loader {
-  border: 8px solid #f3f3f3; /* Light grey */
-  border-top: 8px solid #3498db; /* Blue */
+  border: 8px solid $screen-loader-sub-color;
+  border-top: 8px solid $screen-loader-main-color;
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: $screen-loader-size;
+  height: $screen-loader-size;
   animation: spin 2s linear infinite;
 }
 
@@ -56,24 +53,24 @@ body {
   bottom: 0;
   left: 60%;
   margin-left: -250px;
-  width: 300px;
+  width: $notification-width;
   z-index: 1002;
   .notification {
-    padding: 13px 20px 13px 20px;
-    background: #333333;
+    padding: $notification-padding;
+    background: $notification-bg-color;
     box-shadow: 1px 2px 5px black;
-    color: white;
+    color: $notification-color;
   }
 }
 
 // Confirm & Error Modal
 
 .modal.info-modal {
-  width: 400px;
+  width: $info-modal-width;
   .modal-title {
-    font-size: 1.5rem;
+    font-size: $font-size-big;
   }
   .modal-message {
-    font-size: 1rem;
+    font-size: $font-size-middle;
   }
 }

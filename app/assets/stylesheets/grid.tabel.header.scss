@@ -26,12 +26,12 @@
       color: grey;
     }
     input[type=text]:focus:not([readonly]) {
-      box-shadow: 0 1.5px 0 0 $filter_green;
+      box-shadow: 0 1.5px 0 0 $filter-green;
       font-size: 12px;
       margin-left: -2px;
     }
     input[type=text]:focus:not([readonly]) + label {
-      color: $filter_green;
+      color: $filter-green;
     }
     .slick-sort-indicator, .slick-drag-indicator {
       display: block;

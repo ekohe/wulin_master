@@ -3,9 +3,6 @@
 
 $margin: 10px;
 $app_title_color: #9a9a9c;
-$background_color: white;
-
-$header_height: 48px;
 
 $menu_background_color: #efeff0;
 $menu_text_color: #5d5957;
@@ -16,5 +13,38 @@ $menu_item_active_text: white;
 
 $default_text_color: #333333;
 
-$filter_green: color('green', 'base');
-$grid_border_color: color('grey', 'lighten-2');
+// Common
+
+$main-color: color('blue', 'base');
+
+$font-size-small: 12px;
+$font-size-middle: 16px;
+$font-size-big: 20px;
+
+// Content
+
+$nav-height: 48px;
+$menu-width: 250px;
+$background_color: white;
+
+// Screen Content
+
+$screen-loader-main-color: $main-color;
+$screen-loader-sub-color: color('grey', 'lighten-3');
+$screen-loader-size: 120px;
+
+// Nitification
+
+$notification-width: 300px;
+$notification-padding: 13px 20px;
+$notification-color: white;
+$notification-bg-color: color('grey', 'darken-4');
+
+// Confirm & Error Modal
+
+$info-modal-width: 400px;
+
+// Grid
+
+$filter-green: color('green', 'base');
+$grid-border-color: color('grey', 'lighten-2');

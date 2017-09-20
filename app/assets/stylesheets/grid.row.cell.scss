@@ -5,7 +5,7 @@
 .slick-cell {
   font-size: 12px;
   line-height: 25px;
-  border-bottom-color: $grid_border_color;
+  border-bottom-color: $grid-border-color;
   .editor-text {
     background: none repeat scroll 0 0 transparent;
     height: 100%;
@@ -60,7 +60,7 @@
 }
 
 .slick-row.loading {
-  border-bottom: 1px solid $grid_border_color;
+  border-bottom: 1px solid $grid-border-color;
   .slick-cell.loading {
     border: none;
   }

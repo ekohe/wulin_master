@@ -6,10 +6,10 @@
   float: left;
   // Grid
   .grid {
-    box-shadow: 0px 1px 1px $grid_border_color;
+    box-shadow: 0px 1px 1px $grid-border-color;
     .slick-viewport {
       .grid-canvas {
-        border-top: 1px solid $grid_border_color;
+        border-top: 1px solid $grid-border-color;
       }
     }
   }
@@ -17,11 +17,11 @@
   .slick-pager {
     border: 0;
     background: none;
-    font-size: 12px;
+    font-size: $font-size-small;
     .slick-pager-status.with-filter, .slick-pager-clear-filter {
-      color: $filter_green;
+      color: $filter-green;
       .material-icons {
-        font-size: 16px;
+        font-size: $font-size-middle;
         padding-top: 1px;
       }
       span {

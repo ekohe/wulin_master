@@ -1,6 +1,5 @@
 @import "base";
 
-$menu_width: 250px;
 $menu_item_active_text: #2196F3;
 
 .extended-panel {
@@ -9,10 +8,10 @@ $menu_item_active_text: #2196F3;
 
 #navigation {
   position: absolute;
-  top: $header_height;
+  top: $nav-height;
   left: 0;
   bottom: 0;
-  width: $menu_width;
+  width: $menu-width;
   font-size: 12px;
   border-right: 1px solid #cdc9c9;
   #menu {
