@@ -1,86 +1,9 @@
 @import 'base';
-@import 'materialize/components/color';
-
-$filter_green: color('green', 'base');
-$grid_border_color: color('grey', 'lighten-2');
 
 /* Grid Container */
 
 .grid_container {
   float: left;
-}
-
-/* Grid Column Headers */
-
-.slick-header {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  .slick-header-column.input-field {
-    &.slick-header-column-sorted {
-      font-style: normal;
-    }
-    label {
-      top: 15px;
-      font-size: 0.9rem;
-    }
-    input[type=text] {
-      margin-bottom: none;
-      border-bottom: none;
-      height: 36px;
-    }
-    input[type=text]:focus:not([readonly]) {
-      border-bottom: 1px solid $filter_green;
-      box-shadow: 0 1px 0 0 $filter_green;
-      font-size: 12px;
-      margin-left: -2px;
-    }
-    input[type=text]:focus:not([readonly]) + label {
-      color: $filter_green;
-    }
-  }
-  .progress {
-    bottom: -0.4rem;
-    margin: 0;
-  }
-}
-
-.slick-header-column.ui-state-default, .ui-widget-content .slick-header-column.ui-state-default {
-  height: 44px;
-  border: none;
-  position: relative;
-}
-
-.slick-sort-indicator {
-  margin-bottom: 0;
-  display: block;
-  position: absolute;
-  right: 30px;
-  top: 22px;
-  cursor: pointer;
-  i.material-icons {
-    font-size: 14px;
-    color: grey;
-    background-color: white;
-  }
-}
-
-.slick-drag-indicator {
-  display: block;
-  position: absolute;
-  right: 10px;
-  top: 28px;
-  background-color: white;
-  cursor: move;
-  i.material-icons {
-    font-size: 14px;
-    color: grey;
-    transform: rotate(90deg);
-  }
-}
-
-.slick-resizable-handle {
-  width: 10px;
-  background-color: white;
 }
 
 .slick-cell {
