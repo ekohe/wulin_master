@@ -5,7 +5,7 @@
 .slick-cell {
   font-size: $font-size-small;
   line-height: $grid-row-height;
-  border-bottom-color: $grid-border-color;
+  border-bottom-color: $border-color;
   border-right: none;
   &.selected {
     background: $grid-cell-selected-bg-color;
@@ -14,7 +14,7 @@
     border: $grid-cell-active-border-color solid 1px;
   }
   &.editable {
-    box-shadow: $grid-cell-editable-box-shadow;
+    box-shadow: $box-shadow;
   }
 }
 
@@ -27,7 +27,7 @@
 
 .slick-row {
   &.loading {
-    border-bottom: 1px solid $grid-border-color;
+    border-bottom: 1px solid $border-color;
     .slick-cell.loading {
       border: none;
       margin: $grid-cell-loading-margin;

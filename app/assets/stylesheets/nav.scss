@@ -1,3 +1,5 @@
+@import 'base';
+
 .nav-wrapper .btn {
   background-color: transparent !important;
   box-shadow: none;
@@ -8,14 +10,14 @@
   padding-left: 20px;
 }
 
-#notification-list {
-  width: 30rem !important;
-  top: 3.2rem !important;
+#activity-list {
+  width: $activity-list-width !important;
+  top: $nav-height !important;
   li {
-    font-size: .8rem;
+    font-size: $font-size-small;
     i {
-      height: 1rem;
-      line-height: 1.8rem;
+      height: 16px;
+      line-height: 24px;
     }
     div {
       float: left;
@@ -27,25 +29,25 @@
   border-radius: 0;
   padding: 0;
   .modal-header {
-    background-color: grey;
+    background-color: $label-color;
   }
   .modal-content {
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
+    font-size: $font-size-middle;
+    padding: 8px 16px;
     #help-list li {
       display: flex;
       a {
-        color: grey;
+        color: $label-color;
       }
     }
     #help-menu-link {
       i {
         float: left;
-        margin-right: 0.5rem;
+        margin-right: 8px;
       }
       span {
         display: block;
-        padding-top: 0.1rem;
+        padding-top: 2px;
       }
     }
   }

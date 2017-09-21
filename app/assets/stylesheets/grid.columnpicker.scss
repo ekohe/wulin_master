@@ -21,13 +21,13 @@
   hr {
     border-style: inset;
     border-width: 0.5px;
-    border-color: $columnpicker-divider-color;
+    border-color: $border-color;
     opacity: 0.2;
   }
   #reset_to_default {
     padding-left: $columnpicker-li-padding;
     padding-right: $columnpicker-li-padding;
-    color: $columnpicker-color;
+    color: $label-color;
     span {
       float: right;
       padding-right: $columnpicker-li-padding;

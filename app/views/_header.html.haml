@@ -13,9 +13,9 @@
           %a#help-btn.btn{href: '#help-modal'}
             %i.material-icons help
       %li
-        %a#notification-btn.dropdown-button.btn.disabled{'data-activates' => 'notification-list', href: '#'}
+        %a#activity-btn.dropdown-button.btn.disabled{'data-activates' => 'activity-list', href: '#'}
           %i.material-icons notifications
-        %ul#notification-list.dropdown-content.collection.hide
+        %ul#activity-list.dropdown-content.collection.hide
       %li
         - if defined?(WulinOAuth) && User.current_user
           = link_to "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}" do
@@ -69,8 +69,8 @@
       $('#help-content-container').removeClass('hide');
     });
 
-    $('#notification-btn').on('click', function() {
-      $('#notification-list').removeClass('hide');
+    $('#activity-btn').on('click', function() {
+      $('#activity-list').removeClass('hide');
     });
 
     function showHelpList() {

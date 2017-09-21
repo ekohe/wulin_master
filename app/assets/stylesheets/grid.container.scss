@@ -6,10 +6,10 @@
   float: left;
   // Grid
   .grid {
-    box-shadow: 0px 1px 1px $grid-border-color;
+    box-shadow: 0px 1px 1px $border-color;
     .slick-viewport {
       .grid-canvas {
-        border-top: 1px solid $grid-border-color;
+        border-top: 1px solid $border-color;
       }
     }
   }

@@ -5,23 +5,26 @@
 
 $main-color: color('blue', 'base');
 
+$text-color: color('grey', 'darken-2');
+$label-color: color('grey', 'base');
+$border-color: color('grey', 'lighten-2');
+$filter-color: color('green', 'base');
+
 $font-size-small: 12px;
 $font-size-middle: 16px;
 $font-size-large: 20px;
 
-// Content
+$box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+// Layout
 
 $body-bg-color: white;
 $nav-height: 48px;
 $menu-width: 250px;
 
-// Screen Content
-
 $screen-loader-main-color: $main-color;
-$screen-loader-sub-color: color('grey', 'lighten-3');
+$screen-loader-sub-color: $border-color;
 $screen-loader-size: 120px;
-
-// Nitification
 
 $notification-width: 300px;
 $notification-padding: 13px 20px;
@@ -29,16 +32,21 @@ $notification-color: white;
 $notification-bg-color: color('grey', 'darken-4');
 $notification-box-shadow: 1px 2px 5px black;
 
-// Confirm & Error Modal
-
 $info-modal-width: 400px;
 
 // Menu
 
 $menu-padding: 10px;
-$menu-item-color: color('grey', 'darken-2');
 $menu-item-active-color: $main-color;
-$menu-border-color: color('grey', 'lighten-2');
+
+// Nav
+
+$activity-list-width: 500px;
+
+// Panel
+
+$panel-header-height: 40px;
+$panel-header-padding: 10px;
 
 // Form
 
@@ -51,15 +59,13 @@ $form-submit-padding: 24px;
 
 $grid-header-height: 70px;
 $grid-header-multi-selected-bg-color: rgba($main-color, .1);
-$grid-header-title-color: color('grey', 'darken-2');
 $grid-header-selection-info-color: $main-color;
 
-$grid-states-switcher-color: color('grey', 'base');
 $grid-states-switcher-width: 200px;
 $grid-states-modal-width: 500px;
 
 $toolbar-global-color: $main-color;
-$toolbar-select-color: color('grey', 'darken-2');
+$toolbar-select-color: $text-color;
 
 // Grid Table Header
 
@@ -68,17 +74,14 @@ $slick-header-bg-color: white;
 $slick-header-height: 44px;
 $slick-header-padding: 5px;
 
-$filter-color: color('green', 'base');
 $filter-height: 36px;
 
 // Grid Cell
 
-$grid-border-color: color('grey', 'lighten-2');
 $grid-row-height: 25px;
 $grid-row-odd-bg-color: color('grey', 'lighten-4');
 $grid-cell-selected-bg-color: rgba($main-color, .1);
 $grid-cell-active-border-color: $main-color;
-$grid-cell-editable-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 $grid-cell-loading-margin: 10px;
 $grid-cell-odd-filtered-bg-color: rgba(color('green', 'base'), .1);
 $grid-cell-even-filtered-bg-color: rgba(color('green', 'lighten-2'), .1);
@@ -98,11 +101,8 @@ $grid-cell-even-shimmer-color-2: rgba(color('grey', 'lighten-2'), .1);
 $grid-editor-textarea-height: 80px;
 $grid-editor-textarea-editor-padding: 5px;
 $grid-editor-textarea-editor-bg-color: white;
-$grid-editor-textarea-editor-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 $grid-editor-text-bg: none repeat scroll 0 0 transparent;
 
 // Grid Column Picker
 
 $columnpicker-li-padding: 12px;
-$columnpicker-color: color('grey', 'base');
-$columnpicker-divider-color: color('grey', 'lighten-2');

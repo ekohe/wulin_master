@@ -7,7 +7,7 @@
   bottom: 0;
   width: $menu-width;
   font-size: $font-size-small;
-  border-right: 1px solid $menu-border-color;
+  border-right: 1px solid $border-color;
   #menu {
     position: absolute;
     overflow-y: auto;
@@ -25,13 +25,13 @@
         a {
           text-transform: uppercase;
           padding-left: $menu-padding;
-          color: $menu-item-color;
+          color: $text-color;
         }
         .item {
           padding-top: $menu-padding;
           a {
             text-transform: none;
-            color: $menu-item-color;
+            color: $text-color;
             display: flex;
             align-items: center;
             span {
