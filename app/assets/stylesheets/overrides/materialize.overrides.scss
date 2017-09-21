@@ -1,44 +1,43 @@
+@import 'base';
+
 .modal {
   background-color: white;
-  padding: 1rem;
+  padding: 16px;
   .modal-header {
-    padding: 1rem;
-    background-color: dodgerblue;
+    padding: 16px;
+    background-color: $main-color;
     color: white;
     span {
-      font-size: 1.3rem;
+      font-size: $font-size-large;
     }
   }
   .modal-content {
-    padding: 0 1.5rem;
+    padding: 0 24px;
     h5 {
-      margin-bottom: 3rem;
+      margin-bottom: 48px;
     }
     p {
-      font-size: 1rem;
+      font-size: $font-size-middle;
     }
   }
   .modal-footer {
-    padding: 0 1.5rem;
+    padding: 0 24px;
     background-color: white;
   }
 }
 
 nav {
-  background-color: dodgerblue;
-
+  background-color: $main-color;
   .brand-logo {
-    font-size: 1.2rem;
+    font-size: $font-size-large;
     margin-left: 10px;
   }
-
   a i {
     float: left;
     margin-right: 10px;
   }
-
   i.material-icons {
-    font-size: 20px;
+    font-size: $font-size-large;
   }
 }
 
@@ -46,8 +45,8 @@ nav {
   height: 20px;
   line-height: 20px;
   width: 60px;
-  padding: 0 .5rem;
-  font-size: .7rem;
+  padding: 0 8px;
+  font-size: $font-size-small;
   margin-left: 2px;
 }
 
