@@ -17,6 +17,10 @@
     padding-left: 3px;
     box-shadow: none;
     font-size: $font-size-small;
+    &.editor-text {
+      border: none !important;
+      box-shadow: none !important;
+    }
   }
   input[type=text]:not(.browser-default) {
     height: 100%;

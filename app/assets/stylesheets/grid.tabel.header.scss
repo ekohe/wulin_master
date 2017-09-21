@@ -26,12 +26,13 @@
       color: $slick-header-color;
     }
     input[type=text]:focus:not([readonly]) {
-      box-shadow: 0 1.5px 0 0 $filter-color;
+      border-bottom: 1px $filter-color !important;
+      box-shadow: 0 1.5px 0 0 $filter-color !important;
       font-size: $font-size-small;
       margin-left: -2px;
     }
     input[type=text]:focus:not([readonly]) + label {
-      color: $filter-color;
+      color: $filter-color !important;
     }
     .slick-sort-indicator, .slick-drag-indicator {
       display: block;

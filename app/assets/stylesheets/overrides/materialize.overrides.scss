@@ -1,5 +1,58 @@
 @import 'base';
 
+// Nav
+
+nav {
+  background-color: $main-color;
+  .brand-logo {
+    font-size: $font-size-large;
+    margin-left: 10px;
+  }
+  a i {
+    float: left;
+    margin-right: 10px;
+  }
+  i.material-icons {
+    font-size: $font-size-large;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  nav.nav-extended .nav-wrapper {
+    min-height: 50px;
+  }
+  nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+    height: 47px;
+    line-height: 50px;
+  }
+  .navbar-fixed {
+    height: 50px;
+  }
+}
+
+.nav-wrapper .btn {
+  background-color: transparent !important;
+  box-shadow: none;
+  padding: 0;
+}
+
+// Button
+
+.btn {
+  background-color: $main-color;
+}
+
+.btn-small {
+  height: 20px;
+  line-height: 20px;
+  width: 60px;
+  padding: 0 8px;
+  font-size: $font-size-small;
+  margin-left: 2px;
+}
+
+// Modal
+
 .modal {
   background-color: white;
   padding: 16px;
@@ -26,39 +79,49 @@
   }
 }
 
-nav {
-  background-color: $main-color;
-  .brand-logo {
-    font-size: $font-size-large;
-    margin-left: 10px;
-  }
-  a i {
-    float: left;
-    margin-right: 10px;
-  }
-  i.material-icons {
-    font-size: $font-size-large;
+
+// Progress Bar
+
+.progress {
+  .indeterminate {
+    background-color: $main-color;
   }
 }
 
-.btn-small {
-  height: 20px;
-  line-height: 20px;
-  width: 60px;
-  padding: 0 8px;
-  font-size: $font-size-small;
-  margin-left: 2px;
-}
+// Form: Input Field
 
-@media only screen and (min-width: 601px) {
-  nav.nav-extended .nav-wrapper {
-    min-height: 50px;
+// input[type=text] {
+//   // Focused input style
+//   &:focus:not([readonly]) {
+//     border-bottom: 1px solid $main-color;
+//     box-shadow: 0 1px 0 0 $main-color;
+//   }
+//   // Focused label style
+//   &:focus:not([readonly])+label {
+//     color: $main-color;
+//   }
+// }
+
+input:not([type]),
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=time],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=tel],
+input[type=number],
+input[type=search],
+textarea.materialize-textarea {
+  // Focused input style
+  &:focus:not([readonly]) {
+    border-bottom: 1px solid $main-color !important;
+    box-shadow: 0 1px 0 0 $main-color !important;
   }
-  nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
-    height: 47px;
-    line-height: 50px;
-  }
-  .navbar-fixed {
-    height: 50px;
+  // Focused label style
+  &:focus:not([readonly])+label {
+    color: $main-color !important;
   }
 }
