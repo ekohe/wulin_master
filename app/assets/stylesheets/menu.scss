@@ -1,51 +1,54 @@
 @import "base";
 
-$menu_item_active_text: #2196F3;
-
-.extended-panel {
-  left: 0px !important;
-}
-
 #navigation {
   position: absolute;
   top: $nav-height;
   left: 0;
   bottom: 0;
   width: $menu-width;
-  font-size: 12px;
-  border-right: 1px solid #cdc9c9;
+  font-size: $font-size-small;
+  border-right: 1px solid $menu-border-color;
   #menu {
     position: absolute;
     overflow-y: auto;
     right: 0;
-    left: 10px;
+    left: $menu-padding;
     bottom: 0;
     ul {
       margin-top: 2px;
-      margin-bottom: $margin;
+      margin-bottom: $menu-padding;
       li {
+        &.submenu > a {
+          font-size: 10px;
+          padding-left: 12px;
+        }
         a {
           text-transform: uppercase;
-          padding-left: $margin;
+          padding-left: $menu-padding;
+          color: $menu-item-color;
         }
         .item {
-          padding-top: 10px;
+          padding-top: $menu-padding;
           a {
             text-transform: none;
-            color: $menu_text_color;
+            color: $menu-item-color;
             display: flex;
             align-items: center;
             span {
-              padding-left: 10px;
+              padding-left: $menu-padding;
             }
           }
         }
         .item.active {
           a {
-            color: $menu_item_active_text;
+            color: $menu-item-active-color;
           }
         }
       }
     }
   }
+}
+
+.extended-panel {
+  left: 0px !important;
 }
