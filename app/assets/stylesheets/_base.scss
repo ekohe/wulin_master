@@ -68,7 +68,13 @@ $toolbar-select-color: color('grey', 'darken-2');
 
 // Grid Table Header
 
-$filter-green: color('green', 'base');
+$slick-header-color: color('grey', 'base');
+$slick-header-bg-color: white;
+$slick-header-height: 44px;
+$slick-header-padding: 5px;
+
+$filter-color: color('green', 'base');
+$filter-height: 36px;
 
 // Grid Cell
 
