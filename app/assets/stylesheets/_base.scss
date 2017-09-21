@@ -52,11 +52,6 @@ $error-max-width: 85px;
 $form-title-padding: 16px;
 $form-submit-padding: 24px;
 
-// Grid
-
-$filter-green: color('green', 'base');
-$grid-border-color: color('grey', 'lighten-2');
-
 // Grid Header
 
 $grid-header-height: 70px;
@@ -71,12 +66,39 @@ $grid-states-modal-width: 500px;
 $toolbar-global-color: $main-color;
 $toolbar-select-color: color('grey', 'darken-2');
 
+// Grid Table Header
+
+$filter-green: color('green', 'base');
+
+// Grid Cell
+
+$grid-border-color: color('grey', 'lighten-2');
+$grid-row-height: 25px;
+$grid-row-odd-bg-color: color('grey', 'lighten-4');
+$grid-cell-selected-bg-color: rgba($main-color, .1);
+$grid-cell-active-border-color: $main-color;
+$grid-cell-editable-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+$grid-cell-loading-margin: 10px;
+$grid-cell-odd-filtered-bg-color: rgba(color('green', 'base'), .1);
+$grid-cell-even-filtered-bg-color: rgba(color('green', 'lighten-2'), .1);
+$grid-cell-filtered-selected-bg-color: rgba(color('teal', 'lighten-1'), .2);
+$grid-cell-odd-shimmer-color-1: rgba(color('blue-grey', 'lighten-3'), .3);
+$grid-cell-odd-shimmer-color-2: rgba(color('blue-grey', 'lighten-3'), .1);
+$grid-cell-even-shimmer-color-1: rgba(color('grey', 'lighten-2'), .3);
+$grid-cell-even-shimmer-color-2: rgba(color('grey', 'lighten-2'), .1);
+
+@keyframes shimmerCell{
+  0%   { background-position: -500px 0 }
+  100% { background-position: 500px 0 }
+}
+
 // Grid Editor
 
-$grid-textarea-height: 80px;
-$grid-textarea-padding: 5px;
-$grid-textarea-bg-color: white;
-$grid-textarea-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+$grid-editor-textarea-height: 80px;
+$grid-editor-textarea-editor-padding: 5px;
+$grid-editor-textarea-editor-bg-color: white;
+$grid-editor-textarea-editor-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+$grid-editor-text-bg: none repeat scroll 0 0 transparent;
 
 // Grid Column Picker
 

@@ -1,15 +1,63 @@
 @import 'base';
 
+/* Editors in Grid */
+
+.slick-cell {
+  // text
+  .editor-text {
+    background: $grid-editor-text-bg;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0 none;
+  }
+  input[type=text]:focus:not([readonly]) {
+    padding-left: 3px;
+    box-shadow: none;
+    font-size: $font-size-small;
+  }
+  input[type=text]:not(.browser-default) {
+    height: 100%;
+    margin-bottom: 5px;
+  }
+  .autocomplete-content {
+    margin-top: 2px;
+    margin-left: -2px;
+    width: 102%;
+  }
+  // select
+  .chzn-container {
+    top: 0;
+    .chzn-single {
+      box-shadow: none;
+      margin-right: 4px;
+      margin-bottom: 8px;
+    }
+    .chzn-drop {
+      margin-right: 4px;
+      margin-left: -2px;
+    }
+    .chzn-choices {
+      margin-bottom: -5px;
+      box-shadow: none;
+    }
+  }
+}
+
+// textarea
+
 .textarea-wrapper {
   z-index: 10000;
   position: absolute;
-  background: $grid-textarea-bg-color;
-  padding: $grid-textarea-padding;
-  box-shadow: $grid-textarea-box-shadow;
+  background: $grid-editor-textarea-editor-bg-color;
+  padding: $grid-editor-textarea-editor-padding;
+  box-shadow: $grid-editor-textarea-editor-box-shadow;
 }
 
 .textarea-in-grid {
-  height: $grid-textarea-height;
+  height: $grid-editor-textarea-height;
   border: 0;
   outline: 0;
 }
