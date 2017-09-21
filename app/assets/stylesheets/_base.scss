@@ -19,7 +19,7 @@ $main-color: color('blue', 'base');
 
 $font-size-small: 12px;
 $font-size-middle: 16px;
-$font-size-big: 20px;
+$font-size-large: 20px;
 
 // Content
 
@@ -45,10 +45,31 @@ $notification-box-shadow: 1px 2px 5px black;
 
 $info-modal-width: 400px;
 
+// Form
+
+$error-color: color('red', 'base');
+$error-max-width: 85px;
+$form-title-padding: 16px;
+$form-submit-padding: 24px;
+
 // Grid
 
 $filter-green: color('green', 'base');
 $grid-border-color: color('grey', 'lighten-2');
+
+// Grid Header
+
+$grid-header-height: 70px;
+$grid-header-multi-selected-bg-color: rgba($main-color, .1);
+$grid-header-title-color: color('grey', 'darken-2');
+$grid-header-selection-info-color: $main-color;
+
+$grid-states-switcher-color: color('grey', 'base');
+$grid-states-switcher-width: 200px;
+$grid-states-modal-width: 500px;
+
+$toolbar-global-color: $main-color;
+$toolbar-select-color: color('grey', 'darken-2');
 
 // Grid Editor
 
@@ -56,13 +77,6 @@ $grid-textarea-height: 80px;
 $grid-textarea-padding: 5px;
 $grid-textarea-bg-color: white;
 $grid-textarea-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-// Form
-
-$error-color: color('red', 'base');
-$error-max-width: 85px;
-$form-title-padding: 16px;
-$form-submit-padding: 24px;
 
 // Grid Column Picker
 

@@ -1,21 +1,20 @@
-@import "base";
-@import 'materialize/components/color';
+@import 'base';
 
 /* Grid Header */
 
 .grid-header {
-  height: 70px;
+  height: $grid-header-height;
   &.multi-selected {
-    background-color: color('blue', 'lighten-5');
+    background-color: $grid-header-multi-selected-bg-color;
   }
   // Grid Title
   h2 {
     margin-top: 7px;
-    padding-top: $margin;
+    padding-top: 10px;
     padding-left: 20px;
-    font-size: 16px;
+    font-size: $font-size-middle;
     font-weight: bold;
-    color: #555555;
+    color: $grid-header-title-color;
     float: left;
   }
   // Selection Info
@@ -23,8 +22,8 @@
     position: absolute;
     display: block;
     padding-left: 20px;
-    font-size: 12px;
-    color: #039be5;
+    font-size: $font-size-small;
+    color: $grid-header-selection-info-color;
   }
   // Grid State Switcher
   .grid-states-switcher {
@@ -34,37 +33,37 @@
     .btn {
       text-transform: none;
       text-align: left;
-      color: grey;
-      width: 13rem;
-      font-size: 1rem;
-      padding: 0 1rem 0 1.1rem;
+      color: $grid-states-switcher-color;
+      width: $grid-states-switcher-width;
+      font-size: $font-size-middle;
+      padding: 0 16px;
       span {
         padding-left: 0;
       }
     }
     .dropdown-content {
-      width: 13rem;
+      width: $grid-states-switcher-width;
       li > a {
-        color: grey;
-        font-size: 1rem;
+        color: $grid-states-switcher-color;
+        font-size: $font-size-middle;
         display: inline-block;
-        padding-right: 0.1rem;
+        padding-right: 2px;
         i {
-          font-size: 1.2rem;
-          margin-right: 0.5rem;
+          font-size: $font-size-large;
+          margin-right: 8px;
         }
       }
     }
   }
   .grid-states-modal {
-    width: 35rem;
+    width: $grid-states-modal-width;
   }
   .toolbar-wrapper {
     padding: 20px 20px 0 50px;
     overflow: hidden;
     .toolbar-global {
       i.material-icons {
-        font-size: 18px;
+        font-size: $font-size-large;
       }
       ul {
         margin: 0;
@@ -72,7 +71,8 @@
           float: left;
           padding-left: 10px;
           a {
-            font-size: 12px;
+            font-size: $font-size-small;
+            color: $toolbar-global-color;
             span {
               float: right;
               padding-left: 5px;
@@ -86,14 +86,14 @@
     .toolbar-select {
       float: right;
       i.material-icons {
-        font-size: 20px;
+        font-size: $font-size-large;
       }
       ul {
         margin: 0;
         li.toolbar_item {
           float: left;
           a {
-            color: #5d5957;
+            color: $toolbar-select-color;
             padding-left: 15px;
           }
         }
