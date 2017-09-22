@@ -56,13 +56,13 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
 
       var default_color = 'blue-grey';
       // Set master grid's style for selection
-      var selectionColor = 'selection-' + (this.master_grid.options['selectionColor'] || default_color);
+      var selectionColor = 'grid-selection-color-' + (this.master_grid.options['selectionColor'] || default_color);
       this.master_grid.container.addClass(selectionColor);
 
       // Set detail grid's style
-      var colorTheme = 'theme-' + (detailGrid.options['colorTheme'] || default_color);
+      var colorTheme = 'grid-color-' + (detailGrid.options['colorTheme'] || default_color);
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
-      var bgColor = 'bg-' + (detailGrid.options['bgColor'] || default_color);
+      var bgColor = 'grid-bg-color-' + (detailGrid.options['bgColor'] || default_color);
       detailGrid.container.addClass(bgColor);
 
       // Set detail grid's title

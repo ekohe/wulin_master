@@ -25,8 +25,8 @@ $wulin-colors: (
 
 // Grid Color Theme
 
-@mixin theme($name, $color) {
-  .#{'theme-' + $name} {
+@mixin grid_color($name, $color) {
+  .#{'grid-color-' + $name} {
     .grid-header {
       &.multi-selected {
         background: lighten(rgba($color, .2), 10%) !important;
@@ -55,10 +55,10 @@ $wulin-colors: (
   }
 }
 
-// Grid: Background colors
+// Grid: Background color
 
-@mixin bg_colors($name, $color) {
-  .#{'bg-' + $name} {
+@mixin grid_bg_color($name, $color) {
+  .#{'grid-bg-color-' + $name} {
     .grid-header {
       background: rgba($color, .1);
     }
@@ -94,8 +94,8 @@ $wulin-colors: (
 
 // Grid: Selection colors
 
-@mixin selection_colors($name, $color) {
-  .#{'selection-' + $name} {
+@mixin grid_selection_color($name, $color) {
+  .#{'grid-selection-color-' + $name} {
     .slick-cell {
       &.selected {
         background: lighten(rgba($color, .2), 10%);
@@ -107,8 +107,8 @@ $wulin-colors: (
   }
 }
 
-@each $key, $value in $wulin-colors {
-  @include theme($key, $value);
-  @include selection_colors($key, $value);
-  @include bg_colors($key, $value);
+@each $name, $color in $wulin-colors {
+  @include grid_color($name, $color);
+  @include grid_selection_color($name, $color);
+  @include grid_bg_color($name, $color);
 }
