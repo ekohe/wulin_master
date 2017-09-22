@@ -109,6 +109,6 @@ $wulin-colors: (
 
 @each $name, $color in $wulin-colors {
   @include grid_color($name, $color);
-  @include grid_selection_color($name, $color);
   @include grid_bg_color($name, $color);
+  @include grid_selection_color($name, $color);
 }

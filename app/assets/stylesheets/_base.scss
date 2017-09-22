@@ -3,7 +3,7 @@
 
 // Common
 
-$main-color: color('blue', 'base');
+$main-color: color(#{$color-theme}, 'base');
 
 $text-color: color('grey', 'darken-2');
 $label-color: color('grey', 'base');

@@ -209,13 +209,13 @@ if (typeof Slick === "undefined") {
 
       // Ekohe Add: Add color related class to grid container
       if (options['colorTheme']) {
-        $container.parent('.grid_container').addClass('theme-' + options['colorTheme']);
+        $container.parent('.grid_container').addClass('grid-color-' + options['colorTheme']);
       }
       if (options['selectionColor']) {
-        $container.parent('.grid_container').addClass('selection-' + options['selectionColor']);
+        $container.parent('.grid_container').addClass('grid-selection-color-' + options['selectionColor']);
       }
       if (options['bgColor']) {
-        $container.parent('.grid_container').addClass('bg-' + options['bgColor']);
+        $container.parent('.grid_container').addClass('grid-bg-color-' + options['bgColor']);
       }
 
       if ($container.length < 1) {
