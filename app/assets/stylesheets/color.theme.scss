@@ -1,20 +1,32 @@
-@import 'base';
 @import 'materialize/components/color';
+@import 'base';
 
-//////////////////////
-// Grid Color Themes
-//////////////////////
-
-// Color themes
-
-$themes: (
-  theme-teal: color('teal', 'base'),
-  theme-blue-grey: color('blue-grey', 'base'),
-  theme-indigo: color('indigo', 'base')
+$wulin-colors: (
+  'red': color('red', 'base'),
+  'pink': color('pink', 'base'),
+  'purple': color('purple', 'base'),
+  'deep-purple': color('red', 'base'),
+  'indigo': color('indigo', 'base'),
+  'blue': color('blue', 'base'),
+  'light-blue': color('light-blue', 'base'),
+  'cyan': color('cyan', 'base'),
+  'teal': color('teal', 'base'),
+  'green': color('green', 'base'),
+  'light-green': color('light-green', 'base'),
+  'lime': color('lime', 'base'),
+  'yellow': color('yellow', 'base'),
+  'amber': color('amber', 'base'),
+  'orange': color('orange', 'base'),
+  'deep-orange': color('deep-orange', 'base'),
+  'brown': color('brown', 'base'),
+  'blue-grey': color('blue-grey', 'base'),
+  'grey': color('grey', 'base')
 );
 
+// Grid Color Theme
+
 @mixin theme($name, $color) {
-  .#{$name} {
+  .#{'theme-' + $name} {
     .grid-header {
       &.multi-selected {
         background: lighten(rgba($color, .2), 10%) !important;
@@ -46,46 +58,10 @@ $themes: (
   }
 }
 
-// Including themes
-@each $key, $value in $themes {
-  @include theme($key, $value);
-}
-
-/* Selection colors */
-
-$selection_colors: (
-  selection-teal: color('teal', 'base'),
-  selection-blue-grey: color('blue-grey', 'base'),
-  selection-indigo: color('indigo', 'base')
-);
-
-@mixin selection_colors($name, $color) {
-  .#{$name} {
-    .slick-cell {
-      &.selected {
-        background: lighten(rgba($color, .2), 10%);
-      }
-      &.active {
-        border: $color solid 1px;
-      }
-    }
-  }
-}
-
-@each $key, $value in $selection_colors {
-  @include selection_colors($key, $value);
-}
-
-/* Background colors */
-
-$bg_colors: (
-  bg-teal: color('teal', 'base'),
-  bg-blue-grey: color('blue-grey', 'base'),
-  bg-indigo: color('indigo', 'base')
-);
+// Grid: Background colors
 
 @mixin bg_colors($name, $color) {
-  .#{$name} {
+  .#{'bg-' + $name} {
     .grid-header {
       background: rgba($color, .1);
     }
@@ -119,6 +95,23 @@ $bg_colors: (
   }
 }
 
-@each $key, $value in $bg_colors {
+// Grid: Selection colors
+
+@mixin selection_colors($name, $color) {
+  .#{'selection-' + $name} {
+    .slick-cell {
+      &.selected {
+        background: lighten(rgba($color, .2), 10%);
+      }
+      &.active {
+        border: $color solid 1px;
+      }
+    }
+  }
+}
+
+@each $key, $value in $wulin-colors {
+  @include theme($key, $value);
+  @include selection_colors($key, $value);
   @include bg_colors($key, $value);
 }
