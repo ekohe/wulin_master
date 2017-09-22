@@ -90,18 +90,6 @@ nav {
 
 // Form: Input Field
 
-// input[type=text] {
-//   // Focused input style
-//   &:focus:not([readonly]) {
-//     border-bottom: 1px solid $main-color;
-//     box-shadow: 0 1px 0 0 $main-color;
-//   }
-//   // Focused label style
-//   &:focus:not([readonly])+label {
-//     color: $main-color;
-//   }
-// }
-
 input:not([type]),
 input[type=text],
 input[type=password],

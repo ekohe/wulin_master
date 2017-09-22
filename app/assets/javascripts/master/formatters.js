@@ -75,8 +75,6 @@
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      // var html = value ? '<%= image_tag "tick.png" %>' : '';
-
       var checked = value ? 'checked="checked"' : '';
       var html = '<input disabled type="checkbox" class="filled-in" ' +
                  checked + ' id="show-checkbox-' + row + '" />' +
