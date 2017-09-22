@@ -34,18 +34,15 @@ $wulin-colors: (
       span.detail-grid-title {
         color: $color;
       }
-      .toolbar-global .toolbar_item a {
+      .toolbar-wrapper .toolbar-global ul li.toolbar_item a {
         color: $color;
       }
       .selection-info {
         color: $color;
       }
     }
-    .slick-header-column label {
-      color: $color;
-    }
-    .slick-pager-status {
-      color: $color;
+    .progress .indeterminate {
+      background-color: $color;
     }
     .slick-cell {
       &.selected {
