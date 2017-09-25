@@ -722,8 +722,6 @@ if (typeof Slick === "undefined") {
         }
 
         // Ekohe Add: Drag indicator for reordering columns
-        // var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
-        // var $dragIndicator = $('<div />').addClass('slick-drag-indicator').hide().append($dragIcon);
         var $dragIcon = $('<i />').addClass('material-icons').text('');
         var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
         header.append($dragIndicator);
@@ -749,6 +747,13 @@ if (typeof Slick === "undefined") {
         headerColInput.on('focus', function() {
           $(this).siblings('.slick-sort-indicator, .slick-drag-indicator').hide();
           $(this).width($(this).parent().width());
+        })
+
+        // Ekohe Add: Show sort indicator when sorted
+        headerColInput.on('blur', function() {
+          if ($(this).parent().hasClass('slick-header-column-sorted')) {
+            $(this).siblings('.slick-sort-indicator').css({right: '10px'}).show();
+          }
         })
 
         trigger(self.onHeaderCellRendered, {
