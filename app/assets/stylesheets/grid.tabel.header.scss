@@ -37,31 +37,29 @@
     .slick-sort-indicator, .slick-drag-indicator {
       display: block;
       position: absolute;
+      background-color: $slick-header-bg-color;
+      top: 29px;
       i.material-icons {
+        background-color: $slick-header-bg-color;
         font-size: $font-size-small;
         color: $slick-header-color;
       }
     }
     .slick-sort-indicator {
-      margin-bottom: 0;
-      right: 30px;
-      top: 22px;
+      margin: 0;
+      height: 20px;
+      right: 20px;
       cursor: pointer;
-      i.material-icons {
-        background-color: $slick-header-bg-color;
-      }
     }
     .slick-drag-indicator {
-      right: 10px;
-      top: 28px;
-      background-color: $slick-header-bg-color;
+      right: 5px;
       cursor: move;
       i.material-icons {
         transform: rotate(90deg);
       }
     }
     .slick-resizable-handle {
-      width: 10px;
+      width: 5px;
       background-color: $slick-header-bg-color;
     }
   }

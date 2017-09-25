@@ -619,7 +619,7 @@ if (typeof Slick === "undefined") {
         // Ekohe Edit: Controle visibility of sort/drag buttons
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
-          $(this).find('.slick-sort-indicator').css({ right: '30px' }).show();
+          $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
         }
       }
 
@@ -628,7 +628,7 @@ if (typeof Slick === "undefined") {
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
-            $(this).find('.slick-sort-indicator').css({ right: '15px' });
+            $(this).find('.slick-sort-indicator').css({ right: '10px' });
           } else {
             $(this).find('.slick-drag-indicator, .slick-sort-indicator').hide();
           }
@@ -722,8 +722,10 @@ if (typeof Slick === "undefined") {
         }
 
         // Ekohe Add: Drag indicator for reordering columns
-        var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
-        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').hide().append($dragIcon);
+        // var $dragIcon = $('<i />').addClass('material-icons').text('drag_handle');
+        // var $dragIndicator = $('<div />').addClass('slick-drag-indicator').hide().append($dragIcon);
+        var $dragIcon = $('<i />').addClass('material-icons').text('');
+        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
         header.append($dragIndicator);
 
         if (m.sortable) {
@@ -731,7 +733,10 @@ if (typeof Slick === "undefined") {
           // Ekohe Edit: Use material icon for sort indicator
           // header.append("<span class='slick-sort-indicator' />");
           var $sortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
-          var $sortIndicator = $('<div />').addClass('slick-sort-indicator').append($sortIcon);
+          var $sortIndicator = $('<div />')
+            .addClass('slick-sort-indicator')
+            .css({right: '10px'})
+            .append($sortIcon);
           header.append($sortIndicator);
         }
 
