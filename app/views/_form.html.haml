@@ -114,7 +114,7 @@
     .submit
       .btn-flat.modal-close CANCEL
       - if is_new
-        %input.btn.modal-close{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
+        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
       - else
         %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
