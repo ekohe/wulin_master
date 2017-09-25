@@ -9,8 +9,7 @@
   }
   // Grid Title
   h2 {
-    margin-top: 7px;
-    padding-top: 10px;
+    margin-top: 20px;
     padding-left: 20px;
     font-size: $font-size-middle;
     font-weight: bold;
@@ -28,8 +27,8 @@
   // Grid State Switcher
   .grid-states-switcher {
     float: left;
-    margin-left: 30px;
-    padding-top: 10px;
+    padding-left: 30px;
+    padding-top: 12px;
     .btn {
       text-transform: none;
       text-align: left;
@@ -37,6 +36,8 @@
       width: $grid-states-switcher-width;
       font-size: $font-size-middle;
       padding: 0 16px;
+      height: 30px;
+      line-height: 30px;
       span {
         padding-left: 0;
       }
