@@ -21,10 +21,8 @@ form {
 
 .create_form {
   h5.title {
-    padding-top: $form-title-padding;
-    padding-bottom: $form-title-padding;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: $form-title-margin;
+    margin-bottom: $form-title-margin * 1.5;
   }
   .field {
     margin: 0;

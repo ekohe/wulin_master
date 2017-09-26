@@ -72,16 +72,33 @@ var Ui = {
 
   // Create and open dialog
   openDialog: function(grid, action, options, callback) {
+    var width, height;
+
     $.get(grid.path + '/' + action + grid.query, function(data){
+
+      $('body').append(data);
+      var modalHeight = $('.create_form .title').outerHeight() +             // Title
+                        $('.create_form #new_' + grid.name).outerHeight() +  // Fields
+                        $('.create_form .submit').outerHeight() +            // Button
+                        75;                                                  // Padding
+      if (options) {
+        width = options.form_dialog_width || 600;
+        height = options.form_dialog_height || modalHeight;
+      } else {
+        width = 600;
+        height = modalHeight;
+      }
+      $('.create_form').remove();
+
       var $createModal = $('<div/>')
         .addClass('modal')
-        .width('600px')
+        .width(width)
+        .height(height)
         .appendTo($('body'));
       var $modalContent = $('<div/>')
         .addClass('modal-content')
+        .append(data)
         .appendTo($createModal);
-
-      $modalContent.append(data);
 
       $createModal.modal({
         ready: function(modal, trigger) {
@@ -242,16 +259,11 @@ var Ui = {
     }
 
     // Layout
-    $(".create_form .field").addClass('input-field');
     $(".ui-dialog-titlebar").hide();
     $(".ui-resizable-handle").hide();
     $(".chzn-container").width('100%');
     $(".chzn-drop").width('100%');
     $(".chzn-search input").width('94%');
-    $(".btn-flat.close").on('click', function() {
-      scope.dialog('destroy');
-      scope.remove();
-    });
   },
 
   setupChosen: function(dom, monitor) {

@@ -86,6 +86,7 @@
                                    + "&screen=#{screen.class}"
                                    + "&source=#{column_name}";
               var container = $(".auto-complete-text-field-#{column_name}");
+              container.parent().addClass('input-field').height('51.82px');
               var column = {
                 auto_complete: true,
                 width: container.width(),
