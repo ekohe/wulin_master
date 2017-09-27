@@ -130,11 +130,11 @@ var loadValue = function(scope, data) {
 };
 
 var distinctInput = function(inputBox) {
-  var addNewSelect;
+  var addNewSelect = $('#' + inputBox.attr('id'));
   // This is a crazy feature
   if ($('#' + inputBox.attr('id') + '_chzn li:contains("Add new Option")').size() > 0) {
-    addNewSelect = $('#' + inputBox.attr('id'));
-    $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
+    // $('#' + addNewSelect.attr('id') + '_chzn li:contains("Add new Option")').off('mouseup').on('mouseup', function(event) {
+    $('#' + addNewSelect.attr('id') + '_chzn').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function(event) {
       var $select = addNewSelect;
       var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new option", 'class': "create_form"}).css('display', 'none').appendTo($('body'));
       var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
