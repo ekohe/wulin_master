@@ -30,8 +30,12 @@ form {
       top: 40px;
       margin-bottom: 16px;
     }
+    label.active {
+      top: 5px;
+    }
     input[type=text]:not(.browser-default) {
-      margin-bottom: 8px;
+      height: 36px;
+      font-size: $font-size-small;
     }
   }
   .submit {
