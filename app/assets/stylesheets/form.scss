@@ -6,9 +6,8 @@ form {
   .field_error {
     color: $error-color;
     font-size: $font-size-small;
-    display: inline-block;
-    margin-left: 5px;
-    max-width: $error-max-width;
+    position: absolute;
+    top: 40px;
   }
   .base_error {
     padding-left: 130px;
@@ -27,8 +26,7 @@ form {
   .field {
     margin: 0;
     .chzn-container {
-      top: 40px;
-      margin-bottom: 16px;
+      top: 0;
     }
     label.active {
       top: 5px;
