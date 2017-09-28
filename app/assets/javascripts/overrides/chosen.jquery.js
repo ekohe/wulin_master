@@ -50,6 +50,21 @@ AbstractChosen.prototype.result_add_option = function(option) {
   return '<li id="' + option.dom_id + '" class="' + classes.join(' ') + '"' + style + '>' + option.html + '</li>';
 };
 
+// ---------------- change default text ---------------------------
+AbstractChosen.prototype.set_default_text = function() {
+  if (this.form_field.getAttribute("data-placeholder")) {
+    this.default_text = this.form_field.getAttribute("data-placeholder");
+  } else if (this.is_multiple) {
+    // --------- change default text -------------
+    // this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || "Select Some Options";
+    this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || "Select Options";
+    // ---------------------------------------
+  } else {
+    this.default_text = this.options.placeholder_text_single || this.options.placeholder_text || "Select an Option";
+  }
+  return this.results_none_found = this.form_field.getAttribute("data-no_results_text") || this.options.no_results_text || "No results match";
+};
+
 Chosen.prototype.result_select = function(evt) {
   var high, high_id, item, position;
   if (this.result_highlight) {
