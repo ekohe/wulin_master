@@ -31,6 +31,7 @@
       background-color: color('grey', 'lighten-4');
     }
     .chzn-search {
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       input {
         height: 32px;
         padding: 0 18px 0 3px;

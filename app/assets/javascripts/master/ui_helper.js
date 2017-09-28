@@ -263,7 +263,7 @@ var Ui = {
     $(".ui-resizable-handle").hide();
     $(".chzn-container").width('100%');
     $(".chzn-drop").width('100%');
-    $(".chzn-search input").width('94%');
+    $(".chzn-search input").width('96%');
   },
 
   setupChosen: function(dom, monitor) {
