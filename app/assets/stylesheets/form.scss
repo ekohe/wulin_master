@@ -7,7 +7,7 @@ form {
     color: $error-color;
     font-size: $font-size-small;
     position: absolute;
-    top: 40px;
+    top: 33px;
   }
   .base_error {
     padding-left: 130px;
@@ -29,10 +29,10 @@ form {
       top: 0;
     }
     label.active {
-      top: 5px;
+      top: 8px;
     }
     input[type=text]:not(.browser-default) {
-      height: 36px;
+      height: 32px;
       font-size: $font-size-small;
     }
   }
