@@ -27,6 +27,11 @@ form {
     margin: 0;
     .chzn-container {
       top: 0;
+      .chzn-choices {
+        .search-choice {
+          margin-top: 7px;
+        }
+      }
     }
     label.active {
       top: 8px;

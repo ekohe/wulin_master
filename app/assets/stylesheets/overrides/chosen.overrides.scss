@@ -8,7 +8,9 @@
     border: 0;
     .search-choice {
       border: none;
-      margin-top: 7px;
+      margin-top: 0;
+      background-image: none;
+      background-color: $tag-color;
     }
     .search-field {
       border-bottom: none;
