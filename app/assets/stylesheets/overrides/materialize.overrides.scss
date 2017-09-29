@@ -36,10 +36,16 @@ nav {
   padding: 0;
 }
 
+//////////////////
 // Button
 
+// Raised Button
 .btn {
   background-color: $main-color;
+  &:hover {
+    background-color: lighten($main-color, 5%);
+    @extend .z-depth-1-half;
+  }
 }
 
 .btn-small {
@@ -49,6 +55,22 @@ nav {
   padding: 0 8px;
   font-size: $font-size-small;
   margin-left: 2px;
+}
+
+// Floating button
+.btn-floating {
+  background-color: $main-color;
+  &:hover {
+    background-color: $main-color;
+  }
+}
+
+// Shared focus button style
+.btn,
+.btn-floating {
+  &:focus {
+    background-color: darken($main-color, 10%);
+  }
 }
 
 // Modal
@@ -112,4 +134,11 @@ textarea.materialize-textarea {
   &:focus:not([readonly])+label {
     color: $main-color !important;
   }
+}
+
+// Form: Check Box
+
+[type="checkbox"].filled-in:checked + label:after {
+  border-color: $main-color;
+  background-color: $main-color;
 }
