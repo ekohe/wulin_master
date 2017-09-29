@@ -136,6 +136,13 @@ textarea.materialize-textarea {
   }
 }
 
+// Form: Text Area
+
+textarea.materialize-textarea {
+  padding: 0;
+  margin: 0;
+}
+
 // Form: Check Box
 
 [type="checkbox"].filled-in:checked + label:after {
