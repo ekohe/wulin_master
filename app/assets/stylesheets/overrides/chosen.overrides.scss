@@ -89,13 +89,13 @@
         color: $text-color;
       }
     }
-    .search-choice {
-      .search-choice-close {
-        height: 10px;
-        border-bottom: none;
-        cursor: pointer;
-        text-decoration: none;
-      }
+  }
+}
+
+.chzn-container-single {
+  .chzn-single {
+    abbr {
+      height: 10px;
     }
   }
 }
