@@ -5,9 +5,9 @@
 form {
   .field_error {
     color: $error-color;
-    font-size: $font-size-small;
+    font-size: $font-size-tiny;
     position: absolute;
-    top: 33px;
+    top: 37px;
   }
   .base_error {
     padding-left: 130px;
@@ -24,18 +24,18 @@ form {
     margin-bottom: $form-title-margin * 1.5;
   }
   .field {
-    margin: 0;
     label.active {
-      top: 8px;
+      top: 5px;
     }
     input, textarea {
       color: $text-color;
       font-size: $font-size-small;
     }
     input[type=text]:not(.browser-default) {
-      height: 32px;
+      height: 36px;
+      margin-bottom: 15px;
     }
-    input[data-date=true] {
+    input[data-date=true], input[data-datetime=true] {
       display: block;
       margin-bottom: 5px;
     }

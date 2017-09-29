@@ -11,6 +11,9 @@
       margin-top: 0;
       background-image: none;
       background-color: $tag-color;
+      .search-choice-close {
+        height: 12px;
+      }
     }
     .search-field {
       border-bottom: none;
