@@ -25,7 +25,8 @@
           field = column.options[:through] || column.name
           source = column.editor_source || column.source
         .field{:name => column_name}
-          %label{:for => "#{model_name}_#{column_name}"}= label
+          - unless column.sql_type.to_s.downcase == 'boolean'
+            %label{:for => "#{model_name}_#{column_name}"}= label
           - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
             = form.select column_name,                                      |
               select_options(column),                                       |
