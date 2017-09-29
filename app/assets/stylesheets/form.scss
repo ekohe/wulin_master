@@ -28,12 +28,12 @@ form {
     label.active {
       top: 8px;
     }
-    input {
+    input, textarea {
       color: $text-color;
+      font-size: $font-size-small;
     }
     input[type=text]:not(.browser-default) {
       height: 32px;
-      font-size: $font-size-small;
     }
     input[data-date=true] {
       display: block;
