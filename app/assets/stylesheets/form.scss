@@ -25,6 +25,20 @@ form {
   }
   .field {
     margin: 0;
+    label.active {
+      top: 8px;
+    }
+    input {
+      color: $text-color;
+    }
+    input[type=text]:not(.browser-default) {
+      height: 32px;
+      font-size: $font-size-small;
+    }
+    input[data-date=true] {
+      display: block;
+      margin-bottom: 5px;
+    }
     .chzn-container {
       top: 0;
       .chzn-choices {
@@ -32,13 +46,6 @@ form {
           margin-top: 7px;
         }
       }
-    }
-    label.active {
-      top: 8px;
-    }
-    input[type=text]:not(.browser-default) {
-      height: 32px;
-      font-size: $font-size-small;
     }
   }
   .submit {
