@@ -20,7 +20,6 @@ Given /^I wait for (.+) seconds?$/ do |n|
 end
 
 Given(/^I go to the homepage$/) do
-  # visit '/'
   visit root_path
 end
 
