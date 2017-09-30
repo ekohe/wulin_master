@@ -48,7 +48,7 @@ module WulinMaster
 
     def fetch_distinct_options
       if authorized? && params[:source].present?
-        object_arr = klass.select(params[:source]).order("#{params[:source]} ASC").uniq.pluck(params[:source]).delete_if(&:blank?)
+        object_arr = klass.select(params[:source]).order("#{params[:source]} ASC").distinct.pluck(params[:source]).delete_if(&:blank?)
         self.response_body = object_arr.to_json
       else
         self.status = 403
