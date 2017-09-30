@@ -29,19 +29,11 @@ var batchUpdateByAjax = function(grid, version) {
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
-
-      var $editModal = $('<div/>')
-        .addClass('modal')
-        .width('600px')
-        .appendTo($('body'));
-      var $modalContent = $('<div/>')
-        .addClass('modal-content')
-        .appendTo($editModal);
-
-      $modalContent.append(data);
+      var $editModal = Ui.createModal(grid, data);
       var scope = $( '#' + name + '_form');
-
       $editModal.modal({
+        startingTop: '5%',
+        endingTop: '5%',
         ready: function(modal, trigger) {
           Ui.setupForm(grid, true);
           checkTheBox(name);
@@ -55,9 +47,7 @@ var batchUpdateByAjax = function(grid, version) {
           $editModal.remove();
         }
       });
-
       $editModal.modal('open');
-
     });
   }
 };

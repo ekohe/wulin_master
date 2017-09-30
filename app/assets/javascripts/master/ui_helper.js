@@ -72,35 +72,11 @@ var Ui = {
 
   // Create and open dialog
   openDialog: function(grid, action, options, callback) {
-    var width, height;
-
     $.get(grid.path + '/' + action + grid.query, function(data){
-
-      $('body').append(data);
-      var modalHeight = $('.create_form .title').outerHeight() +             // Title
-                        $('.create_form #new_' + grid.name).outerHeight() +  // Fields
-                        $('.create_form .submit').outerHeight() +            // Button
-                        75;                                                  // Padding
-      if (options) {
-        width = options.form_dialog_width || 600;
-        height = options.form_dialog_height || modalHeight;
-      } else {
-        width = 600;
-        height = modalHeight;
-      }
-      $('.create_form').remove();
-
-      var $createModal = $('<div/>')
-        .addClass('modal')
-        .width(width)
-        .height(height)
-        .appendTo($('body'));
-      var $modalContent = $('<div/>')
-        .addClass('modal-content')
-        .append(data)
-        .appendTo($createModal);
-
+      var $createModal = Ui.createModal(grid, data);
       $createModal.modal({
+        startingTop: '5%',
+        endingTop: '5%',
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
         },
@@ -108,7 +84,6 @@ var Ui = {
           $createModal.remove();
         }
       });
-
       $createModal.modal('open');
     });
   },
@@ -323,6 +298,39 @@ var Ui = {
       }
     }
     return currentGrid;
+  },
+
+  getModalSize: function(grid, data) {
+    var width, height;
+    $('body').append(data);
+    var modalHeight = $('.create_form .title').outerHeight() +             // Title
+                      $('.create_form form').outerHeight() +               // Fields
+                      $('.create_form .submit').outerHeight() +            // Button
+                      120;                                                 // Padding
+    if (grid.options) {
+      width = grid.options.form_dialog_width || 600;
+      height = grid.options.form_dialog_height || modalHeight;
+    } else {
+      width = 600;
+      height = modalHeight;
+    }
+    $('.create_form').remove();
+    return { width: width, height: height };
+  },
+
+  createModal: function(grid, data) {
+    var modalSize = this.getModalSize(grid, data);
+    var $modal = $('<div/>')
+      .addClass('modal')
+      .width(modalSize.width)
+      .height(modalSize.height)
+      .css({'max-height': '90%'})
+      .appendTo($('body'));
+    var $modalContent = $('<div/>')
+      .addClass('modal-content')
+      .append(data)
+      .appendTo($modal);
+    return $modal;
   },
 
   formatData: function(grid, arrayData) {
