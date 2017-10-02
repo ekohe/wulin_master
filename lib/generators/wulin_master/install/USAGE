@@ -1,10 +1,16 @@
 Description:
-    Generate the base files: homepage_controller.rb and and "root :to => 'homepage#index'" to routes
+    Generate the base files: homepage_controller.rb, add menu definition to application_controller.rb and add "root to: 'homepage#index'" to routes
 
 Example:
     rails generate wulin_master:install
 
     This will create:
         what/will/it/create
+        remove  app/controllers/application_controller.rb
+        create  app/controllers/application_controller.rb
         create  app/controllers/homepage_controller.rb
-        route   root :to => 'homepage#index'
+        create  config/initializers/wulin_master.rb
+        create  app/panels
+        create  app/views/action_partials
+        create  app/views/panel_partials
+         route  root to: 'homepage#index'

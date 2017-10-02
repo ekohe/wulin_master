@@ -8,4 +8,10 @@ WulinMaster.configure do |config|
 
   # For the craete popup form, when click "Create and Continue" button reset the form or not
   # config.always_reset_form = false
+
+  # The default year
+  # config.default_year = 2017
+
+  # The default color theme for the whole app
+  # config.color_theme = 'blue'
 end
