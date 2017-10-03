@@ -8,7 +8,7 @@
       toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
         [:create, :export, :add_detail, :switch].include?(item.options[:name].to_sym) || item.options[:global]
       end
-      user_id = respond_to?(:current_user) ? current_user.id : -1
+      user_id = current_user ? current_user.id : -1
     .grid-header
       %h2= grid.title
       - grid.header_actions.each do |a|
