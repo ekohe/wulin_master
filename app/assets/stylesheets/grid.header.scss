@@ -19,8 +19,8 @@
   // Selection Info
   .selection-info {
     position: absolute;
-    display: block;
-    padding-left: 20px;
+    top: 50px;
+    left: 20px;
     font-size: $font-size-small;
     color: $grid-header-selection-info-color;
   }
