@@ -97,7 +97,8 @@
       $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
       $a.on("click", function() {
-        if (confirm('Are you sure that you want to reset the default view?')) {
+        $('#confirm-modal').modal('open');
+        $('#confirmed-btn').on('click', function() {
           $.post('/wulin_master/grid_states_manages/reset_default',
                  { _method: 'PUT',
                    grid_name: grid.name,
@@ -110,7 +111,8 @@
                      displayErrorMessage(data);
                    }
                  });
-        }
+          $('#confirm-modal').modal('close');
+        })
       });
 
       // Ekohe Delete
