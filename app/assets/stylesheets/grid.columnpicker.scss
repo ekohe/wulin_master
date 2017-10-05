@@ -2,17 +2,12 @@
 
 // Grid Column Picker (Right click on Grid Table Header)
 
-.columnpicker-container {
-  .card-panel {
-    padding: 0;
-  }
-}
-
 .column-container {
   padding-top: 10px;
 }
 
 .wulin-columnpicker {
+  padding: 0;
   li {
     list-style: none;
     padding-left: $columnpicker-li-padding;

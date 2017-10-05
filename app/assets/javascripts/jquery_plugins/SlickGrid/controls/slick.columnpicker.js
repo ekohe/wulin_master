@@ -20,8 +20,9 @@
 
       // Ekohe Edit
       // $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
-      var $menuContainer = $("<div class='columnpicker-container' />").appendTo(document.body);
-      $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />").appendTo($menuContainer);
+      $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />")
+        .attr('id', grid.name + '-columnpicker')
+        .appendTo(document.body);
 
       $menu.on("mouseleave", function (e) {
         $(this).fadeOut(options.fadeSpeed)
@@ -221,7 +222,7 @@
       // }
 
       var visibleColumns = [];
-      $.each($(".wulin-columnpicker li input"), function(i, e) {
+      $.each($('#' + grid.name + '-columnpicker li input'), function(i, e) {
         if ($(this).is(":checked")) {
           visibleColumns.push(columns[i]);
           $(this).addClass("filled-in");
