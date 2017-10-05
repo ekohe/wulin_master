@@ -41,6 +41,9 @@ function loadPageForHistoryState() {
 function load_page(url) {
   $("#screen_content").empty();
 
+  // Ekohe Add
+  $('.columnpicker-container').remove();
+
   // Ekohe Edit: Use screen_content_loader as new indicator
 
   // var indicators = $("#activity #indicators");
