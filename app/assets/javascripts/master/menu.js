@@ -41,7 +41,7 @@ function loadPageForHistoryState() {
 function load_page(url) {
   $("#screen_content").empty();
 
-  // Ekohe Add
+  // Ekohe Add: Remove old columnpickers when screen changes
   $('.columnpicker-container').remove();
 
   // Ekohe Edit: Use screen_content_loader as new indicator

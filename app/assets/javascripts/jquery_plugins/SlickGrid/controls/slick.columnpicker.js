@@ -250,13 +250,8 @@
     // Ekohe Modify: Use extend instead of return to set APIs to this
     $.extend(this, {
     // return {
-      "onColumnsPick": new Slick.Event(),                 // Ekohe Add
+      "onColumnsPick": new Slick.Event(),
 
-      "getMenu": getMenu,                                 // Ekohe Add
-      "getColumnCheckboxes": getColumnCheckboxes,         // Ekohe Add
-      "init": init,                                       // Ekohe Add
-      "updateColumn": updateColumn,                       // Ekohe Add
-      "handleHeaderContextMenu": handleHeaderContextMenu, // Ekohe Add
       "destroy": destroy,
       "getAllColumns": getAllColumns
     });
