@@ -6,6 +6,7 @@ spec/tmp/*
 doc
 .DS_Store
 .ruby-version
+rubocop.html
 spec/wulin_app/db/log/*.log
 spec/wulin_app/tmp/
 spec/wulin_app/.sass-cache
