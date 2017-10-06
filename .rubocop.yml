@@ -10,6 +10,7 @@ AllCops:
     - 'deployment/**/*'
     - 'bin/**/*'
     - 'spec/spec_helper.rb'
+    - 'lib/generators/wulin_master/screen_and_grid/templates/*.rb'
 
 Style/StringLiterals:
   Enabled: false
