@@ -19,7 +19,7 @@ module WulinMaster
 
       # Remove columns for exactly screens
       def remove_columns(r_columns, scope = {})
-        return if scope[:screen].blank?
+        return unless scope[:screen].present?
 
         r_columns = r_columns.map(&:to_s)
         self.columns_pool.each do |column|

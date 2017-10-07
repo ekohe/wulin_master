@@ -163,7 +163,7 @@ module WulinMaster
         Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:full_name).inspect}"
       end
       @order_direction = "ASC"
-      @order_direction = params[:sort_dir].upcase if params[:sort_dir].match?(/^(A|DE)SC$/i)
+      @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
 
       @query = grid.apply_order(@query, @order_column, @order_direction)
     end
@@ -200,7 +200,7 @@ module WulinMaster
     end
 
     def get_attributes(attrs, type, object = nil)
-      return {} if attrs.blank?
+      return {} unless attrs.present?
       attrs.delete_if { |k, _v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)

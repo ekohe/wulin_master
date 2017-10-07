@@ -6,6 +6,29 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+# Offense count: 4
+# Cop supports --auto-correct.
+Performance/RegexpMatch:
+  Exclude:
+    - 'app/models/wulin_master/grid_state.rb'
+    - 'lib/wulin_master/actions.rb'
+    - 'lib/wulin_master/components/grid/column/column_attr.rb'
+
+# Offense count: 2
+# Cop supports --auto-correct.
+Rails/ApplicationRecord:
+  Exclude:
+    - 'spec/controllers/wulin_master/screen_controller_spec.rb'
+    - 'spec/wulin_app/app/models/person.rb'
+
+# Offense count: 2
+# Cop supports --auto-correct.
+# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
+Rails/Blank:
+  Exclude:
+    - 'lib/wulin_master/actions.rb'
+    - 'lib/wulin_master/components/grid/grid_columns.rb'
+
 # Offense count: 1
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
