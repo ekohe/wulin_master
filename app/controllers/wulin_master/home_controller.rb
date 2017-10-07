@@ -13,7 +13,7 @@ module WulinMaster
           if request.xhr?
             begin
               render template: 'homepage/dashboard', layout: false
-            rescue
+            rescue StandardError
               render plain: ''
             end
           else

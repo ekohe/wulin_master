@@ -24,7 +24,7 @@ module WulinMaster
         end
       end
       render json: {success: true}
-    rescue
+    rescue StandardError
       render json: {success: false, error_message: $ERROR_INFO.message}
     end
 

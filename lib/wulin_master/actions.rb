@@ -85,7 +85,7 @@ module WulinMaster
         end
       end
       render json: {success: true}
-    rescue
+    rescue StandardEroor
       render json: {success: false, error_message: $ERROR_INFO.message }
     end
 
@@ -107,7 +107,7 @@ module WulinMaster
       else
         render json: {success: false, error_message: error_message}
       end
-    rescue
+    rescue StandardEroor
       render json: {success: false, error_message: $ERROR_INFO.message}
     end
 

@@ -4,10 +4,10 @@ module WulinMaster
 
     def include
       if (ids = params[:ids]).present? && (begin
-                                              group = @group_model.find params[:group_id]
-                                            rescue
-                                              false
-                                            end)
+                                             group = @group_model.find params[:group_id]
+                                           rescue StandardError
+                                             false
+                                           end)
         @group_model.transaction do
           ids.each do |id|
             group.send(params[:exclude_model].underscore.pluralize) << @exclude_model.find(id)
@@ -16,7 +16,7 @@ module WulinMaster
         end
       end
       render json: {status: 'OK', message: "Added #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}."}
-    rescue
+    rescue StandardError
       render json: {status: 'Error', message: "Adding failed! Error: #{$ERROR_INFO.message}"}
     end
 

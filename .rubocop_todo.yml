@@ -6,19 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 18
-Lint/RescueWithoutErrorClass:
-  Exclude:
-    - 'app/controllers/wulin_master/fetch_options_controller.rb'
-    - 'app/controllers/wulin_master/grid_states_controller.rb'
-    - 'app/controllers/wulin_master/grid_states_manages_controller.rb'
-    - 'app/controllers/wulin_master/home_controller.rb'
-    - 'app/controllers/wulin_master/inclusion_exclusion_controller.rb'
-    - 'app/controllers/wulin_master/master_detail_controller.rb'
-    - 'lib/wulin_master/actions.rb'
-    - 'lib/wulin_master/components/component.rb'
-    - 'lib/wulin_master/components/grid/column/sql_adapter.rb'
-
 # Offense count: 2
 Lint/ShadowingOuterLocalVariable:
   Exclude:

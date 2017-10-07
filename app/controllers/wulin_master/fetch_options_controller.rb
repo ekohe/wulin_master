@@ -16,7 +16,7 @@ module WulinMaster
         self.status = 403
         self.response_body = ForbiddenMessage
       end
-    rescue
+    rescue StandardError
       self.status = 500
       self.response_body = "Something wrong: #{$ERROR_INFO.message}"
     end
@@ -33,7 +33,7 @@ module WulinMaster
         self.status = 403
         self.response_body = ForbiddenMessage
       end
-    rescue
+    rescue StandardError
       self.status = 500
       self.response_body = "Something wrong: #{$ERROR_INFO.message}"
     end
@@ -46,7 +46,7 @@ module WulinMaster
         self.status = 403
         self.response_body = ForbiddenMessage
       end
-    rescue
+    rescue StandardError
       self.status = 500
       self.response_body = "Something wrong: #{$ERROR_INFO.message}"
     end

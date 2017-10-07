@@ -15,7 +15,7 @@ module WulinMaster
           # when argument_count is -1, sometimes it can accept self.params (like :fill_window), sometimes it can't (like :title)
           begin
             send(key, value, params)
-          rescue
+          rescue StandardError
             send(key, value)
           end
         end

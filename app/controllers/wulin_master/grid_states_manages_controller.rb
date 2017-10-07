@@ -20,7 +20,7 @@ module WulinMaster
         new_state.brother_states.update_all(current: false)
       end
       self.response_body = "success"
-    rescue
+    rescue StandardError
       self.response_body = $ERROR_INFO.message
     end
 
@@ -42,14 +42,14 @@ module WulinMaster
     def update
       @state.update_attributes!(name: params[:name])
       self.response_body = "success"
-    rescue
+    rescue StandardError
       self.response_body = $ERROR_INFO.message
     end
 
     def destroy
       @state.destroy
       self.response_body = "success"
-    rescue
+    rescue StandardError
       self.response_body = $ERROR_INFO.message
     end
 
@@ -59,7 +59,7 @@ module WulinMaster
         @state.update_attributes!(current: true)
       end
       self.response_body = "success"
-    rescue
+    rescue StandardError
       self.response_body = $!.message
     end
 
@@ -85,7 +85,7 @@ module WulinMaster
         end
         self.response_body = "success"
       end
-    rescue
+    rescue StandardError
       self.response_body = $ERROR_INFO.message
     end
 
@@ -94,7 +94,7 @@ module WulinMaster
         default.reset!
       end
       render plain: 'ok'
-    rescue
+    rescue StandardError
       render plain: $ERROR_INFO.message
     end
 
