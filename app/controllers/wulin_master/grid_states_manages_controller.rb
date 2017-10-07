@@ -76,7 +76,7 @@ module WulinMaster
 
       GridState.transaction do
         # update or create states
-        params[:grid_states].each do |_index, state|
+        params[:grid_states].each_value do |state|
           if state[:id].present?
             GridState.find(state[:id]).update_attributes!(name: state[:name])
           else

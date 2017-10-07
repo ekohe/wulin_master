@@ -6,23 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 20
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: snake_case, normalcase, non_integer
-Naming/VariableNumber:
-  Exclude:
-    - 'spec/controllers/wulin_master/screen_controller_spec.rb'
-    - 'spec/menu/menu_spec.rb'
-    - 'spec/screen/grid_spec.rb'
-    - 'spec/screen/toolbar_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Performance/HashEachMethods:
-  Exclude:
-    - 'app/controllers/wulin_master/grid_states_manages_controller.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Performance/RegexpMatch:
