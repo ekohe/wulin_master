@@ -25,11 +25,7 @@ module WulinMaster
             through = options[:through] || reflection.foreign_key
 
             # call affiliation or reverse_affiliation behavior for detail grid
-            operator = if reflection.macro == :belongs_to
-              inclusion ? 'equals' : 'not_equals'
-            elsif reflection.macro == :has_many
-              inclusion ? 'include' : 'exclude'
-            end
+            operator = find_operator(reflection, inclusion)
 
             # add association column to self for filtering
             unless columns_pool.find { |c| (c.full_name == reflection.foreign_key) && c.valid_in_screen(options[:screen]) }
@@ -52,6 +48,14 @@ module WulinMaster
           end
         else
           raise "'#{master_grid_klass_name}' is not valid grid name."
+        end
+      end
+
+      def find_operator(reflection, inclusion)
+        if reflection.macro == :belongs_to
+          inclusion ? 'equals' : 'not_equals'
+        elsif reflection.macro == :has_many
+          inclusion ? 'include' : 'exclude'
         end
       end
 
