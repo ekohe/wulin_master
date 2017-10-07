@@ -7,12 +7,6 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 2
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'app/helpers/wulin_master_grid_helper.rb'
-    - 'lib/wulin_master/actions.rb'
-
-# Offense count: 2
 Lint/UnreachableCode:
   Exclude:
     - 'app/helpers/wulin_master_grid_helper.rb'

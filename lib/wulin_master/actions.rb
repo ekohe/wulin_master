@@ -79,8 +79,8 @@ module WulinMaster
         updated_attributes = get_attributes(params_permit, :update, record)
         raise record.errors.full_messages.join(',') unless record.errors.empty?
         grid.model.transaction do
-          @records.each do |record|
-            record.update_attributes!(updated_attributes)
+          @records.each do |r|
+            r.update_attributes!(updated_attributes)
           end
         end
       end
