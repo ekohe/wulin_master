@@ -2,13 +2,13 @@
   #menu{style: "top: 10px"}
     %ul
       - controller.menu.each do |menu_entry|
-        - if menu_entry.is_submenu?
+        - if menu_entry.submenu?
           %li.submenu
             %a{href: "#"}
               = menu_entry.title
             %ul
               - menu_entry.each do |submenu_entry|
-                %li.item{:style => submenu_entry.is_hidden? ? "display:none" : ""}
+                %li.item{:style => submenu_entry.hidden? ? "display:none" : ""}
                   = link_to submenu_entry.path do
                     %i.material-icons= submenu_entry.options[:icon] || 'crop_16_9'
                     %span= submenu_entry.title

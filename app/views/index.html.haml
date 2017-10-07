@@ -1,7 +1,7 @@
 - if xhr
   - components.each do |component|
-    = render :partial => '/grid', :locals => {:grid => component} if component.is_grid?
-    = render :partial => '/panel', :locals => {:panel => component} if component.is_panel?
+    = render :partial => '/grid', :locals => {:grid => component} if component.grid?
+    = render :partial => '/panel', :locals => {:panel => component} if component.panel?
     - break if component.respond_to?(:fill_window?) and component.fill_window?
   :javascript
     saveMessage("#{params[:screen]} loaded", 'info');

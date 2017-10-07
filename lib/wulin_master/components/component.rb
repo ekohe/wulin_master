@@ -29,11 +29,11 @@ module WulinMaster
       @custom_config = config
     end
 
-    def is_panel?
+    def panel?
       false
     end
 
-    def is_grid?
+    def grid?
       false
     end
   end

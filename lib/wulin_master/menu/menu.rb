@@ -26,11 +26,11 @@ module WulinMaster
       @options = options
     end
 
-    def is_submenu?
+    def submenu?
       false
     end
 
-    def is_hidden?
+    def hidden?
       @options[:hidden]
     end
 
@@ -48,7 +48,7 @@ module WulinMaster
       @title = title
     end
 
-    def is_submenu?
+    def submenu?
       true
     end
   end

@@ -54,7 +54,7 @@ module WulinMaster
         new_attrs[relation_object.foreign_key] = nil
       elsif association_attributes['id'].present?
         new_attrs[relation_object.foreign_key] = association_attributes['id']
-      elsif has_one_reverse_relation?(relation_object.klass, model)
+      elsif one_reverse_relation?(relation_object.klass, model)
         nested_attr_key = (field_str =~ /_attributes$/ ? field_str : "#{k}_attributes")
         new_attrs[nested_attr_key] = association_attributes
       end
@@ -126,7 +126,7 @@ module WulinMaster
       @relation_object ||= model_associations[field_str]
     end
 
-    def has_one_reverse_relation?(related_klass, klass)
+    def one_reverse_relation?(related_klass, klass)
       (reflect = related_klass.reflections.find { |x| x[1].klass == klass }[1]) && (reflect.macro == :has_one)
     end
 

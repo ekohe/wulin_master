@@ -82,7 +82,7 @@ module WulinMaster
       initialize_toolbar if params[:format] != 'json'
     end
 
-    def is_grid?
+    def grid?
       true
     end
 

@@ -63,7 +63,7 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       # Disbale editting, sorting, filtering for colunms calculated by model method
-      unless is_table_column? || related_column_filterable?
+      unless table_column? || related_column_filterable?
         %w(editable sortable filterable).each { |k| @options[k] = false }
       end
       new_options = @options.dup
@@ -128,7 +128,7 @@ module WulinMaster
         query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
       elsif reflection
         query.order("#{relation_table_name}.#{source} #{direction}, #{model.table_name}.id ASC")
-      elsif is_table_column?
+      elsif table_column?
         order_str = "#{model.table_name}.#{source} #{direction}"
         order_str << ", #{model.table_name}.id ASC" if model < ActiveRecord::Base
         query.order(order_str)
@@ -239,7 +239,7 @@ module WulinMaster
 
     # Returns the sql names used to generate the select
     def sql_names
-      if is_table_column?
+      if table_column?
         if reflection
           [model.table_name + "." + foreign_key, reflection.klass.table_name + "." + source.to_s]
         else
@@ -318,7 +318,7 @@ module WulinMaster
     end
 
     def sortable?
-      @options[:sortable] || is_table_column? || is_nosql_field? || related_column_filterable? || @options[:sql_expression]
+      @options[:sortable] || table_column? || nosql_field? || related_column_filterable? || @options[:sql_expression]
     end
 
     def enum?
@@ -337,7 +337,7 @@ module WulinMaster
     def complete_column_name
       if @options[:sql_expression]
         (@options[:sql_expression]).to_s
-      elsif is_table_column?
+      elsif table_column?
         "#{model.table_name}.#{source}"
       elsif reflection
         "#{reflection.klass.table_name}.#{source}"
@@ -352,11 +352,11 @@ module WulinMaster
       (column.try(:type) || :unknown).to_s.to_sym
     end
 
-    def is_table_column?
+    def table_column?
       model.respond_to?(:column_names) ? model.column_names.include?(name.to_s) : false
     end
 
-    def is_nosql_field?
+    def nosql_field?
       model.ancestors.exclude?(ActiveModel::Serializers::JSON)
     end
 

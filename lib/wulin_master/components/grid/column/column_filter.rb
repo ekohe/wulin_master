@@ -128,7 +128,7 @@ module WulinMaster
           end
         end
 
-        if %w(integer float decimal enum).include?(sql_type.to_s) && is_table_column?
+        if %w(integer float decimal enum).include?(sql_type.to_s) && table_column?
           return query.where(source => filtering_value)
         else
           adapter.string_query(complete_column_name, filtering_value, self)

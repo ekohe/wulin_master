@@ -6,30 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 5
-# Naming/AccessorMethodName:
-#   Exclude:
-#     - 'app/controllers/wulin_master/inclusion_exclusion_controller.rb'
-#     - 'app/controllers/wulin_master/master_detail_controller.rb'
-#     - 'app/controllers/wulin_master/menuable.rb'
-#     - 'app/models/wulin_master/grid_state.rb'
-#     - 'lib/wulin_master/components/grid/grid_options.rb'
-
-# Offense count: 10
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-Naming/PredicateName:
-  Exclude:
-    - 'spec/**/*'
-    - 'lib/wulin_master/components/component.rb'
-    - 'lib/wulin_master/components/grid/column.rb'
-    - 'lib/wulin_master/components/grid/column/column_attr.rb'
-    - 'lib/wulin_master/components/grid/grid.rb'
-    - 'lib/wulin_master/components/panel/panel.rb'
-    - 'lib/wulin_master/menu/menu.rb'
-
 # Offense count: 20
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: snake_case, normalcase, non_integer
