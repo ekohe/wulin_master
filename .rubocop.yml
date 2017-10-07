@@ -90,10 +90,6 @@ Rails:
 # Project specific rules
 ########################
 
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'spec/generator/*.rb'
-
 Lint/HandleExceptions:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
