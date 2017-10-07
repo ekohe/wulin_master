@@ -28,7 +28,7 @@ module WulinMaster
                               -> { yield }
                             else
                               method_name
-        end
+                            end
       end
 
       def find_callbacks(name)
