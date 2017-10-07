@@ -7,11 +7,6 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 1
-Lint/HandleExceptions:
-  Exclude:
-    - 'app/screens/grid_states_screen.rb'
-
-# Offense count: 1
 Lint/RescueException:
   Exclude:
     - 'lib/wulin_master/components/grid/grid_states.rb'
