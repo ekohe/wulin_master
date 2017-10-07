@@ -6,6 +6,7 @@ group :development, :test do
   gem 'byebug'
   gem 'pry'
   gem 'pry-byebug'
+  gem 'rubocop', require: false
 end
 
 # Specify your gem's dependencies in wulin-master.gemspec
