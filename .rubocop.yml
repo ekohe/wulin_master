@@ -21,13 +21,13 @@ Documentation:
 Style/RegexpLiteral:
   Enabled: false
 
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
 Metrics/LineLength:
   Max: 160
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/FormatString:
@@ -39,7 +39,7 @@ Metrics/ClassLength:
 Lint/AssignmentInCondition:
   Enabled: false
 
-Style/EmptyLinesAroundAccessModifier:
+Layout/EmptyLinesAroundAccessModifier:
   Enabled: false
 
 Style/SingleLineBlockParams:
@@ -55,7 +55,7 @@ Style/StringLiteralsInInterpolation:
 Metrics/MethodLength:
   Max: 30
 
-Style/CaseIndentation:
+Layout/CaseIndentation:
   # Valid values are: case, end
   EnforcedStyle: end
   IndentOneStep: false
