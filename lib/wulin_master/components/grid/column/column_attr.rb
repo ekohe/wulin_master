@@ -1,6 +1,6 @@
 module WulinMaster
   module ColumnAttr
-    def assign_attribute(object, value, new_attrs, attrs, type)
+    def assign_attribute(_object, value, new_attrs, attrs, type)
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
         if type == :create
