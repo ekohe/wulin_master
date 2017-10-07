@@ -20,7 +20,6 @@ module WulinMaster
       else
         return filter_without_reflection(query, filtering_value, sql_type, adapter)
       end
-      adapter.query
     end
 
     private

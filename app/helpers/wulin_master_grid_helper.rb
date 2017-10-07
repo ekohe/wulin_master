@@ -68,7 +68,6 @@ module WulinMasterGridHelper
     else
       return false
     end
-    return false if FalseClass === visible
   end
 
   def edit_form_able?(column)
