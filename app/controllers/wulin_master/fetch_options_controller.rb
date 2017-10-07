@@ -71,7 +71,7 @@ module WulinMaster
 
     def code_name_column?
       ['code', 'name'].include?(params[:source]) &&
-      (['code', 'name'] & klass.column_names) == ['code', 'name']
+        (['code', 'name'] & klass.column_names) == ['code', 'name']
     end
   end
 end
