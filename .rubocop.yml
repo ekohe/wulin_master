@@ -10,6 +10,7 @@ AllCops:
     - 'deployment/**/*'
     - 'bin/**/*'
     - 'spec/spec_helper.rb'
+    - 'spec/**/*' # TODO: Should remove after Rspec works
     - 'lib/generators/wulin_master/screen_and_grid/templates/*.rb'
 
 Style/StringLiterals:
@@ -85,8 +86,16 @@ Rails:
   Enabled: true
 
 ########################
-# TODO: Should remove
+# Project specific rules
 ########################
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/generator/*.rb'
+
+#############################
+# TODO: Should review later
+#############################
 
 Metrics/AbcSize:
   Enabled: false

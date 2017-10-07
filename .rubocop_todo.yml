@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Layout/TrailingWhitespace:
-#   Exclude:
-#     - 'lib/wulin_master/components/grid/grid_behaviors.rb'
-
-# Offense count: 1
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'spec/generator/screen_and_grid_generator_spec.rb'
-
 # Offense count: 5
 Lint/AmbiguousRegexpLiteral:
   Exclude:
