@@ -200,7 +200,7 @@ module WulinMaster
     end
 
     def get_attributes(attrs, type, object = nil)
-      return {} unless attrs.present?
+      return {} if attrs.blank?
       attrs.delete_if { |k, _v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
