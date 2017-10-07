@@ -60,7 +60,7 @@ module WulinMaster
 
     def user
       self.class.all_users ||= User.all
-      get_user
+      prepare_user
     end
 
     def email
@@ -73,7 +73,7 @@ module WulinMaster
 
     private
 
-    def get_user
+    def prepare_user
       self.class.all_users.find { |x| x.id == user_id }
     end
 

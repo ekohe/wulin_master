@@ -1,6 +1,6 @@
 module WulinMaster
   class MasterDetailController < ApplicationController
-    def get_detail_controller
+    def detail_controller
       real_class_name = begin
                           params[:middle_model].classify.constantize.reflections[params[:model].to_s].class_name
                         rescue StandardEroor

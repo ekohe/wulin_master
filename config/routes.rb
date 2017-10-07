@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     get 'fetch_distinct_options', :to => WulinMaster::FetchOptionsController.action(:fetch_distinct_options)
     post 'include', :to => WulinMaster::InclusionExclusionController.action(:include)
     post 'exclude', :to => WulinMaster::InclusionExclusionController.action(:exclude)
-    get 'get_detail_controller', :to => WulinMaster::MasterDetailController.action(:get_detail_controller)
+    get 'detail_controller', :to => WulinMaster::MasterDetailController.action(:detail_controller)
     post 'attach_details', :to => WulinMaster::MasterDetailController.action(:attach_details)
 
     match 'js_error_report', to: WulinMaster::ExceptionReportController.action(:js_error), via: [:get, :post]

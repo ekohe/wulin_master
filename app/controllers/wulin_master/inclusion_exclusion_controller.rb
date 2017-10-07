@@ -1,6 +1,6 @@
 module WulinMaster
   class InclusionExclusionController < ApplicationController
-    before_action :get_models
+    before_action :prepare_models
 
     def include
       if (ids = params[:ids]).present? && (begin
@@ -28,7 +28,8 @@ module WulinMaster
     end
 
     private
-    def get_models
+
+    def prepare_models
       @group_model = params[:group_model].classify.constantize
       @include_model = params[:include_model].classify.constantize
       @exclude_model = params[:exclude_model].classify.constantize

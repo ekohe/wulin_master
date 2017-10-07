@@ -72,7 +72,7 @@ module WulinMaster
       the_options = self.class.options_pool.sort_by { |s| s[:only] || s[:except] || [] }.
                     select { |option| valid_option?(option) }.
                     inject({}) { |h, e| h.merge(e.reject { |k, _v| (k == :only) || (k == :except) }) }
-      set_cell_editable_for_current_user(the_options)
+      setup_cell_editable_for_current_user(the_options)
     end
 
     # helpers
@@ -96,7 +96,7 @@ module WulinMaster
         (option[:except].present? && params[:screen].present? && option[:except].exclude?(params[:screen].intern))
     end
 
-    def set_cell_editable_for_current_user(option)
+    def setup_cell_editable_for_current_user(option)
       return option if params[:screen].blank?
       option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option

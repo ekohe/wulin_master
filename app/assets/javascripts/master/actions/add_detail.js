@@ -46,7 +46,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var master = $.extend({}, this.target.master);
     var screen = this.screen;
 
-    $.get('/wulin_master/get_detail_controller?model=' + this.model + '&middle_model=' + this.target.model, function(data){
+    $.get('/wulin_master/detail_controller?model=' + this.model + '&middle_model=' + this.target.model, function(data){
       var url = "/" + data.controller + "?screen=" + screen + "&filters[][column]=" + master.filter_column + "&filters[][value]=" + masterId + "&filters[][operator]=exclude";
       $.ajax({
         type: 'GET',

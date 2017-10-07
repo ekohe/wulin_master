@@ -8,7 +8,7 @@ module WulinMaster
       self.class.context = self
       self.class.menu_block.call(self) unless self.class.menu_block.nil?
       self.class.context = nil
-      self.class.get_menu
+      self.class.prepare_menu
     end
 
     module ClassMethods
@@ -62,7 +62,7 @@ module WulinMaster
         end
       end
 
-      def get_menu
+      def prepare_menu
         @menu
       end
     end
