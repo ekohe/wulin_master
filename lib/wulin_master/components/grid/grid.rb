@@ -73,7 +73,8 @@ module WulinMaster
       end
     end
 
-    attr_accessor :toolbar, :current_user, :virtual_sort_column, :virtual_filter_columns
+    attr_accessor :toolbar, :current_user, :virtual_sort_column
+    attr_writer :virtual_filter_columns
 
     def initialize(screen_instance = nil, config = {})
       super

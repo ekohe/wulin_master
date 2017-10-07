@@ -12,7 +12,8 @@ module WulinMaster
     end
 
     module ClassMethods
-      attr_accessor :menu_block, :menu, :context
+      attr_accessor :menu_block, :context
+      attr_writer :menu
 
       # Menu definition
       def menu(&block)

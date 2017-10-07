@@ -15,7 +15,7 @@ module WulinMaster
 
     class << self
       # alias_method :all, :screens
-      attr_reader :title, :path, :grid_configs, :panel_configs, :components_pool
+      attr_reader :grid_configs, :panel_configs, :components_pool
       attr_accessor :controller_class
 
       def title(new_title = nil)

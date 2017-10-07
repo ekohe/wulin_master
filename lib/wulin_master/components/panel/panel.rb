@@ -13,8 +13,6 @@ module WulinMaster
     end
 
     class << self
-      attr_reader :partial, :title
-
       def partial(new_partial = nil)
         new_partial ? @partial = new_partial : @partial
       end
