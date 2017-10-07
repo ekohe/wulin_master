@@ -8,15 +8,6 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, SupportedStylesForEmptyBraces.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Exclude:
-    - 'lib/wulin_master/components/grid/column.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Layout/TrailingWhitespace:
   Exclude:
     - 'lib/wulin_master/components/grid/grid_behaviors.rb'
