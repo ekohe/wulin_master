@@ -19,7 +19,8 @@ module WulinMaster
             master_grid_name = WulinMaster::Utilities.get_grid_name(master_grid_klass_name, options[:screen])
 
             # master_model must has_many detail_model, detail_model may belongs_to master_model OR has_many master_model
-            reflection = detail_model.reflections[master_grid_klass.model.name.underscore] || detail_model.reflections[master_grid_klass.model.name.underscore.pluralize]
+            reflection = detail_model.reflections[master_grid_klass.model.name.underscore] ||
+                         detail_model.reflections[master_grid_klass.model.name.underscore.pluralize]
 
             through = options[:through] || reflection.foreign_key
 
@@ -32,7 +33,15 @@ module WulinMaster
 
             # add association column to self for filtering
             unless columns_pool.find { |c| (c.full_name == reflection.foreign_key) && c.valid_in_screen(options[:screen]) }
-              column reflection.name, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+              column(
+                reflection.name,
+                visible: false,
+                editable: false,
+                formable: false,
+                source: "id",
+                detail_relation_name: @current_detail_model,
+                only: [options[:screen].intern]
+              )
               @current_filter_column = reflection.name
             end
 
@@ -68,7 +77,15 @@ module WulinMaster
 
           # add association column
           unless columns_pool.find { |c| (c.full_name == reflection.foreign_key) && c.valid_in_screen(options[:screen]) }
-            column reflection.name, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            column(
+              reflection.name,
+              visible: false,
+              editable: false,
+              formable: false,
+              source: "id",
+              detail_relation_name: @current_detail_model,
+              only: [options[:screen].intern]
+            )
             @current_filter_column = reflection.foreign_key
           end
 
@@ -85,9 +102,18 @@ module WulinMaster
           @current_detail_model = model_name
           # if master_model already invoked (the @current_filter_column has been set and added corresponding column)
           # remove it and re-add it, append @current_detail_model as an option
-          if @current_filter_column && (same_column = columns_pool.find { |c| (c.full_name == @current_filter_column) && c.options[:only].include?(options[:screen].intern) })
+          if @current_filter_column &&
+             (same_column = columns_pool.find { |c| (c.full_name == @current_filter_column) && c.options[:only].include?(options[:screen].intern) })
             columns_pool.delete(same_column)
-            column @current_filter_column, visible: false, editable: false, formable: false, source: "id", detail_relation_name: @current_detail_model, only: [options[:screen].intern]
+            column(
+              @current_filter_column,
+              visible: false,
+              editable: false,
+              formable: false,
+              source: "id",
+              detail_relation_name: @current_detail_model,
+              only: [options[:screen].intern]
+            )
             @current_detail_model = nil
           end
         end
