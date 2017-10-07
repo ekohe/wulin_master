@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+
 module WulinMaster
   def self.configure(configuration = WulinMaster::Configuration.new)
     yield configuration if block_given?
