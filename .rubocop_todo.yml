@@ -7,9 +7,9 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 5
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - 'features/step_definitions/general.rb'
+# Lint/AmbiguousRegexpLiteral:
+#   Exclude:
+#     - 'features/step_definitions/general.rb'
 
 # Offense count: 6
 Lint/DuplicateMethods:

@@ -1,21 +1,21 @@
-When /^(?:|I )press '([^"]*)'$/ do |button|
+When(/^(?:|I )press '([^"]*)'$/) do |button|
   page.execute_script("$('.flatpickr-calendar').removeClass('open')");
   click_button(button)
 end
 
-When /^(?:|I )click on '([^"]*)'$/ do |button|
+When(/^(?:|I )click on '([^"]*)'$/) do |button|
   click_link(button)
 end
 
-Then /^(?:|I )should see '([^\']*)'$/ do |text|
+Then(/^(?:|I )should see '([^\']*)'$/) do |text|
   expect(page).to have_content(text)
 end
 
-Then /^take a screenshot$/ do
+Then(/^take a screenshot$/) do
   page.save_screenshot("~/Desktop/screenshot-#{Time.now.to_i}.png")
 end
 
-Given /^I wait for (.+) seconds?$/ do |n|
+Given(/^I wait for (.+) seconds?$/) do |n|
   sleep(n.to_f)
 end
 
