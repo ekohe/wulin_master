@@ -6,14 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 4
-# Cop supports --auto-correct.
-Performance/RegexpMatch:
-  Exclude:
-    - 'app/models/wulin_master/grid_state.rb'
-    - 'lib/wulin_master/actions.rb'
-    - 'lib/wulin_master/components/grid/column/column_attr.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Rails/ApplicationRecord:

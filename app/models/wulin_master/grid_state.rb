@@ -12,7 +12,7 @@ module WulinMaster
       attrs_dup = attrs.dup
       state_value = attrs_dup.delete(:state_value)
       if state = where(attrs_dup).first
-        if state_value =~ /^\s*(null|undefined)\s*$/
+        if state_value.match?(/^\s*(null|undefined)\s*$/)
           state.destroy
         else
           state.update_attribute(:state_value, state_value)
