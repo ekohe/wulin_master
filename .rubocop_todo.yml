@@ -8,9 +8,9 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'lib/wulin_master/components/grid/grid_behaviors.rb'
+# Layout/TrailingWhitespace:
+#   Exclude:
+#     - 'lib/wulin_master/components/grid/grid_behaviors.rb'
 
 # Offense count: 1
 Lint/AmbiguousBlockAssociation:
