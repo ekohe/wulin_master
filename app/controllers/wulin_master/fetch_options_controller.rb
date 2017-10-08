@@ -58,7 +58,7 @@ module WulinMaster
     end
 
     def column_belongs_to_grid?
-      !!column
+      !column.nil?
     end
 
     def klass

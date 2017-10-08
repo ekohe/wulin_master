@@ -6,14 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 6
-Style/DoubleNegation:
-  Exclude:
-    - 'app/controllers/wulin_master/fetch_options_controller.rb'
-    - 'app/helpers/wulin_master_grid_helper.rb'
-    - 'lib/wulin_master/components/grid/column.rb'
-    - 'lib/wulin_master/components/grid/toolbar_item.rb'
-
 # Offense count: 58
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

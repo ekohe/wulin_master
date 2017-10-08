@@ -13,11 +13,11 @@ module WulinMaster
     end
 
     def javascript?
-      !!@javascript
+      !@javascript.nil?
     end
 
     def icon?
-      !!@icon
+      !@icon.nil?
     end
 
     def anchor_tag_options

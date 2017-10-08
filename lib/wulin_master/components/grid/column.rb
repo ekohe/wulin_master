@@ -249,9 +249,9 @@ module WulinMaster
     end
 
     def presence_required?
-      !!model.validators.find do |validator|
+      !model.validators.find do |validator|
         (validator.class == ActiveModel::Validations::PresenceValidator) && validator.attributes.include?(form_name.to_sym)
-      end
+      end.nil?
     end
 
     # Returns the includes to add to the query
