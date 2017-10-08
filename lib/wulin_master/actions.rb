@@ -45,7 +45,7 @@ module WulinMaster
 
           # Getting to total count of the dataset if we aren't on the first page
           @offset = params[:offset].present? ? params[:offset].to_i : 0
-          if @offset == 0
+          if @offset.zero?
             @count_query = @query.clone
           else
             @count = @query.count

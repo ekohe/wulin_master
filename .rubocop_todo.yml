@@ -125,12 +125,3 @@ Style/MutableConstant:
 Style/NestedTernaryOperator:
   Exclude:
     - 'lib/wulin_master/components/grid/column.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle, SupportedStyles.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'lib/wulin_master/actions.rb'
