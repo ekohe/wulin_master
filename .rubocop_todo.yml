@@ -114,13 +114,6 @@ Style/MultilineBlockChain:
   Exclude:
     - 'app/helpers/wulin_master_grid_helper.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/MutableConstant:
-  Exclude:
-    - 'lib/wulin_master/components/grid/grid_actions.rb'
-    - 'lib/wulin_master/components/grid/grid_behaviors.rb'
-
 # Offense count: 1
 Style/NestedTernaryOperator:
   Exclude:

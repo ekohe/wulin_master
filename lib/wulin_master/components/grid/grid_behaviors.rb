@@ -5,7 +5,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      ORIGINAL_BEHAVIORS = %w[update validate highlight get_operate_ids clear_filters]
+      ORIGINAL_BEHAVIORS = %w[update validate highlight get_operate_ids clear_filters].freeze
 
       class << self
         attr_accessor :behaviors_pool
