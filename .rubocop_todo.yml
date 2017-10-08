@@ -36,10 +36,3 @@ Style/GuardClause:
 Style/IfInsideElse:
   Exclude:
     - 'lib/wulin_master/actions.rb'
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: module_function, extend_self
-Style/ModuleFunction:
-  Exclude:
-    - 'lib/wulin_master/utilities/utilities.rb'

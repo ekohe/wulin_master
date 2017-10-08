@@ -1,6 +1,6 @@
 module WulinMaster
   module Utilities
-    extend self
+    module_function
 
     def get_grid_name(grid_class_name, screen_class_name)
       grid_name = grid_class_name.sub('Grid', '').underscore
