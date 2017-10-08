@@ -15,7 +15,7 @@ module WulinMaster
         if state_value =~ /^\s*(null|undefined)\s*$/
           state.destroy
         else
-          state.update_attribute(:state_value, state_value)
+          state.update_attributes(:state_value, state_value)
         end
       elsif state_value !~ /^\s*(null|undefined)\s*$/
         create(attrs)

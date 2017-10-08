@@ -17,7 +17,9 @@ module WulinMaster
       )
       GridState.transaction do
         new_state.save!
-        new_state.brother_states.update_all(current: false)
+        new_state.brother_states.each do |state|
+          state.update_attributes!(current: false)
+        end
       end
       self.response_body = "success"
     rescue StandardError
@@ -55,7 +57,9 @@ module WulinMaster
 
     def set_current
       GridState.transaction do
-        @state.brother_states.update_all(current: false)
+        @state.brother_states.each do |state|
+          state..update_attributes!(current: false)
+        end
         @state.update_attributes!(current: true)
       end
       self.response_body = "success"
@@ -72,7 +76,7 @@ module WulinMaster
       # delete some states
       GridState.delete(all_states.map(&:id) - remaining_ids - [default_state.id])
       # if only remaining default states, mark it as current
-      default_state.update_attribute(:current, true)
+      default_state.update_attributes(:current, true)
 
       GridState.transaction do
         # update or create states

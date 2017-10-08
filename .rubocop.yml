@@ -112,3 +112,7 @@ Metrics/BlockLength:
 
 Metrics/ModuleLength:
   Enabled: false
+
+Rails/OutputSafety:
+  Exclude:
+    - 'app/helpers/wulin_master_grid_helper.rb'

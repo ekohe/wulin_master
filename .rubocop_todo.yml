@@ -7,19 +7,6 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 2
-Rails/OutputSafety:
-  Exclude:
-    - 'app/helpers/wulin_master_grid_helper.rb'
-
-# Offense count: 4
-# Configuration parameters: Blacklist.
-# Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
-Rails/SkipsModelValidations:
-  Exclude:
-    - 'app/controllers/wulin_master/grid_states_manages_controller.rb'
-    - 'app/models/wulin_master/grid_state.rb'
-
-# Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
 Rails/TimeZone:
