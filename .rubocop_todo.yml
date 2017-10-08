@@ -6,18 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'lib/wulin_master/extension.rb'
-
-# Offense count: 2
-Style/ClassVars:
-  Exclude:
-    - 'lib/wulin_master/configuration.rb'
-
 # Offense count: 6
 Style/DoubleNegation:
   Exclude:
