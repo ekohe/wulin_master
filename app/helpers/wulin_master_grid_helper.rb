@@ -17,7 +17,7 @@ module WulinMasterGridHelper
     elsif choices.is_a?(Proc)
       array_to_options(choices.call)
     elsif choices.is_a?(Hash) # TODO: support hash options
-      choices.map do |k, v|
+      raw_options = choices.map do |k, v|
         v.inject("<option value=''></option>") do |str, e|
           str << if e.is_a?(Array)
                    "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
@@ -25,7 +25,8 @@ module WulinMasterGridHelper
                    "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
                  end
         end
-      end.inject("") { |options, x| options << x }.html_safe
+      end
+      raw_options.inject("") { |options, x| options << x }.html_safe
     else
       array_to_options([])
     end

@@ -43,8 +43,3 @@ Style/IfInsideElse:
 Style/ModuleFunction:
   Exclude:
     - 'lib/wulin_master/utilities/utilities.rb'
-
-# Offense count: 1
-Style/MultilineBlockChain:
-  Exclude:
-    - 'app/helpers/wulin_master_grid_helper.rb'
