@@ -48,8 +48,3 @@ Style/ModuleFunction:
 Style/MultilineBlockChain:
   Exclude:
     - 'app/helpers/wulin_master_grid_helper.rb'
-
-# Offense count: 1
-Style/NestedTernaryOperator:
-  Exclude:
-    - 'lib/wulin_master/components/grid/column.rb'

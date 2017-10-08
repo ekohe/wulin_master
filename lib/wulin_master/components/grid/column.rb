@@ -210,7 +210,8 @@ module WulinMaster
     # - column :author                                          -> source = :name  (of author)
     # - column :title                                           -> source = :title (of post)
     def source
-      @options[:source].presence || (@options[:through] ? name : (reflection ? :name : name))
+      source_by_reflection = reflection ? :name : name
+      @options[:source].presence || (@options[:through] ? name : source_by_reflection)
     end
 
     def full_name
