@@ -11,7 +11,7 @@ module WulinMaster
     def self.update_or_create(attrs)
       attrs_dup = attrs.dup
       state_value = attrs_dup.delete(:state_value)
-      if state = where(attrs_dup).first
+      if state = find_by(attrs_dup)
         if state_value =~ /^\s*(null|undefined)\s*$/
           state.destroy
         else
