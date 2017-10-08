@@ -21,15 +21,15 @@ module WulinMaster
 
     def assign_relation_attr_for_create(new_attrs, value)
       if relation_macro == :belongs_to
-        if String === value
+        if value.is_a?(String)
           new_attrs[relation_object.foreign_key] = value
-        elsif (Hash === value) && value['id'] && (value['id'] != 'null')
+        elsif value.is_a?(Hash) && value['id'] && (value['id'] != 'null')
           new_attrs[relation_object.foreign_key] = value['id']
         end
       elsif relation_macro =~ /^has_many$|^has_and_belongs_to_many$/
         if (value == 'null') || value.blank?
           new_attrs[field_sym] = []
-        elsif Array === value
+        elsif value.is_a?(Array)
           value = value.uniq.delete_if(&:blank?)
           new_attrs[field_sym] = relation_object.klass.find(value).to_a
         end
@@ -62,9 +62,9 @@ module WulinMaster
 
     def assign_habtm_attr(new_attrs, association_attributes)
       # batch update action will pass id with array like ['1', '2'], not hash like { id => ['1', '2']}
-      the_ids = if Array === association_attributes
+      the_ids = if association_attributes.is_a?(Array)
         association_attributes # .first.split(',')
-      elsif (Hash === association_attributes) || (ActionController::Parameters === association_attributes)
+      elsif association_attributes.is_a?(Hash) || association_attributes.is_a?(ActionController::Parameters)
         ((association_attributes['id'] == 'null') || association_attributes['id'].blank? ? [] : association_attributes['id'])
       else
         []
@@ -79,11 +79,11 @@ module WulinMaster
 
     def assign_has_many_attr(new_attrs, association_attributes)
       # Should convert association_attributes for grid cell editor ajax request.
-      if (Hash === association_attributes) && association_attributes.values.all? { |value| value.key?('id') }
+      if association_attributes.is_a?(Hash) && association_attributes.values.all? { |value| value.key?('id') }
         association_attributes = association_attributes.values.map { |x| x['id'] }.uniq.delete_if(&:blank?)
       end
 
-      if ActionController::Parameters === association_attributes
+      if association_attributes.is_a?(ActionController::Parameters)
         association_attributes = association_attributes['id'] || 'null'
       end
 
@@ -95,11 +95,11 @@ module WulinMaster
     end
 
     def assign_has_one_attr(new_attrs, association_attributes)
-      if (Hash === association_attributes) && association_attributes.values.all? { |value| value.key?('id') }
+      if association_attributes.is_a?(Hash) && association_attributes.values.all? { |value| value.key?('id') }
         association_attributes = association_attributes.values.map { |x| x['id'] }.uniq.delete_if(&:blank?)
       end
 
-      if ActionController::Parameters === association_attributes
+      if association_attributes.is_a?(ActionController::Parameters)
         association_attributes = association_attributes['id'] || 'null'
       end
 

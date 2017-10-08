@@ -64,7 +64,7 @@ module WulinMasterGridHelper
     visible  = column.options[:visible]
     return true if formable.nil?
     if formable
-      return Array === formable ? formable.include?(:new) : !!formable
+      return formable.is_a?(Array) ? formable.include?(:new) : !!formable
     else
       return false
     end
@@ -74,16 +74,16 @@ module WulinMasterGridHelper
     formable = column.options[:formable]
     editable = column.options[:editable]
     visible  = column.options[:visible]
-    return false if FalseClass === editable
+    return false if editable.is_a?(FalseClass)
     if editable || editable.nil?
       return true if formable.nil?
       if formable
-        return Array === formable ? formable.include?(:edit) : !!formable
+        return formable.is_a?(Array) ? formable.include?(:edit) : !!formable
       else
         return false
       end
     end
-    return false if FalseClass === visible
+    return false if visible.is_a?(FalseClass)
   end
 
   def auto_complete_field?(column)
