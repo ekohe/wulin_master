@@ -70,8 +70,8 @@ module WulinMaster
     end
 
     def code_name_column?
-      ['code', 'name'].include?(params[:source]) &&
-        (['code', 'name'] & klass.column_names) == ['code', 'name']
+      %w[code name].include?(params[:source]) &&
+        (%w[code name] & klass.column_names) == %w[code name]
     end
   end
 end
