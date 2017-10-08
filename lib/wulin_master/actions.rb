@@ -224,8 +224,8 @@ module WulinMaster
       cbs.each do |cb|
         if cb.class == Proc
           cb.call
-        else
-          send(cb) if respond_to?(cb, true)
+        elsif respond_to?(cb, true)
+          send(cb)
         end
       end
     end
