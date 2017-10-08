@@ -323,7 +323,7 @@ module WulinMaster
 
     def enum?
       enums = model.try(:defined_enums)
-      enums && enums.key?(source.to_s)
+      enums&.key?(source.to_s)
     end
 
     alias filterable? sortable?
@@ -331,7 +331,7 @@ module WulinMaster
     private
 
     def related_column_filterable?
-      reflection && reflection.klass.column_names.include?(source.to_s)
+      reflection&.klass&.column_names&.include?(source.to_s)
     end
 
     def complete_column_name

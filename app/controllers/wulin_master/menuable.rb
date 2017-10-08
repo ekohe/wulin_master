@@ -6,7 +6,7 @@ module WulinMaster
     def menu
       self.class.menu = Menu.new
       self.class.context = self
-      self.class.menu_block.call(self) unless self.class.menu_block.nil?
+      self.class.menu_block&.call(self)
       self.class.context = nil
       self.class.prepare_menu
     end

@@ -66,12 +66,10 @@ module WulinMaster
     def grids
       return @grids if defined?(@grids)
       @grids = []
-      if self.class.grid_configs
-        self.class.grid_configs.each do |grid_config|
-          grid_class = grid_config[:class]
-          config = grid_config.reject { |k, _v| k == :class }
-          @grids << grid_class.new(self, config) if grid_class
-        end
+      self.class.grid_configs&.each do |grid_config|
+        grid_class = grid_config[:class]
+        config = grid_config.reject { |k, _v| k == :class }
+        @grids << grid_class.new(self, config) if grid_class
       end
       @grids
     end
@@ -80,12 +78,10 @@ module WulinMaster
       return @panels if defined?(@panels)
 
       @panels = []
-      if self.class.panel_configs
-        self.class.panel_configs.each do |panel_config|
-          panel_class = panel_config[:class]
-          config = panel_config.reject { |k, _v| k == :class }
-          @panels << panel_class.new(self, config) if panel_class
-        end
+      self.class.panel_configs&.each do |panel_config|
+        panel_class = panel_config[:class]
+        config = panel_config.reject { |k, _v| k == :class }
+        @panels << panel_class.new(self, config) if panel_class
       end
       @panels
     end

@@ -53,7 +53,7 @@ module WulinMaster
       # Remove a style from a component
       def remove_style(style_str, screen)
         if screen
-          styles_pool[screen].delete(style_str) if styles_pool[screen]
+          styles_pool[screen]&.delete(style_str)
         elsif styles_pool[:_common]
           styles_pool[:_common].delete(style_str)
         end
