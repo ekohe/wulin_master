@@ -134,17 +134,3 @@ Style/NumericPredicate:
   Exclude:
     - 'spec/**/*'
     - 'lib/wulin_master/actions.rb'
-
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredDelimiters.
-Style/PercentLiteralDelimiters:
-  Exclude:
-    - 'app/controllers/wulin_master/grid_states_controller.rb'
-    - 'lib/tasks/cucumber.rake'
-    - 'lib/wulin_master/components/grid/column.rb'
-    - 'lib/wulin_master/components/grid/column/column_filter.rb'
-    - 'lib/wulin_master/components/grid/column/sql_adapter.rb'
-    - 'lib/wulin_master/components/grid/grid_actions.rb'
-    - 'lib/wulin_master/components/grid/grid_behaviors.rb'
-    - 'lib/wulin_master/engine.rb'

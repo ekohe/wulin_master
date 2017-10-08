@@ -64,7 +64,7 @@ module WulinMaster
       column_type = sql_type
       # Disbale editting, sorting, filtering for colunms calculated by model method
       unless table_column? || related_column_filterable?
-        %w(editable sortable filterable).each { |k| @options[k] = false }
+        %w[editable sortable filterable].each { |k| @options[k] = false }
       end
       new_options = @options.dup
       h = {
@@ -123,7 +123,7 @@ module WulinMaster
     end
 
     def apply_order(query, direction)
-      return query unless %w(ASC DESC).include?(direction)
+      return query unless %w[ASC DESC].include?(direction)
       if @options[:sql_expression]
         query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
       elsif reflection

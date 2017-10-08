@@ -18,7 +18,7 @@ module WulinMaster
             if new_state
               new_state.update_attributes!(state_value: state.state_value)
             else
-              GridState.create!(state.attributes.delete_if { |k, _v| %w(id created_at updated_at).include? k }.merge(user_id: uid))
+              GridState.create!(state.attributes.delete_if { |k, _v| %w[id created_at updated_at].include? k }.merge(user_id: uid))
             end
           end
         end

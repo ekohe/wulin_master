@@ -7,7 +7,7 @@ module WulinMaster
       @query = query
     end
 
-    %w(null_query boolean_query string_query).each do |method_name|
+    %w[null_query boolean_query string_query].each do |method_name|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{method_name}(column_name, value, column)
           if model < ActiveRecord::Base

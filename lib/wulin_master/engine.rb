@@ -4,7 +4,7 @@ require 'wulin_master/mapper'
 module WulinMaster
   class Engine < Rails::Engine
     initializer "add assets to precompile" do |app|
-      app.config.assets.precompile += %w(master/master.js master.css)
+      app.config.assets.precompile += %w[master/master.js master.css]
     end
 
     initializer "Actionpack extensions" do

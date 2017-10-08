@@ -45,9 +45,9 @@ module WulinMaster
         # for special column,
         if source =~ /(_)?id$/ || %i[integer float decimal boolean date datetime].include?(column_type)
           filtering_value = format_filtering_value(filtering_value, column_type)
-          if %w(equals not_equals).include? filtering_operator
+          if %w[equals not_equals].include? filtering_operator
             return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter)
-          elsif %w(include exclude).include? filtering_operator
+          elsif %w[include exclude].include? filtering_operator
             return apply_inclusion_filter(query, filtering_operator, filtering_value)
           end
         # for string column
@@ -58,7 +58,7 @@ module WulinMaster
     end
 
     def apply_equation_filter(query, operator, value, column_type, adapter)
-      if %w(date datetime).include? column_type
+      if %w[date datetime].include? column_type
         operator = operator == 'equals' ? 'LIKE' : 'NOT LIKE'
         query.where(["to_char(#{relation_table_name}.#{source}, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
       elsif column_type == "boolean"
@@ -103,7 +103,7 @@ module WulinMaster
       elsif (column_type == :float) || (column_type == :decimal)
         value.to_f
       elsif column_type == :boolean
-        true_values = %w(y yes ye t true)
+        true_values = %w[y yes ye t true]
         true_values.include?(value.downcase)
       else
         value
@@ -115,7 +115,7 @@ module WulinMaster
       when 'date', 'datetime'
         return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
       when "boolean"
-        true_values = %w(y yes ye t true)
+        true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
         adapter.boolean_query(complete_column_name, true_or_false, self)
         adapter.query
@@ -128,7 +128,7 @@ module WulinMaster
           end
         end
 
-        if %w(integer float decimal enum).include?(sql_type.to_s) && table_column?
+        if %w[integer float decimal enum].include?(sql_type.to_s) && table_column?
           return query.where(source => filtering_value)
         else
           adapter.string_query(complete_column_name, filtering_value, self)
