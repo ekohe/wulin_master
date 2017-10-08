@@ -43,7 +43,7 @@ module WulinMaster
       else
         column_type = column_type(reflection.klass, source)
         # for special column,
-        if source =~ /(_)?id$/ || [:integer, :float, :decimal, :boolean, :date, :datetime].include?(column_type)
+        if source =~ /(_)?id$/ || %i[integer float decimal boolean date datetime].include?(column_type)
           filtering_value = format_filtering_value(filtering_value, column_type)
           if %w(equals not_equals).include? filtering_operator
             return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter)

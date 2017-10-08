@@ -173,10 +173,3 @@ Style/Semicolon:
 Style/SpecialGlobalVars:
   Exclude:
     - 'app/controllers/wulin_master/grid_states_manages_controller.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: MinSize, SupportedStyles.
-# SupportedStyles: percent, brackets
-Style/SymbolArray:
-  EnforcedStyle: brackets

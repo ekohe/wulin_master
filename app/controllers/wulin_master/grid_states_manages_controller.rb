@@ -6,7 +6,7 @@ module WulinMaster
     include ActionView::Layouts
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
-    before_action :set_state, only: [:update, :destroy, :set_current]
+    before_action :set_state, only: %i[update destroy set_current]
 
     def create
       new_state = GridState.new(
