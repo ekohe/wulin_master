@@ -61,16 +61,6 @@ Style/DoubleNegation:
     - 'lib/wulin_master/components/grid/column.rb'
     - 'lib/wulin_master/components/grid/toolbar_item.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, AutoCorrectEncodingComment.
-# SupportedStyles: when_needed, always, never
-Style/Encoding:
-  Exclude:
-    - 'lib/generators/wulin_master/install/templates/wulin_master.rb'
-    - 'lib/wulin_master/configuration.rb'
-    - 'wulin_master.gemspec'
-
 # Offense count: 58
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
