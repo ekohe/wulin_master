@@ -60,7 +60,7 @@ module WulinMaster
       end
       self.response_body = "success"
     rescue StandardError
-      self.response_body = $!.message
+      self.response_body = $ERROR_INFO.message
     end
 
     def batch_update

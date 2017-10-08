@@ -165,11 +165,3 @@ Style/SafeNavigation:
 Style/Semicolon:
   Exclude:
     - 'features/step_definitions/general.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: use_perl_names, use_english_names
-Style/SpecialGlobalVars:
-  Exclude:
-    - 'app/controllers/wulin_master/grid_states_manages_controller.rb'
