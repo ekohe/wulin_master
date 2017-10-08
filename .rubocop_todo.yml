@@ -6,13 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 2
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Exclude:
-    - 'lib/wulin_master/actions.rb'
-
 # Offense count: 15
 Style/CaseEquality:
   Exclude:

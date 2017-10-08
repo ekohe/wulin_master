@@ -189,13 +189,13 @@ module WulinMaster
 
     def render_json
       # Render ruby objects
-      t = Time.now
+      t = Time.current
       @object_array = grid.arraify(@objects)
       json = {offset: @offset,
               total: @count,
               count: @per_page,
               rows: @object_array}.to_json
-      Rails.logger.info "----------------- Rendered JSON in #{Time.now - t} sec. ------------------------"
+      Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
       json
     end
 
