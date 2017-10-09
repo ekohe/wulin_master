@@ -5,8 +5,8 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      ORIGINAL_ACTIONS = %w[create delete edit].freeze
-      SENSITIVE_ACTIONS = %w[create delete edit hotkey_create hotkey_delete].freeze
+      ORIGINAL_ACTIONS = %w[create delete edit]
+      SENSITIVE_ACTIONS = %w[create delete edit hotkey_create hotkey_delete]
 
       class << self
         attr_reader :actions_pool
