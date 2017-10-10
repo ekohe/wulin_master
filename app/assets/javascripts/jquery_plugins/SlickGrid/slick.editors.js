@@ -684,6 +684,10 @@
                 $input = $("<INPUT type=text class='editor-text' />");
                 $input.appendTo(args.container);
                 $input.focus().select();
+                var defaultDate = null;
+                if (column.default_date !== undefined) {
+                  defaultDate = column.default_date;
+                }
                 $input.datepicker({
                     showOn: "button",
                     buttonImageOnly: true,
@@ -698,7 +702,8 @@
                         e.which = 13;
                         $(this).trigger(e);
                     },
-                    dateFormat: showFormat
+                    dateFormat: showFormat,
+                    defaultDate: defaultDate
                 });
                 $input.width($input.width() - 18);
             };
