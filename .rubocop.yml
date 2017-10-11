@@ -94,6 +94,11 @@ Lint/HandleExceptions:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
 
+Style/ClassVars:
+  Exclude:
+    - 'lib/wulin_master/components/grid/grid_actions.rb'
+
+
 #############################
 # TODO: Should review later
 #############################

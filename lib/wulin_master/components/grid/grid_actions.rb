@@ -5,8 +5,7 @@ module WulinMaster
     extend ActiveSupport::Concern
 
     included do
-      ORIGINAL_ACTIONS = %w[create delete edit]
-      SENSITIVE_ACTIONS = %w[create delete edit hotkey_create hotkey_delete]
+      SENSITIVE_ACTIONS = %w[create delete edit hotkey_create hotkey_delete].freeze
 
       class << self
         attr_reader :actions_pool
@@ -17,6 +16,8 @@ module WulinMaster
     end
 
     module ClassMethods
+      @@default_actions = %w[create delete edit]
+
       # action DSL, add an action to the actions_pool
       def action(a_name, options = {})
         new_action = {name: a_name}.merge(options)
@@ -37,7 +38,7 @@ module WulinMaster
       end
 
       def load_default_actions(options = {})
-        ORIGINAL_ACTIONS.each do |oa|
+        @@default_actions.each do |oa|
           action(oa, options)
         end
         # special actions needed to be load as default
@@ -47,7 +48,7 @@ module WulinMaster
 
       # interface open to other plugins
       def add_default_action(action)
-        ORIGINAL_ACTIONS << action
+        @@default_actions << action
       end
 
       def add_hotkey_action(action_name, action_options)
