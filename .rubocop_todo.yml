@@ -10,7 +10,6 @@
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Exclude:
-    - 'app/models/wulin_master/grid_state.rb'
     - 'lib/wulin_master/components/component.rb'
     - 'lib/wulin_master/components/grid/column.rb'
     - 'lib/wulin_master/components/grid/column/column_filter.rb'
