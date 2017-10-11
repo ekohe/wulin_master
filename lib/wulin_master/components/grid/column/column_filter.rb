@@ -17,11 +17,8 @@ module WulinMaster
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
 
-      if reflection && (defined?(RolesUser) ? query != RolesUser : true)
-        return filter_with_reflection(query, filtering_value, filtering_operator, adapter)
-      else
-        return filter_without_reflection(query, filtering_value, sql_type, adapter)
-      end
+      return filter_without_reflection(query, filtering_value, sql_type, adapter) unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+      filter_with_reflection(query, filtering_value, filtering_operator, adapter)
     end
 
     private
@@ -31,12 +28,10 @@ module WulinMaster
       when 'equals' then ''
       when 'not_equals' then 'NOT'
       end
-      if reflection
-        return query.where("#{relation_table_name}.#{source} IS #{operator} NULL")
-      else
-        adapter.null_query(complete_column_name, operator, self)
-        return adapter.query
-      end
+
+      adapter.null_query(complete_column_name, operator, self)
+      return adapter.query unless reflection
+      query.where("#{relation_table_name}.#{source} IS #{operator} NULL")
     end
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
@@ -44,18 +39,13 @@ module WulinMaster
         query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", filtering_value + "%"])
       else
         column_type = column_type(reflection.klass, source)
-        # for special column,
-        if source =~ /(_)?id$/ || %i[integer float decimal boolean date datetime].include?(column_type)
-          filtering_value = format_filtering_value(filtering_value, column_type)
-          if %w[equals not_equals].include? filtering_operator
-            return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter)
-          elsif %w[include exclude].include? filtering_operator
-            return apply_inclusion_filter(query, filtering_operator, filtering_value)
-          end
         # for string column
-        else
-          return apply_string_filter(query, filtering_operator, filtering_value)
-        end
+        normal_type = %i[integer float decimal boolean date datetime].include?(column_type)
+        return apply_string_filter(query, filtering_operator, filtering_value) unless source =~ /(_)?id$/ || normal_type
+        # for special column,
+        filtering_value = format_filtering_value(filtering_value, column_type)
+        return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter) if %w[equals not_equals].include? filtering_operator
+        return apply_inclusion_filter(query, filtering_operator, filtering_value) if %w[include exclude].include? filtering_operator
       end
     end
 
@@ -68,11 +58,8 @@ module WulinMaster
         adapter.query
       else
         where_condition = {relation_table_name.to_sym => {source.to_sym => value}}
-        if operator == 'equals'
-          return query.where(where_condition)
-        else
-          return query.where.not(where_condition)
-        end
+        return query.where.not(where_condition) unless operator == 'equals'
+        query.where(where_condition)
       end
     end
 
@@ -130,12 +117,9 @@ module WulinMaster
           end
         end
 
-        if %w[integer float decimal enum].include?(sql_type.to_s) && table_column?
-          return query.where(source => filtering_value)
-        else
-          adapter.string_query(complete_column_name, filtering_value, self)
-          return adapter.query
-        end
+        adapter.string_query(complete_column_name, filtering_value, self)
+        return adapter.query unless %w[integer float decimal enum].include?(sql_type.to_s) && table_column?
+        query.where(source => filtering_value)
       end
     end
   end
