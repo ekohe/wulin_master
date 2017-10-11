@@ -1,7 +1,9 @@
+:ruby
+  menu = controller&.menu || menu
 #navigation
   #menu{style: "top: 10px"}
     %ul
-      - controller.menu.each do |menu_entry|
+      - menu.each do |menu_entry|
         - if menu_entry.submenu?
           %li.submenu
             %a{href: "#"}
