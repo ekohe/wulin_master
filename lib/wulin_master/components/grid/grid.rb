@@ -48,10 +48,9 @@ module WulinMaster
 
       # dispatch some default configs to config pools
       def apply_default_config
-        if DEFAULT_CONFIG.is_a?(Hash)
-          DEFAULT_CONFIG.each do |k, v|
-            apply_config(k, v)
-          end
+        return unless DEFAULT_CONFIG.is_a?(Hash)
+        DEFAULT_CONFIG.each do |k, v|
+          apply_config(k, v)
         end
       end
 
@@ -223,15 +222,13 @@ module WulinMaster
     end
 
     def find_sort_column_by_name(column_name)
-      if (column = find_column_by_name(column_name)) && (column.options[:sortable] != false)
-        column
-      end
+      return unless (column = find_column_by_name(column_name)) && (column.options[:sortable] != false)
+      column
     end
 
     def find_filter_column_by_name(column_name)
-      if (column = find_column_by_name(column_name)) && (column.options[:filterable] != false)
-        column
-      end
+      return unless (column = find_column_by_name(column_name)) && (column.options[:filterable] != false)
+      column
     end
 
     def find_column_by_name(column_name)
