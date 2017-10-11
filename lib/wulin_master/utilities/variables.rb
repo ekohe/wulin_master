@@ -13,11 +13,8 @@ module WulinMaster
     def screen
       @screen ||= begin
         if params[:screen].present?
-          if screen_class = params[:screen].classify.safe_constantize
-            screen_class.new(self)
-          else
-            raise WulinMaster::ScreenParamInvalidError
-          end
+          raise WulinMaster::ScreenParamInvalidError unless screen_class = params[:screen].classify.safe_constantize
+          screen_class.new(self)
         else
           self.class.screen_classes.first.new(self)
         end
