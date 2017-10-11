@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wulin_master/components/grid/column/sql_adapter'
 
 module WulinMaster

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # grid options
 
 module WulinMaster

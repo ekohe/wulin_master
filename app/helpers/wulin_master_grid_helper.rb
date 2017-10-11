@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMasterGridHelper
   def select_options(column)
     choices = column.options[:choices]

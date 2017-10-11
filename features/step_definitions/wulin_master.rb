@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then(/^I should see the '([^"]*)' grid$/) do |grid_name|
   expect(page).to have_xpath('//div[@class="grid_container"]/div[@class="grid-header"]/h2', text: grid_name)
 end

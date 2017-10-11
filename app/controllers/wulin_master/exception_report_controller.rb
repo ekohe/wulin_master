@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class ExceptionReportController < ::ActionController::Metal
     def js_error

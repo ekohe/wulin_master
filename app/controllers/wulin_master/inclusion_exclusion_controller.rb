@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class InclusionExclusionController < ApplicationController
     before_action :prepare_models

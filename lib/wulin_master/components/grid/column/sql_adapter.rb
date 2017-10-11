@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class SqlAdapter
     attr_accessor :model, :query

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   module Authorization
     # Called as before_action

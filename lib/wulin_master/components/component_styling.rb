@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module WulinMaster
   module ComponentStyling
     extend ActiveSupport::Concern
 
     included do
-      FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;".freeze
+      FILL_WINDOW_CSS = "height: 100%; width: 100%; position: absolute; left:0; right:0;"
 
       class << self
         attr_reader :styles_pool

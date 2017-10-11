@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'wulin_master/utilities/variables'
 module WulinMaster
   class FetchOptionsController < ::ActionController::Metal
-    ForbiddenMessage = "Sorry you can't get anything, please contact administrator.".freeze
+    FORBIDDEN_MESSAGE = "Sorry you can't get anything, please contact administrator."
 
     def index
       if authorized? && params[:source].present?
@@ -14,7 +16,7 @@ module WulinMaster
         self.response_body = objects.collect { |o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDEN_MESSAGE
       end
     rescue StandardError
       self.status = 500
@@ -31,7 +33,7 @@ module WulinMaster
         self.response_body = objects.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDEN_MESSAGE
       end
     rescue StandardError
       self.status = 500
@@ -44,7 +46,7 @@ module WulinMaster
         self.response_body = object_arr.to_json
       else
         self.status = 403
-        self.response_body = ForbiddenMessage
+        self.response_body = FORBIDDEN_MESSAGE
       end
     rescue StandardError
       self.status = 500

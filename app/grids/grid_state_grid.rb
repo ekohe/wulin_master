@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GridStateGrid < WulinMaster::Grid
   model WulinMaster::GridState
 

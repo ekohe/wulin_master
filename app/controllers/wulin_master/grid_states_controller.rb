@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class GridStatesController < ScreenController
     controller_for_screen ::GridStatesScreen

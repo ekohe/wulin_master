@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   def self.configure(configuration = WulinMaster::Configuration.new)
     yield configuration if block_given?

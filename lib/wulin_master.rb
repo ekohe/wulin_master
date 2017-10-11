@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wulin_master/engine' if defined?(Rails)
 
 require 'haml'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wulin_master/components/component_styling'
 
 module WulinMaster

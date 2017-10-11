@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class ToolbarItem
     attr_accessor :title, :javascript, :icon, :options

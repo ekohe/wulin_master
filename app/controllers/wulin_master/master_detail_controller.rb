@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class MasterDetailController < ApplicationController
     def detail_controller

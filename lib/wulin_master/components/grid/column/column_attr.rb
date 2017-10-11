@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   module ColumnAttr
     def assign_attribute(_object, value, new_attrs, attrs, type)

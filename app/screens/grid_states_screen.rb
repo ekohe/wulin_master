@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Module.const_defined? :UserGrid
   begin
     require 'user_grid'

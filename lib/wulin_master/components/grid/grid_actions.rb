@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # toolbar items come from actions
 
 module WulinMaster

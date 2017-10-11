@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class GridState < ::ActiveRecord::Base
     cattr_accessor :all_users

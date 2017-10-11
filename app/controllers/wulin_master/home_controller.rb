@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WulinMaster
   class HomeController < ApplicationController
     include WulinMaster::Menuable

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wulin_master/components/grid/toolbar'
 require 'wulin_master/components/grid/column'
 require 'wulin_master/components/grid/grid_options'

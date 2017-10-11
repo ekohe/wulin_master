@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Grid behaviors, triggered by certain events
 
 module WulinMaster

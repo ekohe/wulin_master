@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wulin_master/components/grid/toolbar_item'
 
 module WulinMaster
@@ -23,7 +25,7 @@ module WulinMaster
       actions.each do |action|
         item_options = {
           id: "#{action[:name]}_action_on_#{grid_name}",
-          class: ("#{action[:name]}_action " << action[:class].to_s),
+          class: ("#{action[:name]}_action " + action[:class].to_s),
           icon: (action[:icon] || default_icons[action[:name].to_sym]).to_s,
           manually_enable: action[:manually_enable]
         }
