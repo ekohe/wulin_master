@@ -11,5 +11,4 @@
 Style/GuardClause:
   Exclude:
     - 'lib/wulin_master/components/grid/column/column_filter.rb'
-    - 'lib/wulin_master/screen/screen.rb'
     - 'lib/wulin_master/utilities/variables.rb'

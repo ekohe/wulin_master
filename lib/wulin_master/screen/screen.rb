@@ -34,12 +34,11 @@ module WulinMaster
       def grid(klass, options = {})
         @components_pool ||= []
         @grid_configs ||= []
-        if klass
-          @components_pool << klass
-          @grid_configs << {class: klass}.merge(options)
-          options.each do |k, v|
-            klass.apply_config(k, v, screen: name)
-          end
+        return unless klass
+        @components_pool << klass
+        @grid_configs << {class: klass}.merge(options)
+        options.each do |k, v|
+          klass.apply_config(k, v, screen: name)
         end
       end
 
@@ -47,12 +46,11 @@ module WulinMaster
       def panel(klass, options = {})
         @components_pool ||= []
         @panel_configs ||= []
-        if klass
-          @components_pool << klass
-          @panel_configs << {class: klass}.merge(options)
-          options.each do |k, v|
-            klass.apply_config(k, v, screen: name)
-          end
+        return unless klass
+        @components_pool << klass
+        @panel_configs << {class: klass}.merge(options)
+        options.each do |k, v|
+          klass.apply_config(k, v, screen: name)
         end
       end
     end
