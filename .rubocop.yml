@@ -88,6 +88,21 @@ Rails:
 # Project specific rules
 ########################
 
+Metrics/BlockLength:
+  Max: 35
+
+Metrics/ModuleLength:
+  Max: 180
+
+Metrics/AbcSize:
+  Max: 50
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 25
+
 Lint/HandleExceptions:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
@@ -95,25 +110,6 @@ Lint/HandleExceptions:
 Style/ClassVars:
   Exclude:
     - 'lib/wulin_master/components/grid/grid_actions.rb'
-
-#############################
-# TODO: Should review later
-#############################
-
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
-Metrics/PerceivedComplexity:
-  Enabled: false
-
-Metrics/BlockLength:
-  Enabled: false
-
-Metrics/ModuleLength:
-  Enabled: false
 
 Rails/OutputSafety:
   Exclude:
