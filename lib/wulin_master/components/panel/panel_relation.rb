@@ -16,20 +16,18 @@ module WulinMaster
     module ClassMethods
       # Specify the inclusion grid for InclusionExclusionPanel
       def inclusion_grid(grid_klass, options = {})
-        if options[:screen]
-          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
-          relations_pool[options[:screen]] ||= {}
-          relations_pool[options[:screen]].merge!(inclusion_grid: grid_name)
-        end
+        return unless options[:screen]
+        grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
+        relations_pool[options[:screen]] ||= {}
+        relations_pool[options[:screen]].merge!(inclusion_grid: grid_name)
       end
 
       # Specify the exclusion grid for InclusionExclusionPanel
       def exclusion_grid(grid_klass, options = {})
-        if options[:screen]
-          grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
-          relations_pool[options[:screen]] ||= {}
-          relations_pool[options[:screen]].merge!(exclusion_grid: grid_name)
-        end
+        return unless options[:screen]
+        grid_name = WulinMaster::Utilities.get_grid_name(grid_klass, options[:screen])
+        relations_pool[options[:screen]] ||= {}
+        relations_pool[options[:screen]].merge!(exclusion_grid: grid_name)
       end
     end
 
