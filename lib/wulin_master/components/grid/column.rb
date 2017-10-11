@@ -242,12 +242,11 @@ module WulinMaster
 
     # Returns the sql names used to generate the select
     def sql_names
-      if table_column?
-        if reflection
-          [model.table_name + "." + foreign_key, reflection.klass.table_name + "." + source.to_s]
-        else
-          [model.table_name + "." + source.to_s]
-        end
+      return unless table_column?
+      if reflection
+        [model.table_name + "." + foreign_key, reflection.klass.table_name + "." + source.to_s]
+      else
+        [model.table_name + "." + source.to_s]
       end
     end
 
