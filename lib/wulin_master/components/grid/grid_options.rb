@@ -43,13 +43,12 @@ module WulinMaster
 
       def eager_loading(value = true, options = {})
         option({eagerLoading: value}.merge(options))
-        if value == false
-          screens = options[:only] || [options["screen"].try(:intern)].compact
-          behavior :disable_toolbar_initially, only: screens
-          behavior :disable_sorting_initially, only: screens
-          behavior :enable_toolbar_after_loading, only: screens
-          behavior :enable_sorting_after_loading, only: screens
-        end
+        return unless value == false
+        screens = options[:only] || [options["screen"].try(:intern)].compact
+        behavior :disable_toolbar_initially, only: screens
+        behavior :disable_sorting_initially, only: screens
+        behavior :enable_toolbar_after_loading, only: screens
+        behavior :enable_sorting_after_loading, only: screens
       end
 
       def multi_select(value = true, options = {})
