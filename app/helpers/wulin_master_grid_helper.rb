@@ -66,11 +66,8 @@ module WulinMasterGridHelper
     formable = column.options[:formable]
     visible  = column.options[:visible]
     return true if formable.nil?
-    if formable
-      return formable.is_a?(Array) ? formable.include?(:new) : !formable.nil?
-    else
-      return false
-    end
+    return false unless formable
+    formable.is_a?(Array) ? formable.include?(:new) : !formable.nil?
   end
 
   def edit_form_able?(column)
@@ -80,11 +77,8 @@ module WulinMasterGridHelper
     return false if editable.is_a?(FalseClass)
     if editable || editable.nil?
       return true if formable.nil?
-      if formable
-        return formable.is_a?(Array) ? formable.include?(:edit) : !formable.nil?
-      else
-        return false
-      end
+      return false unless formable
+      return formable.is_a?(Array) ? formable.include?(:edit) : !formable.nil?
     end
     return false if visible.is_a?(FalseClass)
   end
