@@ -1,19 +1,18 @@
-require "spec_helper"
+# frozen_string_literal: true
+
+require 'spec_helper'
 require './lib/wulin_master/components/grid/toolbar'
 
 describe WulinMaster::Toolbar do
-  it "should render a toolbar with the toolbar items" do
-    pending 'fix'
-    item_1 = WulinMaster::ToolbarItem.new("Excel", icon: "excel")
-    item_2 = WulinMaster::ToolbarItem.new("Filter", icon: "filter", javascript: "alert('filter')")
-    view_1 = item_1.render
-    view_2 = item_2.render
+  it 'should has items created from actions' do
+    actions = [{ name: 'create' }, { name: 'export'}]
+    toolbar = WulinMaster::Toolbar.new('country_grid', actions)
 
-    toolbar = WulinMaster::Toolbar.new([item_1, item_2])
-    view = toolbar.render
-
-    view.should include("<div id=\"toolbar\">")
-    view.should include(view_1)
-    view.should include(view_2)
+    expect(toolbar.items.size).to eq(2)
+    toolbar.items.each { |item| expect(item).to be_a WulinMaster::ToolbarItem }
+    expect(toolbar.items.first.icon).to eq('add_box')
+    expect(toolbar.items.first.options[:name]).to eq('create')
+    expect(toolbar.items.last.icon).to eq('file_download')
+    expect(toolbar.items.last.options[:name]).to eq('export')
   end
 end

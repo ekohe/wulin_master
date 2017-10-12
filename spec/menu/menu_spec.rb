@@ -19,8 +19,8 @@ describe WulinMaster::Menu do
     @menu = WulinMaster::Menu.new
   end
 
-  it 'should be a kind of array' do
-    expect(@menu).to be_a_kind_of(Array)
+  it 'should be an array' do
+    expect(@menu).to be_a Array
   end
 
   it 'should render the view template' do
@@ -44,8 +44,8 @@ describe WulinMaster::SubMenu do
     @sub_menu = WulinMaster::SubMenu.new('sports')
   end
 
-  it 'should be a kind of Menu' do
-    expect(@sub_menu).to be_a_kind_of(WulinMaster::Menu)
+  it 'should be a Menu' do
+    expect(@sub_menu).to be_a WulinMaster::Menu
   end
 
   it 'should has a title' do
