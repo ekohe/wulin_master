@@ -1,50 +1,34 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require './lib/wulin_master/screen/screen'
 
 describe WulinMaster::Screen do
   before :each do
-    Rails.stub_chain(:logger, :info) { "" }
-    # define DemoScreen
-    class DemoScreen < WulinMaster::Screen
-    end
+    class DemoScreen < WulinMaster::Screen; end
   end
 
-  it "should push an inherited screen into class variable screens" do
-    WulinMaster::Screen.screens.should == [DemoScreen]
+  it 'should push an inherited screen into class variable screens' do
+    expect(WulinMaster::Screen.screens).to eq([DemoScreen])
   end
 
-  it "should have a default title" do
+  it 'should have a default title' do
     DemoScreen.title(false)
-    DemoScreen.title.should == "Demo"
+    expect(DemoScreen.title).to eq('Demo')
   end
 
-  it "should assign the title" do
-    # customize title
-    DemoScreen.title("Demo Screen")
-    DemoScreen.title.should == "Demo Screen"
+  it 'should assign the title' do
+    DemoScreen.title('Demo Screen')
+    expect(DemoScreen.title).to eq('Demo Screen')
   end
 
-  it "should has the default path" do
-    pending 'fix'
-    DemoScreen.path.should == "/demos"
+  it 'should assign the path' do
+    DemoScreen.path('/demo_screens')
+    expect(DemoScreen.path).to eq('/demo_screens')
   end
 
-  it "should assign the path" do
-    # customize path
-    DemoScreen.path("/demo_screens")
-    DemoScreen.path.should == "/demo_screens"
-  end
-
-  it "should define a grid in it" do
-    # default is empty
-    pending 'fix'
-    DemoScreen.grids.should == []
-    class FirstGrid < WulinMaster::GridConfig
-      config do
-      end
-    end
-
-    DemoScreen.grid FirstGrid
-    DemoScreen.grids.should == [FirstGrid.grid_context]
+  it 'should has the default path' do
+    DemoScreen.path(nil)
+    expect(DemoScreen.path).to eq('/demos')
   end
 end

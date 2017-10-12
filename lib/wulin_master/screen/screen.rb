@@ -10,13 +10,11 @@ module WulinMaster
       self.screens ||= []
       self.screens << subclass unless self.screens.include?(subclass)
 
-      # ???
       subclass.send :include, Rails.application.routes.url_helpers
       Rails.logger.info "Screen #{subclass} loaded"
     end
 
     class << self
-      # alias_method :all, :screens
       attr_reader :grid_configs, :panel_configs, :components_pool
       attr_accessor :controller_class
 
@@ -25,9 +23,7 @@ module WulinMaster
       end
 
       def path(new_path = nil)
-        new_path ? @path = new_path : @path || to_s.gsub(/Screen/, "").underscore.pluralize
-        # TODO
-        # in last circle of refactoring, the screen path can be the same-named action path of screens_controller
+        new_path ? @path = new_path : @path || '/' + to_s.gsub(/Screen/, '').underscore.pluralize
       end
 
       # Add a grid config to a screen
