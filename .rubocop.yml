@@ -90,6 +90,8 @@ Rails:
 
 Metrics/BlockLength:
   Max: 35
+  Exclude:
+    - 'spec/**/*'
 
 Metrics/ModuleLength:
   Max: 180
