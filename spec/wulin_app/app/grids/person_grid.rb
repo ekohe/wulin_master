@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonGrid < WulinMaster::Grid
   title 'People'
 
