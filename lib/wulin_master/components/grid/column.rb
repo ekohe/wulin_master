@@ -111,7 +111,7 @@ module WulinMaster
         @datetime_excel_format = 'hh:mm'
         value.strftime('%H:%M')
       elsif value.class == Hash
-        value.to_s
+        value.to_json
       elsif value.class.name == 'BSON::ObjectId'
         value.to_s
       else

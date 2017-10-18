@@ -10,6 +10,7 @@ module WulinMaster
       create: 'add_box',
       add_detail: 'add_box',
       export: 'file_download',
+      json_view: 'pageview',
       send_mail: 'mail',
       edit: 'mode_edit',
       delete: 'delete',
