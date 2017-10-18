@@ -20,8 +20,8 @@ describe WulinMaster::Grid do
     expect(BookGrid.model).to eq(Book)
   end
 
-  it 'should has the default path' do
-    BookGrid.path(false)
-    expect(BookGrid.path).to eq('/books')
-  end
+  # it 'should has the default path' do
+  #   BookGrid.path(false)
+  #   expect(BookGrid.path).to eq('/books')
+  # end
 end

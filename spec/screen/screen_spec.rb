@@ -17,7 +17,7 @@ describe WulinMaster::Screen do
     expect(BookScreen.title).to eq('Book')
   end
 
-  # it 'should has the default path' do
-  #   expect(BookScreen.path).to eq('/books')
-  # end
+  it 'should has the default path' do
+    expect(BookScreen.path).to eq('/books')
+  end
 end
