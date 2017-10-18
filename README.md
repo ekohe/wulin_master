@@ -1,5 +1,7 @@
 # WulinMaster
 
+[![Join the chat at https://gitter.im/ekohe/wulin_master](https://badges.gitter.im/ekohe/wulin_master.svg)](https://gitter.im/ekohe/wulin_master?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 WulinMaster is a grid plugin base on Ruby on Rails and [SlickGrid](https://github.com/mleibman/SlickGrid). It provides powerful generator
 and other tools to make grids easy to build as well as flexible configurations.
 
