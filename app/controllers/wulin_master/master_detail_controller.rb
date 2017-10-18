@@ -5,7 +5,7 @@ module WulinMaster
     def detail_controller
       real_class_name = begin
                           params[:middle_model].classify.constantize.reflections[params[:model].to_s].class_name
-                        rescue StandardEroor
+                        rescue StandardError
                           params[:model]
                         end
       render json: {status: 'OK', controller: real_class_name.tableize}
