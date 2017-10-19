@@ -18,27 +18,7 @@ WulinMaster.actions.JsonView = $.extend({}, WulinMaster.actions.BaseAction, {
         }
       });
 
-      var $jsonViewModal = $('<div/>')
-        .addClass('modal modal-fixed-footer')
-        .css({overflow: 'hidden'})
-        .appendTo($('body'));
-      var $modalHeader = $('<div/>')
-        .addClass('modal-header')
-        .append($('<span/>').text('JSON Viewer'))
-        .append($('<i/>').text('close').addClass('modal-close material-icons right'))
-        .appendTo($jsonViewModal);
-      var $modalContent = $('<div/>')
-        .addClass('modal-content')
-        .css({'margin': '20px 0'})
-        .JSONView(jsonData)
-        .appendTo($jsonViewModal);
-
-      $jsonViewModal.modal({
-        complete: function() {
-          $jsonViewModal.remove();
-        }
-      });
-
+      var $jsonViewModal = Ui.createJsonViewModal(jsonData);
       $jsonViewModal.modal('open');
     } else {
       displayErrorMessage('Please select just one record.');

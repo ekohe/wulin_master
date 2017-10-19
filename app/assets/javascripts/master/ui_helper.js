@@ -333,6 +333,31 @@ var Ui = {
     return $modal;
   },
 
+  createJsonViewModal: function(jsonData) {
+    var $jsonViewModal = $('<div/>')
+      .addClass('modal modal-fixed-footer')
+      .css({overflow: 'hidden'})
+      .appendTo($('body'));
+    var $modalHeader = $('<div/>')
+      .addClass('modal-header')
+      .append($('<span/>').text('JSON Viewer'))
+      .append($('<i/>').text('close').addClass('modal-close material-icons right'))
+      .appendTo($jsonViewModal);
+    var $modalContent = $('<div/>')
+      .addClass('modal-content')
+      .css({'margin': '20px 0'})
+      .JSONView(jsonData)
+      .appendTo($jsonViewModal);
+
+    $jsonViewModal.modal({
+      complete: function() {
+        $jsonViewModal.remove();
+      }
+    });
+
+    return $jsonViewModal;
+  },
+
   formatData: function(grid, arrayData) {
     var data = {}, columns;
     columns = grid.loader.getColumns();
