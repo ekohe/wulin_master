@@ -16,10 +16,10 @@ before_script:
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - rm -rf Gemfile.lock
   - bundle install --path /cache
-  - bundle exec rake assets:precompile
 
 test:
   script:
     - bundle exec rubocop
     - bundle exec rspec
+    - bundle exec rake assets:precompile
     - bundle exec cucumber
