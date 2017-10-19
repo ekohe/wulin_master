@@ -7,10 +7,16 @@ WulinMaster.actions.JsonView = $.extend({}, WulinMaster.actions.BaseAction, {
     var grid = this.getGrid();
     var ids = grid.getSelectedIds();
 
-    if (ids.length != 1) {
-      displayErrorMessage('Please select a record.');
-    } else {
-      var jsonData = JSON.parse(grid.getData()[0]['data']);
+    if (ids.length == 1) {
+      var columns = grid.getColumns();
+      var jsonData;
+
+      $.each(columns, function(index, column) {
+        if (column.type == 'jsonb') {
+          jsonData = JSON.parse(grid.getData()[0][column.column_name]);
+          return false;
+        }
+      });
 
       var $jsonViewModal = $('<div/>')
         .addClass('modal modal-fixed-footer')
@@ -34,7 +40,8 @@ WulinMaster.actions.JsonView = $.extend({}, WulinMaster.actions.BaseAction, {
       });
 
       $jsonViewModal.modal('open');
-
+    } else {
+      displayErrorMessage('Please select just one record.');
     }
   }
 });
