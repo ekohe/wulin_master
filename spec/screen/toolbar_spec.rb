@@ -6,7 +6,7 @@ require './lib/wulin_master/components/grid/toolbar'
 describe WulinMaster::Toolbar do
   it 'should has items created from actions' do
     actions = [{ name: 'create' }, { name: 'export'}]
-    toolbar = WulinMaster::Toolbar.new('country_grid', actions)
+    toolbar = WulinMaster::Toolbar.new('post_grid', actions)
 
     expect(toolbar.items.size).to eq(2)
     toolbar.items.each { |item| expect(item).to be_a WulinMaster::ToolbarItem }

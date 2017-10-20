@@ -8,6 +8,7 @@ group :development, :test do
   gem 'byebug'
   gem 'pry'
   gem 'pry-byebug'
+  gem 'rails-controller-testing'
   gem 'rubocop', require: false
 end
 

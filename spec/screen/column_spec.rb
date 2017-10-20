@@ -5,12 +5,12 @@ require './lib/wulin_master/components/grid/column'
 
 describe WulinMaster::Column do
   before :each do
-    @grid = double('grid')
-    @column = WulinMaster::Column.new('title', @grid)
+    @grid = double(:grid)
+    @column = WulinMaster::Column.new(:title, @grid)
   end
 
   it 'should has a name' do
-    expect(@column.name).to eq('title')
+    expect(@column.name).to eq(:title)
   end
 
   it 'should has default options' do
@@ -18,7 +18,7 @@ describe WulinMaster::Column do
   end
 
   it 'can has customized options' do
-    @column = WulinMaster::Column.new('title', @grid, width: 100, editable: false, label: 'Title')
+    @column = WulinMaster::Column.new(:title, @grid, width: 100, editable: false, label: 'Title')
     expect(@column.options).to eq(width: 100, sortable: true, editable: false, label: 'Title')
   end
 
@@ -27,7 +27,7 @@ describe WulinMaster::Column do
   end
 
   it 'can has customized label' do
-    @column = WulinMaster::Column.new('title', @grid, label: 'Book Title')
-    expect(@column.label).to eq('Book Title')
+    @column = WulinMaster::Column.new(:title, @grid, label: 'Post Title')
+    expect(@column.label).to eq('Post Title')
   end
 end

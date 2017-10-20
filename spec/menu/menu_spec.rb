@@ -6,10 +6,10 @@ require './lib/wulin_master/menu/menu'
 # Test MenuEntry
 describe WulinMaster::MenuEntry do
   it 'should has title and path' do
-    @menu_entry = WulinMaster::MenuEntry.new('countries', '/countries', screen_name: 'CountryScreen')
-    expect(@menu_entry.title).to eq('countries')
-    expect(@menu_entry.path).to eq('/countries')
-    expect(@menu_entry.options).to eq(screen_name: 'CountryScreen')
+    @menu_entry = WulinMaster::MenuEntry.new('posts', '/posts', screen_name: 'PostScreen')
+    expect(@menu_entry.title).to eq('posts')
+    expect(@menu_entry.path).to eq('/posts')
+    expect(@menu_entry.options).to eq(screen_name: 'PostScreen')
   end
 end
 

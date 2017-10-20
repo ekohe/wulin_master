@@ -20,22 +20,18 @@ describe WulinMaster::ToolbarItem do
   end
 
   it 'should respond to javascript?' do
-    expect(@item).to respond_to(:javascript?)
     expect(@item.javascript?).to eq(true)
     @item.javascript = nil
     expect(@item.javascript?).to eq(false)
   end
 
   it 'should respond to icon?' do
-    expect(@item).to respond_to(:icon?)
     expect(@item.icon?).to eq(true)
     @item.icon = nil
     expect(@item.icon?).to eq(false)
   end
 
   it 'should has anchor_tag_options' do
-    expect(@item).to respond_to(:anchor_tag_options)
-
     # when item has both icon and javascript
     expect(@item.anchor_tag_options).to eq(class: 'action', id: 'excel', href: '#', onclick: 'alert("export excel"); return false;')
 

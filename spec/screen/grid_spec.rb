@@ -6,22 +6,22 @@ require './lib/wulin_master/components/grid/grid'
 
 describe WulinMaster::Grid do
   before :each do
-    class Book < ApplicationRecord; end
-    class BookGrid < WulinMaster::Grid; end
+    class Post < ApplicationRecord; end
+    class PostGrid < WulinMaster::Grid; end
   end
 
   it 'should have a default title' do
-    BookGrid.title(false)
-    expect(BookGrid.title).to eq('Book')
+    PostGrid.title(false)
+    expect(PostGrid.title).to eq('Post')
   end
 
   it 'should has the default model' do
-    BookGrid.model(false)
-    expect(BookGrid.model).to eq(Book)
+    PostGrid.model(false)
+    expect(PostGrid.model).to eq(Post)
   end
 
   it 'should has the default path' do
-    BookGrid.path(false)
-    expect(BookGrid.path).to eq('books')
+    PostGrid.path(false)
+    expect(PostGrid.path).to eq('posts')
   end
 end
