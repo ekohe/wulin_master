@@ -38,7 +38,7 @@ describe PeopleTestController, type: :controller do
         end
 
         it 'should render json object as the response' do
-          json_obj = { offset: 100, total: 1000, count: 100, rows: ['Maxime', 'Ben'] }.to_json
+          json_obj = { offset: 100, total: 1000, count: 100, rows: %w[Maxime Ben] }.to_json
           allow(controller).to receive(:construct_filters).and_return(true)
           allow(controller).to receive(:parse_ordering).and_return(true)
           allow(controller).to receive(:render_json).and_return(json_obj)
@@ -47,7 +47,7 @@ describe PeopleTestController, type: :controller do
         end
 
         it 'should apply filter on the grid when calling #construct_filters if given filter params' do
-          allow(controller).to receive(:params).and_return({filters: [{column: 'first_name', value: 'Ben', operator: 'equals'}]})
+          allow(controller).to receive(:params).and_return(filters: [{column: 'first_name', value: 'Ben', operator: 'equals'}])
           expect(@grid).to receive(:apply_filter).with(Person, 'first_name', 'Ben', 'equals')
           controller.send(:construct_filters)
         end
