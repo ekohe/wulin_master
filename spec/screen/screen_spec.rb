@@ -9,7 +9,7 @@ describe WulinMaster::Screen do
   end
 
   it 'should push an inherited screen into class variable screens' do
-    expect(WulinMaster::Screen.screens).to eq([PostScreen])
+    expect(WulinMaster::Screen.screens).to include(PostScreen)
   end
 
   it 'should have a default title' do
