@@ -349,6 +349,8 @@ var Ui = {
       .JSONView(jsonData)
       .appendTo($jsonViewModal);
 
+    $modalContent.JSONView('collapse');
+
     $jsonViewModal.modal({
       complete: function() {
         $jsonViewModal.remove();
