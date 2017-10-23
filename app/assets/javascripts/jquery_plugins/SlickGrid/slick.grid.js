@@ -2782,7 +2782,7 @@ if (typeof Slick === "undefined") {
       // Ekohe Add: Popup JSON viewer for jsonb data
       var column = columns[activeCell];
       if (column.type == 'jsonb') {
-        var jsonData = JSON.parse(data[0][column.column_name]);
+        var jsonData = JSON.parse(data[cell.row][column.column_name]);
         var $jsonViewModal = Ui.createJsonViewModal(jsonData);
         $jsonViewModal.modal('open');
         return;

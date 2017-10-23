@@ -9,11 +9,12 @@ WulinMaster.actions.JsonView = $.extend({}, WulinMaster.actions.BaseAction, {
 
     if (ids.length == 1) {
       var columns = grid.getColumns();
+      var currentData = grid.getData()[grid.getSelectedRows()[0]];
       var jsonData;
 
       $.each(columns, function(index, column) {
         if (column.type == 'jsonb') {
-          jsonData = JSON.parse(grid.getData()[0][column.column_name]);
+          jsonData = JSON.parse(currentData[column.column_name]);
           return false;
         }
       });
