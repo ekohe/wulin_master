@@ -93,7 +93,7 @@ Metrics/BlockLength:
     - 'spec/**/*'
 
 Metrics/ModuleLength:
-  Max: 180
+  Max: 200
 
 Metrics/AbcSize:
   Max: 50

@@ -61,7 +61,6 @@ module WulinMaster
 
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
-            # @count = (@objects.size < @per_page) ? @objects.size : @count_query.count
             @count = @objects.size < @per_page ? @objects.size : @count_query.size
           end
 
@@ -173,7 +172,6 @@ module WulinMaster
     def parse_pagination
       # The slick.remotemodel's loadingSize is 200, so here we'd better set 200 too.
       @per_page = params[:count].to_i.zero? ? 200 : params[:count].to_i
-      # @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
 
       @query = @query.is_a?(Array) ? @query.from((@page - 1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page - 1) * @per_page)
