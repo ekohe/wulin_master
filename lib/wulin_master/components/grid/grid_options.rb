@@ -66,6 +66,10 @@ module WulinMaster
       def background_color(value = 'blue-grey', options = {})
         option({bgColor: value}.merge(options))
       end
+
+      def estimate_count(value = {threshold: 10000}, options = {})
+        option({estCount: value}.merge(options))
+      end
     end
 
     def options

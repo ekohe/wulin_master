@@ -50,7 +50,7 @@ module WulinMaster
           if @offset.zero?
             @count_query = @query.clone
           else
-            @count = @query.count
+            @count = smart_query_count
           end
 
           # Add limit and offset
@@ -230,6 +230,15 @@ module WulinMaster
           send(cb)
         end
       end
+    end
+
+    def smart_query_count
+      sql = "SELECT reltuples AS est_count FROM pg_class WHERE relname = '" + @query.table.name + "'"
+      est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['est_count'].to_i
+      if grid.options[:estCount].present?
+        return @query.count if est_count < grid.options[:estCount][:threshold].to_i
+      end
+      est_count
     end
   end
 end
