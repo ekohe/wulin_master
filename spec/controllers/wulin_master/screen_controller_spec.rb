@@ -71,6 +71,42 @@ describe PeopleTestController, type: :controller do
           expect(limited).to receive(:offset).with(200)
           controller.send(:parse_pagination)
         end
+
+        it 'should invoke limit and offset on the query with default value when calling parse_pagination if params not given' do
+          limited = double(:limited)
+          offseted = double(:offseted)
+          controller.instance_variable_set(:@offset, 0)
+          allow(controller.query).to receive(:limit).and_return(limited)
+          allow(limited).to receive(:offset).and_return(offseted)
+          expect(controller.query).to receive(:limit).with(200)
+          expect(limited).to receive(:offset).with(0)
+          controller.send(:parse_pagination)
+        end
+
+        it 'should apply order on the grid when calling parse_ordering if params given' do
+          allow(@grid).to receive(:sql_columns).and_return(['first_name'])
+          allow(controller).to receive(:params).and_return(sort_col: 'first_name', sort_dir: 'DESC')
+          expect(@grid).to receive(:apply_order).with(Person, 'first_name', 'DESC')
+          controller.send(:parse_ordering)
+        end
+
+        it 'should invoke order on query with default value when calling parse_ordering if params not given' do
+          allow(@grid).to receive(:sql_columns).and_return(['first_name'])
+          expect(@grid).to receive(:apply_order).with(Person, 'first_name', 'ASC')
+          controller.send(:parse_ordering)
+        end
+
+        it 'should return a json object after calling render_json' do
+          allow(@grid).to receive(:arraify).and_return(['Maxime', 'Ben'])
+          expect(@grid).to receive(:arraify)
+          result = controller.send(:render_json)
+          expect(result).to be_a(String)
+          expect(result).to include('offset')
+          expect(result).to include('total')
+          expect(result).to include('count')
+          expect(result).to include('rows')
+          expect(result).to include('["Maxime","Ben"]')
+        end
       end
     end
   end
