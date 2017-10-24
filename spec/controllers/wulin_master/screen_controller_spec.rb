@@ -28,11 +28,13 @@ describe PeopleTestController, type: :controller do
       describe 'format: :json' do
         before :each do
           controller.query = Person
+          controller.instance_variable_set(:@per_page, 200)
         end
 
         it 'should invoke methods of building filters, orders and renderings' do
           expect(controller).to receive(:construct_filters)
           expect(controller).to receive(:parse_ordering)
+          expect(controller).to receive(:parse_pagination)
           expect(controller).to receive(:render_json)
           get :index, format: :json
         end
@@ -41,6 +43,7 @@ describe PeopleTestController, type: :controller do
           json_obj = { offset: 100, total: 1000, count: 100, rows: %w[Maxime Ben] }.to_json
           allow(controller).to receive(:construct_filters).and_return(true)
           allow(controller).to receive(:parse_ordering).and_return(true)
+          allow(controller).to receive(:parse_pagination).and_return(true)
           allow(controller).to receive(:render_json).and_return(json_obj)
           get :index, format: :json
           expect(response.body).to eq(json_obj)
@@ -50,6 +53,23 @@ describe PeopleTestController, type: :controller do
           allow(controller).to receive(:params).and_return(filters: [{column: 'first_name', value: 'Ben', operator: 'equals'}])
           expect(@grid).to receive(:apply_filter).with(Person, 'first_name', 'Ben', 'equals')
           controller.send(:construct_filters)
+        end
+
+        it 'should do nothing when calling construct_filters if no filter params given' do
+          expect(@grid).not_to receive(:apply_filter)
+          controller.send(:construct_filters)
+        end
+
+        it 'should invoke limit and offset on the query according to params count and offset when calling parse_pagination if params given' do
+          limited = double(:limited)
+          offseted = double(:offseted)
+          controller.instance_variable_set(:@offset, 200)
+          allow(controller).to receive(:params).and_return(count: 100, offset: 200)
+          allow(controller.query).to receive(:limit).and_return(limited)
+          allow(limited).to receive(:offset).and_return(offseted)
+          expect(controller.query).to receive(:limit).with(100)
+          expect(limited).to receive(:offset).with(200)
+          controller.send(:parse_pagination)
         end
       end
     end
