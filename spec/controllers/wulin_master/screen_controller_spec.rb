@@ -10,17 +10,21 @@ class PeopleTestController < PeopleController
 end
 
 describe PeopleTestController, type: :controller do
+  def mock_person(stubs = {})
+    @mock_person ||= mock_model(Person, stubs).as_null_object
+  end
+
   describe 'Includes WulinMaster::Actions' do
     before :each do
       @screen = PersonScreen.new(controller)
       @grid = @screen.grids.first
       allow(controller).to receive(:grid).and_return(@grid)
       allow(controller).to receive(:params).and_return({})
-      routes.draw { get :index, to: 'people_test#index' }
     end
 
     describe 'get :index' do
       it 'should render index template if request format :html' do
+        routes.draw { get :index, to: 'people_test#index' }
         get :index, format: :html
         expect(response).to render_template(:index)
       end
@@ -97,7 +101,7 @@ describe PeopleTestController, type: :controller do
         end
 
         it 'should return a json object after calling render_json' do
-          allow(@grid).to receive(:arraify).and_return(['Maxime', 'Ben'])
+          allow(@grid).to receive(:arraify).and_return(%w[Maxime Ben])
           expect(@grid).to receive(:arraify)
           result = controller.send(:render_json)
           expect(result).to be_a(String)
@@ -106,6 +110,42 @@ describe PeopleTestController, type: :controller do
           expect(result).to include('count')
           expect(result).to include('rows')
           expect(result).to include('["Maxime","Ben"]')
+        end
+      end
+    end
+
+    describe 'post :create' do
+      before :each do
+        routes.draw { post :create, to: 'people_test#create' }
+      end
+
+      describe 'with valid params' do
+        before :each do
+          allow(@grid.model).to receive(:new).and_return(mock_person(save: true))
+          post :create, format: :json
+        end
+
+        it 'assigns a newly created record as @record' do
+          expect(assigns(:record)).to eq(mock_person)
+        end
+
+        it 'render success json if format json' do
+          expect(response.body).to include('"success":true')
+        end
+      end
+
+      describe 'with invalid params' do
+        it 'assigns a newly created but unsaved record as @record' do
+          allow(@grid.model).to receive(:new).and_return(mock_person(save: false))
+          post :create, format: :json
+          expect(assigns(:record)).to eq(mock_person)
+        end
+
+        it 'render failure json and error message if format json' do
+          allow(@grid.model).to receive(:new).and_return(mock_person(save: false))
+          allow(mock_person(save: false)).to receive(:errors).and_return('person error')
+          post :create, format: :json
+          expect(response.body).to eq({success: false, error_message: 'person error' }.to_json)
         end
       end
     end

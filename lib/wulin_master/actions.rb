@@ -120,7 +120,7 @@ module WulinMaster
       message = if !custom_errors.empty?
         {success: false, error_message: custom_errors}
       elsif @record.save
-        {success: true, id: @record.id }
+        {success: true, id: @record.id}
       else
         {success: false, error_message: @record.errors}
       end

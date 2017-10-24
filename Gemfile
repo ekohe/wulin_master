@@ -9,6 +9,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-byebug'
   gem 'rails-controller-testing'
+  gem 'rspec-activemodel-mocks'
   gem 'rubocop', require: false
 end
 
