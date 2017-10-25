@@ -231,8 +231,13 @@ module WulinMaster
     end
 
     def smart_query_count
-      sql = "SELECT reltuples AS est_count FROM pg_class WHERE relname = '" + @query.table.name + "'"
-      est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['est_count'].to_i
+      if ActiveRecord::Base.connection.instance_values['config'][:adapter] != 'postgresql'
+        Rails.logger.warn 'Estimate count ignored because not using PostegreSQL'
+        return @query.count
+      end
+
+      sql = "SELECT count_estimate('" + @query.to_sql + "')"
+      est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       if grid.options[:estCount].present?
         return @query.count if est_count < grid.options[:estCount][:threshold].to_i
       end
