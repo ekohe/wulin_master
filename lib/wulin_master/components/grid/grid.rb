@@ -59,7 +59,10 @@ module WulinMaster
       end
 
       def path(new_path = nil)
-        new_path ? (self._path = new_path) : (_path || model.table_name || to_s.gsub(/Grid/, "").underscore.pluralize)
+        self._path = new_path unless new_path.nil?
+        uri = _path || model.table_name || to_s.gsub(/Grid/, "").underscore.pluralize
+        uri = '/' + uri unless uri.starts_with? '/'
+        uri
       end
 
       # title setter and getter
