@@ -16,6 +16,7 @@ before_script:
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - rm -rf Gemfile.lock
   - bundle install --path /cache
+  - bundle exec rake db:reset RAILS_ENV=test
 
 test:
   script:
