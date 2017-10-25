@@ -9,6 +9,7 @@ AllCops:
     - 'deployment/**/*'
     - 'bin/**/*'
     - 'spec/spec_helper.rb'
+    - 'spec/wulin_app/db/**/*'
     - 'lib/generators/wulin_master/screen_and_grid/templates/*.rb'
 
 Style/StringLiterals:
