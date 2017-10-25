@@ -19,7 +19,6 @@ describe PeopleTestController, type: :controller do
       @screen = PersonScreen.new(controller)
       @grid = @screen.grids.first
       allow(controller).to receive(:grid).and_return(@grid)
-      allow(controller).to receive(:params).and_return({})
     end
 
     describe 'get :index' do
@@ -145,6 +144,52 @@ describe PeopleTestController, type: :controller do
           allow(@grid.model).to receive(:new).and_return(mock_person(save: false))
           allow(mock_person(save: false)).to receive(:errors).and_return('person error')
           post :create, format: :json
+          expect(response.body).to eq({success: false, error_message: 'person error' }.to_json)
+        end
+      end
+    end
+
+    describe 'post :update' do
+      before :each do
+        routes.draw { put :update, to: 'people_test#update' }
+      end
+
+      context 'with valid params' do
+        let(:valid_params) { { id: 37, item: { these: 'params' } } }
+
+        before do
+          allow(@grid.model).to receive(:find).with(['37']).and_return([mock_person])
+        end
+
+        it 'assigns the requested records as @records' do
+          put :update, params: valid_params
+          expect(assigns(:records)).to eq([mock_person])
+        end
+
+        it 'updates the requested record' do
+          expect(mock_person).to receive(:update_attributes!)
+          put :update, params: valid_params
+        end
+
+        it 'render success json if format json' do
+          put :update, params: valid_params
+          expect(response.body).to eq({success: true}.to_json)
+        end
+      end
+
+      context 'with invalid params' do
+        it 'assigns the records as @records' do
+          allow(@grid.model).to receive(:find).with(['thirty seven']).and_return([mock_person])
+          put :update, params: {id: 'thirty seven', item: {'these' => 'params'}}
+          expect(assigns(:records)).not_to eq(nil)
+        end
+
+        it 'render failure json and error message if format json' do
+          allow(@grid.model).to receive(:find).with(['thirty seven']).and_return([mock_person])
+          errors = double(:error, empty?: false, full_messages: double)
+          allow(errors.full_messages).to receive(:join).and_return('person error')
+          allow(mock_person(update_attributes: false)).to receive(:errors).and_return(errors)
+          put :update, params: {id: 'thirty seven', item: {'these' => 'params'}}, format: :json
           expect(response.body).to eq({success: false, error_message: 'person error' }.to_json)
         end
       end
