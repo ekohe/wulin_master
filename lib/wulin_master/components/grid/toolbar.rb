@@ -6,6 +6,8 @@ module WulinMaster
   class Toolbar
     attr_reader :grid_name, :items
 
+    # TODO: This should be extendable through an API
+    #  ie: wulin_audit/wulin_excel should be able to set the icon for the audit/excel action
     DEFAULT_ICONS = {
       create: 'add_box',
       add_detail: 'add_box',
@@ -15,7 +17,8 @@ module WulinMaster
       edit: 'mode_edit',
       delete: 'delete',
       switch: 'launch',
-      audit: 'restore'
+      audit: 'restore',
+      excel: 'file_download'
     }.freeze
 
     def initialize(grid_name, actions = [])

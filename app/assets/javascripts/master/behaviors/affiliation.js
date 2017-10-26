@@ -64,7 +64,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
       var bgColor = 'grid-bg-color-' + (detailGrid.options['bgColor'] || default_color);
       detailGrid.container.addClass(bgColor);
-      detailGrid.container.find('.grid-header').removeClass('multi-selected');
+      detailGrid.container.find('.grid-header').removeClass('has-selected-rows');
 
       // Set detail grid's title
       var $detailGridTitle = detailGrid.container.find('.grid-header h2');

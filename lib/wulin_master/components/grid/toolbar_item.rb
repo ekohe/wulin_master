@@ -22,16 +22,25 @@ module WulinMaster
       !@icon.nil?
     end
 
+    def global?
+      %i[create export add_detail switch].include?(options[:name].to_sym) || options[:global]
+    end
+
     def anchor_tag_options
+      css_classes = ['waves-effect']
+      unless global?
+        css_classes << 'waves-circle'
+        css_classes << 'tooltipped'
+      end
+
       if icon?
-        css_classes = []
         css_classes += options[:class].split(' ') if options[:class].present?
         # css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
         css_classes << "toolbar_manually_enable" if options[:manually_enable]
-        options[:class] = css_classes.uniq.join(' ')
       else
-        options[:class] = options[:class].split(" ").delete_if { |e| e.include?('toolbar_icon') }.join(" ")
+        css_classes += options[:class].split(" ").delete_if { |e| e.include?('toolbar_icon') }
       end
+      options[:class] = css_classes.uniq.join(' ')
 
       if javascript?
         options.merge!(href: '#',
@@ -41,7 +50,11 @@ module WulinMaster
         options.delete(:onclick)
       end
 
-      options
+      if global?
+        options
+      else
+        options.merge('data-position': 'bottom', 'data-delay': '50', 'data-tooltip': @title)
+      end
     end
 
     # Satisfy render_to_string

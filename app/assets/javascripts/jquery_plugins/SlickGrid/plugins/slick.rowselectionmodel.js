@@ -30,13 +30,6 @@
           wrapHandler(handleKeyDown));
       _handler.subscribe(_grid.onClick,
           wrapHandler(handleClick));
-
-      // Ekohe Add: Clear row selection
-      grid.container.find('.selection-info').on('click', function() {
-        grid.container.find('.toolbar-select').addClass('hide');
-        grid.container.find('.grid-header').removeClass('multi-selected');
-        _self.onSelectedRangesChanged.notify([]);
-      })
     }
 
     function destroy() {

@@ -1425,15 +1425,28 @@ if (typeof Slick === "undefined") {
       var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-        $gridContainer.find('.selection-info').text(itemInfo + ' selected. X CLEAR');
+        var text = itemInfo + ' selected.';
+        var selectionInfo = $gridContainer.find('.selection-info');
+        var textElement = $("<span/>").text(text);
+        selectionInfo.empty().append(textElement);
+
+        var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
+        clearLink.append($("<i/>").addClass('material-icons').text('close'));
+        clearLink.append($("<span/>").text("CLEAR"));
+
+        clearLink.on('click', function() {
+          $gridContainer.find('.toolbar-select').addClass('hide');
+          $gridContainer.find('.grid-header').removeClass('has-selected-rows');
+          selectionModel.onSelectedRangesChanged.notify([]);
+          return false;
+        })
+
+        selectionInfo.append(clearLink);
         $gridContainer.find('.toolbar-select').removeClass('hide');
         $gridContainer.closest('.attach-modal').find('.attach-btn').removeClass('disabled');
-        if (itemCount > 1) {
-          $gridHeader.addClass('multi-selected');
-        } else {
-          $gridHeader.removeClass('multi-selected');
-        }
+        $gridHeader.addClass('has-selected-rows');
       } else {
+        $gridHeader.removeClass('has-selected-rows');
         $gridContainer.find('.selection-info').text('');
         $gridContainer.closest('.attach-modal').find('.attach-btn').addClass('disabled');
         $(getActiveCellNode()).removeClass('active');

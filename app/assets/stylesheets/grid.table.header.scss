@@ -9,7 +9,6 @@
 }
 
 .slick-header {
-  padding-top: $slick-header-padding;
   padding-bottom: $slick-header-padding;
   .slick-header-column.input-field {
     &.slick-header-column-sorted {
@@ -23,7 +22,7 @@
       margin-bottom: none;
       border-bottom: none;
       height: $filter-height;
-      color: $slick-header-color;
+      color: $filter-color;
     }
     input[type=text]:focus:not([readonly]) {
       border-bottom: 1px $filter-color !important;

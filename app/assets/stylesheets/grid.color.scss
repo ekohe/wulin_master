@@ -28,7 +28,7 @@ $wulin-colors: (
 @mixin grid_color($name, $color) {
   .#{'grid-color-' + $name} {
     .grid-header {
-      &.multi-selected {
+      &.has-selected-rows {
         background: lighten(rgba($color, .2), 10%) !important;
       }
       span.detail-grid-title {
@@ -39,6 +39,9 @@ $wulin-colors: (
       }
       .selection-info {
         color: $color;
+        a.clear {
+          color: $color;
+        }
       }
     }
     .progress .indeterminate {

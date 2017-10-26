@@ -6,7 +6,7 @@
         grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
       toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
-        [:create, :export, :add_detail, :switch].include?(item.options[:name].to_sym) || item.options[:global]
+        item.global?
       end
       user_id = ( respond_to?(:current_user) && current_user) ? current_user.id : -1
     .grid-header
@@ -25,9 +25,9 @@
           %ul
             - toolbar_items_select.each do |item|
               %li.toolbar_item
-                =link_to 'javascript:void(0);', item.anchor_tag_options do
+                = link_to 'javascript:void(0);', item.anchor_tag_options do
                   %i.material-icons= item.icon.presence || 'help'
-      %a.selection-info{href: "#"}
+      .selection-info
   .grid
   .pager
 
@@ -44,3 +44,4 @@
                              #{grid.behavior_configs.to_json.html_safe},
                              #{grid.options.to_json.html_safe},
                              #{user_id});
+  $('.tooltipped').tooltip();
