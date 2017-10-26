@@ -22,6 +22,6 @@ describe WulinMaster::Grid do
 
   it 'should has the default path' do
     PostGrid.path(false)
-    expect(PostGrid.path).to eq('posts')
+    expect(PostGrid.path).to eq('/posts')
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,18 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171024160100) do
+ActiveRecord::Schema.define(version: 20171020160100) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "grid_states", id: :serial, force: :cascade do |t|
     t.integer "user_id"
-    t.string "grid_name"
-    t.string "state_value"
     t.string "name", default: "default"
+    t.string "grid_name"
+    t.text "state_value"
     t.boolean "current", default: false, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_grid_states_on_user_id"
   end
 
@@ -31,7 +30,8 @@ ActiveRecord::Schema.define(version: 20171024160100) do
     t.string "first_name"
     t.string "last_name"
     t.datetime "birthdate"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
+
 end
