@@ -33,20 +33,40 @@ describe WulinMaster::ToolbarItem do
 
   it 'should have anchor_tag_options' do
     # when item has both icon and javascript
-    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action", id: "excel", href: "#", onclick: "alert(\"export excel\"); return false;", "data-position": "bottom", "data-delay": "50", "data-tooltip": "Excel")
+    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action",
+                                           id: "excel",
+                                           href: "#",
+                                           onclick: "alert(\"export excel\"); return false;",
+                                           "data-position": "bottom",
+                                           "data-delay": "50",
+                                           "data-tooltip": "Excel")
 
     # when item has only icon
     allow(@item).to receive(:javascript?).and_return(false)
-    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action", id: 'excel', "data-position": "bottom", "data-delay": "50", "data-tooltip": "Excel")
+    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action",
+                                           id: 'excel',
+                                           "data-position": "bottom",
+                                           "data-delay": "50",
+                                           "data-tooltip": "Excel")
 
     # when item has only javascript
     allow(@item).to receive(:icon?).and_return(false)
     allow(@item).to receive(:javascript?).and_return(true)
-    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action", id: 'excel', href: '#', onclick: 'alert("export excel"); return false;', "data-position": "bottom", "data-delay": "50", "data-tooltip": "Excel")
+    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action",
+                                           id: 'excel',
+                                           href: '#',
+                                           onclick: 'alert("export excel"); return false;',
+                                           "data-position": "bottom",
+                                           "data-delay": "50",
+                                           "data-tooltip": "Excel")
 
     # when item has no icon nor javascript
     allow(@item).to receive(:icon?).and_return(false)
     allow(@item).to receive(:javascript?).and_return(false)
-    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action", id: 'excel', "data-position": "bottom", "data-delay": "50", "data-tooltip": "Excel")
+    expect(@item.anchor_tag_options).to eq(class: "waves-effect waves-circle tooltipped action",
+                                           id: 'excel',
+                                           "data-position": "bottom",
+                                           "data-delay": "50",
+                                           "data-tooltip": "Excel")
   end
 end
