@@ -1,7 +1,7 @@
 :ruby
   menu = controller&.menu || menu
 #navigation
-  #menu{style: "top: 10px"}
+  #menu
     %ul
       - menu.each do |menu_entry|
         - if menu_entry.submenu?
@@ -11,7 +11,7 @@
             %ul
               - menu_entry.each do |submenu_entry|
                 %li.item{:style => submenu_entry.hidden? ? "display:none" : ""}
-                  = link_to submenu_entry.path do
+                  = link_to submenu_entry.path, class: 'waves-effect' do
                     %i.material-icons= submenu_entry.options[:icon] || 'crop_16_9'
                     %span= submenu_entry.title
         - else

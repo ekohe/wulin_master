@@ -8,48 +8,73 @@
   width: $menu-width;
   font-size: $font-size-small;
   border-right: 1px solid $border-color;
+  background: color('grey', 'lighten-5');
   #menu {
     position: absolute;
     overflow-y: auto;
     right: 0;
-    left: $menu-padding;
+    left: 0px;
+    top: 20px;
     bottom: 0;
-    .material-icons {
-      font-size: 22px;
-    }
+
     ul {
       margin-top: 2px;
       margin-bottom: $menu-padding;
-      li {
-        &.submenu > a {
-          font-size: 12px;
-          padding-left: 14px;
-        }
+      // Menu groups
+      li.submenu {
         a {
+          font-size: 12px;
+          padding-left: 24px;
           text-transform: uppercase;
-          padding-left: $menu-padding;
           color: $text-color;
         }
+        // Second level menu
         ul {
           margin-top: 4px;
-        }
-        .item {
-          padding-top: $menu-padding;
-          a {
-            text-transform: none;
-            color: $text-color;
-            display: flex;
-            align-items: center;
-            span {
-              padding-left: $menu-padding;
-              font-size: 15px;
+          li.item {
+            display: block;
+
+            .material-icons {
+              position: relative;
+              top: 6px;
+              font-size: 21px;
+              transition: color 0.4s ease;
+              color: color('grey', 'darken-2');
+            }
+
+            a {
+              width: 100%;
+              text-transform: none;
+              color: color('grey', 'darken-4');
+              align-items: center;
+              padding-left: 24px;
+              padding-top: 7px;
+              padding-bottom: 11px;
+
+              span {
+                padding-left: $menu-padding;
+                font-size: 14px;
+              }
+            }
+
+            a:hover {
+              background: color('grey', 'lighten-3');
+              .material-icons {
+                color: black;
+              }
             }
           }
-        }
-        .item.active {
-          a {
-            color: $menu-item-active-color;
+
+          li.active {
+            a, a:hover {
+              color: $menu-item-active-color;
+              .material-icons {
+                color: $menu-item-active-color;
+              }
+            }
           }
+
+
         }
       }
     }
