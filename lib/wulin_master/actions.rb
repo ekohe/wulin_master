@@ -45,13 +45,24 @@ module WulinMaster
 
           fire_callbacks :query_ready
 
-          @count = smart_query_count
+          # Get total counts
+          @offset = params[:offset].present? ? params[:offset].to_i : 0
+          if @offset.zero?
+            @count_query = @query.clone
+          else
+            @count = smart_query_count(@query)
+          end
 
           # Add limit and offset
           parse_pagination
 
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
+
+          # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
+          if @count_query
+            @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
+          end
 
           fire_callbacks :objects_ready
 
@@ -160,7 +171,6 @@ module WulinMaster
 
     def parse_pagination
       # The slick.remotemodel's loadingSize is 200, so here we'd better set 200 too.
-      @offset = params[:offset].present? ? params[:offset].to_i : 0
       @per_page = params[:count].to_i.zero? ? 200 : params[:count].to_i
       @page = (@offset / @per_page) + 1
 
@@ -220,15 +230,15 @@ module WulinMaster
       end
     end
 
-    def smart_query_count
-      return @query.size if grid.options[:estCount].blank?
+    def smart_query_count(query)
+      return query.size if grid.options[:estCount].blank?
       if ActiveRecord::Base.connection.instance_values['config'][:adapter] != 'postgresql'
         Rails.logger.warn 'Estimate count ignored because not using PostgreSQL'
-        return @query.size
+        return query.size
       end
-      sql = "SELECT count_estimate('" + @query.to_sql + "')"
+      sql = "SELECT count_estimate('" + query.to_sql + "')"
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
-      return @query.size if est_count < grid.options[:estCount][:threshold].to_i
+      return query.size if est_count < grid.options[:estCount][:threshold].to_i
       est_count
     end
   end
