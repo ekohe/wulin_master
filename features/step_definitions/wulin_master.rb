@@ -13,7 +13,8 @@ Then(/^I should see the notice '([^"]*)'$/) do |notice|
 end
 
 Then(/^I should see '([^"]*)' in the '([^"]*)' grid$/) do |text, grid_name|
-  title = find(:xpath, '//div[@class="grid_container"]/div[@class="grid-header"]/h2', text: grid_name)
+  # title = find(:xpath, '//div[@class="grid_container"]/div[@class="grid-header"]/h2', text: grid_name)
+  title = find('.grid_container .grid-header h2', text: grid_name)
   grid_canvas = title.find(:xpath, '../..//div[@class="grid-canvas"]')
   expect(grid_canvas).to have_content(text)
 end
