@@ -236,7 +236,7 @@ module WulinMaster
         Rails.logger.warn 'Estimate count ignored because not using PostgreSQL'
         return query.size
       end
-      sql = "SELECT count_estimate('" + query.to_sql + "')"
+      sql = "SELECT count_estimate('" + query.to_sql.gsub("'", "''") + "')"
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       return query.size if est_count < grid.options[:estCount][:threshold].to_i
       est_count
