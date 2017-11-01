@@ -70,6 +70,10 @@ module WulinMaster
       def estimate_count(value = {threshold: 10000}, options = {})
         option({estCount: value}.merge(options))
       end
+
+      def default_sorting_state(value = {id: 'ASC'}, options = {})
+        option({defaultSortingState: value}.merge(options))
+      end
     end
 
     def options

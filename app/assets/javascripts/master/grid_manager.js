@@ -166,6 +166,11 @@
       // var isHide = (grid.options.eagerLoading === false);
       // loader.setLoadingIndicator(createLoadingIndicator(gridElement, isHide));
 
+      // Set default sorting state
+      if (options.defaultSortingState) {
+        grid.setSortColumn(options.defaultSortingState.column, options.defaultSortingState.direction == 'ASC');
+      }
+
       // Restore the sorting states to grid
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 
