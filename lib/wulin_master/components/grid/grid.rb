@@ -111,6 +111,12 @@ module WulinMaster
       @model_columns ||= model.column_names
     end
 
+    def default_sort_setting
+      default_sort_column = columns.find { |c| c.options[:sort].present? }
+      return { column: sql_columns.first, direction: 'ASC' } unless default_sort_column
+      { column: default_sort_column.sql_names.first, direction: default_sort_column.options[:sort].to_s }
+    end
+
     def path
       uri = URI.parse(self.class.path)
       uri.query = [uri.query, "grid=#{self.class}"].compact.join('&')

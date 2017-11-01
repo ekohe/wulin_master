@@ -157,13 +157,14 @@ module WulinMaster
     end
 
     def parse_ordering
-      @order_column = grid.sql_columns.first
+      @order_column = grid.default_sort_setting[:column]
       if params[:sort_col].present? && grid.columns.map(&:full_name).map(&:to_s).include?(params[:sort_col])
         @order_column = params[:sort_col]
       elsif params[:sort_col].present?
         Rails.logger.warn "Sorting parameter ignored because not included in the grid columns: #{grid.columns.map(&:full_name).inspect}"
       end
-      @order_direction = "ASC"
+
+      @order_direction = grid.default_sort_setting[:direction]
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
 
       @query = grid.apply_order(@query, @order_column, @order_direction)
