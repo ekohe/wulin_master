@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+Spring.application_root = ''
 %w[
   .ruby-version
   .rbenv-vars
