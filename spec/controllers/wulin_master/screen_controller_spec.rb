@@ -194,5 +194,45 @@ describe PeopleTestController, type: :controller do
         end
       end
     end
+
+    describe 'delete :destroy' do
+      let(:ids) { ['1'] }
+
+      before :each do
+        routes.draw { put :update, to: 'people_test#destroy' }
+      end
+
+      it 'success to destroy the requested county' do
+        person = mock_person(id: 1, destroy: 1)
+        people = [person]
+
+        allow(@grid.model).to receive(:find).with(ids).and_return(people)
+
+        expect(@grid.model).to receive(:transaction).and_yield
+        expect(people).to receive(:each).and_yield(person)
+        expect(person).to receive(:destroy)
+
+        delete :destroy, params: { id: '1' }, format: :json
+        expect(response.body).to eq({success: true}.to_json)
+      end
+
+      it 'fails to destroy the requested county' do
+        errors = double(:error, full_messages: double)
+        allow(errors.full_messages).to receive(:join).and_return('can\'t destroy')
+        person = mock_person(id: 1, destroy: nil, errors: errors)
+        people = [person]
+
+        allow(@grid.model).to receive(:find).with(ids).and_return(people)
+
+        expect(@grid.model).to receive(:transaction).and_yield
+        expect(people).to receive(:each).and_yield(person)
+
+        expect(person).to receive(:destroy)
+
+        delete :destroy, params: { id: '1' }, format: :json
+        expect(response.body).to eq({ success: false, error_message: 'can\'t destroy' }.to_json)
+      end
+    end
+
   end
 end

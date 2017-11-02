@@ -99,7 +99,7 @@ module WulinMaster
         @records.each do |record|
           next if record.destroy
           success = false
-          error_message << record.errors.full_messages.join(",\n")
+          error_message = error_message + record.errors.full_messages.join(",\n")
           break
         end
       end
