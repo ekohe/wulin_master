@@ -13,6 +13,10 @@ When(/^(?:|I )click on '([^"]*)' button on the grid header$/) do |button|
   find('[name=' + button.downcase + ']').click
 end
 
+When(/^I confirm$/) do
+  find('[id=confirmed-btn]').click
+end
+
 Then(/^(?:|I )should see '([^\']*)'$/) do |text|
   expect(page).to have_content(text)
 end
