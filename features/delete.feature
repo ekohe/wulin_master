@@ -6,7 +6,7 @@ Feature: Delete objects
 
   Scenario: Update data using the standard update popup
     Given I have 2 people in the database
-    Given I go to the homepage
+    When I go to the homepage
     When I click on 'People'
     Then I should see the 'People' grid
     When I click on the first row of the 'People' grid
