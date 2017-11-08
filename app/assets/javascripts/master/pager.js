@@ -89,8 +89,7 @@
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          var rowsWithoutFilter = pagingInfo.rowsWithoutFilter == -1 ? pagingInfo.totalRows : pagingInfo.rowsWithoutFilter;
-          $status.text(pagingInfo.totalRows + " of " + rowsWithoutFilter + " rows found");
+          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
           $status.addClass('with-filter');
           $clearFilterLink.removeClass('hide');
         }

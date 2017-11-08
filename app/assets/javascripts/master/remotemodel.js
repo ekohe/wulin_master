@@ -219,9 +219,7 @@
       var to;
 
       // Ekohe Add: Save row length without filter
-      if (grid.getFilteredInputs().length == 0) {
-        rowsWithoutFilter = parseInt(resp.total, 10);
-      }
+      rowsWithoutFilter = parseInt(resp.totalNoFilter, 10);
 
       if (pageSize === 0) {
         from = resp.offset;
