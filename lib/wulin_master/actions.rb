@@ -192,9 +192,10 @@ module WulinMaster
       # Render ruby objects
       t = Time.current
       @object_array = grid.arraify(@objects)
+      query_without_filter = @query.unscope(:where, :order).limit(nil).offset(nil)
       json = {offset: @offset,
               total: @count,
-              totalNoFilter: smart_query_count(grid.model),
+              totalNoFilter: smart_query_count(query_without_filter),
               count: @per_page,
               rows: @object_array}.to_json
       Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
@@ -233,18 +234,14 @@ module WulinMaster
     end
 
     def smart_query_count(query)
-      return query.count if grid.options[:estCount].blank?
+      return query.size if grid.options[:estCount].blank?
       if ActiveRecord::Base.connection.instance_values['config'][:adapter] != 'postgresql'
         Rails.logger.warn 'Estimate count ignored because not using PostgreSQL'
-        return query.count
+        return query.size
       end
-      sql = if query == grid.model
-        "SELECT reltuples AS count_estimate FROM pg_class WHERE relname = '" + query.table_name + "'"
-      else
-        "SELECT count_estimate('" + query.to_sql.gsub("'", "''") + "')"
-      end
+      sql = "SELECT count_estimate('" + query.to_sql.gsub("'", "''") + "')"
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
-      return query.count if est_count < grid.options[:estCount][:threshold].to_i
+      return query.size if est_count < grid.options[:estCount][:threshold].to_i
       est_count
     end
   end
