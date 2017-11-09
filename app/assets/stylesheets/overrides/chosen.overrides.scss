@@ -3,6 +3,7 @@
 .chzn-container {
   vertical-align: middle;
   top: 25px;
+  width: 100% !important;
   .chzn-choices {
     background: none;
     border: 0;
@@ -31,6 +32,7 @@
     }
   }
   .chzn-drop {
+    width: 100% !important;
     z-index: 100000;
     border: $border-color;
     border-radius: 0;
@@ -48,6 +50,10 @@
         padding: 0 18px 0 3px;
         border: 0;
         background: none;
+      }
+      input[type=text]:focus:not([readonly]) {
+        border-bottom: none !important;
+        box-shadow: none !important;
       }
     }
   }
