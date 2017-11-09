@@ -167,7 +167,7 @@
         ParseSimpleDate: function(simpleDateStr) {
             try {
                 var matchedArr = simpleDateStr.match(/^(\d{2})\s?([A-Za-z]{3})$/);
-                return $.datepicker.parseDate("dd M", matchedArr[1] + " " + matchedArr[2]);
+                return $.datepicker.parseDate("dd M yy", matchedArr[1] + " " + matchedArr[2] + " " + window.default_year);
             } catch (err) {
                 return null;
             }
