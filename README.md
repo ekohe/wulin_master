@@ -550,7 +550,7 @@ For action permission, configure like:
 ```ruby
 class ContactGrid < WulinMaster::Grid
    ...
-   action :add
+   action :create
    action :edit
    action :delete, authorized?: lambda { |user| user.has_permission_with_name?("contacts#delete") }
    ...
