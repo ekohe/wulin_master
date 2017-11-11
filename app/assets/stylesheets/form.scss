@@ -52,27 +52,3 @@ form {
     padding: $form-submit-padding 0;
   }
 }
-
-// Attach(Add Detail) Form
-
-.attach-modal.modal.modal-fixed-footer {
-  .slick-header-column.input-field label {
-    top: 15px;
-  }
-  .modal-content {
-    position: static;
-    padding: 0;
-    height: auto !important;
-    .grid_container {
-      border: none;
-      .grid-header {
-        padding-top: 20px;
-        h2 {
-          padding-top: 0;
-          padding-left: 15px;
-          margin-top: 0;
-        }
-      }
-    }
-  }
-}
