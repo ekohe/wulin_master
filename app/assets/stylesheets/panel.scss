@@ -21,6 +21,7 @@
     position: relative;
     height: $panel-header-height;
     h2 {
+      margin-top: 0;
       padding-top: $panel-header-padding;
       padding-left: $panel-header-padding;
       font-size: $font-size-middle;
