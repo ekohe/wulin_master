@@ -126,6 +126,11 @@
 
   $('##{grid.name}_form input[type=text]').parent().addClass('input-field');
 
+  $('##{grid.name}_form .field').filter(function () {
+    return !!$(this).find('input').val();
+  }).find('label').addClass('active');
+  $('##{grid.name}_form input[data-time]').siblings('label').addClass('active');
+
   $('input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
   $('input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
   $('input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);
