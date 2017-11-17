@@ -87,7 +87,6 @@
                                    + "&screen=#{screen.class}"
                                    + "&source=#{column_name}";
               var container = $(".auto-complete-text-field-#{column_name}");
-              container.parent().addClass('input-field');
               var column = {
                 auto_complete: true,
                 width: container.width(),
@@ -124,6 +123,8 @@
 :javascript
   $('##{grid.name}_form select[data-required="true"]').chosen();
   $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
+
+  $('##{grid.name}_form input[type=text]').parent().addClass('input-field');
 
   $('input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
   $('input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);

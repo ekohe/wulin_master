@@ -34,7 +34,7 @@ form {
     input[type=text]:not(.browser-default) {
       height: 36px;
     }
-    input[data-date=true], input[data-datetime=true] {
+    input[data-date=true], input[data-time=true], input[data-datetime=true] {
       display: block;
       margin-bottom: 5px;
     }
