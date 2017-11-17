@@ -109,6 +109,6 @@ module WulinMasterGridHelper
 
   def array_to_options(arr)
     options = arr.map { |o| o.is_a?(Hash) ? o : {id: o, name: o} }
-    options.inject('') { |opts, x| opts << "<option value='#{x[:id]}'>#{x[:name]}</option>" }.html_safe
+    options.inject('') { |opts, x| opts += "<option value='#{x[:id]}'>#{x[:name]}</option>" }.html_safe
   end
 end
