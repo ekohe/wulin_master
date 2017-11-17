@@ -14,7 +14,7 @@ WulinMaster.behaviors.disableToolbarInitially = $.extend({}, WulinMaster.behavio
   },
 
   handler: function() {
-    var $toolbar_items = this.grid.container.find(".toolbar_item a");
+    var $toolbar_items = this.grid.container.find(".toolbar_item a").not('.switch_action');
     $toolbar_items.addClass("toolbar_icon_disabled");
   }
 
