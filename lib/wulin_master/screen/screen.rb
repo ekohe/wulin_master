@@ -32,6 +32,8 @@ module WulinMaster
         @grid_configs ||= []
         return unless klass
         @components_pool << klass
+        options.merge!(width: '100%') unless options[:width]
+        options.merge!(height: '100%') unless options[:height]
         @grid_configs << {class: klass}.merge(options)
         options.each do |k, v|
           klass.apply_config(k, v, screen: name)
