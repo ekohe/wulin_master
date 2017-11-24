@@ -10,8 +10,9 @@ Gem::Specification.new do |s|
   s.authors     = ['Ekohe']
   s.email       = ['info@ekohe.com']
   s.homepage    = 'http://rubygems.org/gems/wulin_master'
-  s.summary     = 'WulinMaster is a framework'
-  s.description = 'WulinMaster is a framework'
+  s.summary     = 'WulinMaster is a grid plugin base on Ruby on Rails and SlickGrid.'
+  s.description = 'WulinMaster is a grid plugin base on Ruby on Rails and SlickGrid. It provides powerful generator
+  and other tools to make grids easy to build as well as flexible configurations.'
 
   s.rubyforge_project = "wulin_master"
 
