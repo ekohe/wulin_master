@@ -92,6 +92,7 @@ Metrics/BlockLength:
   Max: 35
   Exclude:
     - 'spec/**/*'
+    - '*.gemspec'
 
 Metrics/ModuleLength:
   Max: 200
