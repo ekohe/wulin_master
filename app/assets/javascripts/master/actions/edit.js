@@ -29,25 +29,16 @@ var batchUpdateByAjax = function(grid, version) {
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
-      var $editModal = Ui.createModal(grid, data);
-      var scope = $( '#' + name + '_form');
-      $editModal.modal({
-        startingTop: '5%',
-        endingTop: '5%',
+      Ui.modelModal(grid, data, {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, true);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-          setTimeout(function(){
-            fillValues(scope, grid, selectedIndexes);
-          }, 1000);
+          var scope = $( '#' + name + '_form');
+          fillValues(scope, grid, selectedIndexes);
           showFlagCheckBox(scope, ids);
-        },
-        complete: function() {
-          $editModal.remove();
         }
       });
-      $editModal.modal('open');
     });
   }
 };

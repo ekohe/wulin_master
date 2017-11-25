@@ -73,18 +73,11 @@ var Ui = {
   // Create and open dialog
   openDialog: function(grid, action, options, callback) {
     $.get(grid.path + '/' + action + grid.query, function(data){
-      var $createModal = Ui.createModal(grid, data);
-      $createModal.modal({
-        startingTop: '5%',
-        endingTop: '5%',
+      Ui.modelModal(grid, data, {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
-        },
-        complete: function() {
-          $createModal.remove();
         }
       });
-      $createModal.modal('open');
     });
   },
 
@@ -318,19 +311,37 @@ var Ui = {
     return { width: width, height: height };
   },
 
-  createModal: function(grid, data) {
-    var modalSize = this.getModalSize(grid, data);
+  baseModal: function(options) {
     var $modal = $('<div/>')
       .addClass('modal')
-      .width(modalSize.width)
-      .height(modalSize.height)
-      .css({'max-height': '90%'})
       .appendTo($('body'));
     var $modalContent = $('<div/>')
       .addClass('modal-content')
-      .append(data)
       .appendTo($modal);
+
+    $.extend(options, {
+      complete: function() {
+        $modal.remove();
+      }
+    });
+    $modal.modal(options);
+    $modal.modal('open');
+
     return $modal;
+  },
+
+  modelModal: function(grid, data, options) {
+    $.extend(options, {
+      startingTop: '5%',
+      endingTop: '5%',
+    });
+
+    var modalSize = this.getModalSize(grid, data);
+    var $modelModal = this.baseModal(options)
+      .width(modalSize.width)
+      .height(modalSize.height)
+      .css({'max-height': '90%'});
+    $modelModal.find('.modal-content').append(data);
   },
 
   createJsonViewModal: function(jsonData) {
