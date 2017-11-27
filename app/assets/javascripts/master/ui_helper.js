@@ -311,7 +311,7 @@ var Ui = {
     return { width: width, height: height };
   },
 
-  baseModal: function(options) {
+  baseModal: function(options = {}) {
     var $modal = $('<div/>')
       .addClass('modal')
       .appendTo($('body'));
@@ -341,34 +341,26 @@ var Ui = {
       .width(modalSize.width)
       .height(modalSize.height)
       .css({'max-height': '90%'});
+
     $modelModal.find('.modal-content').append(data);
   },
 
-  createJsonViewModal: function(jsonData) {
-    var $jsonViewModal = $('<div/>')
-      .addClass('modal modal-fixed-footer')
-      .css({overflow: 'hidden'})
-      .appendTo($('body'));
+  headerModal: function(title) {
+    var $headerModal = this.baseModal()
+      .addClass('modal-fixed-footer')
+      .css({overflow: 'hidden'});
     var $modalHeader = $('<div/>')
       .addClass('modal-header')
-      .append($('<span/>').text('JSON Viewer'))
+      .append($('<span/>').text(title))
       .append($('<i/>').text('close').addClass('modal-close material-icons right'))
-      .appendTo($jsonViewModal);
-    var $modalContent = $('<div/>')
-      .addClass('modal-content')
-      .css({'margin': '20px 0'})
+      .insertBefore($headerModal.find('.modal-content'));
+    return $headerModal;
+  },
+
+  createJsonViewModal: function(jsonData) {
+    this.headerModal('JSON View').find('.modal-content')
       .JSONView(jsonData)
-      .appendTo($jsonViewModal);
-
-    $modalContent.JSONView('collapse');
-
-    $jsonViewModal.modal({
-      complete: function() {
-        $jsonViewModal.remove();
-      }
-    });
-
-    return $jsonViewModal;
+      .JSONView('collapse');
   },
 
   formatData: function(grid, arrayData) {

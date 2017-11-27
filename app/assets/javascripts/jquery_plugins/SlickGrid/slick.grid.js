@@ -2796,8 +2796,7 @@ if (typeof Slick === "undefined") {
       var column = columns[activeCell];
       if (column.type == 'jsonb') {
         var jsonData = JSON.parse(data[cell.row][column.column_name]);
-        var $jsonViewModal = Ui.createJsonViewModal(jsonData);
-        $jsonViewModal.modal('open');
+        Ui.createJsonViewModal(jsonData);
         return;
       }
 

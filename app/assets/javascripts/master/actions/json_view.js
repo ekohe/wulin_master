@@ -19,8 +19,7 @@ WulinMaster.actions.JsonView = $.extend({}, WulinMaster.actions.BaseAction, {
         }
       });
 
-      var $jsonViewModal = Ui.createJsonViewModal(jsonData);
-      $jsonViewModal.modal('open');
+      Ui.createJsonViewModal(jsonData);
     } else {
       displayErrorMessage('Please select just one record.');
     }
