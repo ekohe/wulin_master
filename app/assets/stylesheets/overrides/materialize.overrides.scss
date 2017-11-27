@@ -78,11 +78,6 @@ nav {
 .modal {
   background-color: white;
   padding: 16px;
-  &.modal-fixed-footer {
-    .modal-content {
-      margin: 20px 0;
-    }
-  }
   .modal-header {
     padding: 16px;
     background-color: $main-color;
