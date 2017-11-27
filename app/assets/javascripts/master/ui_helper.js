@@ -353,7 +353,7 @@ var Ui = {
       .addClass('modal-header')
       .append($('<span/>').text(title))
       .append($('<i/>').text('close').addClass('modal-close material-icons right'))
-      .insertBefore($headerModal.find('.modal-content'));
+      .prependTo($headerModal);
     return $headerModal;
   },
 
