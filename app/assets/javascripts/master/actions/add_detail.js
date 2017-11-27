@@ -7,38 +7,15 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
 
-    var $modelModal = $('<div/>')
-      .addClass('modal modal-fixed-footer attach-modal')
-      .css({overflow: 'hidden'})
-      .appendTo($('body'));
-    var $modalHeader = $('<div/>')
-      .addClass('modal-header')
-      .append($('<span/>').text('Attach'))
-      .append($('<i/>').text('close').addClass('modal-close material-icons right'))
-      .appendTo($modelModal);
-    var $modalContent = $('<div/>')
-      .addClass('modal-content')
-      .appendTo($modelModal);
-    var $modalFooter = $('<div/>')
-      .addClass('modal-footer')
-      .append($('<div/>').addClass('attach-btn btn right disabled').text('Attach'))
-      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
-      .appendTo($modelModal);
-
-    $modalFooter.find('.attach-btn').on('click', function() {
-      self.appendNewRecordToMiddleTable(masterId, $modalContent);
-    });
-
-    $modelModal.modal({
+    var $addDetailModal = Ui.headerModal('Attach', {
       ready: function(modal, trigger) {
-        self.getModelGrid(masterId, $modalContent);
-      },
-      complete: function() {
-        $modelModal.remove();
+        self.getModelGrid(masterId, modal.find('.modal-content'));
       }
-    });
+    }).addClass('attach-modal');
 
-    $modelModal.modal('open');
+    $addDetailModal.find('.confirm-btn').text('Attach').on('click', function() {
+      self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
+    });
   },
 
   getModelGrid: function(masterId, modalContentDom) {

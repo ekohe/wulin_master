@@ -330,8 +330,8 @@ var Ui = {
     return $modal;
   },
 
-  headerModal: function(title) {
-    var $headerModal = this.baseModal()
+  headerModal: function(title, options = {}) {
+    var $headerModal = this.baseModal(options)
       .addClass('modal-fixed-footer')
       .css({overflow: 'hidden'});
     var $modalHeader = $('<div/>')
@@ -339,6 +339,12 @@ var Ui = {
       .append($('<span/>').text(title))
       .append($('<i/>').text('close').addClass('modal-close material-icons right'))
       .prependTo($headerModal);
+    var $modalFooter = $('<div/>')
+      .addClass('modal-footer')
+      .append($('<div/>').addClass('confirm-btn btn right disabled').text('Confirm'))
+      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
+      .appendTo($headerModal);
+
     return $headerModal;
   },
 
