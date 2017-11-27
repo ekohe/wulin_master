@@ -73,7 +73,7 @@ var Ui = {
   // Create and open dialog
   openDialog: function(grid, action, options, callback) {
     $.get(grid.path + '/' + action + grid.query, function(data){
-      Ui.modelModal(grid, data, {
+      Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
         }
@@ -330,7 +330,19 @@ var Ui = {
     return $modal;
   },
 
-  modelModal: function(grid, data, options) {
+  headerModal: function(title) {
+    var $headerModal = this.baseModal()
+      .addClass('modal-fixed-footer')
+      .css({overflow: 'hidden'});
+    var $modalHeader = $('<div/>')
+      .addClass('modal-header')
+      .append($('<span/>').text(title))
+      .append($('<i/>').text('close').addClass('modal-close material-icons right'))
+      .prependTo($headerModal);
+    return $headerModal;
+  },
+
+  createModelModal: function(grid, data, options) {
     $.extend(options, {
       startingTop: '5%',
       endingTop: '5%',
@@ -343,18 +355,6 @@ var Ui = {
       .css({'max-height': '90%'});
 
     $modelModal.find('.modal-content').append(data);
-  },
-
-  headerModal: function(title) {
-    var $headerModal = this.baseModal()
-      .addClass('modal-fixed-footer')
-      .css({overflow: 'hidden'});
-    var $modalHeader = $('<div/>')
-      .addClass('modal-header')
-      .append($('<span/>').text(title))
-      .append($('<i/>').text('close').addClass('modal-close material-icons right'))
-      .prependTo($headerModal);
-    return $headerModal;
   },
 
   createJsonViewModal: function(jsonData) {

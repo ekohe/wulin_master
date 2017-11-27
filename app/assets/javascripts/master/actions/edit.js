@@ -29,7 +29,7 @@ var batchUpdateByAjax = function(grid, version) {
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
-      Ui.modelModal(grid, data, {
+      Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, true);
           checkTheBox(name);
