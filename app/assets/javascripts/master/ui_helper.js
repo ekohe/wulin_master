@@ -367,7 +367,7 @@ var Ui = {
     var $jsonViewModal = this.headerModal('JSON View');
     $jsonViewModal.find('.modal-footer').hide();
     $jsonViewModal.find('.modal-content')
-      .css('margin-top', '20px')
+      .css('margin-top', '24px')
       .JSONView(jsonData)
       .JSONView('collapse');
   },

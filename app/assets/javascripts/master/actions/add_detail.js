@@ -13,6 +13,8 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       }
     }).addClass('attach-modal');
 
+    $addDetailModal.find('.modal-content').css('padding', '0');
+
     $addDetailModal.find('.confirm-btn').text('Attach').on('click', function() {
       self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
     });
