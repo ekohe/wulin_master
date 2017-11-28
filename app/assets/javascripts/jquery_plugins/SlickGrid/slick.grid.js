@@ -1443,12 +1443,12 @@ if (typeof Slick === "undefined") {
 
         selectionInfo.append(clearLink);
         $gridContainer.find('.toolbar-select').removeClass('hide');
-        $gridContainer.closest('.attach-modal').find('.confirm-btn').removeClass('disabled');
+        $gridContainer.closest('.attach-modal').find('.attach-btn').removeClass('disabled');
         $gridHeader.addClass('has-selected-rows');
       } else {
         $gridHeader.removeClass('has-selected-rows');
         $gridContainer.find('.selection-info').text('');
-        $gridContainer.closest('.attach-modal').find('.confirm-btn').addClass('disabled');
+        $gridContainer.closest('.attach-modal').find('.attach-btn').addClass('disabled');
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
       }

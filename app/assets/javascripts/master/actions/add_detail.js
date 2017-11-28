@@ -14,7 +14,13 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       }
     }).addClass('attach-modal');
 
-    $addDetailModal.find('.confirm-btn').text('Attach').on('click', function() {
+    var $modalFooter = $('<div/>')
+      .addClass('modal-footer')
+      .append($('<div/>').addClass('attach-btn btn right disabled').text('Attach'))
+      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
+      .appendTo($addDetailModal);
+
+    $modalFooter.find('.attach-btn').on('click', function() {
       self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
     });
   },
