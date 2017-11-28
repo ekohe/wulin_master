@@ -311,7 +311,7 @@ var Ui = {
     return { width: width, height: height };
   },
 
-  baseModal: function(options = {}) {
+  baseModal: function(options) {
     var $modal = $('<div/>')
       .addClass('modal')
       .appendTo($('body'));
@@ -330,7 +330,8 @@ var Ui = {
     return $modal;
   },
 
-  headerModal: function(title, options = {}) {
+  headerModal: function(title, options) {
+    options = options || {};
     var $headerModal = this.baseModal(options)
       .addClass('modal-fixed-footer')
       .css({overflow: 'hidden'});
