@@ -10,10 +10,9 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var $addDetailModal = Ui.headerModal('Attach', {
       ready: function(modal, trigger) {
         self.getModelGrid(masterId, modal.find('.modal-content'));
+        modal.find('.modal-content').css('padding', '0');
       }
     }).addClass('attach-modal');
-
-    $addDetailModal.find('.modal-content').css('padding', '0');
 
     $addDetailModal.find('.confirm-btn').text('Attach').on('click', function() {
       self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
