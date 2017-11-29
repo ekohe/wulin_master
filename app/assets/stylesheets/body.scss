@@ -3,6 +3,8 @@
 body {
   background: $body-bg-color;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
 }
 
