@@ -160,9 +160,7 @@
           from = 0;
 
         fromPage = Math.floor(from / loadingSize);
-
         toPage = Math.floor(to / loadingSize);
-
 
         // Increment fromPage if the page at fromPage is already loaded until we find an area that hasn't been loaded yet
         while (data[fromPage * loadingSize] !== undefined && fromPage < toPage)
@@ -172,8 +170,19 @@
         while (data[toPage * loadingSize] !== undefined && fromPage < toPage)
           toPage--;
 
-        // if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize] !== undefined)) {
-        if (fromPage > toPage || ((fromPage == toPage) && data[fromPage*loadingSize])) {
+        if (fromPage > toPage) {
+          return [0,0];
+        }
+
+        var alreadyLoaded = true;
+
+        for (var i=fromPage; i<=toPage; i++) {
+          if (typeof(data[i*loadingSize]) == 'undefined') {
+            alreadyLoaded = false;
+          }
+        }
+
+        if (alreadyLoaded) {
           return [0,0];
         }
 
@@ -196,7 +205,7 @@
       }
     }
 
-    function ensureData(from,to) {
+    function ensureData(from, to) {
       var urlData = generateUrl(from, to);
 
       // Nothing to load, just return.
