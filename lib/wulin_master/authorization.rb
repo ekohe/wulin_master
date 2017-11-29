@@ -3,7 +3,7 @@
 module WulinMaster
   module Authorization
     extend ActiveSupport::Concern
-    
+
     # Called as before_action
     def require_authorization
       return true unless respond_to?(:current_user)
