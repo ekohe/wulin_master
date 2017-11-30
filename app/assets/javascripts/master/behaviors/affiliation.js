@@ -54,7 +54,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
         detailGrid.loader.addFilterWithoutRefresh(association_key, masterIds[0], this.operator);
       }
 
-      var default_color = 'blue-grey';
+      var default_color = 'teal';
       // Set master grid's style for selection
       var selectionColor = 'grid-selection-color-' + (this.master_grid.options['selectionColor'] || default_color);
       this.master_grid.container.addClass(selectionColor);

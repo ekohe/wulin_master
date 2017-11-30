@@ -5,7 +5,7 @@ $wulin-colors: (
   'red': color('red', 'base'),
   'pink': color('pink', 'base'),
   'purple': color('purple', 'base'),
-  'deep-purple': color('red', 'base'),
+  'deep-purple': color('deep-purple', 'base'),
   'indigo': color('indigo', 'base'),
   'blue': color('blue', 'base'),
   'light-blue': color('light-blue', 'base'),
@@ -29,7 +29,7 @@ $wulin-colors: (
   .#{'grid-color-' + $name} {
     .grid-header {
       &.has-selected-rows {
-        background: lighten(rgba($color, .2), 10%) !important;
+        background: lighten(rgba($color, .15), 20%) !important;
       }
       span.detail-grid-title {
         color: $color;
@@ -49,7 +49,7 @@ $wulin-colors: (
     }
     .slick-cell {
       &.selected {
-        background: lighten(rgba($color, .2), 10%) !important;
+        background: lighten(rgba($color, .5), 10%) !important;
       }
       &.active {
         border: $color solid 1px;
@@ -88,6 +88,7 @@ $wulin-colors: (
       }
     }
     .slick-row.odd {
+      background: rgba(245, 245, 245, 0.2);
       .slick-cell {
         background: rgba($color, .2);
       }
@@ -101,7 +102,7 @@ $wulin-colors: (
   .#{'grid-selection-color-' + $name} {
     .slick-cell {
       &.selected {
-        background: lighten(rgba($color, .2), 10%);
+        background: lighten(rgba($color, .5), 10%);
       }
       &.active {
         border: $color solid 1px;
