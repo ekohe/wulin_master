@@ -192,14 +192,24 @@ module WulinMaster
       # Render ruby objects
       t = Time.current
       @object_array = grid.arraify(@objects)
-      query_without_filter = @query == grid.model ? @query : @query.unscope(:where, :order).limit(nil).offset(nil)
       json = {offset: @offset,
               total: @count,
-              totalNoFilter: smart_query_count(query_without_filter),
+              totalNoFilter: count_without_filter,
               count: @per_page,
               rows: @object_array}.to_json
       Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
       json
+    end
+
+    def count_without_filter
+      return @count unless params[:filters]
+      query_without_filter = grid.model
+      params[:filters].each do |f|
+        if grid.columns.find { |c| c.foreign_key == f[:column] }
+          query_without_filter = query_without_filter.where(f[:column] => f[:value])
+        end
+      end
+      smart_query_count(query_without_filter)
     end
 
     def get_attributes(attrs, type, object = nil)
