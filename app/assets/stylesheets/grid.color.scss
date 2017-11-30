@@ -63,10 +63,10 @@ $wulin-colors: (
 @mixin grid_bg_color($name, $color) {
   .#{'grid-bg-color-' + $name} {
     .grid-header {
-      background: rgba($color, .1);
+      background: lighten(rgba($color, .1), 10%);
     }
     .slick-header {
-      background: rgba($color, .1);
+      background: lighten(rgba($color, .1), 10%);
       .slick-header-column {
         background: none;
         &.input-field {
@@ -80,17 +80,17 @@ $wulin-colors: (
       }
     }
     .slick-pager {
-      background: rgba($color, .1);
+      background: lighten(rgba($color, .1), 10%);
     }
     .slick-row.even {
       .slick-cell {
-        background: rgba($color, .1);
+        background: lighten(rgba($color, .1), 10%);
       }
     }
     .slick-row.odd {
-      background: rgba(245, 245, 245, 0.2);
+      background: rgba(245, 245, 245, 0.1);
       .slick-cell {
-        background: rgba($color, .2);
+        background: lighten(rgba($color, .2), 5%);
       }
     }
   }
