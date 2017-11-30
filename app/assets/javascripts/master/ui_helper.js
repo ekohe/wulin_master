@@ -361,10 +361,7 @@ var Ui = {
 
   createJsonViewModal: function(jsonData) {
     var $jsonViewModal = this.headerModal('JSON View');
-    $jsonViewModal.find('.modal-content')
-      .css('margin-top', '24px')
-      .JSONView(jsonData)
-      .JSONView('collapse');
+    $jsonViewModal.find('.modal-content').JSONView(jsonData, { collapsed: true });
   },
 
   formatData: function(grid, arrayData) {
