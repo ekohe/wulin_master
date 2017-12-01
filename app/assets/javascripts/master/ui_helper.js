@@ -238,7 +238,7 @@ var Ui = {
     setTimeout(function(){
       var afterSetupChosen = dom.data('afterSetupChosen');
       if (dom.hasClass("chzn-done")) {
-        dom.trigger("liszt:updated");
+        dom.trigger("chosen:updated");
       } else {
         dom.chosen();
       }

@@ -102,7 +102,7 @@ var loadValue = function(scope, data) {
 
       inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
       if (inputBox.hasClass("chzn-done")) {
-        inputBox.trigger("liszt:updated");
+        inputBox.trigger("chosen:updated");
       } else {
         inputBox.chosen();
       }
@@ -143,7 +143,7 @@ var distinctInput = function(inputBox) {
                   $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
                   $select.val(optionText);
                   $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
-                  $select.trigger('liszt:updated');
+                  $select.trigger('chosen:updated');
                   $dialog.dialog("destroy");
                   $dialog.remove();
               } else {
@@ -190,7 +190,7 @@ var checkTheBox = function(name) {
   scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
     if ($.isEmptyObject($(this).attr('checked'))) {
       $('input[data-target="' + $(this).attr('data-target') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
-      $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("liszt:updated");
+      $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("chosen:updated");
     }
   });
 };

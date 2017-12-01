@@ -70,9 +70,9 @@
                     var current_select_id = "#{model_name}_#{column_name}";
                     var current_select = $("select#" + current_select_id);
                     var key = $(this).val();
-                    current_select.find("option").hide().trigger("liszt:updated");
-                    current_select.val("").trigger("liszt:updated");
-                    current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
+                    current_select.find("option").hide().trigger("chosen:updated");
+                    current_select.val("").trigger("chosen:updated");
+                    current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("chosen:updated");
                   });
                 });
 
