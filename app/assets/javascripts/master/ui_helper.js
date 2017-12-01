@@ -347,7 +347,7 @@ var Ui = {
   createModelModal: function(grid, data, options) {
     $.extend(options, {
       startingTop: '5%',
-      endingTop: '5%',
+      endingTop: '5%'
     });
 
     var modalSize = this.getModalSize(grid, data);
