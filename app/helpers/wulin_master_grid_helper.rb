@@ -22,10 +22,10 @@ module WulinMasterGridHelper
       raw_options = choices.map do |k, v|
         v.inject("<option value=''></option>") do |str, e|
           str += if e.is_a?(Array)
-                   "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
-                 else
-                   "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
-                 end
+            "<option value='#{e[0]}' data-key='#{k}' style='display:none'>#{e[1]}</option>"
+          else
+            "<option value='#{e}' data-key='#{k}' style='display:none'>#{e}</option>"
+          end
         end
       end
       raw_options.inject("") { |options, x| options += x }.html_safe
