@@ -70,9 +70,9 @@
   -#                     var current_select_id = "#{model_name}_#{column_name}";
   -#                     var current_select = $("select#" + current_select_id);
   -#                     var key = $(this).val();
-  -#                     current_select.find("option").hide().trigger("liszt:updated");
-  -#                     current_select.val("").trigger("liszt:updated");
-  -#                     current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("liszt:updated");
+  -#                     current_select.find("option").hide().trigger("chosen:updated");
+  -#                     current_select.val("").trigger("chosen:updated");
+  -#                     current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("chosen:updated");
   -#                   });
   -#                 });
   -#
@@ -142,7 +142,7 @@
   -#       var $flagInput = $('##{grid.name}_form [data-target="' + $(this).data('target') + '"].target_flag');
   -#       $flagInput.attr('checked', 'checked');
   -#       $input.val('');
-  -#       if ($input.is('select')) $input.trigger("liszt:updated");
+  -#       if ($input.is('select')) $input.trigger("chosen:updated");
   -#       if ($input.is(':checkbox')) {
   -#         $input.removeAttr('checked');
   -#         $("##{grid.name}_form [name='" + $input.attr('name') + "']:hidden").val('');

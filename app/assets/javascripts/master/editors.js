@@ -515,7 +515,7 @@
               if (optionText) {
                 $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
                 _self.select.val(optionText);
-                _self.select.trigger('liszt:updated');
+                _self.select.trigger('chosen:updated');
                 $dialog.dialog("destroy");
                 $dialog.remove();
               } else {
