@@ -1,0 +1,116 @@
+.lazy-json-viewer {
+    font-family: Consolas, 'Lucida Console', monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+}
+
+.lazy-json-viewer .value-summary,
+.lazy-json-viewer .collapsed > div > .content {
+    display: none;
+}
+
+.lazy-json-viewer .collapsed > div > .value-summary {
+    display: inline-block;
+}
+
+.lazy-json-viewer .collapsed > .multiline {
+    max-height: 2ex;
+    overflow: hidden;
+    display: inline-block;
+    position: relative;
+    padding-right: 3em;
+    margin-left: 0;
+}
+
+.lazy-json-viewer .collapsed > .multiline::after {
+    content: "...`";
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+
+.lazy-json-viewer .property-name {
+    float: left;
+    clear: left;
+    margin-right: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.lazy-json-viewer .array-value,
+.lazy-json-viewer .object-value {
+    position: relative;
+}
+
+.lazy-json-viewer .array-value > ::before {
+    content: "[";
+}
+
+.lazy-json-viewer .array-value > ::after {
+    content: "]";
+}
+
+.lazy-json-viewer .object-value > ::before {
+    content: "{";
+}
+
+.lazy-json-viewer .object-value > ::after {
+    content: "}";
+}
+
+.lazy-json-viewer .string-value::before,
+.lazy-json-viewer .string-value::after {
+    content: '"';
+}
+
+.lazy-json-viewer .containsQuote::before,
+.lazy-json-viewer .containsQuote::after,
+.lazy-json-viewer .multiline::before,
+.lazy-json-viewer .multiline::after {
+    content: "`";
+}
+
+.lazy-json-viewer .property {
+    overflow: hidden;
+    position: relative;
+    padding-left: 2em;
+}
+
+.lazy-json-viewer .json-expander {
+}
+
+.lazy-json-viewer .json-expander::before {
+    content: "-";
+    position: absolute;
+    left: -10px;
+    top: 0;
+}
+
+.lazy-json-viewer .collapsed > .json-expander::before {
+    content: "+";
+}
+
+.lazy-json-viewer .content {
+    padding-left: 0em;
+}
+
+.lazy-json-viewer .string-value {
+    color: #a31515;
+}
+
+.lazy-json-viewer .number-value {
+    color: #0000ff;
+}
+
+.lazy-json-viewer .null-value {
+    color: #aaa;
+}
+
+.lazy-json-viewer .boolean-value {
+    color: #ae00b5;
+}
+
+.lazy-json-viewer .multiline {
+    margin-left: 16px;
+}
