@@ -344,6 +344,15 @@ var Ui = {
     return $headerModal;
   },
 
+  modalFooter: function(btnName) {
+    var $modalFooter = $('<div/>')
+      .addClass('modal-footer')
+      .append($('<div/>').addClass('confirm-btn btn right').text(btnName))
+      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'));
+
+    return $modalFooter;
+  },
+
   createModelModal: function(grid, data, options) {
     $.extend(options, {
       startingTop: '5%',
