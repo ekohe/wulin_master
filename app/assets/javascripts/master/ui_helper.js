@@ -361,7 +361,6 @@ var Ui = {
 
   createJsonViewModal: function(jsonData) {
     var $jsonViewModal = this.headerModal('JSON View');
-    // $jsonViewModal.find('.modal-content').JSONView(jsonData, { collapsed: true });
     $jsonViewModal.find('.modal-content').jsonViewer(jsonData);
   },
 
