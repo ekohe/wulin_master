@@ -12,13 +12,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         self.getModelGrid(masterId, modal.find('.modal-content'));
         modal.find('.modal-content').css('padding', '0');
       }
-    }).addClass('attach-modal');
-
-    // var $modalFooter = $('<div/>')
-    //   .addClass('modal-footer')
-    //   .append($('<div/>').addClass('attach-btn btn right disabled').text('Attach'))
-    //   .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'))
-    //   .appendTo($addDetailModal);
+    });
 
     var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);
     $modalFooter.find('.confirm-btn').addClass('disabled').on('click', function() {
