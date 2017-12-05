@@ -231,6 +231,10 @@
         }
       });
       grid.setColumns(visibleColumns);
+
+      // Ekohe Add: Reset filters
+      grid.filterPanel.setupEventHander();
+      grid.filterPanel.generateFilters();
     }
 
     function getAllColumns() {

@@ -208,6 +208,7 @@
         // Methods
         'trigger':                            trigger,          // Ekohe Add
         'setCurrentFilter':                   setCurrentFilter, // Ekohe Add
+        'setupEventHander':                   setupEventHander, // Ekohe Add
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
         "updateCurrentFilters":               updateCurrentFilters
