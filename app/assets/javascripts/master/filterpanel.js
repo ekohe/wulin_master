@@ -148,7 +148,7 @@
         //   inputWidth += 2;
         // }
 
-        inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
+        inputHtml += '<input type="text" id="' + field + '" style="width:' + inputWidth + 'px;border-width:1px;padding:1px;height:20px;border-bottom-color:#DDD;" value="' + value + '" class="' + cssClass + '"';
 
         if (this.filterable === false) {
           inputHtml += ' disabled="disabled"';
