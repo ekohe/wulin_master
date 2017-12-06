@@ -353,6 +353,17 @@ var Ui = {
     return $modalFooter;
   },
 
+  pdfDownloadFooter: function() {
+    var $pdfDownloadFooter = Ui.modalFooter('Download PDF');
+    $pdfDownloadFooter.find('.confirm-btn').on('click', function() {
+      var url = $("#pdf_download_btn").attr("href");
+      window.open(url);
+      $pdfDownloadFooter.parent().modal('close');
+    });
+
+    return $pdfDownloadFooter;
+  },
+
   createModelModal: function(grid, data, options) {
     $.extend(options, {
       startingTop: '5%',
