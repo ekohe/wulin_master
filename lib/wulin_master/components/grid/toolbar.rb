@@ -12,6 +12,7 @@ module WulinMaster
       create: 'add_box',
       add_detail: 'add_box',
       export: 'file_download',
+      show_all: 'format_align_justify',
       json_view: 'pageview',
       send_mail: 'mail',
       edit: 'mode_edit',

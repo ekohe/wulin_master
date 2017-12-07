@@ -24,7 +24,7 @@ module WulinMaster
 
     def global?
       options[:global] ||
-        (!options[:name].nil? && %i[create export add_detail switch].include?(options[:name].to_sym))
+        (!options[:name].nil? && %i[create export add_detail switch show_all].include?(options[:name].to_sym))
     end
 
     def anchor_tag_options
