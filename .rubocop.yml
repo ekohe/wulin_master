@@ -95,7 +95,7 @@ Metrics/BlockLength:
     - '*.gemspec'
 
 Metrics/ModuleLength:
-  Max: 200
+  Max: 250
 
 Metrics/AbcSize:
   Max: 50
