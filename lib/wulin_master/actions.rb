@@ -204,8 +204,8 @@ module WulinMaster
     def count_without_filter
       return @count unless params[:filters]
 
-      query_without_filter = @query.except(:select).select("#{grid.model.table_name}.id")
-                                   .unscope(:order).limit(nil).offset(nil)
+      query_without_filter = @query.except(:select).select("#{grid.model.table_name}.id").
+                             unscope(:order).limit(nil).offset(nil)
 
       unless params[:filters].find { |f| f[:operator] == 'text_search' }
         query_without_filter = query_without_filter.unscope(:where)

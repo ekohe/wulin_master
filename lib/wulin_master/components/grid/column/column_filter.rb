@@ -27,10 +27,10 @@ module WulinMaster
     private
 
     def apply_text_search_filter(value)
-      model.select("#{model.table_name}.*, ts_rank_cd(to_tsvector(#{self.name}), query) AS rank")
-           .from("#{model.table_name}, to_tsquery('#{value}') query")
-           .where("query @@ to_tsvector(#{self.name})")
-           .order("rank DESC")
+      model.select("#{model.table_name}.*, ts_rank_cd(to_tsvector(#{name}), query) AS rank").
+        from("#{model.table_name}, to_tsquery('#{value}') query").
+        where("query @@ to_tsvector(#{name})").
+        order("rank DESC")
     end
 
     def filter_by_null(query, _filtering_value, filtering_operator, adapter)
@@ -89,7 +89,7 @@ module WulinMaster
     end
 
     def apply_similar_filter(query, value)
-      return query.where(["UPPER(cast((#{self.name.to_s}) AS text)) SIMILAR TO UPPER(?)", '%(' + value + ')%'])
+      query.where(["UPPER(cast((#{name}) AS text)) SIMILAR TO UPPER(?)", '%(' + value + ')%'])
     end
 
     def apply_string_filter(query, operator, value)
