@@ -27,8 +27,10 @@ module WulinMaster
     private
 
     def apply_text_search_filter(value)
+      tsvector = ActiveRecord::Base.connection.execute("SELECT to_tsvector('" + value + "')").to_a[0]['to_tsvector']
+      tsquery = tsvector.split(/\'/).select { |w| /^[^:]/.match?(w) }.join('|')
       model.select("#{model.table_name}.*, ts_rank_cd(to_tsvector(#{name}), query) AS rank").
-        from("#{model.table_name}, to_tsquery('#{value}') query").
+        from("#{model.table_name}, to_tsquery('#{tsquery}') query").
         where("query @@ to_tsvector(#{name})").
         order("rank DESC")
     end

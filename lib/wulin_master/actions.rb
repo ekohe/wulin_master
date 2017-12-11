@@ -204,9 +204,7 @@ module WulinMaster
     def count_without_filter
       return @count unless params[:filters]
 
-      query_without_filter = @query.except(:select).select("#{grid.model.table_name}.id").
-                             unscope(:order).limit(nil).offset(nil)
-
+      query_without_filter = @query.limit(nil).offset(nil)
       unless params[:filters].find { |f| f[:operator] == 'text_search' }
         query_without_filter = query_without_filter.unscope(:where)
       end
@@ -253,16 +251,21 @@ module WulinMaster
 
     def smart_query_count(query)
       method = query == grid.model ? 'count' : 'size'
+      query = query.except(:select).select("#{grid.model.table_name}.id").unscope(:order)
+
       return query.send(method) if grid.options[:estCount].blank?
+
       if ActiveRecord::Base.connection.instance_values['config'][:adapter] != 'postgresql'
         Rails.logger.warn 'Estimate count ignored because not using PostgreSQL'
         return query.send(method)
       end
+
       sql = if query == grid.model
         "SELECT reltuples AS count_estimate FROM pg_class WHERE relname = '" + query.table_name + "'"
       else
         "SELECT count_estimate('" + query.to_sql.gsub("'", "''") + "')"
       end
+
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       return query.count if est_count < grid.options[:estCount][:threshold].to_i
       est_count
