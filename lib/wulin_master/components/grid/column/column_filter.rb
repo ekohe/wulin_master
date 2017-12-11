@@ -13,6 +13,9 @@ module WulinMaster
       # Search by NULL
       return filter_by_null(query, filtering_value, filtering_operator, adapter) if filtering_value.to_s.casecmp('null').zero?
 
+      # Full text search (PostgreSQL)
+      return apply_text_search_filter(filtering_value) if filtering_operator == 'text_search'
+
       # Although RoleUser `belongs_to` user, User (in WulinOAuth) doesn't provide
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
@@ -22,6 +25,13 @@ module WulinMaster
     end
 
     private
+
+    def apply_text_search_filter(value)
+      model.select("#{model.table_name}.*, ts_rank_cd(to_tsvector(#{self.name}), query) AS rank")
+           .from("#{model.table_name}, to_tsquery('#{value}') query")
+           .where("query @@ to_tsvector(#{self.name})")
+           .order("rank DESC")
+    end
 
     def filter_by_null(query, _filtering_value, filtering_operator, adapter)
       operator = case filtering_operator
@@ -76,6 +86,10 @@ module WulinMaster
         operator = operator == 'include' ? 'IN' : 'NOT IN'
         return query.where("#{model.table_name}.id #{operator} (?)", ids)
       end
+    end
+
+    def apply_similar_filter(query, value)
+      return query.where(["UPPER(cast((#{self.name.to_s}) AS text)) SIMILAR TO UPPER(?)", '%(' + value + ')%'])
     end
 
     def apply_string_filter(query, operator, value)
