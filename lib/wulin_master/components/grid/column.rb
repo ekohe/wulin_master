@@ -65,9 +65,7 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       # Disbale editting, sorting, filtering for colunms calculated by model method
-      unless table_column? || related_column_filterable?
-        %w[editable sortable filterable].each { |k| @options[k] = false }
-      end
+      %w[editable sortable filterable].each { |k| @options[k] = false } unless table_column? || related_column_filterable?
       new_options = @options.dup
       h = {
         id: full_name,

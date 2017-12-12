@@ -85,9 +85,7 @@ module WulinMaster
         association_attributes = association_attributes.values.map { |x| x['id'] }.uniq.delete_if(&:blank?)
       end
 
-      if association_attributes.is_a?(ActionController::Parameters)
-        association_attributes = association_attributes['id'] || 'null'
-      end
+      association_attributes = association_attributes['id'] || 'null' if association_attributes.is_a?(ActionController::Parameters)
 
       new_attrs[field_sym] = if (association_attributes == 'null') || association_attributes.all? { |value| value == 'null' }
         []
@@ -101,9 +99,7 @@ module WulinMaster
         association_attributes = association_attributes.values.map { |x| x['id'] }.uniq.delete_if(&:blank?)
       end
 
-      if association_attributes.is_a?(ActionController::Parameters)
-        association_attributes = association_attributes['id'] || 'null'
-      end
+      association_attributes = association_attributes['id'] || 'null' if association_attributes.is_a?(ActionController::Parameters)
 
       new_attrs[field_sym] = if association_attributes == 'null'
         nil

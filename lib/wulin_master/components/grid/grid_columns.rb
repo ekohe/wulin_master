@@ -25,9 +25,7 @@ module WulinMaster
 
         r_columns = r_columns.map(&:to_s)
         self.columns_pool.each do |column|
-          if r_columns.include? column.name.to_s
-            column.options[:except] = scope[:screen]
-          end
+          column.options[:except] = scope[:screen] if r_columns.include? column.name.to_s
         end
       end
 

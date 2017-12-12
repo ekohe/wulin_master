@@ -81,12 +81,22 @@ Lint/UselessAssignment:
 Style/NumericLiterals:
   Enabled: false
 
+Style/FormatStringToken:
+  Enabled: false
+
+Style/MixinUsage:
+  Exclude:
+    - 'spec/wulin_app/bin/*'
+
 Rails:
   Enabled: true
 
 Rails/HttpPositionalArguments:
   Exclude:
     - 'spec/**/*'
+
+Rails/LexicallyScopedActionFilter:
+  Enabled: false
 
 Metrics/BlockLength:
   Max: 35

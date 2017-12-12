@@ -205,9 +205,7 @@ module WulinMaster
       return @count unless params[:filters]
 
       query_without_filter = @query.limit(nil).offset(nil)
-      unless params[:filters].find { |f| f[:operator] == 'text_search' }
-        query_without_filter = query_without_filter.unscope(:where)
-      end
+      query_without_filter = query_without_filter.unscope(:where) unless params[:filters].find { |f| f[:operator] == 'text_search' }
 
       params[:filters].each do |f|
         if grid.columns.find { |c| c.foreign_key == f[:column] }
