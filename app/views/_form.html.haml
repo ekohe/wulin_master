@@ -76,6 +76,10 @@
                   });
                 });
 
+          - elsif column.options[:file]
+            = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
+          - elsif column.options[:password]
+            = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
           - elsif (column.sql_type.to_s == 'string')
             = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
 
@@ -99,10 +103,6 @@
               carbonCopyNewEditor = TextEditorForForm.bind({})
               carbonCopyNewEditor(args);
 
-          - elsif column.options[:file]
-            = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
-          - elsif column.options[:password]
-            = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
           - else
             - if column.sql_type.to_s.downcase == 'boolean'
               = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field
