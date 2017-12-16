@@ -1,6 +1,7 @@
 @import 'materialize/components/color'
-$primary-color: color("blue", "lighten-2") !default
-$secondary-color: color("blue", "base") !default
+$color-theme: <%= WulinMaster.config.color_theme %>
+$primary-color: color(#{$color-theme}, 'lighten-2') !default
+$secondary-color: color(#{$color-theme}, 'base') !default
 @import 'materialize'
 @import 'material_icons'
 
