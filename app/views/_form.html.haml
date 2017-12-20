@@ -24,6 +24,8 @@
           field = column.options[:through] || column.name
         .field{:name => column_name}
           %label{:for => "#{model_name}_#{column_name}"}= label
+          - unless is_new
+            %input.target_flag{"data-target" => "#{column_name}_target_flag", :type => "checkbox"}
           - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
             = form.select column_name,                                      |
               select_options(column),                                       |
@@ -125,3 +127,8 @@
   $('input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
   $('input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
   $('input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);
+
+  $('##{grid.name}_form select').off('change').on('change', function(){
+    var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
+    if (flag.size() > 0) flag.prop('checked', true);
+  });
