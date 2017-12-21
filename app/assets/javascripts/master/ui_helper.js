@@ -107,7 +107,7 @@ var Ui = {
     $('#' + name + '_form input[data-time]').timepicker({});
   },
 
-  setupForm: function(grid, monitor) {
+  setupForm: function(grid, monitor, selectedIndexes) {
     var remotePath = [];
     var choicesColumn = [];
     var distinctColumn = [];
@@ -170,9 +170,8 @@ var Ui = {
                 target.append("<option value='" + value + "'>" + value + "</option>");
               }
             });
-            Ui.setupChosen(target, monitor);
+            Ui.setupChosen(grid, scope, selectedIndexes);
           });
-
         }
       });
     }
@@ -199,8 +198,8 @@ var Ui = {
               }
             });
             target.append("<option>Add new Option</option>");
+            Ui.setupChosen(grid, scope, selectedIndexes);
           });
-
         }
       });
     }
@@ -213,10 +212,10 @@ var Ui = {
         var target = $("select[data-field='" + field + "']", scope);
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
-            $.each(n[1], function(index, value) {
-              target.append("<option value='" + value + "'>" + value + "</option>");
-            });
-            Ui.setupChosen(target, monitor);
+          $.each(n[1], function(index, value) {
+            target.append("<option value='" + value + "'>" + value + "</option>");
+          });
+          Ui.setupChosen(grid, scope, selectedIndexes);
         }
       });
     }
@@ -229,24 +228,12 @@ var Ui = {
     // Layout
     $('.ui-dialog-titlebar').hide();
     $('.ui-resizable-handle').hide();
-    // $('.chzn-container').width('100%');
-    // $('.chzn-drop').width('100%');
-    // $('.chzn-search input').width('96%');
   },
 
-  setupChosen: function(dom, monitor) {
-    setTimeout(function(){
-      var afterSetupChosen = dom.data('afterSetupChosen');
-      if (dom.hasClass("chzn-done")) {
-        dom.trigger("chosen:updated");
-      } else {
-        dom.chosen();
-      }
-
-      if( afterSetupChosen ) {
-        afterSetupChosen();
-      }
-    }, 100);
+  setupChosen: function(grid, scope, selectedIndexes) {
+    if(typeof(selectedIndexes) != "undefined"){
+      fillValues(scope, grid, selectedIndexes);
+    }
   },
 
   // Close Modal

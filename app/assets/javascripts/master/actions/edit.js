@@ -14,9 +14,11 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
 
 
 var batchUpdateByAjax = function(grid, version) {
-  var ids, name, width, height, selectedIndexes, url;
+  var ids, name, scope, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
   name = grid.name;
+  scope = $( '#' + name + '_form');
+
   if (!selectedIndexes || selectedIndexes.length === 0) {
     displayErrorMessage('Please select a record');
   } else {
@@ -31,11 +33,9 @@ var batchUpdateByAjax = function(grid, version) {
     $.get(url, function(data){
       Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
-          Ui.setupForm(grid, true);
+          Ui.setupForm(grid, true, selectedIndexes);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-          var scope = $( '#' + name + '_form');
-          fillValues(scope, grid, selectedIndexes);
           showFlagCheckBox(scope, ids);
         }
       });
@@ -101,11 +101,7 @@ var loadValue = function(scope, data) {
       }
 
       inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
-      if (inputBox.hasClass("chzn-done")) {
-        inputBox.trigger("chosen:updated");
-      } else {
-        inputBox.chosen();
-      }
+      inputBox.trigger("chosen:updated");
       distinctInput(inputBox);
     }
   }
