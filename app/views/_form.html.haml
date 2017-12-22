@@ -25,10 +25,11 @@
           field = column.options[:through] || column.name
           source = column.editor_source || column.source
         .field-line
-          .switch.target_flag_container
-            %label
-              %input.target_flag{type: 'checkbox', "data-target" => "#{column_name}_target_flag"}
-              %span.lever
+          - unless is_new
+            .switch.target_flag_container
+              %label
+                %input.target_flag{type: 'checkbox', "data-target" => "#{column_name}_target_flag"}
+                %span.lever
           .field{:name => column_name}
             - unless column.sql_type.to_s.downcase == 'boolean'
               %label{:for => "#{model_name}_#{column_name}"}= label
@@ -125,22 +126,3 @@
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
       - else
         %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
-
-:javascript
-  $('##{grid.name}_form select[data-required="true"]').chosen();
-  $('##{grid.name}_form select[data-required="false"]').chosen({allow_single_deselect: true});
-  $('##{grid.name}_form select').off('change').on('change', function(){
-    var flag = $('##{grid.name}_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
-    if (flag.size() > 0) flag.prop('checked', true);
-  });
-
-  $('##{grid.name}_form input[type=text]').parent().addClass('input-field');
-
-  $('##{grid.name}_form .field').filter(function () {
-    return !!$(this).find('input').val();
-  }).find('label').addClass('active');
-  $('##{grid.name}_form input[data-time]').siblings('label').addClass('active');
-
-  $('input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
-  $('input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
-  $('input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);

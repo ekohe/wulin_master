@@ -33,8 +33,9 @@ var batchUpdateByAjax = function(grid, version) {
     $.get(url, function(data){
       Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
-          showFlagCheckBox(modal, ids);
           Ui.setupForm(grid, true, selectedIndexes);
+          Ui.setupComponents(grid);
+          showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
         }
@@ -82,7 +83,7 @@ var loadValue = function(scope, data) {
       $('textarea[data-field="' + i + '"]', scope).val(data[i]);
     } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
-        $('input:checkbox[data-field="' + i + '"]', scope).attr('checked', 'checked');
+        $('input:checkbox[data-field="' + i + '"]', scope).prop('checked', true);
       } else {
         $('input:checkbox[data-field="' + i + '"]', scope).removeAttr('checked');
       }

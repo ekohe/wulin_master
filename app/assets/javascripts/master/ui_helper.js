@@ -76,6 +76,7 @@ var Ui = {
       Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
+          Ui.setupComponents(grid);
         }
       });
     });
@@ -83,28 +84,30 @@ var Ui = {
 
   setupComponents: function(grid) {
     var name = grid.name;
+
     // setup select as chosen
     $('#' + name + '_form select[data-required="true"]').chosen();
     $('#' + name + '_form select[data-required="false"]').chosen({allow_single_deselect: true});
 
+    // make target flag be checked when select changed
     $('#' + name + '_form select').off('change').on('change', function(){
       var flag = $('#' + name + '_form input.target_flag:checkbox[data-target="' + $(this).attr('data-target') + '"]');
-      if (flag.size() > 0) flag.attr('checked', 'checked');
+      if (flag.size() > 0) flag.prop('checked', true);
     });
 
+    // materialize input[type=text]
+    $('#' + name + '_form input[type=text]').parent().addClass('input-field');
+
+    // make label active for input with value
+    $('#' + name + '_form .field').filter(function () {
+      return !!$(this).find('input').val();
+    }).find('label').addClass('active');
+    $('#' + name + '_form input[data-time]').siblings('label').addClass('active');
+
     // setup datepicker
-    $('#' + name + '_form input[data-date]').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('#' + name + '_form input[data-datetime]').datetimepicker({
-      onlyTime: false,
-      dateFormat: "yy-mm-dd",
-      timeFormat: 'HH:mm',
-      timeOnly: false,
-      stepMinute: 1,
-      minuteGrid: 0,
-      beforeShow: function() { calendarOpen = true; },
-      onClose: function() { calendarOpen = false; }
-    });
-    $('#' + name + '_form input[data-time]').timepicker({});
+    $('#' + name + '_form input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
+    $('#' + name + '_form input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
+    $('#' + name + '_form input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);
   },
 
   setupForm: function(grid, monitor, selectedIndexes) {
