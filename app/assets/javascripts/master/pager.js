@@ -85,11 +85,11 @@
 
       if (pagingInfo.pageSize == 0) {
         if (grid.getFilteredInputs().length == 0) {
-          $status.text(pagingInfo.totalRows + " rows found");
+          $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(pagingInfo.totalRows + " of " + pagingInfo.rowsWithoutFilter + " rows found");
+          $status.text(pagingInfo.totalRows.toLocaleString() + " of " + pagingInfo.rowsWithoutFilter.toLocaleString() + " rows found");
           $status.addClass('with-filter');
           $clearFilterLink.removeClass('hide');
         }
