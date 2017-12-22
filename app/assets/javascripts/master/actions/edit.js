@@ -33,10 +33,10 @@ var batchUpdateByAjax = function(grid, version) {
     $.get(url, function(data){
       Ui.createModelModal(grid, data, {
         ready: function(modal, trigger) {
+          showFlagCheckBox(modal, ids);
           Ui.setupForm(grid, true, selectedIndexes);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-          showFlagCheckBox(scope, ids);
         }
       });
     });
@@ -160,10 +160,9 @@ var distinctInput = function(inputBox) {
 
 var showFlagCheckBox = function(scope, ids) {
   if (ids.length > 1) {
-    // Show flag checkbox
-    $('input.target_flag', scope).show();
+    $('.target_flag_container', scope).show();
   } else {
-    $('input.target_flag:visible', scope).hide();
+    $('.target_flag_container', scope).hide();
   }
 };
 
@@ -171,20 +170,20 @@ var checkTheBox = function(name) {
   var scope = $( '#' + name + '_form');
   // Check flag when change value of the box
   scope.off('keyup', 'input:text, input:password, textarea').on('keyup', 'input:text, input:password, textarea', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
   });
   scope.off('change', 'input:checkbox, input:file').on('change', 'input:checkbox:not(.target_flag), input:file', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
   });
 
   // Date picker \ datetime picker \ time picker
-  scope.off('change', 'input.hasDatepicker').on('change', 'input.hasDatepicker', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').attr('checked', 'checked');
+  scope.off('change', 'input.flatpickr-input').on('change', 'input.flatpickr-input', function(e) {
+    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
   });
 
   // Empty input box when flag change to unchecked
   scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
-    if ($.isEmptyObject($(this).attr('checked'))) {
+    if ($(this).prop('checked') == false) {
       $('input[data-target="' + $(this).attr('data-target') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
       $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("chosen:updated");
     }

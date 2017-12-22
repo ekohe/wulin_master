@@ -21,26 +21,36 @@ form {
     margin-top: $form-title-margin;
     margin-bottom: $form-title-margin * 1.5;
   }
-  .field {
-    label.active {
-      top: 5px;
+  .field-line {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    .switch.target_flag_container {
+      width: 70px;
     }
-    input, textarea {
-      color: $text-color;
-      font-size: $font-size-small;
-    }
-    input[type=text]:not(.browser-default) {
-      height: 36px;
-    }
-    input[data-date=true], input[data-time=true], input[data-datetime=true] {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .chzn-container {
-      width: 100% !important;
-      .chzn-choices {
-        .search-choice {
-          margin-top: 7px;
+    .field {
+      width: 100%;
+      label.active {
+        top: 5px;
+      }
+      input, textarea {
+        color: $text-color;
+        font-size: $font-size-small;
+      }
+      input[type=text]:not(.browser-default) {
+        height: 36px;
+      }
+      input[data-date=true], input[data-time=true], input[data-datetime=true] {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .chosen-container {
+        width: 100% !important;
+        .chzn-choices {
+          .search-choice {
+            margin-top: 7px;
+          }
         }
       }
     }
