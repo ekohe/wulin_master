@@ -141,12 +141,6 @@ module WulinMaster
       render '/edit_form', layout: false
     end
 
-    def wulin_master_option_new_form
-      render 'option_new_form', layout: false
-    rescue ActionView::MissingTemplate
-      render '/option_new_form', layout: false
-    end
-
     protected
 
     def construct_filters
