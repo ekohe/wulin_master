@@ -173,7 +173,7 @@ var Ui = {
                 target.append("<option value='" + value + "'>" + value + "</option>");
               }
             });
-            Ui.setupChosen(grid, scope, selectedIndexes);
+            Ui.setupChosen(grid, target, scope, selectedIndexes);
           });
         }
       });
@@ -201,7 +201,7 @@ var Ui = {
               }
             });
             target.append("<option>Add new Option</option>");
-            Ui.setupChosen(grid, scope, selectedIndexes);
+            Ui.setupChosen(grid, target, scope, selectedIndexes);
           });
         }
       });
@@ -218,7 +218,7 @@ var Ui = {
           $.each(n[1], function(index, value) {
             target.append("<option value='" + value + "'>" + value + "</option>");
           });
-          Ui.setupChosen(grid, scope, selectedIndexes);
+          Ui.setupChosen(grid, target, scope, selectedIndexes);
         }
       });
     }
@@ -233,10 +233,11 @@ var Ui = {
     $('.ui-resizable-handle').hide();
   },
 
-  setupChosen: function(grid, scope, selectedIndexes) {
+  setupChosen: function(grid, target, scope, selectedIndexes) {
     if(typeof(selectedIndexes) != "undefined"){
       fillValues(scope, grid, selectedIndexes);
     }
+    target.trigger("chosen:updated");
   },
 
   // Close Modal
