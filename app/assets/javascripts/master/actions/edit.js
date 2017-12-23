@@ -191,6 +191,16 @@ var checkTheBox = function(name) {
   });
 };
 
+var grepValues = function(formData, jqForm, options) {
+  var flagDom;
+  for(var i = formData.length - 1; i >= 0; i--) {
+    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', jqForm);
+    if(flagDom.not(':checked').size() > 0) {
+      formData.splice(i, 1);
+    }
+  }
+};
+
 var submitForm = function(grid, ids, selectedIndexes) {
   var name = grid.name,
   $scope = $( '#' + name + '_form'),
@@ -200,6 +210,7 @@ var submitForm = function(grid, ids, selectedIndexes) {
       dateType: 'json',
       url: grid.path + "/" + ids + ".json"+grid.query,
       data: {_method: 'PUT'},
+      beforeSubmit: grepValues,
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
