@@ -220,7 +220,7 @@ var Ui = {
             });
             target.append("<option>Add new Option</option>");
           });
-
+          Ui.setupChosen(target, monitor);
         }
       });
     }
