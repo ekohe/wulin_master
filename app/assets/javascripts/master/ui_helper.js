@@ -105,9 +105,9 @@ var Ui = {
     $('#' + name + '_form input[data-time]').siblings('label').addClass('active');
 
     // setup datepicker
-    $('#' + name + '_form input[data-datetime]').inputmask('wulinDateTime').flatpickr(window.fpConfigFormDateTime);
-    $('#' + name + '_form input[data-date]').inputmask('wulinDate').flatpickr(window.fpConfigFormDate);
-    $('#' + name + '_form input[data-time]').inputmask('wulinTime').flatpickr(window.fpConfigTime);
+    $('#' + name + '_form input[data-datetime]').inputmask('wulinDateTime').flatpickr(fpConfigFormDateTime);
+    $('#' + name + '_form input[data-date]').inputmask('wulinDate').flatpickr(fpConfigFormDate);
+    $('#' + name + '_form input[data-time]').inputmask('wulinTime').flatpickr(fpConfigTime);
   },
 
   setupForm: function(grid, monitor, selectedIndexes) {
