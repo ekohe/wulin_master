@@ -81,6 +81,7 @@ var fillValues = function(scope, grid, selectedIndexes) {
     dataArr = $.map(selectedIndexes, function(n, i){
       return grid.loader.data[n];
     });
+    full_field_list_first_record = grid.loader.data[selectedIndexes[0]]
     $.each(dataArr, function(index, n){
       for (var k in n) {
         if (index === 0) {
@@ -95,6 +96,21 @@ var fillValues = function(scope, grid, selectedIndexes) {
       }
     });
     loadValue(scope, comm);
+    triggerChosen(scope,full_field_list_first_record);
+  }
+};
+
+var triggerChosen = function(scope, data) {
+  for ( var i in data) {
+    inputBox = $('select[data-field="' + i + '"]', scope);
+    if ($.type(data[i]) === 'string') {
+      inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
+      if (inputBox.hasClass("chzn-done")) {
+        inputBox.trigger("liszt:updated");
+      } else {
+        inputBox.chosen();
+      }
+    }
   }
 };
 
