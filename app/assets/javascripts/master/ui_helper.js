@@ -147,6 +147,8 @@ var Ui = {
       }
     });
 
+    var fillValuesWillRun = false;
+
     // Fetch select options from remote
     if (remotePath.length > 0) {
       $.each(remotePath, function(i, n) {
@@ -175,6 +177,7 @@ var Ui = {
             });
             Ui.setupChosen(grid, target, scope, selectedIndexes);
           });
+          fillValuesWillRun = true;
         }
       });
     }
@@ -203,6 +206,7 @@ var Ui = {
             target.append("<option>Add new Option</option>");
             Ui.setupChosen(grid, target, scope, selectedIndexes);
           });
+          fillValuesWillRun = true;
         }
       });
     }
@@ -219,8 +223,13 @@ var Ui = {
             target.append("<option value='" + value + "'>" + value + "</option>");
           });
           Ui.setupChosen(grid, target, scope, selectedIndexes);
+          fillValuesWillRun = true;
         }
       });
+    }
+
+    if ((fillValuesWillRun==false) && (typeof(selectedIndexes) != "undefined")) {
+      fillValues(scope, grid, selectedIndexes);
     }
 
     first_input = $( '#' + name + '_form input:text', scope).first();
