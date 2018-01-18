@@ -110,53 +110,40 @@ var loadValue = function(scope, data) {
 
 var distinctInput = function(inputBox) {
   var addNewSelect = $('#' + inputBox.attr('id'));
-  // This is a crazy feature
-  if ($('#' + inputBox.attr('id') + '_chzn li:contains("Add new Option")').size() > 0) {
-    $('#' + addNewSelect.attr('id') + '_chzn').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function(event) {
-      var $select = addNewSelect;
-      var $dialog = $("<div/>").attr({id: 'distinct_dialog', title: "Add new option", 'class': "create_form"}).css('display', 'none').appendTo($('body'));
-      var $fieldDiv = $("<div />").attr({style: 'padding: 20px 30px;'});
-      var $submitDiv = $("<div />").attr({style: 'padding: 0 30px;'});
-      $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">New Option</label>');
-      $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
-      $fieldDiv.appendTo($dialog);
-      $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add Option " name="commit">');
-      $submitDiv.appendTo($dialog);
-      $dialog.dialog({
-        autoOpen: true,
-        width: 450,
-        height: 180,
-        modal: true,
-        buttons: {
-          "Cancel": function() {
-            $(this).dialog("destroy");
-            $(this).remove();
-          }
-        },
-        open: function(event, ui) {
-          $('#distinct_submit', $(this)).on('click', function(){
-              var optionText = $('#distinct_dialog #distinct_field').val();
-              if (optionText) {
-                  $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                  $select.val(optionText);
-                  $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
-                  $select.trigger('chosen:updated');
-                  $dialog.dialog("destroy");
-                  $dialog.remove();
-              } else {
-                  alert('New option can not be blank!');
-              }
-          });
-        },
-        close: function(event, ui) {
-          $(this).dialog("destroy");
-          $(this).remove();
-        }
-      });
+  inputBox.chosen().change(function(){
+    if ($('#' + inputBox.attr('id') + '_chosen li:contains("Add new Option")').size() > 0) {
+      $('#' + addNewSelect.attr('id') + '_chosen').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function(event) {
+        var $select = addNewSelect;
 
-      return false;
-    });
-  }
+        var $addOptionModal = Ui.baseModal({
+          ready: function(modal, trigger) {
+            var $fieldDiv = $("<div />").addClass('input-field');
+            $fieldDiv.append('<label for="distinct_field"">New Option</label>');
+            $fieldDiv.append('<input id="distinct_field" type="text" name="distinct_field">');
+            modal.find('.modal-content')
+              .append($('<h5/>').text('Add new option'))
+              .append($fieldDiv);
+          }
+        }).width(400);
+
+        var $modalFooter = Ui.modalFooter('Add Option').appendTo($addOptionModal);
+        $modalFooter.find('.confirm-btn').on('click', function() {
+          var optionText = $addOptionModal.find('#distinct_field').val();
+          if (optionText) {
+            $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
+            $select.val(optionText);
+            $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
+            $select.trigger('chosen:updated');
+            $addOptionModal.modal('close');
+          } else {
+            alert('New option can not be blank!');
+          }
+        });
+
+        return false;
+      });
+    }
+  });
 };
 
 var showFlagCheckBox = function(scope, ids) {
