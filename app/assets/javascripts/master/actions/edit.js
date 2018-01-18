@@ -109,40 +109,10 @@ var loadValue = function(scope, data) {
 };
 
 var distinctInput = function(inputBox) {
-  var addNewSelect = $('#' + inputBox.attr('id'));
   inputBox.chosen().change(function(){
-    if ($('#' + inputBox.attr('id') + '_chosen li:contains("Add new Option")').size() > 0) {
-      $('#' + addNewSelect.attr('id') + '_chosen').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function(event) {
-        var $select = addNewSelect;
-
-        var $addOptionModal = Ui.baseModal({
-          ready: function(modal, trigger) {
-            var $fieldDiv = $("<div />").addClass('input-field');
-            $fieldDiv.append('<label for="distinct_field"">New Option</label>');
-            $fieldDiv.append('<input id="distinct_field" type="text" name="distinct_field">');
-            modal.find('.modal-content')
-              .append($('<h5/>').text('Add new option'))
-              .append($fieldDiv);
-          }
-        }).width(400);
-
-        var $modalFooter = Ui.modalFooter('Add Option').appendTo($addOptionModal);
-        $modalFooter.find('.confirm-btn').on('click', function() {
-          var optionText = $addOptionModal.find('#distinct_field').val();
-          if (optionText) {
-            $('option:contains("Add new Option")', $select).before('<option value="' + optionText + '">' + optionText + '</option>');
-            $select.val(optionText);
-            $('input.target_flag:checkbox[data-target="' + $select.attr('data-target') + '"]').attr('checked', 'checked');
-            $select.trigger('chosen:updated');
-            $addOptionModal.modal('close');
-          } else {
-            alert('New option can not be blank!');
-          }
-        });
-
-        return false;
-      });
-    }
+    $('#' + inputBox.attr('id') + '_chosen').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function() {
+      Ui.createAddOptionModal(inputBox);
+    });
   });
 };
 

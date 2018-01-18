@@ -415,57 +415,11 @@
     };
 
     this.addNewOptionHandler = function() {
-      var _self = this;
-
-      $('#' + _self.select.attr('id') + '_chzn li:contains("' + _self.addOptionText + '")').off('mouseup').on('mouseup', function(event) {
-        var $dialog = $("<div/>").attr({
-          id: 'distinct_dialog',
-          title: "Add new " + _self.column.name,
-          'class': "create_form"
-        }).css('display', 'none').appendTo($('body'));
-        var $fieldDiv = $("<div />").attr({
-          style: 'padding: 20px 30px;'
+      var inputBox = this.select;
+      inputBox.chosen().change(function(){
+        $('.chosen-results li:contains("Add new Option")').on('click', function() {
+          Ui.createAddOptionModal(inputBox);
         });
-        var $submitDiv = $("<div />").attr({
-          style: 'padding: 0 30px;'
-        });
-        $fieldDiv.append('<label for="distinct_field" style="display: inline-block; margin-right: 6px;">' + _self.column.name + '</label>');
-        $fieldDiv.append('<input id="distinct_field" type="text" style="width: 250px" size="30" name="distinct_field">');
-        $fieldDiv.appendTo($dialog);
-        $submitDiv.append('<input id="distinct_submit" class="btn success" type="submit" value=" Add ' + _self.column.name + ' " name="commit">');
-        $submitDiv.appendTo($dialog);
-        $dialog.dialog({
-          autoOpen: true,
-          width: 450,
-          height: 180,
-          modal: true,
-          buttons: {
-            "Cancel": function() {
-              $(this).dialog("destroy");
-              $(this).remove();
-            }
-          },
-          open: function(event, ui) {
-            $('#distinct_submit', $(this)).on('click', function() {
-              var optionText = $('#distinct_dialog #distinct_field').val();
-              if (optionText) {
-                $('option:contains("' + _self.addOptionText + '")', _self.select).before('<option value="' + optionText + '">' + optionText + '</option>');
-                _self.select.val(optionText);
-                _self.select.trigger('chosen:updated');
-                $dialog.dialog("destroy");
-                $dialog.remove();
-              } else {
-                alert('New ' + _self.column.name + ' can not be blank!');
-              }
-            });
-          },
-          close: function(event, ui) {
-            $(this).dialog("destroy");
-            $(this).remove();
-          }
-        });
-
-        return false;
       });
     };
 

@@ -384,6 +384,33 @@ var Ui = {
     $jsonViewModal.find('.modal-content').jsonViewer(jsonData);
   },
 
+  createAddOptionModal: function(inputBox) {
+    var $addOptionModal = Ui.baseModal({
+      ready: function(modal, trigger) {
+        var $fieldDiv = $("<div />").addClass('input-field');
+        $fieldDiv.append('<label for="distinct_field"">New Option</label>');
+        $fieldDiv.append('<input id="distinct_field" type="text" name="distinct_field">');
+        modal.find('.modal-content')
+          .append($('<h5/>').text('Add new option'))
+          .append($fieldDiv);
+      }
+    }).width(400);
+
+    var $modalFooter = Ui.modalFooter('Add Option').appendTo($addOptionModal);
+    $modalFooter.find('.confirm-btn').on('click', function() {
+      var optionText = $addOptionModal.find('#distinct_field').val();
+      if (optionText) {
+        $('option:contains("Add new Option")', inputBox).before('<option value="' + optionText + '">' + optionText + '</option>');
+        inputBox.val(optionText);
+        $('input.target_flag:checkbox[data-target="' + inputBox.attr('data-target') + '"]').attr('checked', 'checked');
+        inputBox.trigger('chosen:updated');
+        $addOptionModal.modal('close');
+      } else {
+        alert('New option can not be blank!');
+      }
+    });
+  },
+
   formatData: function(grid, arrayData) {
     var data = {}, columns;
     columns = grid.loader.getColumns();
