@@ -133,24 +133,6 @@
       this.input.focus().select();
     };
 
-    this.initAwesomplete = function($input) {
-      this.awesomplete = new Awesomplete($input[0], {
-        minChars: 1,
-        maxItems: 5,
-        autoFirst: true
-      });
-
-      $input.on("keydown", function(e) {
-        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
-          e.stopPropagation();
-        }
-      });
-
-      $.getJSON(args.column.choices, function(data) {
-        this.awesomplete.list = data;
-      }.bind(this));
-    };
-
     this.initMdAutoComplete = function($input) {
       $input.on("keydown", function(e) {
         if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
@@ -643,7 +625,6 @@
     this.init = function() {
       this.initElements();
       this.setOffset(this.input, this.offsetWith);
-      // this.initAwesomplete(this.input);
       this.initMdAutoComplete(this.input);
     };
 
