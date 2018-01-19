@@ -32,8 +32,6 @@ Inputmask.extendAliases({
 
 var fpConfigInit = {
   allowInput: true,
-  maxDate: '31/12/2100',
-  minDate: '01/01/1900',
 };
 
 var fpConfigForm = $.extend({}, fpConfigInit, {
@@ -43,12 +41,17 @@ var fpConfigForm = $.extend({}, fpConfigInit, {
   },
 });
 
-var fpConfigFormDateTime = $.extend({}, fpConfigForm, {
+var fpConfigFormDateBase = $.extend({}, fpConfigForm, {
+  maxDate: '31/12/2100',
+  minDate: '01/01/1900',
+});
+
+var fpConfigFormDateTime = $.extend({}, fpConfigFormDateBase, {
   enableTime: true,
   dateFormat: 'd/m/Y H:i',
 });
 
-var fpConfigFormDate = $.extend({}, fpConfigForm, {
+var fpConfigFormDate = $.extend({}, fpConfigFormDateBase, {
   dateFormat: 'd/m/Y',
 });
 
