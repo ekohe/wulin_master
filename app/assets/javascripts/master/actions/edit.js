@@ -110,9 +110,10 @@ var loadValue = function(scope, data) {
 
 var distinctInput = function(inputBox) {
   inputBox.chosen().change(function(){
-    $('#' + inputBox.attr('id') + '_chosen').off('mouseup').on('mouseup', 'li:contains("Add new Option")', function() {
+    $('#' + inputBox.attr('id') + '_chosen').off('click').on('click', 'li:contains("Add new Option")', function() {
       Ui.createAddOptionModal(inputBox);
     });
+    $('#' + inputBox.attr('id') + '_chosen .chosen-single .search-choice-close').trigger('mouseup');
   });
 };
 
