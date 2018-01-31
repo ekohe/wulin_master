@@ -604,7 +604,7 @@
       // this method may get called after the editor itself has been destroyed
       // treat it as an equivalent of a Java/C# "static" method - no instance variables should be accessed
       if (state.id === null) {
-        item[this.column.field] = 'null';
+        item[this.column.field] = {};
       } else {
         item[this.column.field] = state;
       }

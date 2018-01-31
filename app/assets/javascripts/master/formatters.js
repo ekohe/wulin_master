@@ -50,6 +50,9 @@
         }
       }
 
+      // Filter `undefined` value
+      value = (typeof value === 'undefined') ? '' : value;
+
       // Set default text-align
       var textAlign, default_style;
       if (columnDef.type == 'datetime' ||
