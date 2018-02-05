@@ -101,7 +101,6 @@ var loadValue = function(scope, data) {
         inputBox.val(data[i]);
       }
 
-      inputBox.trigger("change");   // trigger change so that the depend_column selector can update options
       inputBox.trigger("chosen:updated");
       distinctInput(inputBox);
     }
