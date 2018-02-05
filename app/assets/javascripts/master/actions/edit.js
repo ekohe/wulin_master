@@ -147,6 +147,7 @@ var loadValue = function(scope, data) {
         inputBox.chosen();
       }
       distinctInput(inputBox);
+      uncheckCheckBox();
     }
   }
 };
@@ -210,6 +211,17 @@ var showFlagCheckBox = function(scope, ids) {
   } else {
     $('input.target_flag:visible', scope).hide();
   }
+};
+
+// uncheck checkbox when select value is empty
+var uncheckCheckBox = function(){
+  var select = $('.chzn-select');
+  
+  select.each(function(){
+    if($(this).val() == ""){
+      $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') +'"]').removeAttr('checked').removeAttr('selected');
+    }
+  });
 };
 
 var checkTheBox = function(name) {
