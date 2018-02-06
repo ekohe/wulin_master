@@ -246,6 +246,7 @@ var Ui = {
     if(typeof(selectedIndexes) != "undefined"){
       fillValues(scope, grid, selectedIndexes);
     }
+    target.trigger("change")
     target.trigger("chosen:updated");
   },
 
