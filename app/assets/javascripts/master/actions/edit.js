@@ -100,18 +100,8 @@ var loadValue = function(scope, data) {
       } else if ($.type(data[i]) === 'array') {
         inputBox.val(data[i]);
       }
-      distinctInput(inputBox);
     }
   }
-};
-
-var distinctInput = function(inputBox) {
-  inputBox.change(function(){
-    $('#' + inputBox.attr('id') + '_chosen').off('click').on('click', 'li:contains("Add new Option")', function() {
-      $('#' + inputBox.attr('id') + '_chosen .chosen-single .search-choice-close').trigger('mouseup');
-      Ui.createAddOptionModal(inputBox);
-    });
-  });
 };
 
 var showFlagCheckBox = function(scope, ids) {

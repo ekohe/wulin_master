@@ -248,6 +248,23 @@ var Ui = {
     }
     target.trigger("change")
     target.trigger("chosen:updated");
+    Ui.unCheckEmpty(target);
+    Ui.addNewOption(target);
+  },
+
+  // Add new option for distinct column
+  addNewOption: function(target) {
+    $('#' + target.attr('id') + '_chosen').off('click').on('click', 'li:contains("Add new Option")', function() {
+      $('#' + target.attr('id') + '_chosen .chosen-single .search-choice-close').trigger('mouseup');
+      Ui.createAddOptionModal(target);
+    });
+  },
+
+  // Uncheck select column when value is empty
+  unCheckEmpty: function(target) {
+    if (!target.val()) {
+      $('input.target_flag:checkbox[data-target="' + target.attr('data-target') +'"]').prop('checked', false);
+    }
   },
 
   // Close Modal
