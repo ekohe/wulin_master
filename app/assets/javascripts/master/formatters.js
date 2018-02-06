@@ -50,8 +50,8 @@
         }
       }
 
-      // Filter `undefined` value
-      value = (typeof value === 'undefined') ? '' : value;
+      // Filter `null` value for 'has_many' columns
+      value = (columnDef.type === 'has_many' && value === 'null') ? '' : value;
 
       // Set default text-align
       var textAlign, default_style;
