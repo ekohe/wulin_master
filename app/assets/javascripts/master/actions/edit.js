@@ -100,19 +100,17 @@ var loadValue = function(scope, data) {
       } else if ($.type(data[i]) === 'array') {
         inputBox.val(data[i]);
       }
-
-      inputBox.trigger("chosen:updated");
       distinctInput(inputBox);
     }
   }
 };
 
 var distinctInput = function(inputBox) {
-  inputBox.chosen().change(function(){
+  inputBox.change(function(){
     $('#' + inputBox.attr('id') + '_chosen').off('click').on('click', 'li:contains("Add new Option")', function() {
+      $('#' + inputBox.attr('id') + '_chosen .chosen-single .search-choice-close').trigger('mouseup');
       Ui.createAddOptionModal(inputBox);
     });
-    $('#' + inputBox.attr('id') + '_chosen .chosen-single .search-choice-close').trigger('mouseup');
   });
 };
 
