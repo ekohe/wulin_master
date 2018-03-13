@@ -33,6 +33,12 @@
             var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
             return "<span style='text-align:right;display:block'>" + text + "</span>";
         },
+        MoneyNeutralFormatter: function(row, cell, value, columnDef, dataContext) {
+            // TODO: make the unit configurable
+            var currency = "";
+            var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
+            return "<span style='text-align:right;display:block'>" + text + "</span>";
+        },
 
         RightFormatter: function(row, cell, value, columnDef, dataContext) {
             return value === null ? "" : "<span style='text-align:right;display:block'>" + value + "</span>";
