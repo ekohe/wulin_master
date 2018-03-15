@@ -67,7 +67,7 @@
 
             // var $nav = $("<span class='slick-pager-nav' />").appendTo($container);
             // var $settings = $("<span class='slick-pager-settings' />").appendTo($container);
-            $status = $("<span class='slick-pager-status' />").appendTo($container);
+            $status = $("<span class='slick-pager-status' style='text-align=left;' />").appendTo($container);
 
             // $settings
                     // .append("<span class='slick-pager-settings-expanded' style='display:none'>Show: <a data=0>All</a><a data='-1'>Auto</a><a data=25>25</a><a data=50>50</a><a data=100>100</a></span>");
@@ -96,19 +96,19 @@
             // $(icon_prefix + "ui-icon-seek-first" + icon_suffix)
             //         .click(gotoFirst)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-prev" + icon_suffix)
             //         .click(gotoPrev)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-next" + icon_suffix)
             //         .click(gotoNext)
             //         .appendTo($nav);
-            // 
+            //
             // $(icon_prefix + "ui-icon-seek-end" + icon_suffix)
             //         .click(gotoLast)
             //         .appendTo($nav);
-            // 
+            //
             // $container.find(".ui-icon-container")
             //         .hover(function() {
             //             $(this).toggleClass("ui-state-hover");
