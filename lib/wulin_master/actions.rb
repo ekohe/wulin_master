@@ -73,7 +73,13 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
+      # stephan patch when grid has includes or join update on main model
+      if (grid.model.class == ActiveRecord::Relation)
+        m = grid.model.klass
+      else
+        m = grid.model
+      end
+      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(m).to_sym].presence
       if param_attrs.present?
         record = @records.first
         updated_attributes = get_attributes(param_attrs, :update, record)
@@ -86,7 +92,7 @@ module WulinMaster
       end
       render json: {:success => true}
     rescue
-      render json: {:success => false, :error_message => $!.message }
+      render json: {:success => false, :error_message => $!.message}
     end
 
     def destroy
@@ -104,14 +110,13 @@ module WulinMaster
         end
       end
       if success
-        render json: {:success => true }
+        render json: {:success => true}
       else
         render json: {:success => false, :error_message => error_message}
       end
     rescue
       render json: {:success => false, :error_message => $!.message}
     end
-
 
     def create
       param_key = ActiveModel::Naming.param_key(grid.model).to_sym
@@ -120,12 +125,12 @@ module WulinMaster
       custom_errors = @record.errors
       @record.assign_attributes(attrs)
       message = if !custom_errors.empty?
-        {:success => false, :error_message => custom_errors}
-      elsif @record.save
-        {:success => true, :id => @record.id }
-      else
-        {:success => false, :error_message => @record.errors}
-      end
+                  {:success => false, :error_message => custom_errors}
+                elsif @record.save
+                  {:success => true, :id => @record.id}
+                else
+                  {:success => false, :error_message => @record.errors}
+                end
       respond_to do |format|
         format.json { render :json => message }
       end
@@ -177,7 +182,7 @@ module WulinMaster
       # @offset = params[:offset] ? params[:offset].to_i : 0
       @page = (@offset / @per_page) + 1
 
-      @query = @query.is_a?(Array) ? @query.from((@page-1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page-1) * @per_page)
+      @query = @query.is_a?(Array) ? @query.from((@page - 1) * @per_page).to(@per_page) : @query.limit(@per_page).offset((@page - 1) * @per_page)
     end
 
     def add_includes
@@ -195,17 +200,16 @@ module WulinMaster
       t = Time.now
       @object_array = grid.arraify(@objects)
       json = {:offset => @offset,
-        :total =>  @count,
-        :count =>  @per_page,
-        :rows  =>  @object_array
-      }.to_json
-      Rails.logger.info "----------------- Rendered JSON in #{Time.now-t} sec. ------------------------"
+              :total  => @count,
+              :count  => @per_page,
+              :rows   => @object_array}.to_json
+      Rails.logger.info "----------------- Rendered JSON in #{Time.now - t} sec. ------------------------"
       json
     end
 
     def get_attributes(attrs, type, object = nil)
       return {} unless attrs.present?
-      attrs.delete_if {|k,v| k == "id" }
+      attrs.delete_if { |k, v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
       attrs
@@ -213,18 +217,18 @@ module WulinMaster
 
     private
 
-      def fire_callbacks(name)
-        return unless self.class.callbacks
-        cbs = self.class.find_callbacks(name)
+    def fire_callbacks(name)
+      return unless self.class.callbacks
+      cbs = self.class.find_callbacks(name)
 
-        return if cbs.blank?
-        cbs.each do |cb|
-          if cb.class == Proc
-            cb.call
-          else
-            self.send(cb) if self.respond_to?(cb, true)
-          end
+      return if cbs.blank?
+      cbs.each do |cb|
+        if cb.class == Proc
+          cb.call
+        else
+          self.send(cb) if self.respond_to?(cb, true)
         end
       end
+    end
   end
 end
