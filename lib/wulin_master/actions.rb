@@ -210,7 +210,8 @@ module WulinMaster
     private
 
     def params_permit
-      model_key = ActiveModel::Naming.param_key(grid.model).to_sym
+      model_class = grid.model.is_a?(ActiveRecord::Relation) ? grid.model.klass : grid.model
+      model_key = ActiveModel::Naming.param_key(model_class).to_sym
       params.require(:item).permit! if params[:item].presence
       params.require(model_key).permit! if params[model_key].presence
       params[:item].presence || params[model_key].presence
