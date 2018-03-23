@@ -73,7 +73,8 @@ module WulinMaster
     def update
       ids = params[:id].to_s.split(',')
       @records = grid.model.find(ids)
-      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(grid.model).to_sym].presence
+      model_class = grid.model.is_a?(ActiveRecord::Relation) ? grid.model.klass : grid.model
+      param_attrs = params[:item].presence || params[ActiveModel::Naming.param_key(model_class).to_sym].presence
       if param_attrs.present?
         record = @records.first
         updated_attributes = get_attributes(param_attrs, :update, record)
