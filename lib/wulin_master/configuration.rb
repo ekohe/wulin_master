@@ -3,11 +3,11 @@
 module WulinMaster
   def self.configure(configuration = WulinMaster::Configuration.new)
     yield configuration if block_given?
-    @configuration = configuration
+    @config = configuration
   end
 
   def self.config
-    @configuration ||= WulinMaster::Configuration.new
+    @config ||= WulinMaster::Configuration.new
   end
 
   class Configuration

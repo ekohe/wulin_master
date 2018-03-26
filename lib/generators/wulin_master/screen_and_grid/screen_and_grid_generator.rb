@@ -5,7 +5,7 @@ require 'rails/generators/active_record'
 
 module WulinMaster
   class ScreenAndGridGenerator < ActiveRecord::Generators::Base
-    source_root File.expand_path('../templates', __FILE__)
+    source_root File.expand_path('templates', __dir__)
     argument :attributes, type: :array, default: [], banner: "field:type field:type"
     class_option :model, type: :boolean, default: true, desc: "Create model"
     class_option :migration, type: :boolean, default: true, desc: 'Create migration file for current grid'

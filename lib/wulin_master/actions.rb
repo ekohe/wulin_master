@@ -81,7 +81,7 @@ module WulinMaster
         raise record.errors.full_messages.join(',') unless record.errors.empty?
         grid.model.transaction do
           @records.each do |r|
-            r.update_attributes!(updated_attributes)
+            r.update!(updated_attributes)
           end
         end
       end
