@@ -22,6 +22,6 @@ before_script:
 test:
   script:
     - bundle exec rubocop
-    - bundle exec rspec
+    - spring rspec
     - bundle exec rake assets:precompile
     - bundle exec cucumber

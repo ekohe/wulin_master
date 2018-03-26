@@ -60,7 +60,7 @@ Layout/CaseIndentation:
   EnforcedStyle: end
   IndentOneStep: false
 
-Lint/EndAlignment:
+Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
 Metrics/AbcSize:
