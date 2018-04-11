@@ -19,6 +19,7 @@ module WulinMaster
       delete: 'delete',
       switch: 'launch',
       audit: 'restore',
+      import: 'file_upload',
       excel: 'file_download'
     }.freeze
 
