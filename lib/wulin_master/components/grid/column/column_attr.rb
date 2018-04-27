@@ -28,7 +28,7 @@ module WulinMaster
         elsif value.is_a?(Hash) && value['id'] && (value['id'] != 'null')
           new_attrs[relation_object.foreign_key] = value['id']
         end
-      elsif relation_macro =~ /^has_many$|^has_and_belongs_to_many$/
+      elsif relation_macro.match?(/^has_many$|^has_and_belongs_to_many$/)
         if (value == 'null') || value.blank?
           new_attrs[field_sym] = []
         elsif value.is_a?(Array)
@@ -57,7 +57,7 @@ module WulinMaster
       elsif association_attributes['id'].present?
         new_attrs[relation_object.foreign_key] = association_attributes['id']
       elsif one_reverse_relation?(relation_object.klass, model)
-        nested_attr_key = (field_str =~ /_attributes$/ ? field_str : "#{k}_attributes")
+        nested_attr_key = (field_str.match?(/_attributes$/) ? field_str : "#{k}_attributes")
         new_attrs[nested_attr_key] = association_attributes
       end
     end
