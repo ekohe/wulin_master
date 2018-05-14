@@ -205,8 +205,7 @@
     this.initAwesomplete = function($input) {
       this.awesomplete = new Awesomplete($input[0], {
         minChars: 1,
-        maxItems: 5,
-        autoFirst: true
+        maxItems: 5
       });
 
       $input.on("keydown", function(e) {
