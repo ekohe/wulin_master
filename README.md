@@ -48,7 +48,7 @@ config.autoload_paths += Dir[Rails.root.join('app', 'grids', '{**}')]
 
 ## Getting Started
 
-### 1. Generator resource files
+### 1. Generate resource files
 
 Assume generating a new grid called `post`, run generator as:
 
@@ -78,9 +78,9 @@ bundle exec rake db:migrate
 
 This will create `grid_states` table for wulin_master to store the grid states for each user, including column's width/order/visibility, sort column and filter states.
 
-### 3. Configure grid
+### 3. Add grids
 
-Configure your grid as followings:
+Create your first grid as followings:
 
 ``` ruby
 # app/grids/post_grid.rb
@@ -106,7 +106,7 @@ class PostGrid < WulinMaster::Grid
   action :see_author, icon: :user
   ...
 
-  # Call this method to add default toolbar items (Create/Edit/Delete)
+  # Call this method to add default toolbar items (Create/Edit/Delete/Import/Export)
   load_default_actions  
 
   # Behaviours act as grid event handler
@@ -381,7 +381,7 @@ Set the whole styles of the component. The value is a string of css styles, like
 
 `:fill_window`
 
-MDetermines the component fill the whole window or not. The default value is true.
+Determine the component fill the whole window or not. The default value is true.
 
 #### Grid options
 
@@ -554,6 +554,44 @@ class ContactGrid < WulinMaster::Grid
    action :edit
    action :delete, authorized?: lambda { |user| user.has_permission_with_name?("contacts#delete") }
    ...
+end
+```
+
+#### Configuration for multi-level joins support to ActiveRecord
+
+**Use case**: `Travel` belongs to `Position` and `Position` belongs to `Person`. We want to show `first_name` field of a person in `Travel` grid with sorting and filtering available.
+
+For the case above, we could work it around by configurations as followings:
+
+###### 1. Reduce join levels through creating delegations for `Position`
+
+```ruby
+# position.rb
+
+class Position
+  delegate :first_name, to: :person, prefix: true, allow_nil: true
+end
+```
+
+###### 2. Use `first_name` as Position owns them in grid
+
+```ruby
+# travel_grid.rb
+
+class TravelGrid < WulinMaster::Grid
+  column :first_name, through: :position
+end
+```
+
+###### 3. Special settings for model & column to make sorting & filtering available
+
+```ruby
+# travel_grid.rb
+
+class TravelGrid < WulinMaster::Grid
+  model Travel.includes(position: :person)
+
+  column :first_name, through: :position, sql_expression: 'people.first_name'
 end
 ```
 
