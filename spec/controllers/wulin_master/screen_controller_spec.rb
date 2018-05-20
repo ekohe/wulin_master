@@ -167,7 +167,7 @@ describe PeopleTestController, type: :controller do
         end
 
         it 'updates the requested record' do
-          expect(mock_person).to receive(:update_attributes!)
+          expect(mock_person).to receive(:update!)
           put :update, params: valid_params
         end
 

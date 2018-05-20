@@ -26,8 +26,8 @@ module WulinMaster
     def unauthorized
       Rails.logger.info "Unauthorized #{params[:action].inspect} request to screen #{screen.class}"
       respond_to do |format|
-        format.html { render plain: "Unauthorized", status: 401 }
-        format.json { render json: {status: :unauthorized}, status: 401 }
+        format.html { render plain: "Unauthorized", status: :unauthorized }
+        format.json { render json: {status: :unauthorized}, status: :unauthorized }
       end
     end
 

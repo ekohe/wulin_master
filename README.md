@@ -48,7 +48,7 @@ config.autoload_paths += Dir[Rails.root.join('app', 'grids', '{**}')]
 
 ## Getting Started
 
-### 1. Generator resource files
+### 1. Generate resource files
 
 Assume generating a new grid called `post`, run generator as:
 
@@ -78,9 +78,9 @@ bundle exec rake db:migrate
 
 This will create `grid_states` table for wulin_master to store the grid states for each user, including column's width/order/visibility, sort column and filter states.
 
-### 3. Configure grid
+### 3. Add grids
 
-Configure your grid as followings:
+Create your first grid as followings:
 
 ``` ruby
 # app/grids/post_grid.rb
@@ -106,7 +106,7 @@ class PostGrid < WulinMaster::Grid
   action :see_author, icon: :user
   ...
 
-  # Call this method to add default toolbar items (Create/Edit/Delete)
+  # Call this method to add default toolbar items (Create/Edit/Delete/Import/Export)
   load_default_actions  
 
   # Behaviours act as grid event handler
@@ -276,6 +276,10 @@ end
 
 When the grid needs to show 2 or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias to avoid conflict when doing sql join.
 
+`:sort_column`
+
+Indicate the column should be used for sorting when it is not the column it self.
+
 `:sql_expression`
 
 This option is special and rarely used. It is only used when you want to do some special sql operation, like 'sorting' or 'filtering' virtual attributes by sql.
@@ -381,7 +385,7 @@ Set the whole styles of the component. The value is a string of css styles, like
 
 `:fill_window`
 
-MDetermines the component fill the whole window or not. The default value is true.
+Determine the component fill the whole window or not. The default value is true.
 
 #### Grid options
 
@@ -406,6 +410,37 @@ Set the grid load data or not when rendered, default is `true`. If set `false`, 
 `:multi_select`
 
 Default is `true`, which means you can select multiple rows in the grid. If set `false`, you can only select one row.
+
+`:color_theme`
+
+Set color theme for a specific grid, default color theme comes from the  `app_config.yml` under the `config` folder. WulinMaster supports all [colors](https://materializecss.com/color.html) provided by [MeterializeCSS](https://materializecss.com/)
+
+```yml
+# config/app_config.yml
+
+wulin_master:
+  color_theme: 'blue'
+```
+
+```ruby
+# app/grids/post_grid.rb
+
+class PostGrid < WulinMaster::Grid
+  color_theme 'red'
+end
+```
+
+`:background_color`
+
+Apart from `color_theme`, we can also set back ground color using `background_color`. Same to `color_theme`, supported colors listed  [here](https://materializecss.com/color.html).
+
+`:estimate_count`
+
+Normally, WulinMaster uses `#count` method of ActiveRecord which simply uses basic query `SELECT COUNT(*) FROM TABLE_NAME` to count the rows listed in a grid, but we also provide an optimized version by using the benefit of [count estimate](https://wiki.postgresql.org/wiki/Count_estimate) to do that when you're persisting your data in a PostgresSQL database. You can also make it happen to use the method only when data volume is huge by setting `threshold` parameter as `estimate_count threshold: 1000000`.
+
+`:default_sorting_state`
+
+Set the default sorting state for the grid. Usage: `default_sorting_state column: 'name', direction: 'ASC'`
 
 #### Grid actions
 
@@ -554,6 +589,32 @@ class ContactGrid < WulinMaster::Grid
    action :edit
    action :delete, authorized?: lambda { |user| user.has_permission_with_name?("contacts#delete") }
    ...
+end
+```
+
+#### Configuration for multi-level joins support to ActiveRecord
+
+**Use case**: `Travel` belongs to `Position` and `Position` belongs to `Person`. We want to show `first_name` field of a person in `Travel` grid with sorting and filtering available.
+
+For the case above, we could work it around by configurations as followings:
+
+###### 1. Define the relationship to `person` for `Travel`
+
+```ruby
+# travel.rb
+
+class Travel
+  has_one :person, through: :position
+end
+```
+
+###### 2. Define `first_name` through `person` in grid
+
+```ruby
+# travel_grid.rb
+
+class TravelGrid < WulinMaster::Grid
+  column :first_name, through: :person
 end
 ```
 

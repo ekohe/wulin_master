@@ -7,7 +7,7 @@
 # files.
 
 ENV["RAILS_ENV"] ||= "test"
-require File.expand_path("../../../spec/wulin_app/config/environment.rb", __FILE__)
+require File.expand_path('../../spec/wulin_app/config/environment.rb', __dir__)
 ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + "../../../spec/wulin_app"
 
 require 'cucumber/rails'

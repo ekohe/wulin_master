@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.push File.expand_path("../lib", __FILE__)
+$LOAD_PATH.push File.expand_path('lib', __dir__)
 require "wulin_master/version"
 
 Gem::Specification.new do |s|
@@ -41,6 +41,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pg', '~> 0.18'
   s.add_development_dependency 'poltergeist'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'spring'
-  s.add_development_dependency 'spring-commands-rspec'
+  # s.add_development_dependency 'spring'
+  # s.add_development_dependency 'spring-commands-rspec'
 end

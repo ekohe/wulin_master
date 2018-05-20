@@ -20,7 +20,7 @@ module WulinMaster
       GridState.transaction do
         new_state.save!
         new_state.brother_states.each do |state|
-          state.update_attributes!(current: false)
+          state.update!(current: false)
         end
       end
       self.response_body = "success"
@@ -44,7 +44,7 @@ module WulinMaster
     end
 
     def update
-      @state.update_attributes!(name: params[:name])
+      @state.update!(name: params[:name])
       self.response_body = "success"
     rescue StandardError
       self.response_body = $ERROR_INFO.message
@@ -60,9 +60,9 @@ module WulinMaster
     def set_current
       GridState.transaction do
         @state.brother_states.each do |state|
-          state..update_attributes!(current: false)
+          state..update!(current: false)
         end
-        @state.update_attributes!(current: true)
+        @state.update!(current: true)
       end
       self.response_body = "success"
     rescue StandardError
@@ -78,13 +78,13 @@ module WulinMaster
       # delete some states
       GridState.delete(all_states.map(&:id) - remaining_ids - [default_state.id])
       # if only remaining default states, mark it as current
-      default_state.update_attributes(:current, true)
+      default_state.update(:current, true)
 
       GridState.transaction do
         # update or create states
         params[:grid_states].each_value do |state|
           if state[:id].present?
-            GridState.find(state[:id]).update_attributes!(name: state[:name])
+            GridState.find(state[:id]).update!(name: state[:name])
           else
             GridState.create!(name: state[:name], user_id: current_user.id, grid_name: params[:grid_name])
           end

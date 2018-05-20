@@ -41,7 +41,7 @@ module WulinMaster
     end
 
     def klass_name
-      @class_name ||= reflection ? relation_klass_name : model.name
+      @klass_name ||= reflection ? relation_klass_name : model.name
     end
 
     def field_name

@@ -45,14 +45,14 @@ module WulinMaster
 
         if authorized_proc
           if authorized_proc.is_a?(Proc)
-            is_authorized = context && context.respond_to?(:current_user) ? authorized_proc.call(context.current_user) : authorized_proc.call(nil)
+            is_authorized = context&.respond_to?(:current_user) ? authorized_proc.call(context.current_user) : authorized_proc.call(nil)
             return unless is_authorized
           else
             return unless authorized_proc == true
           end
         elsif title_or_screen_class.is_a?(Class)
           if screen_instance.respond_to?(:authorized?)
-            is_authorized = context && context.respond_to?(:current_user) ? screen_instance.authorized?(context.current_user) : screen_instance.authorized?(nil)
+            is_authorized = context&.respond_to?(:current_user) ? screen_instance.authorized?(context.current_user) : screen_instance.authorized?(nil)
             return unless is_authorized
           end
         end
