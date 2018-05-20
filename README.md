@@ -598,35 +598,23 @@ end
 
 For the case above, we could work it around by configurations as followings:
 
-###### 1. Reduce join levels through creating delegations for `Position`
+###### 1. Define the relationship to `person` for `Travel`
 
 ```ruby
-# position.rb
+# travel.rb
 
-class Position
-  delegate :first_name, to: :person, prefix: true, allow_nil: true
+class Travel
+  has_one :person, through: :position
 end
 ```
 
-###### 2. Use `first_name` as Position owns them in grid
+###### 2. Define `first_name` through `person` in grid
 
 ```ruby
 # travel_grid.rb
 
 class TravelGrid < WulinMaster::Grid
-  column :first_name, through: :position
-end
-```
-
-###### 3. Special settings for model & column to make sorting & filtering available
-
-```ruby
-# travel_grid.rb
-
-class TravelGrid < WulinMaster::Grid
-  model Travel.includes(position: :person)
-
-  column :first_name, through: :position, sql_expression: 'people.first_name'
+  column :first_name, through: :person
 end
 ```
 
