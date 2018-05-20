@@ -276,6 +276,10 @@ end
 
 When the grid needs to show 2 or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias to avoid conflict when doing sql join.
 
+`:sort_column`
+
+Indicate the column should be used for sorting when it is not the column it self.
+
 `:sql_expression`
 
 This option is special and rarely used. It is only used when you want to do some special sql operation, like 'sorting' or 'filtering' virtual attributes by sql.
@@ -406,6 +410,37 @@ Set the grid load data or not when rendered, default is `true`. If set `false`, 
 `:multi_select`
 
 Default is `true`, which means you can select multiple rows in the grid. If set `false`, you can only select one row.
+
+`:color_theme`
+
+Set color theme for a specific grid, default color theme comes from the  `app_config.yml` under the `config` folder. WulinMaster supports all [colors](https://materializecss.com/color.html) provided by [MeterializeCSS](https://materializecss.com/)
+
+```yml
+# config/app_config.yml
+
+wulin_master:
+  color_theme: 'blue'
+```
+
+```ruby
+# app/grids/post_grid.rb
+
+class PostGrid < WulinMaster::Grid
+  color_theme 'red'
+end
+```
+
+`:background_color`
+
+Apart from `color_theme`, we can also set back ground color using `background_color`. Same to `color_theme`, supported colors listed  [here](https://materializecss.com/color.html).
+
+`:estimate_count`
+
+Normally, WulinMaster uses `#count` method of ActiveRecord which simply uses basic query `SELECT COUNT(*) FROM TABLE_NAME` to count the rows listed in a grid, but we also provide an optimized version by using the benefit of [count estimate](https://wiki.postgresql.org/wiki/Count_estimate) to do that when you're persisting your data in a PostgresSQL database. You can also make it happen to use the method only when data volume is huge by setting `threshold` parameter as `estimate_count threshold: 1000000`.
+
+`:default_sorting_state`
+
+Set the default sorting state for the grid. Usage: `default_sorting_state column: 'name', direction: 'ASC'`
 
 #### Grid actions
 
