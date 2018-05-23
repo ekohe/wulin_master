@@ -254,6 +254,7 @@ class PostGrid < WulinMaster::Grid
   ...
   column :author_email, source: :email, through: :author  # source = :email (of Author)
   column :email, through: :author                         # source = :email (of Author)
+  column :author, source: :name                           # source = :name  (of Author)
   column :author                                          # source = :name  (of Author)
   column :title                                           # source = :title (of Post)
   ...   
