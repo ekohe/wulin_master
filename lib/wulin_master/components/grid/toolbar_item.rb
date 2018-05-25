@@ -4,6 +4,12 @@ module WulinMaster
   class ToolbarItem
     attr_accessor :title, :javascript, :icon, :options
 
+    @@default_global_actions = %i[create add_detail switch show_all]
+
+    def self.add_default_global_actions(action)
+      @@default_global_actions << action
+    end
+
     def initialize(title, options = {})
       @title = title
 
@@ -23,8 +29,7 @@ module WulinMaster
     end
 
     def global?
-      options[:global] ||
-        (!options[:name].nil? && %i[create export import add_detail switch show_all].include?(options[:name].to_sym))
+      options[:global] || (!options[:name].nil? && @@default_global_actions.include?(options[:name].to_sym))
     end
 
     def anchor_tag_options

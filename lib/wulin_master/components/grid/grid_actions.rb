@@ -49,8 +49,10 @@ module WulinMaster
       end
 
       # interface open to other plugins
-      def add_default_action(action)
+      def add_default_action(action, options = {})
         @@default_actions << action
+        WulinMaster::Toolbar.add_default_icon action, options[:icon] if options[:icon]
+        WulinMaster::ToolbarItem.add_default_global_actions action if options[:global]
       end
 
       def add_hotkey_action(action_name, action_options)

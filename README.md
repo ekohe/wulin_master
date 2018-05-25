@@ -481,7 +481,16 @@ You can add this js file anywhere in the application, but we recommend to put it
 
 That's all, you have set up a simple print action.
 
-In addition, you can call `load_default_actions` method to add default toolbar items of WulinMaster, they are 'Add', 'Delete', 'Edit' and 'Audit' (if you have installed **WulinAudit** gem). Also, if you extend WulinMaster gem or create your own gem which include some new actions and you want to make them to be default actions, you can call the api method `add_default_action(YOUR_ACTION)` to do that.
+In addition, you can call `load_default_actions` method to add default toolbar items of WulinMaster, they are 'Create', 'Delete', 'Edit', 'Audit', 'Import' and 'Export'(if you have installed **WulinAudit**, **WulinImport** and **WulinAudit** gem).
+
+Also, if you want to extend WulinMaster gem or to create your own gem which include some new actions and you want to make them to be default actions, you can call the API method `add_default_action` like:
+
+```ruby
+# param1         : :import - action name
+# param2 (option): { icon: :file_upload } - select default icon from https://material.io/icons/
+# param3 (option): { global: true } - action available when no record is selected, such as Create, Import, Export etc.
+WulinMaster::Grid.add_default_action :import, icon: :file_upload, global: true
+```
 
 #### Grid behaviors
 
