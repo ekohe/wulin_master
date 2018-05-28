@@ -188,7 +188,7 @@
 
         for (var i=fromPage; i<=toPage; i++)
           data[i*loadingSize] = null; // null indicates a 'requested but not available yet'
-
+          
         return [(fromPage * loadingSize), (((toPage - fromPage) * loadingSize) + loadingSize)];
       } else {
         // Per page
@@ -229,7 +229,8 @@
 
       // Ekohe Add: Save row length without filter
       rowsWithoutFilter = parseInt(resp.totalNoFilter, 10);
-
+      
+      // Load as we scroll
       if (pageSize === 0) {
         from = resp.offset;
         to = resp.offset + resp.count;
@@ -242,6 +243,9 @@
 
       totalRows = parseInt(resp.total, 10);
       if (resp.rows) {
+        if (resp.rows.length < loadingSize) {
+          data[from+loadingSize] = null;
+        }
         for (var i = 0; i < resp.rows.length; i++) {
           var j = parseInt(from, 10) + parseInt(i, 10);
           var obj = {};
