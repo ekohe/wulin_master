@@ -187,7 +187,7 @@
 
         for (var i=fromPage; i<=toPage; i++)
           data[i*loadingSize] = null; // null indicates a 'requested but not available yet'
-
+          
         return [(fromPage * loadingSize), (((toPage - fromPage) * loadingSize) + loadingSize)];
       } else {
         // Per page
@@ -225,7 +225,8 @@
     function onSuccess(resp, textStatus, request) {
       var from;
       var to;
-
+      
+      // Load as we scroll
       if (pageSize === 0) {
         from = resp.offset;
         to = resp.offset + resp.count;
@@ -238,6 +239,9 @@
 
       totalRows = parseInt(resp.total, 10);
       if (resp.rows) {
+        if (resp.rows.length < loadingSize) {
+          data[from+loadingSize] = null;
+        }
         for (var i = 0; i < resp.rows.length; i++) {
           var j = parseInt(from, 10) + parseInt(i, 10);
           var obj = {};
