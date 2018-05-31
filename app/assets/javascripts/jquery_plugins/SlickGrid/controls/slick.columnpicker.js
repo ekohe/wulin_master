@@ -63,7 +63,7 @@
 
       var $li, $input, $allNoneInput;
 
-      // Ekohe Edit: Add column-container div for MD implementation
+      // Ekohe Add: column-container div for MD implementation
       var $columnContainer = $("<div class='column-container' />").appendTo($menu);
 
       // Append columns checkbox
