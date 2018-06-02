@@ -1,11 +1,15 @@
 (function ($) {
-  function SlickColumnPicker(columns, grid, options) {
+  function SlickColumnPicker(columns, grid, user_id, options) {
     var $menu;
     var columnCheckboxes;
+    var _self = this;   // Ekohe Add
 
     var defaults = {
       fadeSpeed:250
     };
+
+    // Ekohe Edit:
+    //   1. Bind the column pick event
 
     function init() {
       grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
@@ -18,6 +22,20 @@
         $(this).fadeOut(options.fadeSpeed)
       });
       $menu.on("click", updateColumn);
+
+      // Ekohe Add: bind the column pick event
+      $menu.on("click", handleColumnPick);
+      bindGrid();
+    }
+
+    // Ekohe Add: Assign the picker itself to grid
+    function bindGrid() {
+      grid.picker = _self;
+    }
+
+    // Ekohe Add: Bind the column pick event
+    function handleColumnPick(e, args) {
+      _self.onColumnsPick.notify({});
     }
 
     function destroy() {
@@ -25,6 +43,9 @@
       grid.onColumnsReordered.unsubscribe(updateColumnOrder);
       $menu.remove();
     }
+
+    // Ekohe Edit:
+    //  1. Remove "Force Fit Columns" & "Synchronous Resizing" features
 
     function handleHeaderContextMenu(e, args) {
       e.preventDefault();
@@ -50,28 +71,64 @@
           .appendTo($li);
       }
 
-      // Addpend "Force Fit Columns" checkbox
+      // Ekohe Add
+      // Addpend "Reset to defaults" checkbox
       $("<hr/>").appendTo($menu);
-      $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' />").data("option", "autoresize");
-      $("<label />")
-        .text("Force fit columns")
-        .prepend($input)
-        .appendTo($li);
-      if (grid.getOptions().forceFitColumns) {
-        $input.attr("checked", "checked");
-      }
+      $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+      $("<span />").html("RESET TO DEFAULTS").appendTo($a);
+      $a.on("click", function() {
+        $("#confirm_dialog").dialog({
+          modal: true,
+          buttons: {
+            Yes: function() {
+              $.post('/wulin_master/grid_states_manages/reset_default',
+                { _method: 'PUT',
+                 grid_name: grid.name,
+                 user_id: user_id
+                },
+                function(data) {
+                 if (data == 'ok') {
+                   load_page(History.getState().url);
+                 } else {
+                   displayErrorMessage(data);
+                 }
+                });
+              $(this).dialog("close");
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          },
+          close: function() {
+            $(this).dialog("destroy");
+          }
+        });
+      });
 
+      // Ekohe Delete
+      // Addpend "Force Fit Columns" checkbox
+      // $("<hr/>").appendTo($menu);
+      // $li = $("<li />").appendTo($menu);
+      // $input = $("<input type='checkbox' />").data("option", "autoresize");
+      // $("<label />")
+      //   .text("Force fit columns")
+      //   .prepend($input)
+      //   .appendTo($li);
+      // if (grid.getOptions().forceFitColumns) {
+      //   $input.attr("checked", "checked");
+      // }
+
+      // Ekohe Delete
       // Addpend "Synchronous Resizing" checkbox
-      $li = $("<li />").appendTo($menu);
-      $input = $("<input type='checkbox' />").data("option", "syncresize");
-      $("<label />")
-        .text("Synchronous resize")
-        .prepend($input)
-        .appendTo($li);
-      if (grid.getOptions().syncColumnCellResize) {
-        $input.attr("checked", "checked");
-      }
+      // $li = $("<li />").appendTo($menu);
+      // $input = $("<input type='checkbox' />").data("option", "syncresize");
+      // $("<label />")
+      //   .text("Synchronous resize")
+      //   .prepend($input)
+      //   .appendTo($li);
+      // if (grid.getOptions().syncColumnCellResize) {
+      //   $input.attr("checked", "checked");
+      // }
 
       $menu
         .css("top", e.pageY - 10)
@@ -102,27 +159,32 @@
       columns = ordered;
     }
 
-    function updateColumn(e) {
-      // "Force Fit Columns" checkbox hanlder
-      if ($(e.target).data("option") == "autoresize") {
-        if (e.target.checked) {
-          grid.setOptions({forceFitColumns:true});
-          grid.autosizeColumns();
-        } else {
-          grid.setOptions({forceFitColumns:false});
-        }
-        return;
-      }
+    // Ekohe Edit:
+    //  1. Remove "Force Fit Columns" & "Synchronous Resizing" features
 
+    function updateColumn(e) {
+      // Ekohe Delete
+      // "Force Fit Columns" checkbox hanlder
+      // if ($(e.target).data("option") == "autoresize") {
+      //   if (e.target.checked) {
+      //     grid.setOptions({forceFitColumns:true});
+      //     grid.autosizeColumns();
+      //   } else {
+      //     grid.setOptions({forceFitColumns:false});
+      //   }
+      //   return;
+      // }
+
+      // Ekohe Delete
       // "Synchronous Resizing" checkbox hanlder
-      if ($(e.target).data("option") == "syncresize") {
-        if (e.target.checked) {
-          grid.setOptions({syncColumnCellResize:true});
-        } else {
-          grid.setOptions({syncColumnCellResize:false});
-        }
-        return;
-      }
+      // if ($(e.target).data("option") == "syncresize") {
+      //   if (e.target.checked) {
+      //     grid.setOptions({syncColumnCellResize:true});
+      //   } else {
+      //     grid.setOptions({syncColumnCellResize:false});
+      //   }
+      //   return;
+      // }
 
       // Column checkbox handler
       if ($(e.target).is(":checkbox")) {
@@ -146,29 +208,13 @@
       return columns;
     }
 
-    ///////////////////////////////////////////////////////////
-    // Ekohe Add: New getter/setters
-
-    function getMenu() {
-      return $menu;
-    }
-
-    function getColumnCheckboxes() {
-      return columnCheckboxes;
-    }
-
-    // Ekohe Delete: Will be called in WulinMasterColumnPicker
-    // init();
+    init();
 
     // Ekohe Modify: Use extend instead of return to set APIs to this
     $.extend(this, {
-    // return {
-      "getMenu": getMenu,                                 // Ekohe Add
-      "getColumnCheckboxes": getColumnCheckboxes,         // Ekohe Add
-      "init": init,                                       // Ekohe Add
-      "updateColumn": updateColumn,                       // Ekohe Add
-      "handleHeaderContextMenu": handleHeaderContextMenu, // Ekohe Add
-      // "destroy": destroy // Ekohe Delete (should use WulinMasterColumnPicker's API)
+      "onColumnsPick": new Slick.Event(),
+
+      "destroy": destroy,
       "getAllColumns": getAllColumns
     });
   }

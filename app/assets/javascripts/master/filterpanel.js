@@ -66,10 +66,11 @@
         };
       })();
 
-      $input = $("input", $($grid.getHeaderRow()));
+      $input = $($grid.getHeaderRow()).find('input');
+
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $input.off('keyup').on('keyup', function(e) {
+      $($grid.getHeaderRow()).off('keyup', 'input').on('keyup', 'input', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();
