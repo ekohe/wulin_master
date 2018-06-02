@@ -1,5 +1,5 @@
 (function ($) {
-  function SlickColumnPicker(columns, grid, options) {
+  function SlickColumnPicker(columns, grid, user_id, options) {
     var $menu;
     var columnCheckboxes;
     var _self = this;   // Ekohe Add
@@ -70,6 +70,40 @@
           .prepend($input)
           .appendTo($li);
       }
+
+      // Ekohe Add
+      // Addpend "Reset to defaults" checkbox
+      $("<hr/>").appendTo($menu);
+      $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+      $("<span />").html("RESET TO DEFAULTS").appendTo($a);
+      $a.on("click", function() {
+        $("#confirm_dialog").dialog({
+          modal: true,
+          buttons: {
+            Yes: function() {
+              $.post('/wulin_master/grid_states_manages/reset_default',
+                { _method: 'PUT',
+                 grid_name: grid.name,
+                 user_id: user_id
+                },
+                function(data) {
+                 if (data == 'ok') {
+                   load_page(History.getState().url);
+                 } else {
+                   displayErrorMessage(data);
+                 }
+                });
+              $(this).dialog("close");
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          },
+          close: function() {
+            $(this).dialog("destroy");
+          }
+        });
+      });
 
       // Ekohe Delete
       // Addpend "Force Fit Columns" checkbox

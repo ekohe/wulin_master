@@ -5,6 +5,7 @@
       toolbar_items.select! do |item|
         grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
       end
+      user_id = (respond_to?(:current_user) && current_user) ? current_user.id : -1
     .grid-header
       %h2= grid.title
       - grid.header_actions.each do |a|
@@ -32,7 +33,8 @@
                              #{grid.states_for_user.html_safe},
                              #{grid.action_configs.to_json.html_safe},
                              #{grid.behavior_configs.to_json.html_safe},
-                             #{grid.options.to_json.html_safe});
+                             #{grid.options.to_json.html_safe},
+                             #{user_id});
 
   // Initial adjusting toolbar
   WulinMaster.dynamicToolbar.reset('#{grid.name}', true);
