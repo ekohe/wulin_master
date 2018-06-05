@@ -19,7 +19,8 @@
         },
 
         GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-            return value ? "<img src='/assets/tick.png'>" : "";
+            var image = value ? "<img src='/assets/tick.png'>" : "";
+            return "<div style='text-align:center;display:block'>" + image + "</div>";
             // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
         },
 
