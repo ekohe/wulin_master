@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'material_icons'
   s.add_dependency 'materialize-sass'
-  s.add_dependency 'rails', '~> 5.1.4'
+  s.add_dependency 'rails'
   s.add_dependency 'responders'
   s.add_dependency 'sass-rails'
   s.add_development_dependency 'capybara'
@@ -42,6 +42,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'poltergeist'
   s.add_development_dependency 'puma'
   s.add_development_dependency 'rspec-rails'
-  # s.add_development_dependency 'spring'
-  # s.add_development_dependency 'spring-commands-rspec'
 end
