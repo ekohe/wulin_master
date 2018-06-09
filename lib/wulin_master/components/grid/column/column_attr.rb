@@ -129,7 +129,7 @@ module WulinMaster
     end
 
     def relation_field?
-      model_associations.keys.include?(field_str)
+      model_associations.key?(field_str)
     end
   end
 end

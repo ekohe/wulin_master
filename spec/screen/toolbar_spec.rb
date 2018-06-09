@@ -12,7 +12,6 @@ describe WulinMaster::Toolbar do
     toolbar.items.each { |item| expect(item).to be_a WulinMaster::ToolbarItem }
     expect(toolbar.items.first.icon).to eq('add_box')
     expect(toolbar.items.first.options[:name]).to eq('create')
-    expect(toolbar.items.last.icon).to eq('file_download')
     expect(toolbar.items.last.options[:name]).to eq('export')
   end
 end

@@ -19,7 +19,7 @@ module WulinMaster
         else
           state.update(:state_value, state_value)
         end
-      elsif state_value !~ /^\s*(null|undefined)\s*$/
+      elsif !state_value.match?(/^\s*(null|undefined)\s*$/)
         create(attrs)
       end
     end

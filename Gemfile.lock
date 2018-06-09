@@ -199,6 +199,7 @@ GEM
       byebug (~> 9.1)
       pry (~> 0.10)
     public_suffix (3.0.0)
+    puma (3.11.4)
     rack (2.0.5)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -324,6 +325,7 @@ DEPENDENCIES
   poltergeist
   pry
   pry-byebug
+  puma
   rails-controller-testing
   rspec-activemodel-mocks
   rspec-rails

@@ -48,11 +48,11 @@
 
       // Ekohe Edit: Use new MD headers instead of headerRow
       // $input = $("input", $($grid.getHeaderRow()));
-      $input = $("input", $($grid.getHeaders()));
+      $input = $($grid.getHeaders()).find('input');
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
-      $input.off('keyup').on('keyup', function(e) {
+      $($grid.getHeaders()).off('keyup', 'input').on('keyup', 'input', function(e) {
         var containerWidth = $grid.container.innerWidth();
         var $viewPort = $($grid.getCanvasNode()).parent();
         var inputLeft = $(this).position().left + $(this).outerWidth();

@@ -202,9 +202,10 @@ module WulinMaster
       { choices: @options[:choices], source: source }
     end
 
-    # Spec: Suppose a post belongs_to an author
+    # Spec: Suppose a post belongs_to an author. In the post grid, we can have columns like
     # - column :author_email, source: :email, through: :author  -> source = :email (of author)
     # - column :email, through: :author                         -> source = :email (of author)
+    # - column :author, source: email                           -> source = :name  (of author)
     # - column :author                                          -> source = :name  (of author)
     # - column :title                                           -> source = :title (of post)
     def source
