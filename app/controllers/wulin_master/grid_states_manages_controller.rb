@@ -60,7 +60,7 @@ module WulinMaster
     def set_current
       GridState.transaction do
         @state.brother_states.each do |state|
-          state..update!(current: false)
+          state.update!(current: false)
         end
         @state.update!(current: true)
       end
