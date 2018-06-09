@@ -40,8 +40,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'pg', '~> 0.18'
   s.add_development_dependency 'poltergeist'
+  s.add_development_dependency 'puma'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'thin'
   # s.add_development_dependency 'spring'
   # s.add_development_dependency 'spring-commands-rspec'
 end
