@@ -796,7 +796,7 @@ if (typeof Slick === "undefined") {
     function setupColumnSort() {
       // Ekohe Edit
       // $headers.click(function (e) {
-      $(".slick-sort-indicator").click(function (e) {
+      $headers.on('click', '.slick-sort-indicator', function(e) {
         // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
         e.metaKey = e.metaKey || e.ctrlKey;
 
