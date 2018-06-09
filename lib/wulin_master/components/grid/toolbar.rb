@@ -4,9 +4,7 @@ require 'wulin_master/components/grid/toolbar_item'
 
 module WulinMaster
   class Toolbar
-    attr_reader :grid_name, :items
-
-    @@defualt_icons = {
+    @default_icons = {
       create: :add_box,
       add_detail: :add_box,
       show_all: :format_align_justify,
@@ -17,9 +15,15 @@ module WulinMaster
       switch: :launch
     }
 
-    def self.add_default_icon(action, icon)
-      @@defualt_icons[action] = icon
+    class << self
+      attr_reader :default_icons
+
+      def add_default_icon(action, icon)
+        @default_icons[action] = icon
+      end
     end
+
+    attr_reader :grid_name, :items
 
     def initialize(grid_name, actions = [])
       @grid_name = grid_name
@@ -29,7 +33,7 @@ module WulinMaster
         item_options = {
           id: "#{action[:name]}_action_on_#{grid_name}",
           class: ("#{action[:name]}_action " + action[:class].to_s),
-          icon: (action[:icon] || @@defualt_icons[action[:name].to_sym]).to_s,
+          icon: (action[:icon] || Toolbar.default_icons[action[:name].to_sym]).to_s,
           manually_enable: action[:manually_enable]
         }
         item_options = action.merge(item_options)
