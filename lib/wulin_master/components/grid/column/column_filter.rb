@@ -102,7 +102,19 @@ module WulinMaster
     def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
       case column_sql_type.to_s
       when 'date', 'datetime'
-        return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
+        match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
+        operator, value = match_data[1], match_data[2].strip
+        field = "#{model.table_name}.#{source}"
+        where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", value + '%'
+        begin
+          if operator
+            date = DateTime.parse(value).strftime('%Y/%m/%d %T')
+            where_condition = "#{field} #{operator} '#{date}'" if operator
+          end
+        rescue ArgumentError
+        end
+        return query.where(where_condition)
+        # return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
       when "boolean"
         true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
