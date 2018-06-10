@@ -103,15 +103,15 @@ module WulinMaster
       case column_sql_type.to_s
       when 'date', 'datetime'
         match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
-        operator, value = match_data[1], match_data[2].strip
+        operator = match_data[1]
+        text = match_data[2].strip
         field = "#{model.table_name}.#{source}"
-        where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", value + '%'
         begin
-          if operator
-            date = DateTime.parse(value).strftime('%Y/%m/%d %T')
-            where_condition = "#{field} #{operator} '#{date}'" if operator
-          end
+          date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
+          where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
+          where_condition = "#{field} #{operator} '#{date}'" if operator
         rescue ArgumentError
+          where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
         end
         return query.where(where_condition)
         # return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
