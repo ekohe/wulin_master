@@ -112,23 +112,21 @@ module WulinMaster
           where_condition = "#{field} #{operator} '#{date}'" if operator
         rescue ArgumentError
         end
-        return query.where(where_condition)
+        query.where(where_condition)
       when "boolean"
         true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
         adapter.boolean_query(complete_column_name, true_or_false, self)
         adapter.query
+      when 'enum'
+        filtering_value = model.send(source.to_s.pluralize).find do |key, value|
+          value if key.downcase.start_with?(filtering_value.downcase)
+        end
+        query.where(source => filtering_value)
       else
         filtering_value = filtering_value.gsub(/'/, "''")
-
-        if enum?
-          filtering_value = model.send(source.to_s.pluralize).find do |key, value|
-            value if key.downcase.start_with?(filtering_value.downcase)
-          end
-        end
-
-        adapter.string_query(complete_column_name, filtering_value, self) if sql_type != :enum
-        return adapter.query unless %w[integer float decimal enum].include?(sql_type.to_s) && table_column?
+        adapter.string_query(complete_column_name, filtering_value, self)
+        return adapter.query unless %w[integer float decimal].include?(sql_type.to_s) && table_column?
         query.where(source => filtering_value)
       end
     end
