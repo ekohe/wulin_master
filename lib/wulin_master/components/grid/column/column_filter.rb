@@ -100,12 +100,13 @@ module WulinMaster
     end
 
     def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
+      field = "#{model.table_name}.#{source}"
+      match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
+      operator = match_data[1]
+      text = match_data[2].strip
+
       case column_sql_type.to_s
       when 'date', 'datetime'
-        match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
-        operator = match_data[1]
-        text = match_data[2].strip
-        field = "#{model.table_name}.#{source}"
         where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
         begin
           date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
@@ -123,10 +124,11 @@ module WulinMaster
           value if key.downcase.start_with?(filtering_value.downcase)
         end
         query.where(source => filtering_value)
-      else
+      else #'number'
         filtering_value = filtering_value.gsub(/'/, "''")
-        adapter.string_query(complete_column_name, filtering_value, self)
         return adapter.query unless %w[integer float decimal].include?(sql_type.to_s) && table_column?
+        return query.where("#{field} #{operator} #{text}") if operator
+        adapter.string_query(complete_column_name, filtering_value, self)
         query.where(source => filtering_value)
       end
     end
