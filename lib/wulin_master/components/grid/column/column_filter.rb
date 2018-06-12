@@ -127,7 +127,7 @@ module WulinMaster
           end
         end
 
-        adapter.string_query(complete_column_name, filtering_value, self)
+        adapter.string_query(complete_column_name, filtering_value, self) if sql_type != :enum
         return adapter.query unless %w[integer float decimal enum].include?(sql_type.to_s) && table_column?
         query.where(source => filtering_value)
       end
