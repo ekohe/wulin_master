@@ -119,6 +119,7 @@ Metrics/PerceivedComplexity:
 Lint/HandleExceptions:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
+    - 'lib/wulin_master/components/grid/column/column_filter.rb'
 
 Style/ClassVars:
   Exclude:

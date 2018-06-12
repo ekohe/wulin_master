@@ -106,15 +106,13 @@ module WulinMaster
         operator = match_data[1]
         text = match_data[2].strip
         field = "#{model.table_name}.#{source}"
+        where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
         begin
           date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
-          where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
           where_condition = "#{field} #{operator} '#{date}'" if operator
         rescue ArgumentError
-          where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
         end
         return query.where(where_condition)
-        # return query.where(["to_char(#{source}, 'DD/MM/YYYY') LIKE UPPER(?)", filtering_value + "%"])
       when "boolean"
         true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
