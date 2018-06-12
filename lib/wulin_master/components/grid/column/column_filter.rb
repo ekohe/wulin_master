@@ -124,7 +124,7 @@ module WulinMaster
           value if key.downcase.start_with?(filtering_value.downcase)
         end
         query.where(source => filtering_value)
-      else #'number'
+      else # 'number'
         filtering_value = filtering_value.gsub(/'/, "''")
         return adapter.query unless %w[integer float decimal].include?(sql_type.to_s) && table_column?
         return query.where("#{field} #{operator} #{text}") if operator
