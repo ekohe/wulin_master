@@ -709,6 +709,9 @@ if (typeof Slick === "undefined") {
             .attr("for", "" + m.id)
             .appendTo(header);
 
+        // Ekohe Add: Align label to center
+        headerColLabel.css('left', (header.width() - headerColLabel.textWidth()) / 2);
+
         // Ekohe Add: Add left padding to the first columns
         if (i == 0) {
           header.css({'margin-left': '10px'}).width(header.width() - 10);
@@ -1317,15 +1320,18 @@ if (typeof Slick === "undefined") {
       var h;
       for (var i = 0, headers = $headers.children(), ii = headers.length; i < ii; i++) {
         h = $(headers[i]);
-		if (jQueryNewWidthBehaviour) {
-			if (h.outerWidth() !== columns[i].width) {
-			  h.outerWidth(columns[i].width);
-			}
-		} else {
-			if (h.width() !== columns[i].width - headerColumnWidthDiff) {
-			  h.width(columns[i].width - headerColumnWidthDiff);
-			}
-		}
+    		if (jQueryNewWidthBehaviour) {
+    			if (h.outerWidth() !== columns[i].width) {
+    			  h.outerWidth(columns[i].width);
+    			}
+    		} else {
+    			if (h.width() !== columns[i].width - headerColumnWidthDiff) {
+    			  h.width(columns[i].width - headerColumnWidthDiff);
+    			}
+    		}
+        // Ekohe Add: Align label to center for MD
+        var $label = h.find('label');
+        $label.css('left', (h.width() - $label.textWidth()) / 2);
       }
 
       updateColumnCaches();
