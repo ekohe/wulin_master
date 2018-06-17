@@ -118,7 +118,24 @@
       // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
-      // ------------------------- Create Grid ------------------------------------
+      // create the row detail plugin
+      detailView = new Slick.Plugins.RowDetailView({
+        cssClass: "detailView-toggle",
+        preTemplate: loadingTemplate,
+        postTemplate: loadView,
+        process: simulateServerCall,
+        useRowClick: true,
+
+        // how many grid rows do we want to use for the detail panel
+        // also note that the detail view adds an extra 1 row for padding purposes
+        // so if you choose 4 panelRows, the display will in fact use 5 rows
+        panelRows: 4
+      });
+
+      // push the plugin as the first column
+      // columns.unshift(detailView.getColumnDefinition());
+
+    // ------------------------- Create Grid ------------------------------------
       grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
@@ -199,7 +216,46 @@
 
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
+      grid.registerPlugin(detailView);
     } // createNewGrid
+
+    function loadingTemplate() {
+      return '<div class="preload">Loading...</div>';
+    }
+
+    function loadView(itemDetail) {
+      return '<div class="preload">Loaded.</div>';
+      // return [
+      //   '<div>',
+      //   '<h4>' + itemDetail.title + '</h4>',
+      //   '<div class="detail"><label>Assignee:</label> <span>' + itemDetail.assignee + '</span></div>',
+      //   '<div class="detail"><label>Reporter:</label> <span>' + itemDetail.reporter + '</span></div>',
+      //   '<div class="detail"><label>Duration:</label> <span>' + itemDetail.duration + '</span></div>',
+      //   '<div class="detail"><label>% Complete:</label> <span>' + itemDetail.percentComplete + '</span></div>',
+      //   '<div class="detail"><label>Start:</label> <span>' + itemDetail.start + '</span></div>',
+      //   '<div class="detail"><label>Finish:</label> <span>' + itemDetail.finish + '</span></div>',
+      //   '<div class="detail"><label>Effort Driven:</label> <span>' + itemDetail.effortDriven + '</span></div>',
+      //   '<div class="detail"><label>Effort Driven:</label> <span>' + itemDetail.effortDriven + '</span></div>',
+      //   '</div>'
+      // ].join('');
+    }
+
+    function simulateServerCall(item) {
+      // fill the template on delay
+      setTimeout(function() {
+        $('.preload').text('Server Call completed.');
+        // // let's add some property to our item for a better simulation
+        // var itemDetail = item;
+        // itemDetail.assignee = fakeNames[randomNumber(0, 10)];
+        // itemDetail.reporter = fakeNames[randomNumber(0, 10)];
+        //
+        // if(itemDetail.num % 5 == 0) {
+        //   notifyNonTemplatedView(itemDetail)
+        // } else {
+        //   notifyTemplate(itemDetail)
+        // }
+      }, 1000);
+    }
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
