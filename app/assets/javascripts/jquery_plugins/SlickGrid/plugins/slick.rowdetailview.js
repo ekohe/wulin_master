@@ -3,7 +3,7 @@
  * Original StackOverflow question & article making this possible (thanks to violet313)
  * https://stackoverflow.com/questions/10535164/can-slickgrids-row-height-be-dynamically-altered#29399927
  * http://violet313.org/slickgrids/#intro
- * 
+ *
  *
  * USAGE:
  *
@@ -17,17 +17,17 @@
  *    process:          Async server function call
  *    panelRows:        Row count to use for the template panel
  *    useRowClick:      Boolean flag, when True will open the row detail on a row click (from any column), default to False
- * 
+ *
  * AVAILABLE PUBLIC OPTIONS:
  *    init:                 initiliaze the plugin
  *    destroy:              destroy the plugin and it's events
  *    collapseAll:          collapse all opened row detail panel
- *    getColumnDefinition:  get the column definitions 
+ *    getColumnDefinition:  get the column definitions
  *    getOptions:           get current plugin options
  *    setOptions:           set or change some of the plugin options
- * 
+ *
  * THE PLUGIN EXPOSES THE FOLLOWING SLICK EVENTS:
- *    onAsyncResponse:  This event must be used with the "notify" by the end user once the Asynchronous Server call returns the item detail 
+ *    onAsyncResponse:  This event must be used with the "notify" by the end user once the Asynchronous Server call returns the item detail
  *       Event args:
  *          itemDetail: Item detail returned from the async server call
  *          detailView:  An explicit view to use instead of template (Optional)
@@ -36,12 +36,12 @@
  *       Event args:
  *         grid:        Reference to the grid.
  *         itemDetail:  Column definition.
- * 
+ *
  *    onBeforeRowDetailToggle: Fired before the row detail gets toggled
  *       Event args:
  *         grid:        Reference to the grid.
  *         item:  Column definition.
- * 
+ *
  *    onAfterRowDetailToggle: Fired after the row detail gets toggled
  *       Event args:
  *         grid:        Reference to the grid.
@@ -57,7 +57,6 @@
       }
     }
   });
-
 
   function RowDetailView(options) {
     var _grid;
@@ -83,7 +82,7 @@
       _handler
         .subscribe(_grid.onClick, handleClick)
         .subscribe(_grid.onSort, handleSort)
-		.subscribe(_grid.onScroll, handleScroll);
+        .subscribe(_grid.onScroll, handleScroll);
 
       _grid.getData().onRowCountChanged.subscribe(function () { _grid.updateRowCount(); _grid.render(); });
       _grid.getData().onRowsChanged.subscribe(function (e, a) { _grid.invalidateRows(a.rows); _grid.render(); });
@@ -107,7 +106,7 @@
     function setOptions(options) {
       _options = $.extend(true, {}, _options, options);
     }
-  
+
     function handleClick(e, args) {
       // clicking on a row select checkbox
       if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).hasClass("detailView-toggle")) {
@@ -146,42 +145,41 @@
 
 	// If we scroll save detail views that go out of cache range
     function handleScroll(e, args) {
-        
-        var range = _grid.getRenderedRange();
 
-        var start = (range.top > 0 ? range.top : 0);
-        var end = (range.bottom > _dataView.getLength() ? range.bottom : _dataView.getLength());
-        
-        // Get the item at the top of the view
-        var topMostItem = _dataView.getItemByIdx(start);
+      var range = _grid.getRenderedRange();
 
-        // Check it is a parent item
-        if (topMostItem && topMostItem._parent == undefined)
+      var start = (range.top > 0 ? range.top : 0);
+      var end = (range.bottom > _dataView.getLength() ? range.bottom : _dataView.getLength());
+
+      // Get the item at the top of the view
+      var topMostItem = _dataView.getItemByIdx(start);
+
+      // Check it is a parent item
+      if (topMostItem && topMostItem._parent == undefined)
+      {
+        // This is a standard row as we have no parent.
+        var nextItem = _dataView.getItemByIdx(start + 1);
+        if(nextItem !== undefined && nextItem._parent !== undefined)
         {
-            // This is a standard row as we have no parent.
-            var nextItem = _dataView.getItemByIdx(start + 1);
-            if(nextItem !== undefined && nextItem._parent !== undefined)
-            {
-                // This is likely the expanded Detail Row View
-                // Check for safety
-                if(nextItem._parent == topMostItem)
-                {
-                    saveDetailView(topMostItem);
-                }
-            }
+          // This is likely the expanded Detail Row View
+          // Check for safety
+          if(nextItem._parent == topMostItem)
+          {
+            saveDetailView(topMostItem);
+          }
         }
+      }
 
-        // Find the bottom most item that is likely to go off screen
-        var bottomMostItem = _dataView.getItemByIdx(end - 1);
+      // Find the bottom most item that is likely to go off screen
+      var bottomMostItem = _dataView.getItemByIdx(end - 1);
 
-        // If we are a detailView and we are about to go out of cache view
-        if (bottomMostItem && bottomMostItem._parent !== undefined)
-        {
-            saveDetailView(bottomMostItem._parent);
-            
-        }
+      // If we are a detailView and we are about to go out of cache view
+      if (bottomMostItem && bottomMostItem._parent !== undefined)
+      {
+        saveDetailView(bottomMostItem._parent);
+      }
     }
-	
+
     // Toggle between showing and hiding a row
     function toggleRowSelection(row) {
       _grid.getData().beginUpdate();
@@ -195,29 +193,29 @@
         collapseItem(_expandedRows[i]);
       }
     }
-	
+
     // Saves the current state of the detail view
     function saveDetailView(item)
     {
-        var view = $("#innerDetailView_" + item.id);
-        if (view)
+      var view = $("#innerDetailView_" + item.id);
+      if (view)
+      {
+        var html = $("#innerDetailView_" + item.id).html();
+        if(html !== undefined)
         {
-            var html = $("#innerDetailView_" + item.id).html();
-            if(html !== undefined)
-            {
-                item._detailContent = html;
-            }
-        }   
+          item._detailContent = html;
+        }
+      }
     }
-	
+
     // Colapse an Item so it is notlonger seen
     function collapseItem(item) {
-	  
+
       // Save the details on the collapse assuming onetime loading
       if (_options.loadOnce) {
-          saveDetailView(item);
+        saveDetailView(item);
       }
-		
+
       item._collapsed = true;
       for (var idx = 1; idx <= item._sizePadding; idx++) {
         _dataView.deleteItem(item.id + "." + idx);
@@ -235,10 +233,10 @@
     function expandItem(item) {
       item._collapsed = false;
       _expandedRows.push(item);
-      
+
       // In the case something went wrong loading it the first time such a scroll of screen before loaded
-      if (!item._detailContent) item._detailViewLoaded = false;	  
-	   
+      if (!item._detailContent) item._detailViewLoaded = false;
+
       // display pre-loading template
       if (!item._detailViewLoaded || _options.loadOnce !== true) {
         item._detailContent = _options.preTemplate(item);
@@ -264,8 +262,8 @@
      * subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
      * the response has to be as "args.itemDetail" with it's data back
      */
-    function subscribeToOnAsyncResponse() {      
-      _self.onAsyncResponse.subscribe(function (e, args) {      
+    function subscribeToOnAsyncResponse() {
+      _self.onAsyncResponse.subscribe(function (e, args) {
         if (!args || !args.itemDetail) {
           throw 'Slick.RowDetailView plugin requires the onAsyncResponse() to supply "args.itemDetail" property.'
         }
@@ -284,8 +282,8 @@
 
         // trigger an event once the post template is finished loading
         _self.onAsyncEndUpdate.notify({
-            "grid": _grid,
-            "itemDetail": args.itemDetail
+          "grid": _grid,
+          "itemDetail": args.itemDetail
         }, e, _self);
       });
     }
@@ -357,11 +355,11 @@
 
       if (dataContext._collapsed == undefined) {
         dataContext._collapsed = true,
-          dataContext._sizePadding = 0,     //the required number of pading rows
-          dataContext._height = 0,     //the actual height in pixels of the detail field
-          dataContext._isPadding = false,
-          dataContext._parent = undefined,
-          dataContext._offset = 0
+        dataContext._sizePadding = 0,     //the required number of pading rows
+        dataContext._height = 0,     //the actual height in pixels of the detail field
+        dataContext._isPadding = false,
+        dataContext._parent = undefined,
+        dataContext._offset = 0
       }
 
       if (dataContext._isPadding == true) {
@@ -388,7 +386,7 @@
         html.push("style='height:", dataContext._height, "px;"); //set total height of padding
         html.push("top:", rowHeight, "px'>");             //shift detail below 1st row
         html.push("<div id='detailViewContainer_", dataContext.id, "'  class='detail-container' style='max-height:" + (dataContext._height - rowHeight + bottomMargin) + "px'>"); //sub ctr for custom styling
-        html.push("<div id='innerDetailView_" , dataContext.id , "'>" , dataContext._detailContent, "</div></div>"); 
+        html.push("<div id='innerDetailView_" , dataContext.id , "'>" , dataContext._detailContent, "</div></div>");
         //&omit a final closing detail container </div> that would come next
 
         return html.join("");
@@ -398,46 +396,46 @@
 
     function resizeDetailView(item) {
       if (!item) return;
-      
+
       // Grad each of the dom items
       var mainContainer = document.getElementById('detailViewContainer_' + item.id);
       var cellItem = document.getElementById('cellDetailView_' + item.id);
       var inner = document.getElementById('innerDetailView_' + item.id);
-      
+
       if (!mainContainer || !cellItem || !inner) return;
-      
+
       for (var idx = 1; idx <= item._sizePadding; idx++) {
-          _dataView.deleteItem(item.id + "." + idx);
+        _dataView.deleteItem(item.id + "." + idx);
       }
-      
+
       var rowHeight = _grid.getOptions().rowHeight; // height of a row
       var lineHeight = 13; //we know cuz we wrote the custom css innit ;)
-      
+
       // Get the inner Item height as this will be the actual size
       var itemHeight = inner.clientHeight;
-      
-      // Now work out how many rows 
+
+      // Now work out how many rows
       var rowCount = Math.ceil(itemHeight / rowHeight) + 1;
-      
+
       item._sizePadding = Math.ceil(((rowCount * 2) * lineHeight) / rowHeight);
       item._height = (item._sizePadding * rowHeight);
-	  
+
 	  // If the padding is now more than the original minRowBuff we need to increase it
       if (_grid.getOptions().minRowBuffer < item._sizePadding)
       {
-          // Update the minRowBuffer so that the view doesn't disappear when it's at top of screen + the original default 3
-          _grid.getOptions().minRowBuffer =item._sizePadding + 3;
+        // Update the minRowBuffer so that the view doesn't disappear when it's at top of screen + the original default 3
+        _grid.getOptions().minRowBuffer =item._sizePadding + 3;
       }
-      
+
       mainContainer.setAttribute("style", "max-height: " + item._height + "px");
       if (cellItem) cellItem.setAttribute("style", "height: " + item._height + "px;top:" + rowHeight + "px");
-      
+
       var idxParent = _dataView.getIdxById(item.id);
       for (var idx = 1; idx <= item._sizePadding; idx++) {
-          _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
+        _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
       }
     }
-	
+
     $.extend(this, {
       "init": init,
       "destroy": destroy,
@@ -449,7 +447,7 @@
       "onAsyncEndUpdate": new Slick.Event(),
       "onAfterRowDetailToggle": new Slick.Event(),
       "onBeforeRowDetailToggle": new Slick.Event(),
-	  "resizeDetailView": resizeDetailView
+      "resizeDetailView": resizeDetailView
     });
   }
 })(jQuery);
