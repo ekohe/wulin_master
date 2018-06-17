@@ -81,8 +81,9 @@
 
       _handler
         .subscribe(_grid.onClick, handleClick)
-        .subscribe(_grid.onSort, handleSort)
-        .subscribe(_grid.onScroll, handleScroll);
+        .subscribe(_grid.onSort, handleSort);
+        // Ekohe Delete: TODO - Make handleScroll work for remote model
+        // .subscribe(_grid.onScroll, handleScroll);
 
       // Ekohe Delete: Use remote model instead of data view
       // _grid.getData().onRowCountChanged.subscribe(function () { _grid.updateRowCount(); _grid.render(); });
