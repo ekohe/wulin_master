@@ -129,9 +129,7 @@
           "item": item
         }, e, _self);
 
-        // Ekohe Delete: Comment for a while to make CI pass
-        // TODO: Need to implement for a remote model version
-        // toggleRowSelection(item);
+        toggleRowSelection(item);
 
         // trigger an event after toggling
         _self.onAfterRowDetailToggle.notify({
@@ -149,7 +147,7 @@
       collapseAll();
     }
 
-	// If we scroll save detail views that go out of cache range
+	  // If we scroll save detail views that go out of cache range
     function handleScroll(e, args) {
 
       var range = _grid.getRenderedRange();
@@ -188,9 +186,11 @@
 
     // Toggle between showing and hiding a row
     function toggleRowSelection(row) {
-      _grid.getData().beginUpdate();
+      // Edit Delete
+      // _grid.getData().beginUpdate();
       HandleAccordionShowHide(row);
-      _grid.getData().endUpdate();
+      // Edit Delete
+      // _grid.getData().endUpdate();
     }
 
     // Collapse all of the open items
@@ -227,7 +227,8 @@
         _dataView.deleteItem(item.id + "." + idx);
       }
       item._sizePadding = 0;
-      _dataView.updateItem(item.id, item);
+      // TODO
+      // _dataView.updateItem(item.id, item);
 
       // Remove the item from the expandedRows
       _expandedRows = _expandedRows.filter(function (r) {
@@ -258,7 +259,8 @@
       }
 
       applyTemplateNewLineHeight(item);
-      _dataView.updateItem(item.id, item);
+      // Ekohe Delete
+      // _dataView.updateItem(item.id, item);
 
       // async server call
       _options.process(item);
@@ -301,6 +303,9 @@
         } else {
           expandItem(item);
         }
+        // Ekohe Add
+        _grid.setData(_dataView);
+        _grid.render();
       }
     }
 
@@ -309,9 +314,12 @@
     var getPaddingItem = function (parent, offset) {
       var item = {};
 
-      for (var prop in _grid.getData()) {
+      // Ekohe Edit
+      // for (var prop in _grid.getData()) {
+      for (var prop in parent) {
         item[prop] = null;
       }
+
       item.id = parent.id + "." + offset;
 
       //additional hidden padding metadata fields
@@ -336,12 +344,28 @@
       item._sizePadding = Math.ceil(((rowCount * 2) * lineHeight) / _grid.getOptions().rowHeight);
       item._height = (item._sizePadding * _grid.getOptions().rowHeight);
 
-      var idxParent = _dataView.getIdxById(item.id);
-      for (var idx = 1; idx <= item._sizePadding; idx++) {
-        _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
-      }
-    }
+      // Ekohe Edit
+      // var idxParent = _dataView.getIdxById(item.id);
+      var idxParent = parseInt(Object.keys(_dataView).find(key => _dataView[key].id === item.id));
 
+      // Ekohe Add: Change the index of the remained items
+      var remainedItems = {};
+      for (var idx = idxParent + 1; idx <= _dataView.length; idx++) {
+        remainedItems[idx + item._sizePadding] = _dataView[idx];
+        delete _dataView[idx];
+      }
+
+      // Add fake items
+      for (var idx = 1; idx <= item._sizePadding; idx++) {
+        // Ekohe Edit
+        // _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
+        _dataView[idxParent + idx] = getPaddingItem(item, idx);
+      }
+
+      // Ekohe Add: Create new data by combining the fake items and remainedItems
+      $.extend(_dataView, remainedItems);
+      _dataView.length += item._sizePadding;
+    }
 
     function getColumnDefinition() {
       return {
