@@ -71,7 +71,7 @@
     };
 
     // Ekohe Add
-    var itemOperationFns = {
+    var _dataView = {
       getIdxById: function(id) {
         return parseInt(Object.keys(this).find(key => this[key].id === id));
       },
@@ -90,7 +90,8 @@
 
     function init(grid) {
       _grid = grid;
-      _dataView = _grid.getData();
+      // Ekohe Delete
+      // _dataView = _grid.getData();
 
       // Update the minRowBuffer so that the view doesn't disappear when it's at top of screen + the original default 3
       _grid.getOptions().minRowBuffer = _options.panelRows + 3;
@@ -101,9 +102,10 @@
         // Ekohe Delete: TODO - Make handleScroll work for remote model
         // .subscribe(_grid.onScroll, handleScroll);
 
-      // Ekohe Delete: Use remote model instead of data view
+      // Ekohe Edit: Use remote model instead of data view
       // _grid.getData().onRowCountChanged.subscribe(function () { _grid.updateRowCount(); _grid.render(); });
       // _grid.getData().onRowsChanged.subscribe(function (e, a) { _grid.invalidateRows(a.rows); _grid.render(); });
+      _grid.loader.onDataLoaded.subscribe(function (e, a) { $.extend(_dataView, _grid.getData()); });
 
       // subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
       subscribeToOnAsyncResponse();
@@ -134,9 +136,6 @@
           e.stopImmediatePropagation();
           return;
         }
-
-        // Ekohe Add: Add functions to dataView
-        $.extend(_dataView, itemOperationFns);
 
         var item = _dataView.getItem(args.row);
 
@@ -243,6 +242,19 @@
       for (var idx = 1; idx <= item._sizePadding; idx++) {
         _dataView.deleteItem(item.id + "." + idx);
       }
+
+      // Ekohe Add: Change the index of the remained items
+      var idxParent = _dataView.getIdxById(item.id);
+      var remainedItems = {};
+      for (var idx = idxParent + item._sizePadding + 1; idx <= _dataView.length; idx++) {
+        remainedItems[idx - item._sizePadding] = _dataView[idx];
+        delete _dataView[idx];
+      }
+      $.extend(_dataView, remainedItems);
+
+      // Ekohe Add
+      _dataView.length -= item._sizePadding
+
       item._sizePadding = 0;
 
       // Ekohe Delete

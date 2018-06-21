@@ -132,9 +132,6 @@
         panelRows: 4
       });
 
-      // push the plugin as the first column
-      // columns.unshift(detailView.getColumnDefinition());
-
     // ------------------------- Create Grid ------------------------------------
       grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
 
