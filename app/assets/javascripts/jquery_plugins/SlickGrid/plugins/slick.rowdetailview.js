@@ -70,6 +70,22 @@
       width: 30
     };
 
+    // Ekohe Add
+    var itemOperationFns = {
+      getIdxById: function(id) {
+        return parseInt(Object.keys(this).find(key => this[key].id === id));
+      },
+      getItem: function(row) {
+        return _dataView[row];
+      },
+      insertItem: function(idx, content) {
+        this[idx] = content;
+      },
+      deleteItem: function(id) {
+        delete this[this.getIdxById(id)];
+      }
+    };
+
     var _options = $.extend(true, {}, _defaults, options);
 
     function init(grid) {
@@ -119,9 +135,10 @@
           return;
         }
 
-        // Ekohe Edit
-        // var item = _dataView.getItem(args.row);
-        var item = _grid.getDataItem(_grid.getSelectedRows()[0]);
+        // Ekohe Add: Add functions to dataView
+        $.extend(_dataView, itemOperationFns);
+
+        var item = _dataView.getItem(args.row);
 
         // trigger an event before toggling
         _self.onBeforeRowDetailToggle.notify({
@@ -227,7 +244,8 @@
         _dataView.deleteItem(item.id + "." + idx);
       }
       item._sizePadding = 0;
-      // TODO
+
+      // Ekohe Delete
       // _dataView.updateItem(item.id, item);
 
       // Remove the item from the expandedRows
@@ -253,7 +271,8 @@
           "detailView": item._detailContent
         }, undefined, this);
         applyTemplateNewLineHeight(item);
-        _dataView.updateItem(item.id, item);
+        // Ekohe Delete
+        // _dataView.updateItem(item.id, item);
 
         return;
       }
@@ -298,11 +317,14 @@
 
     function HandleAccordionShowHide(item) {
       if (item) {
-        if (!item._collapsed) {
+        // Ekohe Edit: expandItem when item._collapsed == null
+        // if (!item._collapsed) {
+        if (item._collapsed === false) {
           collapseItem(item);
         } else {
           expandItem(item);
         }
+
         // Ekohe Add
         _grid.setData(_dataView);
         _grid.render();
@@ -344,9 +366,7 @@
       item._sizePadding = Math.ceil(((rowCount * 2) * lineHeight) / _grid.getOptions().rowHeight);
       item._height = (item._sizePadding * _grid.getOptions().rowHeight);
 
-      // Ekohe Edit
-      // var idxParent = _dataView.getIdxById(item.id);
-      var idxParent = parseInt(Object.keys(_dataView).find(key => _dataView[key].id === item.id));
+      var idxParent = _dataView.getIdxById(item.id);
 
       // Ekohe Add: Change the index of the remained items
       var remainedItems = {};
@@ -357,9 +377,7 @@
 
       // Add fake items
       for (var idx = 1; idx <= item._sizePadding; idx++) {
-        // Ekohe Edit
-        // _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
-        _dataView[idxParent + idx] = getPaddingItem(item, idx);
+        _dataView.insertItem(idxParent + idx, getPaddingItem(item, idx));
       }
 
       // Ekohe Add: Create new data by combining the fake items and remainedItems

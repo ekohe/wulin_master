@@ -1584,9 +1584,6 @@ if (typeof Slick === "undefined") {
         item = self.loader.oldData[i]
       }
 
-      // Ekohe Add: Support Row Detail
-      item._collapsed = true;
-
       return item;
     }
 
