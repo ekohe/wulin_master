@@ -525,6 +525,7 @@
       "setGrid": setGrid,
       "conditionalURI": conditionalURI,
       'getColumns': getColumns,
+      'refresh': refresh,
       
       // events
       "beforeRemoteRequest": beforeRemoteRequest,

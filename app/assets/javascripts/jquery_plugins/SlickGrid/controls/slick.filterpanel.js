@@ -232,6 +232,13 @@
         });
       }
     }
+    
+    function reapply() {
+      currentFiltersApplied = [];
+      updateCurrentFilters();
+      applyCurrentFilters(currentFilters);
+      setCurrentFilter();
+    }
 
     $.extend(this, {
         // Events
@@ -241,7 +248,8 @@
         // Methods
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
-        "updateCurrentFilters":               updateCurrentFilters
+        "updateCurrentFilters":               updateCurrentFilters,
+        "reapply":                            reapply
     });
 
     init();
