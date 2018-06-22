@@ -250,9 +250,9 @@
         remainedItems[idx - item._sizePadding] = _dataView[idx];
         delete _dataView[idx];
       }
-      $.extend(_dataView, remainedItems);
 
-      // Ekohe Add
+      // Ekohe Add: Refresh the dataview
+      $.extend(_dataView, remainedItems);
       _dataView.length -= item._sizePadding
 
       item._sizePadding = 0;
