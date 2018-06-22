@@ -14,4 +14,14 @@ describe WulinMaster::Grid do
     PostGrid.title(false)
     expect(PostGrid.title).to eq('Post')
   end
+
+  it 'should has the default model' do
+    PostGrid.model(false)
+    expect(PostGrid.model).to eq(Post)
+  end
+
+  it 'should has the default path' do
+    PostGrid.path(false)
+    expect(PostGrid.path).to eq('/posts')
+  end
 end
