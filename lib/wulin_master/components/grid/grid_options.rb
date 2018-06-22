@@ -74,6 +74,10 @@ module WulinMaster
       def default_sorting_state(value = {id: 'ASC'}, options = {})
         option({defaultSortingState: value}.merge(options))
       end
+
+      def row_height(value = 30, options = {})
+        option({rowHeight: value}.merge(options))
+      end
     end
 
     def options
