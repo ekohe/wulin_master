@@ -220,19 +220,6 @@
 
     function loadView(itemDetail) {
       return '<div class="preload">Loaded.</div>';
-      // return [
-      //   '<div>',
-      //   '<h4>' + itemDetail.title + '</h4>',
-      //   '<div class="detail"><label>Assignee:</label> <span>' + itemDetail.assignee + '</span></div>',
-      //   '<div class="detail"><label>Reporter:</label> <span>' + itemDetail.reporter + '</span></div>',
-      //   '<div class="detail"><label>Duration:</label> <span>' + itemDetail.duration + '</span></div>',
-      //   '<div class="detail"><label>% Complete:</label> <span>' + itemDetail.percentComplete + '</span></div>',
-      //   '<div class="detail"><label>Start:</label> <span>' + itemDetail.start + '</span></div>',
-      //   '<div class="detail"><label>Finish:</label> <span>' + itemDetail.finish + '</span></div>',
-      //   '<div class="detail"><label>Effort Driven:</label> <span>' + itemDetail.effortDriven + '</span></div>',
-      //   '<div class="detail"><label>Effort Driven:</label> <span>' + itemDetail.effortDriven + '</span></div>',
-      //   '</div>'
-      // ].join('');
     }
 
     function simulateServerCall(item) {
