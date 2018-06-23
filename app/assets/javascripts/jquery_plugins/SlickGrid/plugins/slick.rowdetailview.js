@@ -129,7 +129,9 @@
 
     function handleClick(e, args) {
       // clicking on a row select checkbox
-      if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).hasClass("detailView-toggle")) {
+      // Ekohe Edit
+      // if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).hasClass("detailView-toggle")) {
+      if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).parent().hasClass('detailView-toggle')) {
         // if editing, try to commit
         if (_grid.getEditorLock().isActive() && !_grid.getEditorLock().commitCurrentEdit()) {
           e.preventDefault();
@@ -425,7 +427,9 @@
       if (dataContext._isPadding == true) {
         //render nothing
       } else if (dataContext._collapsed) {
-        return "<div class='detailView-toggle expand'></div>";
+        // Ekohe Edit: Use Material Icons
+        // return "<div class='detailView-toggle expand'></div>";
+        return "<div class='detailView-toggle expand'><i class='material-icons'>add</i></div>";
       } else {
         var html = [];
         var rowHeight = _grid.getOptions().rowHeight;
@@ -440,7 +444,10 @@
         //slick-cell to escape the cell overflow clipping.
 
         //sneaky extra </div> inserted here-----------------v
-        html.push("<div class='detailView-toggle collapse'></div></div>");
+
+        // Ekohe Edit: Use Material Icons
+        // html.push("<div class='detailView-toggle collapse'></div></div>");
+        html.push("<div class='detailView-toggle collapse'><i class='material-icons'>remove</i></div></div>");
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
         html.push("style='height:", dataContext._height, "px;"); //set total height of padding

@@ -124,13 +124,11 @@
         preTemplate: loadingTemplate,
         postTemplate: loadView,
         process: simulateServerCall,
-        useRowClick: true,
-
-        // how many grid rows do we want to use for the detail panel
-        // also note that the detail view adds an extra 1 row for padding purposes
-        // so if you choose 4 panelRows, the display will in fact use 5 rows
         panelRows: 4
       });
+
+      // push the plugin as the first column
+      columns.unshift(detailView.getColumnDefinition());
 
     // ------------------------- Create Grid ------------------------------------
       grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
