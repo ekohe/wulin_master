@@ -93,13 +93,14 @@
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
       return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style || 'text-align:center') + "</div>";
-    }
+    },
 
     // Support image tag on grid
     ImageFormatter: function(row, cell, value, columnDef, dataContext) {
       if (value == null) { return ""; }
 
-      return "<div style='text-align:center'><img src='" + value + "' /></div>";
+      var style = columnDef.style || 'text-align:center';
+      return "<div style='" + style + "'><img src='" + value + "' /></div>";
     }
   };
 
