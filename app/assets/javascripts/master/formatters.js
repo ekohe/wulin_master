@@ -12,8 +12,8 @@
 
     parseDateTime: function(dateTimeStr) {
       try {
-        var REGEX_DATE = '(\\d{2})\\/(\\d{2})\\/(\\d{4})';    // 'yyyy-mm-dd'
-        var REGEX_TIME = '(\\d{2}):(\\d{2})';                 // 'hh:mm'
+        var REGEX_DATE = '(\\d{2})\\/(\\d{2})\\/(\\d{4})'; // 'yyyy-mm-dd'
+        var REGEX_TIME = '(\\d{2}):(\\d{2})'; // 'hh:mm'
         var matchedArr = dateTimeStr.match(new RegExp('^' + REGEX_DATE + '[ \\t]' + REGEX_TIME + '$'));
 
         return {
@@ -56,8 +56,8 @@
       // Set default text-align
       var textAlign, default_style;
       if (columnDef.type == 'datetime' ||
-          columnDef.type == 'date' ||
-          columnDef.type == 'time') {
+        columnDef.type == 'date' ||
+        columnDef.type == 'time') {
         textAlign = 'center';
       }
       default_style = textAlign ? 'text-align:' + textAlign : null
@@ -80,9 +80,9 @@
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var checked = value ? 'checked="checked"' : '';
       var html = '<input disabled type="checkbox" class="filled-in" ' +
-                 checked + ' id="show-checkbox-' + row + '" />' +
-                 '<label for="show-checkbox-' + row +
-                 '"></label>';
+        checked + ' id="show-checkbox-' + row + '" />' +
+        '<label for="show-checkbox-' + row +
+        '"></label>';
       return applyStyle(html, columnDef.style || 'text-align:center');
     },
 
@@ -93,6 +93,13 @@
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
       return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style || 'text-align:center') + "</div>";
+    }
+
+    // Support image tag on grid
+    ImageFormatter: function(row, cell, value, columnDef, dataContext) {
+      if (value == null) { return ""; }
+
+      return "<div style='text-align:center'><img src='" + value + "' /></div>";
     }
   };
 
