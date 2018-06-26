@@ -6,8 +6,8 @@
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    applyStyle: function(value, style) {
-      return value === null ? "" : "<span style='" + style + ";display:block'>" + value + "</span>";
+    applyStyle: function(value, styleClass = '', style = '') {
+      return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";display:block'>" + value + "</span>";
     },
 
     parseDateTime: function(dateTimeStr) {
@@ -60,21 +60,21 @@
         columnDef.type == 'time') {
         textAlign = 'center';
       }
-      default_style = textAlign ? 'text-align:' + textAlign : null
+      default_style = textAlign ? 'text-align:' + textAlign : ''
 
       // Apply style
-      return applyStyle(value, columnDef.style || default_style);
+      return applyStyle(value, columnDef.style_class, columnDef.style || default_style);
     },
 
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
       var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
-      return applyStyle(text, columnDef.style || 'text-align:right');
+      return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:right');
     },
 
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === null ? "" : (value ? 'Yes' : 'No');
-      return applyStyle(text, columnDef.style || 'text-align:center');
+      return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
@@ -83,16 +83,16 @@
         checked + ' id="show-checkbox-' + row + '" />' +
         '<label for="show-checkbox-' + row +
         '"></label>';
-      return applyStyle(html, columnDef.style || 'text-align:center');
+      return applyStyle(html, columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
       var text = value === 0 ? "" : value;
-      return applyStyle(text, columnDef.style || 'text-align:right');
+      return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:right');
     },
 
     TooltipFormatter: function(row, cell, value, columnDef, dataContext) {
-      return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style || 'text-align:center') + "</div>";
+      return "<div title='" + columnDef.tooltips[value] + "'>" + applyStyle(value, columnDef.style_class, columnDef.style || 'text-align:center') + "</div>";
     },
 
     // Support image tag on grid

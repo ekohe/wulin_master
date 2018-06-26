@@ -355,6 +355,14 @@ This option is only useful for some relation columns. For example, `Post` belong
 
 This option is only useful for text column.
 
+`:style`
+
+Set inline css to the cell belongs to the specified column. Example: `style: 'text-align:center'`
+
+`:style_class`
+
+Set css class to the cell belongs to the specified column. Example: `style_class: 'red'`
+
 #### Grid styles
 
 Now the style configuration methods are all defined in `WulinMaster::ComponentStyling` module (grid and panel are both component), you can use these methods in grid class file, or as an option of grid in screen class file, like:
