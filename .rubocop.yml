@@ -53,7 +53,7 @@ Style/StringLiteralsInInterpolation:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 30
+  Max: 40
 
 Layout/CaseIndentation:
   # Valid values are: case, end

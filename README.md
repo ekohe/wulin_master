@@ -101,13 +101,16 @@ class PostGrid < WulinMaster::Grid
   cell_editable false
   eager_loading true
 
+  # Define the grid row height
+  row_height 30
+
   # Toolbar items shown as Material Design icons (https://material.io/icons/)
   action :publish_post, icon: :publish
   action :see_author, icon: :user
   ...
 
   # Call this method to add default toolbar items (Create/Edit/Delete/Import/Export)
-  load_default_actions  
+  load_default_actions
 
   # Behaviours act as grid event handler
   behavior :highlight
@@ -257,7 +260,7 @@ class PostGrid < WulinMaster::Grid
   column :author, source: :name                           # source = :name  (of Author)
   column :author                                          # source = :name  (of Author)
   column :title                                           # source = :title (of Post)
-  ...   
+  ...
 end
 ```
 
@@ -351,6 +354,14 @@ This option is only useful for some relation columns. For example, `Post` belong
 `:distinct`
 
 This option is only useful for text column.
+
+`:style`
+
+Set inline css to the cell belongs to the specified column. Example: `style: 'text-align:center'`
+
+`:style_class`
+
+Set css class to the cell belongs to the specified column. Example: `style_class: 'red'`
 
 #### Grid styles
 
@@ -693,7 +704,7 @@ class ArticleScreen < WulinMaster::Screen
   title 'All Articles'
 
   panel AuthorSelectionPanel
-  grid PostGrid, height: '50%', master_model: 'author', eager_loading: false  
+  grid PostGrid, height: '50%', master_model: 'author', eager_loading: false
   # Actually, the master_model option will add a hidden column 'author_id' into PostGrid
 end
 ```
