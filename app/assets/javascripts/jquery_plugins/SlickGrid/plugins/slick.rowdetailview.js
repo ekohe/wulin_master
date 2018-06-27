@@ -97,9 +97,9 @@
       _grid.getOptions().minRowBuffer = _options.panelRows + 3;
 
       _handler
-        .subscribe(_grid.onClick, handleClick)
-        .subscribe(_grid.onSort, handleSort);
-        // Ekohe Delete: TODO - Make handleScroll work for remote model
+        .subscribe(_grid.onClick, handleClick);
+        // Ekohe Delete: scroll/sort works well with Ekohe version remotemodel. no need to handle here
+        // .subscribe(_grid.onSort, handleSort)
         // .subscribe(_grid.onScroll, handleScroll);
 
       // Ekohe Edit: Use remote model instead of data view
