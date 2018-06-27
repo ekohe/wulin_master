@@ -70,6 +70,9 @@
         grid.invalidateRow(i);
       }
 
+      // Reset data since data is not updated automatically when row detail view added
+      grid.setData(args.data);
+
       grid.updateRowCount();
 
       grid.render();
@@ -268,7 +271,7 @@
       this.loader.oldData = deep_clone(data);
 
       // Loading data
-      dataIsLoaded({from:from, to:to});
+      dataIsLoaded({from:from, to:to, data:data});
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
