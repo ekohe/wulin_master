@@ -249,7 +249,7 @@
       // Exclude detail selector
       realColumns = columns;
       detailSelector = realColumns.find(function(c) { return c.id === '_detail_selector' });
-      indexDetailSelector = realColumns.indexOf(detaileSelector);
+      indexDetailSelector = realColumns.indexOf(detailSelector);
       realColumns.splice(indexDetailSelector, 1);
 
       if (resp.rows) {

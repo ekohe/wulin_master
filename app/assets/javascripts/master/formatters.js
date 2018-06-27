@@ -37,7 +37,7 @@
       var inner_formatter = columnDef.inner_formatter;
 
       // Retrive info for relation columns
-      if (source && typeof value === 'object') {
+      if (source && value && typeof value === 'object') {
         value = value[source];
       }
 
