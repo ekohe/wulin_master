@@ -246,11 +246,10 @@
 
       totalRows = parseInt(resp.total, 10);
 
-      // Exclude detail selector
-      realColumns = columns;
-      detailSelector = realColumns.find(function(c) { return c.id === '_detail_selector' });
-      indexDetailSelector = realColumns.indexOf(detailSelector);
-      realColumns.splice(indexDetailSelector, 1);
+      // Exclude detail selector from columns
+      var detailSelector = columns.find(function(c) { return c.id === '_detail_selector' });
+      var indexDetailSelector = columns.indexOf(detailSelector);
+      if (indexDetailSelector >= 0) { columns.splice(indexDetailSelector, 1); }
 
       if (resp.rows) {
         if (resp.rows.length < loadingSize) {
@@ -259,7 +258,7 @@
         for (var i = 0; i < resp.rows.length; i++) {
           var j = parseInt(from, 10) + parseInt(i, 10);
           var obj = {};
-          $.each(realColumns, function(index, value) {
+          $.each(columns, function(index, value) {
             var item = resp.rows[i][index];
             // match the column and the response data (compare column name and response data key)
             if(item && typeof(item) == 'object' && !(item instanceof Array)) {
