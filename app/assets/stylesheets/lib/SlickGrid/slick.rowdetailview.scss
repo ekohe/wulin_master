@@ -15,15 +15,12 @@
   position: absolute;
   background-color: white;
   margin: 0;
-  padding: 0;
+  padding: 10px;
   width: 100%;
   overflow: auto;
   border-bottom: 1px solid $border-color;
   font-size: $font-size-small;
   color: $label-color;
-  .preload {
-    margin: 10px;
-  }
 }
 
 .dynamic-cell-detail > :first-child {

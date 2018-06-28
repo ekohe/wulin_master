@@ -120,10 +120,10 @@
 
       // create the row detail plugin
       detailView = new Slick.Plugins.RowDetailView({
-        cssClass: "detailView-toggle",
-        preTemplate: loadingTemplate,
-        postTemplate: loadView,
-        process: simulateServerCall,
+        cssClass: 'detailView-toggle',
+        preTemplate: preTemplate,
+        postTemplate: postTemplate,
+        process: asyncServerCall,
         panelRows: 4
       });
 
@@ -214,29 +214,18 @@
       grid.registerPlugin(detailView);
     } // createNewGrid
 
-    function loadingTemplate() {
+    function preTemplate() {
       return '<div class="preload">Loading...</div>';
     }
 
-    function loadView(itemDetail) {
-      return '<div class="preload">Loaded.</div>';
+    function postTemplate(item) {
+      return '<div class="detail"><label>ID:</label> <span>' + item.id + '</span></div>';
     }
 
-    function simulateServerCall(item) {
-      // fill the template on delay
-      setTimeout(function() {
-        $('.preload').text('Server Call completed.');
-        // // let's add some property to our item for a better simulation
-        // var itemDetail = item;
-        // itemDetail.assignee = fakeNames[randomNumber(0, 10)];
-        // itemDetail.reporter = fakeNames[randomNumber(0, 10)];
-        //
-        // if(itemDetail.num % 5 == 0) {
-        //   notifyNonTemplatedView(itemDetail)
-        // } else {
-        //   notifyTemplate(itemDetail)
-        // }
-      }, 1000);
+    function asyncServerCall(item) {
+      detailView.onAsyncResponse.notify({
+        'itemDetail': item
+      }, undefined, this);
     }
 
     function createLoadingIndicator(gridElement, isHide) {

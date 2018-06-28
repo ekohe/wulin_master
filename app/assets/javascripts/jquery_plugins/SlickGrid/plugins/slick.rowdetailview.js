@@ -81,8 +81,16 @@
       insertItem: function(idx, content) {
         this[idx] = content;
       },
+      updateItem: function(idx, item) {
+        this[idx] = item;
+        this.refresh();
+      },
       deleteItem: function(id) {
         delete this[this.getIdxById(id)];
+      },
+      refresh: function() {
+        _grid.setData(this);
+        _grid.render();
       }
     };
 
@@ -259,8 +267,7 @@
 
       item._sizePadding = 0;
 
-      // Ekohe Delete
-      // _dataView.updateItem(item.id, item);
+      _dataView.updateItem(item.id, item);
 
       // Remove the item from the expandedRows
       _expandedRows = _expandedRows.filter(function (r) {
@@ -285,15 +292,13 @@
           "detailView": item._detailContent
         }, undefined, this);
         applyTemplateNewLineHeight(item);
-        // Ekohe Delete
-        // _dataView.updateItem(item.id, item);
+        _dataView.updateItem(item.id, item);
 
         return;
       }
 
       applyTemplateNewLineHeight(item);
-      // Ekohe Delete
-      // _dataView.updateItem(item.id, item);
+      _dataView.updateItem(item.id, item);
 
       // async server call
       _options.process(item);
@@ -338,10 +343,6 @@
         } else {
           expandItem(item);
         }
-
-        // Ekohe Add
-        _grid.setData(_dataView);
-        _grid.render();
       }
     }
 
@@ -487,7 +488,7 @@
       item._sizePadding = Math.ceil(((rowCount * 2) * lineHeight) / rowHeight);
       item._height = (item._sizePadding * rowHeight);
 
-	  // If the padding is now more than the original minRowBuff we need to increase it
+	    // If the padding is now more than the original minRowBuff we need to increase it
       if (_grid.getOptions().minRowBuffer < item._sizePadding)
       {
         // Update the minRowBuffer so that the view doesn't disappear when it's at top of screen + the original default 3
