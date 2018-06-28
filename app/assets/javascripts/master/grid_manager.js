@@ -15,9 +15,6 @@
       rowHeight: 30
     };
 
-    function init() {
-    }
-
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
         case "enum":
@@ -119,16 +116,18 @@
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
       // create the row detail plugin
-      detailView = new Slick.Plugins.RowDetailView({
-        cssClass: 'detailView-toggle',
-        preTemplate: preTemplate,
-        postTemplate: postTemplate,
-        process: asyncServerCall,
-        panelRows: 4
-      });
+      if (options.rowDetail) {
+        rowDetailView = new Slick.Plugins.RowDetailView({
+          panelRows: options.rowDetail.panelRows,
+          cssClass: options.rowDetail.cssClass,
+          preTemplate: options.rowDetail.preTemplate,
+          postTemplate: window['RowDetailTemplates'][options.rowDetail.postTemplate],
+          process: asyncRespDetailView
+        });
 
-      // push the plugin as the first column
-      columns.unshift(detailView.getColumnDefinition());
+        // push the plugin as the first column
+        columns.unshift(rowDetailView.getColumnDefinition());
+      }
 
       // ------------------------- Create Grid ------------------------------------
       grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
@@ -211,19 +210,11 @@
 
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
-      grid.registerPlugin(detailView);
+      if (options.rowDetail) { grid.registerPlugin(rowDetailView); }
     } // createNewGrid
 
-    function preTemplate() {
-      return '<div class="preload">Loading...</div>';
-    }
-
-    function postTemplate(item) {
-      return '<div class="detail"><label>ID:</label> <span>' + item.id + '</span></div>';
-    }
-
-    function asyncServerCall(item) {
-      detailView.onAsyncResponse.notify({
+    function asyncRespDetailView(item) {
+      rowDetailView.onAsyncResponse.notify({
         'itemDetail': item
       }, undefined, this);
     }
@@ -287,8 +278,6 @@
       });
     }
 
-    init();
-
     return {
       // properties
       "grids": grids,
@@ -302,10 +291,9 @@
     };
   }
 
-  $.extend(true, window, { GridManager: GridManager});
-  })(jQuery);
+  $.extend(true, window, { GridManager: GridManager });
+})(jQuery);
 
+var gridManager = new GridManager();
 
-  var gridManager = new GridManager();
-
-  $(window).resize(function() { gridManager.resizeGrids(); });
+$(window).resize(function() { gridManager.resizeGrids(); });

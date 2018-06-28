@@ -285,7 +285,9 @@
 
       // display pre-loading template
       if (!item._detailViewLoaded || _options.loadOnce !== true) {
-        item._detailContent = _options.preTemplate(item);
+        // Ekohe Edit: Use attribute instead of method so that template can be defined in wulin master's gird
+        // item._detailContent = _options.preTemplate(item);
+        item._detailContent = _options.preTemplate;
       } else {
         _self.onAsyncResponse.notify({
           "itemDetail": item,
