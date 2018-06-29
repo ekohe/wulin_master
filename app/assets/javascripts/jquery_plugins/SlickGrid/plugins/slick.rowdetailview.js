@@ -48,6 +48,14 @@
  *         item:  Column definition.
  *
  */
+
+ /*
+  * Ekohe fork:
+  *
+  * 1. Change to deal with Ekohe version of remotemodel instead dataviw
+  * 
+  */
+
 (function ($) {
   // register namespace
   $.extend(true, window, {

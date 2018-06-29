@@ -118,6 +118,7 @@
       // create the row detail plugin
       if (options.rowDetail) {
         rowDetailView = new Slick.Plugins.RowDetailView({
+          loadOnce: true,
           panelRows: options.rowDetail.panelRows,
           cssClass: options.rowDetail.cssClass,
           preTemplate: options.rowDetail.preTemplate,

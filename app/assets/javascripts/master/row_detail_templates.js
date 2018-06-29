@@ -1,5 +1,5 @@
 var RowDetailTemplates = {
   default: function(item) {
-    return '<div class="detail"> ID: ' + item.id + '</div>';
+    return '<div class="row-detail"> ID: ' + item.id + '</div>';
   }
 };
