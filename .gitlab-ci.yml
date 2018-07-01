@@ -24,4 +24,4 @@ test:
     - bundle exec rubocop
     - bundle exec rspec
     - bundle exec rake assets:precompile
-    # - bundle exec cucumber
+    - bundle exec cucumber
