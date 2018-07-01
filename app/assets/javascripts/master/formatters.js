@@ -6,7 +6,7 @@
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    applyStyle: function(value, styleClass = '', style = '') {
+    applyStyle: function(value, styleClass, style) {
       return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";display:block'>" + value + "</span>";
     },
 
