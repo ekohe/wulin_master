@@ -247,9 +247,9 @@
       totalRows = parseInt(resp.total, 10);
 
       // Exclude detail selector from columns
-      var detailSelector = columns.find(function(c) { return c.id === '_detail_selector' });
+      var detailSelector = $.grep(columns, function(c) { return c.id === '_detail_selector' })[0];
       var indexDetailSelector = columns.indexOf(detailSelector);
-      if (indexDetailSelector >= 0) { columns.splice(indexDetailSelector, 1); }
+      if (indexDetailSelector > -1) { columns.splice(indexDetailSelector, 1); }
 
       if (resp.rows) {
         if (resp.rows.length < loadingSize) {
