@@ -15,9 +15,6 @@
       rowHeight: 30
     };
 
-    function init() {
-    }
-
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
         case "enum":
@@ -118,6 +115,21 @@
       // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
+      // create the row detail plugin
+      if (options.rowDetail) {
+        rowDetailView = new Slick.Plugins.RowDetailView({
+          loadOnce: true,
+          panelRows: options.rowDetail.panelRows,
+          cssClass: options.rowDetail.cssClass,
+          preTemplate: options.rowDetail.loadingTemplate,
+          postTemplate: window['RowDetailTemplates'][options.rowDetail.postTemplate],
+          process: asyncRespDetailView
+        });
+
+        // push the plugin as the first column
+        columns.unshift(rowDetailView.getColumnDefinition());
+      }
+
       // ------------------------- Create Grid ------------------------------------
       grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
 
@@ -199,7 +211,14 @@
 
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
+      if (options.rowDetail) { grid.registerPlugin(rowDetailView); }
     } // createNewGrid
+
+    function asyncRespDetailView(item) {
+      rowDetailView.onAsyncResponse.notify({
+        'itemDetail': item
+      }, undefined, this);
+    }
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
@@ -260,8 +279,6 @@
       });
     }
 
-    init();
-
     return {
       // properties
       "grids": grids,
@@ -275,10 +292,9 @@
     };
   }
 
-  $.extend(true, window, { GridManager: GridManager});
-  })(jQuery);
+  $.extend(true, window, { GridManager: GridManager });
+})(jQuery);
 
+var gridManager = new GridManager();
 
-  var gridManager = new GridManager();
-
-  $(window).resize(function() { gridManager.resizeGrids(); });
+$(window).resize(function() { gridManager.resizeGrids(); });

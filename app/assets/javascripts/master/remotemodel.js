@@ -70,6 +70,9 @@
         grid.invalidateRow(i);
       }
 
+      // Reset data since data is not updated automatically when row detail view added
+      grid.setData(args.data);
+
       grid.updateRowCount();
 
       grid.render();
@@ -188,7 +191,7 @@
 
         for (var i=fromPage; i<=toPage; i++)
           data[i*loadingSize] = null; // null indicates a 'requested but not available yet'
-          
+
         return [(fromPage * loadingSize), (((toPage - fromPage) * loadingSize) + loadingSize)];
       } else {
         // Per page
@@ -229,7 +232,7 @@
 
       // Ekohe Add: Save row length without filter
       rowsWithoutFilter = parseInt(resp.totalNoFilter, 10);
-      
+
       // Load as we scroll
       if (pageSize === 0) {
         from = resp.offset;
@@ -242,6 +245,12 @@
       }
 
       totalRows = parseInt(resp.total, 10);
+
+      // Exclude detail selector from columns
+      var detailSelector = $.grep(columns, function(c) { return c.id === '_detail_selector' })[0];
+      var indexDetailSelector = columns.indexOf(detailSelector);
+      if (indexDetailSelector > -1) { columns.splice(indexDetailSelector, 1); }
+
       if (resp.rows) {
         if (resp.rows.length < loadingSize) {
           data[from+loadingSize] = null;
@@ -268,7 +277,7 @@
       this.loader.oldData = deep_clone(data);
 
       // Loading data
-      dataIsLoaded({from:from, to:to});
+      dataIsLoaded({from:from, to:to, data:data});
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());

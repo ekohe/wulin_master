@@ -1583,6 +1583,7 @@ if (typeof Slick === "undefined") {
       if(!item && self.loader && self.loader.oldData) {
         item = self.loader.oldData[i]
       }
+
       return item;
     }
 
@@ -1892,7 +1893,7 @@ if (typeof Slick === "undefined") {
         return;
       }
       vScrollDir = 0;
-	  rl = rows.length;
+	    rl = rows.length;
       for (i = 0;  i < rl; i++) {
         if (currentEditor && activeRow === rows[i]) {
           makeActiveCellNormal();
@@ -1902,7 +1903,6 @@ if (typeof Slick === "undefined") {
         }
       }
       if (options.enableAsyncPostRenderCleanup) { startPostProcessingCleanup(); }
-
     }
 
     function invalidateRow(row) {
