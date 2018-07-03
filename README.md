@@ -459,12 +459,12 @@ Set the default sorting state for the grid. Usage: `default_sorting_state column
 Set to show the row detail panel. You can specify options for your own style.
 
 ```ruby
-row_detail cssClass: 'company_row_detail', panelRows: 5, preTemplate: '<span class="red-text">Loading...</span>', postTemplate: :company
+row_detail cssClass: 'company_row_detail', panelRows: 5, loadingTemplate: '<span class="red-text">Loading...</span>', postTemplate: :company
 ```
 
 - **cssClass**: A CSS class to be added to the row detail. Default: `detailView-toggle`
 - **panelRows**: Row count to use for the row detail panel. Default: `4`
-- **preTemplate**: Template (html) that will be used before the async process, typically used to show a spinner/loading. Default: `Loading...`
+- **loadingTemplate**: Template (html) that will be used before the async process, typically used to show a spinner/loading. Default: `Loading...`
 - **postTemplate**: Template that will be loaded once the async function finishes. Should be defined as a javascript method with item data as parameter presented as a property of a global object named `RowDetailTemplates` which return html code. Default: `<div class="row-detail"> ID: ' + item.id + '</div>`. You can define your own templates within the host app's assets like
   ```js
   var RowDetailTemplates = $.extend({}, RowDetailTemplates, {

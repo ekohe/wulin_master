@@ -121,7 +121,7 @@
           loadOnce: true,
           panelRows: options.rowDetail.panelRows,
           cssClass: options.rowDetail.cssClass,
-          preTemplate: options.rowDetail.preTemplate,
+          preTemplate: options.rowDetail.loadingTemplate,
           postTemplate: window['RowDetailTemplates'][options.rowDetail.postTemplate],
           process: asyncRespDetailView
         });
