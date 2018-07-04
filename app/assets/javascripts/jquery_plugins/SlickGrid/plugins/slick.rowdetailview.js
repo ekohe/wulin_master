@@ -81,8 +81,9 @@
     // Ekohe Add
     var _dataView = {
       getIdxById: function(id) {
+        // return parseInt(Object.keys(this).find(key => this[key].id === id));
         return parseInt($.grep(Object.keys(this), function(key) {
-          this[key].id === id;
+          return this[key] && typeof this[key] === 'object' && 'id' in this[key] && this[key].id === id;
         }.bind(this))[0]);
       },
       getItem: function(row) {
