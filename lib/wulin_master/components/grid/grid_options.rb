@@ -83,8 +83,8 @@ module WulinMaster
                                useRowClick: false,
                                cssClass: 'detailView-toggle',
                                loadingTemplate: 'Loading...',
-                               postTemplate: :default
-                             }, options = {})
+                               postTemplate: :default },
+                     options = {})
         option({rowDetail: value}.merge(options))
       end
     end
