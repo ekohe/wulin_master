@@ -451,7 +451,9 @@
       } else if (dataContext._collapsed) {
         // Ekohe Edit: Use Material Icons
         // return "<div class='detailView-toggle expand'></div>";
-        return "<div class='detailView-toggle expand'><i class='material-icons'>add_circle_outline</i></div>";
+        if (columnDef.rowDetailIconVisible !== false) {
+          return "<div class='detailView-toggle expand'><i class='material-icons'>add_circle_outline</i></div>";
+        }
       } else {
         var html = [];
         var rowHeight = _grid.getOptions().rowHeight;
@@ -469,7 +471,10 @@
 
         // Ekohe Edit: Use Material Icons
         // html.push("<div class='detailView-toggle collapse'></div></div>");
-        html.push("<div class='detailView-toggle collapse'><i class='material-icons'>remove_circle_outline</i></div></div>");
+        if (columnDef.rowDetailIconVisible !== false) {
+          html.push("<div class='detailView-toggle collapse'><i class='material-icons'>remove_circle_outline</i></div>");
+        }
+        html.push("</div>");
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
         html.push("style='height:", dataContext._height, "px;"); //set total height of padding

@@ -128,7 +128,14 @@
         });
 
         // push the plugin as the first column
-        columns.unshift(rowDetailView.getColumnDefinition());
+        // columns.unshift(rowDetailView.getColumnDefinition());
+        var triggerColumn = rowDetailView.getColumnDefinition();
+        if (!options.rowDetail.showTriggerColumn) {
+          triggerColumn.rowDetailIconVisible = false;
+          triggerColumn.width = 0;
+          triggerColumn.minWidth = 1;
+        }
+        columns.unshift(triggerColumn);
       }
 
       // ------------------------- Create Grid ------------------------------------

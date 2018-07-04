@@ -81,6 +81,7 @@ module WulinMaster
 
       def row_detail(value = { panelRows: 4,
                                useRowClick: false,
+                               showTriggerColumn: true,
                                cssClass: 'detailView-toggle',
                                loadingTemplate: 'Loading...',
                                postTemplate: :default },
