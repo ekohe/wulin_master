@@ -128,7 +128,6 @@
         });
 
         // push the plugin as the first column
-        // columns.unshift(rowDetailView.getColumnDefinition());
         var triggerColumn = rowDetailView.getColumnDefinition();
         if (!options.rowDetail.showTriggerColumn) {
           triggerColumn.rowDetailIconVisible = false;
