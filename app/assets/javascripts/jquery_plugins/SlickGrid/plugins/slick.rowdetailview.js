@@ -81,7 +81,6 @@
     // Ekohe Add
     var _dataView = {
       getIdxById: function(id) {
-        // return parseInt(Object.keys(this).find(key => this[key].id === id));
         return parseInt($.grep(Object.keys(this), function(key) {
           return this[key] && typeof this[key] === 'object' && 'id' in this[key] && this[key].id === id;
         }.bind(this))[0]);
@@ -121,10 +120,16 @@
         // .subscribe(_grid.onSort, handleSort)
         // .subscribe(_grid.onScroll, handleScroll);
 
-      // Ekohe Edit: Use remote model instead of data view
+      // Ekohe Detete: dataview not in use
       // _grid.getData().onRowCountChanged.subscribe(function () { _grid.updateRowCount(); _grid.render(); });
       // _grid.getData().onRowsChanged.subscribe(function (e, a) { _grid.invalidateRows(a.rows); _grid.render(); });
-      _grid.loader.onDataLoaded.subscribe(function (e, a) { $.extend(_dataView, _grid.getData()); });
+
+      // Ekohe Add: Use remotemodel
+      _grid.loader.onDataLoaded.subscribe(function (e, a) {
+        $.extend(_dataView, _grid.getData());
+        if (_grid.loader.getFilters().length === 0) { collapseAll(); }
+        _expandedRows = [];
+      });
 
       // subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
       subscribeToOnAsyncResponse();
@@ -354,6 +359,9 @@
         if (item._collapsed === false) {
           collapseItem(item);
         } else {
+          // Ekohe Add
+          collapseAll();
+
           expandItem(item);
         }
       }
