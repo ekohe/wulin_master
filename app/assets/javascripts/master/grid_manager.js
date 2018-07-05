@@ -155,6 +155,7 @@
         states: states,
         actions: actions,
         behaviors: behaviors,
+        rowDetailView: rowDetailView,
         options: options
       };
       for(var attr in gridAttrs) {

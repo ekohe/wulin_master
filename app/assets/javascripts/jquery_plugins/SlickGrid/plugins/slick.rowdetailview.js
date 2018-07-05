@@ -530,6 +530,13 @@
       }
     }
 
+    //////////////////////////////////////
+    // Ekohe Add: Customized Getter/Setter
+
+    function setPanelRows(panelRows) {
+      _options.panelRows = panelRows;
+    }
+
     $.extend(this, {
       "init": init,
       "destroy": destroy,
@@ -541,7 +548,10 @@
       "onAsyncEndUpdate": new Slick.Event(),
       "onAfterRowDetailToggle": new Slick.Event(),
       "onBeforeRowDetailToggle": new Slick.Event(),
-      "resizeDetailView": resizeDetailView
+      "resizeDetailView": resizeDetailView,
+
+      // Ekohe Add
+      'setPanelRows': setPanelRows
     });
   }
 })(jQuery);
