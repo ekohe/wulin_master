@@ -155,12 +155,14 @@
         states: states,
         actions: actions,
         behaviors: behaviors,
-        rowDetailView: rowDetailView,
         options: options
       };
       for(var attr in gridAttrs) {
         grid[attr] = gridAttrs[attr];
       }
+
+      // Set rowDetailView
+      if (options.rowDetail) { grid.rowDetailView = rowDetailView; }
 
       // Set selection model
       grid.setSelectionModel(new WulinMaster.RowSelectionModel());
