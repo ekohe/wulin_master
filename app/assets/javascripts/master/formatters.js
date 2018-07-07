@@ -105,8 +105,9 @@
 
     // Support growth values
     PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
-      value = (value === null) ? '' : (parseInt(value) + '%')
-      return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:center');
+      value = (value === null) ? '' : (parseInt(value) + '%');
+
+      return applyStyle(value, columnDef.style_class, columnDef.style || 'text-align:center');
     }
   };
 
