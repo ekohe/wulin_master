@@ -101,6 +101,13 @@
 
       var style = columnDef.style || 'text-align:center';
       return "<div style='" + style + "'><img src='" + value + "' /></div>";
+    },
+
+    // Support growth values
+    PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
+      value = (value === null) ? '' : (parseInt(value) + '%');
+
+      return applyStyle(value, columnDef.style_class, columnDef.style || 'text-align:center');
     }
   };
 
