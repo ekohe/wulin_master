@@ -26,10 +26,10 @@ module WulinMaster
         @callbacks ||= {}
         @callbacks[name] ||= []
         @callbacks[name] << if block_given?
-                              -> { yield }
-                            else
-                              method_name
-                            end
+          -> { yield }
+        else
+          method_name
+        end
       end
 
       def find_callbacks(name)
