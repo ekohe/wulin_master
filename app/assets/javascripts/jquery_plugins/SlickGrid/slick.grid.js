@@ -2138,6 +2138,11 @@ if (typeof Slick === "undefined") {
           continue;
         }
 
+        // Ekohe Add: Avoid removing row detail view
+        if ($(cacheEntry.cellNodesByColumnIdx[i]).hasClass('dynamic-cell-detail')) {
+          continue;
+        }
+
         // This is a string, so it needs to be cast back to a number.
         i = i | 0;
 
