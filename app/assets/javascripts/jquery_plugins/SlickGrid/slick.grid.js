@@ -203,6 +203,9 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
+    //
+    // Ekohe Edit:
+    // 1. Add color setting to grid container
 
     function init() {
       $container = $(container);
@@ -309,13 +312,21 @@ if (typeof Slick === "undefined") {
 
       $focusSink2 = $focusSink.clone().appendTo($container);
 
-      // Ekohe Delete: Customized finishInitialization() will be called in WulinMasterGrid()
-      // if (!options.explicitInitialization) {
-      //   finishInitialization();
-      // }
+      if (!options.explicitInitialization) {
+        finishInitialization();
+      }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Edit
+    //   1. Remove invisible columns
+
     function finishInitialization() {
+
+      // Ekohe Add: Remove invisible columns
+      setColumnsById({});
+      removeInvisibleColumns();
+
       if (!initialized) {
         initialized = true;
 
@@ -3680,6 +3691,9 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // IEditor implementation for the editor lock
+    //
+    // Ekohe Edit
+    //   1. Use current cell instead of the whole row for submit in onCellChange trigger
 
     function commitCurrentEdit() {
       var item = getDataItem(activeRow);
@@ -3700,22 +3714,24 @@ if (typeof Slick === "undefined") {
                 execute: function () {
                   this.editor.applyValue(item, this.serializedValue);
                   updateRow(this.row);
-                  trigger(self.onCellChange, {
-                    row: activeRow,
-                    cell: activeCell,
-                    item: item,
-                    grid: self
-                  });
+                  // Ekohe Delete: Original SlickGrid Logic: Submit item for the whole row
+                  // trigger(self.onCellChange, {
+                  //   row: activeRow,
+                  //   cell: activeCell,
+                  //   item: item,
+                  //   grid: self
+                  // });
                 },
                 undo: function () {
                   this.editor.applyValue(item, this.prevSerializedValue);
                   updateRow(this.row);
-                  trigger(self.onCellChange, {
-                    row: activeRow,
-                    cell: activeCell,
-                    item: item,
-                    grid: self
-                  });
+                  // Ekohe Delete: Original SlickGrid Logic: Submit item for the whole row
+                  // trigger(self.onCellChange, {
+                  //   row: activeRow,
+                  //   cell: activeCell,
+                  //   item: item,
+                  //   grid: self
+                  // });
                 }
               };
 
@@ -3726,6 +3742,17 @@ if (typeof Slick === "undefined") {
                 editCommand.execute();
                 makeActiveCellNormal();
               }
+
+              // Ekohe Add: Use item info of current cell for submit in onCellChange trigger
+              var submitItem = {};
+              submitItem['id'] = item.id;
+              submitItem[column.field] = item[column.field];
+              trigger(self.onCellChange, {
+                row: activeRow,
+                cell: activeCell,
+                item: submitItem,
+                editCommand: editCommand
+              });
 
             } else {
               var newItem = {};
@@ -3894,6 +3921,63 @@ if (typeof Slick === "undefined") {
         .filter(function () { return !!this.value; });
     }
 
+    // Remove columns which have option of visible:false when initialize the grid
+    function removeInvisibleColumns() {
+      var columns = getColumns();
+
+      var tmp = [];
+      for (var i = 0; i < columns.length; i++) {
+        if (columns[i].visible != false) {
+          tmp.push(columns[i]);
+        }
+      }
+      setColumns(tmp);
+    }
+
+    function isEditing(){
+      return getCellEditor() != null;
+    }
+
+    function getRowByRecordId(id) {
+      var data = getData();
+      if (data.length == 0 || data.length > 0 && !data[0]) {
+        if (self.loader) data = self.loader.oldData;
+      }
+      for(var i in data) {
+        if (data.hasOwnProperty(i) && i !== 'length' && data[i] && data[i].id == id) { return { row: getRowAt(i), index: i}; };
+      }
+    }
+
+    function getSelectedIds() {
+      try {
+        var selectedIndexes = getSelectedRows();
+        var ids;
+        if (selectedIndexes.length > 0) {
+          ids = $.map(selectedIndexes,function(n, i) {
+            return getDataItem(n)['id'];
+          });
+          return ids;
+        } else {
+          return [];
+        }
+      } catch (e) {
+        alert('You selected too many rows! Please select again.');
+      }
+    }
+
+    function resizeAndRender() {
+      if (options.forceFitColumns) {
+        autosizeColumns();
+      } else {
+        resizeCanvas();
+      }
+    }
+
+    function initialRender() {
+      resizeAndRender();
+      trigger(self.onRendered, {});
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Public API
 
@@ -3936,6 +4020,10 @@ if (typeof Slick === "undefined") {
       "onDragEnd": new Slick.Event(),
       "onSelectedRowsChanged": new Slick.Event(),
       "onCellCssStylesChanged": new Slick.Event(),
+
+      // Ekohe Add: New events
+      "onRendered": new Slick.Event(),
+      "onCanvasResized": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
@@ -4015,9 +4103,7 @@ if (typeof Slick === "undefined") {
       "removeCellCssStyles": removeCellCssStyles,
       "getCellCssStyles": getCellCssStyles,
 
-      // Ekohe Modify: Expose init() to WulinMasterGrid
-      // "init": finishInitialization,
-      "init": init,
+      "init": finishInitialization,
       "destroy": destroy,
 
       // IEditor implementation
@@ -4029,6 +4115,8 @@ if (typeof Slick === "undefined") {
       "getRows": getRows,
       "getRowAt": getRowAt,
       "getCanvas": getCanvas,
+      "getSelectedIds": getSelectedIds,
+      "getRowByRecordId": getRowByRecordId,
       "getSerializedEditorValue": getSerializedEditorValue,
       "setColumnsById": setColumnsById,
       "setEditController": setEditController,
@@ -4039,10 +4127,11 @@ if (typeof Slick === "undefined") {
       "renderLoadingRows": renderLoadingRows,
       "getFilteredInputs": getFilteredInputs,
       "setupColumnSort": setupColumnSort,
+      "isEditing": isEditing,
+      "initialRender": initialRender,
       "trigger": trigger
     });
 
-    // Ekohe Delete: Will be called in WulinMasterGrid
-    // init();
+    init();
   }
 }(jQuery));

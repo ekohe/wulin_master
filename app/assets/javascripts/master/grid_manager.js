@@ -138,7 +138,7 @@
       }
 
       // ------------------------- Create Grid ------------------------------------
-      grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
+      grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
       gridAttrs = {
