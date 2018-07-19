@@ -179,7 +179,7 @@
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      pager = new WulinMaster.Pager(loader, grid, pagerElement);
+      pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       grid.pager = pager;
 
       // Ekohe Delete: Stop setting indicator (Create progress bar as indicator in connection instead)
