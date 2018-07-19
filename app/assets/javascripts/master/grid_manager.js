@@ -165,7 +165,7 @@
       if (options.rowDetail) { grid.rowDetailView = rowDetailView; }
 
       // Set selection model
-      grid.setSelectionModel(new WulinMaster.RowSelectionModel());
+      grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // Set ColumnPicker
       var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
