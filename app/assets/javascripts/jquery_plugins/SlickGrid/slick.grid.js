@@ -16,6 +16,23 @@
  *     and do proper cleanup.
  */
 
+ /*
+  * Ekohe fork:
+  *
+  *   1.  Material Design UI
+  *   2.  Color theme support
+  *   3.  Don't show invisible columns
+  *   4.  Show selection info on grid header
+  *   5.  Support to specify editor type
+  *   6.  Row detail view support
+  *   7.  Use column's option to decide if make cell editable when ENTER
+  *   8.  Use current cell instead of the whole row for submit in onCellChange trigger
+  *   9.  JSON viewer support
+  *   10. column_editable option support
+  *   98. New events: onRendered, onCanvasResized
+  *   99. New APIs
+  */
+
 // make sure required JavaScript modules are loaded
 if (typeof jQuery === "undefined") {
   throw "SlickGrid requires jquery module to be loaded";
@@ -627,7 +644,7 @@ if (typeof Slick === "undefined") {
 
     function createColumnHeaders() {
       function onMouseEnter() {
-        // Ekohe Edit: Controle visibility of sort/drag buttons
+        // Ekohe Edit: Control visibility of sort/drag buttons
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
           $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
@@ -635,7 +652,7 @@ if (typeof Slick === "undefined") {
       }
 
       function onMouseLeave() {
-        // Ekohe Edit: Controle visibility of sort/drag button
+        // Ekohe Edit: Control visibility of sort/drag button
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
@@ -807,8 +824,12 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Ekohe Edit
+    //   1. Material Design UI
+
     function setupColumnSort() {
-      // Ekohe Edit
+      // Ekohe Edit: Material Design UI
       // $headers.click(function (e) {
       $headers.on('click', '.slick-sort-indicator', function(e) {
         // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
@@ -1966,11 +1987,15 @@ if (typeof Slick === "undefined") {
       invalidatePostProcessingResults(row);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Edit
+    //   1. Ekohe Edit: Material Dedign UI
+
     function getViewportHeight() {
       return parseFloat($.css($container[0], "height", true)) -
         parseFloat($.css($container[0], "paddingTop", true)) -
         parseFloat($.css($container[0], "paddingBottom", true)) -
-        // Ekohe Edit
+        // Ekohe Edit: Material Dedign UI
         // parseFloat($.css($headerScroller[0], "height", true)) - getVBoxDelta($headerScroller) -
         parseFloat($.css($headers[0], "height", true)) - getVBoxDelta($headerScroller) -
         (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -

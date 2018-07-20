@@ -1,3 +1,11 @@
+/*
+ * Ekohe fork:
+ *
+ *   1. Remove pagging bottons (WulinMaster loads data by scrolling)
+ *   2. Use customized farmat for row count when filtering: 5 of 100 rows found
+ *   3. Add clear filter link on the right
+ */
+
 (function ($) {
   function SlickGridPager(dataView, grid, $container, options) {
     var $status;
