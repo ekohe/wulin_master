@@ -457,7 +457,7 @@
         }
       } else {
         var html = [];
-        var hideRow = _grid.getOptions().hideRow;
+        var hideRow = _options.hideRow;
         var rowHeight = _grid.getOptions().rowHeight;
         var bottomMargin = 5;
 
@@ -480,16 +480,17 @@
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
 
-        // set total height of padding
-        // shift detail below 1st row
-        if (hideRow == false) {
-          html.push("style='height:", dataContext._height, "px;");
-          html.push("top:", rowHeight, "px'>");
-          var detailViewHeight = (dataContext._height - rowHeight + bottomMargin);
-        } else {
+        // 1. Set total height of padding
+        // 2. Shift detail below 1st row
+        // 3. Set the max-height
+        if (hideRow == true) {
           html.push("style='height:", dataContext._height + rowHeight, "px;");
           html.push("top: 0px'>");
           var detailViewHeight = (dataContext._height + bottomMargin);
+        } else {
+          html.push("style='height:", dataContext._height, "px;");
+          html.push("top:", rowHeight, "px'>");
+          var detailViewHeight = (dataContext._height - rowHeight + bottomMargin);
         }
 
         // sub ctr for custom styling
