@@ -1750,7 +1750,11 @@ if (typeof Slick === "undefined") {
         }
 
         // Do not render cells outside of the viewport.
-        if (columnPosRight[Math.min(ii - 1, i + colspan - 1)] > range.leftPx) {
+
+        // Ekohe Edit: Show row detail view
+        // if (columnPosRight[Math.min(ii - 1, i + colspan - 1)] > range.leftPx) {
+        if ((columnPosRight[Math.min(ii - 1, i + colspan - 1)] > range.leftPx) ||
+            (m.id === '_detail_selector')) {
           if (columnPosLeft[i] > range.rightPx) {
             // All columns to the right are outside the range.
             break;
