@@ -75,7 +75,8 @@
       columnId: "_detail_selector",
       cssClass: null,
       toolTip: "",
-      width: 30
+      width: 30,
+      hideRow: false
     };
 
     // Ekohe Add
@@ -456,6 +457,7 @@
         }
       } else {
         var html = [];
+        var hideRow = _grid.getOptions().hideRow;
         var rowHeight = _grid.getOptions().rowHeight;
         var bottomMargin = 5;
 
@@ -477,11 +479,23 @@
         html.push("</div>");
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
-        html.push("style='height:", dataContext._height, "px;"); //set total height of padding
-        html.push("top:", rowHeight, "px'>");             //shift detail below 1st row
-        html.push("<div id='detailViewContainer_", dataContext.id, "'  class='detail-container' style='max-height:" + (dataContext._height - rowHeight + bottomMargin) + "px'>"); //sub ctr for custom styling
+
+        // set total height of padding
+        // shift detail below 1st row
+        if (hideRow == false) {
+          html.push("style='height:", dataContext._height, "px;");
+          html.push("top:", rowHeight, "px'>");
+          var detailViewHeight = (dataContext._height - rowHeight + bottomMargin);
+        } else {
+          html.push("style='height:", dataContext._height + rowHeight, "px;");
+          html.push("top: 0px'>");
+          var detailViewHeight = (dataContext._height + bottomMargin);
+        }
+
+        // sub ctr for custom styling
+        html.push("<div id='detailViewContainer_", dataContext.id, "'  class='detail-container' style='max-height:" + detailViewHeight + "px'>");
+        // &omit a final closing detail container </div> that would come next
         html.push("<div id='innerDetailView_" , dataContext.id , "'>" , dataContext._detailContent, "</div></div>");
-        //&omit a final closing detail container </div> that would come next
 
         return html.join("");
       }
