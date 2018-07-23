@@ -35,13 +35,13 @@
 
 // make sure required JavaScript modules are loaded
 if (typeof jQuery === "undefined") {
-  throw "SlickGrid requires jquery module to be loaded";
+  throw new Error("SlickGrid requires jquery module to be loaded");
 }
 if (!jQuery.fn.drag) {
-  throw "SlickGrid requires jquery.event.drag module to be loaded";
+  throw new Error("SlickGrid requires jquery.event.drag module to be loaded");
 }
 if (typeof Slick === "undefined") {
-  throw "slick.core.js not loaded";
+  throw new Error("slick.core.js not loaded");
 }
 
 
@@ -72,6 +72,7 @@ if (typeof Slick === "undefined") {
   function SlickGrid(container, data, columns, options) {
     // settings
     var defaults = {
+      alwaysShowVerticalScroll: false,
       explicitInitialization: false,
       rowHeight: 25,
       defaultColumnWidth: 80,
@@ -79,6 +80,7 @@ if (typeof Slick === "undefined") {
       leaveSpaceForNewRows: false,
       editable: false,
       autoEdit: true,
+      suppressActiveCellChangeOnEdit: false,
       enableCellNavigation: true,
       enableColumnReorder: true,
       asyncEditorLoading: false,
@@ -95,6 +97,9 @@ if (typeof Slick === "undefined") {
       createFooterRow: false,
       showFooterRow: false,
       footerRowHeight: 25,
+      createPreHeaderPanel: false,
+      showPreHeaderPanel: false,
+      preHeaderPanelHeight: 25,
       showTopPanel: false,
       topPanelHeight: 25,
       formatterFactory: null,
@@ -106,10 +111,18 @@ if (typeof Slick === "undefined") {
       dataItemColumnValueExtractor: null,
       fullWidthRows: false,
       multiColumnSort: false,
+      numberedMultiColumnSort: false,
+      tristateMultiColumnSort: false,
+      sortColNumberInSeparateSpan: false,
       defaultFormatter: defaultFormatter,
       forceSyncScrolling: false,
       addNewRowCssClass: "new-row",
-      preserveCopiedSelectionOnPaste: false
+      preserveCopiedSelectionOnPaste: false,
+      showCellSelection: true,
+      viewportClass: null,
+      minRowBuffer: 3,
+      emulatePagingWhenScrolling: true, // when scrolling off bottom of viewport, place new row at top of viewport
+      editorCellNavOnLRKeys: false
     };
 
     var columnDefaults = {
@@ -145,6 +158,7 @@ if (typeof Slick === "undefined") {
     var $headers;
     var $headerRow, $headerRowScroller, $headerRowSpacer;
     var $footerRow, $footerRowScroller, $footerRowSpacer;
+    var $preHeaderPanel, $preHeaderPanelScroller, $preHeaderPanelSpacer;
     var $topPanelScroller;
     var $topPanel;
     var $viewport;
@@ -217,6 +231,7 @@ if (typeof Slick === "undefined") {
     var cssShow = { position: 'absolute', visibility: 'hidden', display: 'block' };
     var $hiddenParents;
     var oldProps = [];
+    var columnResizeDragging = false;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
@@ -1122,11 +1137,11 @@ if (typeof Slick === "undefined") {
       var h = ["borderLeftWidth", "borderRightWidth", "paddingLeft", "paddingRight"];
       var v = ["borderTopWidth", "borderBottomWidth", "paddingTop", "paddingBottom"];
 
-  	  // jquery prior to version 1.8 handles .width setter/getter as a direct css write/read
-  	  // jquery 1.8 changed .width to read the true inner element width if box-sizing is set to border-box, and introduced a setter for .outerWidth
-  	  // so for equivalent functionality, prior to 1.8 use .width, and after use .outerWidth
-  	  var verArray = $.fn.jquery.split('.');
-  	  jQueryNewWidthBehaviour = (verArray[0]==1 && verArray[1]>=8) ||  verArray[0] >=2;
+      // jquery prior to version 1.8 handles .width setter/getter as a direct css write/read
+      // jquery 1.8 changed .width to read the true inner element width if box-sizing is set to border-box, and introduced a setter for .outerWidth
+      // so for equivalent functionality, prior to 1.8 use .width, and after use .outerWidth
+      var verArray = $.fn.jquery.split('.');
+      jQueryNewWidthBehaviour = (verArray[0]==1 && verArray[1]>=8) ||  verArray[0] >=2;
 
       el = $("<div class='ui-state-default slick-header-column' style='visibility:hidden'>-</div>").appendTo($headers);
       headerColumnWidthDiff = headerColumnHeightDiff = 0;
@@ -1352,18 +1367,18 @@ if (typeof Slick === "undefined") {
       var h;
       for (var i = 0, headers = $headers.children(), ii = headers.length; i < ii; i++) {
         h = $(headers[i]);
-    		if (jQueryNewWidthBehaviour) {
-    			if (h.outerWidth() !== columns[i].width) {
-    			  h.outerWidth(columns[i].width);
-    			}
-    		} else {
-    			if (h.width() !== columns[i].width - headerColumnWidthDiff) {
-    			  h.width(columns[i].width - headerColumnWidthDiff);
-    			}
-    		}
         // Ekohe Add: Align label to center for MD
         var $label = h.find('label');
         $label.css('left', (h.width() - $label.textWidth()) / 2);
+        if (jQueryNewWidthBehaviour) {
+          if (h.outerWidth() !== columns[i].width) {
+            h.outerWidth(columns[i].width);
+          }
+        } else {
+          if (h.width() !== columns[i].width - headerColumnWidthDiff) {
+            h.width(columns[i].width - headerColumnWidthDiff);
+          }
+        }
       }
 
       updateColumnCaches();
@@ -1589,8 +1604,8 @@ if (typeof Slick === "undefined") {
 
     function getDataLengthIncludingAddNew() {
       return getDataLength() + (!options.enableAddRow ? 0
-		: (!pagingActive || pagingIsLastPage ? 1 : 0)
-	  );
+        : (!pagingActive || pagingIsLastPage ? 1 : 0)
+      );
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1906,11 +1921,7 @@ if (typeof Slick === "undefined") {
         zombieRowPostProcessedFromLastMouseWheelEvent = postProcessedRows[row];
         // ignore post processing cleanup in this case - it will be dealt with later
       } else {
-        if (options.enableAsyncPostRenderCleanup && postProcessedRows[row]) {
-          queuePostProcessedRowForCleanup(cacheEntry, postProcessedRows[row], row);
-        } else {
-          $canvas[0].removeChild(cacheEntry.rowNode);
-        }
+        $canvas[0].removeChild(cacheEntry.rowNode);
       }
 
       delete rowsCache[row];
@@ -1925,7 +1936,7 @@ if (typeof Slick === "undefined") {
         return;
       }
       vScrollDir = 0;
-	    rl = rows.length;
+      rl = rows.length;
       for (i = 0;  i < rl; i++) {
         if (currentEditor && activeRow === rows[i]) {
           makeActiveCellNormal();
@@ -1938,6 +1949,7 @@ if (typeof Slick === "undefined") {
     }
 
     function invalidateRow(row) {
+      if (!row && row !== 0) { return; }
       invalidateRows([row]);
     }
 
@@ -2029,9 +2041,9 @@ if (typeof Slick === "undefined") {
     }
 
     function updatePagingStatusFromView( pagingInfo ) {
-		pagingActive = (pagingInfo.pageSize !== 0);
-		pagingIsLastPage = (pagingInfo.pageNum == pagingInfo.totalPages - 1);
-	}
+        pagingActive = (pagingInfo.pageSize !== 0);
+        pagingIsLastPage = (pagingInfo.pageNum == pagingInfo.totalPages - 1);
+    }
 
     function updateRowCount() {
       if (!initialized) { return; }
@@ -2123,7 +2135,7 @@ if (typeof Slick === "undefined") {
     function getRenderedRange(viewportTop, viewportLeft) {
       var range = getVisibleRange(viewportTop, viewportLeft);
       var buffer = Math.round(viewportH / options.rowHeight);
-      var minBuffer = 3;
+      var minBuffer = options.minRowBuffer;
 
       if (vScrollDir == -1) {
         range.top -= buffer;
@@ -2586,7 +2598,7 @@ if (typeof Slick === "undefined") {
 
     function addCellCssStyles(key, hash) {
       if (cellCssClasses[key]) {
-        throw "addCellCssStyles: cell CSS hash with key '" + key + "' already exists.";
+        throw new Error("addCellCssStyles: cell CSS hash with key '" + key + "' already exists.");
       }
 
       cellCssClasses[key] = hash;
@@ -2713,7 +2725,7 @@ if (typeof Slick === "undefined") {
 
       if (!handled) {
         if (!e.shiftKey && !e.altKey && !e.ctrlKey) {
-		      // editor may specify an array of keys to bubble
+          // editor may specify an array of keys to bubble
           if (options.editable && currentEditor && currentEditor.keyCaptureList) {
             if (currentEditor.keyCaptureList.indexOf( e.which ) > -1) {
                 return;
@@ -2915,7 +2927,7 @@ if (typeof Slick === "undefined") {
       // read column number from .l<columnNumber> CSS class
       var cls = /l\d+/.exec(cellNode.className);
       if (!cls) {
-        throw "getCellFromNode: cannot get cell - " + cellNode.className;
+        throw new Error("getCellFromNode: cannot get cell - " + cellNode.className);
       }
       return parseInt(cls[0].substr(1, cls[0].length - 1), 10);
     }
@@ -3122,7 +3134,7 @@ if (typeof Slick === "undefined") {
 
       // Ekohe Delete: Change to judge editable or not by specific column's `editable` option, not grid's
       // if (!options.editable) {
-      //   throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
+      //   throw new Error("Grid : makeActiveCellEditable : should never get called when options.editable is false");
       // }
 
       // cancel pending async call if there is one
@@ -3143,7 +3155,7 @@ if (typeof Slick === "undefined") {
       getEditorLock().activate(editController);
       $(activeCellNode).addClass("editable");
 
-  	  var useEditor = editor || getEditor(activeRow, activeCell);
+      var useEditor = editor || getEditor(activeRow, activeCell);
 
       // don't clear the cell if a custom editor is passed through
       if (!editor && !useEditor.suppressClearOnEdit) {
@@ -3830,14 +3842,14 @@ if (typeof Slick === "undefined") {
 
     function getSelectedRows() {
       if (!selectionModel) {
-        throw "Selection model is not set";
+        throw new Error("Selection model is not set");
       }
       return selectedRows;
     }
 
     function setSelectedRows(rows) {
       if (!selectionModel) {
-        throw "Selection model is not set";
+        throw new Error("Selection model is not set");
       }
       selectionModel.setSelectedRanges(rowsToRanges(rows));
     }
@@ -4007,7 +4019,7 @@ if (typeof Slick === "undefined") {
     // Public API
 
     $.extend(this, {
-      "slickGridVersion": "2.3.0",
+      "slickGridVersion": "2.3.19",
 
       // Events
       "onScroll": new Slick.Event(),
@@ -4029,6 +4041,7 @@ if (typeof Slick === "undefined") {
       "onContextMenu": new Slick.Event(),
       "onKeyDown": new Slick.Event(),
       "onAddNewRow": new Slick.Event(),
+      "onBeforeAppendCell": new Slick.Event(),
       "onValidationError": new Slick.Event(),
       "onViewportChanged": new Slick.Event(),
       "onColumnsReordered": new Slick.Event(),
@@ -4072,7 +4085,7 @@ if (typeof Slick === "undefined") {
       "getSelectedRows": getSelectedRows,
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
-	    "updatePagingStatusFromView": updatePagingStatusFromView,
+      "updatePagingStatusFromView": updatePagingStatusFromView,
 
       "render": render,
       "invalidate": invalidate,
