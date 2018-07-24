@@ -3978,10 +3978,12 @@ if (typeof Slick === "undefined") {
       // if selecting the 'add new' row, start editing right away
 
       // Ekohe Modify: Pass new param `column_editable` to judge if set the cell active or not
-      // setActiveCellInternal(newCell, forceEdit || (row === getDataLength()) || options.autoEdit);
+      // setActiveCellInternal(newCell, (forceEdit || (row === getDataLength()) || options.autoEdit), null, options.editable);
       setActiveCellInternal(
         newCell,
         (forceEdit || (row === getDataLength()) || options.autoEdit),
+        null,
+        options.editable,
         isColumnEditable(getColumns()[cell])
       )
 
