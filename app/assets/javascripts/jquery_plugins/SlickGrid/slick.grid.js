@@ -723,6 +723,7 @@ if (typeof Slick === "undefined") {
     function createColumnHeaders() {
       function onMouseEnter() {
         // Ekohe Edit: Control visibility of sort/drag buttons
+        // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
           $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
@@ -731,6 +732,7 @@ if (typeof Slick === "undefined") {
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
+        // $(this).removeClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
@@ -780,13 +782,10 @@ if (typeof Slick === "undefined") {
             }
           });
         $footerRow.empty();
-	    }
-
-      columnsById = {};
+      }
 
       for (var i = 0; i < columns.length; i++) {
         var m = columns[i];
-        columnsById[m.id] = i;
 
         // Ekohe Edit: Use new Material Design headers
 
@@ -838,7 +837,9 @@ if (typeof Slick === "undefined") {
         if (m.sortable) {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator
-          // header.append("<span class='slick-sort-indicator' />");
+          // header.append("<span class='slick-sort-indicator"
+          //   + (options.numberedMultiColumnSort && !options.sortColNumberInSeparateSpan ? " slick-sort-indicator-numbered" : "" ) + "' />");
+          // if (options.numberedMultiColumnSort && options.sortColNumberInSeparateSpan) { header.append("<span class='slick-sort-indicator-numbered' />"); }
           var $sortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
           var $sortIndicator = $('<div />')
             .addClass('slick-sort-indicator')
@@ -896,9 +897,12 @@ if (typeof Slick === "undefined") {
 
       setSortColumns(sortColumns);
       setupColumnResize();
-
       if (options.enableColumnReorder) {
-        setupColumnReorder();
+        if (typeof options.enableColumnReorder == 'function') {
+            options.enableColumnReorder(self, $headers, headerColumnWidthDiff, setColumns, setupColumnResize, columns, getColumnIndex, uid, trigger);
+        } else {
+            setupColumnReorder();
+        }
       }
     }
 
