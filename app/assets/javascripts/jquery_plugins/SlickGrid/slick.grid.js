@@ -3301,7 +3301,8 @@ if (typeof Slick === "undefined") {
         if (d) {
           var column = columns[activeCell];
           var formatter = getFormatter(activeRow, column);
-          activeCellNode.innerHTML = formatter(activeRow, activeCell, getDataItemValueForColumn(d, column), column, d, self);
+          var formatterResult =  formatter(activeRow, activeCell, getDataItemValueForColumn(d, column), column, d, self);
+          applyFormatResultToCellNode(formatterResult, activeCellNode);
           invalidatePostProcessingResults(activeRow);
         }
       }
@@ -3315,7 +3316,7 @@ if (typeof Slick === "undefined") {
       getEditorLock().deactivate(editController);
     }
 
-    function makeActiveCellEditable(editor) {
+    function makeActiveCellEditable(editor, preClickModeOn) {
       if (!activeCellNode) {
         return;
       }
@@ -3363,6 +3364,9 @@ if (typeof Slick === "undefined") {
 
       if (item) {
         currentEditor.loadValue(item);
+        if (preClickModeOn && currentEditor.preClick) {
+          currentEditor.preClick();
+        }
       }
 
       serializedEditorValue = currentEditor.serializeValue();
@@ -3404,7 +3408,7 @@ if (typeof Slick === "undefined") {
       // walk up the tree
       var offsetParent = elem.offsetParent;
       while ((elem = elem.parentNode) != document.body) {
-		if (elem == null) break;
+        if (elem == null) break;
 
         if (box.visible && elem.scrollHeight != elem.offsetHeight && $(elem).css("overflowY") != "visible") {
           box.visible = box.bottom > elem.scrollTop && box.top < elem.scrollTop + elem.clientHeight;
@@ -3729,6 +3733,10 @@ if (typeof Slick === "undefined") {
 
       var firstFocusableCell = null;
       var dataLengthIncludingAddNew = getDataLengthIncludingAddNew();
+
+      // if at last row, cycle through columns rather than get stuck in the last one
+      if (row === dataLengthIncludingAddNew - 1) { row--; }
+
       while (++row < dataLengthIncludingAddNew) {
         firstFocusableCell = findFirstFocusableCell(row);
         if (firstFocusableCell !== null) {
