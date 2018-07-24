@@ -2079,6 +2079,21 @@ if (typeof Slick === "undefined") {
       invalidateRows([row]);
     }
 
+    function applyFormatResultToCellNode(formatterResult, cellNode, suppressRemove) {
+        if (formatterResult === null || formatterResult === undefined) { formatterResult = ''; }
+        if (Object.prototype.toString.call(formatterResult)  !== '[object Object]') {
+            cellNode.innerHTML = formatterResult;
+            return;
+        }
+        cellNode.innerHTML = formatterResult.text;
+        if (formatterResult.removeClasses && !suppressRemove) {
+            $(cellNode).removeClass(formatterResult.removeClasses);
+        }
+        if (formatterResult.addClasses) {
+            $(cellNode).addClass(formatterResult.addClasses);
+        }
+    }
+
     function updateCell(row, cell) {
       var cellNode = getCellNode(row, cell);
       if (!cellNode) {
@@ -2089,7 +2104,8 @@ if (typeof Slick === "undefined") {
       if (currentEditor && activeRow === row && activeCell === cell) {
         currentEditor.loadValue(d);
       } else {
-        cellNode.innerHTML = d ? getFormatter(row, m)(row, cell, getDataItemValueForColumn(d, m), m, d) : "";
+        var formatterResult =  d ? getFormatter(row, m)(row, cell, getDataItemValueForColumn(d, m), m, d, self) : "";
+        applyFormatResultToCellNode(formatterResult, cellNode);
         invalidatePostProcessingResults(row);
       }
     }
@@ -2102,7 +2118,7 @@ if (typeof Slick === "undefined") {
 
       ensureCellNodesInRowsCache(row);
 
-      var d = getDataItem(row);
+      var formatterResult, d = getDataItem(row);
 
       for (var columnIdx in cacheEntry.cellNodesByColumnIdx) {
         if (!cacheEntry.cellNodesByColumnIdx.hasOwnProperty(columnIdx)) {
@@ -2116,7 +2132,8 @@ if (typeof Slick === "undefined") {
         if (row === activeRow && columnIdx === activeCell && currentEditor) {
           currentEditor.loadValue(d);
         } else if (d) {
-          node.innerHTML = getFormatter(row, m)(row, columnIdx, getDataItemValueForColumn(d, m), m, d);
+          formatterResult =  getFormatter(row, m)(row, columnIdx, getDataItemValueForColumn(d, m), m, d, self);
+          applyFormatResultToCellNode(formatterResult, node);
         } else {
           node.innerHTML = "";
         }
