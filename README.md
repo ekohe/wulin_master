@@ -464,6 +464,7 @@ row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, show
 
 - **cssClass**: A CSS class to be added to the row detail. Default: `detailView-toggle`
 - **panelRows**: Row count to use for the row detail panel. Default: `4`
+- **hideRow**: Boolean flag, when `true` will hide the current row on a row click (from any column). Default: `false`
 - **useRowClick**: Boolean flag, when `true` will open the row detail on a row click (from any column). Default: `false`
 - **showTriggerColumn**: Boolean flag, when `false` will hide the column to trigger the row detail panel. Default: `true`
 - **loadingTemplate**: Template (html) that will be used before the async process, typically used to show a spinner/loading. Default: `Loading...`

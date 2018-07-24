@@ -71,6 +71,9 @@
     var _self = this;
     var _expandedRows = [];
     var _handler = new Slick.EventHandler();
+
+    // Ekohe add options
+    //  - hideRow
     var _defaults = {
       columnId: "_detail_selector",
       cssClass: null,
@@ -457,6 +460,7 @@
         }
       } else {
         var html = [];
+        // Ekohe Edit
         var hideRow = _options.hideRow;
         var rowHeight = _grid.getOptions().rowHeight;
         var bottomMargin = 5;
@@ -480,9 +484,10 @@
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
 
-        // 1. Set total height of padding
-        // 2. Shift detail below 1st row
-        // 3. Set the max-height
+        // Ekohe Add: Rewrite detail Panel height
+        //  1. Set total height of padding
+        //  2. Shift detail below 1st row
+        //  3. Set the max-height
         if (hideRow == true) {
           html.push("style='height:", dataContext._height + rowHeight, "px;");
           html.push("top: 0px'>");
