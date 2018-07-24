@@ -704,16 +704,20 @@ if (typeof Slick === "undefined") {
       return $footerRow[0];
     }
 
-    function getHeaderRowColumn(columnId) {
-      var idx = getColumnIndex(columnId);
-      var $header = $headerRow.children().eq(idx);
-      return $header && $header[0];
+    function getPreHeaderPanel() {
+      return $preHeaderPanel[0];
     }
 
-    function getFooterRowColumn(columnId) {
-      var idx = getColumnIndex(columnId);
-      var $footer = $footerRow.children().eq(idx);
-      return $footer && $footer[0];
+    function getHeaderRowColumn(columnIdOrIdx) {
+      var idx = (typeof columnIdOrIdx === "number" ? columnIdOrIdx : getColumnIndex(columnIdOrIdx));
+      var $rtn = $headerRow.children().eq(idx);
+      return $rtn && $rtn[0];
+    }
+
+    function getFooterRowColumn(columnIdOrIdx) {
+      var idx = (typeof columnIdOrIdx === "number" ? columnIdOrIdx : getColumnIndex(columnIdOrIdx));
+      var $rtn = $footerRow.children().eq(idx);
+      return $rtn && $rtn[0];
     }
 
     function createColumnHeaders() {
