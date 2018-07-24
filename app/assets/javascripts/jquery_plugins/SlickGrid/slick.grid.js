@@ -1708,14 +1708,14 @@ if (typeof Slick === "undefined") {
     //   1. Add process to get data form oldData when data variable is not set
 
     function getDataItem(i) {
-      // Ekohe Delete
+      // Ekohe Edit: Get data form oldData when data variable is not set
+
       // if (data.getItem) {
       //   return data.getItem(i);
       // } else {
       //   return data[i];
       // }
 
-      // Ekohe Add: Get data form oldData when data variable is not set
       var item = null;
       if (data.getItem) {
         item = data.getItem(i);
@@ -1766,6 +1766,17 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    function setPreHeaderPanelVisibility(visible) {
+      if (options.showPreHeaderPanel != visible) {
+        options.showPreHeaderPanel = visible;
+        if (visible) {
+          $preHeaderPanelScroller.slideDown("fast", resizeCanvas);
+        } else {
+          $preHeaderPanelScroller.slideUp("fast", resizeCanvas);
+        }
+      }
+    }
+
     function getContainerNode() {
       return $container.get(0);
     }
@@ -1805,7 +1816,7 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function defaultFormatter(row, cell, value, columnDef, dataContext) {
+    function defaultFormatter(row, cell, value, columnDef, dataContext, grid) {
       if (value == null) {
         return "";
       } else {
@@ -1864,7 +1875,7 @@ if (typeof Slick === "undefined") {
       var dataLoading = row < dataLength && !d;
       var rowCss = "slick-row" +
           (dataLoading ? " loading" : "") +
-          (row === activeRow ? " active" : "") +
+          (row === activeRow && options.showCellSelection ? " active" : "") +
           (row % 2 == 1 ? " odd" : " even");
 
       if (!d) {
