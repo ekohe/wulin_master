@@ -3196,11 +3196,16 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    function scrollColumnIntoView(cell) {
+      internalScrollColumnIntoView(columnPosLeft[cell], columnPosRight[cell]);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Modify
+    // Ekohe Edit
     //   1. Use new parameter `column_editable` to judge if make active or not
 
-    function setActiveCellInternal(newCell, opt_editMode, column_editable) {
+    // function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent) {
+    function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent, column_editable) {
       if (activeCellNode !== null) {
         makeActiveCellNormal();
         $(activeCellNode).removeClass("active");
@@ -3220,28 +3225,31 @@ if (typeof Slick === "undefined") {
           opt_editMode = (activeRow == getDataLength()) || options.autoEdit;
         }
 
-        $(activeCellNode).addClass("active");
-        $(rowsCache[activeRow].rowNode).addClass("active");
+        if (options.showCellSelection) {
+          $(activeCellNode).addClass("active");
+          $(rowsCache[activeRow].rowNode).addClass("active");
+        }
 
         // Ekohe Add: Use new parameter `column_editable` to judge if make active or not
+        // if (options.editable && opt_editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
         if ((column_editable || options.editable) && opt_editMode && isCellPotentiallyEditable(activeRow, activeCell)) {
           clearTimeout(h_editorLoader);
 
           if (options.asyncEditorLoading) {
             h_editorLoader = setTimeout(function () {
-              makeActiveCellEditable();
+              makeActiveCellEditable(undefined, preClickModeOn);
             }, options.asyncEditorLoadDelay);
           } else {
-            makeActiveCellEditable();
+            makeActiveCellEditable(undefined, preClickModeOn);
           }
         }
       } else {
         activeRow = activeCell = null;
       }
 
-	  // this optimisation causes trouble - MLeibman #329
+      // this optimisation causes trouble - MLeibman #329
       //if (activeCellChanged) {
-        trigger(self.onActiveCellChanged, getActiveCell());
+      if (!suppressActiveCellChangedEvent) { trigger(self.onActiveCellChanged, getActiveCell()); }
       //}
     }
 
