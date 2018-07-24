@@ -533,13 +533,20 @@ if (typeof Slick === "undefined") {
       return dim;
     }
 
-    function getHeadersWidth() {
-      var headersWidth = 0;
+    function getColumnTotalWidth(includeScrollbar) {
+      var totalWidth = 0;
       for (var i = 0, ii = columns.length; i < ii; i++) {
         var width = columns[i].width;
-        headersWidth += width;
+        totalWidth += width;
       }
-      headersWidth += scrollbarDimensions.width;
+      if (includeScrollbar) {
+        totalWidth += scrollbarDimensions.width;
+      }
+      return totalWidth;
+    }
+
+    function getHeadersWidth() {
+      var headersWidth = getColumnTotalWidth(!options.autoHeight);
       return Math.max(headersWidth, viewportW) + 1000;
     }
 
@@ -561,6 +568,7 @@ if (typeof Slick === "undefined") {
         $canvas.width(canvasWidth);
         $headerRow.width(canvasWidth);
         if (options.createFooterRow) { $footerRow.width(canvasWidth); }
+        if (options.createPreHeaderPanel) { $preHeaderPanel.width(canvasWidth); }
         $headers.width(getHeadersWidth());
         viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
       }
@@ -568,6 +576,7 @@ if (typeof Slick === "undefined") {
        var w=canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0);
        $headerRowSpacer.width(w);
        if (options.createFooterRow) { $footerRowSpacer.width(w); }
+       if (options.createPreHeaderPanel) { $preHeaderPanelSpacer.width(w); }
 
       if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
         applyColumnWidths();
@@ -663,6 +672,16 @@ if (typeof Slick === "undefined") {
           "grid": self
         });
       }
+    }
+
+    function getHeader() {
+      return $headers[0];
+    }
+
+    function getHeaderColumn(columnIdOrIdx) {
+      var idx = (typeof columnIdOrIdx === "number" ? columnIdOrIdx : getColumnIndex(columnIdOrIdx));
+      var $rtn = $headers.children().eq(idx);
+      return $rtn && $rtn[0];
     }
 
     function getHeaderRow() {
