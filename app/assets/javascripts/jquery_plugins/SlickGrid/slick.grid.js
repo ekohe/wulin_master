@@ -1495,7 +1495,7 @@ if (typeof Slick === "undefined") {
 
     function setSortColumns(cols) {
       sortColumns = cols;
-
+      var numberCols = options.numberedMultiColumnSort && sortColumns.length > 1;
       var headerColumnEls = $headers.children();
       headerColumnEls
         .removeClass("slick-header-column-sorted")
@@ -1503,6 +1503,9 @@ if (typeof Slick === "undefined") {
            // Ekohe EDIT: Use mateiral icon for sort indicators
            // .removeClass("slick-sort-indicator-asc slick-sort-indicator-desc");
           .hide();
+      headerColumnEls
+        .find(".slick-sort-indicator-numbered")
+          .text('');
 
       $.each(sortColumns, function(i, col) {
         if (col.sortAsc == null) {
@@ -1525,13 +1528,13 @@ if (typeof Slick === "undefined") {
           headerColumnEls.eq(columnIndex)
             .addClass("slick-header-column-sorted")
             .find(".slick-sort-indicator")
-              .show()
-              .append($sortIcon);
-
-          // Move the sort indicator to right when grid first loaded
-          var $sortIndicator = $sortIcon.parent();
-          if (!$sortIndicator.siblings('.slick-drag-indicator').is(':visible')) {
-            $sortIndicator.css({right: '15px'})
+              // Ekohe Edit: Use mateiral icon for sort indicators
+              // .addClass(col.sortAsc ? "slick-sort-indicator-asc" : "slick-sort-indicator-desc");
+              .show().append($sortIcon);
+          if (numberCols) {
+            headerColumnEls.eq(columnIndex)
+              .find(".slick-sort-indicator-numbered")
+                .text(i+1);
           }
         }
       });
