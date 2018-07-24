@@ -2151,11 +2151,12 @@ if (typeof Slick === "undefined") {
         parseFloat($.css($container[0], "paddingTop", true)) -
         parseFloat($.css($container[0], "paddingBottom", true)) -
         // Ekohe Edit: Material Dedign UI
-        // parseFloat($.css($headerScroller[0], "height", true)) - getVBoxDelta($headerScroller) -
-        parseFloat($.css($headers[0], "height", true)) - getVBoxDelta($headerScroller) -
+        // parseFloat($.css($headerScroller[0], "height")) - getVBoxDelta($headerScroller) -
+        parseFloat($.css($headers[0], "height")) - getVBoxDelta($headerScroller) -
         (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -
         (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0) -
-        (options.createFooterRow && options.showFooterRow ? options.footerRowHeight + getVBoxDelta($footerRowScroller) : 0);
+        (options.createFooterRow && options.showFooterRow ? options.footerRowHeight + getVBoxDelta($footerRowScroller) : 0) -
+        (options.createPreHeaderPanel && options.showPreHeaderPanel ? options.preHeaderPanelHeight + getVBoxDelta($preHeaderPanelScroller) : 0);
     }
 
     function resizeCanvas() {
@@ -2170,6 +2171,10 @@ if (typeof Slick === "undefined") {
       viewportW = parseFloat($.css($container[0], "width", true));
       if (!options.autoHeight) {
         $viewport.height(viewportH);
+      }
+
+      if (!scrollbarDimensions || !scrollbarDimensions.width) {
+        scrollbarDimensions = measureScrollbar();
       }
 
       if (options.forceFitColumns) {
