@@ -1933,7 +1933,7 @@ if (typeof Slick === "undefined") {
       var m = columns[cell];
       var cellCss = "slick-cell l" + cell + " r" + Math.min(columns.length - 1, cell + colspan - 1) +
           (m.cssClass ? " " + m.cssClass : "");
-      if (row === activeRow && cell === activeCell) {
+      if (row === activeRow && cell === activeCell && options.showCellSelection) {
         cellCss += (" active");
       }
 
@@ -1944,12 +1944,22 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      stringArray.push("<div class='" + cellCss + "'>");
+      var value = null, formatterResult = '';
+      if (item) {
+        value = getDataItemValueForColumn(item, m);
+        formatterResult =  getFormatter(row, m)(row, cell, value, m, item, self);
+        if (formatterResult === null || formatterResult === undefined) { formatterResult = ''; }
+      }
+
+      // get addl css class names from object type formatter return and from string type return of onBeforeAppendCell
+      var addlCssClasses = trigger(self.onBeforeAppendCell, { row: row, cell: cell, grid: self, value: value, dataContext: item }) || '';
+      addlCssClasses += (formatterResult && formatterResult.addClasses ? (addlCssClasses ? ' ' : '') + formatterResult.addClasses : '');
+
+      stringArray.push("<div class='" + cellCss + (addlCssClasses ? ' ' + addlCssClasses : '') + "'>");
 
       // if there is a corresponding row (if not, this is the Add New row or this data hasn't been loaded yet)
       if (item) {
-        var value = getDataItemValueForColumn(item, m);
-        stringArray.push(getFormatter(row, m)(row, cell, value, m, item));
+        stringArray.push(Object.prototype.toString.call(formatterResult)  !== '[object Object]' ? formatterResult : formatterResult.text);
       }
 
       stringArray.push("</div>");
