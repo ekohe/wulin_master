@@ -240,7 +240,14 @@ if (typeof Slick === "undefined") {
     // 1. Add color setting to grid container
 
     function init() {
-      $container = $(container);
+      if (container instanceof jQuery) {
+        $container = container;
+      } else {
+        $container = $(container);
+      }
+      if ($container.length < 1) {
+        throw new Error("SlickGrid requires a valid container, " + container + " does not exist in the DOM.");
+      }
 
       // Ekohe Add: Add color related class to grid container
       if (options['colorTheme']) {
@@ -253,15 +260,10 @@ if (typeof Slick === "undefined") {
         $container.parent('.grid_container').addClass('grid-bg-color-' + options['bgColor']);
       }
 
-      if ($container.length < 1) {
-        throw new Error("SlickGrid requires a valid container, " + container + " does not exist in the DOM.");
-      }
-
       cacheCssForHiddenInit();
 
       // calculate these only once and share between grid instances
       maxSupportedCssHeight = maxSupportedCssHeight || getMaxSupportedCssHeight();
-      scrollbarDimensions = scrollbarDimensions || measureScrollbar();
 
       options = $.extend({}, defaults, options);
       validateAndEnforceOptions();
@@ -303,18 +305,26 @@ if (typeof Slick === "undefined") {
 
       $focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
 
-      $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+      if (options.createPreHeaderPanel) {
+        $preHeaderPanelScroller = $("<div class='slick-preheader-panel ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+        $preHeaderPanel = $("<div />").appendTo($preHeaderPanelScroller);
+        $preHeaderPanelSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
+            .appendTo($preHeaderPanelScroller);
 
+        if (!options.showPreHeaderPanel) {
+          $preHeaderPanelScroller.hide();
+        }
+      }
+
+      $headerScroller = $("<div class='slick-header ui-state-default' />").appendTo($container);
       $headers = $("<div class='slick-header-columns' style='left:-1000px' />").appendTo($headerScroller);
-      $headers.width(getHeadersWidth());
 
-      $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+      $headerRowScroller = $("<div class='slick-headerrow ui-state-default' />").appendTo($container);
       $headerRow = $("<div class='slick-headerrow-columns' />").appendTo($headerRowScroller);
       $headerRowSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
-          .css("width", getCanvasWidth() + scrollbarDimensions.width + "px")
           .appendTo($headerRowScroller);
 
-      $topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+      $topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default' />").appendTo($container);
       $topPanel = $("<div class='slick-top-panel' style='width:10000px' />").appendTo($topPanelScroller);
 
       if (!options.showTopPanel) {
@@ -326,12 +336,22 @@ if (typeof Slick === "undefined") {
       }
 
       $viewport = $("<div class='slick-viewport' style='width:100%;overflow:auto;outline:0;position:relative;;'>").appendTo($container);
-      $viewport.css("overflow-y", options.autoHeight ? "hidden" : "auto");
+      $viewport.css("overflow-y", options.alwaysShowVerticalScroll ? "scroll" : (options.autoHeight ? "hidden" : "auto"));
+      $viewport.css("overflow-x", options.forceFitColumns ? "hidden" : "auto");
+      if (options.viewportClass) $viewport.toggleClass(options.viewportClass, true);
 
       $canvas = $("<div class='grid-canvas' />").appendTo($viewport);
 
+      scrollbarDimensions = scrollbarDimensions || measureScrollbar();
+
+      if ($preHeaderPanelSpacer) $preHeaderPanelSpacer.css("width", getCanvasWidth() + scrollbarDimensions.width + "px");
+      $headers.width(getHeadersWidth());
+      $headerRowSpacer.css("width", getCanvasWidth() + scrollbarDimensions.width + "px");
+
+
+
       if (options.createFooterRow) {
-        $footerRowScroller = $("<div class='slick-footerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+        $footerRowScroller = $("<div class='slick-footerrow ui-state-default' />").appendTo($container);
         $footerRow = $("<div class='slick-footerrow-columns' />").appendTo($footerRowScroller);
         $footerRowSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
             .css("width", getCanvasWidth() + scrollbarDimensions.width + "px")
