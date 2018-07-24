@@ -2980,17 +2980,20 @@ if (typeof Slick === "undefined") {
       }
 
       trigger(self.onClick, {row: cell.row, cell: cell.cell, grid: self}, e);
-
       if (e.isImmediatePropagationStopped()) {
         return;
       }
 
-	  // this optimisation causes trouble - MLeibman #329
+      // this optimisation causes trouble - MLeibman #329
       //if ((activeCell != cell.cell || activeRow != cell.row) && canCellBeActive(cell.row, cell.cell)) {
       if (canCellBeActive(cell.row, cell.cell)) {
         if (!getEditorLock().isActive() || getEditorLock().commitCurrentEdit()) {
           scrollRowIntoView(cell.row, false);
-          setActiveCellInternal(getCellNode(cell.row, cell.cell));
+
+          var preClickModeOn = (e.target && e.target.className === Slick.preClickClassName);
+          var column = columns[cell.cell];
+          var suppressActiveCellChangedEvent = (options.editable && column && column.editor && options.suppressActiveCellChangeOnEdit) ? true : false;
+          setActiveCellInternal(getCellNode(cell.row, cell.cell), null, preClickModeOn, suppressActiveCellChangedEvent);
         }
       }
     }
