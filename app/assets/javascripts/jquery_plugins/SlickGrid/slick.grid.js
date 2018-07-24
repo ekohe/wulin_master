@@ -2203,7 +2203,7 @@ if (typeof Slick === "undefined") {
 
       var oldViewportHasVScroll = viewportHasVScroll;
       // with autoHeight, we do not need to accommodate the vertical scroll bar
-      viewportHasVScroll = !options.autoHeight && (numberOfRows * options.rowHeight > viewportH);
+      viewportHasVScroll = options.alwaysShowVerticalScroll || !options.autoHeight && (numberOfRows * options.rowHeight > viewportH);
       viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
 
       makeActiveCellNormal();
@@ -2580,15 +2580,24 @@ if (typeof Slick === "undefined") {
       $container.find('.slick-cell.l0').css({'padding-left': '10px'});
     }
 
+    function handleHeaderScroll() {
+      handleElementScroll($headerScroller[0]);
+    }
+
     function handleHeaderRowScroll() {
-      var scrollLeft = $headerRowScroller[0].scrollLeft;
-      if (scrollLeft != $viewport[0].scrollLeft) {
-        $viewport[0].scrollLeft = scrollLeft;
-      }
+      handleElementScroll($headerRowScroller[0]);
     }
 
     function handleFooterRowScroll() {
-      var scrollLeft = $footerRowScroller[0].scrollLeft;
+      handleElementScroll($footerRowScroller[0]);
+    }
+
+    function handlePreHeaderPanelScroll() {
+      handleElementScroll($preHeaderPanelScroller[0]);
+    }
+
+    function handleElementScroll(element) {
+      var scrollLeft = element.scrollLeft;
       if (scrollLeft != $viewport[0].scrollLeft) {
         $viewport[0].scrollLeft = scrollLeft;
       }
@@ -2607,6 +2616,9 @@ if (typeof Slick === "undefined") {
         $headerRowScroller[0].scrollLeft = scrollLeft;
         if (options.createFooterRow) {
           $footerRowScroller[0].scrollLeft = scrollLeft;
+        }
+        if (options.createPreHeaderPanel) {
+          $preHeaderPanelScroller[0].scrollLeft = scrollLeft;
         }
       }
 
