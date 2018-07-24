@@ -53,7 +53,8 @@
   * Ekohe fork:
   *
   * 1. Change to deal with Ekohe version of remotemodel instead dataviw
-  *
+  * 2. Make showing trigger column optional
+  * 3. Add the feature to handle if we could hide the original row
   */
 
 (function ($) {
@@ -72,14 +73,12 @@
     var _expandedRows = [];
     var _handler = new Slick.EventHandler();
 
-    // Ekohe add options
-    //  - hideRow
     var _defaults = {
       columnId: "_detail_selector",
       cssClass: null,
       toolTip: "",
-      width: 30,
-      hideRow: false
+      hideRow: false, // Ekohe Add
+      width: 30
     };
 
     // Ekohe Add
@@ -460,10 +459,11 @@
         }
       } else {
         var html = [];
-        // Ekohe Edit
-        var hideRow = _options.hideRow;
         var rowHeight = _grid.getOptions().rowHeight;
         var bottomMargin = 5;
+
+        // Ekohe Add
+        var hideRow = _options.hideRow;
 
         //V313HAX:
         //putting in an extra closing div after the closing toggle div and ommiting a
@@ -484,10 +484,15 @@
 
         html.push("<div id='cellDetailView_", dataContext.id, "' class='dynamic-cell-detail' ");   //apply custom css to detail
 
-        // Ekohe Add: Rewrite detail Panel height
+        // Ekohe Edit: Rewrite detail Panel height
         //  1. Set total height of padding
         //  2. Shift detail below 1st row
         //  3. Set the max-height
+
+        // html.push("style='height:", dataContext._height, "px;"); //set total height of padding
+        // html.push("top:", rowHeight, "px'>");             //shift detail below 1st row
+        // html.push("<div id='detailViewContainer_", dataContext.id, "'  class='detail-container' style='max-height:" + (dataContext._height - rowHeight + bottomMargin) + "px'>"); //sub ctr for custom styling
+
         if (hideRow == true) {
           html.push("style='height:", dataContext._height + rowHeight, "px;");
           html.push("top: 0px'>");
@@ -497,11 +502,10 @@
           html.push("top:", rowHeight, "px'>");
           var detailViewHeight = (dataContext._height - rowHeight + bottomMargin);
         }
-
-        // sub ctr for custom styling
         html.push("<div id='detailViewContainer_", dataContext.id, "'  class='detail-container' style='max-height:" + detailViewHeight + "px'>");
-        // &omit a final closing detail container </div> that would come next
+
         html.push("<div id='innerDetailView_" , dataContext.id , "'>" , dataContext._detailContent, "</div></div>");
+        // &omit a final closing detail container </div> that would come next
 
         return html.join("");
       }
