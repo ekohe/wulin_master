@@ -3075,10 +3075,6 @@ if (typeof Slick === "undefined") {
       invalidatePostProcessingResults(row);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Edit
-    //   1. Ekohe Edit: Material Dedign UI
-
     function getViewportHeight() {
       if (options.autoHeight) {
         viewportH = options.rowHeight
@@ -3093,9 +3089,7 @@ if (typeof Slick === "undefined") {
         viewportH = parseFloat($.css($container[0], "height", true))
           - parseFloat($.css($container[0], "paddingTop", true))
           - parseFloat($.css($container[0], "paddingBottom", true))
-          // Ekohe Edit: Material Dedign UI
-          // - parseFloat($.css($headerScroller[0], "height"))
-          - parseFloat($.css($headerRow[0], "height"))
+          - parseFloat($.css($headerScroller[0], "height"))
           - getVBoxDelta($headerScroller)
           - topPanelH
           - headerRowH
