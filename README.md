@@ -80,7 +80,7 @@ This will create `grid_states` table for wulin_master to store the grid states f
 
 ### 3. Add grids
 
-Create your first grid as followings:
+Create your first grid as the following:
 
 ``` ruby
 # app/grids/post_grid.rb
