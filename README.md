@@ -226,7 +226,7 @@ Default is `true`. If set `false`, this column can not be sorted.
 
 `:formable`
 
-To show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
+Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
 
 ```ruby
 class PostGrid < WulinMaster::Grid
