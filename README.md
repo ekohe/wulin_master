@@ -191,7 +191,7 @@ end
 
 #### Basic grid configuration
 
-A basic grid configuration needs to provide model and columns. Title and path are optional, they will be automatically assigned according to the grid class name and model.
+A basic grid configuration needs to provide a model and columns. A title and path are optional, they will be assigned automatically according to the grid class name and model.
 
 ```ruby
 class PostGrid < WulinMaster::Grid
