@@ -273,7 +273,7 @@ Indicates the model when a column comes from another model:
 ```ruby
 class PostGrid < WulinMaster::Grid
   ...
-  column :author_name, source: name, through: :author
+  column :author_name, source: :name, through: :author
   ...
 end
 ```
@@ -292,19 +292,19 @@ This option is special and rarely used. It is only used when you want to perform
 
 `:sql_type`
 
-This option is only used when the column is a virtual attribute column. Since it is not a real column in database, we can't know its type of db level. So if you want to make this column be editable in the `create` form or `edit` form, you have to explicitly specify its `:sql_type`.
+This option is only used when the column is a virtual attribute column. Since it is not a real column in the database, we can not know its type of db level. So if you want to enable this column to be editable in the `create` or `edit` form, you have to explicitly specify its `:sql_type`.
 
 `:editor`
 
-By default, if the column is editable, the type of cell editor is decided from the column type: `string`, `integer`, `boolean` etc. So you don't need to specify the editor manually for general cases. But sometimes, you have to define the `:editor`. For example, `SelectEditor` renders a dropdown of possible values of the column, `TimeCellEditor` renders a time-picker for the column which is `datetime` type, etc.
+By default, if the column is editable, the type of cell editor is determined from the column types such as `string`, `integer`, `boolean` etc. Therefore you don't need to specify the editor manually for general cases. However in some cases you have to define the `:editor`. For example, `SelectEditor` renders a dropdown of possible values of the column, `TimeCellEditor` renders a time-picker for the column which is of `datetime` type, etc.
 
-You can define a new type of editor by yourself, the editor definitions are all located in `editor.js`
+You can define a new type of editor by yourself. All editor definitions can be found in `editor.js`
 
 `:formatter`
 
-This option defines how the value is displayed in the grid cell, for example: `MoneyFormatter` renders the number value as money format, etc.
+This option defines how the value is displayed in the grid cell. For example, `MoneyFormatter` renders the number value as money format, etc.
 
-And, you can also define a new formatter by yourself, the formatter definitions are all located in `slick.editor.js`.
+You can also define a new formatter by yourself. The formatter definitions are all located in `slick.editor.js`.
 
 `:choices`
 
@@ -312,7 +312,7 @@ This option should be used together with `SelectEditor`, it specifies the option
 
 `:choices_columm`
 
-This option should also be used together with `SelectEditor`, its value should be another column name in the grid, and the value of the column for current record is an array, so that current dropdown will load the array items as options.
+This option should also be used together with `SelectEditor`. Its value should be another column name in the grid, and the value of the column for the current record is an array, so that the current dropdown will load the array items as options.
 
 `:file`
 
@@ -324,7 +324,7 @@ If this column is a password or password_confirmation, you should add this optio
 
 `:depend_column`
 
-This option should be used when the `:choices` option specifying a hash value. When you choose a value, say 'k1', from the column that `:depend_column` specifies, then you edit the current column, the dropdown will display options which are the values of key 'k1' in the choices hash. Here is an example:
+This option should be used when the `:choices` option is specifying a hash value. When you choose a value, say 'k1', from the column that `:depend_column` specifies, then when you edit the current column, the dropdown will display options which are the values of key 'k1' in the choices hash. Here is an example:
 
 ```ruby
 class ServiceGrid < WulinMaster::Grid
@@ -343,31 +343,31 @@ class ServiceGrid < WulinMaster::Grid
 end
 ```
 
-For above example, if you choose 'mn' for `:unit column`, the available values for `:unit_scale` will be ['10','30','60'].
+For the example above, if you choose 'mn' for `:unit column`, the available values for `:unit_scale` will be ['10','30','60'].
 
 `:currency`
 
-This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other type of currencies.
+This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other types of currencies.
 
 `:dynamic_options`
 
-This option is only useful for some relation columns. For example, `Post` belongs to `Category`. In `Post` grid, category cell editor should be a drop-down. If set `:dynamic_options` to `true` for category column in `Post` grid, it will be a `Add new option` option at bottom of category drop-down. When you click `Add new option` option, create category form pops up, and you can create a new category there and then drop-down will be chosen the created category automatically.
+This option is only useful for some relation columns. For example, `Post` belongs to `Category`. In the `Post` grid, the category cell editor should be a drop-down. If `:dynamic_options` is set to `true` for the category column in the `Post` grid, it will be a `Add new option` option at the bottom of the category drop-down. When you click on the `Add new option` option, the create category form pops up, and you can create a new category there. Then the drop-down will choose the created category automatically.
 
 `:distinct`
 
-This option is only useful for text column.
+This option is only useful for the text column.
 
 `:style`
 
-Set inline css to the cell belongs to the specified column. Example: `style: 'text-align:center'`
+Set inline css to the cell that belongs to the specified column. Example: `style: 'text-align:center'`
 
 `:style_class`
 
-Set css class to the cell belongs to the specified column. Example: `style_class: 'red'`
+Set the css class to the cell that belongs to the specified column. Example: `style_class: 'red'`
 
 #### Grid styles
 
-Now the style configuration methods are all defined in `WulinMaster::ComponentStyling` module (grid and panel are both component), you can use these methods in grid class file, or as an option of grid in screen class file, like:
+The style configuration methods are all defined in the `WulinMaster::ComponentStyling` module (both grid and panel components). You can use these methods in a grid class file, or as an option of grid in a screen class file, like:
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -383,51 +383,51 @@ class PostScreen < WulinMaster::Screen
 end
 ```
 
-Followings are the available style methods:
+The following are the available style methods:
 
 `:height`
 
-Set the height of the component. The value can be a number (default unit is `px`) or a percentage string.
+Sets the height of the component. The value can be a number (default unit is `px`) or a percentage string.
 
 `:width`
 
-Set the width of the component. The value can be a number (default unit is `px`) or a percentage string.
+Sets the width of the component. The value can be a number (default unit is `px`) or a percentage string.
 
 `:css`
 
-Set the whole styles of the component. The value is a string of css styles, like `width:300px;height:200px;float:left`
+Sets the whole style of the component. The value is a string of css styles, such as `width:300px;height:200px;float:left`
 
 `:fill_window`
 
-Determine the component fill the whole window or not. The default value is true.
+Determines whether the component fills the whole window or not. The default value is true.
 
 #### Grid options
 
-The option configuration of grid can set some attributes of the grid. These methods can be used in grid class file, or as an option of grid in screen class file, like the usage of grid styles. Followings are the available option methods:
+The option configuration of the grid can set some attributes of the grid. These methods can be used in a grid class file, or as an option of a grid in a screen class file, like the usage of grid styles. The available option methods are as follows:
 
 `:cell_editable`
 
-Set the whole grid editable or not, default is `true`
+Sets whether the whole grid is editable or not. The default is `true`.
 
 `:column_sortable`
 
-Set the all columns sortable or not, default is `true`
+Sets whether all columns are sortable or not. The default is `true`.
 
 `:hide_header`
 
-Set the grid hide header or not, default is `false`
+Sets the grid hide header or not. The default is `false`.
 
 `:eager_loading`
 
-Set the grid load data or not when rendered, default is `true`. If set `false`, the grid won't load data until set filters.
+Sets the grid load data or not when rendered. The default is `true`. If set to `false`, the grid will not load data until filters are set.
 
 `:multi_select`
 
-Default is `true`, which means you can select multiple rows in the grid. If set `false`, you can only select one row.
+The default is `true`, which means multiple rows in the grid are selectable. If set to `false`, only one row is selectable.
 
 `:color_theme`
 
-Set color theme for a specific grid, default color theme comes from the  `app_config.yml` under the `config` folder. WulinMaster supports all [colors](https://materializecss.com/color.html) provided by [MeterializeCSS](https://materializecss.com/)
+Sets color theme for a specific grid. The default color theme comes from  `app_config.yml` under the `config` folder. WulinMaster supports all [colors](https://materializecss.com/color.html) provided by [MeterializeCSS](https://materializecss.com/)
 
 ```yml
 # config/app_config.yml
@@ -446,19 +446,19 @@ end
 
 `:background_color`
 
-Apart from `color_theme`, we can also set back ground color using `background_color`. Same to `color_theme`, supported colors listed  [here](https://materializecss.com/color.html).
+Apart from `color_theme`, we can also set the background color using `background_color`. Same as `color_theme`, the supported colors are listed  [here](https://materializecss.com/color.html).
 
 `:estimate_count`
 
-Normally, WulinMaster uses `#count` method of ActiveRecord which simply uses basic query `SELECT COUNT(*) FROM TABLE_NAME` to count the rows listed in a grid, but we also provide an optimized version by using the benefit of [count estimate](https://wiki.postgresql.org/wiki/Count_estimate) to do that when you're persisting your data in a PostgresSQL database. You can also make it happen to use the method only when data volume is huge by setting `threshold` parameter as `estimate_count threshold: 1000000`.
+Normally, WulinMaster uses the `#count` method of ActiveRecord which uses basic query `SELECT COUNT(*) FROM TABLE_NAME` to count the rows listed in a grid. However we also provide an optimized version by using the benefit of [count estimate](https://wiki.postgresql.org/wiki/Count_estimate) for the same performance when persisting your data in a PostgresSQL database. The method can also be used only when the data volume is incredibly large by setting the `threshold` parameter as `estimate_count threshold: 1000000`.
 
 `:default_sorting_state`
 
-Set the default sorting state for the grid. Usage: `default_sorting_state column: 'name', direction: 'ASC'`
+Sets the default sorting state for the grid. Usage: `default_sorting_state column: 'name', direction: 'ASC'`
 
 `:row_detail`
 
-Set to show the row detail panel. You can specify options as followings:
+Sets to show the row detail panel. You can specify the options as follows:
 
 ```ruby
 row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, showTriggerColumn: false, loadingTemplate: '<span class="red-text">Loading...</span>', postTemplate: :company
@@ -466,11 +466,11 @@ row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, show
 
 - **cssClass**: A CSS class to be added to the row detail. Default: `detailView-toggle`
 - **panelRows**: Row count to use for the row detail panel. Default: `4`
-- **hideRow**: Boolean flag, when `true` will hide the current row on a row click (from any column). Default: `false`
-- **useRowClick**: Boolean flag, when `true` will open the row detail on a row click (from any column). Default: `false`
-- **showTriggerColumn**: Boolean flag, when `false` will hide the column to trigger the row detail panel. Default: `true`
+- **hideRow**: Boolean flag. When `true` will hide the current row on a row click (from any column). Default: `false`
+- **useRowClick**: Boolean flag. When `true` will open the row detail on a row click (from any column). Default: `false`
+- **showTriggerColumn**: Boolean flag. When `false` will hide the column to trigger the row detail panel. Default: `true`
 - **loadingTemplate**: Template (html) that will be used before the async process, typically used to show a spinner/loading. Default: `Loading...`
-- **postTemplate**: Template that will be loaded once the async function finishes. Should be defined as a javascript method with item data as parameter presented as a property of a global object named `RowDetailTemplates` which return html code. Default: `<div class="row-detail"> ID: ' + item.id + '</div>`. You can define your own templates within the host app's assets like
+- **postTemplate**: Template that will be loaded once the async function finishes. Should be defined as a javascript method with item data as the parameter passed as a property of a global object named `RowDetailTemplates` which return the html code. Default: `<div class="row-detail"> ID: ' + item.id + '</div>`. You can also define your own templates within the host app's assets:
   ```js
   var RowDetailTemplates = $.extend({}, RowDetailTemplates, {
     company: function(item) {
@@ -481,9 +481,9 @@ row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, show
 
 #### Grid actions
 
-If you want to set toolbar items on the grid, grid actions provide a convenient way to do that. Let's look an example:
+If you want to set toolbar items on the grid, grid actions provide a convenient way to do that. Let's look at an example:
 
-1.First, call the action method in grid configuration file. For example, we want to add an 'print' button on the toolbar
+1.First, call the action method in the grid configuration file. For example, we want to add a 'print' button on the toolbar
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -493,9 +493,9 @@ class PostGrid < WulinMaster::Grid
 end
 ```
 
-After this, you will see an icon appear on the grid toolbar, and the item css should be `print_action toolbar_icon_print`, you can set a backgroud image for the css. For now, the available options are 'title' and 'icon' which are used to set the action text and css for each.
+After this, you will see an icon appear on the grid toolbar, and the item css should be `print_action toolbar_icon_print`. A background image can be set for the css. Currently, the available options are 'title' and 'icon' which are used to set the action text and css for each.
 
-2.Then, create a javascript file for the action, write the click handler for it:
+2.Then, create a javascript file for the action. Write the click handler for it:
 
 ```js
 // app/assets/javascripts/actions/print.js
@@ -513,13 +513,13 @@ WulinMaster.ActionManager.register(WulinMaster.actions.Print);
 
 ```
 
-You can add this js file anywhere in the application, but we recommend to put it in `app/assets/javascripts/actions` folder
+You can add this js file anywhere in the application, but we recommend to put it in the `app/assets/javascripts/actions` folder
 
 That's all, you have set up a simple print action.
 
-In addition, you can call `load_default_actions` method to add default toolbar items of WulinMaster, they are 'Create', 'Delete', 'Edit', 'Audit', 'Import' and 'Export'(if you have installed **WulinAudit**, **WulinImport** and **WulinAudit** gem).
+In addition, you can call the `load_default_actions` method to add the default toolbar items of WulinMaster. The toolbar items are 'Create', 'Delete', 'Edit', 'Audit', 'Import' and 'Export'(if you have installed **WulinAudit**, **WulinImport** and **WulinAudit** gem).
 
-Also, if you want to extend WulinMaster gem or to create your own gem which include some new actions and you want to make them to be default actions, you can call the API method `add_default_action` like:
+Also, if you want to extend the WulinMaster gem or to create your own gems which include new actions and you want to make them to be default actions, you can call the API method `add_default_action`:
 
 ```ruby
 # param1         : :import - action name
@@ -530,9 +530,9 @@ WulinMaster::Grid.add_default_action :import, icon: :file_upload, global: true
 
 #### Grid behaviors
 
-WulinMaster grid has a lot of events, like `onDataLoaded`, `onViewportChanged`, etc. (see `slick.grid.js` for details). If you want to bind some event handlers, grid behavior gives you an easy and well-organized way. Let's look at an example:
+WulinMaster grid has a lot of events such as `onDataLoaded`, `onViewportChanged`, etc. (see `slick.grid.js` for details). If you want to bind some event handlers, grid behavior gives you an easy and well-organized way. Let's look at an example:
 
-1.First, call the `#behavior` method in grid configuration file, we want to add an `show_total_price` behavior after grid data loaded.
+1.First, call the `#behavior` method in a grid configuration file. We want to add the `show_total_price` behavior after the grid data has loaded.
 
 ```ruby
 class OrderGrid < WulinMaster::Grid
@@ -542,7 +542,7 @@ class OrderGrid < WulinMaster::Grid
 end
 ```
 
-2.Then, create a javascript file for this behavior, write the event and handler for it:
+2.Then, create a javascript file for this behavior. Write the event and handler for it:
 
 ```js
 // app/assets/javascripts/behaviors/show_total_price.js
@@ -570,17 +570,17 @@ WulinMaster.behaviors.ShowTotalPrice = $.extend({}, WulinMaster.behaviors.BaseBe
 WulinMaster.BehaviorManager.register("show_total_price", WulinMaster.behaviors.ShowTotalPrice);
 ```
 
-You can add this js file anywhere in the application, but we recommend to put it in *app/assets/javascripts/behaviors* folder
+You can add this js file anywhere in the application, but we recommend to put it in the *app/assets/javascripts/behaviors* folder
 
 That's all, you have set up a simple behavior.
 
-In addition, we already provide some behaviors in `wulin_master` gem, you can check them out in *wulin_master/app/assets/javascripts/master/behaviors* folder.If you want to disable some default behaviors for the grid in your application, you are able to call `remove_behaviors` method. Also, if you extend WulinMaster gem or create your own gem which include some new behaviors and you want to make them to be default behavior for all grids, you can call the API method `add_default_behavior(YOUR_BEHAVIOR)` to do that.
+In addition, we already provide some behaviors in the `wulin_master` gem, which can be checked out in the *wulin_master/app/assets/javascripts/master/behaviors* folder. If you want to disable some default behaviors for the grid in your application, you are able to call the `remove_behaviors` method. Also, if you extend the WulinMaster gem or create your own gems which include new behaviors and you want to make them the default behavior for all grids, you can call the API method `add_default_behavior(YOUR_BEHAVIOR)` to configure that.
 
 #### Configuration for different screens
 
-In many cases, a grid may appear on different screens for different purpose, so it may have different styles, options, actions or behaviors between screens. It is easy to implement that.
+In many cases, a grid may appear on different screens for different purposes, so it may have different styles, options, actions or behaviors across screens. This is easy to implement.
 
-1.If you configure the grid in screen class file, the grid options are only valid on this screen, like:
+1.If you configure the grid in a screen class file, the grid options are only valid on this screen:
 
 ```ruby
 class PostScreen < WulinMaster::Screen
@@ -596,7 +596,7 @@ end
 
 As above, the `PostGrid` options defined in `PostScreen` are only valid on the grid in `PostScreen`, without affecting the grid in `MagazineScreen`.
 
-2.But, if you configure the grid in grid class, you should specify which screens are available or not by using `:only` and `:except` option, like:
+2.However, if you configure the grid in a grid class, you should specify which screens are available or not by using `:only` and `:except` option:
 
 ```ruby
 class PostGrid < WUlinMaster::Grid
@@ -608,15 +608,15 @@ class PostGrid < WUlinMaster::Grid
 end
 ```
 
-As above, only in `MagazineScreen`, the `PostGrid`'s width will be '30%', the `print_post` action will appear in all screens except `MagazineScreen`, however, the `show_author` behavior has not been set the `:only` nor `:except` option, so it will be available to `PostGrid`s in all screens.
+As the example above, the `PostGrid`'s width will be '30%' only in `MagazineScreen`. The `print_post` action will appear in all screens except `MagazineScreen`, however, the `show_author` behavior has not been set the `:only` nor `:except` option, so it will be available to `PostGrid`s in all screens.
 
-The `:only` and `:except` option can be appended to all methods of grid styles, options, actions and behaviors.
+The `:only` and `:except` options can be appended to all methods of grid styles, options, actions and behaviors.
 
 #### Configuration for different users
 
-Permission management is a necessary aspect for the application. If you are using `wulin_permits` (the permission management plugin of wulin series), you can easily configure what screens or grid actions be visible for a certain kinds of users.
+Permission management is a necessary aspect for the application. If you are using `wulin_permits` (the permission management plugin of the Wulin series), you can easily configure which screens or grid actions are visible for a certain kinds of users.
 
-For screen permission, you can configure like:
+For screen permission, configuration is possible as such:
 
 ```ruby
 submenu 'Orders' do
@@ -626,7 +626,7 @@ submenu 'Orders' do
 end
 ```
 
-For action permission, configure like:
+For action permission:
 
 ```ruby
 class ContactGrid < WulinMaster::Grid
@@ -640,9 +640,9 @@ end
 
 #### Configuration for multi-level joins support to ActiveRecord
 
-**Use case**: `Travel` belongs to `Position` and `Position` belongs to `Person`. We want to show `first_name` field of a person in `Travel` grid with sorting and filtering available.
+**Use case**: `Travel` belongs to `Position` and `Position` belongs to `Person`. We want to show the `first_name` field of a person in `Travel` grid with sorting and filtering available.
 
-For the case above, we could work it around by configurations as followings:
+For the case above, we could work it around by configurations as following:
 
 ###### 1. Define the relationship to `person` for `Travel`
 
@@ -666,7 +666,7 @@ end
 
 ### 2. Panel configuration
 
-As one of WulinMaster components, `WulinMaster::Panel` can be also rendered in the screen like `WulinMaster::Grid`, but the configuration is much easier:
+As one of WulinMaster components, `WulinMaster::Panel` can also be rendered in the screen as `WulinMaster::Grid`, however the configuration is much easier:
 
 ```ruby
 # app/panels/order_booking_panel.rb
@@ -679,15 +679,15 @@ class OrderBookingPanel < WulinMaster::Panel
 end
 ```
 
-Panel configuration can use the same methods used in grid styles since they are defined in `WulinMaster::ComponentStyling` which included both in `WulinMaster::Grid` and `WulinMaster::Panel`.
+Panel configuration can use the same methods used in grid styles since they are defined in `WulinMaster::ComponentStyling` which are both included in `WulinMaster::Grid` and `WulinMaster::Panel`.
 
-The special configure option for Panel is `partial`. By default, the corresponding html partial file for a Panel should be put in *app/views/panel_partials*, and the file name should be the underscore version of panel class name, but if you want to use another partial name, you can set partial option by yourself.
+The special configure option for a Panel is `partial`. By default, the corresponding html partial file for a Panel should be put in *app/views/panel_partials*, and the file name should be the underscore version of panel class name. However if you want to use another partial name, you can set partial option manually.
 
 ### 3. Screen configuration
 
 #### Basic screen configuration
 
-A most basic screen configuration needs to provide nothing, it will request the url path which get from the screen class name, like `OrderScreen` will request path `orders?screen=OrderScreen` unless you set path option, and will display nothing until you add grids and panels, they will be rendered on the screen one by one.
+The most basic screen configuration does not need to provide anything, it will request the url path which it gets from the screen class name. For example `OrderScreen` will request path `orders?screen=OrderScreen` unless you set path option, and will display nothing until you add grids and panels. They will be rendered on the screen one by one.
 
 ```ruby
 class OrderScreen < WulinMaster::Grid
@@ -702,11 +702,12 @@ end
 
 #### Grid and Panel options in screen
 
-This has been explained in 'Grid configuration/Configuration for different screens' part, the option you set for a panel or a grid in this screen class will be valid only in this screen.
+This has been explained in 'Grid configuration/Configuration section, describing the different screens'. The option you set for a panel or a grid in this screen class will be valid only in this screen.
 
 #### Master-Detail grids
 
-In many cases, we need to display 2 grids in one screen whose model relationship is `belong_to` and `has_many`, we have built a helper method `master_grid` in wulin_master gem to enable you to easily implement this. Eg, you want to show `AuthorGrid` and `PostGrid` in one screen, when select one author in `AuthorGrid`, the `PostGrid` will show his/her posts.
+In many cases, we need to display two grids in one screen whose model relationship is `belong_to` and `has_many`. We have built a helper method `master_grid` in the wulin_master gem to enable you to easily implement this. Eg, you want to show `AuthorGrid` and `PostGrid` in one screen. w
+When one author is selected in `AuthorGrid`, the `PostGrid` will show his/her posts.
 
 ```ruby
 class ArticleScreen < WulinMaster::Screen
@@ -718,9 +719,9 @@ class ArticleScreen < WulinMaster::Screen
 end
 ```
 
-In above example, `eager_loading` is set to `false` to make `PostGrid` not loading until selecting an author.
+In the example above, `eager_loading` is set to `false` to prevent `PostGrid` from loading until an author is selected.
 
-Sometimes, there is no master grid existing, but you still want to had the detail grid filtered by a given master id, in this case you can use `master_model` instead of `master_grid`. In fact, the two options both add a hidden column into detail grid in purpose of filtering, generally the column name is the foreign key name between the detail grid model and the master model. Let's make a little change of previous example and use `master_model` option:
+Sometimes, there is no existing master grid, but you still want to have the detail grid filtered by a given master id. In this case you can use `master_model` instead of `master_grid`. In fact, the two options both add a hidden column into detail grid in purpose of filtering, generally the column name is the foreign key name between the detail grid model and the master model. Let's make a small change in the previous example and use the `master_model` option:
 
 ```ruby
 # article_screen.rb
@@ -746,7 +747,7 @@ $('.#author_list').change(function(){
 });
 ```
 
-In the above example, there is no `Author` grid, but supposing a dropdown list #author_list located in AuthorSelectionPanel, when we select one author from the dropdown, the data in PostGrid will be get filtered by invoking the javascript method `addFilter`.
+In the above example, there is no `Author` grid, but supposing a dropdown list #author_list is located in AuthorSelectionPanel, when we select one author from the dropdown. The data in PostGrid will be be filtered by invoking the javascript method `addFilter`.
 
 ##### `add_detail` action
 
@@ -763,13 +764,13 @@ class AddPostScreen < WulinMaster::Screen
 end
 ```
 
-In above code, action `:add_detail` must has two necessary options, `model` and `screen`: `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from.
+In the code above, action `:add_detail` must have two necessary options, `model` and `screen`: `model` specifies what kind of record you want to add, `screen` is the screen that contains the grid which you can pick records from.
 
-`add_detail` action can has the option `reload_master`, if set to true, the master grid will be reloaded automatically once adding detail records is over. (This option can also be applied to `:delete` action when it is used as 'remove detail').
+`add_detail` action can have the option `reload_master`. If set to true, the master grid will be reloaded automatically, when adding detail records is over. (This option can also be applied to `:delete` action when it is used as 'remove detail').
 
 ##### `detail_model` option
 
-We often meet self-related model when 'add detail', imagine that there is a `Employee` model, and an employee can has many subordinates which are also employees.
+We often meet self-related models when we 'add detail'. Imagine that there is an `Employee` model, and an employee can have many subordinates which are also employees.
 
 ```ruby
 class Employee < ActiveRecord::Base
@@ -778,7 +779,7 @@ class Employee < ActiveRecord::Base
 end
 ```
 
-Now we can set grids to add subordinates for the selected employee, like following code:
+Now we can set grids to add subordinates for the selected employee, like the following code:
 
 ```ruby
 class EmployeeGrid < WulinMaster::Grid
@@ -791,11 +792,11 @@ class AddSubordinateScreen < WulinMaster::Screen
 end
 ```
 
-In the above code, we must specify `detail_model` as 'subordinates' for `EmployeeGrid` in `AddSubordinateScreen`, otherwise the `EmployeeGrid` will use the default model 'employee' to find the relationship which will cause error.
+In the code above, we must specify `detail_model` as 'subordinates' for `EmployeeGrid` in `AddSubordinateScreen`. Otherwise the `EmployeeGrid` will use the default model 'employee' to find the relationship, which will cause an error.
 
 #### Define Inclusion-Exclusion grids
 
-Inclusion-Exclusion grids is also a very common case. For example, there are 3 grids in the screen, the models of 2 grid has relationship `has_and_belongs_to_many` or `has_many`, the third grid comes from the join table or through model. Let's look at following example:
+Inclusion-Exclusion grids is also a very common case. For example, there are 3 grids in the screen, the models of two grids has the relationships `has_and_belongs_to_many` or `has_many`, the third grid comes from the join table or through model. Let's look at following example:
 
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++
     | People Groups                                       |
@@ -820,7 +821,7 @@ Inclusion-Exclusion grids is also a very common case. For example, there are 3 g
     |                   |           |---------------------|
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-We have `PeopleGroup` model, `People` model, they have `has_many` relation with each other, their relation through model is `PeopleGroupsPeople`, we want to build above screen to manage the groups when we select a group, the left bottom grid will show people of this group, the right bottom grid will show people who are not in the group yet, and you can utilize the middle panel to add/remove a people to/from the group. We can implement as the following:
+We have the `PeopleGroup` model, `People` model, they have a `has_many` relation with each other, their relation through model is `PeopleGroupsPeople`. We want to build the above screen to manage the groups. When we select a group, the left bottom grid will show people from this group, the right bottom grid will show people who are not in the group yet, and you can utilize the middle panel to add/remove people to/from the group. We can implement as the following:
 
 ```ruby
 # app/grids/people_group_grid.rb
@@ -851,7 +852,7 @@ class PeopleGroupScreen < WulinMaster::Screen
 end
 ```
 
-In the above screen configuration, we use helper methods `include_of`, `exclude_of` to specify the inclusion and exclusion grids, also we used `WulinMaster::InclusionExclusionPanel` which is pre-defined in wulin_master gem, but it has to know which is the inclusion grid and which is the exclusion grid by set options `inclusion_grid` and `exclusion_grid`.
+In the configuration for the screen above, we use helper methods `include_of`, `exclude_of` to specify the inclusion and exclusion grids, also we used `WulinMaster::InclusionExclusionPanel` which is pre-defined in the wulin_master gem. However it has to know which is the inclusion grid and which is the exclusion grid by set options `inclusion_grid` and `exclusion_grid`.
 
 ## Contributing
 
