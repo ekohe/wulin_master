@@ -139,7 +139,7 @@
       }
 
       // ------------------------- Create Grid ------------------------------------
-      grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
+      grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
       gridAttrs = {
@@ -166,7 +166,7 @@
       if (options.rowDetail) { grid.rowDetailView = rowDetailView; }
 
       // Set selection model
-      grid.setSelectionModel(new WulinMaster.RowSelectionModel());
+      grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // Set ColumnPicker
       var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
@@ -180,7 +180,7 @@
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      pager = new WulinMaster.Pager(loader, grid, pagerElement);
+      pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       grid.pager = pager;
 
       // Ekohe Delete: Stop setting indicator (Create progress bar as indicator in connection instead)
