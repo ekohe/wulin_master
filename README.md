@@ -280,15 +280,15 @@ end
 
 `:join_aliased_as`
 
-When the grid needs to show 2 or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias to avoid conflict when doing sql join.
+When the grid needs to show two or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias. This will avoid conflict when doing sql join.
 
 `:sort_column`
 
-Indicate the column should be used for sorting when it is not the column it self.
+Indicates the column that should be used for sorting when it is not the column itself.
 
 `:sql_expression`
 
-This option is special and rarely used. It is only used when you want to do some special sql operation, like 'sorting' or 'filtering' virtual attributes by sql.
+This option is special and rarely used. It is only used when you want to perform a special sql operation, like the 'sorting' or 'filtering' virtual attributes by sql.
 
 `:sql_type`
 
