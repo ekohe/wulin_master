@@ -210,7 +210,7 @@ end
 
 #### Column options
 
-A column can be a real field in the database table of current model, or virtual attribute of the model or other models. You can attach one or more options to define attributes for the column.
+A column can be a real field in the database table of the current model, or a virtual attribute of the model or other models. You can attach one or more options to define attributes for the column.
 
 `:visible`
 
