@@ -214,19 +214,19 @@ A column can be a real field in the database table of the current model, or a vi
 
 `:visible`
 
-Default is `true`. If set, `false` the column will be invisible initially (can make it visible from column picker).
+Default is `true`. If set `false`, the column will be invisible initially (can make it visible from column picker).
 
 `:editable`
 
-Default is `true`. If set, `false` the grid cell of this column can not be edited.
+Default is `true`. If set, `false`, the grid cell of this column can not be edited.
 
 `:sortable`
 
-Default is `true`. If set, `false` this column can not be sorted.
+Default is `true`. If set `false`, this column can not be sorted.
 
 `:formable`
 
-Show the column in `create` and `update` form or not. You can set it to true or false, either pass an array like `[:new, :edit]` or one of them.
+To show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
 
 ```ruby
 class PostGrid < WulinMaster::Grid
