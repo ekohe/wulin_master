@@ -142,7 +142,7 @@ end
 
 ### 4. Add screens
 
-A screen can has one or multiple grids.
+A screen can have one or multiple grids.
 
 ``` ruby
 # app/screens/post_screen.rb:
