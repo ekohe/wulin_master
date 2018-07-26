@@ -268,7 +268,7 @@ end
 
 `:through`
 
-Indicate the model when the column comes from another model:
+Indicates the model when a column comes from another model:
 
 ```ruby
 class PostGrid < WulinMaster::Grid
