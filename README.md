@@ -39,7 +39,7 @@ Now, you can config wulin_master in `config/initializers/wulin_master.rb`
 
 Remove the rails default view layout for wulin_master using its own layout
 
-In application.rb, add `autoload_paths` for screens folder:
+In config/application.rb, add `autoload_paths` for screens folder:
 
 ```
 config.autoload_paths += Dir[Rails.root.join('app', 'screens', '{**}')]
