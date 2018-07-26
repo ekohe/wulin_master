@@ -214,15 +214,15 @@ A column can be a real field in the database table of the current model, or a vi
 
 `:visible`
 
-Default is `true`, if set `false`, the column will be invisible initially (Can make it visible from column picker).
+Default is `true`. If set `false` the column will be invisible initially (can make it visible from column picker).
 
 `:editable`
 
-Default is `true`, if set `false`, the grid cell of this column can not be edited.
+Default is `true`. If set `false` the grid cell of this column can not be edited.
 
 `:sortable`
 
-Default is `true`, if set `false`, this column can not be sorted.
+Default is `true`. If set `false` this column can not be sorted.
 
 `:formable`
 
