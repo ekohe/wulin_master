@@ -68,7 +68,7 @@ create  app/views/posts
 route  resources :posts
 ```
 
-`name:string age:integer` are the columns of the grid, taking the format as `[field:type field:type]`.
+`name:string age:integer` are the columns of the grid, in the format of `[field:type field:type]`.
 
 ### 2. Run migration
 
