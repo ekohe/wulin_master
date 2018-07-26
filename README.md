@@ -240,19 +240,19 @@ end
 
 `:auto_fill`
 
-Default is `false`, if set `true`, the column will appear in the `new`/`edit` form but readonly.
+Default is `false`. If set `true`, the column will appear in the `new`/`edit` form in readonly.
 
 `:label`
 
-Set the title displayed on the column header, if not set, the column label will be the same to column name.
+Sets the title displayed on the column header. If not set, the column label will be the same as the column name.
 
 `:width`
 
-Set the initial width of the column, default is `150`.
+Sets the initial width of the column. Default is `150`.
 
 `:source`
 
-Indicate the the data source (the attribute name of the DB).
+Indicates the data source (the attribute name of the DB).
 
 ```ruby
 class PostGrid < WulinMaster::Grid
