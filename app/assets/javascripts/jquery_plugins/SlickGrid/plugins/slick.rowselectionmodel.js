@@ -1,3 +1,10 @@
+/*
+ * Ekohe fork:
+ *
+ *   1. Add clearing row selection processing
+ *   2. Support single selection
+ */
+
 (function ($) {
   // register namespace
   $.extend(true, window, {
@@ -16,10 +23,6 @@
     var _defaults = {
       selectActiveRow: true
     };
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Modify
-    //   1. Add clearing row selection processing
 
     function init(grid) {
       _options = $.extend(true, {}, _defaults, options);
@@ -108,7 +111,9 @@
 
     function handleKeyDown(e) {
       var activeRow = _grid.getActiveCell();
-      if (activeRow && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && (e.which == 38 || e.which == 40)) {
+      if (_grid.getOptions().multiSelect && activeRow 
+      && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey 
+      && (e.which == Slick.keyCode.UP || e.which == Slick.keyCode.DOWN)) {
         var selectedRows = getSelectedRows();
         selectedRows.sort(function (x, y) {
           return x - y
@@ -122,7 +127,7 @@
         var bottom = selectedRows[selectedRows.length - 1];
         var active;
 
-        if (e.which == 40) {
+        if (e.which == Slick.keyCode.DOWN) {
           active = activeRow.row < bottom || top == bottom ? ++bottom : ++top;
         } else {
           active = activeRow.row < bottom ? --bottom : --top;
