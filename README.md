@@ -10,7 +10,7 @@ and other tools to make grids easy to build as well as flexible configurations.
 ### 1. Add `gem wulin_master` to your Gemfile
 
 ```bash
-gem wulin_master
+gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master'
 ```
 
 ### 2. Run bundler command to install the gem
