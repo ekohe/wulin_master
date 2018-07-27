@@ -179,7 +179,7 @@ if (typeof Slick === "undefined") {
     var $canvas;
     var $style;
     var $boundAncestors;
-    var treeColumns; Ekohe Add: Frozen Grid Support
+    var treeColumns; // Ekohe Add: Frozen Grid Support
     var stylesheet, columnCssRulesL, columnCssRulesR;
     var viewportH, viewportW;
 
