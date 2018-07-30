@@ -1,14 +1,38 @@
+/*
+ * Ekohe fork:
+ *
+ *   1. Remove pagging bottons (WulinMaster loads data by scrolling)
+ *   2. Use customized farmat for row count when filtering: 5 of 100 rows found
+ *   3. Add clear filter link on the right
+ */
+
 (function ($) {
-  function SlickGridPager(dataView, grid, $container) {
+  function SlickGridPager(dataView, grid, $container, options) {
     var $status;
+    var _options;
+    var _defaults = {
+      showAllText: "Showing all {rowCount} rows",
+      showPageText: "Showing page {pageNum} of {pageCount}"
+    };
+
+    // Ekohe Add
+    var $clearFilterLink;
 
     function init() {
+      _options = $.extend(true, {}, _defaults, options);
+
       dataView.onPagingInfoChanged.subscribe(function (e, pagingInfo) {
-        updatePager(pagingInfo);
+        // EKohe Edit: Use customized update logic (Add row count without filter)
+        // updatePager(pagingInfo);
+        wulinUpdatePager(pagingInfo);
       });
 
-      constructPagerUI();
-      updatePager(dataView.getPagingInfo());
+      // Ekohe Edit: Use customized pager UI (Remove pagging btns, Add clear filter link)
+      // constructPagerUI();
+      wulinConstructPagerUI();
+
+      // Ekohe Delete: Triggerd by onPagingInfoChanged event, no need here
+      // updatePager(dataView.getPagingInfo());
     }
 
     function getNavState() {
@@ -114,6 +138,32 @@
       $container.children().wrapAll("<div class='slick-pager' />");
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Ekohe Add: Customized constructPagerUI
+    //   1. Remove pagging fucntion (Wulin Master loads data by scrolling)
+    //   2. Show rows count info (filtered count/all count)
+    //   3. Show Clear filter link
+
+    function wulinConstructPagerUI() {
+      $container.empty();
+      $status = $("<span class='slick-pager-status' />").appendTo($container);
+
+      // Ekohe Add: Clear Filter
+      $clearFilterLink = $("<a href='#' />")
+        .addClass('slick-pager-clear-filter right hide')
+        .append($('<i class="material-icons">close</i>'))
+        .append($('<span>CLEAR FILTER</span>'))
+        .appendTo($container);
+
+      $container.children().wrapAll("<div class='slick-pager' />");
+      $clearFilterLink.on('click', function() {
+        grid.container.find('.slick-header-column input').val('').focusout();
+        grid.filterPanel.updateCurrentFilters();
+        grid.filterPanel.applyCurrentFilters([]);
+        grid.filterPanel.setCurrentFilter();
+        grid.filterPanel.trigger(grid.filterPanel.onFilterLoaded, {filterData:[]});
+      })
+    }
 
     function updatePager(pagingInfo) {
       var state = getNavState();
@@ -133,13 +183,50 @@
       }
 
       if (pagingInfo.pageSize == 0) {
-        $status.text("Showing all " + pagingInfo.totalRows + " rows");
+        $status.text(_options.showAllText.replace('{rowCount}', pagingInfo.totalRows + "").replace('{pageCount}', pagingInfo.totalPages + ""));
       } else {
-        $status.text("Showing page " + (pagingInfo.pageNum + 1) + " of " + pagingInfo.totalPages);
+        $status.text(_options.showPageText.replace('{pageNum}', pagingInfo.pageNum + 1 + "").replace('{pageCount}', pagingInfo.totalPages + ""));
       }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Ekohe Add: Customized updatePager
+    //   1. Show rows count as `14(filtered) of 100(all) rows found`
+
+    function wulinUpdatePager(pagingInfo) {
+      if (pagingInfo.pageSize == 0) {
+        if (grid.getFilteredInputs().length == 0) {
+          $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
+          $status.removeClass('with-filter');
+          $clearFilterLink.addClass('hide');
+        } else {
+          $status.text(pagingInfo.totalRows.toLocaleString() + " of " + pagingInfo.rowsWithoutFilter.toLocaleString() + " rows found");
+          $status.addClass('with-filter');
+          $clearFilterLink.removeClass('hide');
+        }
+      } else {
+        $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Ekohe Add: Customized API
+
+    function resetPager() {
+      wulinUpdatePager({pageSize:0, pageNum:0, totalRows:0, rowsWithoutFilter:0});
+    }
+
+    function clearPager() {
+      $status.text('');
+    }
+
     init();
+
+    // Ekohe Add: Expose API methods
+    return {
+      "resetPager": resetPager,
+      "clearPager": clearPager
+    };
   }
 
   // Slick.Controls.Pager

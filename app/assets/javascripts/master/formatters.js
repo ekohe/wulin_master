@@ -6,7 +6,7 @@
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    applyStyle: function(value, styleClass = '', style = '') {
+    applyStyle: function(value, styleClass, style) {
       return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";display:block'>" + value + "</span>";
     },
 
@@ -37,7 +37,7 @@
       var inner_formatter = columnDef.inner_formatter;
 
       // Retrive info for relation columns
-      if (source && typeof value === 'object') {
+      if (source && value && typeof value === 'object') {
         value = value[source];
       }
 
@@ -101,6 +101,13 @@
 
       var style = columnDef.style || 'text-align:center';
       return "<div style='" + style + "'><img src='" + value + "' /></div>";
+    },
+
+    // Support growth values
+    PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
+      value = (value === null) ? '' : (parseInt(value) + '%');
+
+      return applyStyle(value, columnDef.style_class, columnDef.style || 'text-align:center');
     }
   };
 

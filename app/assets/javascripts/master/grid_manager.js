@@ -15,9 +15,6 @@
       rowHeight: 30
     };
 
-    function init() {
-    }
-
     function getEditorForType(type) {
       switch (type.toLowerCase()) {
         case "enum":
@@ -118,8 +115,31 @@
       // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
 
+      // create the row detail plugin
+      if (options.rowDetail) {
+        rowDetailView = new Slick.Plugins.RowDetailView({
+          loadOnce: true,
+          useRowClick: options.rowDetail.useRowClick,
+          panelRows: options.rowDetail.panelRows,
+          hideRow: options.rowDetail.hideRow,
+          cssClass: options.rowDetail.cssClass,
+          preTemplate: options.rowDetail.loadingTemplate,
+          postTemplate: window['RowDetailTemplates'][options.rowDetail.postTemplate],
+          process: asyncRespDetailView
+        });
+
+        // push the plugin as the first column
+        var triggerColumn = rowDetailView.getColumnDefinition();
+        if (!options.rowDetail.showTriggerColumn) {
+          triggerColumn.rowDetailIconVisible = false;
+          triggerColumn.width = 0;
+          triggerColumn.minWidth = 1;
+        }
+        columns.unshift(triggerColumn);
+      }
+
       // ------------------------- Create Grid ------------------------------------
-      grid = new WulinMaster.Grid(gridElement, loader.data, columns, options);
+      grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
       // Append necessary attributes to the grid
       gridAttrs = {
@@ -142,8 +162,11 @@
         grid[attr] = gridAttrs[attr];
       }
 
+      // Set rowDetailView
+      if (options.rowDetail) { grid.rowDetailView = rowDetailView; }
+
       // Set selection model
-      grid.setSelectionModel(new WulinMaster.RowSelectionModel());
+      grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // Set ColumnPicker
       var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
@@ -157,7 +180,7 @@
 
       // Set Pager
       pagerElement = $(gridElementPrefix + name + pagerElementSuffix);
-      pager = new WulinMaster.Pager(loader, grid, pagerElement);
+      pager = new Slick.Controls.Pager(loader, grid, pagerElement);
       grid.pager = pager;
 
       // Ekohe Delete: Stop setting indicator (Create progress bar as indicator in connection instead)
@@ -199,7 +222,14 @@
 
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
+      if (options.rowDetail) { grid.registerPlugin(rowDetailView); }
     } // createNewGrid
+
+    function asyncRespDetailView(item) {
+      rowDetailView.onAsyncResponse.notify({
+        'itemDetail': item
+      }, undefined, this);
+    }
 
     function createLoadingIndicator(gridElement, isHide) {
       var truncateThreshold = 35,
@@ -260,8 +290,6 @@
       });
     }
 
-    init();
-
     return {
       // properties
       "grids": grids,
@@ -275,10 +303,9 @@
     };
   }
 
-  $.extend(true, window, { GridManager: GridManager});
-  })(jQuery);
+  $.extend(true, window, { GridManager: GridManager });
+})(jQuery);
 
+var gridManager = new GridManager();
 
-  var gridManager = new GridManager();
-
-  $(window).resize(function() { gridManager.resizeGrids(); });
+$(window).resize(function() { gridManager.resizeGrids(); });

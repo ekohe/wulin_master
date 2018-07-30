@@ -78,6 +78,16 @@ module WulinMaster
       def row_height(value = 30, options = {})
         option({rowHeight: value}.merge(options))
       end
+
+      def row_detail(value = { panelRows: 4,
+                               useRowClick: false,
+                               showTriggerColumn: true,
+                               cssClass: 'detailView-toggle',
+                               loadingTemplate: 'Loading...',
+                               postTemplate: :default },
+                     options = {})
+        option({rowDetail: value}.merge(options))
+      end
     end
 
     def options

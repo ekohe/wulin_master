@@ -1,33 +1,93 @@
+/***
+ * A control to add a Column Picker (right+click on any column header to reveal the column picker)
+ *
+ * USAGE:
+ *
+ * Add the slick.columnpicker.(js|css) files and register it with the grid.
+ *
+ * Available options, by defining a columnPicker object:
+ *
+ *  var options = {
+ *    enableCellNavigation: true,
+ *    columnPicker: {
+ *      columnTitle: "Columns",                 // default to empty string
+ *
+ *      // the last 2 checkboxes titles
+ *      hideForceFitButton: false,              // show/hide checkbox near the end "Force Fit Columns" (default:false)
+ *      hideSyncResizeButton: false,            // show/hide checkbox near the end "Synchronous Resize" (default:false)
+ *      forceFitTitle: "Force fit columns",     // default to "Force fit columns"
+ *      syncResizeTitle: "Synchronous resize",  // default to "Synchronous resize"
+ *    }
+ *  };
+ *
+ * @class Slick.Controls.ColumnPicker
+ * @constructor
+ */
+
+ /*
+  * Ekohe fork:
+  *
+  *   1. Material Design
+  *   2. Add "Reset to defaults" feature
+  *   3. Remove "Force Fit Columns" & "Synchronous Resizing" features
+  */
+
+'use strict';
+
 (function ($) {
+  // Ekohe Edit: Add user_id as param to get user based grid setting info
+  // function SlickColumnPicker(columns, grid, options) {
   function SlickColumnPicker(columns, grid, user_id, options) {
+    var _grid = grid;
+    var $list;
     var $menu;
     var columnCheckboxes;
-    var _self = this;   // Ekohe Add
+    var onColumnsChanged = new Slick.Event();
 
     var defaults = {
-      fadeSpeed:250
+      fadeSpeed: 250,
+
+      // the last 2 checkboxes titles
+      hideForceFitButton: false,
+      hideSyncResizeButton: false,
+      forceFitTitle: "Force fit columns",
+      syncResizeTitle: "Synchronous resize"
     };
 
-    // Ekohe Edit: for MD implementation
-    //   1. Add menu container div
-    //   2. Use MaterializedCSS's card-panel class
-    //   3. Use wulin-columnpicker class for customization
+    // Ekohe Add
+    var _self = this;
 
-    function init() {
-      grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+    function init(grid) {
+      // Ekohe Edit: Use customized handler
+      // grid.onHeaderContextMenu.subscribe(handleHeaderContextMenu);
+      grid.onHeaderContextMenu.subscribe(wulinHandleHeaderContextMenu);
       grid.onColumnsReordered.subscribe(updateColumnOrder);
       options = $.extend({}, defaults, options);
 
       // Ekohe Edit
-      // $menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
+      // $menu = $("<div class='slick-columnpicker' style='display:none' />").appendTo(document.body);
+      // var $close = $("<button type='button' class='close' data-dismiss='slick-columnpicker' aria-label='Close'><span class='close' aria-hidden='true'>&times;</span></button>").appendTo($menu);
       $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />")
         .attr('id', grid.name + '-columnpicker')
         .appendTo(document.body);
 
-      $menu.on("mouseleave", function (e) {
-        $(this).fadeOut(options.fadeSpeed)
-      });
-      $menu.on("click", updateColumn);
+      // user could pass a title on top of the columns list
+      if(options.columnPickerTitle || (options.columnPicker && options.columnPicker.columnTitle)) {
+        var columnTitle = options.columnPickerTitle || options.columnPicker.columnTitle;
+        var $title = $("<div class='title'/>").append(columnTitle);
+        $title.appendTo($menu);
+      }
+
+      // Ekohe Edit: Use customized handler
+      // $menu.on("click", updateColumn);
+      $menu.on("click", wulinUpdateColumn);
+      $list = $("<span class='slick-columnpicker-list' />");
+
+      // Hide the menu on outside click.
+      $(document.body).on("mousedown", handleBodyMouseDown);
+
+      // destroy the picker if user leaves the page
+      $(window).on("beforeunload", destroy);
 
       // Ekohe Add: bind the column pick event
       $menu.bind("click", handleColumnPick);
@@ -45,17 +105,154 @@
     }
 
     function destroy() {
-      grid.onHeaderContextMenu.unsubscribe(handleHeaderContextMenu);
-      grid.onColumnsReordered.unsubscribe(updateColumnOrder);
+      _grid.onHeaderContextMenu.unsubscribe(handleHeaderContextMenu);
+      _grid.onColumnsReordered.unsubscribe(updateColumnOrder);
+      $(document.body).off("mousedown", handleBodyMouseDown);
+      $("div.slick-columnpicker").hide(options.fadeSpeed);
       $menu.remove();
     }
 
-    // Ekohe Edit:
+    function handleBodyMouseDown(e) {
+      if (($menu && $menu[0] != e.target && !$.contains($menu[0], e.target)) || e.target.className == "close") {
+        $menu.hide(options.fadeSpeed);
+      }
+    }
+
+    function handleHeaderContextMenu(e, args) {
+      e.preventDefault();
+      $list.empty();
+      updateColumnOrder();
+      columnCheckboxes = [];
+
+      var $li, $input;
+      for (var i = 0; i < columns.length; i++) {
+        $li = $("<li />").appendTo($list);
+        $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+        columnCheckboxes.push($input);
+
+        if (_grid.getColumnIndex(columns[i].id) != null) {
+          $input.attr("checked", "checked");
+        }
+
+        $("<label />")
+            .html(columns[i].name)
+            .prepend($input)
+            .appendTo($li);
+      }
+
+      if (options.columnPicker && (!options.columnPicker.hideForceFitButton || !options.columnPicker.hideSyncResizeButton)) {
+        $("<hr/>").appendTo($list);
+      }
+
+      if (!(options.columnPicker && options.columnPicker.hideForceFitButton)) {
+        var forceFitTitle = (options.columnPicker && options.columnPicker.forceFitTitle) || options.forceFitTitle;
+        $li = $("<li />").appendTo($list);
+        $input = $("<input type='checkbox' />").data("option", "autoresize");
+        $("<label />")
+            .text(forceFitTitle)
+            .prepend($input)
+            .appendTo($li);
+        if (_grid.getOptions().forceFitColumns) {
+          $input.attr("checked", "checked");
+        }
+      }
+
+      if (!(options.columnPicker && options.columnPicker.hideSyncResizeButton)) {
+        var syncResizeTitle = (options.columnPicker && options.columnPicker.syncResizeTitle) || options.syncResizeTitle;
+        $li = $("<li />").appendTo($list);
+        $input = $("<input type='checkbox' />").data("option", "syncresize");
+        $("<label />")
+            .text(syncResizeTitle)
+            .prepend($input)
+            .appendTo($li);
+        if (_grid.getOptions().syncColumnCellResize) {
+          $input.attr("checked", "checked");
+        }
+      }
+
+      $menu
+          .css("top", e.pageY - 10)
+          .css("left", e.pageX - 10)
+          .css("max-height", $(window).height() - e.pageY -10)
+          .fadeIn(options.fadeSpeed);
+
+      $list.appendTo($menu);
+    }
+
+    function updateColumnOrder() {
+      // Because columns can be reordered, we have to update the `columns`
+      // to reflect the new order, however we can't just take `grid.getColumns()`,
+      // as it does not include columns currently hidden by the picker.
+      // We create a new `columns` structure by leaving currently-hidden
+      // columns in their original ordinal position and interleaving the results
+      // of the current column sort.
+      var current = grid.getColumns().slice(0);
+      var ordered = new Array(columns.length);
+      for (var i = 0; i < ordered.length; i++) {
+        if ( grid.getColumnIndex(columns[i].id) === undefined ) {
+          // If the column doesn't return a value from getColumnIndex,
+          // it is hidden. Leave it in this position.
+          ordered[i] = columns[i];
+        } else {
+          // Otherwise, grab the next visible column.
+          ordered[i] = current.shift();
+        }
+      }
+      columns = ordered;
+    }
+
+    function updateColumn(e) {
+      if ($(e.target).data("option") == "autoresize") {
+        if (e.target.checked) {
+          _grid.setOptions({forceFitColumns:true});
+          _grid.autosizeColumns();
+        } else {
+          _grid.setOptions({forceFitColumns:false});
+        }
+        return;
+      }
+
+      if ($(e.target).data("option") == "syncresize") {
+        if (e.target.checked) {
+          _grid.setOptions({syncColumnCellResize:true});
+        } else {
+          _grid.setOptions({syncColumnCellResize:false});
+        }
+        return;
+      }
+
+      if ($(e.target).is(":checkbox")) {
+        var visibleColumns = [];
+        $.each(columnCheckboxes, function (i, e) {
+          if ($(this).is(":checked")) {
+            visibleColumns.push(columns[i]);
+          }
+        });
+
+        if (!visibleColumns.length) {
+          $(e.target).attr("checked", "checked");
+          return;
+        }
+
+        _grid.setColumns(visibleColumns);
+        onColumnsChanged.notify({columns: visibleColumns, grid: _grid});
+      }
+    }
+
+    function getAllColumns() {
+      return columns;
+    }
+
+    ///////////////////////////////////////////////////////////
+    // Ekohe Add: New methods
+    ///////////////////////////////////////////////////////////
+
+    // Ekohe Add: Customazition for handleHeaderContextMenu
     //  1. Add column-container div for MD implementation
     //  2. Add "Reset to defaults" feature
     //  3. Remove "Force Fit Columns" & "Synchronous Resizing" features
 
-    function handleHeaderContextMenu(e, args) {
+    function wulinHandleHeaderContextMenu(e, args) {
       e.preventDefault();
       $menu.empty();
       updateColumnOrder();
@@ -93,8 +290,8 @@
       // Ekohe Add
       // Addpend "Reset to defaults" checkbox
       $("<hr/>").appendTo($menu);
-      $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
-      $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
+      var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+      var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
       $a.on("click", function() {
         $('#confirm-modal').modal('open');
@@ -115,31 +312,6 @@
         })
       });
 
-      // Ekohe Delete
-      // Addpend "Force Fit Columns" checkbox
-      // $("<hr/>").appendTo($menu);
-      // $li = $("<li />").appendTo($menu);
-      // $input = $("<input type='checkbox' />").data("option", "autoresize");
-      // $("<label />")
-      //   .text("Force fit columns")
-      //   .prepend($input)
-      //   .appendTo($li);
-      // if (grid.getOptions().forceFitColumns) {
-      //   $input.attr("checked", "checked");
-      // }
-
-      // Ekohe Delete
-      // Addpend "Synchronous Resizing" checkbox
-      // $li = $("<li />").appendTo($menu);
-      // $input = $("<input type='checkbox' />").data("option", "syncresize");
-      // $("<label />")
-      //   .text("Synchronous resize")
-      //   .prepend($input)
-      //   .appendTo($li);
-      // if (grid.getOptions().syncColumnCellResize) {
-      //   $input.attr("checked", "checked");
-      // }
-
       // Ekohe Edit: MD implementation
       $menu
         // .css("top", e.pageY - 10)
@@ -149,79 +321,13 @@
         .fadeIn(options.fadeSpeed);
     }
 
-    function updateColumnOrder() {
-      // Because columns can be reordered, we have to update the `columns`
-      // to reflect the new order, however we can't just take `grid.getColumns()`,
-      // as it does not include columns currently hidden by the picker.
-      // We create a new `columns` structure by leaving currently-hidden
-      // columns in their original ordinal position and interleaving the results
-      // of the current column sort.
-      var current = grid.getColumns().slice(0);
-      var ordered = new Array(columns.length);
-      for (var i = 0; i < ordered.length; i++) {
-        if ( grid.getColumnIndex(columns[i].id) === undefined ) {
-          // If the column doesn't return a value from getColumnIndex,
-          // it is hidden. Leave it in this position.
-          ordered[i] = columns[i];
-        } else {
-          // Otherwise, grab the next visible column.
-          ordered[i] = current.shift();
-        }
-      }
-      columns = ordered;
-    }
-
-    // Ekohe Edit:
+    // Ekohe Add: Customazition for updateColumn
     //  1. Remove "Force Fit Columns" & "Synchronous Resizing" features
 
-    function updateColumn(e) {
-      // Ekohe Delete
-      // "Force Fit Columns" checkbox hanlder
-      // if ($(e.target).data("option") == "autoresize") {
-      //   if (e.target.checked) {
-      //     grid.setOptions({forceFitColumns:true});
-      //     grid.autosizeColumns();
-      //   } else {
-      //     grid.setOptions({forceFitColumns:false});
-      //   }
-      //   return;
-      // }
-
-      // Ekohe Delete
-      // "Synchronous Resizing" checkbox hanlder
-      // if ($(e.target).data("option") == "syncresize") {
-      //   if (e.target.checked) {
-      //     grid.setOptions({syncColumnCellResize:true});
-      //   } else {
-      //     grid.setOptions({syncColumnCellResize:false});
-      //   }
-      //   return;
-      // }
-
-      // Ekohe Edit
-      //   Use specifc class to identify columnpicker since e.target
-      //   is recognized as label (should be input) here.
-      //   TODO: Use e.target instead of using columnpicker element
-
-      // // Column checkbox handler
-      // if ($(e.target).is(":checkbox")) {
-      //   var visibleColumns = [];
-      //   $.each(columnCheckboxes, function (i, e) {
-      //     if ($(this).is(":checked")) {
-      //       visibleColumns.push(columns[i]);
-      //     }
-      //   });
-      //
-      //   if (!visibleColumns.length) {
-      //     // Ekohe Edit
-      //     // $(e.target).attr("checked", "checked");
-      //     $(e.target).attr("checked", "checked")
-      //                .addClass("filled-in");
-      //     return;
-      //   }
-      //
-      //   grid.setColumns(visibleColumns);
-      // }
+    function wulinUpdateColumn(e) {
+      // Use specifc class to identify columnpicker since e.target
+      // is recognized as label (should be input) here.
+      // TODO: Use e.target instead of using columnpicker element
 
       var visibleColumns = [];
       $.each($('#' + grid.name + '-columnpicker li input'), function(i, e) {
@@ -237,13 +343,6 @@
       grid.filterPanel.generateFilters();
     }
 
-    function getAllColumns() {
-      return columns;
-    }
-
-    ///////////////////////////////////////////////////////////
-    // Ekohe Add: New getter/setters
-
     function getMenu() {
       return $menu;
     }
@@ -252,17 +351,18 @@
       return columnCheckboxes;
     }
 
-    init();
+    init(_grid);
 
-    // Ekohe Modify: Use extend instead of return to set APIs to this
+    // Ekohe Modify: Use extend instead of returning to set APIs to this
     $.extend(this, {
     // return {
-      "onColumnsPick": new Slick.Event(),
-
+      "init": init,
+      "getAllColumns": getAllColumns,
       "destroy": destroy,
-      "getAllColumns": getAllColumns
+      "onColumnsPick": new Slick.Event(),
+      // Ekohe Add
+      "onColumnsChanged": onColumnsChanged
     });
-
   }
 
   // Slick.Controls.ColumnPicker

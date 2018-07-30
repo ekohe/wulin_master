@@ -10,7 +10,7 @@ and other tools to make grids easy to build as well as flexible configurations.
 ### 1. Add `gem wulin_master` to your Gemfile
 
 ```bash
-gem wulin_master
+gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master', branch: 'develop'
 ```
 
 ### 2. Run bundler command to install the gem
@@ -39,7 +39,7 @@ Now, you can config wulin_master in `config/initializers/wulin_master.rb`
 
 Remove the rails default view layout for wulin_master using its own layout
 
-In application.rb, add `autoload_paths` for screens folder:
+In config/application.rb, add `autoload_paths` for screens folder:
 
 ```
 config.autoload_paths += Dir[Rails.root.join('app', 'screens', '{**}')]
@@ -68,7 +68,7 @@ create  app/views/posts
 route  resources :posts
 ```
 
-`name:string age:integer` are the columns of the grid, taking the format as `[field:type field:type]`.
+`name:string age:integer` are the columns of the grid, in the format of `[field:type field:type]`.
 
 ### 2. Run migration
 
@@ -80,7 +80,7 @@ This will create `grid_states` table for wulin_master to store the grid states f
 
 ### 3. Add grids
 
-Create your first grid as followings:
+Create your first grid as the following:
 
 ``` ruby
 # app/grids/post_grid.rb
@@ -142,7 +142,7 @@ end
 
 ### 4. Add screens
 
-A screen can has one or multiple grids.
+A screen can have one or multiple grids.
 
 ``` ruby
 # app/screens/post_screen.rb:
@@ -191,9 +191,11 @@ end
 
 #### Basic grid configuration
 
-A basic grid configuration needs to provide model and columns. Title and path are optional, they will be automatically assigned according to the grid class name and model.
+A basic grid configuration needs to provide a model and columns. A title and path are optional, they will be assigned automatically according to the grid class name and model.
 
 ```ruby
+#app/grids/post_grid.rb
+
 class PostGrid < WulinMaster::Grid
   model Post
 
@@ -208,23 +210,23 @@ end
 
 #### Column options
 
-A column can be a real field in the database table of current model, or virtual attribute of the model or other models. You can attach one or more options to define attributes for the column.
+A column can be a real field in the database table of the current model, or a virtual attribute of the model or other models. You can attach one or more options to define attributes for the column.
 
 `:visible`
 
-Default is `true`, if set `false`, the column will be invisible initially (Can make it visible from column picker).
+Default is `true`. If set `false`, the column will be invisible initially (can make it visible from column picker).
 
 `:editable`
 
-Default is `true`, if set `false`, the grid cell of this column can not be edited.
+Default is `true`. If set, `false`, the grid cell of this column can not be edited.
 
 `:sortable`
 
-Default is `true`, if set `false`, this column can not be sorted.
+Default is `true`. If set `false`, this column can not be sorted.
 
 `:formable`
 
-Show the column in `create` and `update` form or not. You can set it to true or false, either pass an array like `[:new, :edit]` or one of them.
+Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -238,19 +240,19 @@ end
 
 `:auto_fill`
 
-Default is `false`, if set `true`, the column will appear in the `new`/`edit` form but readonly.
+Default is `false`. If set `true`, the column will appear in the `new`/`edit` form in readonly.
 
 `:label`
 
-Set the title displayed on the column header, if not set, the column label will be the same to column name.
+Sets the title displayed on the column header. If not set, the column label will be the same as the column name.
 
 `:width`
 
-Set the initial width of the column, default is `150`.
+Sets the initial width of the column. Default is `150`.
 
 `:source`
 
-Indicate the the data source (the attribute name of the DB).
+Indicates the data source (the attribute name of the DB).
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -266,7 +268,7 @@ end
 
 `:through`
 
-Indicate the model when the column comes from another model:
+Indicates the model when a column comes from another model:
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -278,15 +280,15 @@ end
 
 `:join_aliased_as`
 
-When the grid needs to show 2 or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias to avoid conflict when doing sql join.
+When the grid needs to show two or more columns which come from the same table and the same column, you can define `:join_aliased_as` for one column to set the alias. This will avoid conflict when doing sql join.
 
 `:sort_column`
 
-Indicate the column should be used for sorting when it is not the column it self.
+Indicates the column that should be used for sorting when it is not the column itself.
 
 `:sql_expression`
 
-This option is special and rarely used. It is only used when you want to do some special sql operation, like 'sorting' or 'filtering' virtual attributes by sql.
+This option is special and rarely used. It is only used when you want to perform a special sql operation, like the 'sorting' or 'filtering' virtual attributes by sql.
 
 `:sql_type`
 
@@ -453,6 +455,29 @@ Normally, WulinMaster uses `#count` method of ActiveRecord which simply uses bas
 `:default_sorting_state`
 
 Set the default sorting state for the grid. Usage: `default_sorting_state column: 'name', direction: 'ASC'`
+
+`:row_detail`
+
+Set to show the row detail panel. You can specify options as followings:
+
+```ruby
+row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, showTriggerColumn: false, loadingTemplate: '<span class="red-text">Loading...</span>', postTemplate: :company
+```
+
+- **cssClass**: A CSS class to be added to the row detail. Default: `detailView-toggle`
+- **panelRows**: Row count to use for the row detail panel. Default: `4`
+- **hideRow**: Boolean flag, when `true` will hide the current row on a row click (from any column). Default: `false`
+- **useRowClick**: Boolean flag, when `true` will open the row detail on a row click (from any column). Default: `false`
+- **showTriggerColumn**: Boolean flag, when `false` will hide the column to trigger the row detail panel. Default: `true`
+- **loadingTemplate**: Template (html) that will be used before the async process, typically used to show a spinner/loading. Default: `Loading...`
+- **postTemplate**: Template that will be loaded once the async function finishes. Should be defined as a javascript method with item data as parameter presented as a property of a global object named `RowDetailTemplates` which return html code. Default: `<div class="row-detail"> ID: ' + item.id + '</div>`. You can define your own templates within the host app's assets like
+  ```js
+  var RowDetailTemplates = $.extend({}, RowDetailTemplates, {
+    company: function(item) {
+      return '<div class="company-row-detail red-text"> Name: ' + item.name + '</div>';
+    }
+  });
+  ```
 
 #### Grid actions
 

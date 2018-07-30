@@ -142,10 +142,10 @@ module WulinMaster
           column.apply_filter(query, filtering_value, filtering_operator)
         else
           virtual_filter_columns << if column.reflection
-                                      ["#{column.options[:through] || column.name}.#{column.source}", filtering_value, filtering_operator]
-                                    else
-                                      [column_name, filtering_value, filtering_operator]
-                                    end
+            ["#{column.options[:through] || column.name}.#{column.source}", filtering_value, filtering_operator]
+          else
+            [column_name, filtering_value, filtering_operator]
+          end
           query
         end
       else
