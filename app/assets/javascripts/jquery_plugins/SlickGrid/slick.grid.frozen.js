@@ -1399,7 +1399,7 @@ if (typeof Slick === "undefined") {
             .attr("title", m.toolTip || "")
             .data("column", m)
             .addClass(m.headerCssClass || "")
-            .appendTo($headers);
+            .appendTo($headerTarget);
         var headerColInput = $("<input type='text' />")
             .attr("id", "" + m.id)
             .attr("data-col", "r" + i)
