@@ -7,9 +7,15 @@
   // Grid
   .grid {
     box-shadow: 0px 1px 1px $border-color;
-    .slick-viewport {
-      .grid-canvas {
-        border-top: 1px solid $border-color;
+    .slick-pane {
+      position: absolute;
+      outline: 0;
+      overflow: hidden;
+      width: 100%;
+      .slick-viewport {
+        .grid-canvas {
+          border-top: 1px solid $border-color;
+        }
       }
     }
   }
