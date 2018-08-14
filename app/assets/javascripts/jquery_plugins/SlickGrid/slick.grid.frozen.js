@@ -351,6 +351,10 @@ if (typeof Slick === "undefined") {
       validateAndEnforceOptions();
       columnDefaults.width = options.defaultColumnWidth;
 
+      // Ekohe Add: Remove invisible columns
+      setColumnsById({});
+      removeInvisibleColumns();
+
       // Ekohe Add: Frozen Grid Support
       treeColumns = new Slick.TreeColumns(columns);
       columns = treeColumns.extractColumns();
@@ -573,15 +577,7 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Ekohe Edit
-    //   1. Remove invisible columns
-
     function finishInitialization() {
-
-      // Ekohe Add: Remove invisible columns
-      setColumnsById({});
-      removeInvisibleColumns();
 
       if (!initialized) {
         initialized = true;
