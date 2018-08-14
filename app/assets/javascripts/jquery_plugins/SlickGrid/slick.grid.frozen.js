@@ -3165,7 +3165,7 @@ if (typeof Slick === "undefined") {
           if (options.enableAsyncPostRenderCleanup && postProcessedRows[row]) {
             queuePostProcessedRowForCleanup(cacheEntry, postProcessedRows[row], row);
           } else {
-            $canvas[0].removeChild(cacheEntry.rowNode);
+            $canvas[0].removeChild(cacheEntry.rowNode[0]);
           }
         }
       }
