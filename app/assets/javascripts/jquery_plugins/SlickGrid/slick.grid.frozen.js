@@ -1391,7 +1391,7 @@ if (typeof Slick === "undefined") {
         //     .attr("title", m.toolTip || "")
         //     .data("column", m)
         //     .addClass(m.headerCssClass || "")
-        //     .appendTo($headers);
+        //     .appendTo($headerTarget);
 
         var header = $("<div class='ui-state-default slick-header-column input-field' />")
             .width(m.width - headerColumnWidthDiff)
@@ -3150,20 +3150,34 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      if (cacheEntry.rowNode) {
-        if (rowNodeFromLastMouseWheelEvent === cacheEntry.rowNode) {
-          cacheEntry.rowNode.style.display = 'none';
-          zombieRowNodeFromLastMouseWheelEvent = rowNodeFromLastMouseWheelEvent;
-          zombieRowCacheFromLastMouseWheelEvent = cacheEntry;
-          zombieRowPostProcessedFromLastMouseWheelEvent = postProcessedRows[row];
-          // ignore post processing cleanup in this case - it will be dealt with later
-        } else {
-          if (options.enableAsyncPostRenderCleanup && postProcessedRows[row]) {
-            queuePostProcessedRowForCleanup(cacheEntry, postProcessedRows[row], row);
-          } else {
-            $canvas[0].removeChild(cacheEntry.rowNode[0]);
-          }
-        }
+      // Ekohe Edit: Frozen Grid Support
+      // if (cacheEntry.rowNode) {
+      //   if (rowNodeFromLastMouseWheelEvent === cacheEntry.rowNode) {
+      //     cacheEntry.rowNode.style.display = 'none';
+      //     zombieRowNodeFromLastMouseWheelEvent = rowNodeFromLastMouseWheelEvent;
+      //     zombieRowCacheFromLastMouseWheelEvent = cacheEntry;
+      //     zombieRowPostProcessedFromLastMouseWheelEvent = postProcessedRows[row];
+      //     // ignore post processing cleanup in this case - it will be dealt with later
+      //   } else {
+      //     if (options.enableAsyncPostRenderCleanup && postProcessedRows[row]) {
+      //       queuePostProcessedRowForCleanup(cacheEntry, postProcessedRows[row], row);
+      //     } else {
+      //       $canvas[0].removeChild(cacheEntry.rowNode[0]);
+      //     }
+      //   }
+      // }
+      if (rowNodeFromLastMouseWheelEvent == cacheEntry.rowNode[0]
+        || (hasFrozenColumns() && rowNodeFromLastMouseWheelEvent == cacheEntry.rowNode[1])) {
+
+        cacheEntry.rowNode.hide();
+
+        zombieRowNodeFromLastMouseWheelEvent = cacheEntry.rowNode;
+      } else {
+
+        cacheEntry.rowNode.each(function() {
+          this.parentElement.removeChild(this);
+        });
+
       }
 
       delete rowsCache[row];
