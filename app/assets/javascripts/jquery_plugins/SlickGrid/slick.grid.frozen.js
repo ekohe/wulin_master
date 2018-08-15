@@ -5839,7 +5839,7 @@ if (typeof Slick === "undefined") {
     // Ekohe Add
 
     function getHeaders() {
-      return $headers[0];
+      return $headers;
     }
 
     function getRows() {
