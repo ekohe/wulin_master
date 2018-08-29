@@ -240,6 +240,14 @@ var Ui = {
     // Layout
     $('.ui-dialog-titlebar').hide();
     $('.ui-resizable-handle').hide();
+
+    // For detail add, pass the filter value / column in the parameters
+    if (grid.master && grid.master.filter_column && grid.master.filter_value) {
+      hidden_master_id = $("<input type='hidden'/>").
+                          attr('name', grid.master.filter_column).
+                          val(grid.master.filter_value);
+      $('form', scope).append(hidden_master_id);
+    }
   },
 
   setupChosen: function(grid, target, scope, selectedIndexes) {
