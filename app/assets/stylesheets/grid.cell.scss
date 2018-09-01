@@ -68,3 +68,52 @@
     }
   }
 }
+
+// Loading effect on row for frozen columns support
+.grid-canvas-left,
+.grid-canvas-right {
+  .slick-row {
+    &.loading {
+      border-bottom: 1px solid $border-color;
+      .row-content.loading {
+        border: none;
+        margin: $grid-cell-loading-margin;
+        animation-duration: 3s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: shimmerCell;
+        animation-timing-function: linear;
+      }
+    }
+    &.odd {
+      background: $grid-row-odd-bg-color;
+      // .slick-cell.loading {
+      .row-content.loading {
+        background: linear-gradient(to right,
+                                    $grid-cell-odd-shimmer-color-1 8%,
+                                    $grid-cell-odd-shimmer-color-2 18%,
+                                    $grid-cell-odd-shimmer-color-1 33%);
+      }
+      .slick-cell.filtered {
+        background: $grid-cell-odd-filtered-bg-color;
+      }
+      .slick-cell.filtered.selected {
+        background: $grid-cell-filtered-selected-bg-color;
+      }
+    }
+    &.even {
+      .row-content.loading {
+        background: linear-gradient(to right,
+                                    $grid-cell-even-shimmer-color-1 8%,
+                                    $grid-cell-even-shimmer-color-2 18%,
+                                    $grid-cell-even-shimmer-color-1 33%);
+      }
+      .slick-cell.filtered {
+        background: $grid-cell-even-filtered-bg-color;
+      }
+      .slick-cell.filtered.selected {
+        background: $grid-cell-filtered-selected-bg-color;
+      }
+    }
+  }
+}

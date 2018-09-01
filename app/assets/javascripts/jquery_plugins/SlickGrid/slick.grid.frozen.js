@@ -5875,37 +5875,62 @@ if (typeof Slick === "undefined") {
     }
 
     function renderLoadingRows(range) {
-      var stringArray = [];
-      var colCount = $headers.children().length;
+      // Ekohe Edit: Frozen Grid Support
+      // var stringArray = [];
+      var stringArrayL = [];
+      var stringArrayR = [];
 
-      // Rows
-      for (var i = range.top, ii = range.bottom; i < ii; i++) {
-        var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
-        stringArray.push(
-          "<div class='ui-widget-content " + rowCss +
-          "' style='top:" + getRowTop(i) + "px'>"
-        );
+      // Ekohe Edit: Frozen Grid Support
+      // var colCount = $headers.children().length;
+      var colCountL = $('.slick-header-columns-left').children().length
+      var colCountR = $('.slick-header-columns-right').children().length
 
-        // Columns
-        var colspan;
-        for (var j = 0, jj = colCount; j < jj; j++) {
-          colspan = 1;
-          var cellCss = "slick-cell loading l" + j +
-                        " r" + Math.min(colCount - 1, j + colspan - 1);
-          stringArray.push("<div style='height:10px' class='" + cellCss + "'></div>");
-          if (colspan > 1) {
-            i += (colspan - 1);
-          }
+      // Ekohe Add: Create string arrays using function
+      createStringArray(colCountL, stringArrayL, 0);
+      createStringArray(colCountR, stringArrayR, 500);
+
+      // Ekohe Edit: Wrap string arrays creation as a function
+      function createStringArray(colCount, stringArray, leftPosition) {
+        // Rows
+        for (var i = range.top, ii = range.bottom; i < ii; i++) {
+          var rowCss = "slick-row loading" + (i % 2 == 1 ? " odd" : " even");
+          stringArray.push(
+            "<div class='ui-widget-content " + rowCss +
+            "' style='top:" + getRowTop(i) + "px'>"
+          );
+
+          // Ekohe Edit: Use row instead of cell to show loading effect
+          // Columns
+          // var colspan;
+          // for (var j = 0, jj = colCount; j < jj; j++) {
+          //   colspan = 1;
+          //   var cellCss = "slick-cell loading l" + j +
+          //                 " r" + Math.min(colCount - 1, j + colspan - 1);
+          //   stringArray.push("<div style='height:10px' class='" + cellCss + "'></div>");
+          //   if (colspan > 1) {
+          //     i += (colspan - 1);
+          //   }
+          // }
+          stringArray.push("<div style='height:10px' class='row-content loading'></div>");
+
+          stringArray.push("</div>");
         }
-
-        stringArray.push("</div>");
       }
 
-      var gridElement = document.createElement("div");
-      gridElement.innerHTML = stringArray.join("");
+      // Ekohe Edit: Frozen Grid Support
+      // var gridElement = document.createElement("div");
+      var gridElementL = document.createElement("div");
+      var gridElementR = document.createElement("div");
+
+      // Ekohe Edit: Frozen Grid Support
+      // gridElement.innerHTML = stringArray.join("");
+      gridElementL.innerHTML = stringArrayL.join("");
+      gridElementR.innerHTML = stringArrayR.join("");
 
       for (var i = range.top, ii = range.bottom; i < ii; i++) {
-        $canvas[0].appendChild(gridElement.firstChild);
+        $canvas[0].appendChild(gridElementL.firstChild);
+        // Ekohe Add: Frozen Grid Support
+        $canvas[1].appendChild(gridElementR.firstChild); // Right Canvas
       }
     }
 
