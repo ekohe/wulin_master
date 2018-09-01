@@ -141,7 +141,6 @@
       // ------------------------- Create Grid ------------------------------------
       grid = new Slick.Grid(gridElement, loader.data, columns, options);
       // grid = new Slick.FrozenGrid(gridElement, loader.data, columns, options);
-      // grid.setOptions({ 'frozenColumn': 1 });
 
       // Append necessary attributes to the grid
       gridAttrs = {

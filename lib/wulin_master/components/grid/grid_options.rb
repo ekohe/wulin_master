@@ -88,6 +88,10 @@ module WulinMaster
                      options = {})
         option({rowDetail: value}.merge(options))
       end
+
+      def frozen_column(value = 1, options = {})
+        option({frozenColumn: value}.merge(options))
+      end
     end
 
     def options
