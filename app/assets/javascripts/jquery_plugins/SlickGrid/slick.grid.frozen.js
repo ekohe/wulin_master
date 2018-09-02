@@ -3647,6 +3647,11 @@ if (typeof Slick === "undefined") {
         return;
       }
 
+      // Ekohe Add: Frozen Grid Support: Ignore frozen columns
+      if (hasFrozenColumns()) {
+        return;
+      }
+
       var totalCellsRemoved = 0;
       var cacheEntry = rowsCache[row];
 
