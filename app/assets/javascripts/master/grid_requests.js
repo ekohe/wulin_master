@@ -16,6 +16,9 @@ var Requests = {
           grid.resetActiveCell();
           grid.operatedIds = [request.id];
           grid.loader.reloadData();
+          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+            grid.master_grid.loader.reloadData();
+          }
           if (continue_on) {
             if (window._always_reset_form) {
               Ui.refreshCreateForm(grid);
