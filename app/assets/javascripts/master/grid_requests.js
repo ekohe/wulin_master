@@ -16,6 +16,9 @@ var Requests = {
           grid.resetActiveCell();
           grid.operatedIds = [request.id];
           grid.loader.reloadData();
+          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+            grid.master_grid.loader.reloadData();
+          }
           if (continue_on) {
             if (window._always_reset_form) {
               Ui.refreshCreateForm(grid);
@@ -85,6 +88,9 @@ var Requests = {
           var from = parseInt(range[0] / 200, 10) * 200;
           var to = range[1]+1;
           grid.loader.reloadData(from, to);
+          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+            grid.master_grid.loader.reloadData();
+          }
           grid.container.find('.toolbar-select').addClass('hide');
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
