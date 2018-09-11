@@ -44,7 +44,6 @@ module WulinMaster
       def eager_loading(value = true, options = {})
         option({eagerLoading: value}.merge(options))
         return unless value == false
-
         screens = options[:only] || [options["screen"].try(:intern)].compact
         behavior :disable_toolbar_initially, only: screens
         behavior :disable_sorting_initially, only: screens
@@ -126,7 +125,6 @@ module WulinMaster
 
     def setup_cell_editable_for_current_user(option)
       return option if params[:screen].blank?
-
       option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option
     end

@@ -31,7 +31,6 @@ module WulinMaster
         @components_pool ||= []
         @grid_configs ||= []
         return unless klass
-
         @components_pool << klass
         options[:width] ||= '100%'
         options[:height] ||= '100%'
@@ -46,7 +45,6 @@ module WulinMaster
         @components_pool ||= []
         @panel_configs ||= []
         return unless klass
-
         @components_pool << klass
         @panel_configs << {class: klass}.merge(options)
         options.each do |k, v|
@@ -65,7 +63,6 @@ module WulinMaster
 
     def grids
       return @grids if defined?(@grids)
-
       @grids = []
       self.class.grid_configs&.each do |grid_config|
         grid_class = grid_config[:class]

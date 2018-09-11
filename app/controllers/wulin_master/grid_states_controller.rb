@@ -16,7 +16,6 @@ module WulinMaster
           params[:state_ids].each do |sid|
             state = GridState.find(sid)
             next if state.user_id == uid
-
             new_state = GridState.where(user_id: uid, name: state.name, grid_name: state.grid_name).first
             if new_state
               new_state.update!(state_value: state.state_value)
@@ -47,23 +46,19 @@ module WulinMaster
 
     def skip_sorting_if_sort_by_user
       return if params[:sort_col].blank? || (params[:sort_col] != "email")
-
       @skip_order = true
     end
 
     def set_user_ids_for_sorting
       return unless @skip_order
-
       @query = @query.all.sort do |s1, s2|
         return 0 if s1.user.nil? || s2.user.nil?
-
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
       end
     end
 
     def clear_invalid_states_and_users_cache
       return unless params[:format] == 'json'
-
       User.set_request_uri('/users.json?screen=UsersScreen')
       WulinMaster::GridState.all_users = User.all
       WulinMaster::GridState.clear_invalid_states!

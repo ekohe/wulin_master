@@ -51,7 +51,6 @@ module WulinMaster
     # the behaviors of a grid instance, filtered by screen param from class's behaviors_pool
     def behaviors
       return self.class.behaviors_pool if params["screen"].blank?
-
       self.class.behaviors_pool.select { |behavior| valid_behavior?(behavior) }
     end
 
@@ -81,10 +80,8 @@ module WulinMaster
     # 2. check if this behavior authorized for current user
     def valid_by_behavior_authorized?(behavior)
       return true unless behavior[:authorized?] && current_user
-
       authorized_proc = behavior.delete(:authorized?)
       return authorized_proc == true unless authorized_proc.is_a?(Proc)
-
       authorized_proc.call(current_user)
     end
   end

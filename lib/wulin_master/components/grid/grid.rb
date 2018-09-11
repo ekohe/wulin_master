@@ -49,7 +49,6 @@ module WulinMaster
       # dispatch some default configs to config pools
       def apply_default_config
         return unless DEFAULT_CONFIG.is_a?(Hash)
-
         DEFAULT_CONFIG.each do |k, v|
           apply_config(k, v)
         end
@@ -114,7 +113,6 @@ module WulinMaster
 
     def default_sorting_state
       return { column: sql_columns.first, direction: 'ASC' } unless options[:defaultSortingState]
-
       { column: options[:defaultSortingState][:column], direction: options[:defaultSortingState][:direction] }
     end
 
@@ -233,13 +231,11 @@ module WulinMaster
 
     def find_sort_column_by_name(column_name)
       return unless (column = find_column_by_name(column_name)) && (column.options[:sortable] != false)
-
       column
     end
 
     def find_filter_column_by_name(column_name)
       return unless (column = find_column_by_name(column_name)) && (column.options[:filterable] != false)
-
       column
     end
 

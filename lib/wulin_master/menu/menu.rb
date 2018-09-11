@@ -38,7 +38,6 @@ module WulinMaster
 
     def active_paths
       return nil if options[:active_paths].blank?
-
       paths = options.delete(:active_paths)
       paths.is_a?(Array) ? paths.join(',') : paths
     end

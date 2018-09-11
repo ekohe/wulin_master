@@ -37,20 +37,17 @@ module WulinMaster
     def self.current(user_id, grid_name)
       states = for_user_and_grid(user_id, grid_name).all
       return nil if states.blank?
-
       states.find(&:current?) || states.find { |x| x.name.to_s.casecmp('default').zero? } || states.first
     end
 
     def self.create_default(user_id, grid_name)
       return if WulinMaster::GridState.for_user_and_grid(user_id, grid_name).present?
-
       create(grid_name: grid_name, user_id: user_id, current: true)
     end
 
     # cache all_users, loop all states and destroy the state without valid user_id
     def self.clear_invalid_states!
       return if all_users.blank?
-
       all.find_each do |state|
         state.destroy unless all_users.map(&:id).include?(state.user_id)
       end

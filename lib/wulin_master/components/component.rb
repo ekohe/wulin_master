@@ -12,7 +12,6 @@ module WulinMaster
     def self.apply_config(key, value, params = {})
       # Proceed when component class respond to the config method and it is a writter method
       return unless respond_to?(key) && ((arguments_count = method(key).arity) != 0)
-
       if arguments_count == 1
         send(key, value)
       elsif (arguments_count == -1) || (arguments_count == -2) # if this method accept options, pass the grid's params as options

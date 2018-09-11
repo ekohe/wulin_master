@@ -17,7 +17,6 @@ module WulinMaster
 
         raise "'#{master_grid_klass_name}' is not valid grid name." unless master_grid_klass = master_grid_klass_name.to_s.classify.safe_constantize
         return if options[:screen].blank?
-
         detail_model = model
         master_grid_name = WulinMaster::Utilities.get_grid_name(master_grid_klass_name, options[:screen])
 
