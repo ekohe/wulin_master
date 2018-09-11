@@ -124,6 +124,7 @@ module WulinMaster
 
     def apply_order(query, direction)
       return query unless %w[ASC DESC].include?(direction)
+
       if @options[:sql_expression]
         query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
       elsif reflection
@@ -145,12 +146,14 @@ module WulinMaster
     def model_columns
       @model_columns ||= begin
         return [] unless model
+
         model.respond_to?(:all_columns) ? model.all_columns : model.columns
       end
     end
 
     def sql_type
       return :unknown if model.blank?
+
       if reflection
         options[:inner_sql_type] = reflection.klass.columns.find { |c| c.name.to_s == source.to_s }.try(:type)
         options[:inner_formatter] ||= (options.delete(:formatter) || options[:inner_sql_type])
@@ -242,6 +245,7 @@ module WulinMaster
     # Returns the sql names used to generate the select
     def sql_names
       return unless table_column?
+
       if reflection
         [model.table_name + "." + foreign_key, reflection.klass.table_name + "." + source.to_s]
       else

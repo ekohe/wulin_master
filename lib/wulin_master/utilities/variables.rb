@@ -14,6 +14,7 @@ module WulinMaster
       @screen ||= begin
         if params[:screen].present?
           raise WulinMaster::ScreenParamInvalidError unless screen_class = params[:screen].classify.safe_constantize
+
           screen_class.new(self)
         else
           self.class.screen_classes.first.new(self)

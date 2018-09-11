@@ -79,6 +79,7 @@ module WulinMaster
         record = @records.first
         updated_attributes = get_attributes(params_permit, :update, record)
         raise record.errors.full_messages.join(',') unless record.errors.empty?
+
         grid.model.transaction do
           @records.each do |r|
             r.update!(updated_attributes)
@@ -98,6 +99,7 @@ module WulinMaster
       grid.model.transaction do
         @records.each do |record|
           next if record.destroy
+
           success = false
           error_message += record.errors.full_messages.join(",\n")
           break
@@ -145,6 +147,7 @@ module WulinMaster
 
     def construct_filters
       return unless params[:filters]
+
       params[:filters].each do |f|
         @query = grid.apply_filter(@query, f[:column], f[:value], f[:operator])
       end
@@ -212,6 +215,7 @@ module WulinMaster
 
     def get_attributes(attrs, type, object = nil)
       return {} if attrs.blank?
+
       attrs.delete_if { |k, _v| k == "id" }
       new_attributes = grid.map_attrs(attrs, type, object)
       attrs.merge!(new_attributes)
@@ -230,9 +234,11 @@ module WulinMaster
 
     def fire_callbacks(name)
       return unless self.class.callbacks
+
       cbs = self.class.find_callbacks(name)
 
       return if cbs.blank?
+
       cbs.each do |cb|
         if cb.class == Proc
           cb.call
@@ -261,6 +267,7 @@ module WulinMaster
 
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       return query.count if est_count < grid.options[:estCount][:threshold].to_i
+
       est_count
     end
   end
