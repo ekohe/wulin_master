@@ -460,6 +460,7 @@
       } else {
         var html = [];
         var rowHeight = _grid.getOptions().rowHeight;
+        var rowWidth = _grid.getCanvasWidth();
         var bottomMargin = 5;
 
         // Ekohe Add
@@ -495,10 +496,12 @@
 
         if (hideRow == true) {
           html.push("style='height:", dataContext._height + rowHeight, "px;");
+          html.push("width:", rowWidth, "px;");
           html.push("top: 0px'>");
           var detailViewHeight = (dataContext._height + bottomMargin);
         } else {
           html.push("style='height:", dataContext._height, "px;");
+          html.push("width:", rowWidth, "px;");
           html.push("top:", rowHeight, "px'>");
           var detailViewHeight = (dataContext._height - rowHeight + bottomMargin);
         }
