@@ -6,6 +6,7 @@ module WulinMaster
 
     def states_for_user
       return "false" unless current_user
+
       current_state = GridState.current(current_user.id, name)
       current_state.try(:state_value).presence || {}.to_json
     rescue StandardError => e

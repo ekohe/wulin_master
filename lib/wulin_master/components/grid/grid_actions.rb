@@ -68,6 +68,7 @@ module WulinMaster
     # the actions of a grid instance, filtered by screen param from class's actions_pool
     def actions
       return self.class.actions_pool if params["screen"].blank?
+
       self.class.actions_pool.select { |action| valid_action?(action) }.uniq { |action| action[:name] }
     end
 
@@ -107,14 +108,17 @@ module WulinMaster
     # 2. check if this screen creation authorized for current user if action is cud
     def valid_by_screen_authorize_create?(action)
       return true unless current_user
+
       self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?
     end
 
     # 3. check if this action authorized for current user
     def valid_by_action_authorized?(action)
       return true unless action[:authorized?] && current_user
+
       authorized_proc = action.delete(:authorized?)
       return authorized_proc == true unless authorized_proc.is_a?(Proc)
+
       authorized_proc.call(current_user)
     end
   end

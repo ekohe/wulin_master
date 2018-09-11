@@ -18,6 +18,7 @@ module WulinMaster
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
 
       return filter_without_reflection(query, filtering_value, sql_type, adapter) unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+
       filter_with_reflection(query, filtering_value, filtering_operator, adapter)
     end
 
@@ -31,6 +32,7 @@ module WulinMaster
 
       adapter.null_query(complete_column_name, operator, self)
       return adapter.query unless reflection
+
       query.where("#{relation_table_name}.#{source} IS #{operator} NULL")
     end
 
@@ -42,6 +44,7 @@ module WulinMaster
         # for string column
         normal_type = %i[integer float decimal boolean date datetime].include?(column_type)
         return apply_string_filter(query, filtering_operator, filtering_value) unless source =~ /(_)?id$/ || normal_type
+
         # for special column,
         filtering_value = format_filtering_value(filtering_value, column_type)
         return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter) if %w[equals not_equals].include? filtering_operator
@@ -59,6 +62,7 @@ module WulinMaster
       else
         where_condition = {relation_table_name.to_sym => {source.to_sym => value}}
         return query.where.not(where_condition) unless operator == 'equals'
+
         query.where(where_condition)
       end
     end

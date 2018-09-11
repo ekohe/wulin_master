@@ -35,6 +35,7 @@ module WulinMaster
 
       def item(title_or_screen_class, options = {})
         return unless @menu
+
         screen_instance = title_or_screen_class.new(context) if title_or_screen_class.is_a?(Class)
         authorized_proc = options.delete(:authorized?)
 

@@ -56,6 +56,7 @@ module WulinMaster
     private
     def authorized?
       return true unless respond_to?(:current_user)
+
       current_user && column_belongs_to_grid? && screen.authorized?(current_user)
     end
 

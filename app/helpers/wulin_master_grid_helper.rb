@@ -57,6 +57,7 @@ module WulinMasterGridHelper
   def grid_states_options(user_id, grid_name)
     states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).all.to_a
     return [] if states.blank?
+
     current = WulinMaster::GridState.current(user_id, grid_name)
     states.delete(current)
     states.unshift(current).compact.map { |x| [x.name, x.id] }
@@ -67,6 +68,7 @@ module WulinMasterGridHelper
     visible  = column.options[:visible]
     return true if formable.nil?
     return false unless formable
+
     formable.is_a?(Array) ? formable.include?(:new) : !formable.nil?
   end
 
@@ -75,9 +77,11 @@ module WulinMasterGridHelper
     editable = column.options[:editable]
     visible  = column.options[:visible]
     return false if editable.is_a?(FalseClass)
+
     if editable || editable.nil?
       return true if formable.nil?
       return false unless formable
+
       return formable.is_a?(Array) ? formable.include?(:edit) : !formable.nil?
     end
     return false if visible.is_a?(FalseClass)
@@ -95,6 +99,7 @@ module WulinMasterGridHelper
   def required?(column)
     return false if column.options[:distinct]
     return true if column.options[:required]
+
     column.presence_required?
   end
 
