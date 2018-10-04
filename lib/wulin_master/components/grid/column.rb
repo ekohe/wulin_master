@@ -17,7 +17,7 @@ module WulinMaster
     end
 
     def label
-      @options[:label] || @name.to_s.underscore.humanize
+      @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
     end
 
     def singular_name
