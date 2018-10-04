@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'material_icons'
-  s.add_dependency 'materialize-sass'
+  s.add_dependency 'materialize-sass', '~> 0.100.2'
   s.add_dependency 'rails'
   s.add_dependency 'responders'
   s.add_dependency 'sass-rails'
