@@ -110,6 +110,32 @@ describe PeopleTestController, type: :controller do
           expect(result).to include('rows')
           expect(result).to include('["Maxime","Ben"]')
         end
+
+        it 'should return id and first_name when only first_name in request columns' do
+          column1 = WulinMaster::Column.new('id', '', always_include: true)
+          column2 = WulinMaster::Column.new('first_name', '')
+          column3 = WulinMaster::Column.new('last_name', '')
+          column4 = WulinMaster::Column.new('age', '')
+
+          allow(@grid).to receive(:columns).and_return([column1, column2, column3, column4])
+          allow(@grid).to receive(:params).and_return(columns: 'first_name')
+
+          expect(@grid.send(:request_columns)).to eq(['first_name'])
+          expect(@grid.send(:visible_columns)).to eq([column1, column2])
+        end
+
+        it 'should return all columns as visible_columns when without columns in params' do
+          column1 = WulinMaster::Column.new('id', '', always_include: true)
+          column2 = WulinMaster::Column.new('first_name', '')
+          column3 = WulinMaster::Column.new('last_name', '')
+          column4 = WulinMaster::Column.new('age', '')
+
+          allow(@grid).to receive(:columns).and_return([column1, column2, column3, column4])
+          allow(@grid).to receive(:params).and_return(grid: 'PersonGrid')
+
+          expect(@grid.send(:request_columns)).to eq([])
+          expect(@grid.send(:visible_columns)).to eq([column1, column2, column3, column4])
+        end
       end
     end
 
