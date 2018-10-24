@@ -126,7 +126,25 @@
 
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI();
+
+      // Decide which columns will be queried
+      //  Add new params[:columns]
+      url += appendVisibleColumnsListToURL();
+
       return [url, normalLoadingMode];
+    }
+
+    function appendVisibleColumnsListToURL() {
+      return '&columns=' + visibleColumnNames();
+    }
+
+    function visibleColumnNames() {
+      var columnNames = [];
+
+      $.each(grid.getColumns(), function(_, column) {
+        if (column['column_name'] !== undefined) { columnNames.push(column['column_name']); }
+      });
+      return columnNames;
     }
 
     function conditionalURI() {

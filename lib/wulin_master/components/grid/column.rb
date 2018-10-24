@@ -32,6 +32,10 @@ module WulinMaster
       options[:join_aliased_as] || reflection.klass.table_name
     end
 
+    def always_include?
+      options[:always_include] || false
+    end
+
     def relation_klass_name
       @relation_klass_name ||= reflection.klass.name
     end

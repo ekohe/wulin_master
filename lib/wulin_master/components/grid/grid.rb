@@ -176,7 +176,7 @@ module WulinMaster
     end
 
     def full_includes
-      @full_includes ||= columns.map(&:includes).flatten.uniq
+      @full_includes ||= visible_columns.map(&:includes).flatten.uniq
     end
 
     # Returns the includes to add to the query
@@ -186,13 +186,16 @@ module WulinMaster
 
     # Returns the joins to add to the query
     def joins
-      full_joins = columns.map(&:joins).flatten.uniq
+      full_joins = visible_columns.map(&:joins).flatten.uniq
       @joins ||= remove_through_model(full_joins - includes)
     end
 
+    # Add logic to verify request params[:columns]
+    #
+    # => Load only the data of the request columns
     def arraify(objects)
       objects.collect do |object|
-        columns.collect { |col| col.json(object) }
+        columns.collect { |col| visible_column?(col) ? col.json(object) : nil }
       end
     end
 
@@ -245,6 +248,19 @@ module WulinMaster
 
     def initialize_toolbar
       self.toolbar ||= Toolbar.new(name, toolbar_actions)
+    end
+
+    # Read request columns from URL request
+    def visible_columns
+      @visible_columns ||= (request_columns.empty? ? columns : columns.select { |column| visible_column?(column) })
+    end
+
+    def visible_column?(column)
+      column.always_include? || request_columns.include?(column.name.to_s)
+    end
+
+    def request_columns
+      params[:columns]&.split(/\,/) || []
     end
   end
 end
