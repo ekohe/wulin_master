@@ -176,7 +176,7 @@ module WulinMaster
     end
 
     def full_includes
-      @full_includes ||= visible_columns.map(&:includes).flatten.uniq
+      @full_includes ||= columns.map(&:includes).flatten.uniq
     end
 
     # Returns the includes to add to the query
