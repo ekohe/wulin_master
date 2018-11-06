@@ -67,9 +67,8 @@ module WulinMaster
       relation_class = reflection.klass
       ids = relation_class.where("#{relation_table_name}.#{source} = ?", value).map do |e|
         real_relation_name = relation_class.reflections.find { |k| k[1].klass.name == model.name }
-        if real_relation_name.nil?
-          raise "Couldn't find relation to model #{model.name} in model #{relation_class}"
-        end
+        raise "Couldn't find relation to model #{model.name} in model #{relation_class}" if real_relation_name.nil?
+
         real_relation_name = real_relation_name[0]
         e.send(real_relation_name).map(&:id)
       end.flatten.uniq
