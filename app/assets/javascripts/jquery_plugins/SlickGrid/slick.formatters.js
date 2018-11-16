@@ -21,7 +21,11 @@
         GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
             var image = value ? "<img src='/assets/tick.png'>" : "";
             return "<div style='text-align:center;display:block'>" + image + "</div>";
-            // return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
+        },
+
+        GraphicBoolCellWithCrossFormatter: function(row, cell, value, columnDef, dataContext) {
+            var image = value ? "<img src='/assets/tick.png'>" : "";
+            return value === null ? "" : (value ? "<img src='/assets/tick.png'>" : "<img src='/assets/cross.png'>");
         },
 
         TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
