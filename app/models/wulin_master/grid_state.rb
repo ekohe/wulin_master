@@ -41,8 +41,8 @@ module WulinMaster
     end
 
     def self.create_default(user_id, grid_name)
-      grid_states = WulinMaster::GridState.for_user_and_grid(user_id, grid_name)
-      return grid_states.first if grid_states.present?
+      grid_state = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).first
+      return grid_state if grid_state.present?
       create(grid_name: grid_name, user_id: user_id, current: true)
     end
 
