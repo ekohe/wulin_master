@@ -3,7 +3,7 @@
   // Get current year
 
   var dateNow = new Date();
-  this.yearNow = dateNow.getFullYear();
+  this.yearNow = (window.default_year || dateNow.getFullYear());
 
   // Config of Inputmask
 

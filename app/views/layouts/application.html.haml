@@ -12,6 +12,7 @@
       }
       window._token = encodeURIComponent('#{form_authenticity_token}');
       window._always_reset_form = #{WulinMaster.config.always_reset_form};
+      window.default_year = #{WulinMaster.config.default_year || Time.new.year};
 
     = javascript_include_tag *WulinMaster.javascripts
     :javascript
