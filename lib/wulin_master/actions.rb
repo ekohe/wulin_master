@@ -64,6 +64,8 @@ module WulinMaster
             @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
           end
 
+          @count_without_filter = count_without_filter
+
           fire_callbacks :objects_ready
 
           # Render json response
@@ -191,7 +193,7 @@ module WulinMaster
       @object_array = grid.arraify(@objects)
       json = {offset: @offset,
               total: @count,
-              totalNoFilter: count_without_filter,
+              totalNoFilter: @count_without_filter,
               count: @per_page,
               rows: @object_array}.to_json
       Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
@@ -209,6 +211,12 @@ module WulinMaster
           query_without_filter = grid.apply_filter(query_without_filter, f[:column], f[:value], f[:operator])
         end
       end
+
+      includes = grid.includes
+      query_without_filter = query_without_filter.includes(includes).references(includes) if !includes.empty? && query_without_filter.respond_to?(:includes)
+
+      joins = grid.joins
+      query_without_filter = query_without_filter.joins(joins) if !joins.empty? && query_without_filter.respond_to?(:joins)
 
       smart_query_count(query_without_filter)
     end

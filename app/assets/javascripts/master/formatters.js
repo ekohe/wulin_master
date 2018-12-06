@@ -66,10 +66,15 @@
       return applyStyle(value, columnDef.style_class, columnDef.style || default_style);
     },
 
+    NumberWithDelimiterFormatter: function(row, cell, value, columnDef, dataContext) {
+      var text = (value === null || value === undefined || value === '') ? '' : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return applyStyle(text, columnDef.style_class, columnDef.style || '');
+    },
+
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
       var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
-      return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:right');
+      return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
@@ -107,7 +112,7 @@
     PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
       value = (value === null) ? '' : (parseInt(value) + '%');
 
-      return applyStyle(value, columnDef.style_class, columnDef.style || 'text-align:center');
+      return applyStyle(value, columnDef.style_class, columnDef.style || '');
     }
   };
 

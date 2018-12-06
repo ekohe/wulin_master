@@ -7,7 +7,7 @@ PATH
       jquery-rails
       jquery-ui-rails
       material_icons
-      materialize-sass
+      materialize-sass (~> 0.100.2)
       rails
       responders
       sass-rails
@@ -167,7 +167,7 @@ GEM
     lumberjack (1.0.13)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
-    marcel (0.3.2)
+    marcel (0.3.3)
       mimemagic (~> 0.3.2)
     material_icons (2.2.1)
       railties (>= 3.2)
@@ -284,7 +284,7 @@ GEM
     ruby_dep (1.5.0)
     ruby_parser (3.11.0)
       sexp_processor (~> 4.9)
-    sass (3.5.7)
+    sass (3.6.0)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)

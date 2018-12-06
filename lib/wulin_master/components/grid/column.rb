@@ -17,7 +17,7 @@ module WulinMaster
     end
 
     def label
-      @options[:label] || @name.to_s.underscore.humanize
+      @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
     end
 
     def singular_name
@@ -30,6 +30,10 @@ module WulinMaster
 
     def relation_table_name
       options[:join_aliased_as] || reflection.klass.table_name
+    end
+
+    def always_include?
+      options[:always_include] || false
     end
 
     def relation_klass_name

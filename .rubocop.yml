@@ -25,6 +25,9 @@ Style/RegexpLiteral:
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 160
 

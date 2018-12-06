@@ -21,7 +21,6 @@
     var grid;
     var loadingIndicator = null;
     var mainIndicator = null;
-    var initedFilter = false;
     var filters = [];
     var lastRequestVersionNumber = 0;
     var currentRequestVersionNumber = 0;
@@ -117,16 +116,30 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
-      if (initedFilter || filters.length > 0) {
-        path = path.replace(/filters.*?&/g,'').replace(/&filters.*/g,'');
-      } else {
-        initedFilter = true;
-      }
+      
       var url = path + "&offset=" + offset + "&count=" + count;
 
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI();
+
+      // Decide which columns will be queried
+      //  Add new params[:columns]
+      url += appendVisibleColumnsListToURL();
+
       return [url, normalLoadingMode];
+    }
+
+    function appendVisibleColumnsListToURL() {
+      return '&columns=' + visibleColumnNames();
+    }
+
+    function visibleColumnNames() {
+      var columnNames = [];
+
+      $.each(grid.getColumns(), function(_, column) {
+        if (column['column_name'] !== undefined) { columnNames.push(column['column_name']); }
+      });
+      return columnNames;
     }
 
     function conditionalURI() {
