@@ -147,9 +147,10 @@ var loadValue = function(scope, data) {
         inputBox.chosen();
       }
       distinctInput(inputBox);
-      uncheckCheckBox();
     }
   }
+  uncheckCheckBox(scope);
+  setTimeout(function() {uncheckCheckBox(scope);}, 100);
 };
 
 var distinctInput = function(inputBox) {
@@ -215,12 +216,12 @@ var showFlagCheckBox = function(scope, ids) {
 };
 
 // uncheck checkbox when select value is empty
-var uncheckCheckBox = function(){
+var uncheckCheckBox = function(scope) {
   var select = $('.chzn-select');
-  
+
   select.each(function(){
     if($(this).val() == ""){
-      $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') +'"]').removeAttr('checked').removeAttr('selected');
+      $('input.target_flag:checkbox[data-target="' + $(this).attr('data-target') +'"]', scope).removeAttr('checked').removeAttr('selected');
     }
   });
 };
