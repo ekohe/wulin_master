@@ -73,7 +73,10 @@
 
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
-      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
+      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',')
+      if (text !== '') {
+        text = (columnDef.position_of_currency === 'before' ? currency + ' ' + text : text + ' ' + currency);
+      }
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
