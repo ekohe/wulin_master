@@ -353,6 +353,10 @@ This option should be used when the :formatter is 'MoneyFormatter', you can spec
 
 This option should be used when the :formatter is 'MoneyFormatter'. The expected values are 'before' and 'after' to customize the position of currency sign relative to the value. Default is `after`.
 
+`:precision`
+
+This option could be used when the :formatter is 'MoneyFormatter'. it control the precicion of the money.
+
 `:dynamic_options`
 
 This option is only useful for some relation columns. For example, `Post` belongs to `Category`. In `Post` grid, category cell editor should be a drop-down. If set `:dynamic_options` to `true` for category column in `Post` grid, it will be a `Add new option` option at bottom of category drop-down. When you click `Add new option` option, create category form pops up, and you can create a new category there and then drop-down will be chosen the created category automatically.
