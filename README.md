@@ -224,6 +224,10 @@ Default is `true`. If set, `false`, the grid cell of this column can not be edit
 
 Default is `true`. If set `false`, this column can not be sorted.
 
+`:default_sort_asc`
+
+Default is `true`. If set `false`, this column default sort direction is DESC.
+
 `:formable`
 
 Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
