@@ -1871,14 +1871,14 @@ if (typeof Slick === "undefined") {
     }
 
     function appendRowHtml(stringArray, row, range, dataLength) {
-      var d = getDataItem(row);
-      var dataLoading = row < dataLength && !d;
+      var dataItemOfRow = getDataItem(row);
+      var dataLoading = row < dataLength && !dataItemOfRow;
       var rowCss = "slick-row" +
           (dataLoading ? " loading" : "") +
           (row === activeRow && options.showCellSelection ? " active" : "") +
           (row % 2 == 1 ? " odd" : " even");
 
-      if (!d) {
+      if (!dataItemOfRow) {
         rowCss += " " + options.addNewRowCssClass;
       }
 
@@ -1888,7 +1888,14 @@ if (typeof Slick === "undefined") {
         rowCss += " " + metadata.cssClasses;
       }
 
-      stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+      var startStringOfRowTagName = "<div class='ui-widget-content " +
+                                    rowCss +
+                                    "' style='top:" + getRowTop(row) +
+                                    "px'" +
+                                    (dataItemOfRow.id ? " data-id=" + dataItemOfRow.id : '') +
+                                    ">"
+
+      stringArray.push(startStringOfRowTagName);
 
       var colspan, m;
       for (var i = 0, ii = columns.length; i < ii; i++) {
@@ -1913,7 +1920,7 @@ if (typeof Slick === "undefined") {
             break;
           }
 
-          appendCellHtml(stringArray, row, i, colspan, d);
+          appendCellHtml(stringArray, row, i, colspan, dataItemOfRow);
         }
 
         if (colspan > 1) {
