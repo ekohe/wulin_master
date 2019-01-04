@@ -130,8 +130,8 @@
       // Ekohe Add: Use remotemodel
       _grid.loader.onDataLoaded.subscribe(function (e, a) {
         $.extend(_dataView, _grid.getData());
-        if (_grid.loader.getFilters().length === 0) { collapseAll(); }
-        _expandedRows = [];
+        // if (_grid.loader.getFilters().length === 0) { collapseAll(); }
+        // _expandedRows = [];
       });
 
       // subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
