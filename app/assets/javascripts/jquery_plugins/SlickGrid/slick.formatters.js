@@ -87,7 +87,7 @@
 
             if (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}(\s\d{1,2}:\d{1,2})?$/.test(value)) {
                 var thedate = $.datepicker.parseDate("yy-mm-dd", value);
-                return thedate.format("dd mmm");
+                return thedate.format("mm/dd/yyyy");
             } else {
                 return value;
             }
