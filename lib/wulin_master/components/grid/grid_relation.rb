@@ -21,8 +21,8 @@ module WulinMaster
         master_grid_name = WulinMaster::Utilities.get_grid_name(master_grid_klass_name, options[:screen])
 
         # master_model must has_many detail_model, detail_model may belongs_to master_model OR has_many master_model
-        reflection = detail_model.reflections[master_grid_klass.model.name.underscore] ||
-                     detail_model.reflections[master_grid_klass.model.name.underscore.pluralize]
+        reflection = detail_model.reflections[master_grid_klass.model.name.underscore.tr('/', '_')] ||
+                     detail_model.reflections[master_grid_klass.model.name.underscore.tr('/', '_').pluralize]
 
         through = options[:through] || reflection.foreign_key
 
