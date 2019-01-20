@@ -30,6 +30,8 @@ module WulinMaster
           grid.model.relation if grid.model.respond_to?(:relation)
 
           # Add the necessary where statements to the query
+          @query_without_filter = @query
+
           construct_filters
 
           fire_callbacks :query_filters_ready
@@ -164,6 +166,7 @@ module WulinMaster
       @order_direction = params[:sort_dir].upcase if params[:sort_dir] =~ /^(A|DE)SC$/i
 
       @query = grid.apply_order(@query, @order_column, @order_direction)
+      @query_without_filter = grid.apply_order(@query_without_filter, @order_column, @order_direction)
     end
 
     def parse_pagination
@@ -177,11 +180,13 @@ module WulinMaster
     def add_includes
       includes = grid.includes
       @query = @query.includes(includes).references(includes) if !includes.empty? && @query.respond_to?(:includes)
+      @query_without_filter = @query_without_filter.includes(includes).references(includes) if !includes.empty? && @query_without_filter.respond_to?(:includes)
     end
 
     def add_joins
       joins = grid.joins
       @query = @query.joins(joins) if !joins.empty? && @query.respond_to?(:joins)
+      @query_without_filter = @query_without_filter.joins(joins) if !joins.empty? && @query_without_filter.respond_to?(:joins)
     end
 
     def render_json
@@ -200,22 +205,7 @@ module WulinMaster
     def count_without_filter
       return @count unless params[:filters]
 
-      query_without_filter = @query.limit(nil).offset(nil)
-      query_without_filter = query_without_filter.unscope(:where) unless params[:filters].find { |f| f[:operator] == 'text_search' }
-
-      params[:filters].each do |f|
-        if grid.columns.find { |c| c.foreign_key == f[:column] }
-          query_without_filter = grid.apply_filter(query_without_filter, f[:column], f[:value], f[:operator])
-        end
-      end
-
-      includes = grid.includes
-      query_without_filter = query_without_filter.includes(includes).references(includes) if !includes.empty? && query_without_filter.respond_to?(:includes)
-
-      joins = grid.joins
-      query_without_filter = query_without_filter.joins(joins) if !joins.empty? && query_without_filter.respond_to?(:joins)
-
-      smart_query_count(query_without_filter)
+      smart_query_count(@query_without_filter)
     end
 
     def get_attributes(attrs, type, object = nil)
