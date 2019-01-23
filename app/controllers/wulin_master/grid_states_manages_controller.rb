@@ -30,12 +30,15 @@ module WulinMaster
 
     def save
       current_state = GridState.current(current_user.id, params[:grid_name])
+      state_value = params[:state_value] || {}
+
       if current_state
-        current_state.state_value = JSON(current_state.state_value.presence || "{}").merge(params[:state_type] => params[:state_value]).to_json
+        current_state.state_value = JSON.parse(current_state.state_value.presence || "{}").merge(state_value).to_json
       else
         current_state = GridState.new(user_id: current_user.id, grid_name: params[:grid_name],
-                                      name: 'default', current: true, state_value: {params[:state_type] => params[:state_value]}.to_json)
+                                      name: 'default', current: true, state_value: state_value.to_json)
       end
+
       self.response_body = if current_state.save
         {status: "success", data: {id: current_state.id, name: current_state.name}}.to_json
       else
