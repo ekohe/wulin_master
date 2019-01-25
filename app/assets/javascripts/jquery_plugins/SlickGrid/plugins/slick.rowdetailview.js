@@ -94,8 +94,8 @@
       insertItem: function(idx, content) {
         this[idx] = content;
       },
-      updateItem: function(idx, item) {
-        this[idx] = item;
+      updateItem: function(id, item) {
+        this[this.getIdxById(id)] = item;
         this.refresh();
       },
       deleteItem: function(id) {
