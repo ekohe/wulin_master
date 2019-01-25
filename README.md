@@ -224,6 +224,10 @@ Default is `true`. If set, `false`, the grid cell of this column can not be edit
 
 Default is `true`. If set `false`, this column can not be sorted.
 
+`:default_sort_asc`
+
+Default is `true`. If set `false`, this column default sort direction is DESC.
+
 `:formable`
 
 Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
@@ -348,6 +352,14 @@ For above example, if you choose 'mn' for `:unit column`, the available values f
 `:currency`
 
 This option should be used when the :formatter is 'MoneyFormatter', you can specify it as '$' or '€', or other type of currencies.
+
+`:position_of_currency`
+
+This option should be used when the :formatter is 'MoneyFormatter'. The expected values are 'before' and 'after' to customize the position of currency sign relative to the value. Default is `after`.
+
+`:precision`
+
+This option could be used when the :formatter is 'MoneyFormatter'. it control the precicion of the money.
 
 `:dynamic_options`
 

@@ -6,7 +6,7 @@ require './lib/wulin_master/actions'
 require './app/controllers/wulin_master/screen_controller'
 
 class PeopleTestController < PeopleController
-  attr_accessor :query
+  attr_accessor :query, :query_without_filter
 end
 
 describe PeopleTestController, type: :controller do
@@ -31,6 +31,7 @@ describe PeopleTestController, type: :controller do
       describe 'format: :json' do
         before :each do
           controller.query = Person
+          controller.query_without_filter = Person
           controller.instance_variable_set(:@per_page, 200)
         end
 
@@ -89,13 +90,13 @@ describe PeopleTestController, type: :controller do
         it 'should apply order on the grid when calling parse_ordering if params given' do
           allow(@grid).to receive(:sql_columns).and_return(['first_name'])
           allow(controller).to receive(:params).and_return(sort_col: 'first_name', sort_dir: 'DESC')
-          expect(@grid).to receive(:apply_order).with(Person, 'first_name', 'DESC')
+          expect(@grid).to receive(:apply_order).twice.with(Person, 'first_name', 'DESC')
           controller.send(:parse_ordering)
         end
 
         it 'should invoke order on query with default value when calling parse_ordering if params not given' do
           allow(@grid).to receive(:sql_columns).and_return(['first_name'])
-          expect(@grid).to receive(:apply_order).with(Person, 'first_name', 'ASC')
+          expect(@grid).to receive(:apply_order).twice.with(Person, 'first_name', 'ASC')
           controller.send(:parse_ordering)
         end
 

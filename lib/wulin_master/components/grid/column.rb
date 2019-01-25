@@ -13,7 +13,7 @@ module WulinMaster
     def initialize(name, grid_class, opts = {})
       @name = name
       @grid_class = grid_class
-      @options = {width: 150, sortable: true}.merge(opts)
+      @options = {width: 150, sortable: true, default_sort_asc: true}.merge(opts)
     end
 
     def label
@@ -78,7 +78,8 @@ module WulinMaster
         klass_name: klass_name,
         field: field_name,
         type: column_type,
-        sortColumn: sort_col_name
+        sortColumn: sort_col_name,
+        defaultSortAsc: @options[:default_sort_asc]
       }.merge(new_options)
       h.merge!(reflection_options) if reflection
       h

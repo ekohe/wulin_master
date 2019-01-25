@@ -29,6 +29,7 @@
   *   8.  Use current cell instead of the whole row for submit in onCellChange trigger
   *   9.  JSON viewer support
   *   10. column_editable option support
+  *   11. Add data-id attribute to each row for manipulating rows easily
   *   98. New events: onRendered, onCanvasResized
   *   99. New APIs
   */
@@ -1887,8 +1888,16 @@ if (typeof Slick === "undefined") {
       if (metadata && metadata.cssClasses) {
         rowCss += " " + metadata.cssClasses;
       }
+      // Ekohe Edit: Add data-id attribute to each row for manipulating rows easily
+      // stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+      var startStringOfRowTagName = "<div class='ui-widget-content " +
+                                    rowCss +
+                                    "' style='top:" + getRowTop(row) +
+                                    "px'" +
+                                    (d.id ? " data-id=" + d.id : '') +
+                                    ">"
 
-      stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+      stringArray.push(startStringOfRowTagName);
 
       var colspan, m;
       for (var i = 0, ii = columns.length; i < ii; i++) {

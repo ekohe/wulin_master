@@ -73,7 +73,16 @@
 
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
-      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(2, '.', ',') + ' ' + currency;
+      if (columnDef.precision == undefined) {
+        var precision = 2;
+      } else {
+        var precision = columnDef.precision;
+      }
+
+      var text = (value === null || value === undefined || value === '') ? '' : parseFloat(value).toMoney(precision, '.', ',')
+      if (text !== '') {
+        text = (columnDef.position_of_currency === 'before' ? currency + ' ' + text : text + ' ' + currency);
+      }
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
@@ -110,7 +119,17 @@
 
     // Support growth values
     PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
-      value = (value === null) ? '' : (parseInt(value) + '%');
+      if (columnDef.precision == undefined) {
+        var precision = 0;
+      } else {
+        var precision = columnDef.precision;
+      }
+
+      if (precision == 0) {
+        value = (value === null) ? '' : (parseInt(value) + '%');
+      } else {
+        value = (value === null) ? '' : (parseFloat(value).toFixed(2) + '%');
+      }
 
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
     }
