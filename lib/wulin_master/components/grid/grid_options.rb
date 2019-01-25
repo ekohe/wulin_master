@@ -88,7 +88,7 @@ module WulinMaster
           loadingTemplate: 'Loading...',
           postTemplate: :default
         }.merge(options)
-        option({rowDetail: options})
+        option(rowDetail: options)
       end
     end
 
