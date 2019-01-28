@@ -1890,11 +1890,12 @@ if (typeof Slick === "undefined") {
       }
       // Ekohe Edit: Add data-id attribute to each row for manipulating rows easily
       // stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+      var dataId = d && d.id; // When fast scrolling, d.id will raise an error, so it's necessary to do the check whether d is present
       var startStringOfRowTagName = "<div class='ui-widget-content " +
                                     rowCss +
                                     "' style='top:" + getRowTop(row) +
                                     "px'" +
-                                    (d.id ? " data-id=" + d.id : '') +
+                                    (dataId ? " data-id=" + dataId : '') +
                                     ">"
 
       stringArray.push(startStringOfRowTagName);
