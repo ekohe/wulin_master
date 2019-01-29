@@ -321,6 +321,10 @@
       applyTemplateNewLineHeight(item);
       _dataView.updateItem(item.id, item);
 
+      // Ekohe Add: Expand rowDetailView panel width
+      $('.slick-pane-left').css('overflow', 'visible');
+      $('.grid-canvas-left').css('position', 'absolute');
+
       // async server call
       _options.process(item);
     }
