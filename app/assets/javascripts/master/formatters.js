@@ -67,7 +67,21 @@
     },
 
     NumberWithDelimiterFormatter: function(row, cell, value, columnDef, dataContext) {
-      var text = (value === null || value === undefined || value === '') ? '' : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      if (columnDef.precision == undefined) {
+        var precision = 0;
+      } else {
+        var precision = columnDef.precision;
+      }
+
+      if (value === null || value === undefined || value === '') {
+        var text = '';
+      } else {
+        if (precision == 0){
+          var text = parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        } else {
+          var text = parseFloat(value).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      }
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
