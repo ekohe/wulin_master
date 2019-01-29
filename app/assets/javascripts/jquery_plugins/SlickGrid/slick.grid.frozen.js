@@ -2961,12 +2961,15 @@ if (typeof Slick === "undefined") {
         rowCss += " " + metadata.cssClasses;
       }
 
-      // Ekohe Edit: Frozen Grid Support
+      // Ekohe Edit: Frozen Grid Support & Adding data-id attribute
       // stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+      var dataId = d && d.id; // When fast scrolling, d.id will raise an error, so it's necessary to do the check whether d is present
       var frozenRowOffset = getFrozenRowOffset(row);
       var rowHtml = "<div class='ui-widget-content " + rowCss + "' style='top:"
         + (getRowTop(row) - frozenRowOffset )
-        + "px'>";
+        + "px'"
+        + (dataId ? " data-id=" + dataId : '')
+        + ">";
       stringArrayL.push(rowHtml);
       if (hasFrozenColumns()) {
         stringArrayR.push(rowHtml);
