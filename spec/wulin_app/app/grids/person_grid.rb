@@ -7,6 +7,9 @@ class PersonGrid < WulinMaster::Grid
 
   # path '/people' # Define a different route for the grid
 
+  # frozen_column 1
+  # row_detail useRowClick: true, hideRow: true, showTriggerColumn: false
+
   column :first_name
   column :last_name
   column :birthdate
