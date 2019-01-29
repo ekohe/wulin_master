@@ -14,5 +14,7 @@ class PersonGrid < WulinMaster::Grid
   column :last_name
   column :birthdate
 
+  # 0.upto(6) { column :last_name }
+
   load_default_actions # Add default toolbar items for this grid
 end
