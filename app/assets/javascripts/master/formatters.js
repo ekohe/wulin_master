@@ -7,6 +7,7 @@
     ///////////////////////////////////////////////////////////////////////////
 
     applyStyle: function(value, styleClass, style) {
+      styleClass = styleClass || '';
       return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";display:block'>" + value + "</span>";
     },
 
@@ -52,6 +53,14 @@
 
       // Filter `null` value for 'has_many' columns
       value = (columnDef.type === 'has_many' && value === 'null') ? '' : value;
+
+      // Apply Format based on value type
+      if ($.isArray(value)) {
+        // Convert Array to String for present in Grid Cell
+        // Example of default delimiter: ['one', 'two', 'three', ['four']] => 'one, two, three, four'
+        var delimiter = columnDef.delimiter || ', ';
+        value = value.join().replace(/\,(?=[^\s])/g, delimiter);
+      }
 
       // Set default text-align
       var textAlign, default_style;
