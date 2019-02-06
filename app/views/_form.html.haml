@@ -223,10 +223,10 @@
 
             .field_error
     .submit
-      %a.btn-flat.waves-effect.modal-close CANCEL
+      %a.btn-flat.waves-effect.modal-close キャンセル
       - if is_new
-        %input.btn-flat.waves-effect.color-blue{id: "#{grid.name}_submit_continue", name: "commit", type: "submit", value: " Create and Continue "}
-        %input.btn.waves-effect{id: "#{grid.name}_submit", name: "commit", type: "submit", value: " Create "}
+        %input.btn-flat.waves-effect.color-blue{id: "#{grid.name}_submit_continue", name: "commit", type: "submit", value: " 連続作成 "}
+        %input.btn.waves-effect{id: "#{grid.name}_submit", name: "commit", type: "submit", value: " 作成 "}
       - else
         %input.btn.waves-effect{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: " #{button_name} "}
 

@@ -6,11 +6,11 @@
 
 #confirm-modal.info-modal.modal
   .modal-content
-    %h5.modal-title Confirmation
-    #confirm-content.modal-message Are you sure to do this ?
+    %h5.modal-title 確認
+    #confirm-content.modal-message 本当によろしいですか？
   .modal-footer
-    #confirmed-btn.btn.right.modal-close Yes
-    .modal-close.btn-flat.waves-effect No
+    #confirmed-btn.btn.right.modal-close はい
+    .modal-close.btn-flat.waves-effect いいえ
 
 #error-modal.info-modal.modal
   .modal-content
@@ -38,15 +38,15 @@
 
       $('#confirm-modal').modal({
         onCloseEnd: function(modal, trigger) {
-          $('#confirm-content').text('Are you sure to do this ?');
-          $('#confirm-modal .modal-title').text('Confirmation');
+          $('#confirm-content').text('本当によろしいですか？');
+          $('#confirm-modal .modal-title').text('確認');
         }
       });
 
       $('#error-modal').modal({
         onCloseEnd: function(modal, trigger) {
-          $('#error-content').text('Something happened.');
-          $('#error-modal .modal-title').text('Error');
+          $('#error-content').text('エラーが発生しました。');
+          $('#error-modal .modal-title').text('エラー');
         }
       });
     })
