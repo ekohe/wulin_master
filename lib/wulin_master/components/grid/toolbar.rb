@@ -15,8 +15,14 @@ module WulinMaster
       switch: :launch
     }
 
+    @default_titles = {
+      create: '作成',
+      edit: '編集',
+      delete: '削除'
+    }
+
     class << self
-      attr_reader :default_icons
+      attr_reader :default_icons, :default_titles
 
       def add_default_icon(action, icon)
         @default_icons[action] = icon
@@ -37,7 +43,7 @@ module WulinMaster
           manually_enable: action[:manually_enable]
         }
         item_options = action.merge(item_options)
-        item_name = action[:title] || action[:name].capitalize
+        item_name = action[:title] || Toolbar.default_titles[action[:name].to_sym] || action[:name].capitalize
 
         @items << ToolbarItem.new(item_name, item_options)
       end
