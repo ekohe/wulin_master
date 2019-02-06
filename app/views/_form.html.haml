@@ -119,9 +119,9 @@
 
             .field_error
     .submit
-      .btn-flat.modal-close CANCEL
+      .btn-flat.modal-close キャンセル
       - if is_new
-        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " 作成 "}/
+        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " 連続作成 "}/
       - else
         %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
