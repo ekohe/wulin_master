@@ -1645,7 +1645,7 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         applyColumnWidths();
-        handleScroll();
+        handleScroll(true); // Ekohe Modify: Add argument true to force handleScroll
       }
     }
 
@@ -2613,13 +2613,21 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function handleScroll() {
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Ekohe Modify
+    //   1. Add new params forceScrolling to decide if force update scrollLeft/scollTop
+    //   2. Add forceScrolling to every condition
+
+    function handleScroll(forceScrolling) {
+      // Ekohe Added: set forceScrolling to false as default
+      forceScrolling = forceScrolling || false;
+
       scrollTop = $viewport[0].scrollTop;
       scrollLeft = $viewport[0].scrollLeft;
       var vScrollDist = Math.abs(scrollTop - prevScrollTop);
       var hScrollDist = Math.abs(scrollLeft - prevScrollLeft);
 
-      if (hScrollDist) {
+      if (hScrollDist || forceScrolling) {
         prevScrollLeft = scrollLeft;
         $headerScroller[0].scrollLeft = scrollLeft;
         $topPanelScroller[0].scrollLeft = scrollLeft;
@@ -2632,7 +2640,7 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      if (vScrollDist) {
+      if (vScrollDist || forceScrolling) {
         vScrollDir = prevScrollTop < scrollTop ? 1 : -1;
         prevScrollTop = scrollTop;
 
@@ -2653,7 +2661,7 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      if (hScrollDist || vScrollDist) {
+      if (hScrollDist || vScrollDist || forceScrolling) {
         if (h_render) {
           clearTimeout(h_render);
         }
