@@ -11,5 +11,11 @@ class PersonGrid < WulinMaster::Grid
   column :last_name
   column :birthdate
 
+  20.times do |i|
+    column "column_#{i}", source: :first_name
+  end
+
+  frozen_column 1
+
   load_default_actions # Add default toolbar items for this grid
 end
