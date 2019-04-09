@@ -129,9 +129,25 @@
 
       // Ekohe Add: Use remotemodel
       _grid.loader.onDataLoaded.subscribe(function (e, a) {
+        var oldMaxIdx = getMaxIdx(_dataView);
+        var maxIdx = getMaxIdx(_grid.getData());
+
         $.extend(_dataView, _grid.getData());
         // if (_grid.loader.getFilters().length === 0) { collapseAll(); }
         // _expandedRows = [];
+
+        // Remove element which over than new Data's length
+        for (var idx = maxIdx + 1; idx <= oldMaxIdx; idx++) {
+          delete _dataView[idx];
+        }
+
+        // Restore expanded item when new data appended
+        if (oldMaxIdx < maxIdx) {
+          for (var i = _expandedRows.length - 1; i >= 0; i--) {
+            applyTemplateNewLineHeight(_expandedRows[i]);
+            _dataView.refresh();
+          }
+        }
       });
 
       // subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
