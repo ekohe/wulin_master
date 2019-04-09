@@ -89,7 +89,7 @@
         }.bind(this))[0]);
       },
       getItem: function(row) {
-        return _dataView[row];
+        return this[row];
       },
       insertItem: function(idx, content) {
         this[idx] = content;
@@ -129,9 +129,25 @@
 
       // Ekohe Add: Use remotemodel
       _grid.loader.onDataLoaded.subscribe(function (e, a) {
+        var oldMaxIdx = getMaxIdx(_dataView);
+        var maxIdx = getMaxIdx(_grid.getData());
+
         $.extend(_dataView, _grid.getData());
         // if (_grid.loader.getFilters().length === 0) { collapseAll(); }
         // _expandedRows = [];
+
+        // Remove element which over than new Data's length
+        for (var idx = maxIdx + 1; idx <= oldMaxIdx; idx++) {
+          delete _dataView[idx];
+        }
+
+        // Restore expanded item when new data appended
+        if (oldMaxIdx < maxIdx) {
+          for (var i = _expandedRows.length - 1; i >= 0; i--) {
+            applyTemplateNewLineHeight(_expandedRows[i]);
+            _dataView.refresh();
+          }
+        }
       });
 
       // subscribe to the onAsyncResponse so that the plugin knows when the user server side calls finished
@@ -152,6 +168,13 @@
 
     function setOptions(options) {
       _options = $.extend(true, {}, _options, options);
+    }
+
+    // Ekohe Add: Detect max idx of _dataView/getData()
+    function getMaxIdx(data) {
+      return parseInt(Object.keys(data).reverse().find(function(idx) {
+        return (/\d+/.test(idx) && data[idx]);
+      })) || 0;
     }
 
     function handleClick(e, args) {
@@ -192,7 +215,7 @@
       collapseAll();
     }
 
-	  // If we scroll save detail views that go out of cache range
+    // If we scroll save detail views that go out of cache range
     function handleScroll(e, args) {
 
       var range = _grid.getRenderedRange();
@@ -267,23 +290,34 @@
         saveDetailView(item);
       }
 
-      item._collapsed = true;
+      // Ekohe Edit: Check if there is really expanded
+      var isReallyExpanded = true;
       for (var idx = 1; idx <= item._sizePadding; idx++) {
-        _dataView.deleteItem(item.id + "." + idx);
+        var itemId = item.id + "." + idx;
+
+        if (_dataView.getIdxById(itemId)) {
+          _dataView.deleteItem(itemId);
+        } else {
+          isReallyExpanded = false;
+        }
       }
 
       // Ekohe Add: Change the index of the remained items
-      var idxParent = _dataView.getIdxById(item.id);
-      var remainedItems = {};
-      for (var idx = idxParent + item._sizePadding + 1; idx <= _dataView.length; idx++) {
-        remainedItems[idx - item._sizePadding] = _dataView[idx];
-        delete _dataView[idx];
+      if (isReallyExpanded) {
+        var idxParent = _dataView.getIdxById(item.id);
+        var remainedItems = {};
+        var maxIdx = getMaxIdx(_dataView);
+        for (var idx = idxParent + item._sizePadding + 1; idx <= maxIdx; idx++) {
+          remainedItems[idx - item._sizePadding] = _dataView[idx];
+          delete _dataView[idx];
+        }
+
+        // Ekohe Add: Refresh the dataview
+        $.extend(_dataView, remainedItems);
+        _dataView.length -= item._sizePadding;
       }
 
-      // Ekohe Add: Refresh the dataview
-      $.extend(_dataView, remainedItems);
-      _dataView.length -= item._sizePadding
-
+      item._collapsed = true;
       item._sizePadding = 0;
 
       _dataView.updateItem(item.id, item);
@@ -413,7 +447,8 @@
 
       // Ekohe Add: Change the index of the remained items
       var remainedItems = {};
-      for (var idx = idxParent + 1; idx <= _dataView.length; idx++) {
+      var maxIdx = getMaxIdx(_dataView);
+      for (var idx = idxParent + 1; idx <= maxIdx; idx++) {
         remainedItems[idx + item._sizePadding] = _dataView[idx];
         delete _dataView[idx];
       }
@@ -542,7 +577,7 @@
       item._sizePadding = Math.ceil(((rowCount * 2) * lineHeight) / rowHeight);
       item._height = (item._sizePadding * rowHeight);
 
-	    // If the padding is now more than the original minRowBuff we need to increase it
+      // If the padding is now more than the original minRowBuff we need to increase it
       if (_grid.getOptions().minRowBuffer < item._sizePadding)
       {
         // Update the minRowBuffer so that the view doesn't disappear when it's at top of screen + the original default 3
