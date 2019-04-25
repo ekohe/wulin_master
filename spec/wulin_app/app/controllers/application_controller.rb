@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
     menu do |_c|
       submenu 'Section 1' do
         item PersonScreen
+        item PersonScreen, label: 'Normal URL', url: '/example'
+        item PersonScreen, label: 'React URL', url: '/example/#/'
       end
     end
   end
