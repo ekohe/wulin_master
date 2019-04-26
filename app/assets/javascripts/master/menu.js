@@ -81,7 +81,7 @@ function trackGoogleAnalytics() {
   }
 }
 
-function deselectMenuItems() { $(".active").removeClass("active"); }
+function deselectMenuItems() { $("#menu .active").removeClass("active"); }
 
 function selectMenuItem(url) {
   rootUrl = History.getRootUrl(),
