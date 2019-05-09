@@ -10,7 +10,7 @@ var Requests = {
     ajaxOptions = {
       url: grid.path + '.json',
       beforeSend: function() {
-        submitButton.prop('disabled', 'disabled')
+        submitButton.prop('disabled', 'disabled');
       },
       success: function(request) {
         if (typeof afterCreated == "function") {
@@ -45,7 +45,7 @@ var Requests = {
         }
       },
       complete: function() {
-        submitButton.prop('disabled', null)
+        submitButton.prop('disabled', null);
       }
     };
     createFormElement.ajaxSubmit(ajaxOptions);
