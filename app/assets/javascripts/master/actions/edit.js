@@ -150,12 +150,16 @@ var submitForm = function(grid, ids, selectedIndexes) {
   var name = grid.name,
   $scope = $( '#' + name + '_form'),
   $form = $('form', $scope);
+  var submitButton = $form.find("input[type='submit']");
   $scope.off('click', '.update_btn').on('click', '.update_btn', function() {
     var options = {
       dateType: 'json',
       url: grid.path + "/" + ids + ".json"+grid.query,
       data: {_method: 'PUT'},
       beforeSubmit: grepValues,
+      beforeSend: function() {
+        submitButton.prop('disabled', 'disabled');
+      },
       success: function(msg) {
         if(msg.success) {
           Ui.resetForm(grid.name);
@@ -175,6 +179,9 @@ var submitForm = function(grid, ids, selectedIndexes) {
           grid.loader.reloadData();
         }
         $scope.closest('.modal').modal('close');
+      },
+      complete: function() {
+        submitButton.prop('disabled', null);
       }
     };
     $form.ajaxSubmit(options);
