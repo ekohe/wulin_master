@@ -2,15 +2,15 @@
 var Requests = {
   // Record create by ajax
   createByAjax: function(grid, continue_on, afterCreated) {
-    var createFormElement, ajaxOptions, smtBtns;
+    var createFormElement, ajaxOptions, submitButton;
     createFormElement = $('div#'+grid.name+'_form form');
-    smtBtns = createFormElement.find("input[type='submit']");
+    submitButton = createFormElement.find("input[type='submit']");
     // clear all the error messages
     createFormElement.find(".field_error").text("");
     ajaxOptions = {
       url: grid.path + '.json',
       beforeSend: function() {
-        smtBtns.prop('disabled', 'disabled')
+        submitButton.prop('disabled', 'disabled')
       },
       success: function(request) {
         if (typeof afterCreated == "function") {
@@ -45,7 +45,7 @@ var Requests = {
         }
       },
       complete: function() {
-        smtBtns.prop('disabled', null)
+        submitButton.prop('disabled', null)
       }
     };
     createFormElement.ajaxSubmit(ajaxOptions);
