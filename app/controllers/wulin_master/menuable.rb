@@ -27,7 +27,7 @@ module WulinMaster
         if block_given?
           @submenu = SubMenu.new(title)
           yield
-          @menu << @submenu unless @submenu.empty?
+          @menu << @submenu if @submenu.present?
           @submenu = nil
         end
         @submenu

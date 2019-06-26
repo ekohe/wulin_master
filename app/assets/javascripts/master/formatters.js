@@ -151,7 +151,7 @@
       if (precision == 0) {
         value = (value === null) ? '' : (parseInt(value) + '%');
       } else {
-        value = (value === null) ? '' : (parseFloat(value).toFixed(2) + '%');
+        value = (value === null) ? '' : (parseFloat(value).toFixed(precision) + '%');
       }
 
       return applyStyle(value, columnDef.style_class, columnDef.style || '');

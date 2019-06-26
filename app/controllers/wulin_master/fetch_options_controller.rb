@@ -6,8 +6,6 @@ module WulinMaster
     FORBIDDEN_MESSAGE = "Sorry you can't get anything, please contact administrator."
 
     def index
-      Rails.logger.info "authorized?"
-      Rails.logger.info authorized?
       if authorized? && params[:source].present?
         objects = if klass.column_names.include? params[:source]
           klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all

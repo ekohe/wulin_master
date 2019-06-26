@@ -2,12 +2,16 @@
 var Requests = {
   // Record create by ajax
   createByAjax: function(grid, continue_on, afterCreated) {
-    var createFormElement, ajaxOptions;
+    var createFormElement, ajaxOptions, submitButton;
     createFormElement = $('div#'+grid.name+'_form form');
+    submitButton = createFormElement.find("input[type='submit']");
     // clear all the error messages
     createFormElement.find(".field_error").text("");
     ajaxOptions = {
       url: grid.path + '.json',
+      beforeSend: function() {
+        submitButton.prop('disabled', 'disabled');
+      },
       success: function(request) {
         if (typeof afterCreated == "function") {
           return afterCreated(request);
@@ -39,6 +43,9 @@ var Requests = {
           }
           saveMessage('Error creating ' + grid.model.toLowerCase(), 'error');
         }
+      },
+      complete: function() {
+        submitButton.prop('disabled', null);
       }
     };
     createFormElement.ajaxSubmit(ajaxOptions);
