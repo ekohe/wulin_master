@@ -13,7 +13,7 @@ module WulinMaster
     def initialize(name, grid_class, opts = {})
       @name = name
       @grid_class = grid_class
-      @options = {width: 150, sortable: true, default_sort_asc: true}.merge(opts)
+      @options = {width: 150, sortable: true, default_sort_asc: true}.merge(opts).with_indifferent_access
     end
 
     def label
