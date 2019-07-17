@@ -40,13 +40,13 @@ module WulinMaster
 
     def assign_relation_attr_for_update(new_attrs, value)
       case relation_macro
-      when :belongs_to then
+      when :belongs_to
         assign_belongs_to_attr(new_attrs, value)
-      when :has_and_belongs_to_many then
+      when :has_and_belongs_to_many
         assign_habtm_attr(new_attrs, value)
-      when :has_many then
+      when :has_many
         assign_has_many_attr(new_attrs, value)
-      when :has_one then
+      when :has_one
         assign_has_one_attr(new_attrs, value)
       end
     end
