@@ -11,7 +11,7 @@ module WulinMaster
     attr_accessor :name, :options, :datetime_value, :datetime_excel_format
 
     def initialize(name, grid_class, opts = {})
-      @name = name
+      @name = name.to_sym
       @grid_class = grid_class
       @options = {width: 150, sortable: true, default_sort_asc: true}.merge(opts).with_indifferent_access
     end
@@ -162,7 +162,7 @@ module WulinMaster
         return association_type
       end
       column = model_columns.find { |col| col.name.to_s == source.to_s }
-      (enum? ? :enum : (column.try(:type) || association_type || options[:sql_type] || :unknown)).to_s.to_sym
+      (enum? ? :enum : (column.try(:type) || association_type || options[:sql_type] || :unknown)).to_sym
     end
 
     def reflection
@@ -355,7 +355,7 @@ module WulinMaster
     def column_type(model, column_name)
       all_columns = model.respond_to?(:all_columns) ? model.all_columns : model.columns
       column = all_columns.find { |col| col.name.to_s == column_name.to_s }
-      (column.try(:type) || :unknown).to_s.to_sym
+      (column.try(:type) || :unknown).to_sym
     end
 
     def table_column?
