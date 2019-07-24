@@ -11,8 +11,9 @@ describe WulinMaster::Column do
     @column = WulinMaster::Column.new(:title, @grid)
   end
 
-  it 'should have a name' do
-    expect(@column.name).to eq(:title)
+  it 'should have a symbol name' do
+    column = WulinMaster::Column.new('name', @grid)
+    expect(column.name).to eq(:name)
   end
 
   it 'should have default options' do
