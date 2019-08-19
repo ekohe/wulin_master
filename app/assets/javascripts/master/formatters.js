@@ -155,6 +155,13 @@
       }
 
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
+    },
+
+    // Depend on date.format.js
+    DateFormatter: function(row, cell, value, columnDef, dataContext) {
+      value = (value === null) ? '' : (new Date(value).format('isoDate')); // "YYYY-MM-DD"
+
+      return applyStyle(value, columnDef.style_class, columnDef.style || '');
     }
   };
 
