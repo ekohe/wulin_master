@@ -12,7 +12,7 @@ before_script:
   - apt-get update -qy
   - apt-get install -qy nodejs
   - apt-get install -qy libfontconfig1
-  - gem install bundler
+  - gem install bundler -v '2.0.2'
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
   - rm -rf Gemfile.lock
   - bundle install --path /cache
