@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'cucumber-rails'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'factory_bot'
-  s.add_development_dependency 'faker'
+  s.add_development_dependency 'faker', '~> 1.9.1'
   s.add_development_dependency 'generator_spec'
   s.add_development_dependency 'guard'
   s.add_development_dependency 'guard-rspec'

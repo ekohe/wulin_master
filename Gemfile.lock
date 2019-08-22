@@ -326,7 +326,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   factory_bot
-  faker
+  faker (~> 1.9.1)
   generator_spec
   guard
   guard-rspec
