@@ -110,8 +110,8 @@ GEM
     execjs (2.7.0)
     factory_bot (5.0.2)
       activesupport (>= 4.2.0)
-    faker (1.9.1)
-      i18n (>= 0.7)
+    faker (2.1.2)
+      i18n (>= 0.8)
     ffi (1.9.25)
     formatador (0.2.5)
     generator_spec (0.9.4)
@@ -326,7 +326,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   factory_bot
-  faker (~> 1.9.1)
+  faker (~> 2.1.2)
   generator_spec
   guard
   guard-rspec
