@@ -66,6 +66,6 @@ require 'capybara/rails'
 require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
 
-require 'factory_girl'
-World(FactoryGirl::Syntax::Methods)
-FactoryGirl.find_definitions
+require 'factory_bot'
+World(FactoryBot::Syntax::Methods)
+FactoryBot.find_definitions

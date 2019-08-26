@@ -5,7 +5,7 @@ module WulinMaster
     # Rendering
     # ----------
     def view_path
-      File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'views')
+      [File.expand_path('../../../app/views', __dir__)]
     end
 
     # Satisfy render_to_string
