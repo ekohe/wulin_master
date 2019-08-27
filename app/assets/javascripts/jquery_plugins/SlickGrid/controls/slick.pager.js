@@ -156,12 +156,14 @@
         .appendTo($container);
 
       $container.children().wrapAll("<div class='slick-pager' />");
-      $clearFilterLink.on('click', function() {
+      $clearFilterLink.on('click', function(e) {
+        e.stopPropagation();
         grid.container.find('.slick-header-column input').val('').focusout();
         grid.filterPanel.updateCurrentFilters();
         grid.filterPanel.applyCurrentFilters([]);
         grid.filterPanel.setCurrentFilter();
         grid.filterPanel.trigger(grid.filterPanel.onFilterLoaded, {filterData:[]});
+        return false;
       })
     }
 

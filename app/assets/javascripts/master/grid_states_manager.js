@@ -9,6 +9,9 @@ var GridStatesManager = {
       else if (typeof type == 'string') { state_value[type] = value }
       else if (typeof type == 'object' && !$.isArray(type)) { state_value = type }
 
+      console.log("state value:");
+      console.log(state_value);
+
       return $.post(url, {
         grid_name: gridName,
         state_value: state_value,
@@ -53,11 +56,15 @@ var GridStatesManager = {
     // save filter states when input filter value
     if(grid.filterPanel) {
       grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
-        var filterJson = {};
-        $.each(args.filterData, function(index,data){
-          filterJson[data['id']] = data['value'];
-        });
-        self.saveStates(grid.name, "filter", filterJson);
+        if (args.filterData.length == 0) {
+          self.saveStates(grid.name, "filter", null);
+        } else {
+          var filterJson = {};
+          $.each(args.filterData, function(index,data){
+            filterJson[data['id']] = data['value'];
+          });
+          self.saveStates(grid.name, "filter", filterJson);
+        }
       });
 
       grid.filterPanel.onFilterPanelClosed.subscribe(function(e, args){
