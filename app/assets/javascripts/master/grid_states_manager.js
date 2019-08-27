@@ -9,9 +9,6 @@ var GridStatesManager = {
       else if (typeof type == 'string') { state_value[type] = value }
       else if (typeof type == 'object' && !$.isArray(type)) { state_value = type }
 
-      console.log("state value:");
-      console.log(state_value);
-
       return $.post(url, {
         grid_name: gridName,
         state_value: state_value,
