@@ -118,7 +118,7 @@
       _grid.getOptions().minRowBuffer = _options.panelRows + 3;
 
       _handler
-        .subscribe(_grid.onClick, handleClick);
+        .subscribe(_grid.onClick, delayToHandleClick)
         // Ekohe Delete: scroll/sort works well with Ekohe version remotemodel. no need to handle here
         // .subscribe(_grid.onSort, handleSort)
         // .subscribe(_grid.onScroll, handleScroll);
@@ -175,6 +175,17 @@
       return parseInt(Object.keys(data).reverse().find(function(idx) {
         return (/\d+/.test(idx) && data[idx]);
       })) || 0;
+    }
+
+    // Ekohe Add: Support to dblClick to edit and just click to expand rowDetail
+    function delayToHandleClick(e, args) {
+      var isEditing = args.grid.isEditing
+      var delay = 200
+      var fn = function () { !isEditing() && handleClick(e, args) }
+
+      if (!isEditing()) {
+        setTimeout(fn, delay)
+      }
     }
 
     function handleClick(e, args) {
