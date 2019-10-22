@@ -14,4 +14,4 @@ module WulinMaster
   end
 end
 
-ActionDispatch::Routing::Mapper.send(:include, WulinMaster::FormResourceRoute)
+ActionDispatch::Routing::Mapper.include WulinMaster::FormResourceRoute

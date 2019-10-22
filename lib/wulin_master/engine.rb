@@ -12,7 +12,7 @@ module WulinMaster
     initializer "Actionpack extensions" do
       ActiveSupport.on_load :action_controller do
         require 'wulin_master/utilities/variables'
-        ActionController::Metal.send :include, WulinMaster::Variables
+        ActionController::Metal.include WulinMaster::Variables
       end
     end
 
