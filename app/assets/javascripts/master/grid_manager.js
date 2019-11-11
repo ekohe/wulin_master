@@ -118,7 +118,7 @@
       // create the row detail plugin
       if (options.rowDetail) {
         rowDetailView = new Slick.Plugins.RowDetailView({
-          loadOnce: true,
+          loadOnce: "loadOnce" in options.rowDetail ? options.rowDetail.loadOnce : true,
           useRowClick: options.rowDetail.useRowClick,
           panelRows: options.rowDetail.panelRows,
           hideRow: options.rowDetail.hideRow,
