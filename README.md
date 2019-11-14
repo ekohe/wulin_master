@@ -216,6 +216,10 @@ A column can be a real field in the database table of the current model, or a vi
 
 Default is `true`. If set `false`, the column will be invisible initially (can make it visible from column picker).
 
+`:always_include`
+
+Default is `false`. if set, this column will be available in the data even if not visible.
+
 `:editable`
 
 Default is `true`. If set, `false`, the grid cell of this column can not be edited.
