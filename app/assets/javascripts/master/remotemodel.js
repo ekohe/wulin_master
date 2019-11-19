@@ -49,8 +49,6 @@
         var vp = grid.getViewport();
         // when the grid rendered, onViewportChanged will be triggerd, if eagerLoading is false and no data loaded yet, we don't load the initial data
         if(grid.options.eagerLoading === false && grid.getData().length === 0) return false;
-        // Event triggered before the ajax request
-        beforeRemoteRequest.notify();
         ensureData(vp.top, vp.bottom);
       });
 
@@ -116,7 +114,7 @@
         // Preemptive loading mode
         normalLoadingMode = false;
       }
-      
+
       var url = path + "&offset=" + offset + "&count=" + count;
 
       // filters, ordering, extra parameters - not specific to the viewport
@@ -228,6 +226,11 @@
       if(urlData === null) { return; }
       var url = urlData[0];
       var normalLoading = urlData[1];
+
+      // Event triggered before the ajax request
+      // Ekohe Edit: Move it from onViewportChanged subscribing in setGrid to here,
+      // beforeRemoteRequest hook may need to run before every ajax request
+      beforeRemoteRequest.notify();
 
       // Ekohe Edit: Stop passing indicator to connection (Create progress bar as indicator in connection instead)
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
