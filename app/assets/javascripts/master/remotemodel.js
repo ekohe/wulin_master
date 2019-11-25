@@ -220,17 +220,17 @@
     }
 
     function ensureData(from, to) {
+      // Event triggered before the ajax request
+      // Ekohe Edit: Move it from onViewportChanged subscribing in setGrid to here,
+      // beforeRemoteRequest hook may need to run before every ajax request
+      beforeRemoteRequest.notify();
+
       var urlData = generateUrl(from, to);
 
       // Nothing to load, just return.
       if(urlData === null) { return; }
       var url = urlData[0];
       var normalLoading = urlData[1];
-
-      // Event triggered before the ajax request
-      // Ekohe Edit: Move it from onViewportChanged subscribing in setGrid to here,
-      // beforeRemoteRequest hook may need to run before every ajax request
-      beforeRemoteRequest.notify();
 
       // Ekohe Edit: Stop passing indicator to connection (Create progress bar as indicator in connection instead)
       // Store loading size to provide stats. If pageSize is not zero then we are coming from a pager request.
