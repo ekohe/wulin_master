@@ -117,7 +117,23 @@ module WulinMaster
     end
 
     def create
-      @record = grid.model.new
+      model_class = grid.model
+      if potential_foreign_keys.present?
+        associations_on_belongs_to = model_class.reflect_on_all_associations(:belongs_to)
+        foreign_key_ary = associations_on_belongs_to.map(&:foreign_key) & potential_foreign_keys
+        if foreign_key_ary.present?
+          foreign_key = foreign_key_ary.first # There will only be one foreign key
+          reflection = associations_on_belongs_to.find { |ref| ref.foreign_key == foreign_key }
+          host_klass = reflection.klass
+          # To avoid has_many with options class_name
+          reverse_reflections = host_klass.reflections.find { |_key, ref| ref.class_name == model_class.name }
+          associations = reverse_reflections.first # There will only be one
+          host = host_klass.find(params[foreign_key])
+          model_class = host.send(associations)
+        end
+      end
+
+      @record = model_class.new
       attrs = get_attributes(params_permit, :create, @record)
       custom_errors = @record.errors
       @record.assign_attributes(attrs)
@@ -260,6 +276,10 @@ module WulinMaster
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       return query.count if est_count < grid.options[:estCount][:threshold].to_i
       est_count
+    end
+
+    def potential_foreign_keys
+      params.keys.select { |key| key.match(/.+_id$/) }
     end
   end
 end

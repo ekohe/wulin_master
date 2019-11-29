@@ -119,7 +119,7 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Max: 25
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
     - 'lib/wulin_master/components/grid/column/column_filter.rb'
