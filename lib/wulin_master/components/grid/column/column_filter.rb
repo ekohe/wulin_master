@@ -74,10 +74,10 @@ module WulinMaster
       end.flatten.uniq
       if ids.blank?
         operator = operator == 'include' ? 'IS' : 'IS NOT'
-        return query.where("#{model.table_name}.id #{operator} NULL")
+        query.where("#{model.table_name}.id #{operator} NULL")
       else
         operator = operator == 'include' ? 'IN' : 'NOT IN'
-        return query.where("#{model.table_name}.id #{operator} (?)", ids)
+        query.where("#{model.table_name}.id #{operator} (?)", ids)
       end
     end
 
