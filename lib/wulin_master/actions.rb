@@ -120,16 +120,16 @@ module WulinMaster
       model_class = grid.model
       if potential_foreign_keys.present?
         associations_on_belongs_to = model_class.reflect_on_all_associations(:belongs_to)
-        foreign_key_ary = associations_on_belongs_to.map(&:foreign_key) & potential_foreign_keys
-        if foreign_key_ary.present?
-          foreign_key = foreign_key_ary.first # There will only be one foreign key
+        foreign_keys = associations_on_belongs_to.map(&:foreign_key) & potential_foreign_keys
+        if foreign_keys.present?
+          foreign_key = foreign_keys.first # There will only be one foreign key
           reflection = associations_on_belongs_to.find { |ref| ref.foreign_key == foreign_key }
           host_klass = reflection.klass
           # To avoid has_many with options class_name
-          reverse_reflections = host_klass.reflections.find { |_key, ref| ref.class_name == model_class.name }
-          associations = reverse_reflections.first # There will only be one
+          reverse_reflection = host_klass.reflections.find { |_key, ref| ref.class_name == model_class.name }
+          association = reverse_reflection.first # There will only be one
           host = host_klass.find(params[foreign_key])
-          model_class = host.send(associations)
+          model_class = host.send(association)
         end
       end
 
