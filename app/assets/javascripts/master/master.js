@@ -1,5 +1,5 @@
 //= require jquery
-//= require rails-ujs
+//= require jquery_ujs
 //= require exception/js_error_reporter
 //= require jquery_plugins
 //= require overrides
