@@ -48,16 +48,16 @@
                 .flex-fields{style: 'display: flex;flex-wrap: wrap;'}
                   - column.options['choices'].each do |arr|
                     - field_name = arr[0].gsub(' ', '_').downcase
-                    .field{style: 'flex: 0 0 180px;height:80px;'}
-                      = form.check_box column_name,                                  |
+                    .field{style: 'flex: 0 0 180px;'}
+                      = form.check_box column_name,                    |
                         name: "room[interiors_attributes][][checked]", |
-                        id: "room_interiors_#{field_name}",                          |
-                        "data-target" => "#{field_name}_target_flag",                |
-                        "data-field" => field_name,                                  |
+                        id: "room_interiors_#{field_name}",            |
+                        "data-target" => "#{field_name}_target_flag",  |
+                        "data-field" => field_name,                    |
                         class: 'filled-in'
                       = form.label "interiors_#{field_name}", arr[0]
                       %span
-                        %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: arr[1] }
+                        %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
                         %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px'}
               - else
                 = form.select column.reflection.name.to_s,                       |
