@@ -4,7 +4,11 @@
   if params[:update_version].present? and (version_columns = grid.find_columns_by_version(params[:update_version])).present?
     columns.select!{|x| version_columns.include?(x.name)}
   end
-  object = grid.model.new
+  if params[:ids].present?
+    object = grid.model.find(params[:ids].split(',')[0])
+  else
+    object = grid.model.new
+  end
   is_new = params["action"] === 'wulin_master_new_form'
   type = is_new ? 'new' : 'edit'
   title = (is_new ? 'Create new' : 'Update') + " #{model_name.titleize}"
@@ -46,19 +50,22 @@
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
               - if column.options['checkbox'] == true
                 .flex-fields{style: 'display: flex;flex-wrap: wrap;'}
+                  - interior_jsons = object.interiors_json
                   - column.options['choices'].each do |arr|
+                    - interior = interior_jsons.detect { |x| x['layout_id'] == arr[1] }
                     - field_name = arr[0].gsub(' ', '_').downcase
-                    .field{style: 'flex: 0 0 180px;height:80px;'}
-                      = form.check_box column_name,                                  |
+                    .field{style: 'flex: 0 0 180px;'}
+                      = form.check_box column_name,                    |
                         name: "room[interiors_attributes][][checked]", |
-                        id: "room_interiors_#{field_name}",                          |
-                        "data-target" => "#{field_name}_target_flag",                |
-                        "data-field" => field_name,                                  |
+                        id: "room_interiors_#{field_name}",            |
+                        "data-target" => "#{field_name}_target_flag",  |
+                        "data-field" => field_name,                    |
+                        checked: !!interior,                           |
                         class: 'filled-in'
                       = form.label "interiors_#{field_name}", arr[0]
                       %span
-                        %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: arr[1] }
-                        %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px'}
+                        %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
+                        %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
               - else
                 = form.select column.reflection.name.to_s,                       |
                   select_options(column),                                        |
