@@ -27,7 +27,7 @@ var batchUpdateByAjax = function(grid, version) {
       displayErrorMessage('You select too many rows, please select less than 350 rows.');
       return;
     }
-    url = grid.path + '/wulin_master_edit_form' + grid.query;
+    url = grid.path + '/wulin_master_edit_form' + grid.query + '&ids=' + ids;
     if (version)
       url = url + "&update_version=" + version;
     $.get(url, function(data){
