@@ -81,17 +81,17 @@
                           %input{ type: 'hidden', name: "room[prices_attributes][][category]", value: 'Price' }
                           %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: price&.dig('value') }
                   - elsif column.name == :costs
-                    - prices_json = object.prices_json
+                    - costs_json = object.costs_json
                     - column.options['choices'].each do |arr|
-                      - price = prices_json.detect { |x| x['condition'] == arr[0] }
+                      - cost = costs_json.detect { |x| x['condition'] == arr[0] }
                       - field_name = arr[0].gsub(' ', '_').downcase
                       .field{style: 'flex: 0 0 180px;'}
-                        = form.label "prices_#{field_name}", arr[0]
+                        = form.label "costs_#{field_name}", arr[0]
                         %div
-                          %input{ type: 'hidden', name: "room[prices_attributes][][id]", value: price&.dig('id') }
-                          %input{ type: 'hidden', name: "room[prices_attributes][][condition]", value: arr[0] }
-                          %input{ type: 'hidden', name: "room[prices_attributes][][category]", value: 'Cost' }
-                          %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: price&.dig('value') }            
+                          %input{ type: 'hidden', name: "room[costs_attributes][][id]", value: cost&.dig('id') }
+                          %input{ type: 'hidden', name: "room[costs_attributes][][condition]", value: arr[0] }
+                          %input{ type: 'hidden', name: "room[costs_attributes][][category]", value: 'Cost' }
+                          %input{ type: 'text', name: "room[costs_attributes][][value]", style: 'width: 80px; min-height: 20px', value: cost&.dig('value') }
 
               - else
                 = form.select column.reflection.name.to_s,                       |
