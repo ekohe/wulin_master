@@ -48,24 +48,38 @@
                 "data-field"       => field                                   |
 
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
-              - if column.options['checkbox'] == true
+              - if column.options['multi_inputs'] == true
                 .flex-fields{style: 'display: flex;flex-wrap: wrap;'}
-                  - interior_jsons = object.interiors_json
-                  - column.options['choices'].each do |arr|
-                    - interior = interior_jsons.detect { |x| x['layout_id'] == arr[1] }
-                    - field_name = arr[0].gsub(' ', '_').downcase
-                    .field{style: 'flex: 0 0 180px;'}
-                      = form.check_box column_name,                    |
-                        name: "room[interiors_attributes][][checked]", |
-                        id: "room_interiors_#{field_name}",            |
-                        "data-target" => "#{field_name}_target_flag",  |
-                        "data-field" => field_name,                    |
-                        checked: !!interior,                           |
-                        class: 'filled-in'
-                      = form.label "interiors_#{field_name}", arr[0]
-                      %span
-                        %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
-                        %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
+                  - if column.name == :interiors
+                    - interiors_json = object.interiors_json
+                    - column.options['choices'].each do |arr|
+                      - interior = interiors_json.detect { |x| x['layout_id'] == arr[1] }
+                      - field_name = arr[0].gsub(' ', '_').downcase
+                      .field{style: 'flex: 0 0 180px;'}
+                        = form.check_box column_name,                    |
+                          name: "room[interiors_attributes][][checked]", |
+                          id: "room_interiors_#{field_name}",            |
+                          "data-target" => "#{field_name}_target_flag",  |
+                          "data-field" => field_name,                    |
+                          checked: !!interior,                           |
+                          class: 'filled-in'
+                        = form.label "interiors_#{field_name}", arr[0]
+                        %span
+                          %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: interior&.dig('id') }
+                          %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
+                          %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
+                  - elsif column.name == :prices
+                    - prices_json = object.prices_json
+                    - column.options['choices'].each do |arr|
+                      - price = prices_json.detect { |x| x['condition'] == arr[0] }
+                      - field_name = arr[0].gsub(' ', '_').downcase
+                      .field{style: 'flex: 0 0 180px;'}
+                        = form.label "prices_#{field_name}", arr[0]
+                        %div
+                          %input{ type: 'hidden', name: "room[prices_attributes][][id]", value: price&.dig('id') }
+                          %input{ type: 'hidden', name: "room[prices_attributes][][condition]", value: arr[0] }
+                          %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: price&.dig('value') }
+
               - else
                 = form.select column.reflection.name.to_s,                       |
                   select_options(column),                                        |
