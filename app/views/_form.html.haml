@@ -68,6 +68,24 @@
                           %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: interior&.dig('id') }
                           %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
                           %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
+                  - if column.name == :rentings
+                    - rentings_json = object.rentings_json
+                    - column.options['choices'].each do |arr|
+                      - renting = rentings_json.detect { |x| x['service_id'] == arr[1] }
+                      - field_name = arr[0].gsub(' ', '_').downcase
+                      .field{style: 'flex: 0 0 180px;'}
+                        = form.check_box column_name,                    |
+                          name: "booking[rentings_attributes][][checked]", |
+                          id: "booking_rentings_#{field_name}",            |
+                          "data-target" => "#{field_name}_target_flag",  |
+                          "data-field" => field_name,                    |
+                          checked: !!renting,                           |
+                          class: 'filled-in'
+                        = form.label "rentings_#{field_name}", arr[0]
+                        %span
+                          %input{ type: 'hidden', name: "booking[rentings_attributes][][id]", value: renting&.dig('id') }
+                          %input{ type: 'hidden', name: "booking[rentings_attributes][][service_id]", value: arr[1] }
+                          %input{ type: 'text', name: "booking[rentings_attributes][][quantity]", style: 'width: 80px; min-height: 20px', value: renting&.dig('quantity') }
                   - elsif column.name == :prices
                     - prices_json = object.prices_json
                     - column.options['choices'].each do |arr|
