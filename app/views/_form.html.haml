@@ -38,7 +38,7 @@
               %label{:for => "#{model_name}_#{column_name}"}= label
             - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
               = form.select column_name,                                      |
-                select_options(column),                                       |
+                select_tag_options(column),                                   |
                 { include_blank: !column.presence_required? },                |
                 :class             => 'chzn-select',                          |
                 :disabled          => column.options[:auto_fill],             |
@@ -46,6 +46,20 @@
                 "data-source"      => source,                                 |
                 "data-target"      => "#{column_name}_target_flag",           |
                 "data-field"       => field                                   |
+              - if (column.options[:depend_column].present?)
+                :javascript
+                  $(function(){
+                    var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
+                    var depend_select = $("select#" + depend_select_id);
+                    $(document).on("change", "select#"+depend_select_id, function(){
+                      var current_select_id = "#{model_name}_#{column_name}";
+                      var current_select = $("select#" + current_select_id);
+                      var key = $(this).val();
+                      current_select.find("option").hide().trigger("chosen:updated");
+                      current_select.val("").trigger("chosen:updated");
+                      current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("chosen:updated");
+                    });
+                  });
 
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
               - if column.options['multi_inputs'] == true
