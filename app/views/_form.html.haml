@@ -68,7 +68,7 @@
                           %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: interior&.dig('id') }
                           %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
                           %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
-                  - if column.name == :rentings
+                  - elsif column.name == :rentings
                     - rentings_json = object.rentings_json
                     - column.options['choices'].each do |arr|
                       - renting = rentings_json.detect { |x| x['service_id'] == arr[1] }
