@@ -64,7 +64,7 @@
                           checked: !!interior,                           |
                           class: 'filled-in'
                         = form.label "interiors_#{field_name}", arr[0]
-                        %span
+                        %div
                           %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: interior&.dig('id') }
                           %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
                           %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
@@ -82,7 +82,7 @@
                           checked: !!renting,                              |
                           class: 'filled-in'
                         = form.label "rentings_#{field_name}", arr[0]
-                        %span
+                        %div
                           %input{ type: 'hidden', name: "booking[rentings_attributes][][id]", value: renting&.dig('id') }
                           %input{ type: 'hidden', name: "booking[rentings_attributes][][service_id]", value: arr[1] }
                           %input{ type: 'text', name: "booking[rentings_attributes][][quantity]", style: 'width: 80px; min-height: 20px', value: renting&.dig('quantity') }
