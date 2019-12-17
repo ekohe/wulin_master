@@ -38,6 +38,7 @@ var batchUpdateByAjax = function(grid, version) {
           showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
+          setTimeout( function() { $(document).trigger('FormLoaded') }, 200);
         }
       });
     });
