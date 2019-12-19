@@ -1,4 +1,4 @@
-window.onerror = function(msg, file, line, col, error){
+window.onerror = function(msg, file, line, _, error){
   var message = "Error: " + msg + "\nurl: " + window.location + "\nfile: " + file + "\nline #: " + line;
   $.ajax({
     type: 'POST',
