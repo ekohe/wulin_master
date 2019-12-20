@@ -16,6 +16,8 @@
     = javascript_include_tag *WulinMaster.javascripts
     = javascript_pack_tag 'application'
     = yield :header_tags
+    %link{href: "/favicon.ico", rel: "shortcut icon", type: "image/x-icon"}
+
     :javascript
       $(function(){
         if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
