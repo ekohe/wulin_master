@@ -1,3 +1,5 @@
+require: rubocop-rails
+
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.5.1
@@ -27,7 +29,7 @@ Layout/SpaceInsideHashLiteralBraces:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 160
 
 Layout/DotPosition:
@@ -48,10 +50,6 @@ Layout/EmptyLinesAroundAccessModifier:
 Style/SingleLineBlockParams:
   Enabled: false
 
-Style/NumericLiterals:
-  Exclude:
-    - 'spec/**/*'
-
 Style/StringLiteralsInInterpolation:
   Enabled: false
 
@@ -65,15 +63,6 @@ Layout/CaseIndentation:
 
 Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
-
-Metrics/AbcSize:
-  Max: 40
-
-Metrics/CyclomaticComplexity:
-  Max: 10
-
-Metrics/PerceivedComplexity:
-  Max: 15
 
 Metrics/ParameterLists:
   Max: 10
@@ -101,6 +90,12 @@ Rails/HttpPositionalArguments:
 Rails/LexicallyScopedActionFilter:
   Enabled: false
 
+Rails/RakeEnvironment:
+  Enabled: false
+
+Rails/FilePath:
+  Enabled: false
+
 Metrics/BlockLength:
   Max: 35
   Exclude:
@@ -119,7 +114,7 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Max: 25
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'app/screens/grid_states_screen.rb'
     - 'lib/wulin_master/components/grid/column/column_filter.rb'

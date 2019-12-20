@@ -12,6 +12,7 @@ group :development, :test do
   gem 'rspec-activemodel-mocks'
   gem 'rspec-rails', '~> 4.0.0.beta2'
   gem 'rubocop', require: false
+  gem 'rubocop-rails'
 end
 
 # Specify your gem's dependencies in wulin-master.gemspec
