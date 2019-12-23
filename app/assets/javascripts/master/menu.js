@@ -58,6 +58,7 @@ function load_page(url) {
   $.ajax({
     type: 'GET',
     dataType: 'html',
+    data: { xhr: 1 },
     url: url,
     success: function(html) {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
