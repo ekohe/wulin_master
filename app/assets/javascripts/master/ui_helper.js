@@ -77,6 +77,7 @@ var Ui = {
         ready: function(modal, trigger) {
           Ui.setupForm(grid, false);
           Ui.setupComponents(grid);
+          setTimeout(function() { $(document).trigger('FormLoaded') }, 320);
         }
       });
     });
