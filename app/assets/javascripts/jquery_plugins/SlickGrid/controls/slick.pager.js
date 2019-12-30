@@ -198,11 +198,11 @@
     function wulinUpdatePager(pagingInfo) {
       if (pagingInfo.pageSize == 0) {
         if (grid.getFilteredInputs().length == 0) {
-          $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
+          $status.text(pagingInfo.totalRows.toLocaleString() + "条记录");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(pagingInfo.totalRows.toLocaleString() + " of " + pagingInfo.rowsWithoutFilter.toLocaleString() + " rows found");
+          $status.text(pagingInfo.totalRows.toLocaleString() + "条记录从 " + pagingInfo.rowsWithoutFilter.toLocaleString() + "条记录中筛选得到");
           $status.addClass('with-filter');
           $clearFilterLink.removeClass('hide');
         }

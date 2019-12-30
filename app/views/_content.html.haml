@@ -6,11 +6,11 @@
 
 #confirm-modal.info-modal.modal
   .modal-content
-    %h5.modal-title Confirmation
-    #confirm-content.modal-message Are you sure to do this ?
+    %h5.modal-title 确认
+    #confirm-content.modal-message 是否确认本次操作？
   .modal-footer
-    #confirmed-btn.btn.right.modal-close Yes
-    .modal-close.btn-flat.waves-effect No
+    #confirmed-btn.btn.right.modal-close 是
+    .modal-close.btn-flat.waves-effect 否
 
 #error-modal.info-modal.modal
   .modal-content
@@ -33,7 +33,7 @@
 
     $('#confirm-modal').modal({
       complete: function(modal, trigger) {
-        $('#confirm-content').text('Are you sure to do this ?');
+        $('#confirm-content').text('是否确认本次操作？');
       }
     });
   });
