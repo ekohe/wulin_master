@@ -3,7 +3,7 @@
     :ruby
       toolbar_items = grid.toolbar_items
       toolbar_items.select! do |item|
-        grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
+        grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create? || grid.screen.authorize_destroy?
       end
       toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
         item.global?
