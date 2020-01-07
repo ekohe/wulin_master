@@ -11,7 +11,7 @@
   end
   is_new = params["action"] === 'wulin_master_new_form'
   type = is_new ? 'new' : 'edit'
-  title = (is_new ? 'Create new' : 'Update') + " #{model_name.titleize}"
+  title = (is_new ? '创建新的' : '编辑') + grid.title
   action = is_new ? 'create' : 'update'
 .create_form{:id => "#{grid.name}_form", :title => title, data: {action: action}}
   %h5.title= title
