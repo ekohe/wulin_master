@@ -32,7 +32,7 @@ var Requests = {
               setTimeout(function(){ Ui.closeModal(grid.name); }, 100);
             }
           }
-          displayNewNotification(grid.model + ' successfully created');
+          displayNewNotification(grid.title + '已被成功创建');
         } else {
           for(var k in request.error_message){
             createFormElement.find(".field[name=" + k + "], .field[name=" + k + "_id]").find(".field_error").text(request.error_message[k].join());
@@ -102,9 +102,9 @@ var Requests = {
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {
-            message = recordSize + ' ' + grid.model.toLowerCase() + 's deleted';
+            message = recordSize + '条' + grid.title + '记录被删除';
           } else {
-            message = '1 ' + grid.model.toLowerCase() + ' deleted';
+            message = '1条' + grid.title + '记录被删除';
           }
           displayNewNotification(message);
         } else if(msg.confirm) {
