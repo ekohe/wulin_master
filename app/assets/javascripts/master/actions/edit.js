@@ -171,9 +171,9 @@ var submitForm = function(grid, ids, selectedIndexes) {
             grid.master_grid.loader.reloadData();
           }
           if (selectedIndexes.length > 1) {
-            displayNewNotification(selectedIndexes.length + ' ' + grid.model.toLowerCase() + 's updated');
+            displayNewNotification(selectedIndexes.length + '条' + grid.title + '记录被更新');
           } else {
-            displayNewNotification('1 ' + grid.model.toLowerCase() + ' updated');
+            displayNewNotification('更新了1个' + grid.title);
           }
 
         } else {
