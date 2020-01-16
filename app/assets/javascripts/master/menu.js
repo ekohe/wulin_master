@@ -39,6 +39,7 @@ function loadPageForHistoryState() {
 }
 
 function load_page(url) {
+  document.title = "留白空间";
   $("#screen_content").empty();
 
   // Ekohe Add: Remove old columnpickers, tooltips when screen changes

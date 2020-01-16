@@ -11,7 +11,7 @@
   end
   is_new = params["action"] === 'wulin_master_new_form'
   type = is_new ? 'new' : 'edit'
-  title = (is_new ? 'Create new' : 'Update') + " #{model_name.titleize}"
+  title = (is_new ? '创建新的' : '编辑') + grid.title
   action = is_new ? 'create' : 'update'
 .create_form{:id => "#{grid.name}_form", :title => title, data: {action: action}}
   %h5.title= title
@@ -64,50 +64,50 @@
                           checked: !!interior,                           |
                           class: 'filled-in'
                         = form.label "interiors_#{field_name}", arr[0]
-                        %span
+                        %div
                           %input{ type: 'hidden', name: "room[interiors_attributes][][id]", value: interior&.dig('id') }
                           %input{ type: 'hidden', name: "room[interiors_attributes][][layout_id]", value: arr[1] }
                           %input{ type: 'text', name: "room[interiors_attributes][][capacity]", style: 'width: 80px; min-height: 20px', value: interior&.dig('capacity') }
-                  - if column.name == :rentings
+                  - elsif column.name == :rentings
                     - rentings_json = object.rentings_json
                     - column.options['choices'].each do |arr|
                       - renting = rentings_json.detect { |x| x['service_id'] == arr[1] }
                       - field_name = arr[0].gsub(' ', '_').downcase
                       .field{style: 'flex: 0 0 180px;'}
-                        = form.check_box column_name,                    |
+                        = form.check_box column_name,                      |
                           name: "booking[rentings_attributes][][checked]", |
                           id: "booking_rentings_#{field_name}",            |
-                          "data-target" => "#{field_name}_target_flag",  |
-                          "data-field" => field_name,                    |
-                          checked: !!renting,                           |
+                          "data-target" => "#{field_name}_target_flag",    |
+                          "data-field" => field_name,                      |
+                          checked: !!renting,                              |
                           class: 'filled-in'
                         = form.label "rentings_#{field_name}", arr[0]
-                        %span
+                        %div
                           %input{ type: 'hidden', name: "booking[rentings_attributes][][id]", value: renting&.dig('id') }
                           %input{ type: 'hidden', name: "booking[rentings_attributes][][service_id]", value: arr[1] }
                           %input{ type: 'text', name: "booking[rentings_attributes][][quantity]", style: 'width: 80px; min-height: 20px', value: renting&.dig('quantity') }
                   - elsif column.name == :prices
                     - prices_json = object.prices_json
                     - column.options['choices'].each do |arr|
-                      - price = prices_json.detect { |x| x['condition'] == arr[0] }
+                      - price = prices_json.detect { |x| x['condition'] == arr[1] }
                       - field_name = arr[0].gsub(' ', '_').downcase
                       .field{style: 'flex: 0 0 180px;'}
                         = form.label "prices_#{field_name}", arr[0]
                         %div
                           %input{ type: 'hidden', name: "room[prices_attributes][][id]", value: price&.dig('id') }
-                          %input{ type: 'hidden', name: "room[prices_attributes][][condition]", value: arr[0] }
+                          %input{ type: 'hidden', name: "room[prices_attributes][][condition]", value: arr[1] }
                           %input{ type: 'hidden', name: "room[prices_attributes][][category]", value: 'Price' }
                           %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: price&.dig('value') }
                   - elsif column.name == :costs
                     - costs_json = object.costs_json
                     - column.options['choices'].each do |arr|
-                      - cost = costs_json.detect { |x| x['condition'] == arr[0] }
+                      - cost = costs_json.detect { |x| x['condition'] == arr[1] }
                       - field_name = arr[0].gsub(' ', '_').downcase
                       .field{style: 'flex: 0 0 180px;'}
                         = form.label "costs_#{field_name}", arr[0]
                         %div
                           %input{ type: 'hidden', name: "room[costs_attributes][][id]", value: cost&.dig('id') }
-                          %input{ type: 'hidden', name: "room[costs_attributes][][condition]", value: arr[0] }
+                          %input{ type: 'hidden', name: "room[costs_attributes][][condition]", value: arr[1] }
                           %input{ type: 'hidden', name: "room[costs_attributes][][category]", value: 'Cost' }
                           %input{ type: 'text', name: "room[costs_attributes][][value]", style: 'width: 80px; min-height: 20px', value: cost&.dig('value') }
 
@@ -187,9 +187,9 @@
 
             .field_error
     .submit
-      .btn-flat.modal-close CANCEL
+      .btn-flat.modal-close 取消
       - if is_new
-        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " 创建 "}/
+        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " 创建并继续 "}/
       - else
-        %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  更新  "}/

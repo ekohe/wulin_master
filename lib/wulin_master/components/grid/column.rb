@@ -156,13 +156,15 @@ module WulinMaster
 
     def sql_type
       return :unknown if model.blank?
+      return options[:sql_type] if options[:sql_type].present?
+
       if reflection
         options[:inner_sql_type] = reflection.klass.columns.find { |c| c.name.to_s == source.to_s }.try(:type)
         options[:inner_formatter] ||= (options.delete(:formatter) || options[:inner_sql_type])
         return association_type
       end
       column = model_columns.find { |col| col.name.to_s == source.to_s }
-      (enum? ? :enum : (column.try(:type) || association_type || options[:sql_type] || :unknown)).to_sym
+      (enum? ? :enum : (column.try(:type) || association_type || :unknown)).to_sym
     end
 
     def reflection

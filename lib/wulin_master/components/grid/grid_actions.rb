@@ -92,9 +92,11 @@ module WulinMaster
     private
 
     def valid_action?(action)
-      valid_action_by_screen_configuration?(action) &&
-        valid_by_screen_authorize_create?(action) &&
-        valid_by_action_authorized?(action)
+      if /delete/.match action[:name].to_s
+        valid_by_screen_authorize_destroy?(action)
+      else
+        valid_by_screen_authorize_create?(action)
+      end && valid_action_by_screen_configuration?(action) && valid_by_action_authorized?(action)
     end
 
     # 1. check if this action can be displayed in the screen due to :only or :except configuration
@@ -108,6 +110,11 @@ module WulinMaster
     def valid_by_screen_authorize_create?(action)
       return true unless current_user
       self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_create?
+    end
+
+    def valid_by_screen_authorize_destroy?(action)
+      return true unless current_user
+      self.class::SENSITIVE_ACTIONS.exclude?(action[:name].to_s) || screen.authorize_destroy?
     end
 
     # 3. check if this action authorized for current user

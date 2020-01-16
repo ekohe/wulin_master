@@ -38,6 +38,7 @@ var batchUpdateByAjax = function(grid, version) {
           showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
+          setTimeout(function() { $(document).trigger('FormLoaded') }, 320);
         }
       });
     });
@@ -85,7 +86,9 @@ var loadValue = function(scope, data) {
       if (data[i]) {
         $('input:checkbox[data-field="' + i + '"]', scope).prop('checked', true);
       } else {
-        $('input:checkbox[data-field="' + i + '"]', scope).removeAttr('checked');
+        // data only include visible columns, some formable columns' value are not included in data.
+        // we should not unchecked an checked checkbox, only because it's not visible column.
+        // $('input:checkbox[data-field="' + i + '"]', scope).removeAttr('checked');
       }
     } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-field="' + i + '"]', scope);
@@ -168,9 +171,9 @@ var submitForm = function(grid, ids, selectedIndexes) {
             grid.master_grid.loader.reloadData();
           }
           if (selectedIndexes.length > 1) {
-            displayNewNotification(selectedIndexes.length + ' ' + grid.model.toLowerCase() + 's updated');
+            displayNewNotification(selectedIndexes.length + '条' + grid.title + '记录被更新');
           } else {
-            displayNewNotification('1 ' + grid.model.toLowerCase() + ' updated');
+            displayNewNotification('更新了1个' + grid.title);
           }
 
         } else {

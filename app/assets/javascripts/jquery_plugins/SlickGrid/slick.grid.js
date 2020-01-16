@@ -1570,15 +1570,15 @@ if (typeof Slick === "undefined") {
       var $gridContainer = $container.parent();
       var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
-        var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-        var text = itemInfo + ' selected.';
+        var itemInfo = itemCount > 1 ? itemCount + '条' : '1条';
+        var text = itemInfo + '记录被选中';
         var selectionInfo = $gridContainer.find('.selection-info');
         var textElement = $("<span/>").text(text);
         selectionInfo.empty().append(textElement);
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
-        clearLink.append($("<span/>").text("CLEAR"));
+        clearLink.append($("<span/>").text("取消选中"));
 
         clearLink.on('click', function() {
           $gridContainer.find('.toolbar-select').addClass('hide');

@@ -63,6 +63,7 @@
       grid.onHeaderContextMenu.subscribe(wulinHandleHeaderContextMenu);
       grid.onColumnsReordered.subscribe(updateColumnOrder);
       options = $.extend({}, defaults, options);
+      document.title = "留白空间";
 
       // Ekohe Edit
       // $menu = $("<div class='slick-columnpicker' style='display:none' />").appendTo(document.body);
