@@ -11,7 +11,7 @@
   end
   is_new = params["action"] === 'wulin_master_new_form'
   type = is_new ? 'new' : 'edit'
-  title = (is_new ? '创建新的' : '编辑') + grid.title
+  title = (is_new ? '添加' : '编辑') + grid.title
   action = is_new ? 'create' : 'update'
 .create_form{:id => "#{grid.name}_form", :title => title, data: {action: action}}
   %h5.title= title
@@ -97,7 +97,7 @@
                           %input{ type: 'hidden', name: "room[prices_attributes][][id]", value: price&.dig('id') }
                           %input{ type: 'hidden', name: "room[prices_attributes][][condition]", value: arr[1] }
                           %input{ type: 'hidden', name: "room[prices_attributes][][category]", value: 'Price' }
-                          %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: price&.dig('value') }
+                          %input{ type: 'text', name: "room[prices_attributes][][value]", style: 'width: 80px; min-height: 20px', value: number_with_precision(price&.dig('value'), strip_insignificant_zeros: true) }
                   - elsif column.name == :costs
                     - costs_json = object.costs_json
                     - column.options['choices'].each do |arr|
@@ -109,7 +109,7 @@
                           %input{ type: 'hidden', name: "room[costs_attributes][][id]", value: cost&.dig('id') }
                           %input{ type: 'hidden', name: "room[costs_attributes][][condition]", value: arr[1] }
                           %input{ type: 'hidden', name: "room[costs_attributes][][category]", value: 'Cost' }
-                          %input{ type: 'text', name: "room[costs_attributes][][value]", style: 'width: 80px; min-height: 20px', value: cost&.dig('value') }
+                          %input{ type: 'text', name: "room[costs_attributes][][value]", style: 'width: 80px; min-height: 20px', value: number_with_precision(cost&.dig('value'), strip_insignificant_zeros: true) }
 
               - else
                 = form.select column.reflection.name.to_s,                       |
