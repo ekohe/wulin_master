@@ -179,7 +179,7 @@
             - else
               - if column.sql_type.to_s.downcase == 'boolean'
                 = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in'
-                = form.label column_name, label
+                = form.label column_name, label, style: "margin: 15px auto"
               - elsif column.sql_type.to_s.downcase == 'text'
                 = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
               - else
