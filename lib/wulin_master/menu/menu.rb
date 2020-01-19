@@ -36,6 +36,10 @@ module WulinMaster
       @options[:hidden]
     end
 
+    def target_blank?
+      @options[:target].to_s == '_blank'
+    end
+
     def active_paths
       return nil if options[:active_paths].blank?
       paths = options.delete(:active_paths)
