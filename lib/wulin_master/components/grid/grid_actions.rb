@@ -120,7 +120,7 @@ module WulinMaster
     # 3. check if this action authorized for current user
     def valid_by_action_authorized?(action)
       return true unless action[:authorized?] && current_user
-      authorized_proc = action.delete(:authorized?)
+      authorized_proc = action[:authorized?]
       return authorized_proc == true unless authorized_proc.is_a?(Proc)
       authorized_proc.call(current_user)
     end
