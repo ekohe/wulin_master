@@ -128,13 +128,12 @@ module WulinMaster
         end
         query.where(source => filtering_value)
       else
-        filtering_value = filtering_value.gsub(/'/, "''")
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
            table_column? &&
            operator &&
            text.match(/\A[-+]?[0-9]*\.?[0-9]+\Z/)
-          query.where("#{field} #{operator} #{text}")
+          query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
           adapter.string_query(complete_column_name, filtering_value, self)
