@@ -375,7 +375,7 @@ var Ui = {
     var $modalFooter = $('<div/>')
       .addClass('modal-footer')
       .append($('<div/>').addClass('confirm-btn btn right').text(btnName))
-      .append($('<div/>').addClass('btn-flat modal-close').text('Cancel'));
+      .append($('<div/>').addClass('btn-flat modal-close').text('取消'));
 
     return $modalFooter;
   },

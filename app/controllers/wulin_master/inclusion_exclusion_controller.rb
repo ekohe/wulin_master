@@ -17,7 +17,7 @@ module WulinMaster
           group.save
         end
       end
-      render json: {status: 'OK', message: "Added #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}."}
+      render json: {status: 'OK', message: "#{I18n.t('wulin_master.text.Added')} #{ids.size} #{I18n.t(params[:exclude_model].titleize)}"}
     rescue StandardError
       render json: {status: 'Error', message: "Adding failed! Error: #{$ERROR_INFO.message}"}
     end
@@ -26,7 +26,7 @@ module WulinMaster
       if (ids = params[:ids]).present?
         @include_model.where('id IN (?)', ids).destroy_all
       end
-      render json: {status: 'OK', message: "Removed #{ids.size} #{params[:exclude_model].titleize}#{ids.size > 1 ? 's' : ''}!"}
+      render json: {status: 'OK', message: "#{I18n.t('wulin_master.text.Removed')} #{ids.size} #{I18n.t(params[:exclude_model].titleize)}"}
     end
 
     private

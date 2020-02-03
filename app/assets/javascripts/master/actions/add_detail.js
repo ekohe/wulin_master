@@ -7,14 +7,14 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var self = this;
     var masterId = this.target.master.filter_value;
 
-    var $addDetailModal = Ui.headerModal('Attach', {
+    var $addDetailModal = Ui.headerModal('添加', {
       ready: function(modal, trigger) {
         self.getModelGrid(masterId, modal.find('.modal-content'));
         modal.find('.modal-content').css('padding', '0');
       }
     });
 
-    var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);
+    var $modalFooter = Ui.modalFooter('添加').appendTo($addDetailModal);
     $modalFooter.find('.confirm-btn').addClass('disabled').on('click', function() {
       self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
     });

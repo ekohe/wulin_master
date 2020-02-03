@@ -19,7 +19,7 @@ module WulinMaster
           middle_model.create!(detail_column => detail_id, params[:master_column] => params[:master_id])
         end
       end
-      render json: {status: 'OK', message: "#{self.class.helpers.pluralize(params[:detail_ids].size, 'record')} attached."}
+      render json: {status: 'OK', message: "#{params[:detail_ids].size}#{I18n.t('wulin_master.text.record attached')}"}
     end
   end
 end
