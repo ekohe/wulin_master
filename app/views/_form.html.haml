@@ -193,3 +193,14 @@
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " 创建并继续 "}/
       - else
         %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  更新  "}/
+:javascript
+  $(document).ready(function() {
+    $(document).on("keydown", function(event){
+      if($(".modal").hasClass('open') && event.keyCode == 13) {
+        event.preventDefault();
+        var submitBtns = document.querySelectorAll('input[type=submit]');
+        submitBtn = submitBtns[0]
+        submitBtn.click();
+      }
+    });
+  });
