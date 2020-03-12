@@ -17,7 +17,7 @@ module WulinMaster
       self.app_title = 'Undefined App'
       self.app_title_height = '42px'
       self.always_reset_form = false
-      self.default_year = Time.zone.today.year
+      self.default_year = Time.zone ? Time.zone.today.year : nil
       self.color_theme = 'blue'
     end
   end
