@@ -10,7 +10,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rails-controller-testing'
   gem 'rspec-activemodel-mocks'
-  gem 'rspec-rails', '~> 4.0.0.beta2'
   gem 'rubocop', require: false
   gem 'rubocop-rails'
 end
