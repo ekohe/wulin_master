@@ -1,8 +1,6 @@
-require: rubocop-rails
-
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.5.1
+  TargetRubyVersion: 2.7.0
   Exclude:
     - '**/*.yml'
     - 'db/**/*'
@@ -17,7 +15,7 @@ AllCops:
 Style/StringLiterals:
   Enabled: false
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
 Style/RegexpLiteral:
@@ -80,22 +78,6 @@ Style/MixinUsage:
   Exclude:
     - 'spec/wulin_app/bin/*'
 
-Rails:
-  Enabled: true
-
-Rails/HttpPositionalArguments:
-  Exclude:
-    - 'spec/**/*'
-
-Rails/LexicallyScopedActionFilter:
-  Enabled: false
-
-Rails/RakeEnvironment:
-  Enabled: false
-
-Rails/FilePath:
-  Enabled: false
-
 Metrics/BlockLength:
   Max: 35
   Exclude:
@@ -123,6 +105,11 @@ Style/ClassVars:
   Exclude:
     - 'lib/wulin_master/components/grid/grid_actions.rb'
 
-Rails/OutputSafety:
-  Exclude:
-    - 'app/helpers/wulin_master_grid_helper.rb'
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
