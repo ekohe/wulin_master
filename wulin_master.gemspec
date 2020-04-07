@@ -14,8 +14,6 @@ Gem::Specification.new do |s|
   s.description = 'WulinMaster is a grid plugin base on Ruby on Rails and SlickGrid. It provides powerful generator
   and other tools to make grids easy to build as well as flexible configurations.'
 
-  s.rubyforge_project = "wulin_master"
-
   s.files         = `git ls-files`.split("\n")
   s.test_files    = Dir['spec/**/*']
   s.executables   = []
