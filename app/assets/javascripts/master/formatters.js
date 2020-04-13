@@ -8,7 +8,7 @@
 
     applyStyle: function(value, styleClass, style) {
       styleClass = styleClass || '';
-      return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";display:block'>" + value + "</span>";
+      return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";'>" + value + "</span>";
     },
 
     parseDateTime: function(dateTimeStr) {

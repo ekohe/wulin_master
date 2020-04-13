@@ -90,17 +90,17 @@ classes should alter those!
 .slick-cell, .slick-headerrow-column , .slick-footerrow-column{
   position: absolute;
   border: 1px solid transparent;
-  border-right: 1px dotted silver;
+  border-right: 1px solid silver;
   border-bottom-color: silver;
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   vertical-align: middle;
   z-index: 1;
-  padding: 1px 2px 2px 1px;
+  padding: 1px 4px 2px 2px;
   margin: 0;
   white-space: nowrap;
-  cursor: default;
+  cursor: pointer;
 }
 .slick-cell, .slick-headerrow-column{
   border-bottom-color: silver;
@@ -108,7 +108,7 @@ classes should alter those!
 .slick-footerrow-column {
   border-top-color: silver;
 }
- 
+
 .slick-group {
 }
 
