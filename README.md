@@ -102,6 +102,7 @@ class PostGrid < WulinMaster::Grid
   eager_loading true
 
   # Define the grid row height
+  # default row height 26
   row_height 30
 
   # Toolbar items shown as Material Design icons (https://material.io/icons/)
