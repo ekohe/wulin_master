@@ -14,5 +14,9 @@ group :development, :test do
   gem 'rubocop-rails'
 end
 
+group :test do
+  gem 'cucumber-rails', require: false
+end
+
 # Specify your gem's dependencies in wulin-master.gemspec
 gemspec
