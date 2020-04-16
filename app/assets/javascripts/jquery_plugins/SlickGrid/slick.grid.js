@@ -582,6 +582,7 @@ if (typeof Slick === "undefined") {
       if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
         applyColumnWidths();
       }
+      handleScroll(true);
     }
 
     function disableSelection($target) {
