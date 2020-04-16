@@ -1,0 +1,30 @@
+:ruby
+  toolbar_items.select! do |item|
+    grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
+  end
+  toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
+    item.global?
+  end
+.toolbar-wrapper
+  - case WulinMaster.config.button_mode
+  - when 'merged'
+    .toolbar-select.hide(data-grid="#{@grid_name}")
+      %ul
+        - toolbar_items.each do |item|
+          %li.toolbar_item
+            = link_to 'javascript:void(0);', item.anchor_tag_options do
+              %i.material-icons= item.icon.presence || 'help'
+  - else
+    .toolbar-global(data-grid="#{@grid_name}")
+      %ul
+        - toolbar_items_global.each do |item|
+          %li.toolbar_item
+            =link_to 'javascript:void(0);', item.anchor_tag_options do
+              %i.material-icons= item.icon.presence || 'help'
+              %span= item.title
+    .toolbar-select.hide(data-grid="#{@grid_name}")
+      %ul
+        - toolbar_items_select.each do |item|
+          %li.toolbar_item
+            = link_to 'javascript:void(0);', item.anchor_tag_options do
+              %i.material-icons= item.icon.presence || 'help'
