@@ -816,7 +816,7 @@ if (typeof Slick === "undefined") {
             .appendTo(header);
 
         // Ekohe Add: Align label to center
-        headerColLabel.css('left', (header.width() - headerColLabel.textWidth()) / 2);
+        headerColLabel.css('padding-left', 2);
 
         // Ekohe Add: Add left padding to the first columns
         if (i == 0) {
