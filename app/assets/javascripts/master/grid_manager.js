@@ -12,7 +12,7 @@
       asyncEditorLoading: false,
       autoEdit: false,
       cellFlashingCssClass: "master_flashing",
-      rowHeight: 30
+      rowHeight: 26
     };
 
     function getEditorForType(type) {
