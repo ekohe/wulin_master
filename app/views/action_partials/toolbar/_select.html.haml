@@ -1,4 +1,4 @@
-.toolbar-select.hide(data-grid="#{@grid_name}")
+.toolbar-select{hidden: WulinMaster.config.split_button_mode?, 'data-mode': WulinMaster.config.button_mode}(data-grid="#{@grid_name}")
   %ul
     - toolbar_items.each do |item|
       %li.toolbar_item

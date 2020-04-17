@@ -25,5 +25,9 @@ module WulinMaster
     def split_button_mode?
       button_mode == 'split'
     end
+
+    def merged_button_mode?
+      button_mode == 'merged'
+    end
   end
 end

@@ -1579,16 +1579,33 @@ if (typeof Slick === "undefined") {
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
         clearLink.append($("<span/>").text("CLEAR"));
+        var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
+        var isSplitMode = buttonMode === 'split';
+        var toolbarSelect = $gridContainer.find('.toolbar-select');
 
         clearLink.on('click', function() {
-          $gridContainer.find('.toolbar-select').addClass('hide');
+          if(isSplitMode) {
+            toolbarSelect.attr('hidden', true);
+          } else {
+            toolbarSelect
+              .find('.specific')
+              .addClass('toolbar_icon_disabled')
+              .removeClass('specific');
+          }
           $gridContainer.find('.grid-header').removeClass('has-selected-rows');
           selectionModel.onSelectedRangesChanged.notify([]);
           return false;
         })
 
         selectionInfo.append(clearLink);
-        $gridContainer.find('.toolbar-select').removeClass('hide');
+        if(isSplitMode) {
+          toolbarSelect.attr('hidden', false);
+        } else {
+          toolbarSelect
+            .find('.toolbar_icon_disabled')
+            .addClass('specific')
+            .removeClass('toolbar_icon_disabled');
+        }
         $gridContainer.closest('.modal').find('.confirm-btn').removeClass('disabled');
         $gridHeader.addClass('has-selected-rows');
       } else {

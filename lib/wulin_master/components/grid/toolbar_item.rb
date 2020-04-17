@@ -44,12 +44,20 @@ module WulinMaster
       WulinMaster.config.split_button_mode?
     end
 
+    def merged_button_mode?
+      WulinMaster.config.merged_button_mode?
+    end
+
     def global?
       customized_global_action? || default_global_action?
     end
 
     def global_unlder_split_button_mode?
       split_button_mode? && global?
+    end
+
+    def select_unlder_merged_button_mode?
+      merged_button_mode? && !global?
     end
 
     def anchor_tag_options
@@ -62,6 +70,7 @@ module WulinMaster
       if icon?
         css_classes += options[:class].split(' ') if options[:class].present?
         # css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
+        css_classes << "toolbar_icon_disabled" if select_unlder_merged_button_mode?
         css_classes << "toolbar_manually_enable" if options[:manually_enable]
       else
         css_classes += options[:class].split(" ").delete_if { |e| e.include?('toolbar_icon') }
