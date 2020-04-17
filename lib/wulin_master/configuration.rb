@@ -21,5 +21,9 @@ module WulinMaster
       self.color_theme = 'blue'
       self.button_mode = 'split'
     end
+
+    def split_button_mode?
+      button_mode == 'split'
+    end
   end
 end

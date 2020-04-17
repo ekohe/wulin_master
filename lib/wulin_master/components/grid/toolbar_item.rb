@@ -25,22 +25,38 @@ module WulinMaster
     end
 
     def javascript?
-      !@javascript.nil?
+      @javascript.present?
     end
 
     def icon?
-      !@icon.nil?
+      @icon.present?
+    end
+
+    def default_global_action?
+      ToolbarItem.default_global_actions.include?(options[:name]&.to_sym)
+    end
+
+    def customized_global_action?
+      options[:global]
+    end
+
+    def split_button_mode?
+      WulinMaster.config.split_button_mode?
     end
 
     def global?
-      options[:global] || (!options[:name].nil? && ToolbarItem.default_global_actions.include?(options[:name].to_sym))
+      customized_global_action? || default_global_action?
+    end
+
+    def global_unlder_split_button_mode?
+      split_button_mode? && global?
     end
 
     def anchor_tag_options
-      css_classes = ['waves-effect']
-      unless global?
-        css_classes << 'waves-circle'
-        css_classes << 'tooltipped'
+      css_classes = if global_unlder_split_button_mode?
+        ['waves-effect']
+      else
+        %w[waves-effect waves-circle tooltipped]
       end
 
       if icon?
@@ -60,7 +76,7 @@ module WulinMaster
         options.delete(:onclick)
       end
 
-      if global?
+      if global_unlder_split_button_mode?
         options
       else
         options.merge('data-position': 'bottom', 'data-delay': '50', 'data-tooltip': @title)
