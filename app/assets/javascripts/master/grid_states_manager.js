@@ -104,13 +104,6 @@ var GridStatesManager = {
     if(!orderStates) return columns;
 
     var new_columns = [], i, j, k;
-    // find id column
-    for(i in columns){
-      if (columns[i].id == "id"){
-        new_columns.push(columns[i]);
-        break;
-      }
-    }
     // push other columns according to states
     for(j in orderStates){
       for(k in columns) {
