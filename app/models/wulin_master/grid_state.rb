@@ -7,6 +7,7 @@ module WulinMaster
 
     scope :for_user_and_grid, ->(user_id, grid_name) { where(user_id: user_id, grid_name: grid_name) }
     scope :default, -> { where(name: 'default') }
+    scope :current_ones, -> { where(current: true) }
 
     reject_audit if defined? ::WulinAudit
 
@@ -35,15 +36,19 @@ module WulinMaster
     end
 
     def self.current(user_id, grid_name)
-      states = for_user_and_grid(user_id, grid_name).all
+      states = for_user_and_grid(user_id, grid_name)
       return nil if states.blank?
-      states.find(&:current?) || states.find { |x| x.name.to_s.casecmp('default').zero? } || states.first
+      states.current_ones.first || states.find { |x| x.name.to_s.casecmp('default').zero? } || states.first
     end
 
     def self.create_default(user_id, grid_name)
-      grid_state = WulinMaster::GridState.for_user_and_grid(user_id, grid_name).first
-      return grid_state if grid_state.present?
-      create(grid_name: grid_name, user_id: user_id, current: true)
+      grid_state = for_user_and_grid(user_id, grid_name)
+      return grid_state.first if grid_state.present?
+      grid_state.current_ones.create
+    end
+
+    def self.current_or_default(user_id, grid_name)
+      current(user_id, grid_name) || create_default(user_id, grid_name)
     end
 
     # cache all_users, loop all states and destroy the state without valid user_id
