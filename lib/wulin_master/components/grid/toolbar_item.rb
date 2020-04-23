@@ -52,7 +52,7 @@ module WulinMaster
       customized_global_action? || default_global_action?
     end
 
-    def global_unlder_split_button_mode?
+    def global_under_split_button_mode?
       split_button_mode? && global?
     end
 
@@ -61,7 +61,7 @@ module WulinMaster
     end
 
     def anchor_tag_options
-      css_classes = if global_unlder_split_button_mode?
+      css_classes = if global_under_split_button_mode?
         ['waves-effect']
       else
         %w[waves-effect waves-circle tooltipped]
@@ -85,7 +85,7 @@ module WulinMaster
         options.delete(:onclick)
       end
 
-      if global_unlder_split_button_mode?
+      if global_under_split_button_mode?
         options
       else
         options.merge('data-position': 'bottom', 'data-delay': '50', 'data-tooltip': @title)
