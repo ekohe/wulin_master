@@ -64,7 +64,7 @@ module WulinMaster
       css_classes = if global_under_split_button_mode?
         ['waves-effect']
       elsif select_unlder_merged_button_mode?
-        %w[waves-effect waves-circle]
+        %w[static-waves-effect waves-circle tooltipped]
       else
         %w[waves-effect waves-circle tooltipped]
       end

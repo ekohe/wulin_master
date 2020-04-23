@@ -151,3 +151,15 @@ textarea.materialize-textarea {
   border-color: $main-color;
   background-color: $main-color;
 }
+
+.static-waves-effect {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  transition: .3s ease-out;
+}
