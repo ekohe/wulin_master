@@ -25,27 +25,54 @@ module WulinMaster
     end
 
     def javascript?
-      !@javascript.nil?
+      @javascript.present?
     end
 
     def icon?
-      !@icon.nil?
+      @icon.present?
+    end
+
+    def default_global_action?
+      ToolbarItem.default_global_actions.include?(options[:name]&.to_sym)
+    end
+
+    def customized_global_action?
+      options[:global]
+    end
+
+    def split_button_mode?
+      WulinMaster.config.split_button_mode?
+    end
+
+    def merged_button_mode?
+      WulinMaster.config.merged_button_mode?
     end
 
     def global?
-      options[:global] || (!options[:name].nil? && ToolbarItem.default_global_actions.include?(options[:name].to_sym))
+      customized_global_action? || default_global_action?
+    end
+
+    def global_under_split_button_mode?
+      split_button_mode? && global?
+    end
+
+    def select_unlder_merged_button_mode?
+      merged_button_mode? && !global?
     end
 
     def anchor_tag_options
-      css_classes = ['waves-effect']
-      unless global?
-        css_classes << 'waves-circle'
-        css_classes << 'tooltipped'
+      css_classes = if global_under_split_button_mode?
+        ['waves-effect']
+      elsif select_unlder_merged_button_mode?
+        %w[static-waves-effect waves-circle tooltipped]
+      else
+        %w[waves-effect waves-circle tooltipped]
       end
 
       if icon?
         css_classes += options[:class].split(' ') if options[:class].present?
         # css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
+        css_classes << "toolbar_icon_disabled" if select_unlder_merged_button_mode?
         css_classes << "toolbar_manually_enable" if options[:manually_enable]
       else
         css_classes += options[:class].split(" ").delete_if { |e| e.include?('toolbar_icon') }
@@ -60,7 +87,7 @@ module WulinMaster
         options.delete(:onclick)
       end
 
-      if global?
+      if global_under_split_button_mode?
         options
       else
         options.merge('data-position': 'bottom', 'data-delay': '50', 'data-tooltip': @title)

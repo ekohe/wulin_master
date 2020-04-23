@@ -1,0 +1,15 @@
+:ruby
+  toolbar_items.select! do |item|
+    grid.class::SENSITIVE_ACTIONS.exclude?(item.options[:name].to_s) || grid.screen.authorize_create?
+  end
+  toolbar_items_global, toolbar_items_select = toolbar_items.partition do |item|
+    item.global?
+  end
+.toolbar-wrapper
+  - case WulinMaster.config.button_mode
+  - when 'merged'
+    = render '/action_partials/toolbar/merged', toolbar_items: toolbar_items_select
+    = render '/action_partials/toolbar/merged', toolbar_items: toolbar_items_global
+  - else
+    = render '/action_partials/toolbar/global', toolbar_items: toolbar_items_global
+    = render '/action_partials/toolbar/select', toolbar_items: toolbar_items_select
