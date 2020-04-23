@@ -19,6 +19,8 @@
     background: none;
     font-size: $font-size-small;
     .slick-pager-status.with-filter, .slick-pager-clear-filter {
+      position: absolute;
+      float: left;
       color: $filter-color;
       .material-icons {
         font-size: $font-size-middle;
@@ -29,7 +31,7 @@
       }
     }
     .slick-pager-clear-filter {
-      padding: 6px 15px 6px;
+      padding: 6px 15px 6px 0px;
     }
   }
 }
