@@ -1459,8 +1459,6 @@ if (typeof Slick === "undefined") {
       for (var i = 0, headers = $headers.children(), ii = columns.length; i < ii; i++) {
         h = $(headers[i]);
         // Ekohe Add: Align label to center for MD
-        var $label = h.find('label');
-        $label.css('left', (h.width() - $label.textWidth()) / 2);
         if (jQueryNewWidthBehaviour) {
           if (h.outerWidth() !== columns[i].width) {
             h.outerWidth(columns[i].width);
