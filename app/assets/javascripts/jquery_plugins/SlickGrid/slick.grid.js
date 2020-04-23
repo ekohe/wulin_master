@@ -1590,7 +1590,9 @@ if (typeof Slick === "undefined") {
             toolbarSelect
               .find('.specific')
               .addClass('toolbar_icon_disabled')
-              .removeClass('specific');
+              .removeClass('specific')
+              .removeClass('tooltipped')
+              .tooltip('remove');
           }
           $gridContainer.find('.grid-header').removeClass('has-selected-rows');
           selectionModel.onSelectedRangesChanged.notify([]);
@@ -1604,7 +1606,9 @@ if (typeof Slick === "undefined") {
           toolbarSelect
             .find('.toolbar_icon_disabled')
             .addClass('specific')
-            .removeClass('toolbar_icon_disabled');
+            .removeClass('toolbar_icon_disabled')
+            .addClass('tooltipped')
+            .tooltip();
         }
         $gridContainer.closest('.modal').find('.confirm-btn').removeClass('disabled');
         $gridHeader.addClass('has-selected-rows');

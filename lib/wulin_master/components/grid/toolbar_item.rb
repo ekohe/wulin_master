@@ -63,6 +63,8 @@ module WulinMaster
     def anchor_tag_options
       css_classes = if global_under_split_button_mode?
         ['waves-effect']
+      elsif select_unlder_merged_button_mode?
+        %w[waves-effect waves-circle]
       else
         %w[waves-effect waves-circle tooltipped]
       end
