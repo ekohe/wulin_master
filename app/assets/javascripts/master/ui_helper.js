@@ -74,10 +74,10 @@ var Ui = {
   openDialog: function(grid, action, options, callback) {
     $.get(grid.path + '/' + action + grid.query, function(data){
       Ui.createModelModal(grid, data, {
-        ready: function(modal, trigger) {
+        onOpenEnd: function (modal, trigger) {
           Ui.setupForm(grid, false);
           Ui.setupComponents(grid);
-        }
+        },
       });
     });
   },
@@ -346,9 +346,9 @@ var Ui = {
       .appendTo($modal);
 
     $.extend(options, {
-      complete: function() {
+      onCloseEnd: function () {
         $modal.remove();
-      }
+      },
     });
     $modal.modal(options);
     $modal.modal('open');
@@ -412,7 +412,7 @@ var Ui = {
 
   createAddOptionModal: function(inputBox) {
     var $addOptionModal = Ui.baseModal({
-      ready: function(modal, trigger) {
+      onOpenEnd: function(modal, trigger) {
         var $fieldDiv = $("<div />").addClass('input-field');
         $fieldDiv.append('<label for="distinct_field"">New Option</label>');
         $fieldDiv.append('<input id="distinct_field" type="text" name="distinct_field">');

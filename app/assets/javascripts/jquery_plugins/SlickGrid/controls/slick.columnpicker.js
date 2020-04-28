@@ -134,10 +134,12 @@
           $input.attr("checked", "checked");
         }
 
-        $("<label />")
+        $("<span />")
             .html(columns[i].name)
             .prepend($input)
             .appendTo($li);
+
+        $li.children().wrapAll($('<label />'));
       }
 
       if (options.columnPicker && (!options.columnPicker.hideForceFitButton || !options.columnPicker.hideSyncResizeButton)) {
@@ -148,26 +150,28 @@
         var forceFitTitle = (options.columnPicker && options.columnPicker.forceFitTitle) || options.forceFitTitle;
         $li = $("<li />").appendTo($list);
         $input = $("<input type='checkbox' />").data("option", "autoresize");
-        $("<label />")
+        $("<span />")
             .text(forceFitTitle)
             .prepend($input)
             .appendTo($li);
         if (_grid.getOptions().forceFitColumns) {
           $input.attr("checked", "checked");
         }
+        $li.children().wrapAll($('<label />'));
       }
 
       if (!(options.columnPicker && options.columnPicker.hideSyncResizeButton)) {
         var syncResizeTitle = (options.columnPicker && options.columnPicker.syncResizeTitle) || options.syncResizeTitle;
         $li = $("<li />").appendTo($list);
         $input = $("<input type='checkbox' />").data("option", "syncresize");
-        $("<label />")
+        $("<span />")
             .text(syncResizeTitle)
             .prepend($input)
             .appendTo($li);
         if (_grid.getOptions().syncColumnCellResize) {
           $input.attr("checked", "checked");
         }
+        $li.children().wrapAll($('<label />'));
       }
 
       $menu
@@ -201,44 +205,6 @@
       columns = ordered;
     }
 
-    function updateColumn(e) {
-      if ($(e.target).data("option") == "autoresize") {
-        if (e.target.checked) {
-          _grid.setOptions({forceFitColumns:true});
-          _grid.autosizeColumns();
-        } else {
-          _grid.setOptions({forceFitColumns:false});
-        }
-        return;
-      }
-
-      if ($(e.target).data("option") == "syncresize") {
-        if (e.target.checked) {
-          _grid.setOptions({syncColumnCellResize:true});
-        } else {
-          _grid.setOptions({syncColumnCellResize:false});
-        }
-        return;
-      }
-
-      if ($(e.target).is(":checkbox")) {
-        var visibleColumns = [];
-        $.each(columnCheckboxes, function (i, e) {
-          if ($(this).is(":checked")) {
-            visibleColumns.push(columns[i]);
-          }
-        });
-
-        if (!visibleColumns.length) {
-          $(e.target).attr("checked", "checked");
-          return;
-        }
-
-        _grid.setColumns(visibleColumns);
-        onColumnsChanged.notify({columns: visibleColumns, grid: _grid});
-      }
-    }
-
     function getAllColumns() {
       return columns;
     }
@@ -258,7 +224,7 @@
       updateColumnOrder();
       columnCheckboxes = [];
 
-      var $li, $input, $allNoneInput;
+      var $li, $input;
 
       // Ekohe Add: column-container div for MD implementation
       var $columnContainer = $("<div class='column-container' />").appendTo($menu);
@@ -269,8 +235,8 @@
         // Ekohe Edit: MD implementation
         // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         $input = $("<input type='checkbox' />")
-                  .attr({id: "columnpicker_" + i, name: columns[i].field})
-                  .appendTo($li);
+          .attr({ id: 'columnpicker_' + i, name: columns[i].field })
+          .appendTo($li);
         columnCheckboxes.push($input);
 
         if (grid.getColumnIndex(columns[i].id) != null) {
@@ -280,11 +246,12 @@
         }
 
         // Ekohe Edit: MD implementation
-        $("<label />")
+        $("<span />")
           .attr("for", "columnpicker_" + i)
           .text(columns[i].name)
-          // .prepend($input);
           .appendTo($li);
+
+        $li.children().wrapAll($('<label />'));
       }
 
       // Ekohe Add

@@ -225,7 +225,8 @@
         .addClass('filled-in')
         .attr('id', id)
         .appendTo(this.args.container);
-      $('<label />').attr('for', id).appendTo(this.args.container);
+      $('<span />').attr('for', id).appendTo(this.args.container);
+      this.args.container.children().wrapAll($('<label />'));
       this.setElement(this.checkbox);
     };
 
