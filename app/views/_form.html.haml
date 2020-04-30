@@ -29,7 +29,7 @@
               %label
                 %input.target_flag{type: 'checkbox', "data-target" => "#{column_name}_target_flag"}
                 %span.lever
-          .field.input-field{:name => column_name}
+          .field{:name => column_name}
             - unless column.sql_type.to_s.downcase == 'boolean'
               %label{:for => "#{model_name}_#{column_name}"}= label
             - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
