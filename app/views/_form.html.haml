@@ -90,24 +90,27 @@
                 = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
 
               :javascript
-                var choices = "/wulin_master/fetch_distinct_options?"
-                                     + "column=#{column_name}"
-                                     + "&grid=#{grid.class}"
-                                     + "&klass=#{grid.model.name}"
-                                     + "&screen=#{screen.class}"
-                                     + "&source=#{column_name}";
-                var container = $(".auto-complete-text-field-#{column_name}");
-                var column = {
-                  auto_complete: true,
-                  width: container.width(),
-                  choices: choices
-                };
-                var args = {
-                  column: column,
-                  container: container
-                };
-                carbonCopyNewEditor = TextEditorForForm.bind({})
-                carbonCopyNewEditor(args);
+                if(__globalWillAppend) {
+                  var choices = "/wulin_master/fetch_distinct_options?"
+                                      + "column=#{column_name}"
+                                      + "&grid=#{grid.class}"
+                                      + "&klass=#{grid.model.name}"
+                                      + "&screen=#{screen.class}"
+                                      + "&source=#{column_name}";
+                  var container = $(".auto-complete-text-field-#{column_name}");
+                  var column = {
+                    auto_complete: true,
+                    width: container.width(),
+                    choices: choices
+                  };
+                  var args = {
+                    column: column,
+                    container: container
+                  };
+
+                  carbonCopyNewEditor = TextEditorForForm.bind({})
+                  carbonCopyNewEditor(args);
+                }
 
             - else
               - if column.sql_type.to_s.downcase == 'boolean'

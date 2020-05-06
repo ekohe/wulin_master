@@ -402,7 +402,9 @@ var Ui = {
       .height(modalSize.height)
       .css({'max-height': '90%'});
 
+    __globalWillAppend = true;
     $modelModal.find('.modal-content').append(data);
+    __globalWillAppend = false;
   },
 
   createJsonViewModal: function(jsonData) {

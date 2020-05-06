@@ -4,3 +4,5 @@
 //= require jquery_plugins
 //= require overrides
 //= require_tree .
+
+var __globalWillAppend = false;
