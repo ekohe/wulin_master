@@ -129,6 +129,7 @@
         }
       });
 
+      $(this.args.container).addClass("input-field");
       this.input.appendTo(this.args.container);
       this.input.focus().select();
     };
