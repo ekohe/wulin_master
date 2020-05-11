@@ -12,7 +12,7 @@ describe WulinMaster::Grid do
 
   it 'should have a default title' do
     PostGrid.title(false)
-    expect(PostGrid.title).to eq('Post')
+    expect(PostGrid.title).to eq('Posts')
   end
 
   it 'should has the default model' do
