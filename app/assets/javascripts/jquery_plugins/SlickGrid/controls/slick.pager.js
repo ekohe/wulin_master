@@ -147,8 +147,6 @@
     function wulinConstructPagerUI() {
       $container.empty();
       $status = $("<span class='slick-pager-status' />").appendTo($container);
-      $selectionInfo = $("<span class='selection-info' />").appendTo($container)
-      $selectionInfo.css('left', ($container.width() - $selectionInfo.width()) / 2)
 
       // Ekohe Add: Clear Filter
       $clearFilterLink = $("<a href='#' />")
@@ -156,6 +154,7 @@
         .append($('<i class="material-icons">close</i>'))
         .append($('<span>CLEAR FILTER</span>'))
         .appendTo($container);
+      $selectionInfo = $("<span class='selection-info' />").appendTo($container)
 
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function(e) {
