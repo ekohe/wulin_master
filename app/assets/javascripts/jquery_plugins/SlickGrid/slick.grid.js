@@ -1569,7 +1569,7 @@ if (typeof Slick === "undefined") {
       var $gridContainer = $container.parent();
       var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
-        var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
+        var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
         var text = itemInfo + ' selected.';
         var selectionInfo = $gridContainer.find('.selection-info');
         var textElement = $("<span/>").text(text);
@@ -1577,7 +1577,7 @@ if (typeof Slick === "undefined") {
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
-        clearLink.append($("<span/>").text("CLEAR"));
+        clearLink.append($('<span/>').text('CLEAR SELECTION'));
         var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
         var isSplitMode = buttonMode === 'split';
         var toolbarSelect = $gridContainer.find('.toolbar-select');
