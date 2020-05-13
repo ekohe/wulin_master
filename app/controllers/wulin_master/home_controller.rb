@@ -6,6 +6,7 @@ module WulinMaster
 
     def self.inherited(subclass)
       subclass.define_menu
+      super
     end
 
     def index

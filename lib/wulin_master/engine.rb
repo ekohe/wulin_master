@@ -9,13 +9,6 @@ module WulinMaster
       app.config.assets.precompile += %w[master/master.js master.css]
     end
 
-    initializer "Actionpack extensions" do
-      ActiveSupport.on_load :action_controller do
-        require 'wulin_master/utilities/variables'
-        ActionController::Metal.include WulinMaster::Variables
-      end
-    end
-
     initializer :append_migrations do |app|
       config.paths["db/migrate"].expanded.each do |expanded_path|
         app.config.paths["db/migrate"] << expanded_path

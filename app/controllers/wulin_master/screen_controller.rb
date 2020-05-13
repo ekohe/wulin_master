@@ -5,6 +5,7 @@ module WulinMaster
   class ScreenController < ApplicationController
     include WulinMaster::Menuable
     include WulinMaster::Actions
+    include WulinMaster::Variables
 
     prepend_view_path File.join(File.dirname(__FILE__), '..', '..', 'views')
     rescue_from ActionView::MissingTemplate, with: :render_index
@@ -13,6 +14,7 @@ module WulinMaster
 
     def self.inherited(subclass)
       subclass.define_menu
+      super
     end
 
     class << self
