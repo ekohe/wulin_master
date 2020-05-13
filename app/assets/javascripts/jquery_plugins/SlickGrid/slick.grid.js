@@ -1570,7 +1570,7 @@ if (typeof Slick === "undefined") {
       var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
-        var text = itemInfo + ' selected.';
+        var text = itemInfo + ' selected';
         var selectionInfo = $gridContainer.find('.selection-info');
         var textElement = $("<span/>").text(text);
         selectionInfo.empty().append(textElement);
