@@ -21,7 +21,5 @@ Rails.application.routes.draw do
     post 'exclude', :to => WulinMaster::InclusionExclusionController.action(:exclude)
     get 'detail_controller', :to => WulinMaster::MasterDetailController.action(:detail_controller)
     post 'attach_details', :to => WulinMaster::MasterDetailController.action(:attach_details)
-
-    match 'js_error_report', to: WulinMaster::ExceptionReportController.action(:js_error), via: [:get, :post]
   end
 end
