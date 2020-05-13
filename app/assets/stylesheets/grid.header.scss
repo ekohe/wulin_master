@@ -11,7 +11,7 @@
   }
   // Grid Title
   h2 {
-    margin-top: 20px;
+    margin-top: 12px;
     padding-left: 20px;
     font-size: $font-size-large;
     font-weight: normal;
@@ -54,7 +54,7 @@
     width: $grid-states-modal-width;
   }
   .toolbar-wrapper {
-    padding: 15px 20px 0 20px;
+    padding: 6px 20px 0 20px;
     overflow: hidden;
     .toolbar_icon_disabled {
       @include opacity(0.4);
