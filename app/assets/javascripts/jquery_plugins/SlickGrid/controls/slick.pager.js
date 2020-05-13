@@ -150,10 +150,11 @@
 
       // Ekohe Add: Clear Filter
       $clearFilterLink = $("<a href='#' />")
-        .addClass('slick-pager-clear-filter right hide')
+        .addClass('slick-pager-clear-filter hide')
         .append($('<i class="material-icons">close</i>'))
         .append($('<span>CLEAR FILTER</span>'))
         .appendTo($container);
+      $selectionInfo = $("<span class='selection-info' />").appendTo($container)
 
       $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function(e) {
@@ -202,9 +203,19 @@
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(pagingInfo.totalRows.toLocaleString() + " of " + pagingInfo.rowsWithoutFilter.toLocaleString() + " rows found");
+          $status.text(`${pagingInfo.totalRows.toLocaleString()} of ${pagingInfo.rowsWithoutFilter.toLocaleString()} rows found`)
           $status.addClass('with-filter');
-          $clearFilterLink.removeClass('hide');
+          var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
+          var totalRowsLength = pagerStatusWithFilter.width();
+          var totalRowsPaddings =
+            parseInt(pagerStatusWithFilter.css('padding-left')) +
+              parseInt(pagerStatusWithFilter.css('padding-right'))
+          var slickPaperMarginLeft = parseInt($('.slick-pager').css("padding-left"));
+          var clearFilterLinkLeft =
+            totalRowsLength + totalRowsPaddings + slickPaperMarginLeft;
+          $clearFilterLink
+            .removeClass('hide')
+            .css({ left: clearFilterLinkLeft });
         }
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));

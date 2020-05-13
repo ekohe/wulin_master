@@ -301,7 +301,7 @@ if (typeof Slick === "undefined") {
 
       // set up a positioning container if needed
       if (!/relative|absolute|fixed/.test($container.css("position"))) {
-        $container.css("position", "relative");
+        $container.css('position', 'absolute');
       }
 
       $focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
@@ -1569,15 +1569,15 @@ if (typeof Slick === "undefined") {
       var $gridContainer = $container.parent();
       var $gridHeader = $gridContainer.find('.grid-header');
       if (itemCount >= 1) {
-        var itemInfo = itemCount > 1 ? itemCount + ' items' : '1 item';
-        var text = itemInfo + ' selected.';
+        var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
+        var text = itemInfo + ' selected';
         var selectionInfo = $gridContainer.find('.selection-info');
         var textElement = $("<span/>").text(text);
         selectionInfo.empty().append(textElement);
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
-        clearLink.append($("<span/>").text("CLEAR"));
+        clearLink.append($('<span/>').text('CLEAR SELECTION'));
         var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
         var isSplitMode = buttonMode === 'split';
         var toolbarSelect = $gridContainer.find('.toolbar-select');

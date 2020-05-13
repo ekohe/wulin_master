@@ -21,15 +21,42 @@
     .slick-pager-status.with-filter, .slick-pager-clear-filter {
       color: $filter-color;
       .material-icons {
+        position: relative;
+        top: 3px;
         font-size: $font-size-middle;
-        padding-top: 1px;
       }
       span {
-        float: right;
+        margin-left: 5px;
       }
-    }
+    };
     .slick-pager-clear-filter {
-      padding: 6px 15px 6px;
+      padding: 6px 15px 6px 0px;
+    };
+    .selection-info {
+      position: inherit;
+      left: 50%;
+      font-size: $font-size-small;
+      color: $grid-header-selection-info-color;
+      a.clear {
+        position: relative;
+        top: -2px;
+        margin-left: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 2px;
+        color: $grid-header-selection-info-color;
+        &:hover {
+          background: rgba(158, 158, 158, 0.2);
+        }
+        span {
+          margin-left: 5px;
+        }
+      }
+      .material-icons {
+        position: relative;
+        top: 3px;
+        font-size: $font-size-middle;
+      }
     }
   }
 }
