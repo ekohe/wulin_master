@@ -32,13 +32,13 @@ var batchUpdateByAjax = function(grid, version) {
       url = url + "&update_version=" + version;
     $.get(url, function(data){
       Ui.createModelModal(grid, data, {
-        ready: function(modal, trigger) {
+        onOpenEnd: function (modal, trigger) {
           Ui.setupForm(grid, true, selectedIndexes);
           Ui.setupComponents(grid);
           showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-        }
+        },
       });
     });
   }

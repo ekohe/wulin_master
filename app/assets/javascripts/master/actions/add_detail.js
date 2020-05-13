@@ -8,10 +8,10 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
     var masterId = this.target.master.filter_value;
 
     var $addDetailModal = Ui.headerModal('Attach', {
-      ready: function(modal, trigger) {
+      onOpenEnd: function (modal, trigger) {
         self.getModelGrid(masterId, modal.find('.modal-content'));
         modal.find('.modal-content').css('padding', '0');
-      }
+      },
     });
 
     var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);

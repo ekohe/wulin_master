@@ -15,6 +15,7 @@ before_script:
   - apt-get install -qy libfontconfig1
   - gem install bundler
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
+  # - rm -rf Gemfile.lock
   - bundle install --path /cache
   - bundle exec rake db:drop db:create RAILS_ENV=test
   - bundle exec rake db:migrate RAILS_ENV=test

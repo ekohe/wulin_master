@@ -8,7 +8,7 @@
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
 
 .grid-states-switcher
-  %a#current-state.dropdown-button.btn.grey.lighten-3{"data-activates" => "grid_states", "data-beloworigin" => "true", href: "#"}
+  %a#current-state.dropdown-trigger.btn.grey.lighten-3{"data-target" => "grid_states", "data-coverTrigger" => "true", href: "#"}
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
   %ul#grid_states.dropdown-content
@@ -52,7 +52,7 @@
 
   $(function(){
 
-    $('.dropdown-button').dropdown();
+    $('.dropdown-trigger').dropdown();
     $('.modal').modal();
 
     var id;

@@ -86,32 +86,38 @@
             - elsif column.options[:password]
               = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
             - elsif (column.sql_type.to_s == 'string')
-              = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
+              .input-field
+                = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
 
               :javascript
-                var choices = "/wulin_master/fetch_distinct_options?"
-                                     + "column=#{column_name}"
-                                     + "&grid=#{grid.class}"
-                                     + "&klass=#{grid.model.name}"
-                                     + "&screen=#{screen.class}"
-                                     + "&source=#{column_name}";
-                var container = $(".auto-complete-text-field-#{column_name}");
-                var column = {
-                  auto_complete: true,
-                  width: container.width(),
-                  choices: choices
-                };
-                var args = {
-                  column: column,
-                  container: container
-                };
-                carbonCopyNewEditor = TextEditorForForm.bind({})
-                carbonCopyNewEditor(args);
+                if(__globalWillAppend) {
+                  var choices = "/wulin_master/fetch_distinct_options?"
+                                      + "column=#{column_name}"
+                                      + "&grid=#{grid.class}"
+                                      + "&klass=#{grid.model.name}"
+                                      + "&screen=#{screen.class}"
+                                      + "&source=#{column_name}";
+                  var container = $(".auto-complete-text-field-#{column_name}");
+                  var column = {
+                    auto_complete: true,
+                    width: container.width(),
+                    choices: choices
+                  };
+                  var args = {
+                    column: column,
+                    container: container
+                  };
+
+                  carbonCopyNewEditor = TextEditorForForm.bind({})
+                  carbonCopyNewEditor(args);
+                }
 
             - else
               - if column.sql_type.to_s.downcase == 'boolean'
-                = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in'
-                = form.label column_name, label
+                .checkboxMargin
+                  %label
+                    = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in'
+                    %span #{column_name}
               - elsif column.sql_type.to_s.downcase == 'text'
                 = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
               - else

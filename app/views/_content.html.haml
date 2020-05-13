@@ -26,13 +26,13 @@
 :javascript
   $(function(){
     $('.info-modal').modal({
-      ready: function(modal, trigger) {
+      onOpenEnd: function(modal, trigger) {
         modal.css('z-index', '9999');
       }
     });
 
     $('#confirm-modal').modal({
-      complete: function(modal, trigger) {
+      onCloseEnd: function(modal, trigger) {
         $('#confirm-content').text('Are you sure to do this ?');
       }
     });

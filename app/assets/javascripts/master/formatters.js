@@ -116,10 +116,10 @@
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
       var checked = value ? 'checked="checked"' : '';
-      var html = '<input disabled type="checkbox" class="filled-in" ' +
+      var html = '<label>'+'<input disabled type="checkbox" class="filled-in" ' +
         checked + ' id="show-checkbox-' + row + '" />' +
-        '<label for="show-checkbox-' + row +
-        '"></label>';
+        '<span for="show-checkbox-' + row +
+        '"></span>'+'</label>';
       return applyStyle(html, columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
