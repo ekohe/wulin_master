@@ -301,7 +301,7 @@ if (typeof Slick === "undefined") {
 
       // set up a positioning container if needed
       if (!/relative|absolute|fixed/.test($container.css("position"))) {
-        $container.css('position', 'absolute');
+        $container.css('position', 'relative');
       }
 
       $focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
