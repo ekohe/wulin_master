@@ -33,6 +33,7 @@
           margin-top: 4px;
           li.item {
             display: block;
+            position: relative;
 
             .material-icons {
               position: relative;
@@ -63,6 +64,16 @@
                 color: black;
               }
             }
+
+            a.reverse {
+              width: auto;
+              position: absolute;
+              right: 10px;
+              top: 0px;
+              display: none;
+              padding-left: 10px;
+              padding-right: 10px;
+            }
           }
 
           li.active {
@@ -70,6 +81,14 @@
               color: $menu-item-active-color;
               .material-icons {
                 color: $menu-item-active-color;
+              }
+            }
+
+            a.reverse {
+              display: block;
+              color: color('grey', 'darken-4');
+              .material-icons {
+                color: color('grey', 'darken-4');
               }
             }
           }

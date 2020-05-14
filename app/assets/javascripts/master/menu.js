@@ -104,13 +104,17 @@ function initialize_menu() {
       return;
     }
 
+    if ($(this).hasClass('reverse')) {
+      var currentWindowUrl = window.location.pathname + window.location.search;
+
+      if (currentUrl == currentWindowUrl) {
+        // go back to the original one
+        currentUrl = $("a:not(.reverse)", $(this).parent()).attr('href');
+      }
+    }
+
     // State management
     History.pushState(null, null, currentUrl);
-
-    // Ekohe Delete
-    // Since History.pushState triggers statechange event which calls load_page,
-    // We do not need to load_page here.
-    // load_page(currentUrl);
 
     return false;
   });

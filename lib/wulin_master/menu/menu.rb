@@ -37,9 +37,19 @@ module WulinMaster
     end
 
     def active_paths
-      return nil if options[:active_paths].blank?
-      paths = options.delete(:active_paths)
-      paths.is_a?(Array) ? paths.join(',') : paths
+      return nil if options[:active_paths].blank? && @options[:reverse].blank?
+      paths = options.delete(:active_paths) || []
+      paths_list = paths.is_a?(Array) ? paths.join(',') : paths
+      paths_list += "," + @options[:reverse] if reverse_present?
+      paths_list
+    end
+
+    def reverse_present?
+      @options[:reverse].present?
+    end
+
+    def reverse_path
+      @options[:reverse]
     end
   end
 
