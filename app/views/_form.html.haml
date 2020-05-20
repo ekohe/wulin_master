@@ -123,8 +123,13 @@
                     = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in'
                     %span #{column_name}
               - elsif column.sql_type.to_s.downcase == 'text'
-                %label{:for => "#{model_name}_#{column_name}"}= label
-                = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
+                .input-field.input-outlined
+                  %label{:for => "#{model_name}_#{column_name}"}= label
+                  = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
+              - elsif column.sql_type.to_s.downcase == 'integer'
+                .input-field.input-outlined
+                  %label{:for => "#{model_name}_#{column_name}"}= label
+                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
               - else
                 %label{:for => "#{model_name}_#{column_name}"}= label
                 = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field

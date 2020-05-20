@@ -62,7 +62,7 @@ form {
 }
 
 .input-field.input-outlined {
-  > input {
+  > input, textarea {
     border: 2px solid #eee;
     padding: 12px 16px 14px;
     width: calc(100% - 2.5rem);
