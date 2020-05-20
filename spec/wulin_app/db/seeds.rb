@@ -10,12 +10,14 @@
 
 JOBS = %w[Developer DevOps Designer PM].freeze
 
-1.upto(2000) do |index|
+1.upto(500) do |index|
   Person.create(
     first_name: "first name #{sprintf('%04d', index)}",
     last_name: "last name #{sprintf('%04d', index)}",
     job: JOBS.sample,
     vip: [true, false].sample,
-    birthdate: Date.today
+    birthdate: Date.today,
+    age: (15..40).to_a.sample,
+    signature: "wulin_master is a powerful ruby gem"
   )
 end

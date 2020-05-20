@@ -10,6 +10,8 @@ class PersonGrid < WulinMaster::Grid
 
   column :first_name
   column :last_name
+  column :age
+  column :signature
   column :birthdate
   column :job, choices: JOBS, editor: 'SelectEditor'
   column :vip
