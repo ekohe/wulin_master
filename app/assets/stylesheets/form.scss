@@ -31,9 +31,6 @@ form {
     }
     .field {
       width: 100%;
-      label.active {
-        top: 5px;
-      }
       input, textarea {
         color: $text-color;
         font-size: $font-size-small;
@@ -62,4 +59,34 @@ form {
 }
 .checkboxMargin{
   margin: 15px auto;
+}
+
+.input-field.input-outlined {
+  > input {
+    border: 2px solid #eee;
+    padding: 12px 16px 14px;
+    width: calc(100% - 2.5rem);
+    float: none;
+    display: block;
+    border-radius: 4px;
+    transition: box-shadow, border-color 0.15s;
+    &:focus:not([readonly]) {
+      border-color: $main-color;
+      box-shadow: 0 1px 0 0px $main-color;
+    }
+  }
+  > label {
+    left: 27px;
+    display: inline-flex;
+    width: auto !important;
+    top: 0.5rem;
+    &.active {
+      background: white;
+      border-left: 4px solid white;
+      border-right: 4px solid white;
+      transform: translateY(-1.75rem);
+      color: $main-color;
+      top: 1rem;
+    }
+  }
 }
