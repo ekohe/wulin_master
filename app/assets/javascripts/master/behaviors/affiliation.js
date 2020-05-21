@@ -67,12 +67,12 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       detailGrid.container.find('.grid-header').removeClass('has-selected-rows');
 
       // Set detail grid's title
-      var $detailGridTitle = detailGrid.container.find('.grid-header h2');
-      $detailGridTitle.html(
-        this.master_grid.model + ' #' + masterIds[0] +
-        ' > <span class="detail-grid-title">' +
-        detailGrid.model + 's</span>'
-      );
+      // var $detailGridTitle = detailGrid.container.find('.grid-header h2');
+      // $detailGridTitle.html(
+      //   this.master_grid.model + ' #' + masterIds[0] +
+      //   ' > <span class="detail-grid-title">' +
+      //   detailGrid.model + 's</span>'
+      // );
     }
   },
 
