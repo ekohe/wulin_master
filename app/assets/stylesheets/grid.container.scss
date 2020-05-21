@@ -3,6 +3,7 @@
 /* Grid Container */
 
 .grid_container {
+  position: relative;
   float: left;
   // Grid
   .grid {
@@ -13,30 +14,21 @@
       }
     }
   }
+
   // Footer
-  .slick-pager {
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 32px;
     border: 0;
     background: none;
     font-size: $font-size-small;
-    .slick-pager-status.with-filter, .slick-pager-clear-filter {
-      color: $filter-color;
-      .material-icons {
-        position: relative;
-        top: 3px;
-        font-size: $font-size-middle;
-      }
-      span {
-        margin-left: 5px;
-      }
-    };
-    .slick-pager-clear-filter {
-      padding: 6px 15px 6px 0px;
-    };
-    .selection-info {
-      position: inherit;
-      left: 50%;
-      font-size: $font-size-small;
-      color: $grid-header-selection-info-color;
+
+    .pager-item {
+      flex-grow: 1;
+      padding: 8px 10px 2px 10px;
+
       a.clear {
         position: relative;
         top: -2px;
@@ -44,7 +36,6 @@
         padding-left: 5px;
         padding-right: 5px;
         border-radius: 2px;
-        color: $grid-header-selection-info-color;
         &:hover {
           background: rgba(158, 158, 158, 0.2);
         }
@@ -52,10 +43,31 @@
           margin-left: 5px;
         }
       }
+
       .material-icons {
         position: relative;
         top: 3px;
         font-size: $font-size-middle;
+      }
+    }
+
+    .pager-item.selection {
+      text-align: center;
+    }
+
+    .selection-info {
+      position: inherit;
+      left: 50%;
+      font-size: $font-size-small;
+      color: $grid-header-selection-info-color;
+      a.clear {
+        color: $grid-header-selection-info-color;
+      }
+    }
+
+    .pager-item.status {
+      a.clear, .slick-pager-status.with-filter {
+        color: $filter-color;
       }
     }
   }

@@ -146,17 +146,19 @@
 
     function wulinConstructPagerUI() {
       $container.empty();
-      $status = $("<span class='slick-pager-status' />").appendTo($container);
 
-      // Ekohe Add: Clear Filter
+      $statusContainer = $("<div class='pager-item status'/>").appendTo($container);
+      $status = $("<span class='slick-pager-status' />").appendTo($statusContainer);
+
+      $selectionContainer = $("<div class='pager-item selection'/>").appendTo($container);
+      $selectionInfo = $("<span class='selection-info' />").appendTo($selectionContainer)
+
       $clearFilterLink = $("<a href='#' />")
-        .addClass('slick-pager-clear-filter hide')
-        .append($('<i class="material-icons">close</i>'))
-        .append($('<span>CLEAR FILTER</span>'))
-        .appendTo($container);
-      $selectionInfo = $("<span class='selection-info' />").appendTo($container)
+                        .addClass('clear hide waves-effect')
+                        .append($('<i class="material-icons">close</i>'))
+                        .append($('<span>CLEAR FILTER</span>'))
+                        .appendTo($statusContainer);
 
-      $container.children().wrapAll("<div class='slick-pager' />");
       $clearFilterLink.on('click', function(e) {
         e.stopPropagation();
         grid.container.find('.slick-header-column input').val('').focusout();
@@ -164,8 +166,11 @@
         grid.filterPanel.applyCurrentFilters([]);
         grid.filterPanel.setCurrentFilter();
         grid.filterPanel.trigger(grid.filterPanel.onFilterLoaded, {filterData:[]});
+        $clearFilterLink.addClass('hide');
         return false;
       })
+
+      $extraContainer = $("<div class='pager-item extra'/>").appendTo($container);
     }
 
     function updatePager(pagingInfo) {

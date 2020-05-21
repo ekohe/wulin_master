@@ -4,7 +4,7 @@
 
 .slick-cell {
   font-size: $font-size-small;
-  line-height: $grid-row-height;
+  line-height: $grid-row-height - 3;
   border-bottom-color: $border-color;
   &.selected {
     background: $grid-cell-selected-bg-color;
