@@ -81,6 +81,9 @@ var loadValue = function(scope, data) {
       $('input[data-field="' + i + '"]', scope).val(data[i]);
     } else if ($('textarea[data-field="' + i + '"]', scope).size() > 0) {
       $('textarea[data-field="' + i + '"]', scope).val(data[i]);
+      if (data[i]) {
+        $('textarea[data-field="' + i + '"]', scope).siblings('label').addClass('active')
+      }
     } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
         $('input:checkbox[data-field="' + i + '"]', scope).prop('checked', true);
