@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_20_085806) do
+ActiveRecord::Schema.define(version: 2020_05_22_032554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_085806) do
     t.boolean "vip", default: false
     t.integer "age", default: 18
     t.text "signature"
+    t.integer "status", default: 0
   end
 
   create_table "posts", id: :serial, force: :cascade do |t|
