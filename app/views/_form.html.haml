@@ -31,16 +31,17 @@
                 %span.lever
           .field{:name => column_name}
             - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
-              %label{:for => "#{model_name}_#{column_name}"}= label
-              = form.select column_name,                                      |
-                select_options(column),                                       |
-                { include_blank: !column.presence_required? },                |
-                :class             => 'chzn-select',                          |
-                :disabled          => column.options[:auto_fill],             |
-                "data-required"    => column.presence_required?,              |
-                "data-source"      => source,                                 |
-                "data-target"      => "#{column_name}_target_flag",           |
-                "data-field"       => field                                   |
+              .input-field.input-outlined
+                %label{:for => "#{model_name}_#{column_name}"}= label
+                = form.select column_name,                                      |
+                  select_options(column),                                       |
+                  { include_blank: !column.presence_required? },                |
+                  :class             => 'chzn-select',                          |
+                  :disabled          => column.options[:auto_fill],             |
+                  "data-required"    => column.presence_required?,              |
+                  "data-source"      => source,                                 |
+                  "data-target"      => "#{column_name}_target_flag",           |
+                  "data-field"       => field                                   |
 
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
               %label{:for => "#{model_name}_#{column_name}"}= label
