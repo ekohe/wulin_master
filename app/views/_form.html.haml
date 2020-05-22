@@ -56,31 +56,32 @@
                 :disabled          => column.options[:auto_fill]               |
 
             - elsif (select_tag_field?(column) || column.sql_type.to_s == 'has_one')
-              %label{:for => "#{model_name}_#{column_name}"}= label
-              = select_tag "#{model_name}[#{column_name}]",                   |
-                select_tag_options(column),                                   |
-                :class             => 'chzn-select',                          |
-                :disabled          => column.options[:auto_fill],             |
-                :include_blank     => !column.presence_required?,             |
-                "data-required"    => column.presence_required?,              |
-                "data-target"      => "#{column_name}_target_flag",           |
-                "data-source"      => source,                                 |
-                "data-field"       => field                                   |
-              - if (column.options[:depend_column].present?)
-                :javascript
-                  $(function(){
-                    var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
-                    var depend_select = $("select#" + depend_select_id);
+              .input-field.input-outlined
+                %label{:for => "#{model_name}_#{column_name}"}= label
+                = select_tag "#{model_name}[#{column_name}]",                   |
+                  select_tag_options(column),                                   |
+                  :class             => 'chzn-select',                          |
+                  :disabled          => column.options[:auto_fill],             |
+                  :include_blank     => !column.presence_required?,             |
+                  "data-required"    => column.presence_required?,              |
+                  "data-target"      => "#{column_name}_target_flag",           |
+                  "data-source"      => source,                                 |
+                  "data-field"       => field                                   |
+                - if (column.options[:depend_column].present?)
+                  :javascript
+                    $(function(){
+                      var depend_select_id = "#{model_name}_#{column.options[:depend_column]}";
+                      var depend_select = $("select#" + depend_select_id);
 
-                    $(document).on("change", "select#"+depend_select_id, function(){
-                      var current_select_id = "#{model_name}_#{column_name}";
-                      var current_select = $("select#" + current_select_id);
-                      var key = $(this).val();
-                      current_select.find("option").hide().trigger("chosen:updated");
-                      current_select.val("").trigger("chosen:updated");
-                      current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("chosen:updated");
+                      $(document).on("change", "select#"+depend_select_id, function(){
+                        var current_select_id = "#{model_name}_#{column_name}";
+                        var current_select = $("select#" + current_select_id);
+                        var key = $(this).val();
+                        current_select.find("option").hide().trigger("chosen:updated");
+                        current_select.val("").trigger("chosen:updated");
+                        current_select.find("option[data-key='" + key + "']").show().css("display", "").trigger("chosen:updated");
+                      });
                     });
-                  });
 
             - elsif column.options[:file]
               %label{:for => "#{model_name}_#{column_name}"}= label
