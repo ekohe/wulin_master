@@ -15,6 +15,7 @@ class PersonGrid < WulinMaster::Grid
   column :birthdate
   column :job, choices: JOBS, editor: 'SelectEditor'
   column :status, choices: -> { Person.statuses.to_a }, visible: false, editor: 'SelectEditor'
+  column :teachers
   column :vip
 
   load_default_actions # Add default toolbar items for this grid

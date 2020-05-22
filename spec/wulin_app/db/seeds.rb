@@ -10,14 +10,31 @@
 
 JOBS = %w[Developer DevOps Designer PM].freeze
 
+SUBJECTS_WITH_TEACHER_NAMES = {
+  math: 'Mike',
+  english: 'Jack',
+  history: 'Tom'
+}.freeze
+
+SUBJECTS_WITH_TEACHER_NAMES.each do |subject, name|
+  Teacher.create(subject: subject, name: name)
+end
+
+teachers = Teacher.all
+
 1.upto(500) do |index|
-  Person.create(
+  person = Person.new(
     first_name: "first name #{sprintf('%04d', index)}",
     last_name: "last name #{sprintf('%04d', index)}",
     job: JOBS.sample,
+    status: Person.statuses.values.sample,
     vip: [true, false].sample,
     birthdate: Date.today,
     age: (15..40).to_a.sample,
     signature: "wulin_master is a powerful ruby gem"
   )
+
+  person.teachers = teachers
+
+  person.save
 end

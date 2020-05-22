@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_22_032554) do
+ActiveRecord::Schema.define(version: 2020_05_22_054056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,11 +39,23 @@ ActiveRecord::Schema.define(version: 2020_05_22_032554) do
     t.integer "status", default: 0
   end
 
+  create_table "people_teachers", id: false, force: :cascade do |t|
+    t.bigint "person_id", null: false
+    t.bigint "teacher_id", null: false
+    t.index ["person_id"], name: "index_people_teachers_on_person_id"
+    t.index ["teacher_id"], name: "index_people_teachers_on_teacher_id"
+  end
+
   create_table "posts", id: :serial, force: :cascade do |t|
     t.string "name"
     t.integer "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "teachers", force: :cascade do |t|
+    t.string "name"
+    t.string "subject"
   end
 
 end
