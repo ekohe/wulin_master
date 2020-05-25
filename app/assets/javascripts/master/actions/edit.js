@@ -92,6 +92,7 @@ var loadValue = function(scope, data) {
       }
     } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-field="' + i + '"]', scope);
+      inputBox.siblings('label').addClass('active');
       if ($.type(data[i]) === 'string') {
         inputBox.val(data[i]);
       } else if ($.type(data[i]) === 'object') {
