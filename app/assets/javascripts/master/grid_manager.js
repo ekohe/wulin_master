@@ -170,6 +170,7 @@
 
       // Set ColumnPicker
       var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
+      grid.allColumns = columnpicker.getAllColumns();
 
       // Set FilterPanel
       var filterPanel = new WulinMaster.FilterPanel(grid, grid.loader, grid.states["filter"]);

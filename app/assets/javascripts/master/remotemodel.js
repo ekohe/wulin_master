@@ -134,8 +134,10 @@
     function visibleColumnNames() {
       var columnNames = [];
 
-      $.each(grid.getColumns(), function(_, column) {
-        if (column['column_name'] !== undefined) { columnNames.push(column['column_name']); }
+      $.each(grid.allColumns, function (_, column) {
+        if (column['column_name'] !== undefined) {
+          columnNames.push(column['column_name']);
+        }
       });
       return columnNames;
     }
