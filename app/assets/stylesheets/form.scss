@@ -62,6 +62,22 @@ form {
 }
 
 .input-field.input-outlined {
+  &:focus-within > label {
+    color: $main-color;
+    z-index: 1;
+    background: white !important;
+    border-left: 4px solid white !important;
+    border-right: 4px solid white !important;
+    transform: translateY(-1.75rem);
+    top: 1rem;
+  }
+  &:not(:focus-within) > label.active {
+    z-index: 1;
+    top: 0.4rem;
+    background: white !important;
+    border-left: 4px solid white !important;
+    border-right: 4px solid white !important;
+  }
   > input, textarea, .chosen-container {
     border: 2px solid #eee;
     padding: 12px 16px 14px;
@@ -85,14 +101,5 @@ form {
     display: inline-flex;
     width: auto !important;
     top: 0.5rem;
-    &.active {
-      z-index: 1;
-      background: white !important;
-      border-left: 4px solid white !important;
-      border-right: 4px solid white !important;
-      transform: translateY(-1.75rem);
-      color: $main-color;
-      top: 1rem;
-    }
   }
 }
