@@ -134,8 +134,9 @@
                   %label{:for => "#{model_name}_#{column_name}"}= label
                   = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
               - else
-                %label{:for => "#{model_name}_#{column_name}"}= label
-                = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
+                .input-field.input-outlined
+                  %label{:for => "#{model_name}_#{column_name}"}= label
+                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
 
             .field_error
     .submit
