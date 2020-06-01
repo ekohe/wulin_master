@@ -19,6 +19,8 @@ class PersonGrid < WulinMaster::Grid
   column :birthdate
   # string -> selector
   column :job, choices: JOBS, editor: 'SelectEditor'
+  # belongs_to
+  column :country, choices: -> { Country.pluck(:name, :id) }
   # enum
   column :status, choices: Person.statuses.keys
   # has_many -> multiple selector

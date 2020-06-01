@@ -10,6 +10,12 @@
 
 JOBS = %w[Developer DevOps Designer PM].freeze
 
+COUNTRIES = %w[China America France].freeze
+
+COUNTRIES.each do |country_name|
+  Country.create(name: country_name)
+end
+
 SUBJECTS_WITH_TEACHER_NAMES = {
   math: 'Mike',
   english: 'Jack',
@@ -35,6 +41,7 @@ teachers = Teacher.all
   )
 
   person.teachers = teachers
+  person.country = Country.all.sample
 
   person.save
 end

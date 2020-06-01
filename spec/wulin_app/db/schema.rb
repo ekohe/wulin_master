@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_22_054056) do
+ActiveRecord::Schema.define(version: 2020_06_01_022655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "grid_states", id: :serial, force: :cascade do |t|
     t.integer "user_id"
@@ -37,6 +43,8 @@ ActiveRecord::Schema.define(version: 2020_05_22_054056) do
     t.integer "age", default: 18
     t.text "signature"
     t.integer "status", default: 0
+    t.integer "country_id"
+    t.index ["country_id"], name: "index_people_on_country_id"
   end
 
   create_table "people_teachers", id: false, force: :cascade do |t|
