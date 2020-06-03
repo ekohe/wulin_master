@@ -4,19 +4,19 @@
 
 .slick-header-column.ui-state-default {
   height: $slick-header-height;
-  border: none;
-  position: relative;
 }
 
 .slick-header {
-  padding-bottom: $slick-header-padding;
   .slick-header-column.input-field {
     &.slick-header-column-sorted {
       font-style: normal;
     }
     label {
-      top: 15px;
+      top: 10px;
       font-size: $font-size-small;
+      &.active {
+        top: 15px
+      }
     }
     input[type=text] {
       margin-bottom: none;
