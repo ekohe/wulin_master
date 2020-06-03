@@ -852,8 +852,7 @@ if (typeof Slick === "undefined") {
         // Ekohe Edit: Control visibility of sort/drag buttons
         // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
-          $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
-          $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
+          $(this).find('.slick-sort-indicator').show();
           $(this).css({
             'border-right': '1px solid silver',
             'border-left': '1px solid silver',
@@ -873,7 +872,6 @@ if (typeof Slick === "undefined") {
         });
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
-            $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
             $(this).find('.slick-sort-indicator').css({ right: '10px' });
           } else {
             $(this).find('.slick-drag-indicator, .slick-sort-indicator').hide();
