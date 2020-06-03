@@ -3,9 +3,7 @@
 #contextMenu {
   position: absolute;
   width: 204px;
-  height: 137px;
-  left: 355px;
-  top: 321px;
+  padding: 10px 0;
   background: #FFFFFF;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.16), 0px 2px 5px rgba(0, 0, 0, 0.26);
 
@@ -13,10 +11,7 @@
 }
 
 #contextMenu li {
-  width: 171.41px;
-  height: 18px;
-  margin: 13px;
-
+  padding: 10px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -34,8 +29,7 @@
     background: #DADADA;
     font-size: $font-size-large;
   }
-}
-
-#contextMenu li:hover {
-  background-color: white;
+  &:hover {
+    background-color: #eeeeee;
+  }
 }
