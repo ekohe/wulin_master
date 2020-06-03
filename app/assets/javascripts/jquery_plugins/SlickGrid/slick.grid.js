@@ -421,7 +421,9 @@ if (typeof Slick === "undefined") {
             .on("contextmenu", handleHeaderContextMenu)
             .on("click", handleHeaderClick)
             .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
-            .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave);
+            .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave)
+            .on("mousedown", ".slick-header-column input", handleHeaderMousedown)
+
         $headerRowScroller
             .on("scroll", handleHeaderRowScroll);
 
@@ -3099,10 +3101,30 @@ if (typeof Slick === "undefined") {
     }
 
     function handleHeaderMouseLeave(e) {
+      if(timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
       trigger(self.onHeaderMouseLeave, {
         "column": $(this).data("column"),
         "grid": self
       }, e);
+    }
+
+    var timer = null;
+
+    function handleHeaderMousedown(e){
+      console.log("1111111")
+      console.log(timer)
+      if (timer == null) {
+        let that = this;
+        timer = setTimeout(function () {
+          e.preventDefault();
+          $(that).hide();
+          $(that).siblings('label').removeClass('active');
+          $(that).parent('.slick-header-column').css({ border: '1px solid silver', cursor: 'move' });
+        }, 1000);
+      }
     }
 
     function handleHeaderContextMenu(e) {
