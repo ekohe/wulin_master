@@ -141,6 +141,28 @@
       // ------------------------- Create Grid ------------------------------------
       grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
+      grid.onContextMenu.subscribe(function (e) {
+        e.preventDefault();
+        var cell = grid.getCellFromEvent(e);
+
+        var $node = $(grid.getCellNode(cell.row, cell.cell));
+        var text = $.trim($node.text());
+
+        $("#contextMenu").data({"row": cell.row, "copiedText": text})
+                         .css("top", e.pageY)
+                         .css("left", e.pageX)
+                         .show();
+
+        // For copy
+        $("#contextMenu li#contextMenuCopy").on("click", function () {
+          copyStringToClipboard(text);
+        });
+
+        $("body").one("click", function () {
+          $("#contextMenu").hide();
+        });
+      });
+
       // Append necessary attributes to the grid
       gridAttrs = {
         name: name,
@@ -270,6 +292,23 @@
       });
 
       return theGrid;
+    }
+
+    copyStringToClipboard = function(str){
+      // Create new element
+      var el = document.createElement('textarea');
+      // Set value (string to be copied)
+      el.value = str;
+      // Set non-editable to avoid focus and move outside of view
+      el.setAttribute('readonly', '');
+      el.style = {position: 'absolute', left: '-9999px'};
+      document.body.appendChild(el);
+      // Select text inside element
+      el.select();
+      // Copy text to clipboard
+      document.execCommand('copy');
+      // Remove temporary element
+      document.body.removeChild(el);
     }
 
     function setGridBodyHeight(gridElement) {
