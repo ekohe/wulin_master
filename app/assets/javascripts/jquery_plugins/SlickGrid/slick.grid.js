@@ -799,12 +799,23 @@ if (typeof Slick === "undefined") {
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
           $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
+          $(this).css({
+            'border-right': '1px solid silver',
+            'border-left': '1px solid silver',
+            'border-top': '1px solid silver',
+            'border-bottom': '0px !important', })
         }
       }
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
         // $(this).removeClass("ui-state-hover");
+        $(this).css({
+          'border-right': '1px solid transparent',
+          'border-left': '1px solid transparent',
+          'border-top': '1px solid transparent',
+          'border-bottom': '0px !important',
+        });
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
@@ -930,6 +941,7 @@ if (typeof Slick === "undefined") {
         headerColInput.on('focus', function() {
           $(this).siblings('.slick-sort-indicator, .slick-drag-indicator').hide();
           $(this).width($(this).parent().width());
+          $(this).parent().css({'border':'none'});
         })
 
         // Ekohe Add: Show sort indicator when sorted
