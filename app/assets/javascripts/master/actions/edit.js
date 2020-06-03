@@ -104,6 +104,7 @@ var loadValue = function(scope, data) {
       } else if ($.type(data[i]) === 'array') {
         inputBox.val(data[i]);
       }
+      inputBox.trigger('chosen:updated');
     }
   }
 };

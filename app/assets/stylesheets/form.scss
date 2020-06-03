@@ -71,6 +71,9 @@ form {
     transform: translateY(-1.75rem);
     top: 1rem;
   }
+  &:focus-within > .chosen-container {
+    border-color: $main-color;
+  }
   &:not(:focus-within) > label.active {
     z-index: 1;
     top: 0.4rem;
@@ -86,13 +89,10 @@ form {
     display: block;
     border-radius: 4px;
     transition: box-shadow, border-color 0.15s;
+  }
+  > input, textarea {
     &:focus:not([readonly]) {
       border-color: $main-color;
-      box-shadow: 0 1px 0 0px $main-color;
-    }
-    &.chosen-with-drop {
-      border-color: $main-color;
-      box-shadow: 0 1px 0 0px $main-color;
     }
   }
   > label {
