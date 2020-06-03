@@ -27,7 +27,7 @@
           - unless is_new
             .switch.target_flag_container
               %label
-                %input.target_flag{type: 'checkbox', "data-target" => "#{column_name}_target_flag"}
+                %input.target_flag{type: 'checkbox', "data-target" => "#{column_name}_target_flag", "data-target-id" => "#{column_name}_target_flag"}
                 %span.lever
           .field{:name => column_name}
             - if (column.sql_type.to_s == 'belongs_to' || column.sql_type.to_s == 'enum')
@@ -41,6 +41,7 @@
                   "data-required"    => column.presence_required?,              |
                   "data-source"      => source,                                 |
                   "data-target"      => "#{column_name}_target_flag",           |
+                  "data-target-id"   => "#{column_name}_target_flag",           |
                   "data-field"       => field                                   |
 
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
@@ -54,6 +55,7 @@
                   "data-required"    => column.presence_required?,               |
                   "data-source"      => source,                                  |
                   "data-target"      => "#{column_name}_target_flag",            |
+                  "data-target-id"   => "#{column_name}_target_flag",            |
                   "data-field"       => field,                                   |
                   :disabled          => column.options[:auto_fill]               |
 
@@ -67,6 +69,7 @@
                   :include_blank     => !column.presence_required?,             |
                   "data-required"    => column.presence_required?,              |
                   "data-target"      => "#{column_name}_target_flag",           |
+                  "data-target-id"   => "#{column_name}_target_flag",           |
                   "data-source"      => source,                                 |
                   "data-field"       => field                                   |
                 - if (column.options[:depend_column].present?)
@@ -87,14 +90,14 @@
 
             - elsif column.options[:file]
               %label{:for => "#{model_name}_#{column_name}"}= label
-              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
+              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px', "data-target-id" => "#{column_name}_target_flag"
             - elsif column.options[:password]
               %label{:for => "#{model_name}_#{column_name}"}= label
-              = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px'
+              = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px', "data-target-id" => "#{column_name}_target_flag"
             - elsif (column.sql_type.to_s == 'string')
               .input-field.input-outlined
                 %label{:for => "#{model_name}_#{column_name}"}= label
-                = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field
+                = form.text_field column_name, :class => "auto-complete-text-field-#{column_name}", :value => column.value(object), "data-target" => "#{column_name}_target_flag", "data-field" => field, "data-target-id" => "#{column_name}_target_flag"
 
               :javascript
                 if(__globalWillAppend) {
@@ -123,20 +126,20 @@
               - if column.sql_type.to_s.downcase == 'boolean'
                 .checkboxMargin
                   %label
-                    = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in'
+                    = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in', "data-target-id" => "#{column_name}_target_flag"
                     %span #{column_name}
               - elsif column.sql_type.to_s.downcase == 'text'
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label
-                  = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea"
+                  = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea", "data-target-id" => "#{column_name}_target_flag"
               - elsif column.sql_type.to_s.downcase == 'integer'
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label
-                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
+                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field, "data-target-id" => "#{column_name}_target_flag"
               - else
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label
-                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field
+                  = form.text_field column_name, :style => 'width: 250px', :value => column.value(object), :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", 'data-date' => date_column?(column), 'data-datetime' => datetime_column?(column), 'data-time' => time_column?(column), "data-field" => field, "data-target-id" => "#{column_name}_target_flag"
 
             .field_error
     .submit

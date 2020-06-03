@@ -121,22 +121,22 @@ var checkTheBox = function(name) {
   var scope = $( '#' + name + '_form');
   // Check flag when change value of the box
   scope.off('keyup', 'input:text, input:password, textarea').on('keyup', 'input:text, input:password, textarea', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
+    $('input.target_flag:checkbox[data-target-id="' + $(e.currentTarget).attr('data-target-id') + '"]').prop('checked', true);
   });
   scope.off('change', 'input:checkbox, input:file').on('change', 'input:checkbox:not(.target_flag), input:file', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
+    $('input.target_flag:checkbox[data-target-id="' + $(e.currentTarget).attr('data-target-id') + '"]').prop('checked', true);
   });
 
   // Date picker \ datetime picker \ time picker
   scope.off('change', 'input.flatpickr-input').on('change', 'input.flatpickr-input', function(e) {
-    $('input.target_flag:checkbox[data-target="' + $(e.currentTarget).attr('data-target') + '"]').prop('checked', true);
+    $('input.target_flag:checkbox[data-target-id="' + $(e.currentTarget).attr('data-target-id') + '"]').prop('checked', true);
   });
 
   // Empty input box when flag change to unchecked
   scope.off('change', 'input.target_flag:visible').on('change', 'input.target_flag:visible', function(){
     if ($(this).prop('checked') == false) {
-      $('input[data-target="' + $(this).attr('data-target') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
-      $('select[data-target="' + $(this).attr('data-target') + '"]').val('').trigger("chosen:updated");
+      $('input[data-target-id="' + $(this).attr('data-target-id') + '"]').not(':button, :submit, :reset, :hidden, .target_flag').val('').removeAttr('checked').removeAttr('selected');
+      $('select[data-target-id="' + $(this).attr('data-target-id') + '"]').val('').trigger("chosen:updated");
     }
   });
 };
@@ -144,7 +144,7 @@ var checkTheBox = function(name) {
 var grepValues = function(formData, jqForm, options) {
   var flagDom;
   for(var i = formData.length - 1; i >= 0; i--) {
-    flagDom = $('input.target_flag:checkbox[data-target="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target') + '"]', jqForm);
+    flagDom = $('input.target_flag:checkbox[data-target-id="' + $('[name="' + formData[i].name + '"]').not('[type="hidden"]').attr('data-target-id') + '"]', jqForm);
     if(flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
