@@ -3173,6 +3173,8 @@ if (typeof Slick === "undefined") {
         clearTimeout(timer);
         timer = null;
       }
+      $($(this).find('input')).show();
+      $(this).css({ cursor: 'default' });
       trigger(self.onHeaderMouseLeave, {
         "column": $(this).data("column"),
         "grid": self
