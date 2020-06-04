@@ -3114,8 +3114,6 @@ if (typeof Slick === "undefined") {
     var timer = null;
 
     function handleHeaderMousedown(e){
-      console.log("1111111")
-      console.log(timer)
       if (timer == null) {
         let that = this;
         timer = setTimeout(function () {
