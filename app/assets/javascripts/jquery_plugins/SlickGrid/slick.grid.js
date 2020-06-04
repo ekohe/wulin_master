@@ -424,7 +424,8 @@ if (typeof Slick === "undefined") {
             .on("click", handleHeaderClick)
             .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
             .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave)
-            .on("mousedown", ".slick-header-column input", handleHeaderMousedown)
+            .on("mousedown", ".slick-header-column", handleHeaderMousedown)
+            .on("mouseup", ".slick-header-column", handleHeaderMouseUp)
 
         $headerRowScroller
             .on("scroll", handleHeaderRowScroll);
@@ -3182,17 +3183,28 @@ if (typeof Slick === "undefined") {
     }
 
     var timer = null;
+    var isLongPress = false;
 
     function handleHeaderMousedown(e){
       if (timer == null) {
         let that = this;
         timer = setTimeout(function () {
           e.preventDefault();
-          $(that).hide();
-          $(that).siblings('label').removeClass('active');
-          $(that).parent('.slick-header-column').css({ border: '1px solid silver', cursor: 'move' });
+          isLongPress = true
+          $(that).children('input').hide();
+          $(that).children('label').removeClass('active');
+          $(that).css({ border: '1px solid silver', cursor: 'move' });
         }, 1000);
       }
+    }
+
+    function handleHeaderMouseUp(e) {
+      if(!isLongPress) {
+        clearTimeout(timer)
+        timer = null
+      }
+
+      isLongPress = false
     }
 
     function handleHeaderContextMenu(e) {
