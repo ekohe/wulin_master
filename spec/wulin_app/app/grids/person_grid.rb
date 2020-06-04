@@ -8,14 +8,24 @@ class PersonGrid < WulinMaster::Grid
 
   # path '/people' # Define a different route for the grid
 
+  # string
   column :first_name
   column :last_name
+  # integer
   column :age
+  # text
   column :signature
+  # datetime
   column :birthdate
+  # string -> selector
   column :job, choices: JOBS, editor: 'SelectEditor'
-  column :status, choices: -> { Person.statuses.to_a }, visible: false, editor: 'SelectEditor'
+  # belongs_to
+  column :country
+  # enum
+  column :status, choices: Person.statuses.keys
+  # has_many -> multiple selector
   column :teachers
+  # boolean
   column :vip
 
   load_default_actions # Add default toolbar items for this grid
