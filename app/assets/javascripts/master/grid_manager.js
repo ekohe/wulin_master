@@ -143,6 +143,9 @@
 
       grid.onContextMenu.subscribe(function (e) {
         e.preventDefault();
+        let contextMenu = `<ul id='contextMenu' style='display:none;position:absolute' />`
+        $(contextMenu).appendTo($("body"))
+
         var cell = grid.getCellFromEvent(e);
 
         var $node = $(grid.getCellNode(cell.row, cell.cell));
