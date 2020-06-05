@@ -148,14 +148,29 @@
         var $node = $(grid.getCellNode(cell.row, cell.cell));
         var text = $.trim($node.text());
 
-        $("#contextMenu").data({"row": cell.row, "copiedText": text})
+        $("#contextMenu").empty()
+                         .data({"row": cell.row, "copiedText": text})
                          .css("top", e.pageY)
                          .css("left", e.pageX)
                          .show();
+        let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
+        $(copyItem).appendTo($('#contextMenu'));
 
-        // For copy
-        $("#contextMenu li#contextMenuCopy").on("click", function () {
-          copyStringToClipboard(text);
+        let contextActions = grid.actions.filter((action) => action.visible !== false && action.name !== 'create')
+        // Put Edit in front of Delete
+        let revertContextActions = contextActions.sort((a, b) => a.name[1].localeCompare(b.name[1]))
+
+        for (let action of revertContextActions) {
+          $contextMenuItem = `<li data-action-id=${action.name}_action_on_${grid.name}><i class='material-icons'>${action.name}</i>${action.name[0].toUpperCase() + action.name.slice(1)}...</li>`;
+          $($contextMenuItem).appendTo($('#contextMenu'));
+        }
+        // For copy cell, and actions
+        $('#contextMenu li').off('click').on('click', function () {
+          if (this.id === 'contextMenuCopy') {
+            copyStringToClipboard(text);
+          } else {
+            $('#' + $(this).data('action-id')).trigger('click');
+          }
         });
 
         $("body").one("click", function () {
