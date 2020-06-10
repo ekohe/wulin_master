@@ -33,11 +33,10 @@
     input[type=text]:focus:not([readonly]) + label {
       color: $filter-color !important;
     }
-    .slick-sort-indicator, .slick-drag-indicator {
+    .slick-sort-indicator, .slick-show-more {
       display: block;
       position: absolute;
       background-color: $slick-header-bg-color;
-      top: 28px;
       i.material-icons {
         background-color: $slick-header-bg-color;
         font-size: $font-size-small;
@@ -48,13 +47,20 @@
       margin: 0;
       height: 20px;
       right: 20px;
+      top: 28px;
       cursor: pointer;
     }
-    .slick-drag-indicator {
+    .slick-show-more {
       right: 5px;
-      cursor: move;
-      i.material-icons {
-        transform: rotate(90deg);
+      top: 28px;
+      border-radius: 50%;
+      i {
+        &.material-icons {
+          border-radius: 50%;
+        }
+        &.waves-effect {
+          vertical-align: initial;
+        }
       }
     }
     .slick-resizable-handle {

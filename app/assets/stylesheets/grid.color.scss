@@ -72,7 +72,7 @@ $wulin-colors: (
       .slick-header-column {
         background: none;
         &.input-field {
-          .slick-sort-indicator, .slick-drag-indicator, .slick-resizable-handle {
+          .slick-sort-indicator, .slick-show-more, .slick-resizable-handle {
             background: rgba($color, .0);
             i.material-icons {
               background: rgba($color, .0);
