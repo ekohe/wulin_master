@@ -88,7 +88,7 @@
       }
     }
 
-    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, user_id) {
+    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, select_toolbar_items, user_id) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
       originColumns = deep_clone(columns);
@@ -158,13 +158,24 @@
                          .show();
         let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
         $(copyItem).appendTo($('#contextMenu'));
-
-        let contextActions = grid.actions.filter((action) => action.visible !== false && action.name !== 'create')
+        let contextActions = grid.select_toolbar_items
         // Put Edit in front of Delete
-        let revertContextActions = contextActions.sort((a, b) => a.name[1].localeCompare(b.name[1]))
+        let revertContextActions = contextActions.sort((a, b) => a.title[1].localeCompare(b.title[1]))
 
         for (let action of revertContextActions) {
-          $contextMenuItem = `<li data-action-id=${action.name}_action_on_${grid.name}><i class='material-icons'>${action.name}</i>${action.name[0].toUpperCase() + action.name.slice(1)}...</li>`;
+          var gridAction = grid.actions.find(function (item) {
+            return (
+              action.title === (item.title ||
+              item.name[0].toUpperCase() + item.name.slice(1))
+            );
+          });
+
+          let actionName = action.title.toLowerCase();
+          $contextMenuItem = `<li data-action-id=${gridAction.name}_action_on_${
+            grid.name
+          }><i class='material-icons'>${action.icon || 'help'}</i>${
+            actionName[0].toUpperCase() + actionName.slice(1)
+          }...</li>`;
           $($contextMenuItem).appendTo($('#contextMenu'));
         }
         // For copy cell, and actions
@@ -196,6 +207,7 @@
         states: states,
         actions: actions,
         behaviors: behaviors,
+        select_toolbar_items: select_toolbar_items,
         options: options
       };
       for(var attr in gridAttrs) {
