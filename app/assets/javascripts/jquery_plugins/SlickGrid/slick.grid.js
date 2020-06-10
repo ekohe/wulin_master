@@ -853,7 +853,8 @@ if (typeof Slick === "undefined") {
         // Ekohe Edit: Control visibility of sort/drag buttons
         // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
-          $(this).find('.slick-sort-indicator').show();
+          $(this).find('.slick-sort-indicator').show().css({right: '20px'});
+          $(this).find('.slick-show-more').show().find('.material-icons').text('more_vert');
           $(this).css({
             'border-right': '1px solid silver',
             'border-left': '1px solid silver',
@@ -875,7 +876,7 @@ if (typeof Slick === "undefined") {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-sort-indicator').css({ right: '10px' });
           } else {
-            $(this).find('.slick-drag-indicator, .slick-sort-indicator').hide();
+            $(this).find('.slick-show-more, .slick-sort-indicator').hide();
           }
         }
       }
@@ -967,10 +968,13 @@ if (typeof Slick === "undefined") {
             .on('mouseleave', onMouseLeave);
         }
 
-        // Ekohe Add: Drag indicator for reordering columns
-        var $dragIcon = $('<i />').addClass('material-icons').text('');
-        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
-        header.append($dragIndicator);
+        // Ekohe More Action: (Hide, Move to the right, Move to the left)
+        var $moreVertIcon = $("<i class='waves-effect waves-circle' />")
+          .addClass('material-icons')
+          .text('');
+        var $showMoreBtn = $(`<a href='javascript:void(0)' id='more_vert_${m.id}' />`).append($moreVertIcon)
+        var $showMoreContainer = $('<div />').addClass('slick-show-more').append($showMoreBtn);
+        header.append($showMoreContainer);
 
         if (m.sortable) {
           header.addClass("slick-header-sortable");
@@ -993,7 +997,7 @@ if (typeof Slick === "undefined") {
 
         // Ekohe Add: Text field takes over the full row width and the icons disappear
         headerColInput.on('focus', function() {
-          $(this).siblings('.slick-sort-indicator, .slick-drag-indicator').hide();
+          $(this).siblings('.slick-sort-indicator, .slick-show-more').hide();
           $(this).width($(this).parent().width());
           $(this).parent().css({'border':'none'});
         })
