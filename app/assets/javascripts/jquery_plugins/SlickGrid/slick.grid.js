@@ -461,41 +461,38 @@ if (typeof Slick === "undefined") {
     }
 
     function restoreButtons() {
-      var toolbarWrapperWidth = $container.parent().find('.toolbar-wrapper').width();
       var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
       var globalBottunsWidth = [...$container.parent().find('.toolbar-global .toolbar_item')].reduce(
           (accumulator, currentValue) => accumulator + $(currentValue).width(),
           0
         );
+
+      var toolbarWrapperWidth = Math.max($container.parent().find('.toolbar-wrapper').width(), globalBottunsWidth);
       var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
       var selectContainer = $container.parent().find('.toolbar-select')
       var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
-      var singleSelectButtonWidth = (selectContainer.width() / selectButtons.length) || 38;
-      var capableSelectButtonNumber = Math.floor(availableWidth / singleSelectButtonWidth);
+      var visiableSelectButtons = $container.parent().find('.toolbar-select .toolbar_item:visible');
+      var singleSelectButtonWidth = (selectContainer.width() / (visiableSelectButtons.length || (selectButtons.length - 1))) || 38;
+      var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
 
       var buttonExceptMoreButtonNumbers = capableSelectButtonNumber - 1;
 
       var showButtons = selectButtons.slice(0, buttonExceptMoreButtonNumbers);
-      var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers);
-      // TODO show buttons
-      // do something
+      var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers, selectButtons.length - 1);
 
-      // more buttons
       if (moreButtons.length > 0) {
-        var moreVertButton = `<li class="toolbar_item">
-                                <a
-                                  class="waves-effect waves-circle dropdown-trigger"
-                                  data-target="more_vert_person"
-                                  data-alignment="right"
-                                  href="javascript:void(0);"
-                                  ><i class="material-icons">more_vert</i>
-                                </a>
-                              </li>`;
-        var buttonContainer = $container.parent().find('.toolbar-select ul')
-        for(let element of moreButtons) {
-          element.remove()
+        $container.parent().find('.more_vert').show();
+        for(let element of showButtons) {
+          $(element).show()
         }
-        $(buttonContainer).append(moreVertButton)
+        for(let element of moreButtons) {
+          $(element).hide()
+        }
+      } else {
+        for(let element of showButtons) {
+          $(element).show()
+        }
+        $container.parent().find('.more_vert').hide();
       }
     }
 
