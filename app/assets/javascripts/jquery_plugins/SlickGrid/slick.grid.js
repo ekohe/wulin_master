@@ -410,6 +410,8 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         bindAncestorScrollEvents();
+        bindWindowResize();
+        restoreButtons()
 
         $container
             .on("resize.slickgrid", resizeCanvas);
@@ -455,6 +457,45 @@ if (typeof Slick === "undefined") {
           $canvas.on("mousewheel", handleMouseWheel);
         }
         restoreCssFromHiddenInit();
+      }
+    }
+
+    function restoreButtons() {
+      var toolbarWrapperWidth = $container.parent().find('.toolbar-wrapper').width();
+      var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
+      var globalBottunsWidth = [...$container.parent().find('.toolbar-global .toolbar_item')].reduce(
+          (accumulator, currentValue) => accumulator + $(currentValue).width(),
+          0
+        );
+      var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
+      var selectContainer = $container.parent().find('.toolbar-select')
+      var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
+      var singleSelectButtonWidth = (selectContainer.width() / selectButtons.length) || 38;
+      var capableSelectButtonNumber = Math.floor(availableWidth / singleSelectButtonWidth);
+
+      var buttonExceptMoreButtonNumbers = capableSelectButtonNumber - 1;
+
+      var showButtons = selectButtons.slice(0, buttonExceptMoreButtonNumbers);
+      var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers);
+      // TODO show buttons
+      // do something
+
+      // more buttons
+      if (moreButtons.length > 0) {
+        var moreVertButton = `<li class="toolbar_item">
+                                <a
+                                  class="waves-effect waves-circle dropdown-trigger"
+                                  data-target="more_vert_person"
+                                  data-alignment="right"
+                                  href="javascript:void(0);"
+                                  ><i class="material-icons">more_vert</i>
+                                </a>
+                              </li>`;
+        var buttonContainer = $container.parent().find('.toolbar-select ul')
+        for(let element of moreButtons) {
+          element.remove()
+        }
+        $(buttonContainer).append(moreVertButton)
       }
     }
 
@@ -643,6 +684,10 @@ if (typeof Slick === "undefined") {
           $elem.on("scroll." + uid, handleActiveCellPositionChange);
         }
       }
+    }
+
+    function bindWindowResize() {
+      $(window).on('resize', restoreButtons)
     }
 
     function unbindAncestorScrollEvents() {

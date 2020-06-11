@@ -1,24 +1,6 @@
-- tooltar_item = toolbar_items.shift
 .toolbar-select{hidden: WulinMaster.config.split_button_mode?, 'data-mode': WulinMaster.config.button_mode}(data-grid="#{@grid_name}")
-  - if tooltar_item
-    - current_grid = tooltar_item.anchor_tag_options[:id].gsub(/.*_action_on_/, '')
-    %ul
+  %ul
+    - toolbar_items.each do |item|
       %li.toolbar_item
-        = link_to 'javascript:void(0);', tooltar_item.anchor_tag_options do
-          %i.material-icons= tooltar_item.icon.presence || 'help'
-      - if toolbar_items.present?
-        %li.toolbar_item
-          = link_to 'javascript:void(0);', class: 'waves-effect waves-circle dropdown-trigger', 'data-target' => "more_vert_#{current_grid}", 'data-alignment' => 'right' do
-            %i.material-icons more_vert
-        %ul.dropdown-content.collection{:id => "more_vert_#{current_grid}"}
-          - toolbar_items.each do |item|
-            %li
-              = link_to 'javascript:void(0);', item.anchor_tag_options_without_waves do
-                %i.material-icons
-                  = item.icon.presence || 'help'
-                = item.title
-
-:javascript
-  $(function(){
-    $('.dropdown-trigger').dropdown({alignment: 'right'});
-  })
+        = link_to 'javascript:void(0);', item.anchor_tag_options do
+          %i.material-icons= item.icon.presence || 'help'
