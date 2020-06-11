@@ -481,11 +481,14 @@ if (typeof Slick === "undefined") {
       var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers, selectButtons.length - 1);
 
       if (moreButtons.length > 0) {
+        var dropdownContent = $container.parent().find('.toolbar-select ul ul');
+        console.log('dropdownContent', dropdownContent)
         $container.parent().find('.more_vert').show();
         for(let element of showButtons) {
           $(element).show()
         }
         for(let element of moreButtons) {
+          // $(dropdownContent).append($(element));
           $(element).hide()
         }
       } else {
@@ -494,6 +497,7 @@ if (typeof Slick === "undefined") {
         }
         $container.parent().find('.more_vert').hide();
       }
+
     }
 
     function cacheCssForHiddenInit() {
