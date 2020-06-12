@@ -481,15 +481,24 @@ if (typeof Slick === "undefined") {
       var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers, selectButtons.length - 1);
 
       if (moreButtons.length > 0) {
-        var dropdownContent = $container.parent().find('.toolbar-select ul ul');
-        console.log('dropdownContent', dropdownContent)
         $container.parent().find('.more_vert').show();
         for(let element of showButtons) {
           $(element).show()
+          $container
+            .parent()
+            .find('ul.dropdown-content li')
+            .find("a[data-id='" + $(element).children('a').attr('id') + "']")
+            .parent()
+            .hide()
         }
         for(let element of moreButtons) {
-          // $(dropdownContent).append($(element));
           $(element).hide()
+          $container
+            .parent()
+            .find('ul.dropdown-content li')
+            .find("a[data-id='" + $(element).children('a').attr('id') + "']")
+            .parent()
+            .show();
         }
       } else {
         for(let element of showButtons) {

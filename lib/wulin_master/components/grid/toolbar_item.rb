@@ -69,14 +69,6 @@ module WulinMaster
         %w[waves-effect waves-circle tooltipped]
       end
 
-      handle_options(css_classes)
-    end
-
-    def anchor_tag_options_without_waves
-      handle_options
-    end
-
-    def handle_options(css_classes = [])
       if icon?
         css_classes += options[:class].split(' ') if options[:class].present?
         # css_classes << "toolbar_icon_#{icon}" unless css_classes.include?("toolbar_icon_#{icon}")
