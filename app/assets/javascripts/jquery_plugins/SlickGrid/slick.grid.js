@@ -461,17 +461,17 @@ if (typeof Slick === "undefined") {
     }
 
     function restoreButtons() {
-      var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
-      var globalBottunsWidth = [...$container.parent().find('.toolbar-global .toolbar_item')].reduce(
+      var $gridContainer = $container.parent();
+      var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
+      var globalBottunsWidth = [...$gridContainer.find('.toolbar-global .toolbar_item')].reduce(
           (accumulator, currentValue) => accumulator + $(currentValue).width(),
           0
         );
 
-      var toolbarWrapperWidth = Math.max($container.parent().find('.toolbar-wrapper').width(), globalBottunsWidth);
+      var toolbarWrapperWidth = Math.max($gridContainer.find('.toolbar-wrapper').width(), globalBottunsWidth);
       var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
-      var selectContainer = $container.parent().find('.toolbar-select')
-      var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
-      var visiableSelectButtons = $container.parent().find('.toolbar-select .toolbar_item:visible');
+      var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
+      var visiableSelectButtons = $gridContainer.find('.toolbar-select .toolbar_item:visible');
       var singleSelectButtonWidth = visiableSelectButtons.width() || 38;
       var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
 
@@ -481,7 +481,7 @@ if (typeof Slick === "undefined") {
       var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers, selectButtons.length - 1);
 
       if (moreButtons.length > 0) {
-        $container.parent().find('.more_vert').show();
+        $gridContainer.find('.more_vert').show();
         for(let element of showButtons) {
           $(element).show()
           $container
@@ -493,18 +493,25 @@ if (typeof Slick === "undefined") {
         }
         for(let element of moreButtons) {
           $(element).hide()
-          $container
+          var moreVertItem = $container
             .parent()
             .find('ul.dropdown-content li')
             .find("a[data-id='" + $(element).children('a').attr('id') + "']")
-            .parent()
-            .show();
+          var buttonMode = $gridContainer
+            .find('.toolbar-select')
+            .data('mode');
+          var isSplitMode = buttonMode === 'split';
+          if (isSplitMode) {
+            moreVertItem.addClass('waves-effect')
+          }
+          moreVertItem.parent()
+          .show();
         }
       } else {
         for(let element of showButtons) {
           $(element).show()
         }
-        $container.parent().find('.more_vert').hide();
+        $gridContainer.find('.more_vert').hide();
       }
 
     }
