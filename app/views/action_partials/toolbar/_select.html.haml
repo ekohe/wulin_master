@@ -11,7 +11,7 @@
     %ul.dropdown-content.collection{:id => "more_vert_#{current_grid}"}
       - toolbar_items.each do |item|
         %li
-          = link_to 'javascript:void(0);', 'data-id' => item.anchor_tag_options[:id], onclick: "handleToolbarItemClick(this)"  do
+          = link_to 'javascript:void(0);', **item.anchor_tag_options_without_waves, 'data-id' => item.anchor_tag_options_without_waves[:id], onclick: "handleToolbarItemClick(this)"  do
             %i.material-icons
               = item.icon.presence || 'help'
             = item.title

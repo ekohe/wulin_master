@@ -472,7 +472,7 @@ if (typeof Slick === "undefined") {
       var selectContainer = $container.parent().find('.toolbar-select')
       var selectButtons = $container.parent().find('.toolbar-select .toolbar_item');
       var visiableSelectButtons = $container.parent().find('.toolbar-select .toolbar_item:visible');
-      var singleSelectButtonWidth = (selectContainer.width() / (visiableSelectButtons.length || (selectButtons.length - 1))) || 38;
+      var singleSelectButtonWidth = visiableSelectButtons.width() || 38;
       var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
 
       var buttonExceptMoreButtonNumbers = capableSelectButtonNumber - 1;
