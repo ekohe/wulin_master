@@ -19,7 +19,7 @@
 :javascript
   $(function(){
     $('.dropdown-trigger').dropdown({alignment: 'right'});
-    $("[data-type='more_vert_item']").on('click', function(e) {
+    $("[data-type='more_vert_item']").off('click').on('click', function(e) {
       $("#" + $(e.target).data('id')).click()
     })
   })
