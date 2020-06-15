@@ -143,21 +143,22 @@
 
       grid.onContextMenu.subscribe(function (e) {
         e.preventDefault();
-        let contextMenu = `<ul id='contextMenu' style='display:none;position:absolute' />`
-        $(contextMenu).appendTo($("body"))
+        let $contextMenu = $(`<ul id='contextMenu' style='display:none;position:absolute' />`)
+        $contextMenu.appendTo($('body'));
 
         var cell = grid.getCellFromEvent(e);
 
         var $node = $(grid.getCellNode(cell.row, cell.cell));
         var text = $.trim($node.text());
 
-        $("#contextMenu").empty()
-                         .data({"row": cell.row, "copiedText": text})
-                         .css("top", e.pageY)
-                         .css("left", e.pageX)
-                         .show();
+        $contextMenu
+          .empty()
+          .data({ row: cell.row, copiedText: text })
+          .css('top', e.pageY)
+          .css('left', e.pageX)
+          .show();
         let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
-        $(copyItem).appendTo($('#contextMenu'));
+        $(copyItem).appendTo($contextMenu);
         let contextActions = grid.select_toolbar_items
         // Put Edit in front of Delete
         let revertContextActions = contextActions.sort((a, b) => a.title[1].localeCompare(b.title[1]))
@@ -171,12 +172,12 @@
           });
 
           let actionName = action.title.toLowerCase();
-          $contextMenuItem = `<li data-action-id=${gridAction.name}_action_on_${
+          $contextMenuItem = $(`<li data-action-id=${gridAction.name}_action_on_${
             grid.name
           }><i class='material-icons'>${action.icon || 'help'}</i>${
             actionName[0].toUpperCase() + actionName.slice(1)
-          }...</li>`;
-          $($contextMenuItem).appendTo($('#contextMenu'));
+          }</li>`);
+          $contextMenuItem.appendTo($contextMenu);
         }
         // For copy cell, and actions
         $('#contextMenu li').off('click').on('click', function () {
@@ -188,7 +189,7 @@
         });
 
         $("body").one("click", function () {
-          $("#contextMenu").hide();
+          $contextMenu.hide();
         });
       });
 
