@@ -1,0 +1,35 @@
+@import 'base';
+
+#contextMenu {
+  position: absolute;
+  width: 204px;
+  background: #FFFFFF;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.16), 0px 2px 5px rgba(0, 0, 0, 0.26);
+
+  z-index: 99999;
+  &:focus {
+    outline: none;
+  }
+}
+
+#contextMenu li {
+  padding: 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: $font-size-large;
+  /* identical to box height */
+
+  display: flex;
+  align-items: flex-end;
+  color: #4D4D4E;
+  cursor: pointer;
+
+  i.material-icons {
+    margin-right: 13px;
+    font-size: $font-size-large;
+  }
+  &:hover {
+    background-color: #eeeeee;
+  }
+}

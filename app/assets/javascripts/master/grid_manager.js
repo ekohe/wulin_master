@@ -88,7 +88,7 @@
       }
     }
 
-    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, user_id) {
+    function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, select_toolbar_items, user_id) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
       originColumns = deep_clone(columns);
@@ -141,6 +141,62 @@
       // ------------------------- Create Grid ------------------------------------
       grid = new Slick.Grid(gridElement, loader.data, columns, options);
 
+      grid.onContextMenu.subscribe(function (e) {
+        e.preventDefault();
+        let $contextMenu = $(`<ul id='contextMenu' style='display:none;position:absolute' tabindex='0' />`)
+        $contextMenu.appendTo($('body'));
+
+        var cell = grid.getCellFromEvent(e);
+
+        var $node = $(grid.getCellNode(cell.row, cell.cell));
+        var text = $.trim($node.text());
+
+        $contextMenu
+          .empty()
+          .data({ row: cell.row, copiedText: text })
+          .css('top', e.pageY)
+          .css('left', e.pageX)
+          .show()
+          .focus();
+        let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
+        $(copyItem).appendTo($contextMenu);
+        let contextActions = grid.select_toolbar_items
+        // Put Edit in front of Delete
+        let revertContextActions = contextActions.sort((a, b) => a.title[1].localeCompare(b.title[1]))
+
+        for (let action of revertContextActions) {
+          var gridAction = grid.actions.find(function (item) {
+            return (
+              action.title === (item.title ||
+              item.name[0].toUpperCase() + item.name.slice(1))
+            );
+          });
+
+          let actionName = action.title.toLowerCase();
+          $contextMenuItem = $(`<li data-action-id=${gridAction.name}_action_on_${
+            grid.name
+          }><i class='material-icons'>${action.icon || 'help'}</i>${
+            actionName[0].toUpperCase() + actionName.slice(1)
+          }</li>`);
+          $contextMenuItem.appendTo($contextMenu);
+        }
+        // For copy cell, and actions
+        $('#contextMenu li').off('click').on('click', function () {
+          if (this.id === 'contextMenuCopy') {
+            copyStringToClipboard(text);
+          } else {
+            $('#' + $(this).data('action-id')).trigger('click');
+          }
+        });
+
+        $contextMenu.off('blur').on('blur', function(){
+          $contextMenu.hide();
+        })
+        // $("body").one("click", function () {
+        //   $contextMenu.hide();
+        // });
+      });
+
       // Append necessary attributes to the grid
       gridAttrs = {
         name: name,
@@ -156,6 +212,7 @@
         states: states,
         actions: actions,
         behaviors: behaviors,
+        select_toolbar_items: select_toolbar_items,
         options: options
       };
       for(var attr in gridAttrs) {
@@ -270,6 +327,23 @@
       });
 
       return theGrid;
+    }
+
+    copyStringToClipboard = function(str){
+      // Create new element
+      var el = document.createElement('textarea');
+      // Set value (string to be copied)
+      el.value = str;
+      // Set non-editable to avoid focus and move outside of view
+      el.setAttribute('readonly', '');
+      el.style = {position: 'absolute', left: '-9999px'};
+      document.body.appendChild(el);
+      // Select text inside element
+      el.select();
+      // Copy text to clipboard
+      document.execCommand('copy');
+      // Remove temporary element
+      document.body.removeChild(el);
     }
 
     function setGridBodyHeight(gridElement) {
