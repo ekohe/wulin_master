@@ -919,8 +919,10 @@ if (typeof Slick === "undefined") {
         var $moreVertIcon = $("<i class='waves-effect waves-circle' />")
           .addClass('material-icons')
           .text('');
-        var $showMoreBtn = $(`<a href='javascript:void(0)' id='more_vert_${m.id}' />`).append($moreVertIcon)
-        var $showMoreContainer = $('<div />').addClass('slick-show-more').append($showMoreBtn);
+        var $showMoreBtn = $(`<a href='javascript:void(0)' id='more_vert_${m.id}' />`)
+        $showMoreBtn.append($moreVertIcon)
+        var $showMoreContainer = $(`<div class='slick-show-more' />`)
+        $showMoreContainer.append($showMoreBtn);
         header.append($showMoreContainer);
 
         if (m.sortable) {
