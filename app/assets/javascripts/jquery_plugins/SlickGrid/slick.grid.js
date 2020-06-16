@@ -824,6 +824,7 @@ if (typeof Slick === "undefined") {
             $(this).find('.slick-sort-indicator').css({ right: '10px' });
           } else {
             $(this).find('.slick-show-more, .slick-sort-indicator').hide();
+            $($(this).find('.dropdown-trigger')[0]).dropdown('close');
           }
         }
       }
@@ -918,13 +919,25 @@ if (typeof Slick === "undefined") {
         // Ekohe More Action: (Hide, Move to the right, Move to the left)
         var $moreVertIcon = $("<i class='waves-effect waves-circle' />")
           .addClass('material-icons')
-          .text('');
-        var $showMoreBtn = $(`<a href='javascript:void(0)' id='more_vert_${m.id}' />`)
+          .text('')
+        var columnID = m.id;
+        var $showMoreBtn = $(
+          `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
+        );
         $showMoreBtn.append($moreVertIcon)
         var $showMoreContainer = $(`<div class='slick-show-more' />`)
         $showMoreContainer.append($showMoreBtn);
-        header.append($showMoreContainer);
-
+        var $moreContent = $(`<ul id='dropdown_${columnID}' class='dropdown-content'>
+                              <li><a href="#!">one</a></li>
+                              <li><a href="#!">two</a></li>
+                              <li class="divider" tabindex="-1"></li>
+                              <li><a href="#!">three</a></li>
+                              <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+                              <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+                            </ul>`);
+        $showMoreContainer.append($moreContent);
+        header.append($showMoreContainer)
+        $showMoreBtn.dropdown({alignment: 'right'});
         if (m.sortable) {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator

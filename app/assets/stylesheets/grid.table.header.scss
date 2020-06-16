@@ -62,6 +62,26 @@
           vertical-align: initial;
         }
       }
+      ul.dropdown-content {
+        width: auto !important;
+        box-shadow: $box-shadow;
+        height: auto !important;
+        top: 16px !important;
+        li {
+          min-height: unset;
+          line-height: 1rem;
+          a {
+            font-size: 14px;
+            color: #4D4D4E;
+            padding: 7px 15px;
+            i.material-icons {
+              position: static;
+              font-size: $font-size-middle;
+              margin-right: 16px;
+            }
+          }
+        }
+      }
     }
     .slick-resizable-handle {
       width: 5px;
