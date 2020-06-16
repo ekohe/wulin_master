@@ -1,6 +1,25 @@
+- current_grid = toolbar_items.first.anchor_tag_options[:id].gsub(/.*_action_on_/, '')
 .toolbar-select{hidden: WulinMaster.config.split_button_mode?, 'data-mode': WulinMaster.config.button_mode}(data-grid="#{@grid_name}")
   %ul
     - toolbar_items.each do |item|
       %li.toolbar_item
         = link_to 'javascript:void(0);', item.anchor_tag_options do
           %i.material-icons= item.icon.presence || 'help'
+    %li.toolbar_item.more_vert{style:'display: none;'}
+      = link_to 'javascript:void(0);', class: 'waves-effect waves-circle dropdown-trigger', 'data-target' => "more_vert_#{current_grid}", 'data-alignment' => 'right' do
+        %i.material-icons more_vert
+    %ul.dropdown-content.collection{:id => "more_vert_#{current_grid}"}
+      - toolbar_items.each do |item|
+        %li
+          = link_to 'javascript:void(0);', **item.anchor_tag_options_without_waves, 'data-id' => item.anchor_tag_options_without_waves[:id], 'data-type' => 'more_vert_item'  do
+            %i.material-icons
+              = item.icon.presence || 'help'
+            = item.title
+
+:javascript
+  $(function(){
+    $('.dropdown-trigger').dropdown({alignment: 'right'});
+    $("[data-type='more_vert_item']").off('click').on('click', function(e) {
+      $("#" + $(e.target).data('id')).click()
+    })
+  })
