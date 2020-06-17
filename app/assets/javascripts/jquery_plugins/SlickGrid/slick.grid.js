@@ -801,7 +801,7 @@ if (typeof Slick === "undefined") {
         // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-sort-indicator').show().css({right: '20px'});
-          $(this).find('.slick-show-more').show().find('.material-icons').text('more_vert');
+          $(this).find('.slick-show-more').show()
           $(this).css({
             'border-right': '1px solid silver',
             'border-left': '1px solid silver',
@@ -919,7 +919,7 @@ if (typeof Slick === "undefined") {
         // Ekohe More Action: (Hide, Move to the right, Move to the left)
         var $moreVertIcon = $("<i class='waves-effect waves-circle' />")
           .addClass('material-icons')
-          .text('')
+          .text('more_vert')
         var columnID = m.id;
         var $showMoreBtn = $(
           `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
@@ -928,15 +928,13 @@ if (typeof Slick === "undefined") {
         var $showMoreContainer = $(`<div class='slick-show-more' />`)
         $showMoreContainer.append($showMoreBtn);
         var $moreContent = $(`<ul id='dropdown_${columnID}' class='dropdown-content'>
-                              <li><a href="#!">one</a></li>
-                              <li><a href="#!">two</a></li>
-                              <li class="divider" tabindex="-1"></li>
-                              <li><a href="#!">three</a></li>
-                              <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
-                              <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+                              <li><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>
+                              <li><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>
+                              <li><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>
                             </ul>`);
         $showMoreContainer.append($moreContent);
         header.append($showMoreContainer)
+        $showMoreContainer.hide();
         $showMoreBtn.dropdown({alignment: 'right'});
         if (m.sortable) {
           header.addClass("slick-header-sortable");
