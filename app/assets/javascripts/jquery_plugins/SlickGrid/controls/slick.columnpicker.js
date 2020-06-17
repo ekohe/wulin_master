@@ -205,9 +205,25 @@
       columns = ordered;
     }
 
+    function removeThisColumnEvent(menuItem) {
+        var visibleColumns = getAllVisibleColumns().filter(function (column) {
+          return column.column_name != menuItem;
+        });
+
+        // Update columns
+        grid.setColumns(visibleColumns);
+    }
+
+    // Get all columns(visible and invisible)
     function getAllColumns() {
       return columns;
     }
+
+    // Get all visible columns
+    function getAllVisibleColumns() {
+      return grid.getColumns()
+    }
+
 
     ///////////////////////////////////////////////////////////
     // Ekohe Add: New methods
@@ -328,7 +344,8 @@
       "destroy": destroy,
       "onColumnsPick": new Slick.Event(),
       // Ekohe Add
-      "onColumnsChanged": onColumnsChanged
+      "onColumnsChanged": onColumnsChanged,
+      "removeThisColumnEvent": removeThisColumnEvent
     });
   }
 

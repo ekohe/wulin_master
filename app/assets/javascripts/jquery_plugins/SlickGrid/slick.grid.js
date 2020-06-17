@@ -988,12 +988,7 @@ if (typeof Slick === "undefined") {
         )
           .off('click')
           .on('click', function () {
-            var curColumnID = $(this).data('column-id');
-
-            columns.shift();
-            delete columnsById[curColumnID];
-            self.loader.reloadData();
-            self.columnpicker.onColumnsChanged()
+            self.columnpicker.removeThisColumnEvent($(this).data('column-id'));
           });
         var $moveToRight = $(
           `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
