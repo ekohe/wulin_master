@@ -227,6 +227,7 @@
 
       // Set ColumnPicker
       var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, user_id, options);
+      grid.columnpicker = columnpicker;
       grid.allColumns = columnpicker.getAllColumns();
 
       // Set FilterPanel

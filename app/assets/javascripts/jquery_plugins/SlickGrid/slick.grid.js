@@ -933,6 +933,15 @@ if (typeof Slick === "undefined") {
         var $hideItem = $(
           `<li id='hide' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>`
         )
+          .off('click')
+          .on('click', function () {
+            var curColumnID = $(this).data('column-id');
+
+            columns.shift();
+            delete columnsById[curColumnID];
+            self.loader.reloadData();
+            self.columnpicker.onColumnsChanged()
+          });
         var $moveToRight = $(
           `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
         );
