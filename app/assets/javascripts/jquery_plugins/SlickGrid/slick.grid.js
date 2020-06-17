@@ -927,12 +927,23 @@ if (typeof Slick === "undefined") {
         $showMoreBtn.append($moreVertIcon)
         var $showMoreContainer = $(`<div class='slick-show-more' />`)
         $showMoreContainer.append($showMoreBtn);
-        var $moreContent = $(`<ul id='dropdown_${columnID}' class='dropdown-content'>
-                              <li><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>
-                              <li><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>
-                              <li><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>
-                            </ul>`);
-        $showMoreContainer.append($moreContent);
+        var $moreContainer = $(
+          `<ul id='dropdown_${columnID}' class='dropdown-content' />`
+        );
+        var $hideItem = $(
+          `<li id='hide' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>`
+        )
+        var $moveToRight = $(
+          `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
+        );
+        var $moveToLeft = $(
+          `<li id='move_to_left' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
+        );
+        $moreContainer
+          .append($hideItem)
+          .append($moveToRight)
+          .append($moveToLeft);
+        $showMoreContainer.append($moreContainer);
         header.append($showMoreContainer)
         $showMoreContainer.hide();
         $showMoreBtn.dropdown({alignment: 'right'});
