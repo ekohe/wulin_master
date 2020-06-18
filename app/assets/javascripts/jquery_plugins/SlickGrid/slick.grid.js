@@ -939,10 +939,18 @@ if (typeof Slick === "undefined") {
           });
         var $moveToRight = $(
           `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
-        );
+        )
+          .off('click')
+          .on('click', function () {
+            self.columnpicker.moveThisColumnEvent.apply($(this));
+          });
         var $moveToLeft = $(
           `<li id='move_to_left' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
-        );
+        )
+          .off('click')
+          .on('click', function () {
+            self.columnpicker.moveThisColumnEvent.apply($(this));
+          });;
         $moreContainer
           .append($hideItem)
           .append($moveToRight)
