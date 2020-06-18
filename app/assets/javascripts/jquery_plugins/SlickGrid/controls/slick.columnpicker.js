@@ -215,6 +215,43 @@
         grid.setColumns(visibleColumns);
     }
 
+    function moveThisColumnEvent() {
+      var menuItemName = this.data('column-id');
+      var visibleColumns = getAllVisibleColumns();
+      var currentItem = visibleColumns.find(item => item.column_name === menuItemName)
+      var currentPostion = visibleColumns.indexOf(currentItem);
+
+      var menuAction = this.attr('id')
+      switch(menuAction) {
+        case 'move_to_right':
+          if (currentPostion < visibleColumns.length - 1) {
+            [
+              visibleColumns[currentPostion],
+              visibleColumns[currentPostion + 1],
+            ] = [
+              visibleColumns[currentPostion + 1],
+              visibleColumns[currentPostion],
+            ];
+          }
+          break;
+        case 'move_to_left':
+          if (currentPostion > 0) {
+            [
+              visibleColumns[currentPostion - 1],
+              visibleColumns[currentPostion],
+            ] = [
+              visibleColumns[currentPostion],
+              visibleColumns[currentPostion - 1],
+            ]
+          }
+          break;
+        default:
+          break;
+      }
+      // Update columns
+      grid.setColumns(visibleColumns);
+    }
+
     // Get all columns(visible and invisible)
     function getAllColumns() {
       return columns;
@@ -346,7 +383,8 @@
       "onColumnsPick": new Slick.Event(),
       // Ekohe Add
       "onColumnsChanged": onColumnsChanged,
-      "removeThisColumnEvent": removeThisColumnEvent
+      "removeThisColumnEvent": removeThisColumnEvent,
+      "moveThisColumnEvent": moveThisColumnEvent,
     });
   }
 
