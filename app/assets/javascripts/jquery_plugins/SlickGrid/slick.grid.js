@@ -925,8 +925,8 @@ if (typeof Slick === "undefined") {
           `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
         );
         $showMoreBtn.append($moreVertIcon)
-        var $showMoreContainer = $(`<div class='slick-show-more' />`)
-        $showMoreContainer.append($showMoreBtn);
+        var $showMoreTrigger = $(`<div class='slick-show-more' />`)
+        $showMoreTrigger.append($showMoreBtn);
         var $moreContainer = $(
           `<ul id='dropdown_${columnID}' class='dropdown-content' />`
         );
@@ -955,9 +955,9 @@ if (typeof Slick === "undefined") {
           .append($hideItem)
           .append($moveToRight)
           .append($moveToLeft);
-        $showMoreContainer.append($moreContainer);
-        header.append($showMoreContainer)
-        $showMoreContainer.hide();
+        $showMoreTrigger.append($moreContainer);
+        header.append($showMoreTrigger)
+        $showMoreTrigger.hide();
         $showMoreBtn.dropdown({alignment: 'right'});
         if (m.sortable) {
           header.addClass("slick-header-sortable");
