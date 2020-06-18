@@ -205,9 +205,10 @@
       columns = ordered;
     }
 
-    function removeThisColumnEvent(menuItem) {
+    function removeThisColumnEvent() {
+      var menuItemName = this.data('column-id');
         var visibleColumns = getAllVisibleColumns().filter(function (column) {
-          return column.column_name != menuItem;
+          return column.column_name != menuItemName;
         });
 
         // Update columns
