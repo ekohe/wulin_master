@@ -220,36 +220,31 @@
       var visibleColumns = getAllVisibleColumns();
       var currentItem = visibleColumns.find(item => item.column_name === menuItemName)
       var currentPostion = visibleColumns.indexOf(currentItem);
+      var swappedColumns;
 
       var menuAction = this.attr('id')
       switch(menuAction) {
         case 'move_to_right':
           if (currentPostion < visibleColumns.length - 1) {
-            [
-              visibleColumns[currentPostion],
-              visibleColumns[currentPostion + 1],
-            ] = [
-              visibleColumns[currentPostion + 1],
-              visibleColumns[currentPostion],
-            ];
+            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion + 1)
           }
           break;
         case 'move_to_left':
           if (currentPostion > 0) {
-            [
-              visibleColumns[currentPostion - 1],
-              visibleColumns[currentPostion],
-            ] = [
-              visibleColumns[currentPostion],
-              visibleColumns[currentPostion - 1],
-            ]
+            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion);
           }
           break;
         default:
+          swappedColumns = visibleColumns;
           break;
       }
       // Update columns
-      grid.setColumns(visibleColumns);
+      grid.setColumns(swappedColumns);
+    }
+
+    function swapWithTheFrontOne(array, postion) {
+      [array[postion - 1], array[postion]] = [array[postion], array[postion - 1]];
+      return array
     }
 
     // Get all columns(visible and invisible)
