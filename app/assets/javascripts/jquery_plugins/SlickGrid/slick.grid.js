@@ -410,6 +410,8 @@ if (typeof Slick === "undefined") {
         createCssRules();
         resizeCanvas();
         bindAncestorScrollEvents();
+        bindWindowResize();
+        restoreButtons();
 
         $container
             .on("resize.slickgrid", resizeCanvas);
@@ -456,6 +458,70 @@ if (typeof Slick === "undefined") {
         }
         restoreCssFromHiddenInit();
       }
+    }
+
+    function restoreButtons() {
+      var $gridContainer = $container.parent();
+      var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
+      // cal the global buttons width. Absolutely, when merged mode, there is no .toolbar-global class,
+      // the globalBottunsWidth will be 0. It makes sense.
+      var globalBottunsWidth = [...$gridContainer.find('.toolbar-global .toolbar_item')].reduce(
+          (accumulator, currentValue) => accumulator + $(currentValue).width(),
+          0
+        );
+      var toolbarWrapperWidth = Math.max($gridContainer.find('.toolbar-wrapper').width(), globalBottunsWidth);
+      var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
+      var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
+      var visiableSelectButtons = $gridContainer.find('.toolbar-select .toolbar_item:visible');
+      // 5 is a buffer width to void being too crowd.
+      var singleSelectButtonWidth = (visiableSelectButtons.width() || 38) + 5;
+      var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
+      var buttonExceptMoreButtonNumbers = capableSelectButtonNumber - 1;
+      var showButtons = selectButtons.slice(0, buttonExceptMoreButtonNumbers);
+      var moreButtons = selectButtons.slice(buttonExceptMoreButtonNumbers, selectButtons.length - 1);
+
+      // when more buttons is present, the 'more button' should be shown
+      // at the same time, some buttons should hide from the boolbar
+      if (moreButtons.length > 0) {
+        // show the 'more button'
+        $gridContainer.find('.more_vert').show();
+        for(let element of showButtons) {
+          // when element in the toolbar shows, the element under the more
+          // button should be hiden
+          $(element).show()
+          $container
+            .parent()
+            .find('ul.dropdown-content li')
+            .find("a[data-id='" + $(element).children('a').attr('id') + "']")
+            .parent()
+            .hide()
+        }
+        for(let element of moreButtons) {
+          // when the element in the toolbar hides, the element under the more
+          // button should be shown, and add the waves-effect class for beauty(only when split mode)
+          $(element).hide()
+          var moreVertItem = $container
+            .parent()
+            .find('ul.dropdown-content li')
+            .find("a[data-id='" + $(element).children('a').attr('id') + "']")
+          var buttonMode = $gridContainer
+            .find('.toolbar-select')
+            .data('mode');
+          var isSplitMode = buttonMode === 'split';
+          if (isSplitMode) {
+            moreVertItem.addClass('waves-effect')
+          }
+          moreVertItem.parent()
+          .show();
+        }
+      } else {
+        for(let element of showButtons) {
+          $(element).show()
+        }
+        // when there is no buttons being odd, the 'more button' should be hiden.
+        $gridContainer.find('.more_vert').hide();
+      }
+
     }
 
     function cacheCssForHiddenInit() {
@@ -643,6 +709,10 @@ if (typeof Slick === "undefined") {
           $elem.on("scroll." + uid, handleActiveCellPositionChange);
         }
       }
+    }
+
+    function bindWindowResize() {
+      $(window).on('resize', restoreButtons)
     }
 
     function unbindAncestorScrollEvents() {

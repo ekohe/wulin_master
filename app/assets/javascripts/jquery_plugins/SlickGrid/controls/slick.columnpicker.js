@@ -306,7 +306,7 @@
       grid.setColumns(visibleColumns);
 
       // Ekohe Add: Reset filters
-      grid.filterPanel.setupEventHander();
+      $(grid.getHeaders()).find('input').keyup();
       grid.filterPanel.generateFilters();
     }
 

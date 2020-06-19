@@ -12,15 +12,16 @@
 
 :javascript
   // create grid
-  gridManager.createNewGrid('#{grid.name.to_s.html_safe}',
-                            '#{grid.model.to_s.html_safe}',
-                            '#{grid.params["screen"].to_s.html_safe}',
-                            '#{grid.path_for_json.to_s.html_safe}',
-                             #{grid.params["filters"].to_json.html_safe},
-                             #{grid.javascript_column_model.html_safe},
-                             #{grid.states_for_user.html_safe},
-                             #{grid.action_configs.to_json.html_safe},
-                             #{grid.behavior_configs.to_json.html_safe},
-                             #{grid.options.to_json.html_safe},
-                             #{user_id});
+  gridManager.createNewGrid('#{grid.name.to_s.html_safe}', // name
+                            '#{grid.model.to_s.html_safe}', // model
+                            '#{grid.params["screen"].to_s.html_safe}', // screen
+                            '#{grid.path_for_json.to_s.html_safe}', // path
+                             #{grid.params["filters"].to_json.html_safe}, // filters
+                             #{grid.javascript_column_model.html_safe}, // columns
+                             #{grid.states_for_user.html_safe}, // states
+                             #{grid.action_configs.to_json.html_safe}, // actions
+                             #{grid.behavior_configs.to_json.html_safe}, // behaviors
+                             #{grid.options.to_json.html_safe}, // extend_options
+                             #{grid.toolbar_items.filter{ |item| !item.global? }.to_json.html_safe}, // select_toolbar_items
+                             #{user_id}); // user_id
   $('.tooltipped').tooltip();

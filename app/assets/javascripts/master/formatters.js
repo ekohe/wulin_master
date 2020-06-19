@@ -115,12 +115,13 @@
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      var checked = value ? 'checked="checked"' : '';
-      var html = '<label>'+'<input disabled type="checkbox" class="filled-in" ' +
-        checked + ' id="show-checkbox-' + row + '" />' +
-        '<span for="show-checkbox-' + row +
-        '"></span>'+'</label>';
-      return applyStyle(html, columnDef.style_class, columnDef.style || 'text-align:center');
+      if(value) {
+        var html = '<label>'+'<input disabled type="checkbox" class="filled-in" ' +
+          'checked="checked"' + ' id="show-checkbox-' + row + '" />' +
+          '<span for="show-checkbox-' + row +
+          '"></span>'+'</label>';
+      }
+      return applyStyle(html || '', columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {
