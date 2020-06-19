@@ -63,11 +63,12 @@
         }
       }
       ul.dropdown-content {
+        position: fixed;
         width: 190px !important;
-        box-shadow: $box-shadow;
         height: auto !important;
-        top: 16px !important;
         background: #FFFFFF;
+        box-shadow: $box-shadow;
+        top: 142px !important;
         li {
           font-style: normal;
           font-weight: normal;

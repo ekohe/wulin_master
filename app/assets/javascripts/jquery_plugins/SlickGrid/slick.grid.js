@@ -954,7 +954,8 @@ if (typeof Slick === "undefined") {
         $moreContainer
           .append($hideItem)
           .append($moveToRight)
-          .append($moveToLeft);
+          .append($moveToLeft)
+
         $showMoreTrigger.append($moreContainer);
         header.append($showMoreTrigger)
         $showMoreTrigger.hide();
