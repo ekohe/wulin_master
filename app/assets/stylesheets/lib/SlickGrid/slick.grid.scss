@@ -13,7 +13,7 @@ classes should alter those!
 
 .slick-header.ui-state-default {
   width: 100%;
-  overflow-y: visible;
+  overflow: hidden;
   border-left: 0px !important;
 }
 
@@ -28,14 +28,14 @@ classes should alter those!
   position: relative;
   white-space: nowrap;
   cursor: default;
-  overflow-y: visible;
+  overflow: hidden;
 }
 
 .slick-header-column.ui-state-default {
   position: relative;
   display: inline-block;
   /*box-sizing: content-box !important; */
-  overflow-y: visible;
+  overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   height: 16px;
