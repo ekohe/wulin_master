@@ -379,11 +379,10 @@ var Ui = {
     return $modalFooter;
   },
 
-  pdfDownloadFooter: function() {
+  pdfDownloadFooter: function(pdfUrl) {
     var $pdfDownloadFooter = Ui.modalFooter('Download PDF');
     $pdfDownloadFooter.find('.confirm-btn').on('click', function() {
-      var url = $("#pdf_download_btn").attr("href");
-      window.open(url);
+      window.open(pdfUrl);
       $pdfDownloadFooter.parent().modal('close');
     });
 
