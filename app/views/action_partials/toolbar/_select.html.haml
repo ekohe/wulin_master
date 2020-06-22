@@ -1,4 +1,4 @@
-- current_grid = toolbar_items.first.anchor_tag_options[:id].gsub(/.*_action_on_/, '')
+- current_grid = toolbar_items.first ? toolbar_items.first.anchor_tag_options[:id].gsub(/.*_action_on_/, '') : nil
 .toolbar-select{hidden: WulinMaster.config.split_button_mode?, 'data-mode': WulinMaster.config.button_mode}(data-grid="#{@grid_name}")
   %ul
     - toolbar_items.each do |item|
