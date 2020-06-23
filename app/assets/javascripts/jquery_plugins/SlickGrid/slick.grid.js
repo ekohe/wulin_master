@@ -1643,12 +1643,12 @@ if (typeof Slick === "undefined") {
         var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
         var text = itemInfo + ' selected';
         var selectionInfo = $gridContainer.find('.pager-item.selection');
-        var textElement = $("<div/>").text(text);
+        var textElement = $("<span/>").text(text);
         selectionInfo.empty().append(textElement);
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
-        clearLink.append($('<div/>').text('CLEAR SELECTION'));
+        clearLink.append($('<span/>').text('CLEAR SELECTION'));
         var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
         var isSplitMode = buttonMode === 'split';
         var toolbarSelect = $gridContainer.find('.toolbar-select');

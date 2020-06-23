@@ -149,7 +149,7 @@
 
       $statusContainer = $("<div class='pager-item status'/>").appendTo($container);
       $status = $(
-        "<div class='slick-pager-status' />"
+        "<span class='slick-pager-status' />"
       ).appendTo($statusContainer);
 
       $selectionContainer = $("<div class='pager-item selection'/>").appendTo($container);
@@ -157,7 +157,7 @@
       $clearFilterLink = $("<a href='#' />")
                         .addClass('clear hide waves-effect')
                         .append($('<i class="material-icons">close</i>'))
-                        .append($('<div>CLEAR FILTER</div>'))
+                        .append($('<span>CLEAR FILTER</span>'))
                         .appendTo($statusContainer);
 
       $clearFilterLink.on('click', function(e) {
