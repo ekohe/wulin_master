@@ -723,7 +723,15 @@ if (typeof Slick === "undefined") {
     function restorePaperButtons() {
       var $gridContainer = $container.parent();
       var $pager = $($gridContainer.find('.pager'));
-      console.log('$pager.width()', $pager.width())
+      var selectIsEmpty = $gridContainer.find('.pager-item.selection').is(':empty');
+      if (selectIsEmpty) {
+        if ($pager.width() <= 290) {
+          $gridContainer.find('.pager-item.status').find('a span').hide();
+        } else {
+          $gridContainer.find('.pager-item.status').find('a span').show();
+        }
+        return
+      }
       if ($pager.width() <= 530 && $pager.width() >= 430) {
         $gridContainer.find('.pager-item.status').find('a span').hide()
         $gridContainer.find('.pager-item.selection').find('a span').show();
@@ -1707,8 +1715,6 @@ if (typeof Slick === "undefined") {
         }
         $gridContainer.closest('.modal').find('.confirm-btn').removeClass('disabled');
         $gridHeader.addClass('has-selected-rows');
-        // restore the pager items
-        restorePaperButtons();
       } else {
         $gridHeader.removeClass('has-selected-rows');
         $gridContainer.find('.pager-item.selection').text('');
@@ -1716,6 +1722,9 @@ if (typeof Slick === "undefined") {
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
       }
+
+      // restore the pager items
+      restorePaperButtons();
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
     }
