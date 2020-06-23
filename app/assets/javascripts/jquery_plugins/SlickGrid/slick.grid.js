@@ -1642,13 +1642,13 @@ if (typeof Slick === "undefined") {
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
         var text = itemInfo + ' selected';
-        var selectionInfo = $gridContainer.find('.selection-info');
-        var textElement = $("<span/>").text(text);
+        var selectionInfo = $gridContainer.find('.pager-item.selection');
+        var textElement = $("<div/>").text(text);
         selectionInfo.empty().append(textElement);
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
         clearLink.append($("<i/>").addClass('material-icons').text('close'));
-        clearLink.append($('<span/>').text('CLEAR SELECTION'));
+        clearLink.append($('<div/>').text('CLEAR SELECTION'));
         var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
         var isSplitMode = buttonMode === 'split';
         var toolbarSelect = $gridContainer.find('.toolbar-select');
@@ -1684,7 +1684,7 @@ if (typeof Slick === "undefined") {
         $gridHeader.addClass('has-selected-rows');
       } else {
         $gridHeader.removeClass('has-selected-rows');
-        $gridContainer.find('.selection-info').text('');
+        $gridContainer.find('.pager-item.selection').text('');
         $gridContainer.closest('.modal').find('.confirm-btn').addClass('disabled');
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
