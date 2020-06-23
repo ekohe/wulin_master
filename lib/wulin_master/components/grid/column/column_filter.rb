@@ -17,7 +17,9 @@ module WulinMaster
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
 
-      return filter_without_reflection(query, filtering_value, sql_type, adapter) unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+      unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+        return filter_without_reflection(query, filtering_value, filtering_operator, sql_type, adapter)
+      end
       filter_with_reflection(query, filtering_value, filtering_operator, adapter)
     end
 
@@ -102,10 +104,10 @@ module WulinMaster
       end
     end
 
-    def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
+    def filter_without_reflection(query, filtering_value, filtering_operator, column_sql_type, adapter)
       field = "#{model.table_name}.#{source}"
       match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
-      operator = match_data[1]
+      operator = filtering_operator
       text = match_data[2].strip
 
       case column_sql_type.to_s
@@ -133,7 +135,7 @@ module WulinMaster
            table_column? &&
            operator &&
            text.match(/\A[-+]?[0-9]*\.?[0-9]+\Z/)
-          query.where(["#{field} #{operator} ?", text])
+          query.where(["#{field} #{operator == 'equals' ? '=' : '!='} ?", text])
         # string etc.
         else
           adapter.string_query(complete_column_name, filtering_value, self)
