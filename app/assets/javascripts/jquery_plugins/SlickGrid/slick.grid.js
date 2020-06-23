@@ -712,7 +712,32 @@ if (typeof Slick === "undefined") {
     }
 
     function bindWindowResize() {
-      $(window).on('resize', restoreButtons)
+      $(window).on('resize', handleWindowResize)
+    }
+
+    function handleWindowResize() {
+      restoreButtons();
+      restorePaperButtons();
+    }
+
+    function restorePaperButtons() {
+      var $gridContainer = $container.parent();
+      var $pager = $($gridContainer.find('.pager'));
+      console.log('$pager.width()', $pager.width())
+      if ($pager.width() <= 530 && $pager.width() >= 430) {
+        $gridContainer.find('.pager-item.status').find('a span').hide()
+        $gridContainer.find('.pager-item.selection').find('a span').show();
+      } else if ($pager.width() < 430){
+        for (var pagerItem of $gridContainer.find('.pager-item')) {
+          var $pagerItem = $(pagerItem);
+          $pagerItem.find('a span').hide();
+        }
+      } else {
+        for (var pagerItem of $gridContainer.find('.pager-item')) {
+          var $pagerItem = $(pagerItem);
+          $pagerItem.find('a span').show();
+        }
+      }
     }
 
     function unbindAncestorScrollEvents() {
@@ -1682,6 +1707,8 @@ if (typeof Slick === "undefined") {
         }
         $gridContainer.closest('.modal').find('.confirm-btn').removeClass('disabled');
         $gridHeader.addClass('has-selected-rows');
+        // restore the pager items
+        restorePaperButtons();
       } else {
         $gridHeader.removeClass('has-selected-rows');
         $gridContainer.find('.pager-item.selection').text('');
