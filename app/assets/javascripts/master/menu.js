@@ -13,7 +13,7 @@ $(document).ready(function () {
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function(event, ui) {
     $("#content").css('left', $("#navigation").width()+1);
-    $("#navigation").css('height', '100%');
+    $("#navigation").css('height', 'auto');
   });
 
   History.Adapter.bind(window, 'statechange', function() {
