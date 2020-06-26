@@ -107,15 +107,17 @@ module WulinMaster
     def filter_without_reflection(query, filtering_value, filtering_operator, column_sql_type, adapter)
       field = "#{model.table_name}.#{source}"
       match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
-      operator = filtering_operator
+      operator = match_data[1] || filtering_operator
+      operator = "=" if operator == 'equals'
+
       text = match_data[2].strip
 
       case column_sql_type.to_s
       when 'date', 'datetime'
-        where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
+        where_condition = ["to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%']
         begin
           date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
-          where_condition = "#{field} #{operator} '#{date}'" if operator && date
+          where_condition = ["#{field} #{operator}", date] if operator && date
         rescue ArgumentError
         end
         query.where(where_condition)
@@ -135,7 +137,7 @@ module WulinMaster
            table_column? &&
            operator &&
            text.match(/\A[-+]?[0-9]*\.?[0-9]+\Z/)
-          query.where(["#{field} #{operator == 'equals' ? '=' : '!='} ?", text])
+          query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
           adapter.string_query(complete_column_name, filtering_value, self)
