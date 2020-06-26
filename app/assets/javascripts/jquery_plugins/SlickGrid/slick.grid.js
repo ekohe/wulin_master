@@ -712,7 +712,40 @@ if (typeof Slick === "undefined") {
     }
 
     function bindWindowResize() {
-      $(window).on('resize', restoreButtons)
+      $(window).on('resize', handleWindowResize)
+    }
+
+    function handleWindowResize() {
+      restoreButtons();
+      restorePaperButtons();
+    }
+
+    function restorePaperButtons() {
+      var $gridContainer = $container.parent();
+      var $pager = $($gridContainer.find('.pager'));
+      var selectIsEmpty = $gridContainer.find('.pager-item.selection').is(':empty');
+      if (selectIsEmpty) {
+        if ($pager.width() <= 290) {
+          $gridContainer.find('.pager-item.status').find('a span').hide();
+        } else {
+          $gridContainer.find('.pager-item.status').find('a span').show();
+        }
+        return
+      }
+      if ($pager.width() <= 530 && $pager.width() >= 430) {
+        $gridContainer.find('.pager-item.status').find('a span').hide()
+        $gridContainer.find('.pager-item.selection').find('a span').show();
+      } else if ($pager.width() < 430){
+        for (var pagerItem of $gridContainer.find('.pager-item')) {
+          var $pagerItem = $(pagerItem);
+          $pagerItem.find('a span').hide();
+        }
+      } else {
+        for (var pagerItem of $gridContainer.find('.pager-item')) {
+          var $pagerItem = $(pagerItem);
+          $pagerItem.find('a span').show();
+        }
+      }
     }
 
     function unbindAncestorScrollEvents() {
@@ -1642,7 +1675,7 @@ if (typeof Slick === "undefined") {
       if (itemCount >= 1) {
         var itemInfo = itemCount > 1 ? itemCount + ' rows' : '1 row';
         var text = itemInfo + ' selected';
-        var selectionInfo = $gridContainer.find('.selection-info');
+        var selectionInfo = $gridContainer.find('.pager-item.selection');
         var textElement = $("<span/>").text(text);
         selectionInfo.empty().append(textElement);
 
@@ -1684,11 +1717,14 @@ if (typeof Slick === "undefined") {
         $gridHeader.addClass('has-selected-rows');
       } else {
         $gridHeader.removeClass('has-selected-rows');
-        $gridContainer.find('.selection-info').text('');
+        $gridContainer.find('.pager-item.selection').text('');
         $gridContainer.closest('.modal').find('.confirm-btn').addClass('disabled');
         $(getActiveCellNode()).removeClass('active');
         activeCell, activeRow = null;
       }
+
+      // restore the pager items
+      restorePaperButtons();
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
     }

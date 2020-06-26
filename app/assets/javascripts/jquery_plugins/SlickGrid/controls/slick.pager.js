@@ -148,10 +148,11 @@
       $container.empty();
 
       $statusContainer = $("<div class='pager-item status'/>").appendTo($container);
-      $status = $("<span class='slick-pager-status' />").appendTo($statusContainer);
+      $status = $(
+        "<span class='slick-pager-status' />"
+      ).appendTo($statusContainer);
 
       $selectionContainer = $("<div class='pager-item selection'/>").appendTo($container);
-      $selectionInfo = $("<span class='selection-info' />").appendTo($selectionContainer)
 
       $clearFilterLink = $("<a href='#' />")
                         .addClass('clear hide waves-effect')

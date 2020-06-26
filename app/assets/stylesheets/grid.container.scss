@@ -53,11 +53,6 @@
 
     .pager-item.selection {
       text-align: center;
-    }
-
-    .selection-info {
-      position: inherit;
-      left: 50%;
       font-size: $font-size-small;
       color: $grid-header-selection-info-color;
       a.clear {
