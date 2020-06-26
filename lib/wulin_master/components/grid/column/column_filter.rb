@@ -17,7 +17,9 @@ module WulinMaster
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
 
-      return filter_without_reflection(query, filtering_value, sql_type, adapter) unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+      unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
+        return filter_without_reflection(query, filtering_value, filtering_operator, sql_type, adapter)
+      end
       filter_with_reflection(query, filtering_value, filtering_operator, adapter)
     end
 
@@ -102,18 +104,20 @@ module WulinMaster
       end
     end
 
-    def filter_without_reflection(query, filtering_value, column_sql_type, adapter)
+    def filter_without_reflection(query, filtering_value, filtering_operator, column_sql_type, adapter)
       field = "#{model.table_name}.#{source}"
       match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
-      operator = match_data[1]
+      operator = match_data[1] || filtering_operator
+      operator = "=" if operator == 'equals'
+
       text = match_data[2].strip
 
       case column_sql_type.to_s
       when 'date', 'datetime'
-        where_condition = "to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%'
+        where_condition = ["to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%']
         begin
           date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
-          where_condition = "#{field} #{operator} '#{date}'" if operator && date
+          where_condition = ["#{field} #{operator}", date] if operator && date
         rescue ArgumentError
         end
         query.where(where_condition)
