@@ -16,15 +16,19 @@
         %a#activity-btn.dropdown-trigger.btn.disabled{'data-target' => 'activity-list', href: '#'}
           %i.material-icons notifications
         %ul#activity-list.dropdown-content.collection.hide
-      %li
-        - if defined?(WulinOAuth) && User.current_user
-          = link_to "#{WulinOAuth.configuration['logout_uri']}?redirect_uri=#{logout_url}" do
+      - if WulinMaster::UserMenu.menus.present?
+        %li
+          %a.dropdown-trigger{'data-target' => 'userMenu'}
             %i.material-icons account_circle
             %span= User.current_user.email
-        - elsif defined?(WulinAuth) && current_user
-          = link_to logout_path do
-            %i.material-icons account_circle
-            %span= current_user.email
+          %ul#userMenu.dropdown-content.collection
+            %li
+              - WulinMaster::UserMenu.menus.each do |name, options|
+                %li
+                  = link_to "#{options[:url] || 'javascript:void(0);'}" do
+                    %i.material-icons
+                      = options[:icon].presence || 'help'
+                    = options[:title]
 
 - if wikis
   #help-modal.modal
