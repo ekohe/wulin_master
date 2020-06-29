@@ -58,6 +58,7 @@ require 'wulin_master/screen/screen'
 require 'wulin_master/components/component'
 require 'wulin_master/components/grid/grid'
 require 'wulin_master/components/panel/panel'
+require 'wulin_master/components/nav/user_menu'
 
 WulinMaster.prepend_javascript 'master/master.js'
 WulinMaster.prepend_stylesheet 'master.css'
