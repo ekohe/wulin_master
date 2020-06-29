@@ -46,3 +46,27 @@
     }
   }
 }
+
+.nav-wrapper {
+  #userMenu {
+    top: $nav-height !important;
+    width: 209px !important;
+    background-color: #ffffff;
+    box-shadow: $box-shadow;
+    height: auto !important;
+    li {
+      min-height: unset;
+      line-height: 1rem;
+      font-size: 15px;
+      a {
+        color: #4d4d4e;
+        padding: 7px 15px;
+        i.material-icons {
+          position: static;
+          font-size: $font-size-middle;
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+}
