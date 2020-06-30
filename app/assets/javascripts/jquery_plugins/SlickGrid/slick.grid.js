@@ -725,6 +725,8 @@ if (typeof Slick === "undefined") {
       for (var pagerItem of $gridContainer.find('.pager-item')) {
         var $pagerItem = $(pagerItem);
         var pagerItemWidth = $pagerItem.width();
+        var pagerItemPaddingWidth =  parseInt($pagerItem.css('padding-left')) + parseInt($pagerItem.css('padding-right'));
+        var pagerContentWidth = pagerItemWidth - pagerItemPaddingWidth;
         var $aTag = $($pagerItem.find('a'))
         var $aTagText = $($aTag.find('span'));
         var $aTagIcon = $($aTag.find('i'));
@@ -735,15 +737,15 @@ if (typeof Slick === "undefined") {
         var hintTextWidth = $hintText.width();
         var aTagPaddingWidth = parseInt($aTag.css('padding-left')) + parseInt($aTag.css('padding-right'));
         var aTagMarginWidth = parseInt($aTag.css('margin-left')) + parseInt($aTag.css('margin-right'));
-        var contentWidth = aTagCalculatedWidth + hintTextWidth + aTagPaddingWidth + aTagMarginWidth;
+        var contentWidth = hintTextWidth + aTagCalculatedWidth + aTagPaddingWidth + aTagMarginWidth;
         var hintTextWithIconWidth = hintTextWidth + aTagIconWidth + aTagPaddingWidth + aTagMarginWidth;
-        if (pagerItemWidth < contentWidth){
+        if (pagerContentWidth < contentWidth){
           $aTag.find('span').hide()
         } else {
           $aTag.find('span').show()
         }
         if ($pagerItem.hasClass('selection')) {
-          if (pagerItemWidth < hintTextWithIconWidth) {
+          if (pagerContentWidth < hintTextWithIconWidth) {
             $hintText.hide();
           } else {
             $hintText.show();
