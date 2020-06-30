@@ -717,33 +717,27 @@ if (typeof Slick === "undefined") {
 
     function handleWindowResize() {
       restoreButtons();
-      restorePaperButtons();
+      updatePagerButtons();
     }
 
-    function restorePaperButtons() {
+    function updatePagerButtons() {
       var $gridContainer = $container.parent();
-      var $pager = $($gridContainer.find('.pager'));
-      var selectIsEmpty = $gridContainer.find('.pager-item.selection').is(':empty');
-      if (selectIsEmpty) {
-        if ($pager.width() <= 290) {
-          $gridContainer.find('.pager-item.status').find('a span').hide();
+      for (var pagerItem of $gridContainer.find('.pager-item')) {
+        var $pagerItem = $(pagerItem);
+        var pagerItemWidth = $pagerItem.width();
+        var $aTag = $($pagerItem.find('a'))
+        var $aTagText = $($aTag.find('span'));
+        var $aTagIcon = $($aTag.find('i'));
+        var aTagTextMarginWidth = parseInt($aTagText.css('margin-left')) + parseInt($aTagText.css('margin-right'));
+        var aTagCalculatedWidth = $aTagIcon.width() + $aTagText.width() + aTagTextMarginWidth;
+        var hintTextWidth = $($pagerItem.find('span')[0]).width();
+        var aTagPaddingWidth = parseInt($aTag.css('padding-left')) + parseInt($aTag.css('padding-right'));
+        var aTagMarginWidth = parseInt($aTag.css('margin-left')) + parseInt($aTag.css('margin-right'));
+        var contentWidth = aTagCalculatedWidth + hintTextWidth + aTagPaddingWidth + aTagMarginWidth;
+        if (pagerItemWidth < contentWidth){
+          $aTag.find('span').hide()
         } else {
-          $gridContainer.find('.pager-item.status').find('a span').show();
-        }
-        return
-      }
-      if ($pager.width() <= 530 && $pager.width() >= 430) {
-        $gridContainer.find('.pager-item.status').find('a span').hide()
-        $gridContainer.find('.pager-item.selection').find('a span').show();
-      } else if ($pager.width() < 430){
-        for (var pagerItem of $gridContainer.find('.pager-item')) {
-          var $pagerItem = $(pagerItem);
-          $pagerItem.find('a span').hide();
-        }
-      } else {
-        for (var pagerItem of $gridContainer.find('.pager-item')) {
-          var $pagerItem = $(pagerItem);
-          $pagerItem.find('a span').show();
+          $aTag.find('span').show()
         }
       }
     }
@@ -1723,8 +1717,8 @@ if (typeof Slick === "undefined") {
         activeCell, activeRow = null;
       }
 
-      // restore the pager items
-      restorePaperButtons();
+      // update the pager items
+      updatePagerButtons();
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
     }
