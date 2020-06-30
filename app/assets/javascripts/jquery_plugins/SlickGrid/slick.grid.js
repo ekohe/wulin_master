@@ -724,8 +724,12 @@ if (typeof Slick === "undefined") {
       var $gridContainer = $container.parent();
       for (var pagerItem of $gridContainer.find('.pager-item')) {
         var $pagerItem = $(pagerItem);
+        // if pager item is empty, return directly.
+        if ($pagerItem.is(':empty')) return;
+
         var pagerItemWidth = $pagerItem.width();
-        var pagerItemPaddingWidth =  parseInt($pagerItem.css('padding-left')) + parseInt($pagerItem.css('padding-right'));
+        var pagerItemPaddingWidth = parseInt($pagerItem.css('padding-left')) + parseInt($pagerItem.css('padding-right'));
+        // we use the box-sizing: border-box. we have to subtract paddings(margins, if has), when we cal the content width.
         var pagerContentWidth = pagerItemWidth - pagerItemPaddingWidth;
         var $aTag = $($pagerItem.find('a'))
         var $aTagText = $($aTag.find('span'));
@@ -735,17 +739,19 @@ if (typeof Slick === "undefined") {
         var aTagCalculatedWidth = aTagIconWidth + $aTagText.width() + aTagTextMarginWidth;
         var $hintText = $($pagerItem.find('span')[0]);
         var hintTextWidth = $hintText.width();
-        var aTagPaddingWidth = parseInt($aTag.css('padding-left')) + parseInt($aTag.css('padding-right'));
         var aTagMarginWidth = parseInt($aTag.css('margin-left')) + parseInt($aTag.css('margin-right'));
-        var contentWidth = hintTextWidth + aTagCalculatedWidth + aTagPaddingWidth + aTagMarginWidth;
-        var hintTextWithIconWidth = hintTextWidth + aTagIconWidth + aTagPaddingWidth + aTagMarginWidth;
+        var contentWidth = hintTextWidth + aTagCalculatedWidth + aTagMarginWidth;
+        var hintTextWithIconWidth = hintTextWidth + aTagIconWidth + aTagMarginWidth;
         if (pagerContentWidth < contentWidth){
           $aTag.find('span').hide()
         } else {
           $aTag.find('span').show()
         }
         if ($pagerItem.hasClass('selection')) {
-          if (pagerContentWidth < hintTextWithIconWidth) {
+          // Here we have to re-calculate the width of pager content
+          var curPagerContentWidth = $pagerItem.width() - pagerItemPaddingWidth;
+          // 120 is the 'n rows selected X' default width value
+          if (curPagerContentWidth < Math.max(hintTextWithIconWidth, 120)) {
             $hintText.hide();
           } else {
             $hintText.show();
@@ -1705,6 +1711,8 @@ if (typeof Slick === "undefined") {
           }
           $gridContainer.find('.grid-header').removeClass('has-selected-rows');
           selectionModel.onSelectedRangesChanged.notify([]);
+
+          updatePagerButtons();
           return false;
         })
 
@@ -1729,7 +1737,6 @@ if (typeof Slick === "undefined") {
         activeCell, activeRow = null;
       }
 
-      // update the pager items
       updatePagerButtons();
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
