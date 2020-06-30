@@ -216,9 +216,9 @@
           var totalRowsPaddings =
             parseInt(pagerStatusWithFilter.css('padding-left')) +
               parseInt(pagerStatusWithFilter.css('padding-right'))
-          var slickPaperMarginLeft = parseInt($('.slick-pager').css("padding-left"));
+          var slickPagerMarginLeft = parseInt($('.slick-pager').css("padding-left"));
           var clearFilterLinkLeft =
-            totalRowsLength + totalRowsPaddings + slickPaperMarginLeft;
+            totalRowsLength + totalRowsPaddings + slickPagerMarginLeft;
           $clearFilterLink
             .removeClass('hide')
             .css({ left: clearFilterLinkLeft });
