@@ -1,6 +1,3 @@
-:ruby
-  wikis = WulinWiki::Wiki.all if defined?(WulinWiki)
-
 %nav
   .nav-wrapper
     %a#menu-toggle.left{href: '#'}
@@ -8,79 +5,25 @@
     %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
     %ul.right
-      - if wikis
+      - WulinMaster::AppBarMenu.orderd_menus.each do |main_menu|
         %li
-          %a#help-btn.btn{href: '#help-modal'}
-            %i.material-icons help
-      %li
-        %a#activity-btn.dropdown-trigger.btn.disabled{'data-target' => 'activity-list', href: '#'}
-          %i.material-icons notifications
-        %ul#activity-list.dropdown-content.collection.hide
-      - if WulinMaster::AppBarMenu.menus.present?
-        %li
-          %a.dropdown-trigger{'data-target' => 'appBarMenu'}
-            %i.material-icons account_circle
-            %span= current_user.email
-          %ul#appBarMenu.dropdown-content.collection
-            %li
-              - WulinMaster::AppBarMenu.menus.each do |name, options|
-                %li
-                  = link_to "#{options[:url] || 'javascript:void(0);'}" do
-                    %i.material-icons
-                      = options[:icon].presence || 'help'
-                    = options[:title]
-
-- if wikis
-  #help-modal.modal
-    .modal-header
-      %span#help-title Help
-      %i.modal-close.material-icons.right close
-    .modal-content
-      %ul#help-list
-        - wikis.each do |wiki|
-          - wiki_title = (wiki.screen_name || '') + (wiki.grid_name ? ' - ' + wiki.grid_name : '')
-          %li
-            %a{"data-wiki-content" => wiki.content, "data-wiki-title" => wiki_title, href: '#'}
-              %i.material-icons.left live_help
-              %span= wiki_title
-      #help-content-container.hide
-        #help-content
-        %a#help-menu-link{href: '#'}
-          %i.material-icons dns
-          %span BROWSE ALL ARTICLES
-
-:javascript
-
-  $(function(){
-
-    $('#help-modal').modal();
-
-    $('#help-btn').on('click', function() {
-      $('#help-modal').modal('open');
-      showHelpList();
-    });
-
-    $('#help-menu-link').on('click', function() {
-      showHelpList();
-    });
-
-    $('#help-list li a').on('click', function() {
-      var wikiTitle = 'Help - ' + $(this).attr('data-wiki-title');
-      var wikiContent = $(this).attr('data-wiki-content');
-      $('#help-content').html(wikiContent);
-      $('#help-title').text(wikiTitle);
-      $('#help-list').addClass('hide');
-      $('#help-content-container').removeClass('hide');
-    });
-
-    $('#activity-btn').on('click', function() {
-      $('#activity-list').removeClass('hide');
-    });
-
-    function showHelpList() {
-      $('#help-list').removeClass('hide');
-      $('#help-content-container').addClass('hide');
-      $('#help-title').text('Help');
-    };
-
-  });
+          - case main_menu.to_s
+          - when 'HelpMenu'
+            = link_to wulin_wiki_show_path, remote: true, id: 'help-btn', class: 'btn' do
+              %i.material-icons= main_menu.icon
+          - when 'ActivityMenu'
+            %a#activity-btn.dropdown-trigger.btn.disabled{'data-target' => 'activity-list', href: '#'}
+              %i.material-icons= main_menu.icon
+            %ul#activity-list.dropdown-content.collection
+          - when 'UserMenu'
+            %a.dropdown-trigger{'data-target' => 'userMenu'}
+              %i.material-icons= main_menu.icon
+              %span= main_menu.label
+            %ul#userMenu.dropdown-content.collection
+              %li
+                - main_menu.menus.each do |sub_menu|
+                  %li
+                    = link_to "#{sub_menu[:url] || 'javascript:void(0);'}" do
+                      %i.material-icons
+                        = sub_menu[:icon].presence || 'help'
+                      = sub_menu[:label]
