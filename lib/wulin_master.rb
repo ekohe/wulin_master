@@ -67,3 +67,16 @@ Time::DATE_FORMATS[:no_seconds] = "%d/%m/%Y %H:%M"
 Time::DATE_FORMATS[:date] = "%d/%m/%Y"
 Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds
+class ActivityMenu < WulinMaster::AppBarMenu
+  class << self
+    def order
+      1
+    end
+
+    def icon
+      :notifications
+    end
+  end
+end
+
+WulinMaster::AppBarMenu.add_menu ActivityMenu
