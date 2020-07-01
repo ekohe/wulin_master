@@ -2,19 +2,22 @@
 
 module WulinMaster
   class AppBarMenu
-    # menus:
-    # { logout: { title: 'Logout', icon: 'lock', url: '/logout' } }
-    class_attribute :menus, default: {}
+    class_attribute :menus, default: []
 
     class << self
+      def label; end
+
       # to add a menu
-      def add_menu(name, options)
-        menus[name.to_sym] = { title: name.to_s.titleize, **options }
+      def add_menu(menu)
+        menus.push(menu)
       end
 
-      # mainly to unbind the default menus
-      def remove_menu(name)
-        menus.delete(name.to_sym)
+      def inherited(subclass)
+        subclass.menus = []
+      end
+
+      def orderd_menus
+        menus.sort_by(&:order) # order alphabetically
       end
     end
   end
