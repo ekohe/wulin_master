@@ -20,7 +20,7 @@
         %li
           %a.dropdown-trigger{'data-target' => 'appBarMenu'}
             %i.material-icons account_circle
-            %span= User.current_user.email
+            %span= current_user.email
           %ul#appBarMenu.dropdown-content.collection
             %li
               - WulinMaster::AppBarMenu.menus.each do |name, options|
