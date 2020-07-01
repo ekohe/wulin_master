@@ -22,3 +22,15 @@ module WulinMaster
     end
   end
 end
+
+class ActivityMenu < WulinMaster::AppBarMenu
+  class << self
+    def order
+      1
+    end
+
+    def icon
+      :notifications
+    end
+  end
+end
