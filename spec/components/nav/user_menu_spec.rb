@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require './lib/wulin_master/components/nav/user_menu.rb'
+require './lib/wulin_master/components/nav/app_bar_menu'
 
-describe WulinMaster::UserMenu do
+describe WulinMaster::AppBarMenu do
   subject { described_class }
 
   it 'has a default menus {}' do

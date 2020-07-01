@@ -16,14 +16,14 @@
         %a#activity-btn.dropdown-trigger.btn.disabled{'data-target' => 'activity-list', href: '#'}
           %i.material-icons notifications
         %ul#activity-list.dropdown-content.collection.hide
-      - if WulinMaster::UserMenu.menus.present?
+      - if WulinMaster::AppBarMenu.menus.present?
         %li
-          %a.dropdown-trigger{'data-target' => 'userMenu'}
+          %a.dropdown-trigger{'data-target' => 'appBarMenu'}
             %i.material-icons account_circle
             %span= User.current_user.email
-          %ul#userMenu.dropdown-content.collection
+          %ul#appBarMenu.dropdown-content.collection
             %li
-              - WulinMaster::UserMenu.menus.each do |name, options|
+              - WulinMaster::AppBarMenu.menus.each do |name, options|
                 %li
                   = link_to "#{options[:url] || 'javascript:void(0);'}" do
                     %i.material-icons

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WulinMaster
-  class UserMenu
+  class AppBarMenu
     # menus:
     # { logout: { title: 'Logout', icon: 'lock', url: '/logout' } }
     class_attribute :menus, default: {}
