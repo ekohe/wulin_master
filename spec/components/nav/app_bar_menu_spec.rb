@@ -7,17 +7,17 @@ describe WulinMaster::AppBarMenu do
   subject { described_class }
 
   # ActivityMenu has been added in the file lib/wulin_master.rb
-  it 'has a default menus [ActivityMenu]' do
-    expect(subject.menus).to eq([ActivityMenu])
+  it 'has a default menus named app_bar_menu' do
+    expect(subject.menus.name).to eq(:app_bar_menu)
   end
 
   context 'add_menu' do
     before do
-      ActivityMenu.add_menu(label: 'activity menu')
+      described_class.menus.add_menu(:user_menu)
     end
 
-    it 'alerts ActivityMenu added {label: "activity menu"}' do
-      expect(ActivityMenu.menus).to contain_exactly({label: 'activity menu'})
+    it 'has a menus which has a main menu named user_menu' do
+      expect(described_class.menus.menus.last.name).to eq(:user_menu)
     end
   end
 end
