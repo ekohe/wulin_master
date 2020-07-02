@@ -7,23 +7,16 @@
     %ul.right
       - WulinMaster::AppBarMenu.orderd_menus.each do |main_menu|
         %li
-          - case main_menu.to_s
-          - when 'HelpMenu'
-            = link_to wulin_wiki_show_path, remote: true, id: 'help-btn', class: 'btn' do
-              %i.material-icons= main_menu.icon
-          - when 'ActivityMenu'
-            %a#activity-btn.dropdown-trigger.btn.disabled{'data-target' => 'activity-list', href: '#'}
-              %i.material-icons= main_menu.icon
-            %ul#activity-list.dropdown-content.collection
-          - when 'UserMenu'
-            %a.dropdown-trigger{'data-target' => 'userMenu'}
-              %i.material-icons= main_menu.icon
-              %span= main_menu.label
-            %ul#userMenu.dropdown-content.collection
-              %li
-                - main_menu.menus.each do |sub_menu|
-                  %li
-                    = link_to "#{sub_menu[:url] || 'javascript:void(0);'}" do
-                      %i.material-icons
-                        = sub_menu[:icon].presence || 'help'
-                      = sub_menu[:label]
+          = link_to main_menu.url, id: main_menu.id, class: main_menu.class_name, data: main_menu.data_option do
+            %i.material-icons= main_menu.icon
+            %span= main_menu.label
+          - if main_menu.sub_menus?
+            %ul.dropdown-content.collection{id: "#{main_menu.id}-list"}
+              - if main_menu.menus.present?
+                %li
+                  - main_menu.menus.each do |sub_menu|
+                    %li
+                      = link_to sub_menu[:url] do
+                        %i.material-icons
+                          = sub_menu[:icon].presence || 'help'
+                        = sub_menu[:label]

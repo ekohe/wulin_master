@@ -4,7 +4,7 @@
   padding-left: 20px;
 }
 
-#activity-list {
+#ActivityMenu-list {
   width: $activity-list-width !important;
   top: $nav-height !important;
   li {
@@ -48,7 +48,7 @@
 }
 
 .nav-wrapper {
-  #userMenu {
+  #UserMenu-list {
     top: $nav-height !important;
     width: 209px !important;
     background-color: #ffffff;
