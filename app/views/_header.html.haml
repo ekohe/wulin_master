@@ -5,18 +5,19 @@
     %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
     %ul.right
-      - WulinMaster::AppBarMenu.orderd_menus.each do |main_menu|
+      - WulinMaster::AppBarMenu.sorted_main_menus.each do |main_menu|
+        - main_menu_options = main_menu.options
         %li
-          = link_to main_menu.url, id: main_menu.id, class: main_menu.class_name, data: main_menu.data_option do
-            %i.material-icons= main_menu.icon
-            %span= main_menu.label
-          - if main_menu.sub_menus?
-            %ul.dropdown-content.collection{id: "#{main_menu.id}-list"}
+          = link_to main_menu_options[:url] || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
+            %i.material-icons= main_menu_options[:icon]
+            %span= main_menu_options[:label]
+          - if main_menu_options[:submenus]
+            %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
               - if main_menu.menus.present?
-                %li
-                  - main_menu.menus.each do |sub_menu|
-                    %li
-                      = link_to sub_menu[:url] do
-                        %i.material-icons
-                          = sub_menu[:icon].presence || 'help'
-                        = sub_menu[:label]
+                - main_menu.menus.each do |sub_menu|
+                  - sub_menu_options = sub_menu.options
+                  %li
+                    = link_to sub_menu_options[:url] do
+                      %i.material-icons
+                        = sub_menu_options[:icon].presence || 'help'
+                      = sub_menu_options[:label]

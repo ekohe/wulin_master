@@ -1,69 +1,37 @@
 # frozen_string_literal: true
 
 module WulinMaster
-  class AppBarMenu
-    class_attribute :menus, default: []
+  module AppBarMenu
+    def self.menus
+      @menus ||= MainMenu.new(:app_bar_menu)
+    end
 
-    class << self
-      def id
-        name
-      end
-
-      def class_name
-        ''
-      end
-
-      def data_option
-        {}
-      end
-
-      def url
-        '#'
-      end
-
-      def label; end
-
-      # to add a menu
-      def add_menu(menu)
-        menus.push(menu)
-        yield(menu) if block_given?
-      end
-
-      def inherited(subclass)
-        subclass.menus = []
-      end
-
-      def orderd_menus
-        menus.sort_by(&:order) # order alphabetically
-      end
-
-      def sub_menus?
-        false
-      end
+    def self.sorted_main_menus
+      menus.menus.sort_by { |menu| menu.options[:order] }
     end
   end
-end
 
-class ActivityMenu < WulinMaster::AppBarMenu
-  class << self
-    def class_name
-      'dropdown-trigger disabled'
+  class MainMenu
+    attr_accessor :menus, :name, :options
+
+    def initialize(name, options = {})
+      @name = name
+      @options = options
+      @menus = []
     end
 
-    def data_option
-      { target: "#{id}-list" }
+    def add_menu(name, options = {})
+      menu = find_or_initialize_menu(name, options)
+      menus.push(menu)
+      yield(menu) if block_given?
     end
 
-    def order
-      1
+    def find_or_initialize_menu(name, options)
+      @menus.detect { |x| x.name == name } || MainMenu.new(name, options)
     end
 
-    def icon
-      :notifications
-    end
-
-    def sub_menus?
-      true
+    def sorted
+      menus.sort_by { |menu| menu.options[:order] }
     end
   end
 end
