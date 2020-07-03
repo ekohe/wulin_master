@@ -10,7 +10,7 @@
         %li
           = link_to main_menu_options[:url] || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
             %i.material-icons= main_menu_options[:icon]
-            %span= main_menu_options[:label]
+            %span= main_menu_options[:label]&.call
           - if main_menu_options[:submenus]
             %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
               - if main_menu.menus.present?
