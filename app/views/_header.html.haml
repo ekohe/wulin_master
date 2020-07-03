@@ -11,13 +11,12 @@
           = link_to main_menu_options[:url] || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
             %i.material-icons= main_menu_options[:icon]
             %span= main_menu_options[:label]&.call
-          - if main_menu_options[:submenus]
-            %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
-              - if main_menu.menus.present?
-                - main_menu.menus.each do |sub_menu|
-                  - sub_menu_options = sub_menu.options
-                  %li
-                    = link_to sub_menu_options[:url] do
-                      %i.material-icons
-                        = sub_menu_options[:icon].presence || 'help'
-                      = sub_menu_options[:label]
+          %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
+            - if main_menu.menus.present?
+              - main_menu.menus.each do |sub_menu|
+                - sub_menu_options = sub_menu.options
+                %li
+                  = link_to sub_menu_options[:url] do
+                    %i.material-icons
+                      = sub_menu_options[:icon].presence || 'help'
+                    = sub_menu_options[:label]
