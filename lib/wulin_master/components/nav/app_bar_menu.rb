@@ -26,12 +26,14 @@ module WulinMaster
       yield(menu) if block_given?
     end
 
-    def find_or_initialize_menu(name, options)
-      @menus.detect { |x| x.name == name } || MainMenu.new(name, options)
-    end
-
     def sorted
       menus.sort_by { |menu| menu.options[:order] }
+    end
+
+    private
+
+    def find_or_initialize_menu(name, options)
+      @menus.detect { |x| x.name == name } || MainMenu.new(name, options)
     end
   end
 end
