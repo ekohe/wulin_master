@@ -13,7 +13,7 @@ require 'materialize-sass'
 require 'material_icons'
 
 module WulinMaster
-  @javascripts = ['application.js']
+  @javascripts = Rails::VERSION::MAJOR >= 6 ? [] : ['application.js']
   @stylesheets = ['application.css']
 
   def self.add_javascript(script)
