@@ -7,10 +7,11 @@
     %ul.right
       - WulinMaster::AppBarMenu.sorted_main_menus.each do |main_menu|
         - main_menu_options = main_menu.options
+        - label = main_menu_options[:label] && (main_menu_options[:label].is_a?(Proc) ? instance_exec(&main_menu_options[:label]) : main_menu_options[:label])
         %li
           = link_to main_menu_options[:url] || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
             %i.material-icons= main_menu_options[:icon]
-            %span= main_menu_options[:label]&.call
+            %span= label if label
           %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
             - if main_menu.menus.present?
               - main_menu.menus.each do |sub_menu|
