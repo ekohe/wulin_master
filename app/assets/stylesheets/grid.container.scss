@@ -28,6 +28,9 @@
     .pager-item {
       flex-grow: 1;
       padding: 8px 10px 2px 10px;
+      > span {
+        white-space: nowrap;
+      }
 
       a.clear {
         position: relative;
