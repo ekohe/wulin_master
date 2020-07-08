@@ -58,6 +58,7 @@ require 'wulin_master/screen/screen'
 require 'wulin_master/components/component'
 require 'wulin_master/components/grid/grid'
 require 'wulin_master/components/panel/panel'
+require 'wulin_master/components/nav/app_bar_menu'
 
 WulinMaster.prepend_javascript 'master/master.js'
 WulinMaster.prepend_stylesheet 'master.css'
@@ -66,3 +67,8 @@ Time::DATE_FORMATS[:no_seconds] = "%d/%m/%Y %H:%M"
 Time::DATE_FORMATS[:date] = "%d/%m/%Y"
 Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds
+
+WulinMaster::AppBarMenu.menus.add_menu :activity_menu, icon: :notifications,
+                                                       class: 'dropdown-trigger btn disabled',
+                                                       data: { target: "activity_menu-list" },
+                                                       order: 1

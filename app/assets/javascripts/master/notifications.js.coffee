@@ -35,11 +35,11 @@ window.saveMessage = (content, type) ->
     type: type || 'success',
     time: hour + ':' + minute
   }
-  $li = $('<li class="notification-item collection-item"></li>').prependTo($('#activity-list'))
+  $li = $('<li class="notification-item collection-item"></li>').prependTo($('#activity_menu-list'))
   $icon = $('<i class="material-icons left"></i>').appendTo($li)
   $('<div>' + message.content + '</div>').appendTo($li)
   $('<div class="right">' + message.time + '</div>').appendTo($li)
-  $('#activity-btn').removeClass('disabled')
+  $('#activity_menu').removeClass('disabled')
   if message.type == 'info'
     $icon.text('error_outline')
   else if message.type == 'success'
