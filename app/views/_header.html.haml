@@ -8,16 +8,18 @@
       - WulinMaster::AppBarMenu.sorted_main_menus.each do |main_menu|
         - main_menu_options = main_menu.options
         - label = main_menu_options[:label] && (main_menu_options[:label].is_a?(Proc) ? instance_exec(&main_menu_options[:label]) : main_menu_options[:label])
+        - main_menu_url = main_menu_options[:url] && (main_menu_options[:url].is_a?(Proc) ? instance_exec(&main_menu_options[:url]) : main_menu_options[:url])
         %li
-          = link_to main_menu_options[:url] || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
+          = link_to main_menu_url || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
             %i.material-icons= main_menu_options[:icon]
             %span= label if label
           %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
             - if main_menu.menus.present?
               - main_menu.menus.each do |sub_menu|
                 - sub_menu_options = sub_menu.options
+                - sub_menu_url = sub_menu_options[:url] && (sub_menu_options[:url].is_a?(Proc) ? instance_exec(&sub_menu_options[:url]) : sub_menu_options[:url])
                 %li
-                  = link_to sub_menu_options[:url] do
+                  = link_to sub_menu_url do
                     %i.material-icons
                       = sub_menu_options[:icon].presence || 'help'
                     = sub_menu_options[:label]
