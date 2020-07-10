@@ -15,7 +15,7 @@
             %span= label if label
           %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
             - if main_menu.menus.present?
-              - main_menu.menus.each do |sub_menu|
+              - main_menu.sorted_by_order_asc.each do |sub_menu|
                 - sub_menu_options = sub_menu.options
                 - sub_menu_url = sub_menu_options[:url] && (sub_menu_options[:url].is_a?(Proc) ? instance_exec(&sub_menu_options[:url]) : sub_menu_options[:url])
                 %li

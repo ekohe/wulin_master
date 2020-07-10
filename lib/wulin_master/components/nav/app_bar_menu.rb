@@ -7,7 +7,7 @@ module WulinMaster
     end
 
     def self.sorted_main_menus
-      menus.menus.sort_by { |menu| menu.options[:order] }
+      menus.sorted_by_order_asc
     end
   end
 
@@ -32,6 +32,10 @@ module WulinMaster
 
     def find(name)
       @menus.detect { |x| x.name == name }
+    end
+
+    def sorted_by_order_asc
+      menus.sort_by { |menu| menu.options[:order] }
     end
 
     private
