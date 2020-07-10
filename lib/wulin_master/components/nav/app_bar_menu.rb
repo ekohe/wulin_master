@@ -30,6 +30,10 @@ module WulinMaster
       menus.sort_by { |menu| menu.options[:order] }
     end
 
+    def find(name)
+      @menus.detect { |x| x.name == name }
+    end
+
     private
 
     def find_or_initialize_menu(name, options)
