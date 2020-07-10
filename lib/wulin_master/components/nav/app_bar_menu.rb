@@ -31,7 +31,9 @@ module WulinMaster
     end
 
     def find(name)
-      @menus.detect { |x| x.name == name }
+      menu = @menus.detect { |x| x.name == name }
+      yield(menu) if block_given?
+      menu
     end
 
     def sorted_by_order_asc
