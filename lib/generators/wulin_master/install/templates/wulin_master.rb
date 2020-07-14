@@ -19,6 +19,6 @@ WulinMaster.configure do |config|
   # The default button mode for the whole app
   # config.button_mode = 'split'
 
-  # The default logo file name for the whole app
-  # config.logo_file_name = ''
+  # The default nav sidebar partial path for the whole app
+  # config.nav_sidebar_partial_path = ''
 end

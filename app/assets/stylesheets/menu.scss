@@ -11,16 +11,7 @@
   background: color('grey', 'lighten-5');
   display: flex;
   flex-direction: column;
-  #app-logo {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    & > img {
-      height: 150px;
-      width: 150px;
-    }
-  }
+
   #menu {
     margin-top: 20px;
     overflow-y: auto;

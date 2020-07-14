@@ -1,9 +1,8 @@
 :ruby
   menu = controller&.menu || menu
 #navigation
-  - if WulinMaster.config.logo_file_name.present?
-    #app-logo
-      = image_tag WulinMaster.config.logo_file_name, alt: 'qatar'
+  - if WulinMaster.config.nav_sidebar_partial_path.present?
+    = render partial: WulinMaster.config.nav_sidebar_partial_path
   #menu
     %ul
       - menu.each do |menu_entry|
