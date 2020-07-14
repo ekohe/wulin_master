@@ -15,4 +15,10 @@ WulinMaster.configure do |config|
 
   # The default color theme for the whole app
   # config.color_theme = 'blue'
+
+  # The default button mode for the whole app
+  # config.button_mode = 'split'
+
+  # The default logo file name for the whole app
+  # config.logo_file_name = ''
 end
