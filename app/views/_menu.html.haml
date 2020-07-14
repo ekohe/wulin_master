@@ -1,6 +1,9 @@
 :ruby
   menu = controller&.menu || menu
 #navigation
+  - if WulinMaster.config.logo_file_name.present?
+    #app-logo
+      = image_tag WulinMaster.config.logo_file_name, alt: 'qatar'
   #menu
     %ul
       - menu.each do |menu_entry|
