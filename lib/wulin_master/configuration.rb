@@ -11,7 +11,7 @@ module WulinMaster
   end
 
   class Configuration
-    attr_accessor :app_title, :app_title_height, :always_reset_form, :default_year, :color_theme, :button_mode
+    attr_accessor :app_title, :app_title_height, :always_reset_form, :default_year, :color_theme, :button_mode, :logo_file_name
 
     def initialize
       self.app_title = 'Undefined App'
@@ -20,6 +20,7 @@ module WulinMaster
       self.default_year = Time.zone ? Time.zone.today.year : nil
       self.color_theme = 'blue'
       self.button_mode = 'split'
+      self.logo_file_name = ''
     end
 
     def split_button_mode?
