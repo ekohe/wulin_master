@@ -718,6 +718,7 @@ if (typeof Slick === "undefined") {
     function handleWindowResize() {
       restoreButtons();
       updatePagerButtons();
+      updateGridHeightInModal();
     }
 
     function updatePagerButtons() {
@@ -757,6 +758,13 @@ if (typeof Slick === "undefined") {
             $hintText.show();
           }
         }
+      }
+    }
+
+    function updateGridHeightInModal() {
+      // check modal which is being opened
+      if ($('.modal.open')) {
+        WulinMaster.actions.BaseAction.setGridHeightInModal($('.modal.open'));
       }
     }
 
