@@ -417,7 +417,7 @@ var Ui = {
         var $fieldDiv = $("<div />").addClass('input-field');
         $fieldDiv.append('<label for="distinct_field"">New Option</label>');
         $fieldDiv.append('<input id="distinct_field" type="text" name="distinct_field">');
-        modal.find('.modal-content')
+        $(modal).find('.modal-content')
           .append($('<h5/>').text('Add new option'))
           .append($fieldDiv);
       }
