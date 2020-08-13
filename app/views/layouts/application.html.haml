@@ -12,7 +12,8 @@
       }
       window._token = encodeURIComponent('#{form_authenticity_token}');
       window._always_reset_form = #{WulinMaster.config.always_reset_form};
-
+    - unless Dir[Rails.root.join('app', 'assets', 'javascripts', 'application.*')]
+      WulinMaster.javascripts.delete('application.js')
     = javascript_include_tag *WulinMaster.javascripts
     = yield :header_tags
     :javascript
