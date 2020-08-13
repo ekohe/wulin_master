@@ -227,7 +227,10 @@ module WulinMaster
     def remove_through_model(relations)
       relations_dup = relations.dup
       relations_dup.each do |relation|
-        relations_dup.delete(model.reflections[relation.to_s].options[:through])
+        relaction_reflection = model.reflections[relation.to_s]
+        relations_dup.delete(relaction_reflection.options[:through])
+        # when a relation is just a `Class` rather than ActiveRecord, we have to avoid includeing it
+        relations_dup.delete(relation) unless relaction_reflection.klass.new.is_a?(ActiveRecord::Base)
       end
       relations_dup
     end
