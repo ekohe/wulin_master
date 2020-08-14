@@ -302,7 +302,7 @@ module WulinMaster
       case association_type.to_s
       when 'belongs_to', 'has_one'
         reflection_info = {}
-        association_object = if reflection.klass.new.is_a?(ActiveRecord::Base)
+        association_object = if reflection.klass < ActiveRecord::Base
           object.send(@options[:through] || name)
         else
           reflection_foreign_key = object.send(reflection.foreign_key)
@@ -355,7 +355,7 @@ module WulinMaster
       elsif reflection
         # The reflection is possible just a `Class` rather than `ActiveRecord`
         # when model is RolesUser, the user from the wulin_oauth is a just `Class`
-        if reflection.klass.new.is_a?(ActiveRecord::Base)
+        if reflection.klass < ActiveRecord::Base
           "#{reflection.klass.table_name}.#{source}"
         else
           reflection.foreign_key
