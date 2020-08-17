@@ -301,11 +301,18 @@ module WulinMaster
     def json(object)
       case association_type.to_s
       when 'belongs_to', 'has_one'
-        association_object = object.send(@options[:through] || name)
         reflection_info = {}
+        association_object = if reflection.klass < ActiveRecord::Base
+          object.send(@options[:through] || name)
+        else
+          reflection_foreign_key = object.send(reflection.foreign_key)
+          reflection.klass.find(reflection_foreign_key)
+        end
+
         reflection_info[:id] = association_object.try(:id)
         reflection_info[source] = format(association_object.try(:send, source))
         reflection_info[editor_source] = format(association_object.try(:send, editor_source)) if editor_source
+
         { reflection.name => reflection_info }
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(reflection.name.to_s))}
@@ -346,7 +353,13 @@ module WulinMaster
       elsif table_column?
         "#{model.table_name}.#{source}"
       elsif reflection
-        "#{reflection.klass.table_name}.#{source}"
+        # The reflection is possible just a `Class` rather than `ActiveRecord`
+        # when model is RolesUser, the user from the wulin_oauth is a just `Class`
+        if reflection.klass < ActiveRecord::Base
+          "#{reflection.klass.table_name}.#{source}"
+        else
+          reflection.foreign_key
+        end
       else
         source
       end
