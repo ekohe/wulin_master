@@ -854,13 +854,31 @@ if (typeof Slick === "undefined") {
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-sort-indicator').show().css({right: '20px'});
           $(this).find('.slick-show-more').show()
+<<<<<<< HEAD
           $(this).addClass("ui-state-hover");
+=======
+          $(this).css({
+            'border-right': '1px solid silver',
+            'border-left': '1px solid silver',
+            'border-top': '1px solid silver',
+            'border-bottom': '0px !important', })
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
         }
       }
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
+<<<<<<< HEAD
         $(this).removeClass("ui-state-hover");
+=======
+        // $(this).removeClass("ui-state-hover");
+        $(this).css({
+          'border-right': '1px solid transparent',
+          'border-left': '1px solid transparent',
+          'border-top': '1px solid transparent',
+          'border-bottom': '0px !important',
+        });
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-sort-indicator').css({ right: '10px' });
@@ -3284,31 +3302,47 @@ if (typeof Slick === "undefined") {
     var isLongPress = false;
 
     function handleHeaderMousedown(e){
+<<<<<<< HEAD
       console.log("handleHeaderMousedown, isLongPress:");
       console.log(isLongPress);
 
+=======
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
       if (timer == null) {
         let that = this;
         timer = setTimeout(function () {
           e.preventDefault();
+<<<<<<< HEAD
           console.log("LONG PRESS! - start drag!");
           isLongPress = true
           $(that).children('input').hide();
           $(that).children('label').removeClass('active');
           $(that).css({ border: '1px solid red', cursor: 'move' });
+=======
+          isLongPress = true
+          $(that).children('input').hide();
+          $(that).children('label').removeClass('active');
+          $(that).css({ border: '1px solid silver', cursor: 'move' });
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
         }, 1000);
       }
     }
 
     function handleHeaderMouseUp(e) {
+<<<<<<< HEAD
       console.log("handleHeaderMouseUp, isLongPress:");
       console.log(isLongPress);
+=======
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
       if(!isLongPress) {
         clearTimeout(timer)
         timer = null
       }
 
+<<<<<<< HEAD
       console.log("LONG PRESS! - stop drag!");
+=======
+>>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
       isLongPress = false
     }
 
