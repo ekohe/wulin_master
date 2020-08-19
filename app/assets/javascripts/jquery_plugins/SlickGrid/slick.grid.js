@@ -851,27 +851,16 @@ if (typeof Slick === "undefined") {
     function createColumnHeaders() {
       function onMouseEnter() {
         // Ekohe Edit: Control visibility of sort/drag buttons
-        // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           $(this).find('.slick-sort-indicator').show().css({right: '20px'});
           $(this).find('.slick-show-more').show()
-          $(this).css({
-            'border-right': '1px solid silver',
-            'border-left': '1px solid silver',
-            'border-top': '1px solid silver',
-            'border-bottom': '0px !important', })
+          $(this).addClass("ui-state-hover");
         }
       }
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
-        // $(this).removeClass("ui-state-hover");
-        $(this).css({
-          'border-right': '1px solid transparent',
-          'border-left': '1px solid transparent',
-          'border-top': '1px solid transparent',
-          'border-bottom': '0px !important',
-        });
+        $(this).removeClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
             $(this).find('.slick-sort-indicator').css({ right: '10px' });
@@ -1189,13 +1178,16 @@ if (typeof Slick === "undefined") {
         helper: "clone",
         placeholder: "slick-sortable-placeholder ui-state-default slick-header-column",
         start: function (e, ui) {
+          console.log("starting to drag!");
           ui.placeholder.width(ui.helper.outerWidth() - headerColumnWidthDiff);
           $(ui.helper).addClass("slick-header-column-active");
         },
         beforeStop: function (e, ui) {
+          console.log("stopping to drag!");
           $(ui.helper).removeClass("slick-header-column-active");
         },
         stop: function (e) {
+          console.log("stop drag!");
           if (!getEditorLock().commitCurrentEdit()) {
             $(this).sortable("cancel");
             return;
@@ -1240,6 +1232,7 @@ if (typeof Slick === "undefined") {
         $("<div class='slick-resizable-handle' />")
             .appendTo(e)
             .on("dragstart", function (e, dd) {
+              console.log("resize drag start");
               if (!getEditorLock().commitCurrentEdit()) {
                 return false;
               }
@@ -1300,6 +1293,8 @@ if (typeof Slick === "undefined") {
               minPageX = pageX - Math.min(shrinkLeewayOnLeft, stretchLeewayOnRight);
             })
             .on("drag", function (e, dd) {
+              console.log("resize on drag...");
+
               columnResizeDragging = true;
               var actualMinWidth, d = Math.min(maxPageX, Math.max(minPageX, e.pageX)) - pageX, x;
               if (d < 0) { // shrink column
@@ -1371,6 +1366,7 @@ if (typeof Slick === "undefined") {
               }
             })
             .on("dragend", function (e, dd) {
+              console.log("resize dragend");
               var newWidth;
               $(this).parent().removeClass("slick-header-column-active");
               for (j = 0; j < columns.length; j++) {
@@ -3054,6 +3050,7 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDragInit(e, dd) {
+      console.log("handleDragInit");
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
@@ -3070,6 +3067,7 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDragStart(e, dd) {
+      console.log("handleDragStart");
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
@@ -3084,10 +3082,12 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDrag(e, dd) {
+      console.log("handleDrag");
       return trigger(self.onDrag, dd, e);
     }
 
     function handleDragEnd(e, dd) {
+      console.log("handleDragEnd");
       trigger(self.onDragEnd, dd, e);
     }
 
@@ -3284,24 +3284,31 @@ if (typeof Slick === "undefined") {
     var isLongPress = false;
 
     function handleHeaderMousedown(e){
+      console.log("handleHeaderMousedown, isLongPress:");
+      console.log(isLongPress);
+
       if (timer == null) {
         let that = this;
         timer = setTimeout(function () {
           e.preventDefault();
+          console.log("LONG PRESS! - start drag!");
           isLongPress = true
           $(that).children('input').hide();
           $(that).children('label').removeClass('active');
-          $(that).css({ border: '1px solid silver', cursor: 'move' });
+          $(that).css({ border: '1px solid red', cursor: 'move' });
         }, 1000);
       }
     }
 
     function handleHeaderMouseUp(e) {
+      console.log("handleHeaderMouseUp, isLongPress:");
+      console.log(isLongPress);
       if(!isLongPress) {
         clearTimeout(timer)
         timer = null
       }
 
+      console.log("LONG PRESS! - stop drag!");
       isLongPress = false
     }
 

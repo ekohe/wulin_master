@@ -4,6 +4,19 @@
 
 .slick-header-column.ui-state-default {
   height: $slick-header-height;
+  transition: border-color 0.2s linear;
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-top: 1px solid transparent;
+  border-bottom: 0px !important;
+}
+
+.slick-header-column.ui-state-hover {
+  // TODO: replace with color variable
+  border-right: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 0px !important;
 }
 
 .slick-header {
