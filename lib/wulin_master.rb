@@ -13,11 +13,7 @@ require 'materialize-sass'
 require 'material_icons'
 
 module WulinMaster
-<<<<<<< HEAD
-  @javascripts = Array(Dir.glob('app/assets/javascripts/application.*')).map { |file| File.basename(file) }
-=======
   @javascripts = Dir.glob('app/assets/javascripts/application.*').map { |file| File.basename(file) }
->>>>>>> 078985b4... MISC - Fix application.js file non-exist bug
   @stylesheets = ['application.css']
 
   def self.add_javascript(script)
