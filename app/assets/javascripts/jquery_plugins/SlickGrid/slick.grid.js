@@ -233,6 +233,7 @@ if (typeof Slick === "undefined") {
     var $hiddenParents;
     var oldProps = [];
     var columnResizeDragging = false;
+    var sortable = null;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
@@ -424,8 +425,6 @@ if (typeof Slick === "undefined") {
             .on("click", handleHeaderClick)
             .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
             .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave)
-            .on("mousedown", ".slick-header-column", handleHeaderMousedown)
-            .on("mouseup", ".slick-header-column", handleHeaderMouseUp)
 
         $headerRowScroller
             .on("scroll", handleHeaderRowScroll);
@@ -850,38 +849,24 @@ if (typeof Slick === "undefined") {
 
     function createColumnHeaders() {
       function onMouseEnter() {
+        if (columnResizeDragging) { return };
+
         // Ekohe Edit: Control visibility of sort/drag buttons
         if (!$(this).find('input').is(':focus')) {
-          $(this).find('.slick-sort-indicator').show().css({right: '20px'});
-          $(this).find('.slick-show-more').show()
-<<<<<<< HEAD
+          $(this).find('.slick-sort-indicator').show();
+          $(this).find('.slick-show-more').show();
+          $(this).find('.slick-sort-indicator').css({ right: '28px' });
           $(this).addClass("ui-state-hover");
-=======
-          $(this).css({
-            'border-right': '1px solid silver',
-            'border-left': '1px solid silver',
-            'border-top': '1px solid silver',
-            'border-bottom': '0px !important', })
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
         }
       }
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
-<<<<<<< HEAD
         $(this).removeClass("ui-state-hover");
-=======
-        // $(this).removeClass("ui-state-hover");
-        $(this).css({
-          'border-right': '1px solid transparent',
-          'border-left': '1px solid transparent',
-          'border-top': '1px solid transparent',
-          'border-bottom': '0px !important',
-        });
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
-            $(this).find('.slick-sort-indicator').css({ right: '10px' });
+            $(this).find('.slick-show-more').hide();
+            $(this).find('.slick-sort-indicator').css({ right: '20px' });
           } else {
             $(this).find('.slick-show-more, .slick-sort-indicator').hide();
             $($(this).find('.dropdown-trigger')[0]).dropdown('close');
@@ -977,9 +962,7 @@ if (typeof Slick === "undefined") {
         }
 
         // Ekohe More Action: (Hide, Move to the right, Move to the left)
-        var $moreVertIcon = $("<i class='waves-effect waves-circle' />")
-          .addClass('material-icons')
-          .text('more_vert')
+        var $moreVertIcon = $("<i class='waves-effect waves-circle' />").addClass('material-icons').text('more_vert');
         var columnID = m.id;
         var $showMoreBtn = $(
           `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
@@ -1186,43 +1169,34 @@ if (typeof Slick === "undefined") {
     }
 
     function setupColumnReorder() {
-      $headers.filter(":ui-sortable").sortable("destroy");
-      $headers.sortable({
-        containment: "parent",
-        distance: 3,
-        axis: "x",
-        cursor: "default",
-        tolerance: "intersection",
-        helper: "clone",
-        placeholder: "slick-sortable-placeholder ui-state-default slick-header-column",
-        start: function (e, ui) {
-          console.log("starting to drag!");
-          ui.placeholder.width(ui.helper.outerWidth() - headerColumnWidthDiff);
-          $(ui.helper).addClass("slick-header-column-active");
-        },
-        beforeStop: function (e, ui) {
-          console.log("stopping to drag!");
-          $(ui.helper).removeClass("slick-header-column-active");
-        },
-        stop: function (e) {
-          console.log("stop drag!");
-          if (!getEditorLock().commitCurrentEdit()) {
-            $(this).sortable("cancel");
-            return;
-          }
+      if (sortable!=null) { sortable.destroy(); }
 
-          var reorderedIds = $headers.sortable("toArray");
+      sortable = new Sortable($headers[0], {
+        group: uid,
+        sort: true,
+        delay: 50,
+        disabled: false,
+        animation: 150,
+        easing: "cubic-bezier(1, 0, 0, 1)",
+        direction: 'horizontal',
+        removeCloneOnHide: true,
+        onStart: function () {
+          columnResizeDragging = true;
+          $headers.find('.slick-show-more, .slick-sort-indicator').hide();
+        },
+        onEnd: function () {
+          var reorderedIds = $.map($headers.children('.slick-header-column'), function(item, index) { return $(item).attr('id'); });
           var reorderedColumns = [];
           for (var i = 0; i < reorderedIds.length; i++) {
             reorderedColumns.push(columns[getColumnIndex(reorderedIds[i].replace(uid, ""))]);
           }
           setColumns(reorderedColumns);
-
           trigger(self.onColumnsReordered, {grid: self});
-          e.stopPropagation();
           setupColumnResize();
+          columnResizeDragging = false;
         }
-      });
+      }
+      );
     }
 
     function setupColumnResize() {
@@ -1250,7 +1224,6 @@ if (typeof Slick === "undefined") {
         $("<div class='slick-resizable-handle' />")
             .appendTo(e)
             .on("dragstart", function (e, dd) {
-              console.log("resize drag start");
               if (!getEditorLock().commitCurrentEdit()) {
                 return false;
               }
@@ -1311,8 +1284,6 @@ if (typeof Slick === "undefined") {
               minPageX = pageX - Math.min(shrinkLeewayOnLeft, stretchLeewayOnRight);
             })
             .on("drag", function (e, dd) {
-              console.log("resize on drag...");
-
               columnResizeDragging = true;
               var actualMinWidth, d = Math.min(maxPageX, Math.max(minPageX, e.pageX)) - pageX, x;
               if (d < 0) { // shrink column
@@ -1384,7 +1355,6 @@ if (typeof Slick === "undefined") {
               }
             })
             .on("dragend", function (e, dd) {
-              console.log("resize dragend");
               var newWidth;
               $(this).parent().removeClass("slick-header-column-active");
               for (j = 0; j < columns.length; j++) {
@@ -2790,6 +2760,13 @@ if (typeof Slick === "undefined") {
       // Ekohe Add: Format processing
 
       // Filtered columns
+      renderFilteredInputs();
+
+      // First column cells
+      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
+    }
+
+    function renderFilteredInputs() {
       var $filteredInputs = getFilteredInputs();
       if ($filteredInputs.length != 0) {
         $.each($filteredInputs, function( index, value ) {
@@ -2798,9 +2775,6 @@ if (typeof Slick === "undefined") {
             .addClass('filtered');
         });
       }
-
-      // First column cells
-      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
     }
 
     function handleHeaderScroll() {
@@ -3068,7 +3042,6 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDragInit(e, dd) {
-      console.log("handleDragInit");
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
@@ -3085,7 +3058,6 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDragStart(e, dd) {
-      console.log("handleDragStart");
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
@@ -3100,12 +3072,10 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDrag(e, dd) {
-      console.log("handleDrag");
       return trigger(self.onDrag, dd, e);
     }
 
     function handleDragEnd(e, dd) {
-      console.log("handleDragEnd");
       trigger(self.onDragEnd, dd, e);
     }
 
@@ -3286,64 +3256,10 @@ if (typeof Slick === "undefined") {
     }
 
     function handleHeaderMouseLeave(e) {
-      if(timer) {
-        clearTimeout(timer);
-        timer = null;
-      }
-      $($(this).find('input')).show();
-      $(this).css({ cursor: 'default' });
       trigger(self.onHeaderMouseLeave, {
         "column": $(this).data("column"),
         "grid": self
       }, e);
-    }
-
-    var timer = null;
-    var isLongPress = false;
-
-    function handleHeaderMousedown(e){
-<<<<<<< HEAD
-      console.log("handleHeaderMousedown, isLongPress:");
-      console.log(isLongPress);
-
-=======
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
-      if (timer == null) {
-        let that = this;
-        timer = setTimeout(function () {
-          e.preventDefault();
-<<<<<<< HEAD
-          console.log("LONG PRESS! - start drag!");
-          isLongPress = true
-          $(that).children('input').hide();
-          $(that).children('label').removeClass('active');
-          $(that).css({ border: '1px solid red', cursor: 'move' });
-=======
-          isLongPress = true
-          $(that).children('input').hide();
-          $(that).children('label').removeClass('active');
-          $(that).css({ border: '1px solid silver', cursor: 'move' });
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
-        }, 1000);
-      }
-    }
-
-    function handleHeaderMouseUp(e) {
-<<<<<<< HEAD
-      console.log("handleHeaderMouseUp, isLongPress:");
-      console.log(isLongPress);
-=======
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
-      if(!isLongPress) {
-        clearTimeout(timer)
-        timer = null
-      }
-
-<<<<<<< HEAD
-      console.log("LONG PRESS! - stop drag!");
-=======
->>>>>>> 385b27d8288e599ffe278321f4c6fb827aabfe9a
-      isLongPress = false
     }
 
     function handleHeaderContextMenu(e) {
@@ -4739,7 +4655,8 @@ if (typeof Slick === "undefined") {
       "setupColumnSort": setupColumnSort,
       "isEditing": isEditing,
       "initialRender": initialRender,
-      "trigger": trigger
+      "trigger": trigger,
+      "renderFilteredInputs": renderFilteredInputs
     });
 
     init();

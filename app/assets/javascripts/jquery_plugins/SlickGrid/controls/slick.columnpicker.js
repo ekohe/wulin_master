@@ -218,7 +218,7 @@
     function moveThisColumnEvent() {
       var menuItemName = this.data('column-id');
       var visibleColumns = getAllVisibleColumns();
-      var currentItem = visibleColumns.find(item => item.column_name === menuItemName)
+      var currentItem = visibleColumns.find(item => item.column_name === menuItemName);
       var currentPostion = visibleColumns.indexOf(currentItem);
       var swappedColumns;
 
@@ -240,11 +240,12 @@
       }
       // Update columns
       grid.setColumns(swappedColumns);
+      grid.filterPanel.generateFilters();
     }
 
-    function swapWithTheFrontOne(array, postion) {
-      [array[postion - 1], array[postion]] = [array[postion], array[postion - 1]];
-      return array
+    function swapWithTheFrontOne(array, position) {
+      [array[position - 1], array[position]] = [array[position], array[position - 1]];
+      return array;
     }
 
     // Get all columns(visible and invisible)

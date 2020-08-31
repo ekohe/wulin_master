@@ -9,6 +9,7 @@
   border-left: 1px solid transparent;
   border-top: 1px solid transparent;
   border-bottom: 0px !important;
+  background: tranparent;
 }
 
 .slick-header-column.ui-state-hover {
@@ -17,6 +18,16 @@
   border-left: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
   border-bottom: 0px !important;
+  background: tranparent;
+}
+
+.sortable-ghost {
+  background: #f3f3f3;
+  cursor: grabbing;
+}
+
+.sortable-chosen {
+  cursor: grabbing;
 }
 
 .slick-header {
@@ -40,7 +51,7 @@
     input[type=text]:focus:not([readonly]) {
       border-bottom: 1px $filter-color !important;
       box-shadow: 0 1.5px 0 0 $filter-color !important;
-      font-size: $font-size-small;
+      font-size: 14px;
       margin-left: -2px;
     }
     input[type=text]:focus:not([readonly]) + label {
@@ -49,23 +60,23 @@
     .slick-sort-indicator, .slick-show-more {
       display: block;
       position: absolute;
+      transition: right 0.1s linear;
+      top: 24px;
       background-color: $slick-header-bg-color;
       i.material-icons {
         background-color: $slick-header-bg-color;
-        font-size: $font-size-small;
+        font-size: $font-size-middle;
         color: $slick-header-color;
       }
     }
     .slick-sort-indicator {
       margin: 0;
       height: 20px;
-      right: 20px;
-      top: 28px;
+      right: 28px;
       cursor: pointer;
     }
     .slick-show-more {
       right: 5px;
-      top: 28px;
       border-radius: 50%;
       i {
         &.material-icons {

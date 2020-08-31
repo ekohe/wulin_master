@@ -135,9 +135,7 @@
         html += inputHtml;
       });
 
-      // Fills up and display the secondary row
-      // $headerRow.width(headerWidth);
-      // $headerRow.html(html).show();
+      $grid.renderFilteredInputs();
     }
 
     // This method update the current filters applied to the currentFiltersApplied array
