@@ -46,6 +46,27 @@ config.autoload_paths += Dir[Rails.root.join('app', 'screens', '{**}')]
 config.autoload_paths += Dir[Rails.root.join('app', 'grids', '{**}')]
 ```
 
+### 6. Include Wulin Master Javascript and Stylesheets
+
+Add to your app/assets/config/manifest.js
+
+```
+//= link master/master.js
+//= link master.css
+```
+
+to your application.js
+
+```
+//= require 'master/master.js'
+```
+
+and to your application.css
+
+```
+ *= require 'master'
+```
+
 ## Getting Started
 
 ### 1. Generate resource files
