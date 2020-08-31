@@ -233,6 +233,7 @@ if (typeof Slick === "undefined") {
     var $hiddenParents;
     var oldProps = [];
     var columnResizeDragging = false;
+    var sortable = null;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Initialization
@@ -423,7 +424,8 @@ if (typeof Slick === "undefined") {
             .on("contextmenu", handleHeaderContextMenu)
             .on("click", handleHeaderClick)
             .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
-            .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave);
+            .on("mouseleave", ".slick-header-column", handleHeaderMouseLeave)
+
         $headerRowScroller
             .on("scroll", handleHeaderRowScroll);
 
@@ -847,23 +849,27 @@ if (typeof Slick === "undefined") {
 
     function createColumnHeaders() {
       function onMouseEnter() {
+        if (columnResizeDragging) { return };
+
         // Ekohe Edit: Control visibility of sort/drag buttons
-        // $(this).addClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
-          $(this).find('.slick-drag-indicator').show().find('.material-icons').text('drag_handle');
-          $(this).find('.slick-sort-indicator').css({ right: '20px' }).show();
+          $(this).find('.slick-sort-indicator').show();
+          $(this).find('.slick-show-more').show();
+          $(this).find('.slick-sort-indicator').css({ right: '28px' });
+          $(this).addClass("ui-state-hover");
         }
       }
 
       function onMouseLeave() {
         // Ekohe Edit: Control visibility of sort/drag button
-        // $(this).removeClass("ui-state-hover");
+        $(this).removeClass("ui-state-hover");
         if (!$(this).find('input').is(':focus')) {
           if ($(this).hasClass('slick-header-column-sorted')) {
-            $(this).find('.slick-drag-indicator').show().find('.material-icons').text('');
-            $(this).find('.slick-sort-indicator').css({ right: '10px' });
+            $(this).find('.slick-show-more').hide();
+            $(this).find('.slick-sort-indicator').css({ right: '20px' });
           } else {
-            $(this).find('.slick-drag-indicator, .slick-sort-indicator').hide();
+            $(this).find('.slick-show-more, .slick-sort-indicator').hide();
+            $($(this).find('.dropdown-trigger')[0]).dropdown('close');
           }
         }
       }
@@ -955,11 +961,48 @@ if (typeof Slick === "undefined") {
             .on('mouseleave', onMouseLeave);
         }
 
-        // Ekohe Add: Drag indicator for reordering columns
-        var $dragIcon = $('<i />').addClass('material-icons').text('');
-        var $dragIndicator = $('<div />').addClass('slick-drag-indicator').append($dragIcon);
-        header.append($dragIndicator);
+        // Ekohe More Action: (Hide, Move to the right, Move to the left)
+        var $moreVertIcon = $("<i class='waves-effect waves-circle' />").addClass('material-icons').text('more_vert');
+        var columnID = m.id;
+        var $showMoreBtn = $(
+          `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
+        );
+        $showMoreBtn.append($moreVertIcon)
+        var $showMoreTrigger = $(`<div class='slick-show-more' />`)
+        $showMoreTrigger.append($showMoreBtn);
+        var $moreContainer = $(
+          `<ul id='dropdown_${columnID}' class='dropdown-content' />`
+        );
+        var $hideItem = $(
+          `<li id='hide' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>`
+        )
+          .off('click')
+          .on('click', function () {
+            self.columnpicker.removeThisColumnEvent.apply($(this));
+          });
+        var $moveToRight = $(
+          `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
+        )
+          .off('click')
+          .on('click', function () {
+            self.columnpicker.moveThisColumnEvent.apply($(this));
+          });
+        var $moveToLeft = $(
+          `<li id='move_to_left' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
+        )
+          .off('click')
+          .on('click', function () {
+            self.columnpicker.moveThisColumnEvent.apply($(this));
+          });;
+        $moreContainer
+          .append($hideItem)
+          .append($moveToRight)
+          .append($moveToLeft)
 
+        $showMoreTrigger.append($moreContainer);
+        header.append($showMoreTrigger)
+        $showMoreTrigger.hide();
+        $showMoreBtn.dropdown({alignment: 'right'});
         if (m.sortable) {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator
@@ -981,8 +1024,9 @@ if (typeof Slick === "undefined") {
 
         // Ekohe Add: Text field takes over the full row width and the icons disappear
         headerColInput.on('focus', function() {
-          $(this).siblings('.slick-sort-indicator, .slick-drag-indicator').hide();
+          $(this).siblings('.slick-sort-indicator, .slick-show-more').hide();
           $(this).width($(this).parent().width());
+          $(this).parent().css({'border':'none'});
         })
 
         // Ekohe Add: Show sort indicator when sorted
@@ -1125,40 +1169,34 @@ if (typeof Slick === "undefined") {
     }
 
     function setupColumnReorder() {
-      $headers.filter(":ui-sortable").sortable("destroy");
-      $headers.sortable({
-        containment: "parent",
-        distance: 3,
-        axis: "x",
-        cursor: "default",
-        tolerance: "intersection",
-        helper: "clone",
-        placeholder: "slick-sortable-placeholder ui-state-default slick-header-column",
-        start: function (e, ui) {
-          ui.placeholder.width(ui.helper.outerWidth() - headerColumnWidthDiff);
-          $(ui.helper).addClass("slick-header-column-active");
-        },
-        beforeStop: function (e, ui) {
-          $(ui.helper).removeClass("slick-header-column-active");
-        },
-        stop: function (e) {
-          if (!getEditorLock().commitCurrentEdit()) {
-            $(this).sortable("cancel");
-            return;
-          }
+      if (sortable!=null) { sortable.destroy(); }
 
-          var reorderedIds = $headers.sortable("toArray");
+      sortable = new Sortable($headers[0], {
+        group: uid,
+        sort: true,
+        delay: 50,
+        disabled: false,
+        animation: 150,
+        easing: "cubic-bezier(1, 0, 0, 1)",
+        direction: 'horizontal',
+        removeCloneOnHide: true,
+        onStart: function () {
+          columnResizeDragging = true;
+          $headers.find('.slick-show-more, .slick-sort-indicator').hide();
+        },
+        onEnd: function () {
+          var reorderedIds = $.map($headers.children('.slick-header-column'), function(item, index) { return $(item).attr('id'); });
           var reorderedColumns = [];
           for (var i = 0; i < reorderedIds.length; i++) {
             reorderedColumns.push(columns[getColumnIndex(reorderedIds[i].replace(uid, ""))]);
           }
           setColumns(reorderedColumns);
-
           trigger(self.onColumnsReordered, {grid: self});
-          e.stopPropagation();
           setupColumnResize();
+          columnResizeDragging = false;
         }
-      });
+      }
+      );
     }
 
     function setupColumnResize() {
@@ -2722,6 +2760,13 @@ if (typeof Slick === "undefined") {
       // Ekohe Add: Format processing
 
       // Filtered columns
+      renderFilteredInputs();
+
+      // First column cells
+      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
+    }
+
+    function renderFilteredInputs() {
       var $filteredInputs = getFilteredInputs();
       if ($filteredInputs.length != 0) {
         $.each($filteredInputs, function( index, value ) {
@@ -2730,9 +2775,6 @@ if (typeof Slick === "undefined") {
             .addClass('filtered');
         });
       }
-
-      // First column cells
-      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
     }
 
     function handleHeaderScroll() {
@@ -4613,7 +4655,8 @@ if (typeof Slick === "undefined") {
       "setupColumnSort": setupColumnSort,
       "isEditing": isEditing,
       "initialRender": initialRender,
-      "trigger": trigger
+      "trigger": trigger,
+      "renderFilteredInputs": renderFilteredInputs
     });
 
     init();

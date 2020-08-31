@@ -5,13 +5,26 @@ No built-in (selected, editable, highlight, flashing, invalid, loading, :focus) 
 classes should alter those!
 */
 
-.slick-header.ui-state-default, .slick-headerrow.ui-state-default, .slick-footerrow.ui-state-default  {
+.slick-headerrow.ui-state-default, .slick-footerrow.ui-state-default  {
   width: 100%;
   overflow: hidden;
   border-left: 0px !important;
 }
 
-.slick-header-columns, .slick-headerrow-columns, .slick-footerrow-columns {
+.slick-header.ui-state-default {
+  width: 100%;
+  overflow: hidden;
+  border-left: 0px !important;
+}
+
+.slick-headerrow-columns, .slick-footerrow-columns {
+  position: relative;
+  white-space: nowrap;
+  cursor: default;
+  overflow: hidden;
+}
+
+.slick-header-columns {
   position: relative;
   white-space: nowrap;
   cursor: default;
@@ -29,9 +42,9 @@ classes should alter those!
   line-height: 16px;
   margin: 0;
   padding: 4px;
-  border-right: 1px solid silver;
-  border-left: 0px !important;
-  border-top: 0px !important;
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-top: 1px solid transparent;
   border-bottom: 0px !important;
   float: left;
 }

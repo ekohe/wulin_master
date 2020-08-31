@@ -4,19 +4,43 @@
 
 .slick-header-column.ui-state-default {
   height: $slick-header-height;
-  border: none;
-  position: relative;
+  transition: border-color 0.2s linear;
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-top: 1px solid transparent;
+  border-bottom: 0px !important;
+  background: tranparent;
+}
+
+.slick-header-column.ui-state-hover {
+  // TODO: replace with color variable
+  border-right: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 0px !important;
+  background: tranparent;
+}
+
+.sortable-ghost {
+  background: #f3f3f3;
+  cursor: grabbing;
+}
+
+.sortable-chosen {
+  cursor: grabbing;
 }
 
 .slick-header {
-  padding-bottom: $slick-header-padding;
   .slick-header-column.input-field {
     &.slick-header-column-sorted {
       font-style: normal;
     }
     label {
-      top: 15px;
+      top: 10px;
       font-size: $font-size-small;
+      &.active {
+        top: 15px
+      }
     }
     input[type=text] {
       margin-bottom: none;
@@ -27,34 +51,76 @@
     input[type=text]:focus:not([readonly]) {
       border-bottom: 1px $filter-color !important;
       box-shadow: 0 1.5px 0 0 $filter-color !important;
-      font-size: $font-size-small;
+      font-size: 14px;
       margin-left: -2px;
     }
     input[type=text]:focus:not([readonly]) + label {
       color: $filter-color !important;
     }
-    .slick-sort-indicator, .slick-drag-indicator {
+    .slick-sort-indicator, .slick-show-more {
       display: block;
       position: absolute;
+      transition: right 0.1s linear;
+      top: 24px;
       background-color: $slick-header-bg-color;
-      top: 28px;
       i.material-icons {
         background-color: $slick-header-bg-color;
-        font-size: $font-size-small;
+        font-size: $font-size-middle;
         color: $slick-header-color;
       }
     }
     .slick-sort-indicator {
       margin: 0;
       height: 20px;
-      right: 20px;
+      right: 28px;
       cursor: pointer;
     }
-    .slick-drag-indicator {
+    .slick-show-more {
       right: 5px;
-      cursor: move;
-      i.material-icons {
-        transform: rotate(90deg);
+      border-radius: 50%;
+      i {
+        &.material-icons {
+          border-radius: 50%;
+        }
+        &.waves-effect {
+          vertical-align: initial;
+        }
+      }
+      ul.dropdown-content {
+        position: fixed;
+        width: 190px !important;
+        height: auto !important;
+        background: #FFFFFF;
+        box-shadow: $box-shadow;
+        top: 142px !important;
+        li {
+          font-style: normal;
+          font-weight: normal;
+          font-size: 15px;
+          min-height: unset;
+          line-height: 1rem;
+          display: flex;
+          align-items: flex-end;
+          a {
+            font-size: 14px;
+            color: #4D4D4E;
+            padding: 7px 16px;
+            i {
+              &.material-icons {
+                height: unset;
+                line-height: unset;
+                width: unset;
+                border-radius: unset;
+                background-color: unset;
+                font-size: $font-size-middle;
+                margin-right: 16px;
+              }
+              &.move_back {
+                transform: rotate(180deg);
+              }
+            }
+          }
+        }
       }
     }
     .slick-resizable-handle {

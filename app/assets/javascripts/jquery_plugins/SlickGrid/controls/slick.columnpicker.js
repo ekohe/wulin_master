@@ -205,9 +205,59 @@
       columns = ordered;
     }
 
+    function removeThisColumnEvent() {
+      var menuItemName = this.data('column-id');
+        var visibleColumns = getAllVisibleColumns().filter(function (column) {
+          return column.column_name != menuItemName;
+        });
+
+        // Update columns
+        grid.setColumns(visibleColumns);
+    }
+
+    function moveThisColumnEvent() {
+      var menuItemName = this.data('column-id');
+      var visibleColumns = getAllVisibleColumns();
+      var currentItem = visibleColumns.find(item => item.column_name === menuItemName);
+      var currentPostion = visibleColumns.indexOf(currentItem);
+      var swappedColumns;
+
+      var menuAction = this.attr('id')
+      switch(menuAction) {
+        case 'move_to_right':
+          if (currentPostion < visibleColumns.length - 1) {
+            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion + 1)
+          }
+          break;
+        case 'move_to_left':
+          if (currentPostion > 0) {
+            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion);
+          }
+          break;
+        default:
+          swappedColumns = visibleColumns;
+          break;
+      }
+      // Update columns
+      grid.setColumns(swappedColumns);
+      grid.filterPanel.generateFilters();
+    }
+
+    function swapWithTheFrontOne(array, position) {
+      [array[position - 1], array[position]] = [array[position], array[position - 1]];
+      return array;
+    }
+
+    // Get all columns(visible and invisible)
     function getAllColumns() {
       return columns;
     }
+
+    // Get all visible columns
+    function getAllVisibleColumns() {
+      return grid.getColumns()
+    }
+
 
     ///////////////////////////////////////////////////////////
     // Ekohe Add: New methods
@@ -328,7 +378,9 @@
       "destroy": destroy,
       "onColumnsPick": new Slick.Event(),
       // Ekohe Add
-      "onColumnsChanged": onColumnsChanged
+      "onColumnsChanged": onColumnsChanged,
+      "removeThisColumnEvent": removeThisColumnEvent,
+      "moveThisColumnEvent": moveThisColumnEvent,
     });
   }
 
