@@ -5,14 +5,14 @@
     %meta(http-equiv="content-type" content="text/html; charset=UTF-8")
     %meta(http-equiv="content-language" content="en")
     = csrf_meta_tags
-    = stylesheet_link_tag    *WulinMaster.stylesheets, :media => :all
+    = stylesheet_link_tag 'application', :media => :all
     :javascript
       if (typeof(console) === "undefined") {
         console = { log: function() {} };
       }
       window._token = encodeURIComponent('#{form_authenticity_token}');
       window._always_reset_form = #{WulinMaster.config.always_reset_form};
-    = javascript_include_tag *WulinMaster.javascripts
+    = javascript_include_tag 'application'
     = yield :header_tags
     :javascript
       $(function(){
