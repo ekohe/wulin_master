@@ -1003,6 +1003,8 @@ if (typeof Slick === "undefined") {
         header.append($showMoreTrigger)
         $showMoreTrigger.hide();
         $showMoreBtn.dropdown({alignment: 'right'});
+        var $sortableHandle = $(`<div class='slick-sortable-handle' />`)
+        header.append($sortableHandle)
         if (m.sortable) {
           header.addClass("slick-header-sortable");
           // Ekohe Edit: Use material icon for sort indicator
@@ -1180,6 +1182,7 @@ if (typeof Slick === "undefined") {
         easing: "cubic-bezier(1, 0, 0, 1)",
         direction: 'horizontal',
         removeCloneOnHide: true,
+        handle: '.slick-sortable-handle',
         onStart: function () {
           columnResizeDragging = true;
           $headers.find('.slick-show-more, .slick-sort-indicator').hide();

@@ -45,6 +45,8 @@
     input[type=text] {
       margin-bottom: none;
       border-bottom: none;
+      position: relative;
+      top: 14px;
       height: $filter-height;
       color: $filter-color;
     }
@@ -68,6 +70,15 @@
         font-size: $font-size-middle;
         color: $slick-header-color;
       }
+    }
+    .slick-sortable-handle {
+      display: block;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      height: 14px;
+      cursor: grab;
     }
     .slick-sort-indicator {
       margin: 0;
