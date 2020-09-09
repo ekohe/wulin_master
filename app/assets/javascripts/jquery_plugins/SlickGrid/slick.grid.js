@@ -1174,7 +1174,7 @@ if (typeof Slick === "undefined") {
       sortable = new Sortable($headers[0], {
         group: uid,
         sort: true,
-        delay: 50,
+        delay: 0,
         disabled: false,
         animation: 150,
         easing: "cubic-bezier(1, 0, 0, 1)",
