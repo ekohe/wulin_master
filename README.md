@@ -5,6 +5,28 @@
 WulinMaster is a grid plugin base on Ruby on Rails and [SlickGrid](https://github.com/mleibman/SlickGrid). It provides powerful generator
 and other tools to make grids easy to build as well as flexible configurations.
 
+## Table of contents
+
+- [Installation](#installation)
+  - [1. Add `gem wulin_master` to your Gemfile](#1-add-gem-wulinmaster-to-your-gemfile)
+  - [2. Run bundler command to install the gem](#2-run-bundler-command-to-install-the-gem)
+  - [3. Run the generator to install the base building](#3-run-the-generator-to-install-the-base-building)
+  - [5. Update Rails' default configs](#5-update-rails-default-configs)
+  - [6. Include Wulin Master Javascript and Stylesheets](#6-include-wulin-master-javascript-and-stylesheets)
+- [Getting Started](#getting-started)
+  - [1. Generate resource files](#1-generate-resource-files)
+  - [2. Run migration](#2-run-migration)
+  - [3. Add grids](#3-add-grids)
+  - [4. Add screens](#4-add-screens)
+  - [5. Add controllers](#5-add-controllers)
+  - [6. Add indexes](#6-add-indexes)
+- [Usage](#usage)
+  - [1. Grid configuration](#1-grid-configuration)
+  - [2. Panel configuration](#2-panel-configuration)
+  - [3. Screen configuration](#3-screen-configuration)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installation
 
 ### 1. Add `gem wulin_master` to your Gemfile
@@ -204,6 +226,20 @@ class PostsController < WulinMaster::ScreenController
     @query = @query.where(state: params[:state] || 'ok')
   end
 end
+```
+
+### 6. Add Indexes
+
+When searching by a string column, Wulin is generating this query:
+
+```sql
+SELECT * FROM "my_table" WHERE (UPPER(cast((my_table.my_column) as text)) LIKE UPPER('my_search%'));
+```
+
+For large table this will take a while to perform without proper index. To solve that you can speed up the queries by adding a trigram index like this:
+
+```sql
+CREATE INDEX trgm_index_my_table_on_my_column ON my_table USING gin ((UPPER(cast((my_table.my_column) as text))) gin_trgm_ops);
 ```
 
 ## Usage
