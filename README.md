@@ -19,6 +19,7 @@ and other tools to make grids easy to build as well as flexible configurations.
   - [3. Add grids](#3-add-grids)
   - [4. Add screens](#4-add-screens)
   - [5. Add controllers](#5-add-controllers)
+  - [6. Add indexes](#6-add-indexes)
 - [Usage](#usage)
   - [1. Grid configuration](#1-grid-configuration)
   - [2. Panel configuration](#2-panel-configuration)
