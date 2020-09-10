@@ -6,9 +6,7 @@
   end
   object = grid.model.new
   is_new = params["action"] === 'wulin_master_new_form'
-  type = is_new ? 'new' : 'edit'
-  title = (is_new ? 'Create new' : 'Update') + " #{model_name.titleize}"
-  action = is_new ? 'create' : 'update'
+  title = "#{title_preix} #{model_name.titleize}"
 .create_form{:id => "#{grid.name}_form", :title => title, data: {action: action}}
   %h5.title= title
   = form_for object, :url => grid.path do |form|
@@ -148,4 +146,4 @@
         %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
         %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
       - else
-        %input.btn.update_btn{:id => "#{grid.name}_batch_update", :name => "commit", :type => "submit", :value => "  Update  "}/
+        %input.btn{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: "  #{button_name}  "}/
