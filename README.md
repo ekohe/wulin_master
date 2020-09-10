@@ -227,6 +227,20 @@ class PostsController < WulinMaster::ScreenController
 end
 ```
 
+### 6. Add Indexes
+
+When searching by a string column, Wulin is generating this query:
+
+```sql
+SELECT * FROM "my_table" WHERE (UPPER(cast((my_table.my_column) as text)) LIKE UPPER('my_search%'));
+```
+
+For large table this will take a while to perform without proper index. To solve that you can speed up the queries by adding a trigram index like this:
+
+```sql
+CREATE INDEX trgm_index_my_table_on_my_column ON my_table USING gin ((UPPER(cast((my_table.my_column) as text))) gin_trgm_ops);
+```
+
 ## Usage
 
 ### 1. Grid configuration
