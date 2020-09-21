@@ -134,10 +134,11 @@ var showFlagCheckBox = function (scope, ids) {
   }
 };
 
-var checkTheBox = function (name) {
-  var scope = $('#' + name + '_form');
+var checkTheBox = function (name, scope) {
+  var scope = scope || `#${name}_form`;
+  var $scope = $(scope);
   // Check flag when change value of the box
-  scope
+  $scope
     .off('keyup', 'input:text, input:password, textarea')
     .on('keyup', 'input:text, input:password, textarea', function (e) {
       $(
@@ -146,7 +147,7 @@ var checkTheBox = function (name) {
           '"]'
       ).prop('checked', true);
     });
-  scope
+  $scope
     .off('change', 'input:checkbox, input:file')
     .on('change', 'input:checkbox:not(.target_flag), input:file', function (e) {
       $(
@@ -157,7 +158,7 @@ var checkTheBox = function (name) {
     });
 
   // Date picker \ datetime picker \ time picker
-  scope
+  $scope
     .off('change', 'input.flatpickr-input')
     .on('change', 'input.flatpickr-input', function (e) {
       $(
@@ -168,7 +169,7 @@ var checkTheBox = function (name) {
     });
 
   // Empty input box when flag change to unchecked
-  scope
+  $scope
     .off('change', 'input.target_flag:visible')
     .on('change', 'input.target_flag:visible', function () {
       if ($(this).prop('checked') == false) {
