@@ -94,65 +94,61 @@ var Ui = {
     });
   },
 
-  setupComponents: function (grid) {
+  setupComponents: function (grid, scope) {
     var name = grid.name;
+    scope = scope || `#${name}_form`;
 
     // setup select as chosen
-    $('#' + name + '_form select[data-required="true"]').chosen();
-    $('#' + name + '_form select[data-required="false"]').chosen({
+    $(`${scope} select[data-required="true"]`).chosen();
+    $(`${scope} select[data-required="false"]`).chosen({
       allow_single_deselect: true,
     });
 
     // make target flag be checked when select changed
-    $('#' + name + '_form select')
+    $(`${scope} select`)
       .off('change')
       .on('change', function () {
         var flag = $(
-          '#' +
-            name +
-            '_form input.target_flag:checkbox[data-target="' +
-            $(this).attr('data-target') +
-            '"]'
+          `${scope} input.target_flag:checkbox[data-target="${$(this).attr(
+            'data-target'
+          )}"]`
         );
         if (flag.size() > 0) flag.prop('checked', true);
       });
 
     // materialize input[type=text]
-    $('#' + name + '_form input[type=text]')
-      .parent()
-      .addClass('input-field');
+    $(`${scope} input[type=text]`).parent().addClass('input-field');
 
     // make label active for input with value
-    $('#' + name + '_form .field')
+    $(`${scope} .field`)
       .filter(function () {
         return !!$(this).find('input').val();
       })
       .find('label')
       .addClass('active');
-    $('#' + name + '_form input[data-time]')
-      .siblings('label')
-      .addClass('active');
+    $(`${scope} input[data-time]`).siblings('label').addClass('active');
 
     // setup datepicker
-    $('#' + name + '_form input[data-datetime]')
+    $(`${scope} input[data-datetime]`)
       .inputmask('wulinDateTime')
       .flatpickr(fpConfigFormDateTime);
-    $('#' + name + '_form input[data-date]')
+    $(`${scope} input[data-date]`)
       .inputmask('wulinDate')
       .flatpickr(fpConfigFormDate);
-    $('#' + name + '_form input[data-time]')
+    $(`${scope} input[data-time]`)
       .inputmask('wulinTime')
       .flatpickr(fpConfigTime);
   },
 
-  setupForm: function (grid, monitor, selectedIndexes) {
+  setupForm: function (grid, monitor, selectedIndexes, scope) {
+    var name = grid.name;
+    var scope = scope || `#${name}_form`;
+    var $scope = $(scope);
     var remotePath = [];
     var choicesColumn = [];
     var distinctColumn = [];
     var path;
-    var name = grid.name;
-    var scope = $('#' + name + '_form');
-    var formType = scope.data('action');
+    var formType = $scope.data('action');
     var columns = window[name + '_columns'] || grid.getColumns();
     var currentData = {};
 
@@ -195,7 +191,7 @@ var Ui = {
         if (!path || !formable) return;
 
         var first_input;
-        var target = $("select[data-field='" + field + "']", scope);
+        var target = $("select[data-field='" + field + "']", $scope);
         var source = target.attr('data-source');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
@@ -216,7 +212,7 @@ var Ui = {
                 );
               }
             });
-            Ui.setupChosen(grid, target, scope, selectedIndexes);
+            Ui.setupChosen(grid, target, $scope, selectedIndexes);
           });
           fillValuesWillRun = true;
         }
@@ -231,7 +227,7 @@ var Ui = {
         if (!path) return;
 
         var first_input;
-        var target = $("select[data-field='" + field + "']", scope);
+        var target = $("select[data-field='" + field + "']", $scope);
         var source = target.attr('data-source');
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
@@ -253,7 +249,7 @@ var Ui = {
               }
             });
             target.append('<option>Add new Option</option>');
-            Ui.setupChosen(grid, target, scope, selectedIndexes);
+            Ui.setupChosen(grid, target, $scope, selectedIndexes);
           });
           fillValuesWillRun = true;
         }
@@ -265,7 +261,7 @@ var Ui = {
       $.each(choicesColumn, function (i, n) {
         var field = n[0];
         var first_input;
-        var target = $("select[data-field='" + field + "']", scope);
+        var target = $("select[data-field='" + field + "']", $scope);
         if (target.size() == 1) {
           $('option[value!=""]', target).remove();
           $.each(n[1], function (index, value) {
@@ -273,17 +269,17 @@ var Ui = {
               "<option value='" + value + "'>" + value + '</option>'
             );
           });
-          Ui.setupChosen(grid, target, scope, selectedIndexes);
+          Ui.setupChosen(grid, target, $scope, selectedIndexes);
           fillValuesWillRun = true;
         }
       });
     }
 
     if (fillValuesWillRun == false && typeof selectedIndexes != 'undefined') {
-      fillValues(scope, grid, selectedIndexes);
+      fillValues($scope, grid, selectedIndexes);
     }
 
-    first_input = $('#' + name + '_form input:text', scope).first();
+    first_input = $(`${scope}`, $scope).first();
     if (first_input.attr('data-date')) {
       first_input.focus();
     }
@@ -297,7 +293,7 @@ var Ui = {
       hidden_master_id = $("<input type='hidden'/>")
         .attr('name', grid.master.filter_column)
         .val(grid.master.filter_value);
-      $('form', scope).append(hidden_master_id);
+      $('form', $scope).append(hidden_master_id);
     }
   },
 
