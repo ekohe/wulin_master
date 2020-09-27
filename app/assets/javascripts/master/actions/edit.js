@@ -89,6 +89,11 @@ var loadValue = function (scope, data) {
   for (var i in data) {
     if ($('input:text[data-field="' + i + '"]', scope).size() > 0) {
       $('input[data-field="' + i + '"]', scope).val(data[i]);
+      if (data[i]) {
+        $('input[data-field="' + i + '"]', scope)
+          .siblings('label')
+          .addClass('active');
+      }
     } else if ($('textarea[data-field="' + i + '"]', scope).size() > 0) {
       $('textarea[data-field="' + i + '"]', scope).val(data[i]);
       if (data[i]) {
