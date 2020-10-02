@@ -114,6 +114,10 @@ classes should alter those!
   margin: 0;
   white-space: nowrap;
   cursor: pointer;
+  span {
+    display: inline-block;
+    width: 100%;
+  }
 }
 .slick-cell, .slick-headerrow-column{
   border-bottom-color: silver;

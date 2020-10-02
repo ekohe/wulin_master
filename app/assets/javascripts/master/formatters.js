@@ -6,9 +6,24 @@
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    applyStyle: function(value, styleClass, style) {
-      styleClass = styleClass || '';
-      return value === null ? "" : "<span class='" + styleClass + "' style='" + style + ";'>" + value + "</span>";
+    applyStyle: function(node, styleClass, style) {
+      if (node === null) { return ''; }
+
+      if (typeof node === 'string' || node instanceof String) {
+        node = document.createTextNode(node);
+      }
+
+      var span = document.createElement('span');
+
+      if (styleClass!=null) {
+        span.setAttribute('class', styleClass);
+      }
+      if ((style !== null) && (style !== '')) {
+        span.setAttribute('style', style);
+      }
+
+      span.append(node)
+      return span.outerHTML;
     },
 
     parseDateTime: function(dateTimeStr) {
@@ -45,9 +60,9 @@
       // Apply format for relation columns
       if (inner_formatter) {
         if (inner_formatter == 'boolean') {
-          value = TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
+          return TextBoolCellFormatter(row, cell, eval(value), columnDef, dataContext);
         } else if (typeof(window[inner_formatter]) == 'function') {
-          value = window[inner_formatter](row, cell, value, columnDef, dataContext);
+          return window[inner_formatter](row, cell, value, columnDef, dataContext);
         }
       }
 
@@ -115,13 +130,25 @@
     },
 
     GraphicBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      if(value) {
-        var html = '<label>'+'<input disabled type="checkbox" class="filled-in" ' +
-          'checked="checked"' + ' id="show-checkbox-' + row + '" />' +
-          '<span for="show-checkbox-' + row +
-          '"></span>'+'</label>';
-      }
-      return applyStyle(html || '', columnDef.style_class, columnDef.style || 'text-align:center');
+      if (!value) { return ''; }
+
+      var label = document.createElement('label');
+      label.setAttribute('style', 'text-align: center; display: inline-block;');
+
+      var input = document.createElement('input');
+      input.setAttribute('disabled', 'disabled');
+      input.setAttribute('type', 'checkbox');
+      input.setAttribute('class', 'filled-in');
+      input.setAttribute('checked', 'checked');
+      input.setAttribute('id', 'show-checkbox-' + row);
+
+      var span = document.createElement('span');
+      span.setAttribute('for', 'show-checkbox-' + row);
+
+      label.append(input);
+      label.append(span);
+
+      return applyStyle(label, columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
     ZeroFormatter: function(row, cell, value, columnDef, dataContext) {

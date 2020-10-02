@@ -126,6 +126,32 @@
                   %label
                     = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in', "data-target-id" => "#{column_name}_target_flag"
                     %span #{column_name}
+              - elsif column.options[:editor]=='RichTextEditor'
+                .input-field.input-outlined
+                  %label{:for => "#{model_name}_#{column_name}"}= label
+                  %textarea{name: "#{model_name}[#{column_name}]", id: "#{model_name}_#{column_name}_rich_text_editor", "data-field" => field, class: 'materialnote'}= column.value(object)
+                  :javascript
+                    $('##{model_name}_#{column_name}_rich_text_editor').materialnote({
+                      height: 300,
+                      toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['view', ['fullscreen', 'undo', 'redo']]
+                      ],
+                      callbacks: {
+                        onFocus: function() {
+                          $('##{model_name}_#{column_name}_rich_text_editor').parent().addClass('focused');
+                        },
+                        onBlur: function() {
+                          $('##{model_name}_#{column_name}_rich_text_editor').parent().removeClass('focused');
+                        }
+                      }
+                    });
               - elsif column.sql_type.to_s.downcase == 'text'
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label

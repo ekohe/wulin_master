@@ -1,0 +1,41 @@
+.note-editor.note-frame {
+  border: 2px solid $border-color;
+  border-radius: 4px;
+  transition: border-color 0.15s ease;
+  .note-statusbar {
+    background-color: $border-color;
+  }
+}
+
+.note-toolbar-wrapper {
+  position: relative;
+  top: 10px;
+  padding: 0px 8px;
+}
+
+.input-field.focused {
+  .note-editor.note-frame {
+    border-color: #2196F3;
+  }
+}
+
+.note-editor .dropdown-content.note-check li a, .note-editor .modal-content.note-check li a {
+  padding: 6px 6px;
+}
+
+.note-editor .dropdown-content.note-check li, .note-editor .modal-content.note-check li {
+  min-height: auto;
+  line-height: 1.2em;
+}
+
+.note-editor .dropdown-content, .note-editor .modal-content {
+  background-color: white;
+}
+
+.note-editor .modal .modal-footer {
+  background-color: white;
+}
+
+.note-editor .modal h4 {
+  color: black;
+}

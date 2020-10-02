@@ -96,6 +96,9 @@ var loadValue = function (scope, data) {
           .siblings('label')
           .addClass('active');
       }
+      if ($('.materialnote[data-field="' + i + '"]', scope).size() > 0) {
+        $('.materialnote[data-field="' + i + '"]', scope).materialnote('code', data[i]);
+      }
     } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
         $('input:checkbox[data-field="' + i + '"]', scope).prop(

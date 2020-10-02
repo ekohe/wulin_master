@@ -844,4 +844,36 @@
 
   TimeEditor.prototype = Object.create(DateTimeBaseEditor.prototype);
 
+
+  ///////////////////////////////////////////////////////////////////////////
+  // RichTextEditor < InputElementEditor < BaseEditor
+  ///////////////////////////////////////////////////////////////////////////
+
+  this.RichTextEditor = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+    };
+
+    this.validate = function() {
+      var validationResults;
+      var value = this.element.val();
+
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      return { valid: true, msg: null };
+    };
+
+    this.init();
+  }
+
+  RichTextEditor.prototype = Object.create(InputElementEditor.prototype);
+
 })(jQuery);
