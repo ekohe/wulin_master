@@ -469,6 +469,7 @@ var Ui = {
     __globalWillAppend = true;
     $modelModal.find('.modal-content').append(data);
     __globalWillAppend = false;
+    return $modelModal;
   },
 
   createJsonViewModal: function (jsonData) {
