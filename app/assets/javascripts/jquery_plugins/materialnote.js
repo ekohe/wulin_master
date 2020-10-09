@@ -6438,7 +6438,7 @@
                         }),
                         ui.button({
                             className: 'dropdown-button',
-                            contents: ui.icon('arrow_drop_down'),
+                            contents: ui.icon('color_lens'),
                             tooltip: lang.color.more,
                             data: {
                                 target: 'note-colors-' + options.posIndex
@@ -6622,7 +6622,7 @@
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-button',
-                        contents: ui.icon('arrow_drop_down', 'left') + ui.icon('format_textdirection_l_to_r'),
+                        contents: ui.icon('format_textdirection_l_to_r'),
                         tooltip: lang.paragraph.paragraph,
                         data: {
                             target: 'note-paragraph-' + options.posIndex
@@ -6665,7 +6665,7 @@
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-button',
-                        contents: ui.icon('arrow_drop_down', 'left') + ' ' + ui.icon('border_all'),
+                        contents: ui.icon('border_all'),
                         tooltip: lang.table.table,
                         data: {
                             target: 'note-table-' + options.posIndex

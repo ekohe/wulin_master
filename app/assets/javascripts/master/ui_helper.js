@@ -395,10 +395,10 @@ var Ui = {
       $('.create_form .submit').outerHeight() + // Button
       120; // Padding
     if (grid.options) {
-      width = grid.options.form_dialog_width || 720;
+      width = grid.options.form_dialog_width || 900;
       height = grid.options.form_dialog_height || modalHeight;
     } else {
-      width = 720;
+      width = 900;
       height = modalHeight;
     }
     $('.create_form').remove();
