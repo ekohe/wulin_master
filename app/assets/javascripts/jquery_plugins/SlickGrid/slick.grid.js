@@ -963,32 +963,32 @@ if (typeof Slick === "undefined") {
 
         // Ekohe More Action: (Hide, Move to the right, Move to the left)
         var $moreVertIcon = $("<i class='waves-effect waves-circle' />").addClass('material-icons').text('more_vert');
-        var columnID = m.id;
+        var columnName = m.column_name;
         var $showMoreBtn = $(
-          `<a href='javascript:void(0)' id='more_vert_${columnID}' class='dropdown-trigger' data-target='dropdown_${columnID}' />`
+          `<a href='javascript:void(0)' id='more_vert_${columnName}' class='dropdown-trigger' data-target='dropdown_${columnName}' />`
         );
         $showMoreBtn.append($moreVertIcon)
         var $showMoreTrigger = $(`<div class='slick-show-more' />`)
         $showMoreTrigger.append($showMoreBtn);
         var $moreContainer = $(
-          `<ul id='dropdown_${columnID}' class='dropdown-content' />`
+          `<ul id='dropdown_${columnName}' class='dropdown-content' />`
         );
         var $hideItem = $(
-          `<li id='hide' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>`
+          `<li id='hide' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons">block</i>Hide</a></li>`
         )
           .off('click')
           .on('click', function () {
             self.columnpicker.removeThisColumnEvent.apply($(this));
           });
         var $moveToRight = $(
-          `<li id='move_to_right' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
+          `<li id='move_to_right' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons move_forward">forward</i>Move to the right</a></li>`
         )
           .off('click')
           .on('click', function () {
             self.columnpicker.moveThisColumnEvent.apply($(this));
           });
         var $moveToLeft = $(
-          `<li id='move_to_left' data-column-id='${columnID}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
+          `<li id='move_to_left' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
         )
           .off('click')
           .on('click', function () {
