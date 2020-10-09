@@ -386,13 +386,13 @@ var Ui = {
     return currentGrid;
   },
 
-  getModalSize: function (grid, data) {
+  getModalSize: function (grid, data, willBeRemovedContainerClassName = 'create_form') {
     var width, height;
     $('body').append(data);
     var modalHeight =
-      $('.create_form .title').outerHeight() + // Title
-      $('.create_form form').outerHeight() + // Fields
-      $('.create_form .submit').outerHeight() + // Button
+      $(`.${willBeRemovedContainerClassName} .title`).outerHeight() + // Title
+      $(`.${willBeRemovedContainerClassName} form`).outerHeight() + // Fields
+      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() + // Button
       120; // Padding
     if (grid.options) {
       width = grid.options.form_dialog_width || 720;
@@ -401,7 +401,7 @@ var Ui = {
       width = 720;
       height = modalHeight;
     }
-    $('.create_form').remove();
+    $(`.${willBeRemovedContainerClassName}`).remove();
     return { width: width, height: height };
   },
 
@@ -455,13 +455,13 @@ var Ui = {
     return $pdfDownloadFooter;
   },
 
-  createModelModal: function (grid, data, options) {
+  createModelModal: function (grid, data, options, willBeRemovedContainerClassName) {
     $.extend(options, {
       startingTop: '5%',
       endingTop: '5%',
     });
 
-    var modalSize = this.getModalSize(grid, data);
+    var modalSize = this.getModalSize(grid, data, willBeRemovedContainerClassName);
     var $modelModal = this.baseModal(options)
       .width(modalSize.width)
       .height(modalSize.height)
