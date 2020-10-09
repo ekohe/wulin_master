@@ -3,8 +3,8 @@
 //$border-color: #ffffff !default;
 $toolbar-color: #ffffff;
 $toolbar-overlay-color: #eeeeee !default;
-$toolbar-btn-color: #adadad !default;
-$toolbar-color-lighten: #323232 !default;
+$toolbar-btn-color: #fff !default;
+$toolbar-color-lighten: #dee0e2 !default;
 
 // scrollbars
 $scrollbar-color: color('grey', 'lighten-2') !default;
@@ -17,7 +17,7 @@ $dropdown-overlay-color: $toolbar-overlay-color !default;
 
 // modals
 $modal-color: #212121 !default;
-$modal-text-color: #eeeeee !default;
+$modal-text-color: #888888 !default;
 
 // default colors
 $error-color: #c62828 !default;

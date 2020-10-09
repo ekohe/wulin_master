@@ -1800,6 +1800,11 @@
                 event.preventDefault();
                 var $target = $(event.target);
 
+                var dropDownButton = $target.parents('.dropdown-content').siblings('.dropdown-button');
+                if (dropDownButton.length > 0) {
+                    M.Dropdown.getInstance(dropDownButton[0]).close();
+                }
+
                 if (namespace === 'editor.insertTable') {
                     let optionsContainer = $target.closest('.row').prev();
 
@@ -1887,7 +1892,8 @@
         gutter: 0, // Spacing from edge
         belowOrigin: false, // Displays dropdown below the button
         alignment: 'left', // Displays dropdown with edge aligned to the left of button
-        stopPropagation: false // Stops event propagation
+        stopPropagation: false, // Stops event propagation
+        closeOnClick: false
       }
     );
 
@@ -2083,7 +2089,7 @@
     var popover = renderer.create([
         '<div class="note-popover popover in">',
         '  <div class="arrow"/>',
-        '  <div class="popover-content note-children-container"/>',
+        '  <div class="popover-content note-children-container z-depth-1"/>',
         '</div>'
     ].join(''), function ($node, options) {
         var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
@@ -2282,7 +2288,7 @@
                 videoLink: 'Video Link',
                 insert: 'Insert Video',
                 url: 'Video URL',
-                providers: '(YouTube, Vimeo, Instagram or DailyMotion)'
+                providers: ''
             },
             link: {
                 link: 'Link',
@@ -6455,30 +6461,34 @@
                                 '<div class="row noMargins">',
                                     '<div class="col s12">',
                                         '<ul class="tabs">',
-                                            '<li class="tab col s6"><a class="active" href="#note-background-color-' + options.posIndex + '">' + lang.color.background + '</a></li>',
-                                            '<li class="tab col s6"><a href="#note-foreground-color-' + options.posIndex + '">' + lang.color.foreground + '</a></li>',
+                                            '<li class="tab col s6"><a class="active" href="#note-foreground-color-' + options.posIndex + '">' + lang.color.foreground + '</a></li>',
+                                            '<li class="tab col s6"><a href="#note-background-color-' + options.posIndex + '">' + lang.color.background + '</a></li>',
                                         '</ul>',
                                     '</div>',
                                 '</div>',
                                 '<div class="row noMargins">',
                                     '<div id="note-background-color-' + options.posIndex + '" class="col s12">',
                                         '<div class="row noMargins">',
-                                            '<div class="col s6">',
-                                                '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</button>',
+                                            '<div class="col s12">',
+                                                '<button type="button" class="note-color-reset btn btn-small" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</button>',
                                             '</div>',
-                                            '<div class="col s6">',
-                                                '<span class="color-name"></span>',
+                                        '</div>',
+                                        '<div class="row noMargins">',
+                                            '<div class="col s12">',
+                                                '<span class="color-name">&nbsp;</span>',
                                             '</div>',
                                         '</div>',
                                         '<div class="note-holder" data-event="backColor"></div>',
                                     '</div>',
                                     '<div id="note-foreground-color-' + options.posIndex + '" class="col s12">',
                                         '<div class="row noMargins">',
-                                            '<div class="col s6">',
-                                                '<button type="button" class="note-color-reset btn" data-event="removeFormat" data-value="foreColor">' + lang.color.resetToDefault + '</button>',
+                                            '<div class="col s12">',
+                                                '<button type="button" class="note-color-reset btn btn-small" data-event="removeFormat" data-value="foreColor">' + lang.color.resetToDefault + '</button>',
                                             '</div>',
-                                            '<div class="col s6">',
-                                                '<span class="color-name"></span>',
+                                        '</div>',
+                                        '<div class="row noMargins">',
+                                            '<div class="col s12">',
+                                                '<span class="color-name">&nbsp;</span>',
                                             '</div>',
                                         '</div>',
                                         '<div class="note-holder" data-event="foreColor"/></div>',
@@ -6496,15 +6506,13 @@
                                     }).render());
                                 });
                             },
+                            data: {
+                                closeOnClick: false,
+                            },
                             click: function (event) {
                                 var $button = $(event.target);
                                 var eventName = $button.data('event');
                                 var value = $button.data('value');
-
-                                // prevent closing dropdown when clicking other than note-color-btn or note-color-reset
-                                if (!$button.hasClass('note-color-btn') && !$button.hasClass('note-color-reset')) {
-                                    return false;
-                                }
 
                                 if (eventName && value) {
                                     let key = eventName === 'backColor' ? 'background-color' : 'color';
@@ -6522,6 +6530,9 @@
                                     }
                                     $currentButton.attr('data-' + eventName, value);
                                     context.invoke('editor.' + eventName, value);
+
+                                    var dropDownButton = $('div[data-target="note-colors-'+ options.posIndex +'"]');
+                                    M.Dropdown.getInstance(dropDownButton[0]).close();
                                 }
                             }
                         })
@@ -6666,23 +6677,23 @@
                         items: [
                             '<div class="row beforePicker">',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option" for="note-table-bordered"><input type="checkbox" id="note-table-bordered" class="note-table-option" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-bordered" class="note-table-option filled-in" />',
                                     '<span>' + lang.table.bordered + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option" for="note-table-bordered"><input type="checkbox" id="note-table-striped" class="note-table-option" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-striped" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.striped + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option" for="note-table-bordered"><input type="checkbox" id="note-table-highlight" class="note-table-option" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-highlight" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.highlight + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option" for="note-table-bordered"><input type="checkbox" id="note-table-responsive" class="note-table-option" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-responsive" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.responsive + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option" for="note-table-bordered"><input type="checkbox" id="note-table-centered" class="note-table-option" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-centered" class="note-table-option filled-in" />',
                                     '<span>' + lang.table.centered + '</span></label>',
                                 '</div>',
                             '</div>',
@@ -6700,15 +6711,16 @@
                                     '<div class="note-dimension-display">1 x 1</div>',
                                 '</div>',
                             '</div>'
-                        ].join(''),
-                        click: function (event) {
-                            var $button = $(event.target);
-
-                            // prevent closing dropdown when clicking table option checkboxes
-                            if ($button.hasClass('note-table-option')) {
-                                event.stopPropagation();
-                            }
-                        }
+                        ].join('')
+                        // ,
+                        // click: function (event) {
+                        //     var $button = $(event.target);
+                        //     console.log($button[0]);
+                        //     // prevent closing dropdown when clicking table option checkboxes
+                        //     // if ($button.hasClass('note-table-option')) {
+                        //     //     event.stopPropagation();
+                        //     // }
+                        // }
                     })
                 ], {
                     callback: function ($node) {
@@ -7307,7 +7319,7 @@
             '</div>';
 
             var footer = [
-                //'<a href="#!" class="modal-action modal-close waves-effect waves-light btn ">' + lang.shortcut.close + '</a>',
+                '<a href="#!" class="modal-close-one-level waves-effect waves-light btn-flat">' + lang.shortcut.close + '</a>',
                 '<button href="#" class="btn note-link-btn disabled" disabled>' + lang.link.insert + '</button>'
             ].join('');
 
@@ -7324,6 +7336,7 @@
                     var $linkText = self.$dialog.find('.note-link-text'),
                     $linkUrl = self.$dialog.find('.note-link-url'),
                     $linkBtn = self.$dialog.find('.note-link-btn'),
+                    $cancelBtn = self.$dialog.find('.modal-close-one-level'),
                     $openInNewWindow = self.$dialog.find('input[type=checkbox]');
 
                     context.triggerEvent('dialog.shown');
@@ -7384,6 +7397,11 @@
                             text: $linkText.val(),
                             isNewWindow: $openInNewWindow.is(':checked')
                         });
+                        self.$dialog.modal('close');
+                    });
+
+                    $cancelBtn.one('click', function(event) {
+                        event.preventDefault();
                         self.$dialog.modal('close');
                     });
                 },
@@ -7561,7 +7579,7 @@
                 '</div>' +
             '</div>' +
 
-            '<div class="row">' +
+            '<div class="row" style="display: none">' +
                 '<div class="input-field input-outlined col s12">' +
                     '<label class="note-table-option" for="note-image-responsive"><input type="checkbox" class="filled-in" id="note-image-responsive" class="note-image-option" checked="checked" />' +
                     '<span>' + lang.image.responsive + '</span></label>' +
@@ -7569,7 +7587,7 @@
             '</div>';
 
             var footer = [
-              //  '<a href="#!" class="modal-action modal-close waves-effect waves-light btn ">' + lang.shortcut.close + '</a>',
+                '<a href="#!" class="modal-close-one-level waves-effect waves-light btn-flat">' + lang.shortcut.close + '</a>',
                 '<button href="#" class="btn note-image-btn disabled" disabled>' + lang.image.insert + '</button>'
             ].join('');
 
@@ -7582,9 +7600,11 @@
 
             // init materialize modal plugin
             this.$dialog.modal({
+              dismissible: false,
               onOpenEnd: function() {
                     var $imageInput = self.$dialog.find('.note-image-input'),
                         $imageUrl = self.$dialog.find('.note-image-url'),
+                        $cancelBtn = self.$dialog.find('.modal-close-one-level'),
                         $imageBtn = self.$dialog.find('.note-image-btn');
 
                     ui.toggleBtn($imageBtn, false);
@@ -7610,6 +7630,11 @@
                         ui.toggleBtn($imageBtn, url);
                     }).val('').trigger('focus');
                     self.bindEnterKey($imageUrl, $imageBtn);
+
+                    $cancelBtn.one('click', function(event) {
+                        event.preventDefault();
+                        self.$dialog.modal('close');
+                    });
                 },
                 complete: function() {
                     var $imageInput = self.$dialog.find('.note-image-input'),
@@ -7869,7 +7894,7 @@
             '</div>';
 
             var footer = [
-              //  '<a href="#!" class="modal-action modal-close waves-effect waves-light btn ">' + lang.shortcut.close + '</a>',
+                '<a href="#!" class="modal-close-one-level waves-effect waves-light btn-flat">' + lang.shortcut.close + '</a>',
                 '<button href="#" class="btn note-video-btn disabled" disabled>' + lang.video.insert + '</button>'
             ].join('');
 
@@ -7884,6 +7909,7 @@
             this.$dialog.modal({
                 onOpenEnd: function() {
                     var $videoUrl = self.$dialog.find('.note-video-url'),
+                    $cancelBtn = self.$dialog.find('.modal-close-one-level'),
                     $videoBtn = self.$dialog.find('.note-video-btn');
 
                     ui.toggleBtn($videoBtn, false);
@@ -7897,6 +7923,11 @@
                         event.preventDefault();
 
                         data.resolve($videoUrl.val());
+                    });
+
+                    $cancelBtn.one('click', function(event) {
+                        event.preventDefault();
+                        self.$dialog.modal('close');
                     });
 
                     self.bindEnterKey($videoUrl, $videoBtn);

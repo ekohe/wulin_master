@@ -135,13 +135,13 @@
                       height: 300,
                       toolbar: [
                         ['style', ['bold', 'italic', 'underline', 'clear']],
-                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['font', ['strikethrough']],
                         ['fontsize', ['fontsize']],
                         ['color', ['color']],
                         ['table', ['table']],
                         ['insert', ['link', 'picture', 'video']],
                         ['para', ['ul', 'ol', 'paragraph']],
-                        ['view', ['fullscreen', 'undo', 'redo']]
+                        ['view', ['fullscreen']]
                       ],
                       callbacks: {
                         onFocus: function() {
@@ -150,6 +150,10 @@
                         onBlur: function() {
                           $('##{model_name}_#{column_name}_rich_text_editor').parent().removeClass('focused');
                         }
+                      },
+                      defaultColors: {
+                        text: 'red',
+                        background: 'transparent'
                       }
                     });
               - elsif column.sql_type.to_s.downcase == 'text'

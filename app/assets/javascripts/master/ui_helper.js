@@ -86,6 +86,7 @@ var Ui = {
   openDialog: function (grid, action, options, callback) {
     $.get(grid.path + '/' + action + grid.query, function (data) {
       Ui.createModelModal(grid, data, {
+        dismissible: false,
         onOpenEnd: function (modal, trigger) {
           Ui.setupForm(grid, false);
           Ui.setupComponents(grid);
@@ -394,10 +395,10 @@ var Ui = {
       $('.create_form .submit').outerHeight() + // Button
       120; // Padding
     if (grid.options) {
-      width = grid.options.form_dialog_width || 600;
+      width = grid.options.form_dialog_width || 720;
       height = grid.options.form_dialog_height || modalHeight;
     } else {
-      width = 600;
+      width = 720;
       height = modalHeight;
     }
     $('.create_form').remove();

@@ -32,6 +32,7 @@ var batchUpdateByAjax = function (grid, version) {
     if (version) url = url + '&update_version=' + version;
     $.get(url, function (data) {
       Ui.createModelModal(grid, data, {
+        dismissible: false,
         onOpenEnd: function (modal, trigger) {
           Ui.setupForm(grid, true, selectedIndexes);
           Ui.setupComponents(grid);
@@ -100,11 +101,11 @@ var loadValue = function (scope, data) {
         $('textarea[data-field="' + i + '"]', scope)
           .siblings('label')
           .addClass('active');
+        if ($('.materialnote[data-field="' + i + '"]', scope).size() > 0) {
+          $('.materialnote[data-field="' + i + '"]', scope).materialnote('code', data[i]);
+        }
       }
-      if ($('.materialnote[data-field="' + i + '"]', scope).size() > 0) {
-        $('.materialnote[data-field="' + i + '"]', scope).materialnote('code', data[i]);
-      }
-    } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
+  } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
         $('input:checkbox[data-field="' + i + '"]', scope)
           .prop('checked', true)

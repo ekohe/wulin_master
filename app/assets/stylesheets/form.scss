@@ -67,7 +67,7 @@ form {
 .input-field.input-outlined {
   &:focus-within > label {
     color: $main-color;
-    z-index: 1;
+    z-index: 1000;
     background: white !important;
     border-left: 4px solid white !important;
     border-right: 4px solid white !important;
@@ -78,7 +78,7 @@ form {
     border-color: $main-color;
   }
   &:not(:focus-within) > label.active {
-    z-index: 1;
+    z-index: 1000;
     top: 0.4rem;
     background: white !important;
     border-left: 4px solid white !important;
