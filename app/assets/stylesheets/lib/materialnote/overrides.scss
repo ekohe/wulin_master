@@ -139,3 +139,8 @@
 .note-editor .modal-footer a.modal-close-one-level.btn-flat:visited {
   color: #343434 !important;
 }
+
+// Disabled mode, keep white background
+.note-editor.note-frame .note-editing-area .note-editable[contenteditable="false"] {
+  background-color: #fff;
+}

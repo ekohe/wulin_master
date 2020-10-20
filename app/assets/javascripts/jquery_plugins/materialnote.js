@@ -7562,7 +7562,7 @@
                     '<div class="file-field input-field input-outlined">' +
                         '<div class="btn file-uploader-wrapper">' +
                             '<span>Files</span>' +
-                            '<input class="note-image-input" type="file" multiple>' +
+                            '<input class="note-image-input" type="file">' +
                         '</div>' +
                         '<div class="file-path-wrapper">' +
                             '<input class="file-path" type="text" placeholder="' + lang.image.selectFromFiles + '">' +
@@ -7572,12 +7572,12 @@
                 '</div>' +
             '</div>' +
 
-            '<div clas="row">' +
-                '<div class="input-field input-outlined col s12">' +
-                    '<input class="note-image-url" id="image-url" type="text">' +
-                    '<label for="image-url">' + lang.image.url + '</label>' +
-                '</div>' +
-            '</div>' +
+            // '<div clas="row">' +
+            //     '<div class="input-field input-outlined col s12">' +
+            //         '<input class="note-image-url" id="image-url" type="text">' +
+            //         '<label for="image-url">' + lang.image.url + '</label>' +
+            //     '</div>' +
+            // '</div>' +
 
             '<div class="row" style="display: none">' +
                 '<div class="input-field input-outlined col s12">' +
@@ -7587,8 +7587,9 @@
             '</div>';
 
             var footer = [
-                '<a href="#!" class="modal-close-one-level waves-effect waves-light btn-flat">' + lang.shortcut.close + '</a>',
-                '<button href="#" class="btn note-image-btn disabled" disabled>' + lang.image.insert + '</button>'
+                '<a href="#!" class="modal-close-one-level waves-effect waves-light btn-flat">' + lang.shortcut.close + '</a>'
+                // ,
+                // '<button href="#" class="btn note-image-btn disabled" disabled>' + lang.image.insert + '</button>'
             ].join('');
 
             this.$dialog = ui.dialog({
@@ -7613,23 +7614,46 @@
                     // Cloning imageInput to clear element.
                     $imageInput.replaceWith($imageInput.clone()
                     .on('change', function () {
-                        data.resolve(this.files || this.value);
+                        // Upload file
+                        var file = this.files[0];
+                        var formData = new FormData();
+                        formData.append("file", file, file.name);
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/wulin_master/uploads",
+                            success: function (response) {
+                                data.resolve(response.path);
+                            },
+                            error: function (error) {
+                                // handle error
+                            },
+                            async: true,
+                            data: formData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            timeout: 60000
+                        });
+
+                        // Get path
+                        // data.resolve(this.files || this.value);
                     })
                     .val('')
                     );
                     // clean file-path input
                     self.$dialog.find('.file-path').val('');
 
-                    $imageBtn.click(function (event) {
-                        event.preventDefault();
-                        data.resolve($imageUrl.val());
-                    });
+                    // $imageBtn.click(function (event) {
+                    //     event.preventDefault();
+                    //     data.resolve($imageUrl.val());
+                    // });
 
-                    $imageUrl.on('keyup paste', function () {
-                        var url = $imageUrl.val();
-                        ui.toggleBtn($imageBtn, url);
-                    }).val('').trigger('focus');
-                    self.bindEnterKey($imageUrl, $imageBtn);
+                    // $imageUrl.on('keyup paste', function () {
+                    //     var url = $imageUrl.val();
+                    //     ui.toggleBtn($imageBtn, url);
+                    // }).val('').trigger('focus');
+                    // self.bindEnterKey($imageUrl, $imageBtn);
 
                     $cancelBtn.one('click', function(event) {
                         event.preventDefault();
@@ -7642,8 +7666,8 @@
                         $imageBtn = self.$dialog.find('.note-image-btn');
 
                     $imageInput.off('change');
-                    $imageUrl.off('keyup paste keypress');
-                    $imageBtn.off('click');
+                    // $imageUrl.off('keyup paste keypress');
+                    // $imageBtn.off('click');
 
                     if (data.state() === 'pending') {
                         data.reject();
