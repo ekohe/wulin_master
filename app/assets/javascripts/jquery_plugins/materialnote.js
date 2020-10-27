@@ -7623,7 +7623,7 @@
                             type: "POST",
                             url: "/wulin_master/uploads",
                             success: function (response) {
-                                data.resolve(response.path);
+                                data.resolve(response.url);
                             },
                             error: function (error) {
                                 // handle error
