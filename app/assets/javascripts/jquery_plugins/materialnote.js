@@ -1810,11 +1810,11 @@
 
                     value = {
                         dim: $target.closest('[data-value]').data('value'),
-                        bordered: optionsContainer.find('#note-table-bordered').prop('checked'),
-                        striped: optionsContainer.find('#note-table-striped').prop('checked'),
-                        highlight: optionsContainer.find('#note-table-highlight').prop('checked'),
-                        responsive: optionsContainer.find('#note-table-responsive').prop('checked'),
-                        centered: optionsContainer.find('#note-table-centered').prop('checked')
+                        bordered: optionsContainer.find('#note-table-bordered-' + options.posIndex).prop('checked'),
+                        striped: optionsContainer.find('#note-table-striped-' + options.posIndex).prop('checked'),
+                        highlight: optionsContainer.find('#note-table-highlight-' + options.posIndex).prop('checked'),
+                        responsive: optionsContainer.find('#note-table-responsive-' + options.posIndex).prop('checked'),
+                        centered: optionsContainer.find('#note-table-centered-' + options.posIndex).prop('checked')
                     };
                 }
 
@@ -6677,23 +6677,23 @@
                         items: [
                             '<div class="row beforePicker">',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option"><input type="checkbox" id="note-table-bordered" class="note-table-option filled-in" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-bordered-' + options.posIndex + '" class="note-table-option filled-in" />',
                                     '<span>' + lang.table.bordered + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option"><input type="checkbox" id="note-table-striped" class="note-table-option filled-in" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-striped-' + options.posIndex + '" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.striped + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option"><input type="checkbox" id="note-table-highlight" class="note-table-option filled-in" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-highlight-' + options.posIndex + '" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.highlight + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option"><input type="checkbox" id="note-table-responsive" class="note-table-option filled-in" checked="checked" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-responsive-' + options.posIndex + '" class="note-table-option filled-in" checked="checked" />',
                                     '<span>' + lang.table.responsive + '</span></label>',
                                 '</div>',
                                 '<div class="col s12 m6">',
-                                    '<label class="note-table-option"><input type="checkbox" id="note-table-centered" class="note-table-option filled-in" />',
+                                    '<label class="note-table-option"><input type="checkbox" id="note-table-centered-' + options.posIndex + '" class="note-table-option filled-in" />',
                                     '<span>' + lang.table.centered + '</span></label>',
                                 '</div>',
                             '</div>',
@@ -6888,7 +6888,7 @@
             context.memo('button.responsive', function() {
                 return ui.button({
                     contents: ui.icon('photo_size_select_large'),
-                    id: 'note-image-responsive',
+                    id: 'note-image-responsive-' + options.posIndex,
                     tooltip: lang.image.responsive,
                     click: context.createInvokeHandler('editor.responsivize')
                 }).render();
@@ -7000,7 +7000,7 @@
             context.memo('button.borderedTable', function () {
                 return ui.button({
                     className: 'btn-md',
-                    id: 'note-table-bordered',
+                    id: 'note-table-bordered-' + options.posIndex,
                     contents: ui.icon('border_outer'),
                     tooltip: lang.table.bordered,
                     click: context.createInvokeHandler('editor.updateTable', 'bordered')
@@ -7009,7 +7009,7 @@
             context.memo('button.stripedTable', function () {
                 return ui.button({
                     className: 'btn-md',
-                    id: 'note-table-striped',
+                    id: 'note-table-striped-' + options.posIndex,
                     contents: ui.icon('view_headline'),
                     tooltip: lang.table.striped,
                     click: context.createInvokeHandler('editor.updateTable', 'striped')
@@ -7018,7 +7018,7 @@
             context.memo('button.highlightedTable', function () {
                 return ui.button({
                     className: 'btn-md',
-                    id: 'note-table-highlighted',
+                    id: 'note-table-highlighted-' + options.posIndex,
                     contents: ui.icon('highlight'),
                     tooltip: lang.table.highlight,
                     click: context.createInvokeHandler('editor.updateTable', 'highlight')
@@ -7027,7 +7027,7 @@
             context.memo('button.responsiveTable', function () {
                 return ui.button({
                     className: 'btn-md',
-                    id: 'note-table-responsive',
+                    id: 'note-table-responsive-' + options.posIndex,
                     contents: ui.icon('crop_free'),
                     tooltip: lang.table.responsive,
                     click: context.createInvokeHandler('editor.updateTable', 'responsive-table')
@@ -7036,7 +7036,7 @@
             context.memo('button.centeredTable', function () {
                 return ui.button({
                     className: 'btn-md',
-                    id: 'note-table-centered',
+                    id: 'note-table-centered-' + options.posIndex,
                     contents: ui.icon('format_align_center'),
                     tooltip: lang.table.centered,
                     click: context.createInvokeHandler('editor.updateTable', 'centered')
@@ -7298,20 +7298,20 @@
             var body =
             '<div class="row">' +
                 '<div class="input-field input-outlined col s12">' +
-                    '<input id="note-link-text" class="note-link-text" type="text">' +
-                    '<label for="note-link-text">' + lang.link.textToDisplay + '</label>' +
+                    '<input id="note-link-text-' + options.posIndex + '" class="note-link-text" type="text">' +
+                    '<label for="note-link-text-' + options.posIndex + '">' + lang.link.textToDisplay + '</label>' +
                 '</div>' +
             '</div>' +
 
             '<div class="row">' +
                 '<div class="input-field input-outlined col s12">' +
-                    '<input id="note-link-url" class="note-link-url" type="text">' +
-                    '<label for="note-link-url">' + lang.link.url + '</label>' +
+                    '<input id="note-link-url-' + options.posIndex + '" class="note-link-url" type="text">' +
+                    '<label for="note-link-url-' + options.posIndex + '">' + lang.link.url + '</label>' +
                 '</div>' +
 
                 (!options.disableLinkTarget ?
                     '<div class="input-field col s12">' +
-                        '<label for="sn-checkbox-open-in-new-window"><input type="checkbox" class="filled-in" id="sn-checkbox-open-in-new-window" />' +
+                        '<label for="sn-checkbox-open-in-new-window-' + options.posIndex + '"><input type="checkbox" class="filled-in" id="sn-checkbox-open-in-new-window-' + options.posIndex + '" />' +
                         '<span>' + lang.link.openInNewWindow + '</span></label>' +
                     '</div>' : ''
                 ) +
@@ -7581,7 +7581,7 @@
 
             '<div class="row" style="display: none">' +
                 '<div class="input-field input-outlined col s12">' +
-                    '<label class="note-table-option" for="note-image-responsive"><input type="checkbox" class="filled-in" id="note-image-responsive" class="note-image-option" checked="checked" />' +
+                    '<label class="note-table-option" for="note-image-responsive-' + options.posIndex + '"><input type="checkbox" class="filled-in" id="note-image-responsive-' + options.posIndex + '" class="note-image-option" checked="checked" />' +
                     '<span>' + lang.image.responsive + '</span></label>' +
                 '</div>' +
             '</div>';
@@ -7859,19 +7859,19 @@
                 // handle buttons active status
                 this.$popover.find('.btn-group.note-materializeOptions').children('.note-btn').removeClass('active');
                 if (tableInfo.bordered) {
-                    this.$popover.find('#note-table-bordered').addClass('active');
+                    this.$popover.find('#note-table-bordered-' + options.posIndex).addClass('active');
                 }
                 if (tableInfo.striped) {
-                    this.$popover.find('#note-table-striped').addClass('active');
+                    this.$popover.find('#note-table-striped-' + options.posIndex).addClass('active');
                 }
                 if (tableInfo.highlighted) {
-                    this.$popover.find('#note-table-highlighted').addClass('active');
+                    this.$popover.find('#note-table-highlighted-' + options.posIndex).addClass('active');
                 }
                 if (tableInfo.responsive) {
-                    this.$popover.find('#note-table-responsive').addClass('active');
+                    this.$popover.find('#note-table-responsive-' + options.posIndex).addClass('active');
                 }
                 if (tableInfo.centered) {
-                    this.$popover.find('#note-table-centered').addClass('active');
+                    this.$popover.find('#note-table-centered-' + options.posIndex).addClass('active');
                 }
 
                 if (isCell) {
