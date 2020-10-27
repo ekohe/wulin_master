@@ -7,7 +7,7 @@
   object = grid.model.new
   is_new = params["action"] === 'wulin_master_new_form'
   title = "#{title_prefix} #{model_name.titleize}"
-.create_form{:id => "#{grid.name}_form", :title => title, data: {action: action}}
+.create_form{:id => "#{grid.name}_form", data: {action: action}}
   %h5.title= title
   = form_for object, :url => grid.path do |form|
     = hidden_field_tag :grid, grid.class.to_s

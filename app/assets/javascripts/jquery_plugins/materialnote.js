@@ -2037,14 +2037,14 @@
 
         $btns.forEach(function(btn) {
             let $btn = $(btn);
-            let hexColor = $btn.data('value');
+            // let hexColor = $btn.data('value');
             let colorDescription = $btn.data('description');
 
-            $btn.tooltip({
-                html: hexColor,
-                position: 'bottom',
-                delay: 200
-            });
+            // $btn.tooltip({
+            //     html: hexColor,
+            //     position: 'bottom',
+            //     delay: 200
+            // });
 
             $btn.hover(function() {
                 let $colorName = $(this).closest('.note-holder').prev('.row.noMargins').find('.color-name');
