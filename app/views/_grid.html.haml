@@ -23,5 +23,5 @@
                              #{grid.behavior_configs.to_json.html_safe}, // behaviors
                              #{grid.options.to_json.html_safe}, // extend_options
                              #{grid.toolbar_items.filter{ |item| !item.global? }.to_json.html_safe}, // select_toolbar_items
-                             #{user_id}); // user_id
+                             "#{user_id}"); // user_id
   $('.tooltipped').tooltip();
