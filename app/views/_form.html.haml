@@ -131,6 +131,7 @@
                   %label{:for => "#{model_name}_#{column_name}"}= label
                   %textarea{name: "#{model_name}[#{column_name}]", id: "#{model_name}_#{column_name}_rich_text_editor", "data-field" => field, class: 'materialnote'}= column.value(object)
                   :javascript
+                    window.materialNoteIndex = (window.materialNoteIndex ? window.materialNoteIndex + 1 : 1);
                     $('##{model_name}_#{column_name}_rich_text_editor').materialnote({
                       height: 300,
                       toolbar: [
@@ -154,7 +155,8 @@
                       defaultColors: {
                         text: 'red',
                         background: 'transparent'
-                      }
+                      },
+                      posIndex: window.materialNoteIndex
                     });
               - elsif column.sql_type.to_s.downcase == 'text'
                 .input-field.input-outlined
