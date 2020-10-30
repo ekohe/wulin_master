@@ -156,7 +156,7 @@ module WulinMaster
     end
 
     def apply_order(query, column_name, order_direction)
-      column_name = column_name.split(".").last if column_name.include?(".")
+      column_name = column_name.to_s.split(".").last if column_name.to_s.include?(".")
 
       if column = find_sort_column_by_name(column_name)
         if column.sortable?
