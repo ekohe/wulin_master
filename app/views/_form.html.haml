@@ -129,7 +129,7 @@
               - elsif column.options[:editor]=='RichTextEditor'
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label
-                  %textarea{name: "#{model_name}[#{column_name}]", id: "#{model_name}_#{column_name}_rich_text_editor", "data-field" => field, class: 'materialnote'}= column.value(object)
+                  %textarea{name: "#{model_name}[#{column_name}]", id: "#{model_name}_#{column_name}_rich_text_editor", "data-field" => field, "data-target-id" => "#{column_name}_target_flag", class: 'materialnote'}= column.value(object)
                   :javascript
                     window.materialNoteIndex = (window.materialNoteIndex ? window.materialNoteIndex + 1 : 1);
                     $('##{model_name}_#{column_name}_rich_text_editor').materialnote({
