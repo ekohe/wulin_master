@@ -91,6 +91,9 @@ var Ui = {
           Ui.setupForm(grid, false);
           Ui.setupComponents(grid);
         },
+        onCloseStart: function (modal, trigger) {
+          $(".materialnote", modal).materialnote('destroy');
+        }
       });
     });
   },

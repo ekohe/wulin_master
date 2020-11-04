@@ -40,6 +40,9 @@ var batchUpdateByAjax = function (grid, version) {
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
         },
+        onCloseStart: function (modal, trigger) {
+          $(".materialnote", modal).materialnote('destroy');
+        }
       });
     });
   }
@@ -153,6 +156,16 @@ var checkTheBox = function (name, scope) {
           '"]'
       ).prop('checked', true);
     });
+
+  $('.materialnote', $scope).off('materialnote.change').on('materialnote.change', function(e) {
+    $(e.currentTarget).val($(e.currentTarget).materialnote('code'));
+    $('input.target_flag:checkbox[data-target-id="' +
+        $(e.currentTarget).attr('data-target-id') +
+        '"]'
+    ).prop('checked', true);
+    return true;
+  });
+
   $scope
     .off('change', 'input:checkbox, input:file')
     .on('change', 'input:checkbox:not(.target_flag), input:file', function (e) {
@@ -246,6 +259,8 @@ var submitForm = function (grid, ids, selectedIndexes) {
           saveMessage('Error updating ' + grid.model.toLowerCase(), 'error');
           grid.loader.reloadData();
         }
+        // Destroy material note
+        $(".materialnote").materialnote('destroy');
         $scope.closest('.modal').modal('close');
       },
       complete: function () {
