@@ -98,7 +98,21 @@ var Requests = {
           if (grid.reloadMasterAfterUpdates && grid.master_grid) {
             grid.master_grid.loader.reloadData();
           }
-          grid.container.find('.toolbar-select').addClass('hide');
+
+          var buttonMode = grid.container.find('.toolbar-select').data('mode');
+          var isSplitMode = buttonMode === 'split';
+          var toolbarSelect = grid.container.find('.toolbar-select');
+          if(isSplitMode) {
+            toolbarSelect.attr('hidden', true);
+          } else {
+            toolbarSelect
+              .find('.specific')
+              .addClass('toolbar_icon_disabled')
+              .removeClass('specific')
+              .addClass('static-waves-effect')
+              .removeClass('waves-effect');
+          }
+
           var recordSize = $.isArray(ids) ? ids.length : ids.split(',').length;
           var message;
           if (recordSize > 1) {

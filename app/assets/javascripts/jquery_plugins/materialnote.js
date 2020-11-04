@@ -8775,7 +8775,7 @@
 
             width: null,
             height: null,
-            linkTargetBlank: true,
+            linkTargetBlank: false,
 
             focus: false,
             tabSize: 4,
