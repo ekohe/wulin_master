@@ -125,7 +125,7 @@
                 .checkboxMargin
                   %label
                     = form.check_box column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: 'filled-in', "data-target-id" => "#{column_name}_target_flag"
-                    %span #{column_name}
+                    %span= label
               - elsif column.options[:editor]=='RichTextEditor'
                 .input-field.input-outlined
                   %label{:for => "#{model_name}_#{column_name}"}= label

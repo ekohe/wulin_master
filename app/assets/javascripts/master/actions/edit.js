@@ -108,12 +108,10 @@ var loadValue = function (scope, data) {
   } else if ($('input:checkbox[data-field="' + i + '"]', scope).size() > 0) {
       if (data[i]) {
         $('input:checkbox[data-field="' + i + '"]', scope)
-          .prop('checked', true)
-          .val(1);
+          .prop('checked', true);
       } else {
         $('input:checkbox[data-field="' + i + '"]', scope)
-          .removeAttr('checked')
-          .val(0);
+          .removeAttr('checked');
       }
     } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-field="' + i + '"]', scope);
