@@ -1196,6 +1196,7 @@ if (typeof Slick === "undefined") {
           setColumns(reorderedColumns);
           trigger(self.onColumnsReordered, {grid: self});
           setupColumnResize();
+          updateCanvasWidth(false)
           columnResizeDragging = false;
         }
       }
