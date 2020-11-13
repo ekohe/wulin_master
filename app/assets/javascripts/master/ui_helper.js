@@ -93,6 +93,7 @@ var Ui = {
         },
         onCloseStart: function (modal, trigger) {
           $(".materialnote", modal).materialnote('destroy');
+          $(".note-popover").remove();
         }
       });
     });

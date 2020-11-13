@@ -42,6 +42,7 @@ var batchUpdateByAjax = function (grid, version) {
         },
         onCloseStart: function (modal, trigger) {
           $(".materialnote", modal).materialnote('destroy');
+          $(".note-popover").remove();
         }
       });
     });
@@ -261,6 +262,7 @@ var submitForm = function (grid, ids, selectedIndexes) {
         }
         // Destroy material note
         $(".materialnote").materialnote('destroy');
+        $(".note-popover").remove();
         $scope.closest('.modal').modal('close');
       },
       complete: function () {
