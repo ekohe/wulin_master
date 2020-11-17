@@ -242,7 +242,7 @@ module WulinMaster
 
     def smart_query_count(query)
       method = query == grid.model ? 'count' : 'size'
-      query = query.except(:select).select("#{grid.model.table_name}.id").unscope(:order)
+      query = query.except(:select).select("#{grid.model.table_name}.id").unscope(:order) if query.respond_to?(:except)
 
       return query.send(method) if grid.options[:estCount].blank?
 
