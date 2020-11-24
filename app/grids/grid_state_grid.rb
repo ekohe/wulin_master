@@ -12,4 +12,5 @@ class GridStateGrid < WulinMaster::Grid
   column :name
 
   action :delete
+  action :audit
 end
