@@ -83,18 +83,19 @@ var Ui = {
   },
 
   // Create and open dialog
-  openDialog: function (grid, action, options, callback) {
-    $.get(grid.path + '/' + action + grid.query, function (data) {
+  openDialog: function (grid, action) {
+    var selectedIndexes = grid.getSelectedRows();
+    $.get(grid.path + "/" + action + grid.query, function (data) {
       Ui.createModelModal(grid, data, {
         dismissible: false,
-        onOpenEnd: function (modal, trigger) {
-          Ui.setupForm(grid, false);
+        onOpenEnd: function () {
+          Ui.setupForm(grid, false, selectedIndexes);
           Ui.setupComponents(grid);
         },
-        onCloseStart: function (modal, trigger) {
-          $(".materialnote", modal).materialnote('destroy');
+        onCloseStart: function (modal) {
+          $(".materialnote", modal).materialnote("destroy");
           $(".note-popover").remove();
-        }
+        },
       });
     });
   },
