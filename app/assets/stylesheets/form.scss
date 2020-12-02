@@ -18,8 +18,19 @@ form {
 
 .create_form {
   h5.title {
-    margin-top: $form-title-margin;
-    margin-bottom: $form-title-margin * 1.5;
+    position: fixed;
+    top: -5px;
+    z-index: 9999;
+    width: 100%;
+    left: 0px;
+    background-color: white;
+    height: 80px;
+    padding-left: 30px;
+    padding-top: 25px;
+    box-shadow:0 0 2px lightgrey;
+  }
+  form {
+    margin-top: 60px
   }
   .field-line {
     display: -webkit-flex;
