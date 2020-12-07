@@ -189,12 +189,15 @@
           }
         });
 
-        $contextMenu.off('blur').on('blur', function(){
-          $contextMenu.hide();
-        })
-        // $("body").one("click", function () {
-        //   $contextMenu.hide();
-        // });
+        if($contextMenu.parent().find('.modal.open').length == 0 ) {
+            $contextMenu.off('blur').on('blur', function(){
+            $contextMenu.hide();
+          })
+        } else {
+            $('body').one('click',function(){
+            $contextMenu.hide();
+          })
+        }
       });
 
       // Append necessary attributes to the grid
