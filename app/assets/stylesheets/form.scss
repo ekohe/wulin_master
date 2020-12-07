@@ -42,10 +42,14 @@ form {
     }
     .field {
       width: 100%;
+      input {
+        padding-top: 5px;
+        padding-bottom :5px;
+      }
       input,
       textarea {
         color: $text-color;
-        font-size: $font-size-small;
+        font-size: $font-size-small-middle;
       }
       input[type='text']:not(.browser-default) {
         height: 36px;
@@ -101,7 +105,7 @@ form {
   textarea,
   .chosen-container {
     border: 2px solid #eee;
-    padding: 12px 16px 14px;
+    padding: 10px 15px 10px;
     width: calc(100% - 2.5rem);
     float: none;
     display: block;
@@ -119,7 +123,7 @@ form {
     left: 27px;
     display: inline-flex;
     width: auto !important;
-    top: 0.5rem;
+    top: 0rem;
   }
 }
 
