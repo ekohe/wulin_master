@@ -70,7 +70,6 @@
       $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />")
         .attr('id', grid.name + '-columnpicker')
         .appendTo(document.body);
-
       // user could pass a title on top of the columns list
       if(options.columnPickerTitle || (options.columnPicker && options.columnPicker.columnTitle)) {
         var columnTitle = options.columnPickerTitle || options.columnPicker.columnTitle;
@@ -279,6 +278,10 @@
       // Ekohe Add: column-container div for MD implementation
       var $columnContainer = $("<div class='column-container' />").appendTo($menu);
 
+      // Reinit grid if column-container not found
+      if($('.column-container').length == 0 ) {
+        init(grid)
+      }
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
         $li = $("<li />").appendTo($columnContainer);
@@ -345,7 +348,6 @@
       // Use specifc class to identify columnpicker since e.target
       // is recognized as label (should be input) here.
       // TODO: Use e.target instead of using columnpicker element
-
       var visibleColumns = [];
       $.each($('#' + grid.name + '-columnpicker li input'), function(i, e) {
         if ($(this).is(":checked")) {
