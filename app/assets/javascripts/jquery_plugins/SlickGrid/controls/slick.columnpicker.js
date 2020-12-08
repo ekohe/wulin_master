@@ -213,6 +213,8 @@
 
         // Update columns
         grid.setColumns(visibleColumns);
+
+        _self.onColumnsPick.notify({});
     }
 
     function moveThisColumnEvent() {

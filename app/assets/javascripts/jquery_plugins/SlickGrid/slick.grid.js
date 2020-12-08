@@ -986,6 +986,7 @@ if (typeof Slick === "undefined") {
           .off('click')
           .on('click', function () {
             self.columnpicker.moveThisColumnEvent.apply($(this));
+            trigger(self.onColumnsReordered, {grid: self});
           });
         var $moveToLeft = $(
           `<li id='move_to_left' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons move_back">forward</i>Move to the left</a></li>`
@@ -993,6 +994,7 @@ if (typeof Slick === "undefined") {
           .off('click')
           .on('click', function () {
             self.columnpicker.moveThisColumnEvent.apply($(this));
+            trigger(self.onColumnsReordered, {grid: self});
           });;
         $moreContainer
           .append($hideItem)
