@@ -1,35 +1,35 @@
-@import 'materialize/components/color-variables';
-@import 'base';
+@import "materialize/components/color-variables";
+@import "base";
 
 $wulin-colors: (
-  'red': color('red', 'base'),
-  'pink': color('pink', 'base'),
-  'purple': color('purple', 'base'),
-  'deep-purple': color('deep-purple', 'base'),
-  'indigo': color('indigo', 'base'),
-  'blue': color('blue', 'base'),
-  'light-blue': color('light-blue', 'base'),
-  'cyan': color('cyan', 'base'),
-  'teal': color('teal', 'base'),
-  'green': color('green', 'base'),
-  'light-green': color('light-green', 'base'),
-  'lime': color('lime', 'base'),
-  'yellow': color('yellow', 'base'),
-  'amber': color('amber', 'base'),
-  'orange': color('orange', 'base'),
-  'deep-orange': color('deep-orange', 'base'),
-  'brown': color('brown', 'base'),
-  'blue-grey': color('blue-grey', 'base'),
-  'grey': color('grey', 'base')
+  "red": color("red", "base"),
+  "pink": color("pink", "base"),
+  "purple": color("purple", "base"),
+  "deep-purple": color("deep-purple", "base"),
+  "indigo": color("indigo", "base"),
+  "blue": color("blue", "base"),
+  "light-blue": color("light-blue", "base"),
+  "cyan": color("cyan", "base"),
+  "teal": color("teal", "base"),
+  "green": color("green", "base"),
+  "light-green": color("light-green", "base"),
+  "lime": color("lime", "base"),
+  "yellow": color("yellow", "base"),
+  "amber": color("amber", "base"),
+  "orange": color("orange", "base"),
+  "deep-orange": color("deep-orange", "base"),
+  "brown": color("brown", "base"),
+  "blue-grey": color("blue-grey", "base"),
+  "grey": color("grey", "base"),
 );
 
 // Grid Color Theme
 
 @mixin grid_color($name, $color) {
-  .#{'grid-color-' + $name} {
+  .#{"grid-color-" + $name} {
     .grid-header {
       &.has-selected-rows {
-        background: lighten(rgba($color, .15), 20%) !important;
+        background: lighten(rgba($color, 0.15), 20%) !important;
       }
       span.detail-grid-title {
         color: $color;
@@ -51,7 +51,7 @@ $wulin-colors: (
     }
     .slick-cell {
       &.selected {
-        background: lighten(rgba($color, .5), 10%) !important;
+        background: lighten(rgba($color, 0.5), 10%) !important;
       }
       &.active {
         border: $color solid 1px;
@@ -63,36 +63,38 @@ $wulin-colors: (
 // Grid: Background color
 
 @mixin grid_bg_color($name, $color) {
-  .#{'grid-bg-color-' + $name} {
+  .#{"grid-bg-color-" + $name} {
     .grid-header {
-      background: lighten(rgba($color, .1), 10%);
+      background: lighten(rgba($color, 0.1), 10%);
     }
     .slick-header {
-      background: lighten(rgba($color, .1), 10%);
+      background: lighten(rgba($color, 0.1), 10%);
       .slick-header-column {
         background: none;
         &.input-field {
-          .slick-sort-indicator, .slick-show-more, .slick-resizable-handle {
-            background: rgba($color, .0);
+          .slick-sort-indicator,
+          .slick-show-more,
+          .slick-resizable-handle {
+            background: rgba($color, 0);
             i.material-icons {
-              background: rgba($color, .0);
+              background: rgba($color, 0);
             }
           }
         }
       }
     }
     .slick-pager {
-      background: lighten(rgba($color, .1), 10%);
+      background: lighten(rgba($color, 0.1), 10%);
     }
     .slick-row.even {
       .slick-cell {
-        background: lighten(rgba($color, .1), 10%);
+        background: lighten(rgba($color, 0.1), 10%);
       }
     }
     .slick-row.odd {
       background: rgba(245, 245, 245, 0.1);
       .slick-cell {
-        background: lighten(rgba($color, .2), 5%);
+        background: lighten(rgba($color, 0.2), 5%);
       }
     }
   }
@@ -101,10 +103,10 @@ $wulin-colors: (
 // Grid: Selection colors
 
 @mixin grid_selection_color($name, $color) {
-  .#{'grid-selection-color-' + $name} {
+  .#{"grid-selection-color-" + $name} {
     .slick-cell {
       &.selected {
-        background: lighten(rgba($color, .5), 10%);
+        background: lighten(rgba($color, 0.5), 10%);
       }
       &.active {
         border: $color solid 1px;

@@ -1,4 +1,4 @@
-@import 'base';
+@import "base";
 
 /* Editors in Grid */
 
@@ -13,7 +13,7 @@
     border: 0;
     outline: 0 none;
   }
-  input[type=text]:focus:not([readonly]) {
+  input[type="text"]:focus:not([readonly]) {
     padding-left: 8px;
     font-size: $font-size-small;
     &.editor-text {
@@ -21,7 +21,7 @@
       box-shadow: none !important;
     }
   }
-  input[type=text]:not(.browser-default) {
+  input[type="text"]:not(.browser-default) {
     height: 24px;
   }
   .autocomplete-content {

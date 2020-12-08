@@ -1,4 +1,4 @@
-@import 'base';
+@import "base";
 
 // Common
 
@@ -27,10 +27,10 @@ form {
     height: 70px;
     padding-left: 30px;
     padding-top: 22px;
-    box-shadow:0 0 2px lightgrey;
+    box-shadow: 0 0 2px lightgrey;
   }
   form {
-    margin-top: 60px
+    margin-top: 60px;
   }
   .field-line {
     display: -webkit-flex;
@@ -44,19 +44,19 @@ form {
       width: 100%;
       input {
         padding-top: 5px;
-        padding-bottom :5px;
+        padding-bottom: 5px;
       }
       input,
       textarea {
         color: $text-color;
         font-size: $font-size-small-middle;
       }
-      input[type='text']:not(.browser-default) {
+      input[type="text"]:not(.browser-default) {
         height: 36px;
       }
-      input[data-date='true'],
-      input[data-time='true'],
-      input[data-datetime='true'] {
+      input[data-date="true"],
+      input[data-time="true"],
+      input[data-datetime="true"] {
         display: block;
         margin-bottom: 5px;
       }
@@ -129,6 +129,6 @@ form {
 
 .modal-footer {
   .color-blue {
-    color: #2196F3
+    color: #2196f3;
   }
 }

@@ -1,4 +1,4 @@
-@import 'base';
+@import "base";
 
 /* Grid Container */
 
@@ -64,7 +64,8 @@
     }
 
     .pager-item.status {
-      a.clear, .slick-pager-status.with-filter {
+      a.clear,
+      .slick-pager-status.with-filter {
         color: $filter-color;
       }
     }
