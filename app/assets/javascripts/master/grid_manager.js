@@ -158,6 +158,7 @@
           .css('left', e.pageX)
           .show()
           .focus();
+
         let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
         $(copyItem).appendTo($contextMenu);
         let contextActions = grid.select_toolbar_items
@@ -189,12 +190,13 @@
           }
         });
 
-        if($contextMenu.parent().find('.modal.open').length == 0 ) {
+        if ($contextMenu.parent().find('.modal.open').length == 0 ) {
             $contextMenu.off('blur').on('blur', function(){
             $contextMenu.hide();
           })
         } else {
-            $('body').one('click',function(){
+          $('ul#contextMenu').last().prev("ul#contextMenu").hide()
+          $('body').one('click',function(){
             $contextMenu.hide();
           })
         }
