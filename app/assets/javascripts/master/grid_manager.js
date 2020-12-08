@@ -250,6 +250,9 @@
       // Set default sorting state
       if (options.defaultSortingState) {
         grid.setSortColumn(options.defaultSortingState.column, options.defaultSortingState.direction == 'ASC');
+        if(options.eagerLoading !== false){
+          grid.loader.setSort(options.defaultSortingState.column, options.defaultSortingState.direction == 'ASC');
+        }
       }
 
       // Restore the sorting states to grid

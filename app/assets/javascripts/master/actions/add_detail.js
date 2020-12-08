@@ -45,6 +45,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         }
 
         self.setGridHeightInModal(modalContentDom.parent());
+        Ui.resizeGrid(grid)
       });
     });
   },
