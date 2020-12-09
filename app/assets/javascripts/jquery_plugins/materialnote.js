@@ -1982,7 +1982,6 @@
 
     var airEditor = renderer.create('<div class="note-editor"/>');
     var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
-
     var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
 
     var dropdown = renderer.create('<div class="dropdown-content">', function ($node, options) {
@@ -5950,7 +5949,7 @@
         var $scrollbar = $('html, body');
 
         this.resizeTo = function (size) {
-            $editable.css('height', size.h);
+            $editable.css('height', size.h + $(".modal-content").height() - $(".modal-footer").height());
             $codable.css('height', size.h);
             if ($codable.data('cmeditor')) {
                 $codable.data('cmeditor').setsize(null, size.h);

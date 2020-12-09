@@ -408,7 +408,7 @@ var Ui = {
     var modalHeight =
       $(`.${willBeRemovedContainerClassName} .title`).outerHeight() + // Title
       $(`.${willBeRemovedContainerClassName} form`).outerHeight() + // Fields
-      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight()  // Button
+      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() + 15  // Button
       ; // Padding
     if (grid.options) {
       width = grid.options.form_dialog_width || 900;

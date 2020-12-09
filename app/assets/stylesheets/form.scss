@@ -20,7 +20,7 @@ form {
   h5.title {
     position: fixed;
     top: -5px;
-    z-index: 9999;
+    z-index: 1040;
     width: 100%;
     left: 0px;
     background-color: white;
@@ -127,8 +127,11 @@ form {
   }
 }
 
-.modal-footer {
-  .color-blue {
-    color: #2196f3;
+.modal-fixed-footer {
+  .modal-footer {
+    z-index: 1200;
+    .color-blue {
+      color: #2196f3;
+    }
   }
 }

@@ -20,7 +20,6 @@
       margin-bottom: $menu-padding;
       // Menu groups
       li.submenu {
-        margin-bottom: 20px;
         a {
           font-size: 13px;
           padding-left: 24px;
@@ -47,8 +46,7 @@
               color: color("grey", "darken-4");
               align-items: center;
               padding-left: 24px;
-              padding-top: 4px;
-              padding-bottom: 2px;
+              padding-bottom: 10px;
               font-weight: 250;
 
               span {
