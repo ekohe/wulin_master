@@ -143,7 +143,7 @@
 
       grid.onContextMenu.subscribe(function (e) {
         e.preventDefault();
-        let $contextMenu = $(`<ul id='contextMenu' style='display:none;position:absolute' tabindex='0' />`)
+        let $contextMenu = $(`<ul id='contextMenu' class="context-menu" style='display:none;position:absolute' tabindex='0' />`)
         $contextMenu.appendTo($('body'));
 
         var cell = grid.getCellFromEvent(e);
@@ -190,10 +190,11 @@
           }
         });
 
-        $('ul#contextMenu').last().prev("ul#contextMenu").remove()
+        $("ul.context-menu").not($contextMenu).remove()
         $('body').one('click',function(){
-          $contextMenu.remove();
+          $("ul.context-menu").remove();
         })
+
       });
 
       // Append necessary attributes to the grid
