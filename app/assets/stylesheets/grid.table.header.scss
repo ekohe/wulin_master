@@ -1,4 +1,4 @@
-@import 'base';
+@import "base";
 
 /* Grid Column Headers */
 
@@ -39,10 +39,10 @@
       top: 10px;
       font-size: $font-size-small;
       &.active {
-        top: 15px
+        top: 15px;
       }
     }
-    input[type=text] {
+    input[type="text"] {
       margin-bottom: none;
       border-bottom: none;
       position: relative;
@@ -50,16 +50,17 @@
       height: $filter-height;
       color: $filter-color;
     }
-    input[type=text]:focus:not([readonly]) {
+    input[type="text"]:focus:not([readonly]) {
       border-bottom: 1px $filter-color !important;
       box-shadow: 0 1.5px 0 0 $filter-color !important;
       font-size: 14px;
       margin-left: -2px;
     }
-    input[type=text]:focus:not([readonly]) + label {
+    input[type="text"]:focus:not([readonly]) + label {
       color: $filter-color !important;
     }
-    .slick-sort-indicator, .slick-show-more {
+    .slick-sort-indicator,
+    .slick-show-more {
       display: block;
       position: absolute;
       transition: right 0.1s linear;
@@ -101,7 +102,7 @@
         position: fixed;
         width: 190px !important;
         height: auto !important;
-        background: #FFFFFF;
+        background: #ffffff;
         box-shadow: $box-shadow;
         top: 142px !important;
         li {
@@ -114,7 +115,7 @@
           align-items: flex-end;
           a {
             font-size: 14px;
-            color: #4D4D4E;
+            color: #4d4d4e;
             padding: 7px 16px;
             i {
               &.material-icons {

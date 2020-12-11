@@ -1,18 +1,19 @@
-@import 'mixins';
-@import 'materialize/components/color-variables';
+@import "mixins";
+@import "materialize/components/color-variables";
 
 // Common
 
-$main-color: color(#{$color-theme}, 'base');
+$main-color: color(#{$color-theme}, "base");
 
-$text-color: color('grey', 'darken-2');
-$label-color: color('grey', 'base');
-$tag-color: color('grey', 'lighten-1');
-$border-color: color('grey', 'lighten-2');
-$filter-color: color('green', 'base');
+$text-color: color("grey", "darken-2");
+$label-color: color("grey", "base");
+$tag-color: color("grey", "lighten-1");
+$border-color: color("grey", "lighten-2");
+$filter-color: color("green", "base");
 
 $font-size-tiny: 10px;
 $font-size-small: 12px;
+$font-size-small-middle: 14px;
 $font-size-middle: 16px;
 $font-size-large: 20px;
 
@@ -22,7 +23,7 @@ $box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
 $body-bg-color: white;
 $nav-height: 48px;
-$menu-width: 250px;
+$menu-width: 235px;
 
 $screen-loader-main-color: $main-color;
 $screen-loader-sub-color: $border-color;
@@ -31,14 +32,14 @@ $screen-loader-size: 120px;
 $notification-width: 300px;
 $notification-padding: 13px 20px;
 $notification-color: white;
-$notification-bg-color: color('grey', 'darken-4');
+$notification-bg-color: color("grey", "darken-4");
 $notification-box-shadow: 1px 2px 5px black;
 
 $info-modal-width: 400px;
 
 // Menu
 
-$menu-padding: 16px;
+$menu-padding: 10px;
 $menu-item-active-color: $main-color;
 
 // Nav
@@ -52,14 +53,14 @@ $panel-header-padding: 20px;
 
 // Form
 
-$error-color: color('red', 'base');
+$error-color: color("red", "base");
 $form-title-margin: 16px;
 $form-submit-padding: 24px;
 
 // Grid Header
 
 $grid-header-height: 50px;
-$grid-header-has-selected-rows-bg-color: rgba($main-color, .1);
+$grid-header-has-selected-rows-bg-color: rgba($main-color, 0.1);
 $grid-header-selection-info-color: $main-color;
 
 $grid-states-switcher-width: 200px;
@@ -70,7 +71,7 @@ $toolbar-select-color: $text-color;
 
 // Grid Table Header
 
-$slick-header-color: color('grey', 'base');
+$slick-header-color: color("grey", "base");
 $slick-header-bg-color: white;
 $slick-header-height: 44px;
 $slick-header-padding: 5px;
@@ -80,21 +81,25 @@ $filter-height: 20px;
 // Grid Cell
 
 $grid-row-height: 25px;
-$grid-row-odd-bg-color: color('grey', 'lighten-4');
-$grid-cell-selected-bg-color: rgba($main-color, .1);
+$grid-row-odd-bg-color: color("grey", "lighten-4");
+$grid-cell-selected-bg-color: rgba($main-color, 0.1);
 $grid-cell-active-border-color: $main-color;
 $grid-cell-loading-margin: 10px;
-$grid-cell-odd-filtered-bg-color: rgba(color('green', 'base'), .1);
-$grid-cell-even-filtered-bg-color: rgba(color('green', 'lighten-2'), .1);
-$grid-cell-filtered-selected-bg-color: rgba(color('teal', 'lighten-1'), .2);
-$grid-cell-odd-shimmer-color-1: rgba(color('blue-grey', 'lighten-3'), .3);
-$grid-cell-odd-shimmer-color-2: rgba(color('blue-grey', 'lighten-3'), .1);
-$grid-cell-even-shimmer-color-1: rgba(color('grey', 'lighten-2'), .3);
-$grid-cell-even-shimmer-color-2: rgba(color('grey', 'lighten-2'), .1);
+$grid-cell-odd-filtered-bg-color: rgba(color("green", "base"), 0.1);
+$grid-cell-even-filtered-bg-color: rgba(color("green", "lighten-2"), 0.1);
+$grid-cell-filtered-selected-bg-color: rgba(color("teal", "lighten-1"), 0.2);
+$grid-cell-odd-shimmer-color-1: rgba(color("blue-grey", "lighten-3"), 0.3);
+$grid-cell-odd-shimmer-color-2: rgba(color("blue-grey", "lighten-3"), 0.1);
+$grid-cell-even-shimmer-color-1: rgba(color("grey", "lighten-2"), 0.3);
+$grid-cell-even-shimmer-color-2: rgba(color("grey", "lighten-2"), 0.1);
 
-@keyframes shimmerCell{
-  0%   { background-position: -500px 0 }
-  100% { background-position: 500px 0 }
+@keyframes shimmerCell {
+  0% {
+    background-position: -500px 0;
+  }
+  100% {
+    background-position: 500px 0;
+  }
 }
 
 // Grid Editor

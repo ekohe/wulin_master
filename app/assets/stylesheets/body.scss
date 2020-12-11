@@ -1,8 +1,9 @@
-@import 'base';
+@import "base";
 
 body {
   background: $body-bg-color;
-  font-family: -apple-system, system-ui, "Segoe UI", "Roboto", Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-family: -apple-system, system-ui, "Segoe UI", "Roboto", Oxygen-Sans,
+    Ubuntu, Cantarell, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   font-smooth: always;
   -webkit-font-smoothing: antialiased;
   margin: 0;
@@ -35,8 +36,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 #screen_content_loader {

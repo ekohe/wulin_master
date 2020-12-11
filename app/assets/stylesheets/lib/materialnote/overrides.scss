@@ -15,20 +15,23 @@
 
 .input-field.focused {
   .note-editor.note-frame {
-    border-color: #2196F3;
+    border-color: #2196f3;
   }
 }
 
-.note-editor .dropdown-content.note-check li a, .note-editor .modal-content.note-check li a {
+.note-editor .dropdown-content.note-check li a,
+.note-editor .modal-content.note-check li a {
   padding: 6px 6px;
 }
 
-.note-editor .dropdown-content.note-check li, .note-editor .modal-content.note-check li {
+.note-editor .dropdown-content.note-check li,
+.note-editor .modal-content.note-check li {
   min-height: auto;
   line-height: 1.2em;
 }
 
-.note-editor .dropdown-content, .note-editor .modal-content {
+.note-editor .dropdown-content,
+.note-editor .modal-content {
   background-color: white;
   overflow: hidden;
 }
@@ -41,51 +44,65 @@
   color: black;
 }
 
-.note-popover .popover-content .btn-group, .panel-heading.note-toolbar .btn-group {
+.note-popover .popover-content .btn-group,
+.panel-heading.note-toolbar .btn-group {
   margin-top: 0px;
 }
 
-.note-popover .popover-content .btn, .note-popover .popover-content .btn-large, .note-popover .popover-content .btn-small, .panel-heading.note-toolbar .btn, .panel-heading.note-toolbar .btn-large, .panel-heading.note-toolbar .btn-small {
+.note-popover .popover-content .btn,
+.note-popover .popover-content .btn-large,
+.note-popover .popover-content .btn-small,
+.panel-heading.note-toolbar .btn,
+.panel-heading.note-toolbar .btn-large,
+.panel-heading.note-toolbar .btn-small {
   margin-right: 5px;
   color: #888;
 }
 
-.note-popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content,
+.panel-heading.note-toolbar {
   border-bottom: 1px solid #f0f0f0;
   display: block;
   margin-bottom: -5px;
 }
 
 // Font size selector
-.note-editor .dropdown-content.note-check li a, .note-editor .modal-content.note-check li a {
+.note-editor .dropdown-content.note-check li a,
+.note-editor .modal-content.note-check li a {
   color: #888;
 }
 
-.note-editor .dropdown-content.note-check li a i, .note-editor .modal-content.note-check li a i {
+.note-editor .dropdown-content.note-check li a i,
+.note-editor .modal-content.note-check li a i {
   color: #888 !important;
 }
 
-.note-editor .dropdown-content.note-check li:hover a, .note-editor .modal-content.note-check li:hover a {
+.note-editor .dropdown-content.note-check li:hover a,
+.note-editor .modal-content.note-check li:hover a {
   color: #eee;
 }
 
-.note-editor .dropdown-content.note-check li:hover a i, .note-editor .modal-content.note-check li:hover a i {
+.note-editor .dropdown-content.note-check li:hover a i,
+.note-editor .modal-content.note-check li:hover a i {
   color: #eee !important;
 }
 
 // Color picker
 
-.note-editor .note-color-palette div .note-color-btn, #note-card-modal .note-color-palette div .note-color-btn {
+.note-editor .note-color-palette div .note-color-btn,
+#note-card-modal .note-color-palette div .note-color-btn {
   width: 12px;
   height: 12px;
 }
 
-.note-editor .dropdown-content .tabs .tab.col a.active, .note-editor .modal-content .tabs .tab.col a.active  {
-  background: #2196F3;
+.note-editor .dropdown-content .tabs .tab.col a.active,
+.note-editor .modal-content .tabs .tab.col a.active {
+  background: #2196f3;
   color: #fff;
 }
 
-.note-editor .dropdown-content .tabs .tab.col a, .note-editor .modal-content .tabs .tab.col a  {
+.note-editor .dropdown-content .tabs .tab.col a,
+.note-editor .modal-content .tabs .tab.col a {
   font-size: 12px;
   line-height: 24px;
   padding: 0px 6px;
@@ -93,17 +110,24 @@
   transition: none;
 }
 
-.note-editor .dropdown-content .note-color-reset.btn, .note-editor .dropdown-content .note-color-reset.btn-large, .note-editor .dropdown-content .note-color-reset.btn-small, .note-editor .modal-content .note-color-reset.btn, .note-editor .modal-content .note-color-reset.btn-large, .note-editor .modal-content .note-color-reset.btn-small {
+.note-editor .dropdown-content .note-color-reset.btn,
+.note-editor .dropdown-content .note-color-reset.btn-large,
+.note-editor .dropdown-content .note-color-reset.btn-small,
+.note-editor .modal-content .note-color-reset.btn,
+.note-editor .modal-content .note-color-reset.btn-large,
+.note-editor .modal-content .note-color-reset.btn-small {
   font-size: 12px;
   line-height: 1em;
 }
 
-.note-editor .dropdown-content .color-name, .note-editor .modal-content .color-name {
+.note-editor .dropdown-content .color-name,
+.note-editor .modal-content .color-name {
   font-size: 12px;
   line-height: 1em;
 }
 
-.note-editor .dropdown-content .row.noMargins, .note-editor .modal-content .row.noMargins {
+.note-editor .dropdown-content .row.noMargins,
+.note-editor .modal-content .row.noMargins {
   margin-bottom: 5px;
 }
 
@@ -112,9 +136,32 @@
 .note-popover.popover {
   z-index: 2500;
 }
-.note-popover .popover-content .btn-group .note-table .note-dimension-picker .note-dimension-picker-unhighlighted, .panel-heading.note-toolbar .btn-group .note-table .note-dimension-picker .note-dimension-picker-unhighlighted {
+.note-popover
+  .popover-content
+  .btn-group
+  .note-table
+  .note-dimension-picker
+  .note-dimension-picker-unhighlighted,
+.panel-heading.note-toolbar
+  .btn-group
+  .note-table
+  .note-dimension-picker
+  .note-dimension-picker-unhighlighted {
   background-size: 26px 26px;
-  background-image: repeating-linear-gradient(0deg, #ccc, #ccc 4px, transparent 4px, transparent 26px), repeating-linear-gradient(-90deg, transparent, transparent 4px, #fff 4px, #fff 26px);
+  background-image: repeating-linear-gradient(
+      0deg,
+      #ccc,
+      #ccc 4px,
+      transparent 4px,
+      transparent 26px
+    ),
+    repeating-linear-gradient(
+      -90deg,
+      transparent,
+      transparent 4px,
+      #fff 4px,
+      #fff 26px
+    );
 }
 
 // Restore ul bullet points
@@ -127,7 +174,8 @@
   list-style-type: disc;
 }
 
-.note-popover .popover-content .btn-group .note-table .note-dimension-display, .panel-heading.note-toolbar .btn-group .note-table .note-dimension-display {
+.note-popover .popover-content .btn-group .note-table .note-dimension-display,
+.panel-heading.note-toolbar .btn-group .note-table .note-dimension-display {
   color: #888;
 }
 
@@ -141,6 +189,8 @@
 }
 
 // Disabled mode, keep white background
-.note-editor.note-frame .note-editing-area .note-editable[contenteditable="false"] {
+.note-editor.note-frame
+  .note-editing-area
+  .note-editable[contenteditable="false"] {
   background-color: #fff;
 }

@@ -173,9 +173,14 @@
 
             .field_error
     .submit
-      .btn-flat.modal-close CANCEL
+      %a.btn-flat.waves-effect.modal-close CANCEL
       - if is_new
-        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create "}/
-        %input.btn{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue "}/
+        %input.btn-flat{:id => "#{grid.name}_submit_continue", :name => "commit", :type => "submit", :value => " Create and Continue ", :class=> "waves-effect color-blue"}/
+        %input.btn{:id => "#{grid.name}_submit", :name => "commit", :type => "submit", :value => " Create ", :class=> "waves-effect"}/
       - else
-        %input.btn{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: "  #{button_name}  "}/
+        %input.btn{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: "  #{button_name}  ", :class=> "waves-effect"}/
+:javascript
+   if ($('#modal-footer').children().length == 0) {
+    $('.submit').appendTo($('#modal-footer'))
+  }
+  $('.input-outlined').first().children("input").focus()

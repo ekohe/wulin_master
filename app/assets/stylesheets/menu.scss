@@ -1,4 +1,4 @@
-@import 'base';
+@import "base";
 
 #navigation {
   position: absolute;
@@ -8,7 +8,7 @@
   width: $menu-width;
   font-size: $font-size-small;
   border-right: 1px solid $border-color;
-  background: color('grey', 'lighten-5');
+  background: color("grey", "lighten-5");
   display: flex;
   flex-direction: column;
 
@@ -17,19 +17,17 @@
     overflow-y: auto;
 
     ul {
-      margin-top: 2px;
       margin-bottom: $menu-padding;
       // Menu groups
       li.submenu {
         a {
-          font-size: 12px;
-          padding-left: 24px;
+          font-size: 13px;
+          padding-left: 10px;
           text-transform: uppercase;
           color: $text-color;
         }
         // Second level menu
         ul {
-          margin-top: 4px;
           li.item {
             display: block;
             position: relative;
@@ -39,26 +37,26 @@
               top: 6px;
               font-size: 21px;
               transition: color 0.4s ease;
-              color: color('grey', 'darken-2');
+              color: color("grey", "darken-2");
             }
 
             a {
               width: 100%;
               text-transform: none;
-              color: color('grey', 'darken-4');
+              color: color("grey", "darken-4");
               align-items: center;
-              padding-left: 24px;
-              padding-top: 7px;
-              padding-bottom: 11px;
+              padding-left: 10px;
+              padding-bottom: 10px;
+              font-weight: 400;
 
               span {
-                padding-left: $menu-padding;
-                font-size: 14px;
+                padding-left: 10px;
+                font-size: 13px;
               }
             }
 
             a:hover {
-              background: color('grey', 'lighten-3');
+              background: color("grey", "lighten-3");
               .material-icons {
                 color: black;
               }
