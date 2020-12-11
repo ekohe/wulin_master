@@ -22,7 +22,7 @@
       li.submenu {
         a {
           font-size: 13px;
-          padding-left: 24px;
+          padding-left: 10px;
           text-transform: uppercase;
           color: $text-color;
         }
@@ -45,9 +45,9 @@
               text-transform: none;
               color: color("grey", "darken-4");
               align-items: center;
-              padding-left: 24px;
+              padding-left: 10px;
               padding-bottom: 10px;
-              font-weight: 250;
+              font-weight: 400;
 
               span {
                 padding-left: 10px;
