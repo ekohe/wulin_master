@@ -84,20 +84,20 @@ var Ui = {
 
   // Create and open dialog
   openDialog: function (grid, action) {
-    var selectedIndexes = grid.getSelectedRows();
     $.get(grid.path + "/" + action + grid.query, function (data) {
       Ui.createModelModal(grid, data, {
         dismissible: false,
         onOpenEnd: function () {
           /*
-           * ignoreSelectedRows will ignore selectedIndexes variable because in some cases we don't need prefill the form.
-           * For examle in the comment https://gitlab.ekohe.com/ekohe/hbs/bss_core/-/issues/37#note_733032.
-           * You need set ignoreSelectedRows to be true before call openDialog to make it happen.
+           * needDuplicateSelectedRows will duplicate selected rows.
+           * For examle in the comment https://gitlab.ekohe.com/ekohe/hbs/bss_core/-/issues/37
+           * You need set needDuplicateSelectedRows to be true before call openDialog to make it happen.
            */
-          if(grid.options['ignoreSelectedRows']) {
-            Ui.setupForm(grid, false)
-          } else {
+          if(grid.options['needDuplicateSelectedRows']) {
+            var selectedIndexes = grid.getSelectedRows();
             Ui.setupForm(grid, false, selectedIndexes);
+          } else {
+            Ui.setupForm(grid, false);
           }
           Ui.setupComponents(grid);
         },
@@ -105,7 +105,7 @@ var Ui = {
           $(".materialnote", modal).materialnote("destroy");
           $(".note-popover").remove();
           // Need reset to false at the end to avoid side effect.
-          grid.options['ignoreSelectedRows'] = false;
+          grid.options['needDuplicateSelectedRows'] = false;
         },
       });
     });
