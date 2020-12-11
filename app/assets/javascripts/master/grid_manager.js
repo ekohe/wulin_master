@@ -192,12 +192,12 @@
 
         if ($contextMenu.parent().find('.modal.open').length == 0 ) {
             $contextMenu.off('blur').on('blur', function(){
-            $contextMenu.hide();
+            $contextMenu.remove();
           })
         } else {
-          $('ul#contextMenu').last().prev("ul#contextMenu").hide()
+          $('ul#contextMenu').last().prev("ul#contextMenu").remove()
           $('body').one('click',function(){
-            $contextMenu.hide();
+            $contextMenu.remove();
           })
         }
       });
