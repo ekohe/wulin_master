@@ -151,6 +151,11 @@
         var $node = $(grid.getCellNode(cell.row, cell.cell));
         var text = $.trim($node.text());
 
+        // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
+        if (!$node.hasClass("selected")) {
+          grid.setActiveCell(cell.row, cell.cell)
+        }
+
         $contextMenu
           .empty()
           .data({ row: cell.row, copiedText: text })
