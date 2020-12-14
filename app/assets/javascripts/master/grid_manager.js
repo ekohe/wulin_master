@@ -143,7 +143,7 @@
 
       grid.onContextMenu.subscribe(function (e) {
         e.preventDefault();
-        let $contextMenu = $(`<ul id='contextMenu' style='display:none;position:absolute' tabindex='0' />`)
+        let $contextMenu = $(`<ul id='contextMenu' class="context-menu" style='display:none;position:absolute' tabindex='0' />`)
         $contextMenu.appendTo($('body'));
 
         var cell = grid.getCellFromEvent(e);
@@ -158,6 +158,7 @@
           .css('left', e.pageX)
           .show()
           .focus();
+
         let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
         $(copyItem).appendTo($contextMenu);
         let contextActions = grid.select_toolbar_items
@@ -189,12 +190,11 @@
           }
         });
 
-        $contextMenu.off('blur').on('blur', function(){
-          $contextMenu.hide();
+        $("ul.context-menu").not($contextMenu).remove()
+        $('body').one('click',function(){
+          $("ul.context-menu").remove();
         })
-        // $("body").one("click", function () {
-        //   $contextMenu.hide();
-        // });
+
       });
 
       // Append necessary attributes to the grid
