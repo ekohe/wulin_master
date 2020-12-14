@@ -180,7 +180,4 @@
       - else
         %input.btn{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: "  #{button_name}  ", :class=> "waves-effect"}/
 :javascript
-   if ($('#modal-footer').children().length == 0) {
-    $('.submit').appendTo($('#modal-footer'))
-  }
   $('.input-outlined').first().children("input").focus()

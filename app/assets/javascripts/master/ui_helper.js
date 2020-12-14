@@ -422,10 +422,8 @@ var Ui = {
   },
 
   baseModal: function (options) {
-    var $modal = $('<div/>').addClass('modal modal-fixed-footer').appendTo($('body'));
+    var $modal = $('<div/>').addClass('modal').appendTo($('body'));
     var $modalContent = $('<div/>').addClass('modal-content').appendTo($modal);
-    var $modalFooter = $('<div/>').addClass('modal-footer').attr("id","modal-footer").appendTo($modal);
-
 
     $.extend(options, {
       onCloseEnd: function () {
@@ -486,7 +484,13 @@ var Ui = {
       .css({ 'max-height': '90%' });
 
     __globalWillAppend = true;
+    $modelModal.addClass('modal-fixed-footer');
     $modelModal.find('.modal-content').append(data);
+
+    var $modelFooter = $('<div/>').addClass('modal-footer').attr('id','modal-footer').appendTo($modelModal);
+    if ($('#modal-footer').children().length == 0) {
+      $('.submit').appendTo($('#modal-footer'))
+    }
     __globalWillAppend = false;
     return $modelModal;
   },
