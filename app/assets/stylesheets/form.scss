@@ -72,7 +72,12 @@ form {
   }
   .submit {
     float: right;
-    padding: $form-submit-padding 0;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 9999;
+    right: 16px;
+    bottom: 8px;
   }
 }
 .checkboxMargin {
