@@ -339,12 +339,7 @@
     }
 
     copyStringToClipboard = function(str){
-      // Create new element
-      var el = document.createElement('textarea');
-      // Set value (string to be copied)
-      el.value = str;
-      // Copy text to clipoard
-      navigator.clipboard.writeText(el.value);
+      navigator.clipboard.writeText(str);
     }
 
     function setGridBodyHeight(gridElement) {
