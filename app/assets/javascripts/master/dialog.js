@@ -4,10 +4,10 @@ function displayErrorMessage(message, title, width) {
   if (message === undefined) {
     message = "An unexpected error occured.";
   }
-  $escapeHtml = escapeHtml(message)
-  $final_message = simpleFormat($escapeHtml)
+  escapeHtml = escapeHtml(message)
+  finalMessage = simpleFormat(escapeHtml)
 
-  $('#error-content').html($final_message);
+  $('#error-content').html(finalMessage);
   $('.modal-title').text(title);
   $('#error-modal').modal('open');
 }
