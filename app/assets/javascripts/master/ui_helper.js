@@ -408,7 +408,7 @@ var Ui = {
     var modalHeight =
       $(`.${willBeRemovedContainerClassName} .title`).outerHeight() + // Title
       $(`.${willBeRemovedContainerClassName} form`).outerHeight() + // Fields
-      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() + 15  // Button
+      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() + 30  // Button
       ; // Padding
     if (grid.options) {
       width = grid.options.form_dialog_width || 900;
@@ -422,9 +422,8 @@ var Ui = {
   },
 
   baseModal: function (options) {
-    var $modal = $('<div/>').addClass('modal modal-fixed-footer').appendTo($('body'));
+    var $modal = $('<div/>').addClass('modal').appendTo($('body'));
     var $modalContent = $('<div/>').addClass('modal-content').appendTo($modal);
-    var $modalFooter = $('<div/>').addClass('modal-footer').attr("id","modal-footer").appendTo($modal);
 
 
     $.extend(options, {
@@ -486,7 +485,11 @@ var Ui = {
       .css({ 'max-height': '90%' });
 
     __globalWillAppend = true;
+    $modelModal.addClass('modal-fixed-footer');
     $modelModal.find('.modal-content').append(data);
+
+    var $modelFooter = $('<div/>').addClass('modal-footer').attr('id','modal-footer').appendTo($modelModal);
+
     __globalWillAppend = false;
     return $modelModal;
   },
