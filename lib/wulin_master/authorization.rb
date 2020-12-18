@@ -23,12 +23,10 @@ module WulinMaster
       is_authorized ? authorized : unauthorized
     end
 
-    def unauthorized
+    def unauthorized(permission_name=nil)
       Rails.logger.info "Unauthorized #{params[:action].inspect} request to screen #{screen.class}"
-      action = (params[:action] == 'index' ? 'read' : 'cud')
-      permission_name = screen.permission_name(action)
+      msg = permission_name ? "Permission needed: #{permission_name}" : ''
 
-      msg = "Permission needed: #{permission_name}"
       respond_to do |format|
         format.html { render plain: msg, status: :unauthorized }
         format.json { render json: {status: :unauthorized, msg: msg}, status: :unauthorized }
