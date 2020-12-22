@@ -49,6 +49,7 @@ var fpConfigFormDateBase = $.extend({}, fpConfigForm, {
 var fpConfigFormDateTime = $.extend({}, fpConfigFormDateBase, {
   enableTime: true,
   dateFormat: 'd/m/Y H:i',
+  time_24hr: true,
 });
 
 var fpConfigFormDate = $.extend({}, fpConfigFormDateBase, {
@@ -59,6 +60,7 @@ var fpConfigTime = $.extend({}, fpConfigForm, {
   noCalendar: true,
   enableTime: true,
   dateFormat: 'H:i',
+  time_24hr: true,
   onOpen: function(selectedDates, dateStr, instance) {
     var time = dateStr || '12:00';
     instance.update(time);
