@@ -23,7 +23,7 @@ module WulinMaster
       is_authorized ? authorized : unauthorized
     end
 
-    def unauthorized(permission_name=nil)
+    def unauthorized(permission_name = nil)
       Rails.logger.info "Unauthorized #{params[:action].inspect} request to screen #{screen.class}"
       msg = permission_name ? "Permission needed: #{permission_name}" : ''
 
