@@ -8,6 +8,6 @@ function displayErrorMessage(message, title, width) {
   finalMessage = simpleFormat(escapedHtml);
 
   $("#error-content").html(finalMessage);
-  $(".modal-title").text(title);
+  $("#error-modal .modal-title").text(title);
   $("#error-modal").modal("open");
 }

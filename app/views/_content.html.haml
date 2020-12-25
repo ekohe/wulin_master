@@ -34,6 +34,14 @@
     $('#confirm-modal').modal({
       onCloseEnd: function(modal, trigger) {
         $('#confirm-content').text('Are you sure to do this ?');
+        $('#confirm-modal .modal-title').text('Confirmation');
+      }
+    });
+
+    $('#error-modal').modal({
+      onCloseEnd: function(modal, trigger) {
+        $('#error-content').text('Something happened.');
+        $('#error-modal .modal-title').text('Confirmation');
       }
     });
   });
