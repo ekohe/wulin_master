@@ -39,6 +39,9 @@ function loadPageForHistoryState() {
 }
 
 function load_page(url) {
+  // remove all the context-menu
+  $("ul.context-menu").remove()
+
   $("#screen_content").empty();
 
   // Ekohe Add: Remove old columnpickers, tooltips when screen changes
