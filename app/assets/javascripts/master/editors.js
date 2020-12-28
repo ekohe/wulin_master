@@ -789,6 +789,7 @@
       var flatpickrConfig = $.extend({}, this.fpConfigGrid, {
         enableTime: true,
         dateFormat: 'd/m/Y H:i',
+        time_24hr: true,
       });
 
       this.initElements();
@@ -833,6 +834,7 @@
         noCalendar: true,
         enableTime: true,
         dateFormat: 'H:i',
+        time_24hr: true,
       });
 
       this.initElements();
