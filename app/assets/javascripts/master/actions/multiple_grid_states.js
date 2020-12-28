@@ -21,7 +21,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
           if(msg == "success") {
             var grid_url = grid.path + grid.query;
             $.get(grid_url, function(data){
-              grid.container.html(data);
+              grid.container.replaceWith(data);
             });
           } else {
             displayErrorMessage(msg);
