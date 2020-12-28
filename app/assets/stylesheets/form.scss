@@ -116,9 +116,6 @@ form {
     display: block;
     border-radius: 4px;
     transition: box-shadow, border-color 0.15s;
-    .chosen-drop {
-      z-index: 9999;
-    }
   }
   > input,
   textarea {
@@ -136,7 +133,6 @@ form {
 }
 
 .modal-fixed-footer {
-  overflow: visible !important;
   .modal-footer {
     z-index: 1200;
   }
@@ -144,9 +140,5 @@ form {
     .color-blue {
       color: #2196f3;
     }
-  }
-
-  .modal-content {
-    overflow-y: inherit !important;
   }
 }
