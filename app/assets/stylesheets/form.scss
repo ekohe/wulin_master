@@ -96,6 +96,9 @@ form {
     transform: translateY(-1.75rem);
     top: 1rem;
   }
+  &:focus-within > label.textarea_label {
+    top: 1rem
+  }
   &:focus-within > .chosen-container {
     border-color: $main-color;
   }
@@ -111,12 +114,21 @@ form {
   .chosen-container {
     border: 2px solid #eee;
     padding: 10px 15px 10px;
-    width: calc(100% - 2.5rem);
     float: none;
     display: block;
     border-radius: 4px;
     transition: box-shadow, border-color 0.15s;
   }
+
+  > input,
+  .chosen-container {
+    width: calc(100% - 2.3rem);
+  }
+  > textarea,
+  .chosen-container {
+    width: calc(100%);
+  }
+
   > input,
   textarea {
     &:focus:not([readonly]) {
@@ -129,6 +141,9 @@ form {
     display: inline-flex;
     width: auto !important;
     top: 0rem;
+  }
+  label.textarea_label {
+    top: 0.5rem
   }
 }
 
