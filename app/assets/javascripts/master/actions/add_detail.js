@@ -16,6 +16,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
 
     var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);
     $modalFooter.find('.confirm-btn').addClass('disabled').on('click', function() {
+      $(this).attr("disabled", true);
       self.appendNewRecordToMiddleTable(masterId, $addDetailModal.find('.modal-content'));
     });
   },
