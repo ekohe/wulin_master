@@ -3204,6 +3204,13 @@ if (typeof Slick === "undefined") {
           var preClickModeOn = (e.target && e.target.className === Slick.preClickClassName);
           var column = columns[cell.cell];
           var suppressActiveCellChangedEvent = (options.editable && column && column.editor && options.suppressActiveCellChangeOnEdit) ? true : false;
+  
+          // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
+          // Ekohe Edit start
+          $(self.getContainerNode()).find(".slick-cell").removeClass("active")
+          $(self.getContainerNode()).find(".slick-row").removeClass("active")
+          // Ekohe Edit end
+
           setActiveCellInternal(getCellNode(cell.row, cell.cell), null, preClickModeOn, suppressActiveCellChangedEvent);
         }
       }
@@ -3414,6 +3421,7 @@ if (typeof Slick === "undefined") {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Ekohe Edit
     //   1. Use new parameter `column_editable` to judge if make active or not
+
 
     // function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent) {
     function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent, column_editable) {
@@ -3687,6 +3695,22 @@ if (typeof Slick === "undefined") {
         return {row: activeRow, cell: activeCell, grid: self};
       }
     }
+
+    // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
+    // Ekohe Edit start
+    function setActiveCellNode(node) {
+      activeCellNode = node
+    }
+
+    function setActiveRow(row) {
+      activeRow = row
+    }
+
+    function setActiveCellPosX(cell) {
+      activeCell = cell
+      activePosX = cell
+    }
+    // Ekohe Edit end
 
     function getActiveCellNode() {
       return activeCellNode;
@@ -4595,6 +4619,10 @@ if (typeof Slick === "undefined") {
       "getActiveCell": getActiveCell,
       "setActiveCell": setActiveCell,
       "getActiveCellNode": getActiveCellNode,
+      "setActiveCellNode": setActiveCellNode,
+      "setActiveRow": setActiveRow,
+      "setActiveCell": setActiveCell,
+      "setActiveCellPosX": setActiveCellPosX,
       "getActiveCellPosition": getActiveCellPosition,
       "resetActiveCell": resetActiveCell,
       "editActiveCell": makeActiveCellEditable,
