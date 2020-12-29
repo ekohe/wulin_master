@@ -1549,6 +1549,11 @@ if (typeof Slick === "undefined") {
           prevTotal,
           availWidth = viewportHasVScroll ? viewportW - scrollbarDimensions.width : viewportW;
 
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/191
+      if (scrollbarDimensions && scrollbarDimensions.width > 0) {
+        availWidth = availWidth - scrollbarDimensions.width - 8;
+      }
+
       for (i = 0; i < columns.length; i++) {
         c = columns[i];
         widths.push(c.width);
