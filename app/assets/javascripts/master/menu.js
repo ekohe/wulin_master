@@ -11,7 +11,7 @@ $(document).ready(function () {
   });
 
   // On resize of the left side panel, resize the grid
-  $("#navigation").bind("resize", function(event, ui) {
+  $("#navigation").bind("resize", function() {
     $("#content").css('left', $("#navigation").width()+1);
     $("#navigation").css('height', 'auto');
   });
@@ -117,7 +117,7 @@ function initialize_menu() {
     }
 
     // State management
-    History.pushState(null, null, currentUrl);
+    History.pushState(null, document.title, currentUrl);
 
     return false;
   });
@@ -133,9 +133,8 @@ function initialize_menu() {
   $("#navigation h1 a").click(function() {
     $("#menu .active").removeClass("active");
     // State management
-    var state = {};
     currentUrl = "/";
-    History.pushState(null, null, currentUrl);
+    History.pushState(null, document.title, currentUrl);
     load_page(currentUrl);
     return false;
   });
