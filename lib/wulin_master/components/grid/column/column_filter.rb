@@ -53,8 +53,7 @@ module WulinMaster
 
     def apply_equation_filter(query, operator, value, column_type, adapter)
       if %w[date datetime].include? column_type
-        operator = operator == 'equals' ? 'LIKE' : 'NOT LIKE'
-        query.where(["to_char(#{relation_table_name}.#{source}, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
+        filter_by_datetime(query, operator, "#{relation_table_name}.#{source}", value)
       elsif column_type == "boolean"
         adapter.boolean_query("#{relation_table_name}.#{source}", value, self)
         adapter.query
@@ -63,6 +62,11 @@ module WulinMaster
         return query.where.not(where_condition) unless operator == 'equals'
         query.where(where_condition)
       end
+    end
+
+    def filter_by_datetime(query, operator, field, value)
+      operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
+      query.where(["to_char(#{field}, 'DD/MM/YYYY HH24:MI:SS') #{operator} UPPER(?)", "#{value}%"])
     end
 
     def apply_inclusion_filter(query, operator, value)
@@ -114,13 +118,7 @@ module WulinMaster
 
       case column_sql_type.to_s
       when 'date', 'datetime'
-        where_condition = ["to_char(#{field}, 'YYYY/MM/DD HH24:MI:SS') LIKE UPPER(?)", text + '%']
-        begin
-          date = Time.zone.parse(text).try(:strftime, '%Y/%m/%d %T')
-          where_condition = ["#{field} #{operator}", date] if operator && date
-        rescue ArgumentError
-        end
-        query.where(where_condition)
+        filter_by_datetime(query, operator, field, text)
       when "boolean"
         true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
