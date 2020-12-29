@@ -3694,6 +3694,7 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
     function setActiveCellNode(node) {
       activeCellNode = node
     }

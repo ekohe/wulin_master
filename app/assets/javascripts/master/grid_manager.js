@@ -152,12 +152,15 @@
         var text = $.trim($node.text());
 
         // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
+        // disable the active cell and row
         $(grid.getContainerNode()).find(".slick-cell").removeClass("active")
         $(grid.getContainerNode()).find(".slick-row").removeClass("active")
 
         if (!$node.hasClass("selected")) {
           grid.setActiveCell(cell.row, cell.cell)
         } else {
+          // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
+          // disable the active cell and row
           $node.addClass("active");
           $node.parent(".slick-row").addClass("active")
 
