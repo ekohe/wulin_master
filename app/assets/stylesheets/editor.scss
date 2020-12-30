@@ -29,6 +29,11 @@
     margin-left: -2px;
     width: 102%;
   }
+  // span for highlight in autocomplete options
+  .autocomplete-content li span.highlight {
+    display: initial;
+  }
+
   // select
   .chzn-container {
     &.chzn-container-multi {
