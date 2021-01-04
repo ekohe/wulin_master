@@ -96,7 +96,7 @@ form {
     transform: translateY(-1.75rem);
     top: 1rem;
   }
-  &:focus-within > label.textarea_label {
+  &:focus-within > label.textarea-label {
     top: 1rem;
   }
   &:focus-within > .chosen-container {
@@ -142,8 +142,8 @@ form {
     width: auto !important;
     top: 0rem;
   }
-  label.textarea_label {
-    top: 0.5rem;
+  label.textarea-label {
+    top: 1.5rem;
   }
 }
 

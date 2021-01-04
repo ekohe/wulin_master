@@ -160,7 +160,7 @@
                     });
               - elsif column.sql_type.to_s.downcase == 'text'
                 .input-field.input-outlined
-                  %label.textarea_label{:for => "#{model_name}_#{column_name}"}= label
+                  %label.textarea-label{:for => "#{model_name}_#{column_name}"}= label
                   = form.text_area column_name, :readonly => column.options[:auto_fill], "data-target" => "#{column_name}_target_flag", "data-field" => field, class: "materialize-textarea", "data-target-id" => "#{column_name}_target_flag"
               - elsif column.sql_type.to_s.downcase == 'integer'
                 .input-field.input-outlined
