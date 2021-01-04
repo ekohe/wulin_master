@@ -124,10 +124,6 @@ form {
   .chosen-container {
     width: calc(100% - 2.3rem);
   }
-  > textarea,
-  .chosen-container {
-    width: calc(100%);
-  }
 
   > input,
   textarea {
@@ -143,7 +139,7 @@ form {
     top: 0rem;
   }
   label.textarea-label {
-    top: 1.5rem;
+    top: 2rem;
   }
 }
 
