@@ -297,7 +297,8 @@
 
     this.openDropDrown = function() {
       setTimeout(function() {
-        this.select.trigger('liszt:open');
+        // https://github.com/harvesthq/chosen/blob/master/coffee/chosen.jquery.coffee#L93
+        this.select.trigger('chosen:open.chosen');
       }.bind(this), 300);
     };
 
