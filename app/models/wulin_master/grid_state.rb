@@ -70,6 +70,7 @@ module WulinMaster
     end
 
     def email
+      # The user email configured from `app/controllers/wulin_master/grid_states_controller.rb` method `clear_invalid_states_and_users_cache`
       user.try(:email)
     end
 
