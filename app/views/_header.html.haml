@@ -19,7 +19,7 @@
                 - sub_menu_options = sub_menu.options
                 - sub_menu_url = sub_menu_options[:url] && (sub_menu_options[:url].is_a?(Proc) ? instance_exec(&sub_menu_options[:url]) : sub_menu_options[:url])
                 %li
-                  = link_to sub_menu_url do
+                  = link_to sub_menu_url, target: sub_menu_options[:target] do
                     %i.material-icons
                       = sub_menu_options[:icon].presence || 'help'
                     = sub_menu_options[:label]
