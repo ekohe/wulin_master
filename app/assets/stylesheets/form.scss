@@ -97,7 +97,7 @@ form {
     top: 1rem;
   }
   &:focus-within > label.textarea_label {
-    top: 1rem
+    top: 1rem;
   }
   &:focus-within > .chosen-container {
     border-color: $main-color;
@@ -143,7 +143,7 @@ form {
     top: 0rem;
   }
   label.textarea_label {
-    top: 0.5rem
+    top: 0.5rem;
   }
 }
 
