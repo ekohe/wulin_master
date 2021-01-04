@@ -29,6 +29,18 @@
     margin-left: -2px;
     width: 102%;
   }
+
+  .chosen-container .chosen-drop {
+    top: 25px;
+    left: -3px;
+
+    .chosen-results {
+      white-space: normal;
+      li {
+        font-size: 13px;
+      }
+    }
+  }
   // span for highlight in autocomplete options
   .autocomplete-content li span.highlight {
     display: initial;
@@ -49,6 +61,7 @@
     .chzn-drop {
       margin-right: 4px;
       margin-left: -2px;
+      margin-top: 10px;
     }
     .chzn-choices {
       margin-bottom: -5px;
