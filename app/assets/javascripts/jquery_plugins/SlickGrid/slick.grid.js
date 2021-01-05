@@ -1760,7 +1760,7 @@ if (typeof Slick === "undefined") {
             toolbarSelect.attr('hidden', true);
           } else {
             toolbarSelect
-              .find('.specific')
+              .find('.specific:not(.position_person_action)') // https://gitlab.ekohe.com/ekohe/hbs/crewlist/-/issues/49#note_746740
               .addClass('toolbar_icon_disabled')
               .removeClass('specific')
               .addClass('static-waves-effect')
@@ -1778,7 +1778,7 @@ if (typeof Slick === "undefined") {
           toolbarSelect.attr('hidden', false);
         } else {
           toolbarSelect
-            .find('.toolbar_icon_disabled')
+            .find('.toolbar_icon_disabled:not(.position_person_action)') // https://gitlab.ekohe.com/ekohe/hbs/crewlist/-/issues/49#note_746740
             .addClass('specific')
             .removeClass('toolbar_icon_disabled')
             .removeClass('static-waves-effect')
