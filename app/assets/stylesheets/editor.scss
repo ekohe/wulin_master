@@ -30,10 +30,11 @@
     width: 102%;
   }
 
-  .chosen-container .chosen-drop {
+  .chosen-container-single .chosen-drop {
     top: 25px;
     left: -3px;
-
+  }
+  .chosen-container .chosen-drop {
     .chosen-results {
       white-space: normal;
       li {
