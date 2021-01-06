@@ -59,7 +59,7 @@ module WulinMaster
 
     def clear_invalid_states_and_users_cache
       return unless params[:format] == 'json'
-      User.set_request_uri('/users.json?screen=UsersScreen&columns=id,email') if User.respond_to?(:set_request_uri) # only wulin_oauth user owns the method
+      User.set_request_uri('/users.json?screen=UsersScreen') if User.respond_to?(:set_request_uri) # only wulin_oauth user owns the method
       WulinMaster::GridState.all_users = User.all
       WulinMaster::GridState.clear_invalid_states!
     end
