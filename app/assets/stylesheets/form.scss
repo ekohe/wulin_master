@@ -62,6 +62,9 @@ form {
       }
       .chosen-container {
         width: auto !important;
+        .chosen-drop {
+          top: 50px;
+        }
         .chzn-choices {
           .search-choice {
             margin-top: 7px;
