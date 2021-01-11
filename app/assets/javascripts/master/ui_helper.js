@@ -62,7 +62,7 @@ var Ui = {
     var name = grid.name;
     $.get(grid.path + '/wulin_master_new_form' + grid.query, function (data) {
       newFormDom = $(data);
-      $('#' + name + '_form:visible form').replaceWith(newFormDom.find('form'));
+      $('#' + name + '_form:visible').closest('.modal-content').html(newFormDom);
       setTimeout(function () {
         Ui.setupForm(grid, false);
       }, 350);
