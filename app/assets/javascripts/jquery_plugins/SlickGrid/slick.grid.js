@@ -1794,15 +1794,6 @@ if (typeof Slick === "undefined") {
         activeCell, activeRow = null;
       }
 
-      // disable the edit button if more than one rows are selected
-      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/202
-      let editActionItems = $gridContainer.find("li.toolbar_item a.edit_action")
-      if (itemCount > 1) {
-        editActionItems.addClass("toolbar_icon_disabled")
-      } else {
-        editActionItems.removeClass("toolbar_icon_disabled")
-      }
-
       updatePagerButtons();
 
       trigger(self.onSelectedRowsChanged, {rows: getSelectedRows(), grid: self}, e);
