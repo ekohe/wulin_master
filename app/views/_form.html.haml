@@ -181,9 +181,3 @@
         %input.btn.waves-effect{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: " #{button_name} "}
 :javascript
   $('.input-outlined').first().children("input").focus()
-  $('##{grid.name}_form label').on('click', (evt) => {
-    setTimeout(() => {
-      let id = $(evt.target).closest('.input-outlined').find('.chzn-select').attr('id')
-          $("##{grid.name}_form" + " " + "#" + id).trigger("chosen:open")
-      },100)
-    })
