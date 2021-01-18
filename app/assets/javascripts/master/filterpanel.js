@@ -99,7 +99,9 @@
       // Ekohe Add: Use new MD headers instead of headerRow
       if (currentFiltersApplied.length > 0) {
         $.each(currentFiltersApplied, function(i, v) {
-          var filteredHeaderCol = $headers.find('input#' + v.id);
+          var filteredHeaderCol = $headers.find('input[data-id="'+ v.id +'"]');
+          // There will be a problem when two inputs need focus at the same time
+          // Now we are only focus last one input
           filteredHeaderCol.focus();
           filteredHeaderCol.val(v.value);
         })
@@ -147,7 +149,7 @@
       // $.each($("input", $($grid.getHeaderRow())), function() {
       $.each($("input", $($grid.getHeaders())), function() {
         if ($(this).val() !== '') {
-          currentFilters[$(this).attr('id')] = $(this).val();
+          currentFilters[$(this).attr('data-id')] = $(this).val();
         }
       });
     }

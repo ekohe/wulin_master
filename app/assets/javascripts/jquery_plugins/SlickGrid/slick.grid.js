@@ -152,7 +152,7 @@ if (typeof Slick === "undefined") {
     // private
     var initialized = false;
     var $container;
-    var uid = "slickgrid_" + Math.round(1000000 * Math.random());
+    var uid = "slickgrid_" + randomNumber();
     var self = this;
     var $focusSink, $focusSink2;
     var $headerScroller;
@@ -936,13 +936,16 @@ if (typeof Slick === "undefined") {
             .data("column", m)
             .addClass(m.headerCssClass || "")
             .appendTo($headers);
+
+        var randomIdForFilterInput = m.id + '-' + randomNumber();
         var headerColInput = $("<input type='text' />")
-            .attr("id", "" + m.id)
+            .attr("id", "" + randomIdForFilterInput)
             .attr("data-col", "r" + i)
+            .attr('data-id', '' + m.id)
             .appendTo(header);
         var headerColLabel = $("<label />")
             .html(m.name)
-            .attr("for", "" + m.id)
+            .attr("for", "" + randomIdForFilterInput)
             .appendTo(header);
 
         // Ekohe Add: Align label to center
@@ -3723,6 +3726,11 @@ if (typeof Slick === "undefined") {
     function setActiveCellPosX(cell) {
       activeCell = cell
       activePosX = cell
+    }
+
+    // To generate random number
+    function randomNumber() {
+      return Math.round(1000000 * Math.random());
     }
     // Ekohe Edit end
 
