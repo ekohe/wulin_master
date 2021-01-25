@@ -14,7 +14,6 @@
     outline: 0 none;
   }
   input[type="text"]:focus:not([readonly]) {
-    padding-left: 8px;
     font-size: $font-size-small;
     &.editor-text {
       border: none !important;
@@ -25,9 +24,10 @@
     height: 24px;
   }
   .autocomplete-content {
-    margin-top: -12px;
+    margin-top: -8px;
     margin-left: -2px;
     width: 102%;
+    position: static;
   }
 
   .chosen-container-single .chosen-drop {
