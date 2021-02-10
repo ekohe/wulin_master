@@ -20,6 +20,7 @@ WulinMaster.behaviors.Update = $.extend({}, WulinMaster.behaviors.BaseBehavior, 
       if(i !== 'id') updated_column = i;
     }
 
+    // check the column has the target_model
     if (args.editCommand.editor.column.target_model) {
       this.updateTargetValue(args)
       return
@@ -31,8 +32,13 @@ WulinMaster.behaviors.Update = $.extend({}, WulinMaster.behaviors.BaseBehavior, 
 
   updateTargetValue: function(args) {
     try {
+      // target model, example: position
       let model  = args.editCommand.editor.column.target_model
+
+      // path for update the model
       let path   = args.editCommand.editor.column.target_path
+
+      // model attribute
       let source = args.editCommand.editor.column.source
 
       if (model) {
