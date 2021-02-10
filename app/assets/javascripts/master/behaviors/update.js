@@ -19,8 +19,55 @@ WulinMaster.behaviors.Update = $.extend({}, WulinMaster.behaviors.BaseBehavior, 
     for(var i in args.item) {
       if(i !== 'id') updated_column = i;
     }
+
+    if (args.editCommand.editor.column.target_model) {
+      this.updateTargetValue(args)
+      return
+    }
+
     // send update request
     Requests.updateByAjax(this.grid, args.item);
+  },
+
+  updateTargetValue: function(args) {
+    try {
+      let model  = args.editCommand.editor.column.target_model
+      let path   = args.editCommand.editor.column.target_path
+      let source = args.editCommand.editor.column.source
+
+      if (model) {
+        let self = this
+        let data = args.item[model]
+        let value = data[source]
+        let id = data.id
+
+        if (id > 0) {
+          let item = {}
+          item[source] = value
+
+          $.ajax({
+            type: "POST",
+            dateType: 'json',
+            url:  `/${path}/${id}.json`,
+            data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
+            success: function(msg) {
+              if(msg.success) {
+                self.grid.loader.reloadData()
+              } else {
+                displayErrorMessage(msg.error_message);
+                if(editCommand) {
+                  editCommand.undo();
+                } else {
+                  self.grid.loader.reloadData();
+                }
+              }
+            }
+          })
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
 });

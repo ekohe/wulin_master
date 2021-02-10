@@ -650,6 +650,82 @@
 
   TextEditor.prototype = Object.create(InputElementEditor.prototype);
 
+  //
+  // https://gitlab.ekohe.com/ekohe/hbs/hr-tool/-/issues/17
+  //
+  // In the Recruitments grid, we try to update the postion data, we can use this editor
+  //
+  this.DistinctTextEditor = function(args) {
+    InputElementEditor.call(this, args);
+
+    this.init = function() {
+      this.initElements();
+      this.setOffset(this.input, this.offsetWith);
+      this.initMdAutoComplete(this.input);
+    };
+
+    //
+    // the column is a nest attribute, so need to set the nest value
+    //
+    this.applyValue = function(item, state) {
+      item[this.column.target_model][this.column.source] = state
+    }
+
+    //
+    // Example data
+    // position: {
+    //    id: xx
+    // }
+    //
+    this.loadValue = function(item) {
+      let object = item[this.column.field]
+      let value = object[this.column.source]
+
+      this.defaultValue = value
+    };
+
+    this.initMdAutoComplete = function($input) {
+      $input.on("keydown", function(e) {
+        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
+          e.stopPropagation();
+        }
+      });
+
+      // the choices will be an array
+      let choices = this.column.choices;
+      let dataObject = {}
+
+      for (var i = choices.length - 1; i >= 0; i--) {
+        dataObject[choices[i]] = null
+      }
+
+      $input.addClass('autocomplete');
+      $input.autocomplete({
+        data: dataObject,
+        limit: 5,
+        minLength: 1,
+      })
+    };
+
+    this.validate = function() {
+      var validationResults;
+      var value = this.element.val();
+
+      if (this.column.validator) {
+        validationResults = this.callValidator(value);
+        if (!validationResults.valid) {
+          return validationResults;
+        }
+      }
+
+      return { valid: true, msg: null };
+    };
+
+    this.init();
+  }
+
+  DistinctTextEditor.prototype = Object.create(InputElementEditor.prototype);
+
   ///////////////////////////////////////////////////////////////////////////
   // TextEditorForForm < InputElementEditor < BaseEditor
   ///////////////////////////////////////////////////////////////////////////
