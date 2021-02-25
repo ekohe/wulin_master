@@ -19,6 +19,7 @@ Inputmask.extendAliases({
     alias: 'date',
     placeholder: 'dd/mm/' + yearNow,
     yearrange: { minyear: 1900, maxyear: 2100 },
+    positionCaretOnClick: "none",
   }
 });
 
@@ -26,6 +27,7 @@ Inputmask.extendAliases({
   'wulinTime': {
     alias: 'hh:mm',
     placeholder: '12:00',
+    positionCaretOnClick: "none",
   }
 });
 
