@@ -10,6 +10,7 @@ Inputmask.extendAliases({
     alias: 'datetime',
     placeholder: 'dd/mm/' + yearNow + ' 12:00',
     yearrange: { minyear: 1900, maxyear: 2100 },
+    positionCaretOnClick: "none",
   }
 });
 
