@@ -312,6 +312,18 @@ var Ui = {
         .val(grid.master.filter_value);
       $('form', $scope).append(hidden_master_id);
     }
+    Ui.preventPressEnterKeySubmitForm(`${scope} form`);
+  },
+
+  preventPressEnterKeySubmitForm: function (formSelector) {
+    $("body")
+      .off("keypress", formSelector)
+      .on("keypress", formSelector, function (event) {
+        let isTextarea = /textarea/i.test(event.target.nodeName);
+        if (!isTextarea && event.keyCode === 13) {
+          return false;
+        }
+      });
   },
 
   setupChosen: function (grid, target, scope, selectedIndexes) {
