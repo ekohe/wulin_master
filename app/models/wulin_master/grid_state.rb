@@ -51,14 +51,6 @@ module WulinMaster
       current(user_id, grid_name) || create_default(user_id, grid_name)
     end
 
-    # cache all_users, loop all states and destroy the state without valid user_id
-    def self.clear_invalid_states!
-      return if all_users.blank?
-      all.find_each do |state|
-        state.destroy unless all_users.map(&:id).include?(state.user_id)
-      end
-    end
-
     # ------------------------------ Instance Methods -------------------------------
     def brother_states
       self.class.for_user_and_grid(user_id, grid_name).where("id != ?", id)

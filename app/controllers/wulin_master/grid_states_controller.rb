@@ -8,8 +8,6 @@ module WulinMaster
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
 
-    before_action :clear_invalid_states_and_users_cache, only: :index
-
     def copy
       GridState.transaction do
         params[:user_ids].each do |uid|
@@ -55,13 +53,6 @@ module WulinMaster
         return 0 if s1.user.nil? || s2.user.nil?
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
       end
-    end
-
-    def clear_invalid_states_and_users_cache
-      return unless params[:format] == 'json'
-      User.set_request_uri('/users.json?screen=UsersScreen') if User.respond_to?(:set_request_uri) # only wulin_oauth user owns the method
-      WulinMaster::GridState.all_users = User.all
-      WulinMaster::GridState.clear_invalid_states!
     end
   end
 end
