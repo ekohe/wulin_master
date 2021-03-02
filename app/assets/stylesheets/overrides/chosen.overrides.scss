@@ -64,3 +64,9 @@ select.chosen-select {
     background-image: image-url("chosen-sprite@2x.png") !important;
   }
 }
+
+.slick-cell {
+  .chosen-container-multi .chosen-drop {
+  position: static;
+  }
+}
