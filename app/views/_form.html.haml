@@ -179,6 +179,7 @@
         %input.btn.waves-effect{id: "#{grid.name}_submit", name: "commit", type: "submit", value: " Create "}
       - else
         %input.btn.waves-effect{id: "#{grid.name}_batch_#{name}", class: "#{name}_btn", name: "commit", type: "submit", value: " #{button_name} "}
+
 :javascript
   $('.input-outlined').first().children("input").focus()
 
@@ -199,11 +200,4 @@
     let modal = jqTarget.closest(".modal")
 
     modal.find(".submit").show()
-    modal.find(".modal-content").css({"overflow-y": "auto"})
-
-    modal.css({"overflow-y": "inherit"})
-    jqTarget.closest(".field-line").find(".chosen-drop").css({"z-index": 1010})
   })
-
-
-
