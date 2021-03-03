@@ -1,4 +1,4 @@
-@import "base";
+@import 'base';
 
 /* Grid Container */
 
@@ -68,6 +68,9 @@
       .slick-pager-status.with-filter {
         color: $filter-color;
       }
+    }
+    .pager-item.extra {
+      text-align: right;
     }
   }
 }
