@@ -808,7 +808,7 @@ function Flatpickr(element, config) {
 		// Ekohe Edit: Close calender when use 'Tab'/'Enter'/'ArrowUp'/'ArrowDown' key on input
 		// if (e.target === (self.altInput || self.input) && e.which === 13) {
 			// selectDate(e);
-		if ((e.target === (self.altInput || self.input)) && 
+		if ((e.target === (self.altInput || self.input)) &&
 			  (e.which === 9 || e.which === 13 || e.which === 38 || e.which === 40)) {
 			self.close();
 		// Ekohe Add: Close calender and set focus on input when 'Enter' on Calendar
@@ -1045,40 +1045,40 @@ function Flatpickr(element, config) {
 	}
 
 	function positionCalendar(e) {
-		if (e && e.target !== self.timeContainer) return;
+		// if (e && e.target !== self.timeContainer) return;
 
-		var calendarHeight = self.calendarContainer.offsetHeight,
-		    calendarWidth = self.calendarContainer.offsetWidth,
-		    configPos = self.config.position,
-		    input = self.altInput || self.input,
-		    inputBounds = input.getBoundingClientRect(),
-		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
-		    showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
+		// var calendarHeight = self.calendarContainer.offsetHeight,
+		//     calendarWidth = self.calendarContainer.offsetWidth,
+		//     configPos = self.config.position,
+		//     input = self.altInput || self.input,
+		//     inputBounds = input.getBoundingClientRect(),
+		//     distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
+		//     showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
 
-		var top = window.pageYOffset + inputBounds.top + (!showOnTop ? input.offsetHeight + 2 : -calendarHeight - 2);
+		// var top = window.pageYOffset + inputBounds.top + (!showOnTop ? input.offsetHeight + 2 : -calendarHeight - 2);
 
-		toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
-		toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
+		// toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
+		// toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
 
-		if (self.config.inline) return;
+		// if (self.config.inline) return;
 
-		var left = window.pageXOffset + inputBounds.left;
-		var right = window.document.body.offsetWidth - inputBounds.right;
-		var rightMost = left + calendarWidth > window.document.body.offsetWidth;
+		// var left = window.pageXOffset + inputBounds.left;
+		// var right = window.document.body.offsetWidth - inputBounds.right;
+		// var rightMost = left + calendarWidth > window.document.body.offsetWidth;
 
-		toggleClass(self.calendarContainer, "rightMost", rightMost);
+		// toggleClass(self.calendarContainer, "rightMost", rightMost);
 
-		if (self.config.static) return;
+		// if (self.config.static) return;
 
-		self.calendarContainer.style.top = top + "px";
+		// self.calendarContainer.style.top = 50 + "px";
 
-		if (!rightMost) {
-			self.calendarContainer.style.left = left + "px";
-			self.calendarContainer.style.right = "auto";
-		} else {
-			self.calendarContainer.style.left = "auto";
-			self.calendarContainer.style.right = right + "px";
-		}
+		// if (!rightMost) {
+		// 	self.calendarContainer.style.left = 0 + "px";
+		// 	self.calendarContainer.style.right = "auto";
+		// } else {
+		// 	self.calendarContainer.style.left = "auto";
+		// 	self.calendarContainer.style.right = right + "px";
+		// }
 	}
 
 	function redraw() {
