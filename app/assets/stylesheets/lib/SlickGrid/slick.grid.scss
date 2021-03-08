@@ -112,7 +112,7 @@ classes should alter those!
   margin: 0;
   white-space: nowrap;
   cursor: pointer;
-  span {
+  span:not([class]) {
     display: inline-block;
     width: 100%;
   }
