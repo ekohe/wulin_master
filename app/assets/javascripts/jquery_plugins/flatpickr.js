@@ -64,7 +64,6 @@ function Flatpickr(element, config) {
 		// self.showTimeInput = self.selectedDates.length > 0 || self.config.noCalendar;
 		self.showTimeInput = true;
 
-		if (!self.isMobile) positionCalendar();
 		triggerEvent("Ready");
 	}
 
@@ -176,7 +175,6 @@ function Flatpickr(element, config) {
 
 		if (self.isMobile) return setupMobile();
 
-		self.debouncedResize = debounce(onResize, 50);
 		self.triggerChange = function () {
 			triggerEvent("Change");
 		};
@@ -187,8 +185,6 @@ function Flatpickr(element, config) {
 		self.calendarContainer.addEventListener("keydown", onKeyDown);
 
 		if (!self.config.static) (self.altInput || self.input).addEventListener("keydown", onKeyDown);
-
-		if (!self.config.inline && !self.config.static) window.addEventListener("resize", self.debouncedResize);
 
 		if (window.ontouchstart) window.document.addEventListener("touchstart", documentClick);
 
@@ -223,7 +219,6 @@ function Flatpickr(element, config) {
 		}
 
 		if (self.config.enableTime) {
-			self.timeContainer.addEventListener("transitionend", positionCalendar);
 			self.timeContainer.addEventListener("wheel", function (e) {
 				return debounce(updateTime(e), 5);
 			});
@@ -681,13 +676,9 @@ function Flatpickr(element, config) {
 		instance = instance || self;
 		instance.clear(false);
 
-		window.removeEventListener("resize", instance.debouncedResize);
-
 		window.document.removeEventListener("click", documentClick);
 		window.document.removeEventListener("touchstart", documentClick);
 		window.document.removeEventListener("blur", documentClick);
-
-		if (instance.timeContainer) instance.timeContainer.removeEventListener("transitionend", positionCalendar);
 
 		if (instance.mobileInput) {
 			if (instance.mobileInput.parentNode) instance.mobileInput.parentNode.removeChild(instance.mobileInput);
@@ -926,10 +917,6 @@ function Flatpickr(element, config) {
 		}
 	}
 
-	function onResize() {
-		if (self.isOpen && !self.config.static && !self.config.inline) positionCalendar();
-	}
-
 	function open(e) {
 		if (self.isMobile) {
 			if (e) {
@@ -949,7 +936,6 @@ function Flatpickr(element, config) {
 
 		self.isOpen = true;
 		self.calendarContainer.classList.add("open");
-		positionCalendar();
 		(self.altInput || self.input).classList.add("active");
 
 		triggerEvent("Open");
@@ -1042,43 +1028,6 @@ function Flatpickr(element, config) {
 		if (_typeof(self.config.locale) !== "object" && typeof Flatpickr.l10ns[self.config.locale] === "undefined") console.warn("flatpickr: invalid locale " + self.config.locale);
 
 		self.l10n = _extends(Object.create(Flatpickr.l10ns.default), _typeof(self.config.locale) === "object" ? self.config.locale : self.config.locale !== "default" ? Flatpickr.l10ns[self.config.locale] || {} : {});
-	}
-
-	function positionCalendar(e) {
-		// if (e && e.target !== self.timeContainer) return;
-
-		// var calendarHeight = self.calendarContainer.offsetHeight,
-		//     calendarWidth = self.calendarContainer.offsetWidth,
-		//     configPos = self.config.position,
-		//     input = self.altInput || self.input,
-		//     inputBounds = input.getBoundingClientRect(),
-		//     distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
-		//     showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
-
-		// var top = window.pageYOffset + inputBounds.top + (!showOnTop ? input.offsetHeight + 2 : -calendarHeight - 2);
-
-		// toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
-		// toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
-
-		// if (self.config.inline) return;
-
-		// var left = window.pageXOffset + inputBounds.left;
-		// var right = window.document.body.offsetWidth - inputBounds.right;
-		// var rightMost = left + calendarWidth > window.document.body.offsetWidth;
-
-		// toggleClass(self.calendarContainer, "rightMost", rightMost);
-
-		// if (self.config.static) return;
-
-		// self.calendarContainer.style.top = 50 + "px";
-
-		// if (!rightMost) {
-		// 	self.calendarContainer.style.left = 0 + "px";
-		// 	self.calendarContainer.style.right = "auto";
-		// } else {
-		// 	self.calendarContainer.style.left = "auto";
-		// 	self.calendarContainer.style.right = right + "px";
-		// }
 	}
 
 	function redraw() {
