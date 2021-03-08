@@ -624,10 +624,9 @@
 
   this.TextEditor = function(args) {
     InputElementEditor.call(this, args);
-
     this.init = function() {
       this.initElements();
-      this.setOffset(this.input, this.offsetWith);
+      this.setOffset(this.input, this.boxWidth);
       this.initMdAutoComplete(this.input);
     };
 
