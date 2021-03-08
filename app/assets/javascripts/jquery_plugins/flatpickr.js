@@ -189,7 +189,6 @@ function Flatpickr(element, config) {
 		if (!self.config.static) (self.altInput || self.input).addEventListener("keydown", onKeyDown);
 
 		if (!self.config.inline && !self.config.static) window.addEventListener("resize", self.debouncedResize);
-		if (!self.config.inline && !self.config.static) $('.modal.open .modal-content').on("scroll", self.debouncedResize);
 
 		if (window.ontouchstart) window.document.addEventListener("touchstart", documentClick);
 
