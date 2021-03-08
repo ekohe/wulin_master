@@ -794,7 +794,8 @@
       });
 
       this.initElements();
-      this.input.inputmask('wulinDateTime').flatpickr(flatpickrConfig);
+      let appendedParentNode = $(this.input).parent()[0]
+      this.input.inputmask('wulinDateTime').flatpickr($.extend({}, flatpickrConfig, { appendTo: appendedParentNode }));
     };
 
     this.init();
@@ -815,7 +816,8 @@
       });
 
       this.initElements();
-      this.input.inputmask('wulinDate').flatpickr(fpConfigGridDate);
+      let appendedParentNode = $(this.input).parent()[0]
+      this.input.inputmask('wulinDate').flatpickr($.extend({}, fpConfigGridDate, { appendTo: appendedParentNode }));
     };
 
     this.init();
@@ -839,7 +841,8 @@
       });
 
       this.initElements();
-      this.input.inputmask('wulinTime').flatpickr(fpConfigGridTime);
+      let appendedParentNode = $(this.input).parent()[0]
+      this.input.inputmask('wulinTime').flatpickr($.extend({}, fpConfigGridTime, { appendTo: appendedParentNode }));
     };
 
     this.init();
