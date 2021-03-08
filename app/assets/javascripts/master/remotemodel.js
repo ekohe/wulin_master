@@ -193,7 +193,7 @@
         var alreadyLoaded = true;
 
         for (var i=fromPage; i<=toPage; i++) {
-          if (typeof(data[i*loadingSize]) == 'undefined') {
+          if (!data[i*loadingSize]) {
             alreadyLoaded = false;
           }
         }
