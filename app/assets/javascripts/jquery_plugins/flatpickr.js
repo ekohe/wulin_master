@@ -64,6 +64,10 @@ function Flatpickr(element, config) {
 		// self.showTimeInput = self.selectedDates.length > 0 || self.config.noCalendar;
 		self.showTimeInput = true;
 
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// if (!self.isMobile) positionCalendar();
 		triggerEvent("Ready");
 	}
 
@@ -175,6 +179,10 @@ function Flatpickr(element, config) {
 
 		if (self.isMobile) return setupMobile();
 
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// self.debouncedResize = debounce(onResize, 50);
 		self.triggerChange = function () {
 			triggerEvent("Change");
 		};
@@ -185,6 +193,11 @@ function Flatpickr(element, config) {
 		self.calendarContainer.addEventListener("keydown", onKeyDown);
 
 		if (!self.config.static) (self.altInput || self.input).addEventListener("keydown", onKeyDown);
+
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// if (!self.config.inline && !self.config.static) window.addEventListener("resize", self.debouncedResize);
 
 		if (window.ontouchstart) window.document.addEventListener("touchstart", documentClick);
 
@@ -219,6 +232,10 @@ function Flatpickr(element, config) {
 		}
 
 		if (self.config.enableTime) {
+			/////////////////////////////////////////////////////////////////////////////
+			// Ekohe Edit: There is no need to calculate position anymore
+			/////////////////////////////////////////////////////////////////////////////
+			// self.timeContainer.addEventListener("transitionend", positionCalendar);
 			self.timeContainer.addEventListener("wheel", function (e) {
 				return debounce(updateTime(e), 5);
 			});
@@ -676,10 +693,19 @@ function Flatpickr(element, config) {
 		instance = instance || self;
 		instance.clear(false);
 
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to trigger the resize event to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// window.removeEventListener("resize", instance.debouncedResize);
+
 		window.document.removeEventListener("click", documentClick);
 		window.document.removeEventListener("touchstart", documentClick);
 		window.document.removeEventListener("blur", documentClick);
 
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// if (instance.timeContainer) instance.timeContainer.removeEventListener("transitionend", positionCalendar);
 		if (instance.mobileInput) {
 			if (instance.mobileInput.parentNode) instance.mobileInput.parentNode.removeChild(instance.mobileInput);
 			delete instance.mobileInput;
@@ -917,6 +943,13 @@ function Flatpickr(element, config) {
 		}
 	}
 
+	/////////////////////////////////////////////////////////////////////////////
+	// Ekohe Edit: There is no need to calculate position when resizing anymore
+	/////////////////////////////////////////////////////////////////////////////
+	// function onResize() {
+	// 	if (self.isOpen && !self.config.static && !self.config.inline) positionCalendar();
+	// }
+
 	function open(e) {
 		if (self.isMobile) {
 			if (e) {
@@ -936,6 +969,10 @@ function Flatpickr(element, config) {
 
 		self.isOpen = true;
 		self.calendarContainer.classList.add("open");
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Edit: There is no need to calculate position anymore
+		/////////////////////////////////////////////////////////////////////////////
+		// positionCalendar();
 		(self.altInput || self.input).classList.add("active");
 
 		triggerEvent("Open");
@@ -1029,6 +1066,49 @@ function Flatpickr(element, config) {
 
 		self.l10n = _extends(Object.create(Flatpickr.l10ns.default), _typeof(self.config.locale) === "object" ? self.config.locale : self.config.locale !== "default" ? Flatpickr.l10ns[self.config.locale] || {} : {});
 	}
+
+	/////////////////////////////////////////////////////////////////////////////
+	// Ekohe Edit: Remove the positionCalendar.
+	// we'd better set the config appendTo to make sure the flatpickr calender will be put next to the input
+	// that will avoid flatpickr calender being set into window.document.body, and so that there is no need to
+	// calculate the position dynamically anymore.
+	/////////////////////////////////////////////////////////////////////////////
+	// function positionCalendar(e) {
+	// 	if (e && e.target !== self.timeContainer) return;
+
+	// 	var calendarHeight = self.calendarContainer.offsetHeight,
+	// 	    calendarWidth = self.calendarContainer.offsetWidth,
+	// 	    configPos = self.config.position,
+	// 	    input = self.altInput || self.input,
+	// 	    inputBounds = input.getBoundingClientRect(),
+	// 	    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
+	// 	    showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
+
+	// 	var top = window.pageYOffset + inputBounds.top + (!showOnTop ? input.offsetHeight + 2 : -calendarHeight - 2);
+
+	// 	toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
+	// 	toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
+
+	// 	if (self.config.inline) return;
+
+	// 	var left = window.pageXOffset + inputBounds.left;
+	// 	var right = window.document.body.offsetWidth - inputBounds.right;
+	// 	var rightMost = left + calendarWidth > window.document.body.offsetWidth;
+
+	// 	toggleClass(self.calendarContainer, "rightMost", rightMost);
+
+	// 	if (self.config.static) return;
+
+	// 	self.calendarContainer.style.top = top + "px";
+
+	// 	if (!rightMost) {
+	// 		self.calendarContainer.style.left = left + "px";
+	// 		self.calendarContainer.style.right = "auto";
+	// 	} else {
+	// 		self.calendarContainer.style.left = "auto";
+	// 		self.calendarContainer.style.right = right + "px";
+	// 	}
+	// }
 
 	function redraw() {
 		if (self.config.noCalendar || self.isMobile) return;
