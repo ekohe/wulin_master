@@ -334,9 +334,6 @@
       var currentRow, from;
       if(grid.operatedIds && grid.operatedIds.length > 0) {
         var gridRow = grid.getRowByRecordId(grid.operatedIds[grid.operatedIds.length-1]);
-        if(!gridRow) {
-          gridRow = grid.getLastRow()
-        }
         if(!gridRow) return [null, null];
         currentRow = gridRow.index - 1;
         from = parseInt(currentRow / 200, 10) * 200;

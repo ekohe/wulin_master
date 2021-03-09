@@ -4501,15 +4501,6 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function getLastRow() {
-      let data = getData()
-      let indexOfLastRow = data.length - 1
-
-      if (indexOfLastRow >= 0) {
-        return { row: getRowAt[indexOfLastRow], index: indexOfLastRow }
-      }
-    }
-
     function getSelectedIds() {
       try {
         var selectedIndexes = getSelectedRows();
@@ -4699,7 +4690,6 @@ if (typeof Slick === "undefined") {
       "getCanvas": getCanvas,
       "getSelectedIds": getSelectedIds,
       "getRowByRecordId": getRowByRecordId,
-      "getLastRow": getLastRow,
       "getSerializedEditorValue": getSerializedEditorValue,
       "setColumnsById": setColumnsById,
       "setEditController": setEditController,
