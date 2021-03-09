@@ -1,4 +1,3 @@
-
 //= link_tree ../images
-//= link master/master.js
-//= link master.css
+//= link application.css
+//= link application.js

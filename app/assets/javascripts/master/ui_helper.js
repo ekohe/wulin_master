@@ -145,16 +145,18 @@ var Ui = {
       .addClass('active');
     $(`${scope} input[data-time]`).siblings('label').addClass('active');
 
+    let appendedParentNode = $(`${scope} input[data-datetime]`).parent()[0]
+
     // setup datepicker
     $(`${scope} input[data-datetime]`)
       .inputmask('wulinDateTime')
-      .flatpickr(fpConfigFormDateTime);
+      .flatpickr($.extend({}, fpConfigFormDateTime, { appendTo: appendedParentNode }));
     $(`${scope} input[data-date]`)
       .inputmask('wulinDate')
-      .flatpickr(fpConfigFormDate);
+      .flatpickr($.extend({}, fpConfigFormDate, { appendTo: appendedParentNode }));
     $(`${scope} input[data-time]`)
       .inputmask('wulinTime')
-      .flatpickr(fpConfigTime);
+      .flatpickr($.extend({}, fpConfigTime, { appendTo: appendedParentNode }));
   },
 
   setupForm: function (grid, monitor, selectedIndexes, scope) {

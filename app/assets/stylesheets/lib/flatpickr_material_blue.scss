@@ -585,6 +585,10 @@ span.flatpickr-weekday {
 .flatpickr-input[readonly] {
   cursor: pointer;
 }
+.editor-text.flatpickr-input {
+  display: block;
+  height: 20px !important;
+}
 @-moz-keyframes flatpickrFadeInDown {
   from {
     opacity: 0;
