@@ -145,18 +145,25 @@ var Ui = {
       .addClass('active');
     $(`${scope} input[data-time]`).siblings('label').addClass('active');
 
-    let appendedParentNode = $(`${scope} input[data-datetime]`).parent()[0]
-
     // setup datepicker
-    $(`${scope} input[data-datetime]`)
+    $(`${scope} input[data-datetime]`).each(function() {
+      let that = this
+      $(that)
       .inputmask('wulinDateTime')
-      .flatpickr($.extend({}, fpConfigFormDateTime, { appendTo: appendedParentNode }));
-    $(`${scope} input[data-date]`)
+      .flatpickr($.extend({}, fpConfigFormDateTime, { appendTo: $(that).parent()[0] }));
+    });
+    $(`${scope} input[data-date]`).each(function() {
+      let that = this
+      $(that)
       .inputmask('wulinDate')
-      .flatpickr($.extend({}, fpConfigFormDate, { appendTo: appendedParentNode }));
-    $(`${scope} input[data-time]`)
+      .flatpickr($.extend({}, fpConfigFormDate, { appendTo: $(that).parent()[0] }));
+    });
+    $(`${scope} input[data-time]`).each(function() {
+      let that = this
+      $(that)
       .inputmask('wulinTime')
-      .flatpickr($.extend({}, fpConfigTime, { appendTo: appendedParentNode }));
+      .flatpickr($.extend({}, fpConfigTime, { appendTo: $(that).parent()[0] }));
+    });
   },
 
   setupForm: function (grid, monitor, selectedIndexes, scope) {
