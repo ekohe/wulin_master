@@ -19,9 +19,13 @@ var Requests = {
         if (request.success) {
           grid.resetActiveCell();
           grid.operatedIds = [request.id];
+          var vp = grid.getViewport();
+
           grid.loader.reloadData();
+          grid.loader.ensureData(vp.top, vp.bottom)
           if (grid.reloadMasterAfterUpdates && grid.master_grid) {
             grid.master_grid.loader.reloadData();
+            grid.master_grid.loader.ensureData(vp.top, vp.bottom)
           }
           if (continue_on) {
             if (window._always_reset_form) {
