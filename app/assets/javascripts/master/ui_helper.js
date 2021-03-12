@@ -134,7 +134,9 @@ var Ui = {
       });
 
     // materialize input[type=text]
-    $(`${scope} input[type=text]`).parent().addClass('input-field');
+    // since we have already implemented the input-outlined feature in the _form.html.haml
+    // I think we can comment the follow line code.
+    // $(`${scope} input[type=text]`).parent().addClass('input-field');
 
     // make label active for input with value
     $(`${scope} .field`)
