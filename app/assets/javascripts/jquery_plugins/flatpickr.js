@@ -654,8 +654,13 @@ function Flatpickr(element, config) {
 
 		updateNavigationCurrentMonth();
 		buildDays();
-
-		if (!self.config.noCalendar) self.days.focus();
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Remove: After looking further into the latest flatpickr source code, there is no
+		// the action anymore. And, if we add make self.days.focus(), it just provides the `tabindex` functionality,
+		// but, it will make flatpickr selector behaves abnormally(when you click next month arrow, it will
+		// make the flatpickr selector scroll to top)
+		/////////////////////////////////////////////////////////////////////////////
+		// if (!self.config.noCalendar) self.days.focus();
 
 		triggerEvent("MonthChange");
 	}
@@ -974,6 +979,15 @@ function Flatpickr(element, config) {
 		/////////////////////////////////////////////////////////////////////////////
 		// positionCalendar();
 		(self.altInput || self.input).classList.add("active");
+
+		/////////////////////////////////////////////////////////////////////////////
+		// Ekohe Add: the next two line codes, is a bit hysteria. It looks a bit redundant, but
+		// if we remove it. we won't be able to click flatpickr selector header(If we
+		// click on the header directly, dropdown will disappear. If we focus .numInput first,
+		// it won't appear in any situation)
+		/////////////////////////////////////////////////////////////////////////////
+		$('.numInput.cur-year').focus()
+		$('.numInput.cur-year').blur()
 
 		triggerEvent("Open");
 	}
