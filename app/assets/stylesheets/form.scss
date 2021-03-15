@@ -42,21 +42,21 @@ form {
     }
     .field {
       width: 100%;
-      input:not(.cur-year) {
+      input:not(.numInput) {
         padding-top: 5px;
         padding-bottom: 5px;
       }
-      input:not(.cur-year),
+      input:not(.numInput),
       textarea {
         color: $text-color;
         font-size: $font-size-small-middle;
       }
-      input[type="text"]:not(.browser-default):not(.cur-year) {
+      input[type="text"]:not(.browser-default):not(.numInput) {
         height: 36px;
       }
-      input[data-date="true"]:not(.cur-year),
-      input[data-time="true"]:not(.cur-year),
-      input[data-datetime="true"]:not(.cur-year) {
+      input[data-date="true"]:not(.numInput),
+      input[data-time="true"]:not(.numInput),
+      input[data-datetime="true"]:not(.numInput) {
         display: block;
         margin-bottom: 5px;
       }
