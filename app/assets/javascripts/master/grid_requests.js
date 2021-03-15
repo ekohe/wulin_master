@@ -40,7 +40,7 @@ var Requests = {
         } else {
           for(var k in request.error_message){
             createFormElement.find(".field[name=" + k + "], .field[name=" + k + "_id]").find(".field_error").text(request.error_message[k].join());
-            createFormElement.find(".field[name=" + k + "], .field[name=" + k + "_id]").find("input").addClass('invalid');
+            createFormElement.find(".field[name=" + k + "], .field[name=" + k + "_id]").find("input:not(.numInput)").addClass('invalid');
           }
           if (request.error_message['base']) {
             $('.base_error', createFormElement).text(request.error_message['base']);
