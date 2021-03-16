@@ -31,6 +31,7 @@ module WulinMaster
 
           # Add the necessary where statements to the query
           @query_without_filter = @query
+          @count_without_filter = count_without_filter
 
           construct_filters
 
@@ -49,11 +50,6 @@ module WulinMaster
 
           # Get total counts
           @offset = params[:offset].present? ? params[:offset].to_i : 0
-          if @offset.zero?
-            @count_query = @query.clone
-          else
-            @count = smart_query_count(@query)
-          end
 
           # Add limit and offset
           parse_pagination
@@ -61,12 +57,7 @@ module WulinMaster
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
 
-          # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
-          if @count_query
-            @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
-          end
-
-          @count_without_filter = count_without_filter
+          @count = smart_query_count @query
 
           fire_callbacks :objects_ready
 
@@ -203,9 +194,7 @@ module WulinMaster
     end
 
     def count_without_filter
-      return @count unless params[:filters]
-
-      smart_query_count(@query_without_filter)
+      smart_query_count @query_without_filter
     end
 
     def get_attributes(attrs, type, object = nil)
@@ -240,15 +229,38 @@ module WulinMaster
       end
     end
 
+    # irb(main):049:0> Person.left_joins(:position).count
+    #   (6.8ms)  SELECT COUNT(*) FROM "people" LEFT OUTER JOIN "positions" ON "positions"."person_id" = "people"."id"
+    #=> 3534
+    # irb(main):050:0> Person.count
+    #   (1.6ms)  SELECT COUNT(*) FROM "people"
+    #=> 3529
+    # irb(main):051:0> Person.left_joins(:position).count("DISTINCT people.id")
+    #   (8.0ms)  SELECT COUNT(DISTINCT people.id) FROM "people" LEFT OUTER JOIN "positions" ON "positions"."person_id" = "people"."id"
+    #=> 3529
+    #
+    # The count will be not corrent, if we have the left join. So need to add the DISTINCT on it
+    #
+    def query_count(query)
+      # irb(main):053:0> Person.left_joins(:position).class.to_s
+      # => "Person::ActiveRecord_Relation"
+      case query.class.to_s
+      when /ActiveRecord_Relation/i
+        query.unscope(:order).unscope(:select).unscope(:limit).unscope(:offset).count("DISTINCT #{grid.model.table_name}.id")
+      else
+        query.size
+      end
+    end
+
     def smart_query_count(query)
-      method = query == grid.model ? 'count' : 'size'
       query = query.except(:select).select("#{grid.model.table_name}.id").unscope(:order) if query.respond_to?(:except)
 
-      return query.send(method) if grid.options[:estCount].blank?
+      return query_count(query) if grid.options[:estCount].blank?
 
       if ActiveRecord::Base.connection.instance_values['config'][:adapter] != 'postgresql'
         Rails.logger.warn 'Estimate count ignored because not using PostgreSQL'
-        return query.send(method)
+
+        return query_count(query)
       end
 
       sql = if query == grid.model
