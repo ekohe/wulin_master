@@ -51,7 +51,7 @@ form {
         color: $text-color;
         font-size: $font-size-small-middle;
       }
-      input[type="text"]:not(.browser-default):not(.numInput) {
+      input[type="text"]:not(.browser-default):not(.numInput):not(.chosen-search-input) {
         height: 36px;
       }
       input[data-date="true"]:not(.numInput),
