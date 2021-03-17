@@ -196,7 +196,9 @@
 
 
   $(".chzn-select").on("chosen:hiding_dropdown", (evt, params) => {
-    if ($(".chosen-container-active").length > 0) return;
+    if ($(".chosen-with-drop").length > 0) {
+      return
+    }
 
     let jqTarget = $(evt.currentTarget)
     let modal = jqTarget.closest(".modal")
