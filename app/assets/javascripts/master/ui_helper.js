@@ -330,7 +330,7 @@ var Ui = {
     $("body")
       .off("keypress", formSelector)
       .on("keypress", formSelector, function (event) {
-        let isTextarea = /textarea/i.test(event.target.nodeName);
+        let isTextarea = /textarea/i.test(event.target.nodeName) || event.target.className.includes("note-editable");
         if (!isTextarea && event.keyCode === 13) {
           return false;
         }
