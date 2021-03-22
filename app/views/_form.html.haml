@@ -182,30 +182,3 @@
 
 :javascript
   $('.input-outlined').first().children("input").focus()
-
-  $(".chzn-select").on("chosen:showing_dropdown", (evt, params) => {
-    let jqTarget = $(evt.currentTarget)
-    let modal = jqTarget.closest(".modal")
-
-    modal.find(".submit").hide()
-    modal.find(".modal-content").css({"overflow-y": "visible"})
-
-    modal.css({"overflow-y": "visible"})
-    jqTarget.closest(".field-line").find(".chosen-drop").css({"z-index": 100000, "display": "block"})
-  })
-
-
-  $(".chzn-select").on("chosen:hiding_dropdown", (evt, params) => {
-    if ($(".chosen-with-drop").length > 0) {
-      return
-    }
-
-    let jqTarget = $(evt.currentTarget)
-    let modal = jqTarget.closest(".modal")
-
-    modal.find(".submit").show()
-    modal.css({"overflow-y": "auto"})
-    modal.find(".modal-content").css({"overflow-y": "auto"})
-
-    jqTarget.closest(".field-line").find(".chosen-drop").css({"z-index": 1010, "display": "none"})
-  })
