@@ -192,6 +192,8 @@
       columnDef,
       dataContext
     ) {
+      if (!value) { return '' }
+
       let precision = columnDef.precision || 0
 
       value = parseFloat(value).toFixed(precision).toString()
