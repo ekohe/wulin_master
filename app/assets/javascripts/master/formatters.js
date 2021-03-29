@@ -185,6 +185,26 @@
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
     },
 
+    DeleteRedundantDecimals: function (
+      row,
+      cell,
+      value,
+      columnDef,
+      dataContext
+    ) {
+      let precision = columnDef.precision || 0
+
+      value = parseFloat(value).toFixed(precision).toString()
+
+      let regexp = new RegExp(`(.0{${precision}}$)`)
+      value = regexp.test(value) ? value.replace(RegExp.$1, '') : value
+      return this.applyStyle(
+        value,
+        columnDef.style_class,
+        columnDef.style || ''
+      )
+    },
+
     // Depend on date.format.js
     DateFormatter: function(row, cell, value, columnDef, dataContext) {
       value = (value === null) ? '' : (new Date(value).format('isoDate')); // "YYYY-MM-DD"
