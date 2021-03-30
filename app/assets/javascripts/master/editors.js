@@ -794,7 +794,11 @@
 
       this.initElements();
       let appendedParentNode = $(this.input).parent()[0]
-      this.input.inputmask('wulinDateTime').flatpickr($.extend({}, flatpickrConfig, { appendTo: appendedParentNode }));
+      this.input.inputmask('wulinDateTime')
+
+      if(!args.column.hide_calendar) {
+        this.input.flatpickr($.extend({}, flatpickrConfig, { appendTo: appendedParentNode }));
+      }
     };
 
     this.init();
@@ -816,7 +820,10 @@
 
       this.initElements();
       let appendedParentNode = $(this.input).parent()[0]
-      this.input.inputmask('wulinDate').flatpickr($.extend({}, fpConfigGridDate, { appendTo: appendedParentNode }));
+      this.input.inputmask('wulinDate')
+      if(!args.column.hide_calendar) {
+        this.input.flatpickr($.extend({}, fpConfigGridDate, { appendTo: appendedParentNode }))
+      }
     };
 
     this.init();
@@ -841,7 +848,11 @@
 
       this.initElements();
       let appendedParentNode = $(this.input).parent()[0]
-      this.input.inputmask('wulinTime').flatpickr($.extend({}, fpConfigGridTime, { appendTo: appendedParentNode }));
+      this.input.inputmask('wulinTime')
+
+      if(!args.column.hide_calendar) {
+        this.input.flatpickr($.extend({}, fpConfigGridTime, { appendTo: appendedParentNode }))
+      }
     };
 
     this.init();
