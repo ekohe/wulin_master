@@ -455,7 +455,12 @@ var Ui = {
       },
     });
     $modal.modal(options);
-    $modal.modal('open');
+
+    const { openNow = true } = options
+
+    if (openNow) {
+      $modal.modal('open');
+    }
 
     return $modal;
   },
