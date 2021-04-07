@@ -445,6 +445,8 @@ var Ui = {
   },
 
   baseModal: function (options) {
+    options = options || {};
+
     var $modal = $('<div/>').addClass('modal').appendTo($('body'));
     var $modalContent = $('<div/>').addClass('modal-content').appendTo($modal);
 
