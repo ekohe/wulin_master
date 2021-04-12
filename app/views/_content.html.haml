@@ -25,23 +25,29 @@
 
 :javascript
   $(function(){
-    $('.info-modal').modal({
-      onOpenEnd: function(modal, trigger) {
-        modal.css('z-index', '9999');
-      }
-    });
+    // why use setTimeout?
+    // Since `.modal` makes the following events not work.
+    // Guess Materialize calls the $(selector).modal() automatically in the end
+    // We have to make the following events executed after `.modal()`
+    setTimeout(() => {
+      $('.info-modal').modal({
+        onOpenEnd: function(modal, trigger) {
+          modal.css('z-index', '9999');
+        }
+      });
 
-    $('#confirm-modal').modal({
-      onCloseEnd: function(modal, trigger) {
-        $('#confirm-content').text('Are you sure to do this ?');
-        $('#confirm-modal .modal-title').text('Confirmation');
-      }
-    });
+      $('#confirm-modal').modal({
+        onCloseEnd: function(modal, trigger) {
+          $('#confirm-content').text('Are you sure to do this ?');
+          $('#confirm-modal .modal-title').text('Confirmation');
+        }
+      });
 
-    $('#error-modal').modal({
-      onCloseEnd: function(modal, trigger) {
-        $('#error-content').text('Something happened.');
-        $('#error-modal .modal-title').text('Error');
-      }
-    });
+      $('#error-modal').modal({
+        onCloseEnd: function(modal, trigger) {
+          $('#error-content').text('Something happened.');
+          $('#error-modal .modal-title').text('Error');
+        }
+      });
+    })
   });
