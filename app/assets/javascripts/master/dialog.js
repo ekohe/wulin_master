@@ -2,12 +2,12 @@ var dialogIndex = 1;
 
 function displayErrorMessage(message, title, width) {
   if (message === undefined) {
-    message = "An unexpected error occured.";
+    message = 'An unexpected error occured.';
   }
   escapedHtml = escapeHtml(message);
   finalMessage = simpleFormat(escapedHtml);
 
-  $("#error-content").html(finalMessage);
-  $("#error-modal .modal-title").text(title);
-  $("#error-modal").modal("open");
+  $('#error-content').html(finalMessage);
+  $('#error-modal .modal-title').text(title);
+  $('#error-modal').modal('open');
 }
