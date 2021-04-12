@@ -11,3 +11,18 @@ function displayErrorMessage(message, title, width) {
   $('#error-modal .modal-title').text(title);
   $('#error-modal').modal('open');
 }
+
+const displayCustomizedConfirmModal = (params) => {
+  const {
+    message = 'Are you sure to do this ?',
+    title = 'Confirmation',
+    confirmCallBack,
+  } = params;
+  $('#confirm-content').html(message);
+  $('#confirm-modal .modal-title').text(title);
+  $('#confirm-modal').modal('open');
+  $('#confirmed-btn').on('click', () => {
+    confirmCallBack && confirmCallBack();
+    $('#confirm-modal').modal('close');
+  });
+};
