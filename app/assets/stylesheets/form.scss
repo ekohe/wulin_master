@@ -156,3 +156,17 @@ form {
     }
   }
 }
+
+span.select2-container {
+  border: 2px solid #eee;
+  padding: 10px 15px 10px;
+
+  span.select2-selection {
+    border: none;
+    border-radius: 0;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
