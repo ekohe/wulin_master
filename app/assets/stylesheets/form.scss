@@ -157,6 +157,10 @@ form {
   }
 }
 
+span.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: none !important;
+}
+
 span.select2-container {
   border: 2px solid #eee;
   padding: 10px 15px 10px;
@@ -167,6 +171,19 @@ span.select2-container {
 
     &:focus {
       outline: none;
+    }
+  }
+}
+
+span.select2-selection--multiple {
+  input.select2-search__field {
+    height: auto;
+    margin: 0;
+    padding: 0;
+
+    &:focus {
+      border-bottom: none !important;
+      box-shadow: none !important;
     }
   }
 }
