@@ -130,7 +130,7 @@ var Ui = {
         }
 
         var flag = $(
-          `${scope} input.target_flag:checkbox[data-target="${$(this).attr(
+          `${scope} input.target_flag:checkbox[data-target="${$(e).attr(
             'data-target'
           )}"]`
         );
