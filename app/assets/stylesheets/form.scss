@@ -183,8 +183,7 @@ span.select2-container {
 span.select2-selection--multiple {
   input.select2-search__field {
     height: auto;
-    margin: 0;
-    padding: 0;
+    margin-top: 2px !important;
 
     &:focus {
       border-bottom: none !important;
