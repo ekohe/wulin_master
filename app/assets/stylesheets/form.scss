@@ -175,6 +175,11 @@ span.select2-container {
   }
 }
 
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: calc((100% - 26px)/2) !important;
+  right: 8px !important;
+}
+
 span.select2-selection--multiple {
   input.select2-search__field {
     height: auto;
