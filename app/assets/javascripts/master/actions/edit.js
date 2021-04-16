@@ -132,7 +132,7 @@ var loadValue = function (scope, data) {
         inputBox.val(data[i]);
       }
       inputBox.trigger('change');
-      inputBox.trigger('chosen:updated');
+      // inputBox.trigger('chosen:updated');
     }
   }
 };
@@ -201,8 +201,8 @@ var checkTheBox = function (name, scope) {
           .removeAttr('selected');
         $('select[data-target-id="' + $(this).attr('data-target-id') + '"]')
           .val('')
-          .trigger('chosen:updated')
           .trigger('change');
+          // .trigger('chosen:updated')
       }
     });
 };
