@@ -115,26 +115,31 @@ var Ui = {
     var name = grid.name;
     scope = scope || `#${name}_form`;
 
-    // setup select as chosen
-    $(`${scope} select[data-required="true"]`).chosen();
-    $(`${scope} select[data-required="false"]`).chosen({
-      allow_single_deselect: true,
-    });
+    // init select2
+    $("select.select2").each((_, e) => {
+      $(e).select2()
+      $(e).on("select2:opening", (evt) => {
+        $(evt.target).parents(".field").find("label").addClass("active")
+      })
+      $(e).on("select2:close", (evt) => {
+        let val = $(evt.target).val()
+        if (val) {
+          // do nothing
+        } else {
+          $(evt.target).parents(".field").find("label").addClass("active")
+        }
 
-    // make target flag be checked when select changed
-    $(`${scope} select`)
-      .off('change')
-      .on('change', function () {
         var flag = $(
-          `${scope} input.target_flag:checkbox[data-target="${$(this).attr(
+          `${scope} input.target_flag:checkbox[data-target="${$(e).attr(
             'data-target'
           )}"]`
         );
         if (flag.size() > 0) flag.prop('checked', true);
-      });
+      })
+    })
 
     // materialize input[type=text]
-    // since we have already implemented the input-outlined feature in the _form.html.haml
+    // since we have already imp lemented the input-outlined feature in the _form.html.haml
     // I think we can comment the follow line code.
     // $(`${scope} input[type=text]`).parent().addClass('input-field');
 
