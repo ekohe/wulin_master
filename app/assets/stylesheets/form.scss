@@ -137,8 +137,13 @@ form {
   > label {
     z-index: 1;
     left: 27px;
-    display: inline-flex;
-    width: auto !important;
+    //ekohe truncate label
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    -o-text-overflow: ellipsis;
+    max-width: 80%;
     top: 0rem;
   }
   label.textarea-label {
