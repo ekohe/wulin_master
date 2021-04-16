@@ -138,28 +138,6 @@ var Ui = {
       })
     })
 
-    // setup select as chosen
-    /*
-    $(`${scope} select[data-required="true"]`).chosen();
-    $(`${scope} select[data-required="false"]`).chosen({
-      allow_single_deselect: true,
-    });
-    */
-
-    // make target flag be checked when select changed
-    /*
-    $(`${scope} select`)
-      .off('change')
-      .on('change', function () {
-        var flag = $(
-          `${scope} input.target_flag:checkbox[data-target="${$(this).attr(
-            'data-target'
-          )}"]`
-        );
-        if (flag.size() > 0) flag.prop('checked', true);
-      });
-    */
-
     // materialize input[type=text]
     // since we have already imp lemented the input-outlined feature in the _form.html.haml
     // I think we can comment the follow line code.
