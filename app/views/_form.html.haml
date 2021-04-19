@@ -34,7 +34,7 @@
                 = form.select column_name,                                      |
                   select_options(column),                                       |
                   { include_blank: !column.presence_required? },                |
-                  :class             => 'chzn-select',                          |
+                  :class             => 'chzn-select select2',                  |
                   :disabled          => column.options[:auto_fill],             |
                   "data-required"    => column.presence_required?,              |
                   "data-source"      => source,                                 |
@@ -49,7 +49,7 @@
                   select_options(column),                                        |
                   { include_blank: !column.presence_required? },                 |
                   :multiple          => true,                                    |
-                  :class             => 'chzn-select',                           |
+                  :class             => 'chzn-select select2',                  |
                   "data-required"    => column.presence_required?,               |
                   "data-source"      => source,                                  |
                   "data-target"      => "#{column_name}_target_flag",            |
@@ -62,7 +62,7 @@
                 %label{:for => "#{model_name}_#{column_name}"}= label
                 = select_tag "#{model_name}[#{column_name}]",                   |
                   select_tag_options(column),                                   |
-                  :class             => 'chzn-select',                          |
+                  :class             => 'chzn-select select2',                  |
                   :disabled          => column.options[:auto_fill],             |
                   :include_blank     => !column.presence_required?,             |
                   "data-required"    => column.presence_required?,              |

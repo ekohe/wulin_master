@@ -161,3 +161,38 @@ form {
     }
   }
 }
+
+span.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: none !important;
+}
+
+span.select2-container {
+  border: 2px solid #eee;
+  padding: 10px 15px 10px;
+
+  span.select2-selection {
+    border: none;
+    border-radius: 0;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: calc((100% - 26px)/2) !important;
+  right: 8px !important;
+}
+
+span.select2-selection--multiple {
+  input.select2-search__field {
+    height: auto;
+    margin-top: 2px !important;
+
+    &:focus {
+      border-bottom: none !important;
+      box-shadow: none !important;
+    }
+  }
+}

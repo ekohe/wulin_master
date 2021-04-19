@@ -22,53 +22,7 @@ $(document).ready(function () {
 
   // Initial
   loadPageForHistoryState();
-
-  initOutsideDropdown("form.new_location .chzn-select")
 });
-
-
-function initOutsideDropdown(selector) {
-  $(document).on("chosen:showing_dropdown", selector, (evt, params) => {
-    let jqTarget = $(evt.currentTarget)
-    let modal = jqTarget.closest(".modal")
-
-    modal.find(".submit").hide()
-    modal.find(".modal-content").css({
-      "overflow-y": "visible"
-    })
-
-    modal.css({
-      "overflow-y": "visible"
-    })
-    jqTarget.closest(".field-line").find(".chosen-drop").css({
-      "z-index": 100000,
-      "display": "block"
-    })
-  })
-
-
-  $(document).on("chosen:hiding_dropdown", selector, (evt, params) => {
-    if ($(".chosen-with-drop").length > 0) {
-      return
-    }
-
-    let jqTarget = $(evt.currentTarget)
-    let modal = jqTarget.closest(".modal")
-
-    modal.find(".submit").show()
-    modal.css({
-      "overflow-y": "auto"
-    })
-    modal.find(".modal-content").css({
-      "overflow-y": "auto"
-    })
-
-    jqTarget.closest(".field-line").find(".chosen-drop").css({
-      "z-index": 1010,
-      "display": "none"
-    })
-  })
-}
 
 function loadPageForHistoryState() {
   var url = History.getState().url;
