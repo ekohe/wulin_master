@@ -178,6 +178,11 @@ span.select2-container {
       outline: none;
     }
   }
+
+  span.select2-dropdown {
+    margin-top: -20px;
+    border: 2px solid #eee;
+  }
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
