@@ -11,6 +11,7 @@
     .slick-viewport {
       .grid-canvas {
         border-top: 1px solid $border-color;
+        overflow-y: auto;
       }
     }
   }
