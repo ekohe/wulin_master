@@ -12,6 +12,11 @@
       .grid-canvas {
         border-top: 1px solid $border-color;
         overflow-y: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+      }
+      ::-webkit-scrollbar { 
+        display: none; /* Chrome Safari */
       }
     }
   }
