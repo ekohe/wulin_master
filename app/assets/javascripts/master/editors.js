@@ -299,7 +299,7 @@
       setTimeout(function() {
         // https://github.com/harvesthq/chosen/blob/master/coffee/chosen.jquery.coffee#L93
         this.select.trigger('chosen:open.chosen');
-      }.bind(this), 300);
+      }.bind(this));
     };
 
     this.setAllowSingleDeselect = function() {
