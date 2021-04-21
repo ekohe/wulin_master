@@ -2779,7 +2779,7 @@ if (typeof Slick === "undefined") {
       renderFilteredInputs();
 
       // First column cells
-      $container.find('.slick-cell.l0').css({'padding-left': '10px'});
+      $container.find('.slick-cell.l0 span').css({'padding-left': '10px'});
     }
 
     function renderFilteredInputs() {
@@ -3533,6 +3533,9 @@ if (typeof Slick === "undefined") {
           var formatterResult =  formatter(activeRow, activeCell, getDataItemValueForColumn(d, column), column, d, self);
           applyFormatResultToCellNode(formatterResult, activeCellNode);
           invalidatePostProcessingResults(activeRow);
+          if($(activeCellNode).hasClass('l0')) {
+            $(activeCellNode).find('span').css({'padding-left': '10px'})
+          }
         }
       }
 
