@@ -167,6 +167,7 @@ span.select2-container--default.select2-container--focus .select2-selection--mul
 }
 
 span.select2-container {
+  border-radius: 4px;
   border: 2px solid #eee;
   padding: 10px 15px 10px;
 
@@ -182,6 +183,22 @@ span.select2-container {
   span.select2-dropdown {
     margin-top: -20px;
     border: 2px solid #eee;
+    left: -2px;
+  }
+
+  input.select2-search__field {
+    width: calc(100% - 26px);
+    margin: 1px 0;
+    padding: 4px 20px 4px 5px;
+    height: 27px;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  span.select2-selection__clear {
+    color: #888;
+    font-size: 16px;
   }
 }
 

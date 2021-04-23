@@ -115,12 +115,21 @@ var Ui = {
     var name = grid.name;
     scope = scope || `#${name}_form`;
 
+    $(`${scope} select.select2[data-required=false][multiple]`).each((_, e) => {
+      $(e).find("option[value='']").remove()
+    })
+
     // init select2
-    $("select.select2").each((_, e) => {
-      $(e).select2()
+    $(`${scope} select.select2`).each((_, e) => {
+      $(e).select2({
+        placeholder: "",
+        allowClear: true
+      })
+
       $(e).on("select2:opening", (evt) => {
         $(evt.target).parents(".field").find("label").addClass("active")
       })
+
       $(e).on("select2:close", (evt) => {
         let val = $(evt.target).val()
         if (val) {
@@ -436,8 +445,9 @@ var Ui = {
     var modalHeight =
       $(`.${willBeRemovedContainerClassName} .title`).outerHeight() + // Title
       $(`.${willBeRemovedContainerClassName} form`).outerHeight() + // Fields
-      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() + 30  // Button
-      ; // Padding
+      $(`.${willBeRemovedContainerClassName} .submit`).outerHeight() +  // Submit
+      $(`.${willBeRemovedContainerClassName} .modal-footer`).outerHeight()  // Footer
+      + 60; // Padding
     if (grid.options) {
       width = grid.options.form_dialog_width || 900;
       height = grid.options.form_dialog_height || modalHeight;
