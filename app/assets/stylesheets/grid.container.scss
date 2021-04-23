@@ -11,7 +11,7 @@
     .slick-viewport {
       .grid-canvas {
         border-top: 1px solid $border-color;
-        overflow-y: auto;
+        overflow-y: scroll;
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* IE 10+ */
       }

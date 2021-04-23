@@ -3527,6 +3527,11 @@ if (typeof Slick === "undefined") {
       if (activeCellNode) {
         var d = getDataItem(activeRow);
         $(activeCellNode).removeClass("editable invalid");
+        // remove grid-canvas overflow-y:scroll propriety inside modal
+        if($(activeCellNode).closest('.modal').length >= 1){
+          $(activeCellNode).closest('.grid-canvas').css("overflow-y","")
+        }
+
         if (d) {
           var column = columns[activeCell];
           var formatter = getFormatter(activeRow, column);
@@ -3575,7 +3580,10 @@ if (typeof Slick === "undefined") {
 
       getEditorLock().activate(editController);
       $(activeCellNode).addClass("editable");
-
+      // add overflow-y scroll to grid-canvas inside modal when slick-grid edit mode
+        if($(activeCellNode).closest('.modal').length >= 1) {
+          $(activeCellNode).closest('.grid-canvas').css("overflow-y","scroll")
+        }
       var useEditor = editor || getEditor(activeRow, activeCell);
 
       // don't clear the cell if a custom editor is passed through

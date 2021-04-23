@@ -98,6 +98,10 @@ nav {
     p {
       font-size: $font-size-small-middle;
     }
+    // Slick Grid container 
+    .grid_container .slick-viewport .grid-canvas {
+      overflow: visible;
+    }
   }
   .modal-footer {
     padding: 0 24px;
