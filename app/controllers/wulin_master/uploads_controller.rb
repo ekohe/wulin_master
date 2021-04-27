@@ -5,7 +5,7 @@ module WulinMaster
     def create
       # Directly save the upload in a public folder
       #   if we are using disk service in the public folder
-      if ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::DiskService) &&
+      if Object.const_defined?('ActiveStorage::Service::DiskService') &&
          ActiveStorage::Blob.service.root.to_s.starts_with?(Rails.public_path.to_s)
 
         # Generate unique folder name
