@@ -124,9 +124,17 @@ var Ui = {
       $(e).select2({
         placeholder: "",
         allowClear: true
+      }).on("select2:unselecting", function() {
+        $(this).data("unselecting", true);
+      }).on("select2:opening", function(e) {
+        if ($(this).data("unselecting")) {
+          $(this).parents(".field").find("label").removeClass("active")
+          $(this).removeData("unselecting")
+          e.preventDefault()
+        }
       })
 
-      $(e).on("select2:opening", (evt) => {
+      $(e).on("select2:open", (evt) => {
         $(evt.target).parents(".field").find("label").addClass("active")
       })
 
