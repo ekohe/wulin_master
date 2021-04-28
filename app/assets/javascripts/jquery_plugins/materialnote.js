@@ -7563,6 +7563,7 @@
                             '<span>Files</span>' +
                             '<input class="note-image-input" type="file">' +
                             `<input class="note-image-asset-host" type="hidden" value="${options.assetHost}">` +
+                            `<input class="note-image-blob-key" type="hidden" value="${options.blobKey}">` +
                         '</div>' +
                         '<div class="file-path-wrapper">' +
                             '<input class="file-path" type="text" placeholder="' + lang.image.selectFromFiles + '">' +
@@ -7607,7 +7608,8 @@
                         $imageUrl = self.$dialog.find('.note-image-url'),
                         $cancelBtn = self.$dialog.find('.modal-close-one-level'),
                         $imageBtn = self.$dialog.find('.note-image-btn'),
-                        $imageAssetHost = self.$dialog.find('.note-image-asset-host');
+                        $imageAssetHost = self.$dialog.find('.note-image-asset-host'),
+                        $imageBlobKey = self.$dialog.find('.note-image-blob-key');
 
                     ui.toggleBtn($imageBtn, false);
                     context.triggerEvent('dialog.shown');
@@ -7619,6 +7621,7 @@
                         var file = this.files[0];
                         var formData = new FormData();
                         formData.append("asset_host", $imageAssetHost.val());
+                        formData.append("blob_key", $imageBlobKey.val());
                         formData.append("file", file, file.name);
                         $.ajax({
                             type: "POST",

@@ -23,18 +23,24 @@ module WulinMaster
 
         render json: { url: '/' + public_path.to_s }
       elsif !params[:asset_host].blank?
-        # check that asset_host is a legit uri and does not end with /
+        # usage of `asset_host` implies the asset need to be public in order to have a permanent url behind the `asset_host`
+        raise 'Service is not public. Set `public: true` under the corresponding service under `storage.yml`' unless ActiveStorage::Blob.service.public?
+
         if params[:asset_host] !~ /^#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}(?<!\/)$/
           raise '`asset_host` is not a valid url. Make sure it contains the protocol and does not end with a forward slash (eg https://www.example.com)'
         end
+
+        # check absence of `//`, leading `/` and trailing `/`
+        raise '`blob_key` should not start or end with `/`, or contain `//`' if !params[:blob_key].blank? && params[:blob_key] !~ /^(?!\/)((?!\/\/).)+(?<!\/)$/
+
+        prefix = params[:blob_key].blank? ? '' : "#{params[:blob_key]}/"
 
         blob = ActiveStorage::Blob.create_and_upload!(
           io: params[:file],
           filename: params[:file].original_filename,
           content_type: params[:file].content_type,
-          key: "vic-experiment/#{Time.zone.now.to_i}-#{params[:file].original_filename}"
+          key: "#{prefix}#{Time.zone.now.to_i}-#{params[:file].original_filename}"
         )
-
         url = "#{params[:asset_host]}#{URI.parse(blob.url).path}"
 
         render json: { url: url }
