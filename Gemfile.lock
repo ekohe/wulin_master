@@ -228,7 +228,7 @@ GEM
     parallel (1.20.1)
     parser (3.0.1.0)
       ast (~> 2.4.1)
-    pg (0.21.0)
+    pg (1.2.3)
     phantomjs (2.1.1.0)
     poltergeist (1.18.1)
       capybara (>= 2.1, < 4)
@@ -383,7 +383,7 @@ DEPENDENCIES
   generator_spec
   guard
   guard-rspec
-  pg (~> 0.18)
+  pg (~> 1.1)
   phantomjs
   poltergeist
   pry
