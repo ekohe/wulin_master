@@ -7562,6 +7562,7 @@
                         '<div class="btn file-uploader-wrapper">' +
                             '<span>Files</span>' +
                             '<input class="note-image-input" type="file">' +
+                            `<input class="note-image-asset-host" type="hidden" value="${options.assetHost}">` +
                         '</div>' +
                         '<div class="file-path-wrapper">' +
                             '<input class="file-path" type="text" placeholder="' + lang.image.selectFromFiles + '">' +
@@ -7605,7 +7606,8 @@
                     var $imageInput = self.$dialog.find('.note-image-input'),
                         $imageUrl = self.$dialog.find('.note-image-url'),
                         $cancelBtn = self.$dialog.find('.modal-close-one-level'),
-                        $imageBtn = self.$dialog.find('.note-image-btn');
+                        $imageBtn = self.$dialog.find('.note-image-btn'),
+                        $imageAssetHost = self.$dialog.find('.note-image-asset-host');
 
                     ui.toggleBtn($imageBtn, false);
                     context.triggerEvent('dialog.shown');
@@ -7616,8 +7618,8 @@
                         // Upload file
                         var file = this.files[0];
                         var formData = new FormData();
+                        formData.append("asset_host", $imageAssetHost.val());
                         formData.append("file", file, file.name);
-
                         $.ajax({
                             type: "POST",
                             url: "/wulin_master/uploads",
