@@ -385,11 +385,11 @@ If the column is a file field, like image or any file, you should add this optio
 
 `:hide_autocomplete`
 
-Set hide_autocomplete: true to disable the autocomplete. 
+Set hide_autocomplete: true to disable the autocomplete.
 
 `:autocomplete_minlength`
 
-You can define an number which represent the minimum number of characters before autocomplete starts. 
+You can define an number which represent the minimum number of characters before autocomplete starts.
 ex: `autocomplete_minlength: 3` trigger the autocomplete from the 3nd characters.
 
 `:password`
@@ -446,6 +446,52 @@ Set inline css to the cell that belongs to the specified column. Example: `style
 `:style_class`
 
 Set the css class to the cell that belongs to the specified column. Example: `style_class: 'red'`
+
+`:custom_uploader`
+
+Pass on the uploading mechanism to the application's own implementation. Some scenarios where this may be useful is when your application does not use `ActiveStorage` to upload, unlike WulinMaster. Create a custom class that inherits `WulinMaster::RichMediaUploader` and define these 3 methods: `initialize(arg)`, `upload`, `url`. An example implementation using CarrierWave is shown below.
+
+```ruby
+class MyUploader < CarrierWave::Uploader::Base
+  storage(:fog)
+
+  def initialize(*)
+    super
+
+    # setup fog credentials
+  end
+
+  def store_dir
+    'public'
+  end
+
+  def filename
+    "#{Time.zone.now.to_i}-#{file.filename}"
+  end
+
+  def asset_host
+    'https://some.cdn.com'
+  end
+end
+
+class WysiwygUploader < WulinMaster::RichMediaUploader
+  attr_reader :file
+
+  def initialize(file)
+    @file = file
+    @uploader = MyUploader.new
+  end
+
+  def upload
+    @uploader.store!(@file) # store! is a `CarrierWave` native implementation
+  end
+
+  def url
+    @uploader.url # url is a `CarrierWave` native implementation
+  end
+end
+
+```
 
 #### Grid styles
 
