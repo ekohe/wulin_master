@@ -15,7 +15,11 @@ module WulinMaster
 
     # Render the menu
     def render
-      ActionView::Base.new(view_path).render(partial: "/menu", locals: {menu: self})
+      ActionView::Base.with_empty_template_cache.new(
+        ActionView::LookupContext.new(view_path),
+        {},
+        nil
+      ).render(partial: "/menu", locals: {menu: self})
     end
   end
 
