@@ -22,6 +22,22 @@ module WulinMaster
         public_path = Pathname.new(path).relative_path_from(Rails.public_path)
 
         render json: { url: '/' + public_path.to_s }
+      elsif !params[:asset_host].blank?
+        # check that asset_host is a legit uri and does not end with /
+        if params[:asset_host] !~ /^#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}(?<!\/)$/
+          raise '`asset_host` is not a valid url. Make sure it contains the protocol and does not end with a forward slash (eg https://www.example.com)'
+        end
+
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: params[:file],
+          filename: params[:file].original_filename,
+          content_type: params[:file].content_type,
+          key: "vic-experiment/#{Time.zone.now.to_i}-#{params[:file].original_filename}"
+        )
+
+        url = "#{params[:asset_host]}#{URI.parse(blob.url).path}"
+
+        render json: { url: url }
       else
         # Using disk service outside of public directory, S3 or other cloud services
         blob = ActiveStorage::Blob.create_after_upload!(
