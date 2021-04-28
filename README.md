@@ -383,6 +383,15 @@ This option should also be used together with `SelectEditor`. Its value should b
 
 If the column is a file field, like image or any file, you should add this option and set it to true. It will use `file_field` in the `new`/`edit` form.
 
+`:hide_autocomplete`
+
+Set hide_autocomplete: true to disable the autocomplete. 
+
+`:autocomplete_minlength`
+
+You can define an number which represent the minimum number of characters before autocomplete starts. 
+ex: `autocomplete_minlength: 3` trigger the autocomplete from the 3nd characters.
+
 `:password`
 
 If this column is a password or password_confirmation, you should add this option and set it to true. It will use `password_field` in the `new`/`edit` form.
