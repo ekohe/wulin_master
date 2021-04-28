@@ -3,11 +3,19 @@
 module WulinMaster
   class UploadsController < ApplicationController
     def create
-      # Directly save the upload in a public folder
-      #   if we are using disk service in the public folder
-      if Object.const_defined?('ActiveStorage::Service::DiskService') &&
-         ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::DiskService) &&
-         ActiveStorage::Blob.service.root.to_s.starts_with?(Rails.public_path.to_s)
+      if !params[:custom_uploader].blank?
+        custom_uploader = params[:custom_uploader]
+        raise '`custom_uploader` should inherit RichMediaUploader' unless Object.const_get(custom_uploader).ancestors.include?(RichMediaUploader)
+
+        uploader = Object.const_get(custom_uploader).new(params[:file])
+        uploader.upload
+
+        render json: { url: uploader.url }
+      elsif Object.const_defined?('ActiveStorage::Service::DiskService') &&
+            ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::DiskService) &&
+            ActiveStorage::Blob.service.root.to_s.starts_with?(Rails.public_path.to_s)
+        # Directly save the upload in a public folder
+        #   if we are using disk service in the public folder
 
         # Generate unique folder name
         directory_name = File.join(ActiveStorage::Blob.service.root, SecureRandom.alphanumeric(6).scan(/../))

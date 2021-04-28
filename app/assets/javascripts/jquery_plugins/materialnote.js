@@ -7562,6 +7562,7 @@
                         '<div class="btn file-uploader-wrapper">' +
                             '<span>Files</span>' +
                             '<input class="note-image-input" type="file">' +
+                            `<input class="note-image-custom-uploader" type="hidden" value="${options.customUploader}">` +
                         '</div>' +
                         '<div class="file-path-wrapper">' +
                             '<input class="file-path" type="text" placeholder="' + lang.image.selectFromFiles + '">' +
@@ -7605,7 +7606,8 @@
                     var $imageInput = self.$dialog.find('.note-image-input'),
                         $imageUrl = self.$dialog.find('.note-image-url'),
                         $cancelBtn = self.$dialog.find('.modal-close-one-level'),
-                        $imageBtn = self.$dialog.find('.note-image-btn');
+                        $imageBtn = self.$dialog.find('.note-image-btn'),
+                        $imageCustomUploader = self.$dialog.find('.note-image-custom-uploader');
 
                     ui.toggleBtn($imageBtn, false);
                     context.triggerEvent('dialog.shown');
@@ -7617,6 +7619,7 @@
                         var file = this.files[0];
                         var formData = new FormData();
                         formData.append("file", file, file.name);
+                        formData.append("custom_uploader", $imageCustomUploader.val());
 
                         $.ajax({
                             type: "POST",
