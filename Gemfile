@@ -10,8 +10,8 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rails-controller-testing'
   gem 'rspec-activemodel-mocks'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails'
+  gem 'rubocop', '~> 0.80.0', require: false
+  gem 'rubocop-rails', '= 2.5.0'
 end
 
 # Specify your gem's dependencies in wulin-master.gemspec

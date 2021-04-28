@@ -2,6 +2,7 @@
 
 module WulinMaster
   class UploadsController < ApplicationController
+    # rubocop:disable Metrics/AbcSize
     def create
       # Directly save the upload in a public folder
       #   if we are using disk service in the public folder
@@ -55,5 +56,6 @@ module WulinMaster
         render json: { url: url_for(blob) }
       end
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end
