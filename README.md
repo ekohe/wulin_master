@@ -385,11 +385,11 @@ If the column is a file field, like image or any file, you should add this optio
 
 `:hide_autocomplete`
 
-Set hide_autocomplete: true to disable the autocomplete. 
+Set hide_autocomplete: true to disable the autocomplete.
 
 `:autocomplete_minlength`
 
-You can define an number which represent the minimum number of characters before autocomplete starts. 
+You can define an number which represent the minimum number of characters before autocomplete starts.
 ex: `autocomplete_minlength: 3` trigger the autocomplete from the 3nd characters.
 
 `:password`
@@ -446,6 +446,28 @@ Set inline css to the cell that belongs to the specified column. Example: `style
 `:style_class`
 
 Set the css class to the cell that belongs to the specified column. Example: `style_class: 'red'`
+
+`:asset_host`
+
+Only applicable for columns using `RichTextEditor`. When images within the editor is uploaded, the host (and protocol) of the asset will be swapped to this. Protocol is required. No trailing forward slashes. (Note: the `ActiveStorage` service need to be set `public: true` in `storage.yml`)
+```
+column :wysiwyg_content,
+        editor: 'RichTextEditor',
+        visible: false,
+        asset_host: 'https://some.cdn.name'
+```
+
+`:blob_key`
+
+Add namespace to location of asset. No leading and trailing forward slashes.
+
+```
+column :wysiwyg_content,
+        editor: 'RichTextEditor',
+        visible: false,
+        asset_host: 'https://some.cdn.name',
+        blob_key: 'some/subdirectory'
+```
 
 #### Grid styles
 
