@@ -6,7 +6,7 @@ module WulinMaster
     def create
       if !params[:custom_uploader].blank?
         custom_uploader = params[:custom_uploader]
-        raise '`custom_uploader` should inherit RichMediaUploader' unless Object.const_get(custom_uploader).ancestors.include?(RichMediaUploader)
+        raise "#{custom_uploader} should inherit RichMediaUploader" unless Object.const_get(custom_uploader).ancestors.include?(RichMediaUploader)
 
         uploader = Object.const_get(custom_uploader).new(params[:file])
         uploader.upload
