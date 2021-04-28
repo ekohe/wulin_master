@@ -3,12 +3,10 @@
 module WulinMaster
   class RichMediaUploader
     # rubocop:disable Lint/UnusedMethodArgument
-    def initialize(data)
+    def initialize(file)
       raise(
         NotImplementedError,
-        'Implement the method `initialize`.' \
-        'It should take in 1 argument, which can be anything that is required for your custom implementation to work.' \
-        'Eg `Base64` string, `ActionDispatch::Http::UploadedFile` etc.'
+        'Implement the method `initialize`. Argument is a `ActionDispatch::Http::UploadedFile`'
       )
     end
     # rubocop:enable Lint/UnusedMethodArgument
