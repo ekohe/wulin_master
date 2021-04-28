@@ -134,27 +134,37 @@
       this.input.focus().select();
     };
 
-    this.initMdAutoComplete = function($input) {
-      $input.on("keydown", function(e) {
-        if ((e.keyCode === $.ui.keyCode.UP) || ((e.keyCode === $.ui.keyCode.DOWN))) {
-          e.stopPropagation();
+      this.initMdAutoComplete = function ($input) {
+        // disable autocomplete feature if options hide_autocomplete: true is declare
+        if (args.column.hide_autocomplete) {
+          return;
         }
-      });
-
-      $.getJSON(args.column.choices, function(dataArray) {
-        var dataObject = {};
-        for (var i = 0; i < dataArray.length; ++i) {
-          dataObject[dataArray[i]] = null;
-        }
-
-        $input.addClass('autocomplete');
-        $input.autocomplete({
-          data: dataObject,
-          limit: 5,
-          minLength: 1,
+        $input.on("keydown", function (e) {
+          if (
+            e.keyCode === $.ui.keyCode.UP ||
+            e.keyCode === $.ui.keyCode.DOWN
+          ) {
+            e.stopPropagation();
+          }
         });
-      }.bind(this));
-    };
+
+        $.getJSON(
+          args.column.choices,
+          function (dataArray) {
+            var dataObject = {};
+            for (var i = 0; i < dataArray.length; ++i) {
+              dataObject[dataArray[i]] = null;
+            }
+
+            $input.addClass("autocomplete");
+            $input.autocomplete({
+              data: dataObject,
+              limit: 5,
+              minLength: args.column.autocomplete_minlength || 1,
+            });
+          }.bind(this)
+        );
+      };
 
     this.isValueChanged = function() {
       return (!(this.input.val() === "" && this.defaultValue === null)) && (this.input.val() != this.defaultValue);

@@ -17,6 +17,8 @@
       - if send("#{type}_form_able?", column)
         :ruby
           column_name = get_column_name(column)
+          hide_autocomplete = column.options[:hide_autocomplete]
+          autocomplete_minlength = column.options[:autocomplete_minlength]
           label = column.options[:form_label] || column.label
           _klass = model_name.classify
           field = column.options[:through] || column.name
@@ -106,10 +108,15 @@
                                       + "&screen=#{screen.class}"
                                       + "&source=#{column_name}";
                   var container = $(".auto-complete-text-field-#{column_name}");
+                  //check if column has autocomplete options
+                  let hide_autocomplete = "#{hide_autocomplete}"
+                  let autocomplete_minlength = "#{autocomplete_minlength}"
                   var column = {
                     auto_complete: true,
                     width: container.width(),
-                    choices: choices
+                    choices: choices,
+                    hide_autocomplete: hide_autocomplete,
+                    autocomplete_minlength: autocomplete_minlength
                   };
                   var args = {
                     column: column,
