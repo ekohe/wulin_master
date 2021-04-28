@@ -2,14 +2,13 @@
 
 module WulinMaster
   class RichMediaUploader
-    # rubocop:disable Lint/UnusedMethodArgument
+    attr_reader :file
+
     def initialize(file)
-      raise(
-        NotImplementedError,
-        'Implement the method `initialize`. Argument is a `ActionDispatch::Http::UploadedFile`'
-      )
+      raise 'Argument should be a ActionDispatch::Http::UploadedFile type' unless file.is_a?(ActionDispatch::Http::UploadedFile)
+
+      @file = file
     end
-    # rubocop:enable Lint/UnusedMethodArgument
 
     def upload
       raise NotImplementedError, 'Implement the method `upload`. This is where custom upload method is implemented'
