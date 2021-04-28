@@ -2,6 +2,7 @@
 
 module WulinMaster
   class UploadsController < ApplicationController
+    # rubocop:disable Metrics/AbcSize
     def create
       if !params[:custom_uploader].blank?
         custom_uploader = params[:custom_uploader]
@@ -42,5 +43,6 @@ module WulinMaster
         render json: { url: url_for(blob) }
       end
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end
