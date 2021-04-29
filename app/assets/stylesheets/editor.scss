@@ -47,7 +47,10 @@
     display: initial;
   }
 
-  // select
+}
+// select
+.select-editor {
+  z-index: 1004;
   .chzn-container {
     &.chzn-container-multi {
       .chzn-drop {
@@ -67,6 +70,14 @@
     .chzn-choices {
       margin-bottom: -5px;
       box-shadow: none;
+    }
+  }
+  .chosen-drop {
+    display: flex;
+    flex-direction: column;
+    top: initial;
+    &.reverse {
+      flex-direction: column-reverse;
     }
   }
 }

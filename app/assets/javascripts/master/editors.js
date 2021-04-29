@@ -10,7 +10,7 @@
   }
 
   BaseEditor.prototype = {
-    destroy: function() {
+    destroy: function () {
       if (this.wrapper) {
         this.wrapper.remove();
       } else {
@@ -18,79 +18,79 @@
       }
     },
 
-    focus: function() {
+    focus: function () {
       this.element.focus();
     },
 
-    applyValue: function(item, state) {
+    applyValue: function (item, state) {
       item[this.column.field] = state;
     },
 
-    serializeValue: function() {
+    serializeValue: function () {
       return this.element.val();
     },
 
-    loadValue: function(item) {
+    loadValue: function (item) {
       this.defaultValue = item[this.column.field];
       this.element.val(this.defaultValue);
       this.element.select();
     },
 
-    isValueChanged: function() {
-      return (this.element.val() != this.defaultValue);
+    isValueChanged: function () {
+      return this.element.val() != this.defaultValue;
     },
 
-    validate: function() {
+    validate: function () {
       return {
         valid: true,
-        msg: null
+        msg: null,
       };
     },
 
-    validateNumber: function() {
+    validateNumber: function () {
       if (isNaN(this.element.val())) {
         this.element.val(this.defaultValue);
         return {
           valid: false,
-          msg: "Please enter a valid number."
+          msg: "Please enter a valid number.",
         };
       } else {
         return {
           valid: true,
-          msg: null
+          msg: null,
         };
       }
     },
 
-    getWrapper: function() {
+    getWrapper: function () {
       return this.wrapper;
     },
 
-    setWrapper: function(wrapper) {
+    setWrapper: function (wrapper) {
       this.wrapper = wrapper;
     },
 
-    getElement: function() {
+    getElement: function () {
       return this.element;
     },
 
-    setElement: function(element) {
+    setElement: function (element) {
       this.element = element;
     },
 
-    getValue: function() {
+    getValue: function () {
       return this.element.val();
     },
 
-    setValue: function(val) {
+    setValue: function (val) {
       this.element.val(val);
     },
 
-    getCell: function() {
+    getCell: function () {
       return this.element.parent();
     },
 
-    callValidator: function(value) {
+    callValidator: function (value) {
       if ($.isFunction(this.column.validator)) {
         return this.column.validator(args, value);
       } else {
@@ -98,16 +98,46 @@
       }
     },
 
-    setOffset: function(element, offsetWith) {
+    setOffset: function (element, offsetWith) {
       var winWith = $(window).width(),
-          offsetLeft = this.element.offset().left;
+        offsetLeft = this.element.offset().left;
       if (winWith - offsetLeft < offsetWith) {
         this.element.offset({
-          left: winWith - offsetWith
+          left: winWith - offsetWith,
         });
       }
-    }
-  }
+    },
+
+    adjustPosition: function (element, offsetWith, ignoreCellHeight = true) {
+      let coordinate = offsetWith.getBoundingClientRect();
+      let coordinateX = coordinate.right;
+      let elementWidth = $(element).width();
+
+      $(element).css({ position: "absolute", left: coordinate.left });
+
+      let coordinateY;
+      if (ignoreCellHeight) {
+        coordinateY = coordinate.top;
+      } else {
+        coordinateY = coordinate.top + $(offsetWith).height();
+      }
+
+      if ($(document).height() - coordinateY < $(element).height()) {
+        // Make flatpickr bottom alignment if there isn't enough space below the editing cell
+        coordinateY = coordinate.top - $(element).height();
+      }
+
+      // repositionned flatpick if they is not enough space on the right corner of the viewport
+      if (
+        coordinateX + elementWidth > $(document).width() &&
+        $(element).hasClass("flatpickr-calendar")
+      ) {
+        let newCoordinatex = coordinateX - elementWidth;
+        $(element).css({ left: newCoordinatex });
+      }
+      $(element).css({ top: coordinateY });
+    },
+  };
 
   ///////////////////////////////////////////////////////////////////////////
   // InputElementEditor < BaseEditor
@@ -291,9 +321,9 @@
     this.offsetWith = this.boxWidth + 28;
 
     this.initElements = function() {
-      this.wrapper = $("<div />");
+      this.wrapper = $("<div class='select-editor' />");
       this.setWrapper(this.wrapper);
-      this.wrapper.appendTo(this.args.container);
+      this.wrapper.appendTo(document.querySelector('body'));
 
       this.select = $("<select class='chzn-select' style='width:" + this.boxWidth + "px'></select>");
       this.setElement(this.select);
@@ -301,12 +331,20 @@
       this.select.focus();
 
       this.setOffset(this.wrapper, this.offsetWith);
+      this.adjustPosition(this.wrapper, args.container)
 
       this.select.append($("<option />"));
     };
 
     this.openDropDrown = function() {
       setTimeout(function() {
+        let gridView = $(args.container).closest('.slick-viewport')
+        this.select.bind('chosen:ready, chosen:showing_dropdown', () => {
+          gridView.css({overflow: 'hidden'})
+        })
+        this.select.bind('chosen:hiding_dropdown', () => {
+          gridView.css({overflow: 'auto'})
+        })
         // https://github.com/harvesthq/chosen/blob/master/coffee/chosen.jquery.coffee#L93
         this.select.trigger('chosen:open.chosen');
       }.bind(this));
@@ -777,12 +815,20 @@
     var date = this.args.item[this.column.field];
     this.boxWidth -= 24;
 
+    let gridView = $(args.container).closest('.slick-viewport')
     this.fpConfigGrid = $.extend({}, fpConfigInit, {
       clickOpens: false,
       onReady: function(selectedDates, dateStr, instance) {
         instance.open();
         instance.update(date);
       },
+      onOpen: (_selectedDates, _dateStr, instance) => {
+        this.adjustPosition(instance.calendarContainer, args.container, false)
+        gridView.css({overflow: 'hidden'})
+      },
+      onClose: () => {
+        gridView.css({overflow: 'auto'})
+      }
     });
   }
 
@@ -803,11 +849,10 @@
       });
 
       this.initElements();
-      let appendedParentNode = $(this.input).parent()[0]
       this.input.inputmask('wulinDateTime')
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, flatpickrConfig, { appendTo: appendedParentNode }));
+        this.input.flatpickr($.extend({}, flatpickrConfig));
       }
     };
 
@@ -824,15 +869,15 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
+      let gridView = $(args.container).closest('.slick-viewport')
       var fpConfigGridDate = $.extend({}, this.fpConfigGrid, {
         dateFormat: 'd/m/Y',
       });
 
       this.initElements();
-      let appendedParentNode = $(this.input).parent()[0]
       this.input.inputmask('wulinDate')
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, fpConfigGridDate, { appendTo: appendedParentNode }))
+        this.input.flatpickr($.extend({}, fpConfigGridDate))
       }
     };
 
@@ -857,11 +902,10 @@
       });
 
       this.initElements();
-      let appendedParentNode = $(this.input).parent()[0]
       this.input.inputmask('wulinTime')
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, fpConfigGridTime, { appendTo: appendedParentNode }))
+        this.input.flatpickr($.extend({}, fpConfigGridTime))
       }
     };
 

@@ -3536,6 +3536,10 @@ if (typeof Slick === "undefined") {
           if($(activeCellNode).hasClass('l0')) {
             $(activeCellNode).find('> span:first-child').css({'padding-left': '10px'})
           }
+          // Incase chosen:hiding_dropdown event hasn't been trigger
+          if($(activeCellNode).closest('.slick-viewport').css('overflow') == 'hidden') {
+            $(activeCellNode).closest('.slick-viewport').css({overflow: 'auto'})
+          }
         }
       }
 
