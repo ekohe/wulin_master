@@ -72,10 +72,9 @@
       box-shadow: none;
     }
   }
-  .chosen-drop {
+  .chosen-container {
     display: flex;
     flex-direction: column;
-    top: initial;
     &.reverse {
       flex-direction: column-reverse;
     }

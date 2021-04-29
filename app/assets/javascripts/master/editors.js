@@ -331,7 +331,7 @@
       this.select.focus();
 
       this.setOffset(this.wrapper, this.offsetWith);
-      this.adjustPosition(this.wrapper, args.container)
+      this.adjustPositionOfChosen(this.wrapper, args.container)
 
       this.select.append($("<option />"));
     };
@@ -340,9 +340,15 @@
       setTimeout(function() {
         let gridView = $(args.container).closest('.slick-viewport')
         this.select.bind('chosen:ready, chosen:showing_dropdown', () => {
+          this.wrapper.find('.chosen-container .chosen-drop').css({position: 'static'})
+          this.adjustPositionOfChosen(this.wrapper, args.container)
+
           gridView.css({overflow: 'hidden'})
         })
         this.select.bind('chosen:hiding_dropdown', () => {
+          this.wrapper.find('.chosen-container .chosen-drop').css({position: 'absolute'})
+          this.adjustPositionOfChosen(this.wrapper, args.container)
+
           gridView.css({overflow: 'auto'})
         })
         // https://github.com/harvesthq/chosen/blob/master/coffee/chosen.jquery.coffee#L93
@@ -355,6 +361,22 @@
         allow_single_deselect: !args.column['required']
       });
     };
+
+    this.adjustPositionOfChosen = function(element, offsetWith) {
+      let coordinate = offsetWith.getBoundingClientRect()
+
+      $(element).css({position: 'absolute', left: coordinate.left})
+
+      let coordinateY = coordinate.top
+
+      if (($(document).height() - coordinateY - $(offsetWith).height()) < $(element).height()) {
+        // Move chosen up if there isn't enough space below the editing cell
+        $(element).find('.chosen-container').addClass('reverse')
+        coordinateY = coordinate.top - $(element).height();
+        coordinateY += $(offsetWith).height()
+      }
+      $(element).css({top: coordinateY})
+    }
   }
 
   SelectElementEditor.prototype = Object.create(BaseEditor.prototype);
@@ -823,7 +845,7 @@
         instance.update(date);
       },
       onOpen: (_selectedDates, _dateStr, instance) => {
-        this.adjustPosition(instance.calendarContainer, args.container, false)
+        this.wrapper.find('.chosen-container .chosen-drop').css({position: 'static'})
         gridView.css({overflow: 'hidden'})
       },
       onClose: () => {
