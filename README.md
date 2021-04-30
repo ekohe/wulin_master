@@ -449,7 +449,7 @@ Set the css class to the cell that belongs to the specified column. Example: `st
 
 `:custom_uploader`
 
-Pass on the uploading mechanism to the application's own implementation. Some scenarios where this may be useful is when your application does not use `ActiveStorage` to upload, unlike WulinMaster. Create a custom class that inherits `WulinMaster::RichMediaUploader` and define these 2 methods: `upload` and `url`. An example implementation using CarrierWave is shown below.
+Pass on the uploading mechanism to the application's own implementation. Some scenarios where this may be useful is when your application does not use `ActiveStorage` to upload, unlike WulinMaster. Create a custom class that inherits `WulinMaster::RichMediaUploader` and define these 2 methods: `upload` and `url`. It will have access to the `file` attribute, which is the a `ActionDispatch::Http::UploadedFile` type. An example implementation using CarrierWave is shown below.
 
 ```ruby
 class MyUploader < CarrierWave::Uploader::Base
