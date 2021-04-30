@@ -12,9 +12,7 @@ module WulinMaster
         uploader.upload
 
         render json: { url: uploader.url }
-      elsif Object.const_defined?('ActiveStorage::Service::DiskService') &&
-            ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::DiskService) &&
-            ActiveStorage::Blob.service.root.to_s.starts_with?(Rails.public_path.to_s)
+      elsif using_disk_service?
         # Directly save the upload in a public folder
         #   if we are using disk service in the public folder
 
@@ -44,5 +42,13 @@ module WulinMaster
       end
     end
     # rubocop:enable Metrics/AbcSize
+
+    private
+
+    def using_disk_service?
+      Object.const_defined?('ActiveStorage::Service::DiskService') &&
+        ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::DiskService) &&
+        ActiveStorage::Blob.service.root.to_s.starts_with?(Rails.public_path.to_s)
+    end
   end
 end
