@@ -692,10 +692,10 @@ function Flatpickr(element, config) {
 			(self.altInput || self.input).classList.remove("active");
 		}
 
-		triggerEvent("Close");
 		if(!self.element.classList.contains("editor-text") && $(self.element).closest('.modal.open').length) {
 			$(self.element).closest('.modal-content').css("overflow", "")
 		}
+		triggerEvent("Close");
 	}
 
 	function destroy(instance) {
@@ -992,7 +992,6 @@ function Flatpickr(element, config) {
 		$('.numInput.cur-year').focus()
 		$('.numInput.cur-year').blur()
 
-		triggerEvent("Open");
 		//change flatpickr position if inside popup
 		if (!self.element.classList.contains("editor-text") && $(self.element).closest(".modal.open").length) {
 			const position = self.element.getBoundingClientRect()
@@ -1007,6 +1006,7 @@ function Flatpickr(element, config) {
 			//don't allow popup to scroll
 			$(self.element).closest(".modal-content").css("overflow", "hidden")
 		}
+		triggerEvent("Open");
 	}
 
 	function minMaxDateSetter(type) {
