@@ -351,6 +351,7 @@ function Flatpickr(element, config) {
 	function build() {
 		var fragment = window.document.createDocumentFragment();
 		self.calendarContainer = createElement("div", "flatpickr-calendar");
+
 		self.numInputType = navigator.userAgent.indexOf("MSIE 9.0") > 0 ? "text" : "number";
 
 		if (!self.config.noCalendar) {
@@ -692,6 +693,9 @@ function Flatpickr(element, config) {
 		}
 
 		triggerEvent("Close");
+		if(!self.element.classList.contains("editor-text") && $(self.element).closest('.modal.open').length) {
+			$(self.element).closest('.modal-content').css("overflow", "")
+		}
 	}
 
 	function destroy(instance) {
@@ -969,7 +973,6 @@ function Flatpickr(element, config) {
 			triggerEvent("Open");
 			return;
 		}
-
 		if (self.isOpen || (self.altInput || self.input).disabled || self.config.inline) return;
 
 		self.isOpen = true;
@@ -990,6 +993,20 @@ function Flatpickr(element, config) {
 		$('.numInput.cur-year').blur()
 
 		triggerEvent("Open");
+		//change flatpickr position if inside popup
+		if (!self.element.classList.contains("editor-text") && $(self.element).closest(".modal.open").length) {
+			const position = self.element.getBoundingClientRect()
+			let top = position.y + position.height
+			let left = position.x
+			window.document.body.appendChild(self.calendarContainer)
+			// verify if viewport bottom space is enough to contain calendar
+			if ($(document).height() - position.bottom < $(self.calendarContainer).height()) {
+				top = position.y - $(self.calendarContainer).height()
+			}
+			$(self.calendarContainer).css({ top: `${top}px`, left: `${left}px` })
+			//don't allow popup to scroll
+			$(self.element).closest(".modal-content").css("overflow", "hidden")
+		}
 	}
 
 	function minMaxDateSetter(type) {
