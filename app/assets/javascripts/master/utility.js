@@ -25,7 +25,7 @@ const positionCalendar = (self) => {
 	$(self.element).closest(".modal-content").css("overflow", "hidden")
 }
 
-const modalScrool = (instance) => {
+const modalScroll = (instance) => {
 	$(instance.element).closest('.modal-content').css("overflow", "")
 }
 
@@ -40,6 +40,6 @@ const onCalendarOpenClose = {
 		})
 	},
 	onClose: function (selectedDates, dateStr, instance) {
-		modalScrool(instance)
+		modalScroll(instance)
 	}
 }
