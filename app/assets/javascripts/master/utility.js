@@ -10,3 +10,21 @@ const formatDate = (date, time) => {
   let finalDate = `${dayMonthYear} ${time}`;
   return new Date(finalDate);
 };
+
+//position flatpickr Calendar inside an modal
+const positionCalendar = (self) => {
+		let position = self.element.getBoundingClientRect()
+		let top = position.y + position.height
+		let left = position.x
+		// verify if viewport bottom space is enough to contain calendar
+		if ((window.innerHeight - position.bottom) < $(self.calendarContainer).height()) {
+			top = position.y - $(self.calendarContainer).height()
+		}
+		$(self.calendarContainer).css({ top: `${top}px`, left: `${left}px` })
+		//don't allow popup to scroll
+		$(self.element).closest(".modal-content").css("overflow", "hidden")
+}
+
+const modalScrool = (instance) => {
+  $(instance.element).closest('.modal-content').css("overflow", "")
+}

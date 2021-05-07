@@ -692,9 +692,6 @@ function Flatpickr(element, config) {
 			(self.altInput || self.input).classList.remove("active");
 		}
 
-		if(!self.element.classList.contains("editor-text") && $(self.element).closest('.modal.open').length) {
-			$(self.element).closest('.modal-content').css("overflow", "")
-		}
 		triggerEvent("Close");
 	}
 
@@ -992,22 +989,9 @@ function Flatpickr(element, config) {
 		$('.numInput.cur-year').focus()
 		$('.numInput.cur-year').blur()
 
-		//change flatpickr position if inside popup
-		if (!self.element.classList.contains("editor-text") && $(self.element).closest(".modal.open").length) {
-			const position = self.element.getBoundingClientRect()
-			let top = position.y + position.height
-			let left = position.x
-			window.document.body.appendChild(self.calendarContainer)
-			// verify if viewport bottom space is enough to contain calendar
-			if ($(document).height() - position.bottom < $(self.calendarContainer).height()) {
-				top = position.y - $(self.calendarContainer).height()
-			}
-			$(self.calendarContainer).css({ top: `${top}px`, left: `${left}px` })
-			//don't allow popup to scroll
-			$(self.element).closest(".modal-content").css("overflow", "hidden")
-		}
 		triggerEvent("Open");
 	}
+
 
 	function minMaxDateSetter(type) {
 		return function (date) {
