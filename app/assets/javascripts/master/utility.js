@@ -33,13 +33,15 @@ const modalScroll = (instance) => {
 //e.g
 //flatpickr($.extend({}, fpConfigFormDate, onCalendarOpenClose));
 const onCalendarOpenClose = {
-	onOpen: function (selectedDates, dateStr, instance) {
+	onOpen: [repositionOnOpen],
+	onClose: [reenableScroll]
+}
+function repositionOnOpen (selectedDates, dateStr, instance) {
+	positionCalendar(instance)
+	window.addEventListener('resize', () => {
 		positionCalendar(instance)
-		window.addEventListener('resize', () => {
-			positionCalendar(instance)
-		})
-	},
-	onClose: function (selectedDates, dateStr, instance) {
-		modalScroll(instance)
-	}
+	})
+}
+function reenableScroll(selectedDates, dateStr, instance) {
+	modalScroll(instance)
 }
