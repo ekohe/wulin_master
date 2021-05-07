@@ -351,6 +351,7 @@ function Flatpickr(element, config) {
 	function build() {
 		var fragment = window.document.createDocumentFragment();
 		self.calendarContainer = createElement("div", "flatpickr-calendar");
+
 		self.numInputType = navigator.userAgent.indexOf("MSIE 9.0") > 0 ? "text" : "number";
 
 		if (!self.config.noCalendar) {
@@ -969,7 +970,6 @@ function Flatpickr(element, config) {
 			triggerEvent("Open");
 			return;
 		}
-
 		if (self.isOpen || (self.altInput || self.input).disabled || self.config.inline) return;
 
 		self.isOpen = true;
@@ -991,6 +991,7 @@ function Flatpickr(element, config) {
 
 		triggerEvent("Open");
 	}
+
 
 	function minMaxDateSetter(type) {
 		return function (date) {

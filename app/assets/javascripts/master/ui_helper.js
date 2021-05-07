@@ -174,13 +174,13 @@ var Ui = {
       let that = this
       $(that)
       .inputmask('wulinDateTime')
-      .flatpickr($.extend({}, fpConfigFormDateTime, { appendTo: $(that).parent()[0] }));
+      .flatpickr($.extend({}, fpConfigFormDateTime, onCalendarOpenClose));
     });
     $(`${scope} input[data-date]`).each(function() {
       let that = this
       $(that)
       .inputmask('wulinDate')
-      .flatpickr($.extend({}, fpConfigFormDate, { appendTo: $(that).parent()[0] }));
+      .flatpickr($.extend({}, fpConfigFormDate, onCalendarOpenClose));
     });
     $(`${scope} input[data-time]`).each(function() {
       let that = this
