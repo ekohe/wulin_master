@@ -174,33 +174,13 @@ var Ui = {
       let that = this
       $(that)
       .inputmask('wulinDateTime')
-      .flatpickr($.extend({}, fpConfigFormDateTime, {
-        onOpen: (_selectedDates, _dateStr, instance)=> {
-          positionCalendar(instance)
-          window.addEventListener('resize', () => {
-            positionCalendar(instance)
-          })
-        },
-        onClose: (_selectedDates, _dateStr, instance) => {
-          modalScroll(instance)
-        }
-      }));
+      .flatpickr($.extend({}, fpConfigFormDateTime, onCalendarOpenClose));
     });
     $(`${scope} input[data-date]`).each(function() {
       let that = this
       $(that)
       .inputmask('wulinDate')
-      .flatpickr($.extend({}, fpConfigFormDate, {
-        onOpen: (_selectedDates, _dateStr, instance)=> {
-          positionCalendar(instance)
-          window.addEventListener('resize', () => {
-            positionCalendar(instance)
-          })
-        },
-        onClose: (_selectedDates, _dateStr, instance) => {
-          modalScroll(instance)
-        }
-      }));
+      .flatpickr($.extend({}, fpConfigFormDate, onCalendarOpenClose));
     });
     $(`${scope} input[data-time]`).each(function() {
       let that = this
