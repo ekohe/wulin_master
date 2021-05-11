@@ -20,9 +20,11 @@ WulinMaster.actions.fullscreen = {
     } else {
       // set data[fullscreen] as true
       $fullscreen.data('fullscreen', true);
-      // save grid height and width
-      $fullscreen.data('grid_height', grid.container.height());
-      $fullscreen.data('grid_width', grid.container.width());
+      // save grid height and width(don't use jQuery's css function because that will give you the calculated height)
+      let gridContainerHeight = grid.container[0].style.height;
+      let gridContainerWidth = grid.container[0].style.width;
+      $fullscreen.data('grid_height', gridContainerHeight);
+      $fullscreen.data('grid_width', gridContainerWidth);
       // hide all girds
       gridManager.grids.forEach((_grid) => _grid.container.hide());
       // show the current grid and set it height 100% width 100%
