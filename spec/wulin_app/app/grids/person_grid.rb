@@ -28,5 +28,7 @@ class PersonGrid < WulinMaster::Grid
   # boolean
   column :vip
 
+  action :fullscreen, icon: :fullscreen, global: true
+
   load_default_actions # Add default toolbar items for this grid
 end
