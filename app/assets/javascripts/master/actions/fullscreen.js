@@ -38,7 +38,7 @@ const switchIcon = ($target) => {
   let $iconLabel = $target.find('a.fullscreen_action, span');
   let $iconLabelText = $iconLabel.text();
   $iconLabel.text(
-    $iconLabelText === 'Fullscreen' ? 'Fullscreen Exit' : 'Fullscreen'
+    $iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
   );
 };
 
