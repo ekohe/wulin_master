@@ -6,25 +6,26 @@ WulinMaster.actions.fullscreen = {
     let $fullscreen = $(e.currentTarget);
     let fullscreen = $fullscreen.data('fullscreen');
     let grid = this.getGrid();
-    Array.from(grid.container.siblings(':not(script)')).forEach((sbl) =>
+    let currentContainer = grid.container;
+    Array.from(currentContainer.siblings(':not(script)')).forEach((sbl) =>
       $(sbl).toggle()
     );
 
-    let heightWillBeSet = $fullscreen.data('grid_height') || '100%';
-    let widthWillBeSet = $fullscreen.data('grid_width') || '100%';
+    if (fullscreen) {
+      let gridOriginalHeight = $fullscreen.data('grid_height');
+      let gridOriginalWidth = $fullscreen.data('grid_width');
+      $fullscreen.removeData('fullscreen', 'grid_height', 'grid_width');
+      currentContainer.height(gridOriginalHeight).width(gridOriginalWidth);
+    } else {
+      $fullscreen.data('fullscreen', true);
+      let gridContainerHeight = currentContainer[0].style.height;
+      let gridContainerWidth = currentContainer[0].style.width;
+      $fullscreen.data('grid_height', gridContainerHeight);
+      $fullscreen.data('grid_width', gridContainerWidth);
 
-    let gridContainerHeight = grid.container[0].style.height;
-    let gridContainerWidth = grid.container[0].style.width;
-    $fullscreen.data(
-      'grid_height',
-      $fullscreen.data('grid_height') ? heightWillBeSet : gridContainerHeight
-    );
-    $fullscreen.data(
-      'grid_width',
-      $fullscreen.data('grid_width') ? widthWillBeSet : gridContainerWidth
-    );
-
-    grid.container.height(heightWillBeSet).width(widthWillBeSet);
+      currentContainer.height('100%').width('100%');
+    }
+    currentContainer.resize();
 
     let $icon = $fullscreen.find('a.fullscreen_action, i.material-icons');
     let $iconText = $icon.text();
