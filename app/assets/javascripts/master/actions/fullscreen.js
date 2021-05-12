@@ -9,32 +9,31 @@ WulinMaster.actions.fullscreen = {
     Array.from(grid.container.siblings(':not(script)')).forEach((sbl) =>
       $(sbl).toggle()
     );
-    if (fullscreen) {
-      $fullscreen.removeData('fullscreen');
-      grid.container
-        .height($fullscreen.data('grid_height'))
-        .width($fullscreen.data('grid_width'));
-      $fullscreen
-        .find('a.fullscreen_action, i.material-icons')
-        .text('fullscreen');
-      $fullscreen.find('a.fullscreen_action, span').text('Fullscreen');
-    } else {
-      // set data[fullscreen] as true
-      $fullscreen.data('fullscreen', true);
-      // save grid height and width(don't use jQuery's css function because that will give you the calculated height)
-      let gridContainerHeight = grid.container[0].style.height;
-      let gridContainerWidth = grid.container[0].style.width;
-      $fullscreen.data('grid_height', gridContainerHeight);
-      $fullscreen.data('grid_width', gridContainerWidth);
-      // show the current grid and set it height 100% width 100%
-      grid.container.height('100%').width('100%');
-      // change icon
-      $fullscreen
-        .find('a.fullscreen_action, i.material-icons')
-        .text('fullscreen_exit');
-      // change label
-      $fullscreen.find('a.fullscreen_action, span').text('Fullscreen Exit');
-    }
+
+    let heightWillBeSet = $fullscreen.data('grid_height') || '100%';
+    let widthWillBeSet = $fullscreen.data('grid_width') || '100%';
+
+    let gridContainerHeight = grid.container[0].style.height;
+    let gridContainerWidth = grid.container[0].style.width;
+    $fullscreen.data(
+      'grid_height',
+      $fullscreen.data('grid_height') ? heightWillBeSet : gridContainerHeight
+    );
+    $fullscreen.data(
+      'grid_width',
+      $fullscreen.data('grid_width') ? widthWillBeSet : gridContainerWidth
+    );
+
+    grid.container.height(heightWillBeSet).width(widthWillBeSet);
+
+    let $icon = $fullscreen.find('a.fullscreen_action, i.material-icons');
+    let $iconText = $icon.text();
+    $icon.text($iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen');
+    let $iconLabel = $fullscreen.find('a.fullscreen_action, span');
+    let $iconLabelText = $iconLabel.text();
+    $iconLabel.text(
+      $iconLabelText === 'Fullscreen' ? 'Fullscreen Exit' : 'Fullscreen'
+    );
   },
 };
 
