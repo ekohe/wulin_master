@@ -4,31 +4,21 @@ WulinMaster.actions.fullscreen = {
 
   handler: function (e, args) {
     let $fullscreenElement = $(e.currentTarget);
-    let fullscreen = $fullscreenElement.data('fullscreen');
     let grid = this.getGrid();
     let currentContainer = grid.container;
-    Array.from(currentContainer.siblings(':not(script)')).forEach((sbl) =>
-      $(sbl).toggle()
-    );
 
-    if (fullscreen) {
-      let gridOriginalHeight = $fullscreenElement.data('grid_height');
-      let gridOriginalWidth = $fullscreenElement.data('grid_width');
-      $fullscreenElement.removeData('fullscreen', 'grid_height', 'grid_width');
-      currentContainer.height(gridOriginalHeight).width(gridOriginalWidth);
-    } else {
-      $fullscreenElement.data('fullscreen', true);
-      let gridContainerHeight = currentContainer[0].style.height;
-      let gridContainerWidth = currentContainer[0].style.width;
-      $fullscreenElement.data('grid_height', gridContainerHeight);
-      $fullscreenElement.data('grid_width', gridContainerWidth);
+    toggleSiblings(currentContainer);
 
-      currentContainer.height('100%').width('100%');
-    }
-    currentContainer.resize();
+    transform($fullscreenElement, currentContainer);
 
     switchIcon($fullscreenElement);
   },
+};
+
+const toggleSiblings = (currentContainer) => {
+  Array.from(currentContainer.siblings(':not(script)')).forEach((sbl) =>
+    $(sbl).toggle()
+  );
 };
 
 const switchIcon = ($target) => {
@@ -40,6 +30,25 @@ const switchIcon = ($target) => {
   $iconLabel.text(
     $iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
   );
+};
+
+const transform = ($target, currentContainer) => {
+  let isFullscreen = $target.data('fullscreen');
+  if (isFullscreen) {
+    let gridOriginalHeight = $target.data('grid_height');
+    let gridOriginalWidth = $target.data('grid_width');
+    $target.removeData('fullscreen', 'grid_height', 'grid_width');
+    currentContainer.height(gridOriginalHeight).width(gridOriginalWidth);
+  } else {
+    $target.data('fullscreen', true);
+    let gridContainerHeight = currentContainer[0].style.height;
+    let gridContainerWidth = currentContainer[0].style.width;
+    $target.data('grid_height', gridContainerHeight);
+    $target.data('grid_width', gridContainerWidth);
+
+    currentContainer.height('100%').width('100%');
+  }
+  currentContainer.resize();
 };
 
 WulinMaster.ActionManager.register(WulinMaster.actions.fullscreen);
