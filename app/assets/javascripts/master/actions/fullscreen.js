@@ -27,17 +27,19 @@ WulinMaster.actions.fullscreen = {
     }
     currentContainer.resize();
 
-    let $icon = $fullscreenElement.find(
-      'a.fullscreen_action, i.material-icons'
-    );
-    let $iconText = $icon.text();
-    $icon.text($iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen');
-    let $iconLabel = $fullscreenElement.find('a.fullscreen_action, span');
-    let $iconLabelText = $iconLabel.text();
-    $iconLabel.text(
-      $iconLabelText === 'Fullscreen' ? 'Fullscreen Exit' : 'Fullscreen'
-    );
+    switchIcon($fullscreenElement);
   },
+};
+
+const switchIcon = ($target) => {
+  let $icon = $target.find('a.fullscreen_action, i.material-icons');
+  let $iconText = $icon.text();
+  $icon.text($iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen');
+  let $iconLabel = $target.find('a.fullscreen_action, span');
+  let $iconLabelText = $iconLabel.text();
+  $iconLabel.text(
+    $iconLabelText === 'Fullscreen' ? 'Fullscreen Exit' : 'Fullscreen'
+  );
 };
 
 WulinMaster.ActionManager.register(WulinMaster.actions.fullscreen);
