@@ -6,13 +6,14 @@ WulinMaster.actions.fullscreen = {
     let $fullscreen = $(e.currentTarget);
     let fullscreen = $fullscreen.data('fullscreen');
     let grid = this.getGrid();
+    Array.from(grid.container.siblings(':not(script)')).forEach((sbl) =>
+      $(sbl).toggle()
+    );
     if (fullscreen) {
       $fullscreen.removeData('fullscreen');
       grid.container
         .height($fullscreen.data('grid_height'))
-        .width($fullscreen.data('grid_width'))
-        .hide();
-      gridManager.grids.forEach((_grid) => _grid.container.show());
+        .width($fullscreen.data('grid_width'));
       $fullscreen
         .find('a.fullscreen_action, i.material-icons')
         .text('fullscreen');
@@ -25,10 +26,8 @@ WulinMaster.actions.fullscreen = {
       let gridContainerWidth = grid.container[0].style.width;
       $fullscreen.data('grid_height', gridContainerHeight);
       $fullscreen.data('grid_width', gridContainerWidth);
-      // hide all girds
-      gridManager.grids.forEach((_grid) => _grid.container.hide());
       // show the current grid and set it height 100% width 100%
-      grid.container.show().height('100%').width('100%');
+      grid.container.height('100%').width('100%');
       // change icon
       $fullscreen
         .find('a.fullscreen_action, i.material-icons')
