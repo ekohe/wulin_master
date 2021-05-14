@@ -13,7 +13,7 @@ module WulinMaster
   class Configuration
     attr_accessor :app_title, :app_title_height, :always_reset_form,
                   :default_year, :color_theme, :button_mode, :nav_sidebar_partial_path,
-                  :selection_color, :detail_color_theme, :background_color, :default_color
+                  :master_selection_color, :detail_color_theme, :detail_background_color, :default_color
 
     def initialize
       self.app_title = 'Undefined App'
@@ -23,9 +23,9 @@ module WulinMaster
       self.color_theme = 'blue'
       self.button_mode = 'split'
       self.nav_sidebar_partial_path = ''
-      self.selection_color = ''
+      self.master_selection_color = ''
       self.detail_color_theme = ''
-      self.background_color = ''
+      self.detail_background_color = ''
       self.default_color = 'teal'
     end
 

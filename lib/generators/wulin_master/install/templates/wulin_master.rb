@@ -17,9 +17,9 @@ WulinMaster.configure do |config|
   # config.color_theme = 'blue'
 
   # The default grid colors
-  # config.selection_color = 'teal'
+  # config.master_selection_color = 'teal'
   # config.detail_color_theme = 'teal'
-  # config.background_color = 'teal'
+  # config.detail_background_color = 'teal'
   # config.default_color = 'teal'
 
   # The default button mode for the whole app
