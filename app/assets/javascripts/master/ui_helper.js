@@ -123,7 +123,8 @@ var Ui = {
     $(`${scope} select.select2`).each((_, e) => {
       $(e).select2({
         placeholder: "",
-        allowClear: true
+        allowClear: true,
+        width: "100%"
       }).on("select2:unselecting", function() {
         $(this).data("unselecting", true);
       }).on("select2:opening", function(e) {
