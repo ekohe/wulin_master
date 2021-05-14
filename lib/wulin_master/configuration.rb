@@ -11,7 +11,9 @@ module WulinMaster
   end
 
   class Configuration
-    attr_accessor :app_title, :app_title_height, :always_reset_form, :default_year, :color_theme, :button_mode, :nav_sidebar_partial_path
+    attr_accessor :app_title, :app_title_height, :always_reset_form,
+                  :default_year, :color_theme, :button_mode, :nav_sidebar_partial_path,
+                  :selection_color, :grid_theme_color, :background_color, :default_color
 
     def initialize
       self.app_title = 'Undefined App'
@@ -21,6 +23,10 @@ module WulinMaster
       self.color_theme = 'blue'
       self.button_mode = 'split'
       self.nav_sidebar_partial_path = ''
+      self.selection_color = ''
+      self.grid_theme_color = ''
+      self.background_color = ''
+      self.default_color = 'teal'
     end
 
     def split_button_mode?
