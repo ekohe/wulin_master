@@ -18,7 +18,7 @@ WulinMaster.configure do |config|
 
   # The default grid colors
   # config.selection_color = 'teal'
-  # config.grid_theme_color = 'teal'
+  # config.detail_color_theme = 'teal'
   # config.background_color = 'teal'
   # config.default_color = 'teal'
 
