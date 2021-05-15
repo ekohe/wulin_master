@@ -14,11 +14,8 @@ WulinMaster.actions.fullscreen = {
   },
 }
 
-const toggleSiblings = (currentContainer) => {
-  Array.from(currentContainer.siblings(':not(script)')).forEach((sbl) =>
-    $(sbl).toggle()
-  )
-}
+const toggleSiblings = (currentContainer) =>
+  currentContainer.siblings(':not(script)').toggle()
 
 const transform = ($target, currentContainer) => {
   let isFullscreen = $target.data('fullscreen')
