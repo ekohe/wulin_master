@@ -46,12 +46,19 @@ const transform = ($target, currentContainer) => {
 
 const switchIcon = ($target) => {
   let $icon = $target.find('a.fullscreen_action, i.material-icons')
-  let $iconText = $icon.text()
-  $icon.text($iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen')
+  let iconText = $icon.text()
+  $icon.text(iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen')
+  // split button mode we should switch icon label
   let $iconLabel = $target.find('a.fullscreen_action, span')
-  let $iconLabelText = $iconLabel.text()
+  let iconLabelText = $iconLabel.text()
   $iconLabel.text(
-    $iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
+    iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
+  )
+  // merged button mode we should switch the icon tooltip text
+  let tooltip = $target.data('tooltip')
+  $target.attr(
+    'data-tooltip',
+    tooltip === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
   )
 }
 
