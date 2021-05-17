@@ -55,13 +55,13 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       }
 
       // Set master grid's style for selection
-      var selectionColor = 'grid-selection-color-' + (this.master_grid.options['selectionColor'] || configuredSelectionColor);
+      var selectionColor = 'grid-selection-color-' + (this.master_grid.options['selectionColor'] || configuredMasterDetailColorTheme);
       this.master_grid.container.addClass(selectionColor);
 
       // Set detail grid's style
-      var colorTheme = 'grid-color-' + (detailGrid.options['colorTheme'] || configuredGridColorTheme);
+      var colorTheme = 'grid-color-' + (detailGrid.options['colorTheme'] || configuredMasterDetailColorTheme);
       detailGrid.container.addClass('detail-grid').addClass(colorTheme);
-      var bgColor = 'grid-bg-color-' + (detailGrid.options['bgColor'] || configuredBackgroundColor);
+      var bgColor = 'grid-bg-color-' + (detailGrid.options['bgColor'] || configuredMasterDetailColorTheme);
       detailGrid.container.addClass(bgColor);
       detailGrid.container.find('.grid-header').removeClass('has-selected-rows');
 
