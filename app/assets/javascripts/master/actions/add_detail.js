@@ -11,7 +11,7 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       onOpenStart: function (modal, trigger) {
         self.getModelGrid(masterId, $(modal).find('.modal-content'));
         $(modal).find('.modal-content').css('padding', '0');
-      },
+      }
     });
 
     var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);
@@ -47,6 +47,13 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
 
         self.setGridHeightInModal(modalContentDom.parent());
         Ui.resizeGrid(grid)
+
+        let timer = setInterval(() => {
+          if(grid.container.find('.slick-row').length) {
+            grid.container.resize()
+            clearInterval(timer)
+          }
+        }, 200)
       });
     });
   },
