@@ -215,7 +215,7 @@ describe PeopleTestController, type: :controller do
           allow(@grid.model).to receive(:find).with(['thirty seven']).and_return([mock_person])
           errors = double(:error, empty?: false, full_messages: double)
           allow(errors.full_messages).to receive(:join).and_return('person error')
-          allow(mock_person(update_attributes: false)).to receive(:errors).and_return(errors)
+          allow(mock_person(update: false)).to receive(:errors).and_return(errors)
           put :update, params: {id: 'thirty seven', item: {'these' => 'params'}}, format: :json
           expect(response.body).to eq({success: false, error_message: 'person error' }.to_json)
         end
