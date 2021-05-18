@@ -32,7 +32,7 @@
     setTimeout(() => {
       $('.info-modal').modal({
         onOpenEnd: function(modal, trigger) {
-          modal.css('z-index', '9999');
+          $(modal).css('z-index', '9999');
         }
       });
 
