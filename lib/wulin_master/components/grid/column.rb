@@ -130,13 +130,13 @@ module WulinMaster
     def apply_order(query, direction)
       return query unless %w[ASC DESC].include?(direction)
       if @options[:sql_expression]
-        query.order("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC")
+        query.order(Arel.sql("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC"))
       elsif reflection
-        query.order("#{relation_table_name}.#{source} #{direction}, #{model.table_name}.id ASC")
+        query.order(Arel.sql("#{relation_table_name}.#{source} #{direction}, #{model.table_name}.id ASC"))
       elsif table_column?
         order_str = "#{model.table_name}.#{source} #{direction}"
         order_str += ", #{model.table_name}.id ASC" if model < ActiveRecord::Base
-        query.order(order_str)
+        query.order(Arel.sql(order_str))
       else
         Rails.logger.warn "Sorting column ignored because this column can't be sorted: #{inspect}"
         query
