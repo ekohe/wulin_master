@@ -48,6 +48,9 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
         self.setGridHeightInModal(modalContentDom.parent());
         Ui.resizeGrid(grid)
 
+        let heightOfHeaderAndFooter = parseInt(modalContentDom.siblings('.modal-header').css('height')) + parseInt(modalContentDom.siblings('.modal-footer').css('height'))
+        modalContentDom.css({height: `calc(100% - ${heightOfHeaderAndFooter}px)`})
+
         let timer = setInterval(() => {
           if(grid.container.find('.slick-row').length) {
             grid.container.resize()
