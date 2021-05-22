@@ -52,7 +52,7 @@ const switchIcon = ($target) => {
     iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
   )
   // merged button mode we should switch the icon tooltip text
-  let tooltip = $target.data('tooltip')
+  let tooltip = $target.attr('data-tooltip')
   $target.attr(
     'data-tooltip',
     tooltip === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
