@@ -67,7 +67,7 @@
       // Ekohe Edit
       // $menu = $("<div class='slick-columnpicker' style='display:none' />").appendTo(document.body);
       // var $close = $("<button type='button' class='close' data-dismiss='slick-columnpicker' aria-label='Close'><span class='close' aria-hidden='true'>&times;</span></button>").appendTo($menu);
-      $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:20;' />")
+      $menu = $("<div class='card-panel wulin-columnpicker' style='display:none;position:absolute;z-index:1004;' />")
         .attr('id', grid.name + '-columnpicker')
         .appendTo(document.body);
 
