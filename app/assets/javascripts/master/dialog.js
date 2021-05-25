@@ -21,7 +21,7 @@ const displayCustomizedConfirmModal = (params) => {
   $('#confirm-content').html(message);
   $('#confirm-modal .modal-title').text(title);
   $('#confirm-modal').modal('open');
-  $('#confirmed-btn').on('click', () => {
+  $('#confirmed-btn').off('click').on('click', () => {
     confirmCallBack && confirmCallBack();
     $('#confirm-modal').modal('close');
   });

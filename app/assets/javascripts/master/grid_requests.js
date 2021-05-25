@@ -128,7 +128,7 @@ var Requests = {
         } else if(msg.confirm) {
           if(msg.warning_message) $('#confirm-content').text(msg.warning_message);
           $('#confirm-modal').modal('open');
-          $('#confirmed-btn').on('click', function() {
+          $('#confirmed-btn').off('click').on('click', function() {
             Requests.deleteByAjax(grid, ids, true);
           });
         } else {
@@ -140,9 +140,9 @@ var Requests = {
   },
 
   getCurrentRows: function(grid, ids) {
-    var indexes = $.map(ids, function(id) {
-      return parseInt(grid.getRowByRecordId(id).index, 10);
-    });
+    var indexes = ids.filter((id) => {
+      grid.getRowByRecordId(id)
+    }).map((id) => parseInt(grid.getRowByRecordId(id).index, 10));
     indexes = indexes.sort();
     return [indexes[0], indexes[indexes.length-1]];
   }
