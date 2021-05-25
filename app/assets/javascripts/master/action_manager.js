@@ -78,7 +78,7 @@ WulinMaster.actions.BaseAction = {
   deleteGridRecords: function(grid, ids) {
     var self = this;
     $('#confirm-modal').modal('open');
-    $('#confirmed-btn').on('click', function() {
+    $('#confirmed-btn').off('click').on('click', function() {
       Requests.deleteByAjax(grid, ids);
       $('#confirm-modal').modal('close');
       ids = [];
