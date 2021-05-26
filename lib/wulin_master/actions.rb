@@ -103,7 +103,7 @@ module WulinMaster
           next if record.destroy
           success = false
           error_message += record.errors.full_messages.join(",\n")
-          break
+          raise ActiveRecord::Rollback
         end
       end
       if success
