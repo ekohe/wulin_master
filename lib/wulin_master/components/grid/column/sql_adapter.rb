@@ -34,7 +34,12 @@ module WulinMaster
     end
 
     def string_query(query, column_name, value, _column)
-      query.where(["cast((#{column_name}) as text) ILIKE ?", "%#{value}%"])
+      values = value.split(/\s*,\s*/)
+      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ILIKE ?" }.join(' OR ')
+      qurry_values = values.map { |v| "%#{v}%" }
+      qurry_array = [*qurry_conditions, *qurry_values]
+
+      query.where(qurry_array)
     end
 
     module_function :null_query, :boolean_query, :string_query
