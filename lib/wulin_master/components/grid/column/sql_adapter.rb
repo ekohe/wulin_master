@@ -34,7 +34,7 @@ module WulinMaster
     end
 
     def string_query(query, column_name, value, _column)
-      query.where(["UPPER(cast((#{column_name}) as text)) LIKE UPPER(?)", value + "%"])
+      query.where(["cast((#{column_name}) as text) ILIKE ?", "%#{value}%"])
     end
 
     module_function :null_query, :boolean_query, :string_query
