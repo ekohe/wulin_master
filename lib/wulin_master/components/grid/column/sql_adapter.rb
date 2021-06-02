@@ -39,7 +39,7 @@ module WulinMaster
 
       values = value.split(/\s*#{operator_sym}\s*/)
       qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ILIKE ?" }.join(operator)
-      qurry_values = values.map { |v| "%#{v}%" }
+      qurry_values = values.map { |v| "#{v}%" }
       qurry_array = [*qurry_conditions, *qurry_values]
 
       query.where(qurry_array)
