@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :app_configs, only: [:index]
+
     get 'fetch_options', :to => WulinMaster::FetchOptionsController.action(:index)
     get 'specify_fetch', :to => WulinMaster::FetchOptionsController.action(:specify_fetch)
     get 'fetch_distinct_options', :to => WulinMaster::FetchOptionsController.action(:fetch_distinct_options)
