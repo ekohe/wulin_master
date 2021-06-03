@@ -68,7 +68,14 @@ function load_page(url) {
       // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader_container').remove();
       $("#screen_content").html(html);
-      setTimeout(function() { trackGoogleAnalytics(); }, 250);
+
+      setTimeout(function() {
+        trackGoogleAnalytics();
+
+        let id = $("#screen_content > div").attr("id")
+        $("#screen_content").removeClass()
+        $("#screen_content").addClass(`content-${id}`)
+      }, 250);
     },
     error: function() {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator

@@ -29,6 +29,12 @@ body {
   position: relative;
 }
 
+.content-panel_app_config {
+  overflow-x: scroll !important;
+  overflow-y: scroll !important;
+  overflow: scroll !important;
+}
+
 // Screen Loader
 
 #screen_content_loader_container {
