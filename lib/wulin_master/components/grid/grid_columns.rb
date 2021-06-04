@@ -29,6 +29,17 @@ module WulinMaster
         end
       end
 
+      # Remove columns from grid directly
+      def remove_columns!(*r_columns)
+        r_columns = r_columns.map(&:to_s)
+
+        r_columns.each do |r_column|
+          self.columns_pool.delete_if do |column|
+            column.name.to_s == r_column
+          end
+        end
+      end
+
       # For the old caller, in some old code, there some call like: +grid_class.columns+
       def columns
         self.columns_pool
