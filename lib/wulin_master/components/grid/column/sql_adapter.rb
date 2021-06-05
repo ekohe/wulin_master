@@ -33,12 +33,12 @@ module WulinMaster
       end
     end
 
-    def string_query(query, column_name, value, _column)
-      operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : '&' # ',' or '&'
-      operator = operator_sym == ',' ? ' OR ' : ' AND '
+    def string_query(query, column_name, value, _column, operator = 'ilike')
+      logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : '&' # ',' or '&'
+      logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
 
-      values = value.split(/\s*#{operator_sym}\s*/)
-      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ILIKE ?" }.join(operator)
+      values = value.split(/\s*#{logic_operator_sym}\s*/)
+      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
       qurry_values = values.map { |v| "#{v}%" }
       qurry_array = [*qurry_conditions, *qurry_values]
 

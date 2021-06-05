@@ -6,8 +6,10 @@ class ApplicationController < ActionController::Base
   def self.define_menu
     menu do |_c|
       submenu 'Section 1' do
-        item PersonScreen, icon: :people, label: :vertical_layout_people
-        item AnotherPersonScreen, icon: :people, label: :horizontal_layout_people
+        item PersonScreen, icon: :people, label: 'People'
+        item PostScreen, icon: :apps, label: 'Post'
+        item TeacherScreen, icon: :school, label: 'Teacher'
+        # item AnotherPersonScreen, icon: :people, label: :horizontal_layout_people
       end
     end
   end

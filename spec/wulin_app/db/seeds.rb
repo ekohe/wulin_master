@@ -28,7 +28,29 @@ end
 
 teachers = Teacher.all
 
-1.upto(500) do |index|
+first_names = ['hello', 'hello world', 'hello ruby world', 'ruby', 'ruby world', 'hello ruby', 'world ruby']
+
+first_names.each_with_index do |name, index|
+  person = Person.new(
+    first_name: name,
+    last_name: "last name #{sprintf('%04d', index)}",
+    job: JOBS.sample,
+    status: Person.statuses.values.sample,
+    vip: [true, false].sample,
+    birthdate: Date.today,
+    age: (15..40).to_a.sample,
+    signature: "wulin_master is a powerful ruby gem"
+  )
+
+  person.teachers = teachers
+  person.country = Country.all.sample
+
+  person.posts.build(name: "A post about #{name}")
+
+  person.save
+end
+
+7.upto(500) do |index|
   person = Person.new(
     first_name: "first name #{sprintf('%04d', index)}",
     last_name: "last name #{sprintf('%04d', index)}",
@@ -42,6 +64,8 @@ teachers = Teacher.all
 
   person.teachers = teachers
   person.country = Country.all.sample
+
+  person.posts.build(name: "A post about #{JOBS.sample}")
 
   person.save
 end
