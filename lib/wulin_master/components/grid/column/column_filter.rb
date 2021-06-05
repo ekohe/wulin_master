@@ -38,7 +38,7 @@ module WulinMaster
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       if @options[:sql_expression]
-        query.where(["UPPER(cast((#{@options[:sql_expression]}) as text)) LIKE UPPER(?)", "#{filtering_value}%"])
+        WulinMaster::SqlQuery.string_query(query, @options[:sql_expression], filtering_value, self)
       else
         column_type = column_type(reflection.klass, source)
         # for string column
@@ -93,10 +93,10 @@ module WulinMaster
 
     def apply_string_filter(query, operator, value)
       operator = case operator
-      when 'equals' then 'LIKE'
-      when 'not_equals' then 'NOT LIKE'
+      when 'equals' then 'ILIKE'
+      when 'not_equals' then 'NOT ILIKE'
       end
-      query.where(["UPPER(cast(#{relation_table_name}.#{source} as text)) #{operator} UPPER(?)", "#{value}%"])
+      WulinMaster::SqlQuery.string_query(query, "#{relation_table_name}.#{source}", value, self, operator)
     end
 
     def format_filtering_value(value, column_type)
