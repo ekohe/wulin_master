@@ -212,7 +212,16 @@
       value = (value === null) ? '' : (new Date(value).format('isoDate')); // "YYYY-MM-DD"
 
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
-    }
+    },
+
+    NullOverrideFormatter: function(row, cell, value, columnDef) {
+      if (value === null && columnDef.value_to_replace_null !== undefined) {
+        value = columnDef.value_to_replace_null
+      }
+
+      return applyStyle(value, columnDef.style_class, columnDef.style || '');
+    },
+
   };
 
   $.extend(window, SlickFormatter);
