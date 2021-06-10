@@ -200,6 +200,13 @@
       }
     }
 
+    function reapply() {
+      currentFiltersApplied = [];
+      updateCurrentFilters();
+      applyCurrentFilters(currentFilters);
+      setCurrentFilter();
+    }
+
     $.extend(this, {
         // Events
         "onFilterLoaded":                     new Slick.Event(),
@@ -211,7 +218,8 @@
         'setupEventHander':                   setupEventHander, // Ekohe Add
         'generateFilters':                    generateFilters,
         "applyCurrentFilters":                applyCurrentFilters,
-        "updateCurrentFilters":               updateCurrentFilters
+        "updateCurrentFilters":               updateCurrentFilters,
+        "reapply":                            reapply
     });
 
     init();
