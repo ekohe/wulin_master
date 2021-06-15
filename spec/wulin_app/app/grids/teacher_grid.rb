@@ -8,6 +8,11 @@ class TeacherGrid < WulinMaster::Grid
   # path '/teachers' # Define a different route for the grid
 
   column :name
+  column :students, sql_expression: 'people.first_name'
+  # need to be developed
+  # column :training_students
+  column :courses
+  column :clients
 
   action :fullscreen, icon: :fullscreen, global: true
 

@@ -9,28 +9,33 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 JOBS = %w[Developer DevOps Designer PM].freeze
-
+TRAINING_NAME = %w[I hope that a study of very long sentences will arm you with strategies are almost as diverse the themselves]
 COUNTRIES = %w[China America France].freeze
+FIRST_NAMES = ['hello', 'hello world', 'hello ruby world', 'ruby', 'ruby world', 'hello ruby', 'world ruby', 'world']
 
 COUNTRIES.each do |country_name|
   Country.create(name: country_name)
 end
 
-SUBJECTS_WITH_TEACHER_NAMES = {
-  math: 'Mike',
-  english: 'Jack',
-  history: 'Tom'
-}.freeze
+FIRST_NAMES.each do |name|
+  Teacher.create(subject: name, name: name)
+end
 
-SUBJECTS_WITH_TEACHER_NAMES.each do |subject, name|
-  Teacher.create(subject: subject, name: name)
+FIRST_NAMES.each do |name|
+  Client.create(name: name)
+end
+
+TRAINING_NAME.each do |name|
+  Training.create(name: name, teacher: Teacher.all.sample, client: Client.all.sample)
+end
+
+FIRST_NAMES.each do |name|
+  Course.create(name: name, training: Training.all.sample)
 end
 
 teachers = Teacher.all
 
-first_names = ['hello', 'hello world', 'hello ruby world', 'ruby', 'ruby world', 'hello ruby', 'world ruby']
-
-first_names.each_with_index do |name, index|
+FIRST_NAMES.each_with_index do |name, index|
   person = Person.new(
     first_name: name,
     last_name: "last name #{sprintf('%04d', index)}",
@@ -44,6 +49,7 @@ first_names.each_with_index do |name, index|
 
   person.teachers = teachers
   person.country = Country.all.sample
+  person.training = Training.all.sample
 
   person.posts.build(name: "A post about #{name}")
 

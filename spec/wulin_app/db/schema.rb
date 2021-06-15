@@ -10,15 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_01_022655) do
+ActiveRecord::Schema.define(version: 2021_06_15_152900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", id: :serial, force: :cascade do |t|
+    t.string "country"
+    t.string "city"
+    t.integer "country_id"
+    t.integer "city_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "clients", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "countries", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "courses", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.integer "training_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "grid_states", id: :serial, force: :cascade do |t|
@@ -44,7 +66,9 @@ ActiveRecord::Schema.define(version: 2020_06_01_022655) do
     t.text "signature"
     t.integer "status", default: 0
     t.integer "country_id"
+    t.integer "training_id"
     t.index ["country_id"], name: "index_people_on_country_id"
+    t.index ["training_id"], name: "index_people_on_training_id"
   end
 
   create_table "people_teachers", id: false, force: :cascade do |t|
@@ -61,9 +85,22 @@ ActiveRecord::Schema.define(version: 2020_06_01_022655) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "students_teachers", id: false, force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "teacher_id", null: false
+  end
+
   create_table "teachers", force: :cascade do |t|
     t.string "name"
     t.string "subject"
+  end
+
+  create_table "trainings", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.integer "teacher_id"
+    t.integer "client_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
