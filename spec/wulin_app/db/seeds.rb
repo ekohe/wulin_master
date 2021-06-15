@@ -11,7 +11,9 @@
 JOBS = %w[Developer DevOps Designer PM].freeze
 TRAINING_NAME = %w[I hope that a study of very long sentences will arm you with strategies are almost as diverse the themselves]
 COUNTRIES = %w[China America France].freeze
-FIRST_NAMES = ['hello', 'hello world', 'hello ruby world', 'ruby', 'ruby world', 'hello ruby', 'world ruby', 'world']
+FIRST_NAMES = %w[hello ruby world].repeated_combination(3).map do |cb|
+  cb.uniq.join(' ')
+end
 
 COUNTRIES.each do |country_name|
   Country.create(name: country_name)
