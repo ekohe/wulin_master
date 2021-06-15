@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrainingGrid < WulinMaster::Grid
   title 'Trainings'
 
