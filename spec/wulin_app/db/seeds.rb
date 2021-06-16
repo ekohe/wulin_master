@@ -13,7 +13,7 @@ TRAINING_NAME = %w[I hope that a study of very long sentences will arm you with 
 COUNTRIES = %w[China America France].freeze
 FIRST_NAMES = %w[hello ruby world].repeated_combination(3).map do |cb|
   cb.uniq.join(' ')
-end
+end.uniq
 
 COUNTRIES.each do |country_name|
   Country.create(name: country_name)

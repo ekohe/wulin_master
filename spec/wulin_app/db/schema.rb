@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_152900) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_clients_on_name"
   end
 
   create_table "countries", force: :cascade do |t|
@@ -38,9 +39,12 @@ ActiveRecord::Schema.define(version: 2021_06_15_152900) do
 
   create_table "courses", id: :serial, force: :cascade do |t|
     t.string "name"
+    t.string "title"
+    t.string "desc"
     t.integer "training_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name", "title"], name: "index_courses_on_name_and_title", unique: true
   end
 
   create_table "grid_states", id: :serial, force: :cascade do |t|
