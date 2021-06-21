@@ -20,7 +20,6 @@
 
     function init() {
       _options = $.extend(true, {}, _defaults, options);
-
       dataView.onPagingInfoChanged.subscribe(function (e, pagingInfo) {
         // EKohe Edit: Use customized update logic (Add row count without filter)
         // updatePager(pagingInfo);
@@ -204,7 +203,7 @@
 
     function wulinUpdatePager(pagingInfo) {
       if (pagingInfo.pageSize == 0) {
-        if (grid.getFilteredInputs().length == 0) {
+        if (grid.getFilteredInputs().length === 0 && pagingInfo.totalRows === pagingInfo.rowsWithoutFilter) {
           $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
