@@ -6,6 +6,8 @@ class Person < ApplicationRecord
   belongs_to :training
   has_and_belongs_to_many :teachers
 
+  delegate :name, to: :country, prefix: true, allow_nil: true
+
   enum status: %i[busy avaialbe free]
 
   def name
