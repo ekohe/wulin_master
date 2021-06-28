@@ -203,28 +203,32 @@
 
     function wulinUpdatePager(pagingInfo) {
       if (pagingInfo.pageSize == 0) {
-        if (grid.getFilteredInputs().length === 0 && pagingInfo.totalRows === pagingInfo.rowsWithoutFilter) {
+        if (grid.getFilteredInputs().length === 0) {
           $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(`${pagingInfo.totalRows.toLocaleString()} of ${pagingInfo.rowsWithoutFilter.toLocaleString()} rows found`)
-          $status.addClass('with-filter');
-          var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
-          var totalRowsLength = pagerStatusWithFilter.width();
-          var totalRowsPaddings =
-            parseInt(pagerStatusWithFilter.css('padding-left')) +
-              parseInt(pagerStatusWithFilter.css('padding-right'))
-          var slickPagerMarginLeft = parseInt($('.slick-pager').css("padding-left"));
-          var clearFilterLinkLeft =
-            totalRowsLength + totalRowsPaddings + slickPagerMarginLeft;
-          $clearFilterLink
-            .removeClass('hide')
-            .css({ left: clearFilterLinkLeft });
+          displayPager(pagingInfo)
         }
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
       }
+    }
+
+    function displayPager(pagingInfo) {
+      $status.text(`${pagingInfo.totalRows.toLocaleString()} of ${pagingInfo.rowsWithoutFilter.toLocaleString()} rows found`)
+      $status.addClass('with-filter');
+      var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
+      var totalRowsLength = pagerStatusWithFilter.width();
+      var totalRowsPaddings =
+        parseInt(pagerStatusWithFilter.css('padding-left')) +
+          parseInt(pagerStatusWithFilter.css('padding-right'))
+      var slickPagerMarginLeft = parseInt($('.slick-pager').css("padding-left"));
+      var clearFilterLinkLeft =
+        totalRowsLength + totalRowsPaddings + slickPagerMarginLeft;
+      $clearFilterLink
+        .removeClass('hide')
+        .css({ left: clearFilterLinkLeft });
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -243,7 +247,8 @@
     // Ekohe Add: Expose API methods
     return {
       "resetPager": resetPager,
-      "clearPager": clearPager
+      "clearPager": clearPager,
+      "displayPager": displayPager
     };
   }
 
