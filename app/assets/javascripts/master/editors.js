@@ -600,6 +600,21 @@
         this.select.attr('multiple', 'true');
       }
 
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/232
+      if (this.column.type === "has_and_belongs_to_many") {
+        fetch(this.choices)
+          .then(response => response.json())
+          .then(items => {
+            items.forEach(item => {
+              this.appendOptions(this.select, item)
+            })
+            this.select.val(this.field.id)
+            this.setAllowSingleDeselect()
+            this.openDropDrown()
+          })
+        return
+      }
+
       // must append the current value option, otherwise this.serializeValue can't get it
       this.select.append($("<option />"));
       if (this.field && this.field.id) {
