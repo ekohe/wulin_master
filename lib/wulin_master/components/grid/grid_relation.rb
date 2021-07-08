@@ -52,7 +52,7 @@ module WulinMaster
       end
 
       def find_operator(reflection, inclusion)
-        if [:belongs_to, :has_one].include? reflection.macro
+        if %i[belongs_to has_one].include? reflection.macro
           inclusion ? 'equals' : 'not_equals'
         elsif reflection.macro == :has_many
           inclusion ? 'include' : 'exclude'
