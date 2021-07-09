@@ -80,7 +80,9 @@ module WulinMaster
         raise "Couldn't find relation to model #{model.name} in model #{relation_class}" if real_relation_name.nil?
 
         real_relation_name = real_relation_name[0]
-        e.send(real_relation_name).map(&:id)
+        records = e.send(real_relation_name)
+        records = [records].compact unless records.respond_to?(:map)
+        records.map(&:id)
       end.flatten.uniq
       if ids.blank?
         operator = operator == 'include' ? 'IS' : 'IS NOT'
