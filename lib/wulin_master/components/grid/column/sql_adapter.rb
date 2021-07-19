@@ -11,9 +11,9 @@ module WulinMaster
 
     %w[null_query boolean_query string_query].each do |method_name|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{method_name}(column_name, value, column)
+        def #{method_name}(column_name, value, column, *operator)
           if model < ActiveRecord::Base
-            @query = SqlQuery.#{method_name}(@query, column_name, value, column)
+            @query = SqlQuery.#{method_name}(@query, column_name, value, column, *operator)
           end
         end
       RUBY
@@ -36,12 +36,17 @@ module WulinMaster
     def string_query(query, column_name, value, _column, operator = 'ilike')
       logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : '&' # ',' or '&'
       logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
-
       values = value.split(/\s*#{logic_operator_sym}\s*/)
-      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
-      qurry_values = values.map { |v| "#{v}%" }
-      qurry_array = [*qurry_conditions, *qurry_values]
 
+      case operator
+      when 'exact'
+        qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ilike ?" }.join(logic_operator)
+        qurry_values = values.map { |v| "#{v}" }
+      else
+        qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
+        qurry_values = values.map { |v| "#{v}%" }
+      end
+      qurry_array = [*qurry_conditions, *qurry_values]
       query.where(qurry_array)
     end
 
