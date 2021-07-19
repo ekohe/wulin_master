@@ -41,7 +41,7 @@ module WulinMaster
       case operator
       when 'exact'
         qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ilike ?" }.join(logic_operator)
-        qurry_values = values.map { |v| "#{v}" }
+        qurry_values = values
       else
         qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
         qurry_values = values.map { |v| "#{v}%" }
