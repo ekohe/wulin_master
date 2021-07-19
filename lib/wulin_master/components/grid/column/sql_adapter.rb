@@ -38,14 +38,13 @@ module WulinMaster
       logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
       values = value.split(/\s*#{logic_operator_sym}\s*/)
 
-      case operator
-      when 'exact'
-        qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) ilike ?" }.join(logic_operator)
+      if operator == 'exact'
         qurry_values = values
+        operator = 'ilike'
       else
-        qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
         qurry_values = values.map { |v| "#{v}%" }
       end
+      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
       qurry_array = [*qurry_conditions, *qurry_values]
       query.where(qurry_array)
     end
