@@ -628,6 +628,7 @@
 
                     if(selectedIds) {
                       this.select.val(selectedIds)
+                      this.defaultValue = selectedIds
                       this.setAllowSingleDeselect()
                     }
                   }
@@ -703,6 +704,7 @@
 
                 if(selectedIds) {
                   this.select.val(selectedIds)
+                  this.defaultValue = selectedIds
                   this.setAllowSingleDeselect()
                 }
               }
