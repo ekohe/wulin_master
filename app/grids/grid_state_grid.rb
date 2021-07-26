@@ -10,6 +10,7 @@ class GridStateGrid < WulinMaster::Grid
   column :email, label: 'User'
   column :grid_name
   column :name
+  column :state_value, editable: true, only: [:GridStatesScreen]
   column :current, editable: false, formable: false, sortable: false, filterable: false
 
   action :delete
