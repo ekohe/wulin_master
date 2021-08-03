@@ -7,6 +7,7 @@ module WulinMaster
     add_callback :query_initialized, :set_user_ids_for_filtering
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
+    add_callback :query_ready, :filter_default_grids
 
     def copy
       GridState.transaction do
@@ -26,6 +27,22 @@ module WulinMaster
       render json: {success: true}
     rescue StandardError
       render json: {success: false, error_message: $ERROR_INFO.message}
+    end
+
+    def set_default
+      if params[:id] && params[:grid_name] && params[:state_val]
+        grid = GridState.find_by(id: params[:id], name: "default", grid_name: params[:grid_name])
+        #case when selected grid is aleady an default grid
+        if grid.try(:user_id).nil?
+          render json: { success: true, response: false }
+        else
+          #search for it's default grid state or initialize one
+          default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
+          default_grid.state_value = params[:state_val]
+          default_grid.save
+          render json: { success: true, response: true }
+        end
+      end
     end
 
     protected
@@ -53,6 +70,10 @@ module WulinMaster
         return 0 if s1.user.nil? || s2.user.nil?
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
       end
+    end
+
+    def filter_default_grids
+      @query = @query.where(user_id:nil, name: "default")  if params[:default_grids].present?
     end
   end
 end

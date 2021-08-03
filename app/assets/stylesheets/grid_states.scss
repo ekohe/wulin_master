@@ -1,0 +1,17 @@
+#grid_state_grid_in_grid_states {
+  .grid-header {
+    display: flex;
+    .title-with-actions {
+      min-width: 400px;
+      h2 {
+        margin-right: 10px;
+      }
+    }
+    .toolbar-wrapper {
+      flex-grow: 1;
+    }
+  }
+  .filter_default_grid_state {
+    margin-top: 10px;
+  }
+}

@@ -8,6 +8,7 @@ module WulinMaster
     scope :for_user_and_grid, ->(user_id, grid_name) { where(user_id: user_id, grid_name: grid_name) }
     scope :default, -> { where(name: 'default') }
     scope :current_ones, -> { where(current: true) }
+    scope :default_grid, ->(grid_name) { where(user_id: nil, grid_name: grid_name, name: "default") }
 
     reject_audit if defined? ::WulinAudit
 
@@ -38,7 +39,7 @@ module WulinMaster
     def self.current(user_id, grid_name)
       states = for_user_and_grid(user_id, grid_name)
       return nil if states.blank?
-      states.current_ones.first || states.find { |x| x.name.to_s.casecmp('default').zero? } || states.first
+      states.current_ones.first || states.find_by(user_id: nil, name: "default", grid_name: grid_name) || states.first
     end
 
     def self.create_default(user_id, grid_name)
@@ -51,7 +52,13 @@ module WulinMaster
       current(user_id, grid_name) || create_default(user_id, grid_name)
     end
 
+    def self.get_default_grid(grid_name)
+      defaults = default_grid(grid_name)
+      return nil if defaults.blank? || defaults.first.try(:state_value).blank?
+      defaults.first.state_value
+    end
     # ------------------------------ Instance Methods -------------------------------
+
     def brother_states
       self.class.for_user_and_grid(user_id, grid_name).where("id != ?", id)
     end

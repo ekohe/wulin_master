@@ -7,7 +7,7 @@ module WulinMaster
     def states_for_user
       return "false" unless current_user
       current_state = GridState.current(current_user.id, name)
-      current_state.try(:state_value).presence || {}.to_json
+      current_state.try(:state_value).presence || GridState.get_default_grid(name) || {}.to_json
     rescue StandardError => e
       Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
       "false"
