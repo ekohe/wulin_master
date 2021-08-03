@@ -30,18 +30,18 @@ module WulinMaster
     end
 
     def set_default
-      if params[:id] && params[:grid_name] && params[:state_val]
-        grid = GridState.find_by(id: params[:id], name: "default", grid_name: params[:grid_name])
-        #case when selected grid is aleady an default grid
-        if grid.try(:user_id).nil?
-          render json: { success: true, response: false }
-        else
-          #search for it's default grid state or initialize one
-          default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
-          default_grid.state_value = params[:state_val]
-          default_grid.save
-          render json: { success: true, response: true }
-        end
+      return unless params[:id] || params[:grid_name] || params[:state_val]
+
+      grid = GridState.find_by(id: params[:id], name: "default", grid_name: params[:grid_name])
+      # case when selected grid is aleady an default grid
+      if grid.try(:user_id).nil?
+        render json: { success: true, response: false }
+      else
+        # search for it's default grid state or initialize one
+        default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
+        default_grid.state_value = params[:state_val]
+        default_grid.save
+        render json: { success: true, response: true }
       end
     end
 
@@ -73,7 +73,7 @@ module WulinMaster
     end
 
     def filter_default_grids
-      @query = @query.where(user_id:nil, name: "default")  if params[:default_grids].present?
+      @query = @query.where(user_id: nil, name: "default") if params[:default_grids].present?
     end
   end
 end
