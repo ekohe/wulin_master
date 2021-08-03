@@ -1,0 +1,9 @@
+Description:
+    Generate the test cases for all screens, include sortable & filterable
+
+Example:
+    rails generate wulin_master:install_rspec
+
+    This will create:
+        spec/requests/screen_controllers_filterable_spec.rb
+        spec/requests/screen_controllers_sortable_spec.rb
