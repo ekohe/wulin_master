@@ -3264,6 +3264,12 @@ if (typeof Slick === "undefined") {
         return;
       }
 
+      if (column.formatter && column.formatter.name === "URLFormatter") {
+        let url = data[cell.row][column.column_name]
+        window.open(url, '_blank').focus()
+        return
+      }
+
       // Ekohe Modify: Use column's editable option instead of grid's
       // if (options.editable) {
       if (isColumnEditable(getColumns()[cell.cell])) {
