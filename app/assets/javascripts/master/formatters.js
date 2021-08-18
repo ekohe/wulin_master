@@ -109,6 +109,14 @@
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
+    URLFormatter: function(row, cell, value, columnDef, dataContext) {
+      var element = document.createElement("span")
+      element.setAttribute("style", "display: inline-block;color: #1068bf; text-decoration: underline;")
+      element.innerText = value
+
+      return applyStyle(element, columnDef.style_class, columnDef.style || '');
+    },
+
     MoneyFormatter: function(row, cell, value, columnDef, dataContext) {
       var currency = columnDef.currency || "$";
       if (columnDef.precision == undefined) {
