@@ -31,13 +31,15 @@ module WulinMaster
 
     def set_default
       return unless params[:id] || params[:grid_name] || params[:state_val]
-
-      grid = GridState.find_by(id: params[:id], name: "default", grid_name: params[:grid_name])
-      # case when selected grid is aleady an default grid
-      if grid.try(:user_id).nil?
-        render json: { success: true, response: false }
+      grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
+      # case when custom grid
+      if grid.name != "default"
+        render json: { success: true, response: false, message: "Cannot set a custom view as initial"}
+      # case when selected grid is an default grid
+      elsif grid.user_id.nil?
+        render json: { success: true, response: false, message: "Selected Grid is already set to default"}
+      # search for it's default grid state or initialize one
       else
-        # search for it's default grid state or initialize one
         default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
         default_grid.state_value = params[:state_val]
         default_grid.save

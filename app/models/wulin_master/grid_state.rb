@@ -6,6 +6,7 @@ module WulinMaster
     validates :name, uniqueness: {scope: %i[user_id grid_name]}
 
     scope :for_user_and_grid, ->(user_id, grid_name) { where(user_id: user_id, grid_name: grid_name) }
+    scope :user_grid_view_name, ->(user_id, grid_name, name) { where(user_id: user_id, grid_name: grid_name, name: name) }
     scope :default, -> { where(name: 'default') }
     scope :current_ones, -> { where(current: true) }
     scope :default_grid, ->(grid_name) { where(user_id: nil, grid_name: grid_name, name: "default") }

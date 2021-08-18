@@ -31,9 +31,7 @@ module WulinMaster
     def save
       current_state = GridState.current_or_default(current_user.id, params[:grid_name])
       state_value = params[:state_value] || { visibility: [] }
-
-      current_state.state_value = JSON.parse(current_state.state_value.presence || "{}").merge(state_value).to_json
-
+      current_state.state_value = JSON.parse(current_state.state_value.presence || GridState.get_default_grid(params[:grid_name]) || "{}").merge(state_value).to_json
       self.response_body = if current_state.save
         {status: "success", data: {id: current_state.id, name: current_state.name}}.to_json
       else
@@ -94,7 +92,8 @@ module WulinMaster
     end
 
     def reset_default
-      if params[:grid_name].present? && params[:user_id].present? && (default = GridState.for_user_and_grid(params[:user_id], params[:grid_name]).default.first)
+      name = params[:view_name].blank?? 'default' : params[:view_name]
+      if params[:grid_name].present? && params[:user_id].present? && (default = GridState.user_grid_view_name(params[:user_id], params[:grid_name], name).first)
         default.reset!
       end
       render plain: 'ok'
