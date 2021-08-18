@@ -92,7 +92,7 @@ module WulinMaster
     end
 
     def reset_default
-      name = params[:view_name].blank?? 'default' : params[:view_name]
+      name = params[:view_name].blank? ? 'default' : params[:view_name]
       if params[:grid_name].present? && params[:user_id].present? && (default = GridState.user_grid_view_name(params[:user_id], params[:grid_name], name).first)
         default.reset!
       end
