@@ -4,6 +4,7 @@ module WulinMaster
   class GridState < ::ActiveRecord::Base
     cattr_accessor :all_users
     validates :name, uniqueness: {scope: %i[user_id grid_name]}
+    validate :valid_json
 
     scope :for_user_and_grid, ->(user_id, grid_name) { where(user_id: user_id, grid_name: grid_name) }
     scope :user_grid_view_name, ->(user_id, grid_name, name) { where(user_id: user_id, grid_name: grid_name, name: name) }
@@ -79,6 +80,15 @@ module WulinMaster
     end
 
     private
+
+    def valid_json
+      return unless state_value.present?
+      begin
+        JSON.parse state_value
+      rescue JSON::ParserError => e
+        errors.add(:base, "invalid json format")
+      end
+    end
 
     def prepare_user
       self.class.all_users.find { |x| x.id == user_id }

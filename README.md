@@ -24,6 +24,7 @@ and other tools to make grids easy to build as well as flexible configurations.
   - [1. Grid configuration](#1-grid-configuration)
   - [2. Panel configuration](#2-panel-configuration)
   - [3. Screen configuration](#3-screen-configuration)
+  - [4. All grids filtering and sorting testing](#4-all-grids-filtering-and-sorting-testingexperiment-feature)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -935,6 +936,21 @@ end
 ```
 
 In the configuration for the screen above, we use helper methods `include_of`, `exclude_of` to specify the inclusion and exclusion grids, also we used `WulinMaster::InclusionExclusionPanel` which is pre-defined in the wulin_master gem. However it has to know which is the inclusion grid and which is the exclusion grid by set options `inclusion_grid` and `exclusion_grid`.
+
+### 4. All grids filtering and sorting testing(Experiment Feature)
+
+We have many grids in the projects, so we create two generic test cases
+
+1. screen_controllers_filterable_spec.rb
+2. screen_controllers_sortable_spec.rb
+
+The first one will try to get all the screens and filterable columns, and do a rspec test, the second one will try to get all the screens and sortable columns, and do a rspec test
+
+```ruby
+# just run this command in your project
+rails generate wulin_master:install_rspec
+```
+
 
 ## Contributing
 

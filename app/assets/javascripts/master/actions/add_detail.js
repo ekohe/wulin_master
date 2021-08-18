@@ -14,6 +14,11 @@ WulinMaster.actions.AddDetail = $.extend({}, WulinMaster.actions.BaseAction, {
       }
     });
 
+    // TODO: There might be other options to support
+    if (this.dialog_options && this.dialog_options.width) {
+      $addDetailModal.width(this.dialog_options.width);
+    }
+
     var $modalFooter = Ui.modalFooter('Attach').appendTo($addDetailModal);
     $modalFooter.find('.confirm-btn').addClass('disabled').on('click', function() {
       $(this).attr("disabled", true);

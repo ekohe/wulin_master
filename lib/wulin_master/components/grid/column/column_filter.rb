@@ -119,6 +119,7 @@ module WulinMaster
       field = "#{model.table_name}.#{source}"
       match_data = filtering_value.match(/\s*(>=?|<=?|=)*\s*(.*)/)
       operator = match_data[1] || filtering_operator
+
       operator = "=" if operator == 'equals'
 
       text = match_data[2].strip
@@ -145,7 +146,9 @@ module WulinMaster
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
-          adapter.string_query(complete_column_name, filtering_value, self)
+          args = [complete_column_name, filtering_value, self]
+          args << operator if operator == 'exact'
+          adapter.string_query(*args)
           adapter.query
         end
       end

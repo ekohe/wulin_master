@@ -608,9 +608,35 @@
             items.forEach(item => {
               this.appendOptions(this.select, item)
             })
-            this.select.val(this.field.id)
-            this.setAllowSingleDeselect()
-            this.openDropDrown()
+
+            let column = this.column.column_name
+            let recordId = this.args.item.id
+
+            let link = this.args.grid.path + `.json${this.args.grid.query}&` + new URLSearchParams({
+              "filters[][column]": "id",
+              "filters[][value]": recordId,
+              "filters[][operator]": "equals",
+              "columns": `id,${column}`
+            })
+
+            fetch(link)
+              .then(response => response.json())
+              .then(data => {
+                data["rows"][0].forEach(item => {
+                  if (item && item[column]) {
+                    let selectedIds = item[column].id
+
+                    if(selectedIds) {
+                      this.select.val(selectedIds)
+                      this.defaultValue = selectedIds
+                      this.setAllowSingleDeselect()
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                this.openDropDrown()
+              })
           })
         return
       }
@@ -658,11 +684,36 @@
         $.each(itemdata, function(index, value) {
           this.appendOptions(this.select, value);
         }.bind(this));
-        this.select.val(this.field.id);
-        this.setAllowSingleDeselect();
-      }.bind(this));
 
-      this.openDropDrown();
+        let column = this.column.column_name
+        let recordId = this.args.item.id
+
+        let link = this.args.grid.path + `.json${this.args.grid.query}&` + new URLSearchParams({
+          "filters[][column]": "id",
+          "filters[][value]": recordId,
+          "filters[][operator]": "equals",
+          "columns": `id,${column}`
+        })
+
+        fetch(link)
+          .then(response => response.json())
+          .then(data => {
+            data["rows"][0].forEach(item => {
+              if (item && item[column]) {
+                let selectedIds = item[column].id
+
+                if(selectedIds) {
+                  this.select.val(selectedIds)
+                  this.defaultValue = selectedIds
+                  this.setAllowSingleDeselect()
+                }
+              }
+            })
+          })
+          .finally(() => {
+            this.openDropDrown()
+          })
+      }.bind(this));
     };
 
     this.applyValue = function(item, state) {

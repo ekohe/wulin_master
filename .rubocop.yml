@@ -12,6 +12,8 @@ AllCops:
     - 'spec/wulin_app/db/**/*'
     - 'lib/generators/wulin_master/screen_and_grid/templates/*.rb'
     - 'lib/wulin_master/authorization.rb'
+    - 'lib/generators/wulin_master/install_rspec/templates/screen_controllers_filterable_spec.rb'
+    - 'lib/generators/wulin_master/install_rspec/templates/screen_controllers_sortable_spec.rb'
 
 Style/StringLiterals:
   Enabled: false
