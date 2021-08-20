@@ -31,7 +31,7 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 Layout/LineLength:
-  Max: 165
+  Max: 176
 
 Layout/DotPosition:
   EnforcedStyle: trailing
