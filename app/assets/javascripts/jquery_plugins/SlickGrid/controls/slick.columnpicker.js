@@ -313,7 +313,7 @@
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("RESET TO DEFAULTS").appendTo($a);
       $a.on("click", function() {
-        $('#confirm-modal').modal('open');
+        $('#confirm-modal').modal('open').css('z-index','1005');
         $('#confirmed-btn').on('click', function() {
           $.post('/wulin_master/grid_states_manages/reset_default',
                  { _method: 'PUT',
