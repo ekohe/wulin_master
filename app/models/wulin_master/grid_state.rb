@@ -102,7 +102,5 @@ end
 
 if WulinMaster::GridState.user_model
   WulinMaster::GridState.send(:belongs_to, :user, class_name: WulinMaster::GridState.user_model.name, optional: true)
-  if WulinMaster::GridState.user_model.name == 'WulinAuth::User'
-    WulinMaster::GridState.user_model.send(:has_many, :grid_states, class_name: "WulinMaster::GridState")
-  end
+  WulinMaster::GridState.user_model.send(:has_many, :grid_states, class_name: "WulinMaster::GridState") if WulinMaster::GridState.user_model.name == 'WulinAuth::User'
 end
