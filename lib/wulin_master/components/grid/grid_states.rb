@@ -20,11 +20,7 @@ module WulinMaster
 
     def create_current_grid(current_user_id, name)
       default = GridState.default_grid(name).first
-      current_state = if default
-        GridState.create(user_id: current_user_id, grid_name: name, state_value: default.try(:state_value).nil? ? {}.to_json : default.state_value, current: true)
-      else
-        GridState.create(user_id: current_user_id, grid_name: name, state_value: {}.to_json, current: true)
-      end
+      current_state = GridState.create(user_id: current_user_id, grid_name: name, state_value: default.try(:state_value).nil? ? {}.to_json : default.state_value, current: true)
       current_state.state_value
     end
   end

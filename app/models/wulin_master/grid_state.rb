@@ -41,7 +41,7 @@ module WulinMaster
     def self.current(user_id, grid_name)
       states = for_user_and_grid(user_id, grid_name)
       return nil if states.blank?
-      states.current_ones.first || states.find_by(user_id: nil, name: "default", grid_name: grid_name) || states.first
+      states.current_ones.first || states.find { |x| x.name.to_s.casecmp('default').zero? } || states.first
     end
 
     def self.create_default(user_id, grid_name)
@@ -56,7 +56,7 @@ module WulinMaster
 
     def self.get_default_grid(grid_name)
       defaults = default_grid(grid_name)
-      return nil if defaults.blank? || defaults.first.try(:state_value).blank?
+      return nil if defaults.first.try(:state_value).blank?
       defaults.first.state_value
     end
     # ------------------------------ Instance Methods -------------------------------

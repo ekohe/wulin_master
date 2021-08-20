@@ -13,8 +13,6 @@ WulinMaster.actions.FilterDefaultGridStates = $.extend(
 
       $switcher.on("click", function () {
         if ($switcher.is(":checked")) {
-          //filter with user_id null name: default
-          //grid.loader.setParam('all_pds_forms', 'true', true);
           grid.loader.setParam("default_grids", "true", true);
         } else {
           grid.loader.setParam("default_grids", "", true);
