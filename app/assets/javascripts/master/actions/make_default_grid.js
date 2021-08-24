@@ -43,7 +43,7 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
       let footer = Ui.modalFooter("Set as Initial").appendTo(modal);
       footer.find(".confirm-btn").on("click", function () {
         modal.modal("close");
-        let url = `/wulin_master/grid_states/set_default?id=${gridId}&grid_name=${gridName}&state_val=${stateVal}&name=${name}`;
+        let url = `/wulin_master/grid_states/set_as_initial?id=${gridId}&grid_name=${gridName}&state_val=${stateVal}&name=${name}`;
         $.ajax({
           method: "POST",
           dataType: "json",
@@ -51,7 +51,7 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
           url: url,
           success: function (res) {
             if (res.response) {
-              displayNewNotification("Default grid has been successfully set!");
+              displayNewNotification("Initial grid has been successfully set!");
               grid.loader.reloadData();
             } else {
               displayErrorMessage(res.message);

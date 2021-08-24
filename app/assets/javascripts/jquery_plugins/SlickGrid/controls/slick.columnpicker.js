@@ -311,7 +311,7 @@
       let viewName = grid.container[0].querySelector('#current-state > span') && grid.container[0].querySelector('#current-state > span').innerHTML;
       var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
-      $("<span />").html("Reinitialize").appendTo($a);
+      $("<span />").html("REINITIALIZE").appendTo($a);
       $a.on("click", function() {
         $('#confirm-modal').modal('open');
         $('#confirmed-btn').on('click', function() {

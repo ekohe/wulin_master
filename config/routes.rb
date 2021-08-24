@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :grid_states do
       collection do
         post 'copy'
-        post 'set_default'
+        post 'set_as_initial'
       end
     end
 

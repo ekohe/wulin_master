@@ -19,7 +19,4 @@ class GridStatesScreen < WulinMaster::Screen
     grid GridStateGrid, width: '100%', height: '100%', title: 'Grid States'
   end
 
-  def authorized?(user)
-    user&.admin?
-  end
 end

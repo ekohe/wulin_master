@@ -13,7 +13,7 @@ class GridStateGrid < WulinMaster::Grid
   column :name, label: 'View Name'
   column :current, label: 'Is Current View?', sortable: false, filterable: false
 
-  action :make_default_grid, title: "Set as Initial", icon: :publish, toolbar_item: true
+  action :make_default_grid, title: "Set as Initial", icon: :publish, toolbar_item: true, authorized?: ->(user) { user.has_permission_with_name?("grid_states#set_as_initial") }
   action :filter_default_grid_states, toolbar_item: false
 
   action :delete

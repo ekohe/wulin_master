@@ -29,7 +29,7 @@ module WulinMaster
       render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
-    def set_default
+    def set_as_initial
       return unless params[:id] || params[:grid_name] || params[:state_val]
       grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
       # case when custom grid
