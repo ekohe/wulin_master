@@ -204,7 +204,7 @@
     function wulinUpdatePager(pagingInfo) {
       if (pagingInfo.pageSize == 0) {
         if (grid.getFilteredInputs().length === 0) {
-          $status.text(pagingInfo.totalRows.toLocaleString() + " rows found");
+          $status.text(pagingInfo.rowsWithoutFilter.toLocaleString() + " rows found");
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
