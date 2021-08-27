@@ -75,7 +75,11 @@ module WulinMaster
     end
 
     def filter_default_grids
-      @query = @query.where(user_id: nil, name: "default") if params[:default_grids].present?
+      if params[:default_grids].present?
+        @query = @query.where(user_id: nil, name: "default")
+      else
+        @query = @query.where("user_id IS NOT NULL")
+      end
     end
   end
 end
