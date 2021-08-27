@@ -3266,7 +3266,13 @@ if (typeof Slick === "undefined") {
 
       if (column.formatter && column.formatter.name === "URLFormatter") {
         let url = data[cell.row][column.column_name]
-        window.open(url, '_blank').focus()
+
+        try {
+          new URL(url)
+          window.open(url, '_blank').focus()
+        } catch (e) {
+          console.error(e)
+        }
         return
       }
 
