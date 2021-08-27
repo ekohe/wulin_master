@@ -7,6 +7,7 @@ module WulinMaster
     add_callback :query_initialized, :set_user_ids_for_filtering
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
+    add_callback :query_ready, :filter_default_grids
 
     def copy
       GridState.transaction do
@@ -26,6 +27,24 @@ module WulinMaster
       render json: {success: true}
     rescue StandardError
       render json: {success: false, error_message: $ERROR_INFO.message}
+    end
+
+    def set_as_initial
+      return unless params[:id] || params[:grid_name] || params[:state_val]
+      grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
+      # case when custom grid
+      if grid.name != "default"
+        render json: { success: true, response: false, message: "Cannot set a custom view as initial"}
+      # case when selected grid is an default grid
+      elsif grid.user_id.nil?
+        render json: { success: true, response: false, message: "Selected Grid is already set to default"}
+      # search for it's default grid state or initialize one
+      else
+        default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
+        default_grid.state_value = params[:state_val]
+        default_grid.save
+        render json: { success: true, response: true }
+      end
     end
 
     protected
@@ -52,6 +71,14 @@ module WulinMaster
       @query = @query.all.sort do |s1, s2|
         return 0 if s1.user.nil? || s2.user.nil?
         params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
+      end
+    end
+
+    def filter_default_grids
+      @query = if params[:default_grids].present?
+        @query.where(user_id: nil, name: "default")
+      else
+        @query.where("user_id IS NOT NULL")
       end
     end
   end

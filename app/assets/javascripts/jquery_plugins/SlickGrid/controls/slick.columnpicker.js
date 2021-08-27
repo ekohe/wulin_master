@@ -305,20 +305,21 @@
 
         $li.children().wrapAll($('<label />'));
       }
-
       // Ekohe Add
       // Addpend "Reset to defaults" checkbox
       $("<hr/>").appendTo($menu);
+      let viewName = grid.container[0].querySelector('#current-state > span') && grid.container[0].querySelector('#current-state > span').innerHTML;
       var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
-      $("<span />").html("RESET TO DEFAULTS").appendTo($a);
+      $("<span />").html("REINITIALIZE").appendTo($a);
       $a.on("click", function() {
         $('#confirm-modal').modal('open').css('z-index','1005');
         $('#confirmed-btn').on('click', function() {
           $.post('/wulin_master/grid_states_manages/reset_default',
                  { _method: 'PUT',
                    grid_name: grid.name,
-                   user_id: user_id
+                   user_id: user_id,
+                   view_name: viewName
                  },
                  function(data) {
                    if (data == 'ok') {
