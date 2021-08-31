@@ -4599,6 +4599,7 @@ if (typeof Slick === "undefined") {
       // Ekohe Add: New events
       "onRendered": new Slick.Event(),
       "onCanvasResized": new Slick.Event(),
+      "onUpdatedByAjax": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
