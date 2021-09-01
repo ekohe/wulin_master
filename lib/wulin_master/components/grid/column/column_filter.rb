@@ -33,7 +33,12 @@ module WulinMaster
 
       adapter.null_query(complete_column_name, operator, self)
       return adapter.query unless reflection
-      query.where("#{relation_table_name}.#{source} IS #{operator} NULL")
+
+      if @options[:sql_expression]
+        query.where("#{@options[:sql_expression]} IS #{operator} NULL")
+      else
+        query.where("#{relation_table_name}.#{source} IS #{operator} NULL")
+      end
     end
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
