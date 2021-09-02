@@ -7,6 +7,7 @@ form {
     color: $error-color;
     font-size: $font-size-tiny;
   }
+
   .base_error {
     padding-left: 130px;
     line-height: 30px;
@@ -29,42 +30,53 @@ form {
     padding-top: 22px;
     box-shadow: 0 0 2px lightgrey;
   }
+
   form, .form {
     margin-top: 60px;
   }
+
   .field-line {
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
     align-items: center;
+
     .switch.target_flag_container {
       width: 70px;
     }
+
     .field {
       width: 100%;
+
       input:not(.numInput) {
         padding-top: 5px;
         padding-bottom: 5px;
       }
+
       input:not(.numInput),
       textarea {
         color: $text-color;
         font-size: $font-size-small-middle;
       }
+
       input[type="text"]:not(.browser-default):not(.numInput):not(.chosen-search-input) {
         height: 36px;
       }
+
       input[data-date="true"]:not(.numInput),
       input[data-time="true"]:not(.numInput),
       input[data-datetime="true"]:not(.numInput) {
         display: block;
         margin-bottom: 5px;
       }
+
       .chosen-container {
         width: auto !important;
+
         .chosen-drop {
           top: 50px;
         }
+
         .chzn-choices {
           .search-choice {
             margin-top: 7px;
@@ -73,6 +85,7 @@ form {
       }
     }
   }
+
   .submit {
     float: right;
     margin: 0;
@@ -83,6 +96,7 @@ form {
     bottom: 8px;
   }
 }
+
 .checkboxMargin {
   margin: 15px auto;
 }
@@ -90,6 +104,7 @@ form {
 .input-field.input-outlined {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+
   &:focus-within > label {
     color: $main-color;
     z-index: 1000;
@@ -99,12 +114,15 @@ form {
     transform: translateY(-1.75rem);
     top: 1rem;
   }
+
   &:focus-within > label.textarea-label {
     top: 1rem;
   }
+
   &:focus-within > .chosen-container {
     border-color: $main-color;
   }
+
   &:not(:focus-within) > label.active {
     z-index: 1000;
     top: 0.4rem;
@@ -112,6 +130,7 @@ form {
     border-left: 4px solid white !important;
     border-right: 4px solid white !important;
   }
+
   > input,
   textarea,
   .chosen-container {
@@ -134,6 +153,7 @@ form {
       border-color: $main-color;
     }
   }
+
   > label {
     z-index: 1;
     left: 27px;
@@ -141,11 +161,12 @@ form {
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     max-width: 80%;
     top: 0rem;
   }
+
   label.textarea-label {
     top: 0.3rem;
   }
@@ -155,6 +176,7 @@ form {
   .modal-footer {
     z-index: 1200;
   }
+
   .submit {
     .color-blue {
       color: #2196f3;
@@ -208,7 +230,7 @@ span.select2-container {
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: calc((100% - 26px)/2) !important;
+  top: calc((100% - 26px) / 2) !important;
   right: 8px !important;
 }
 
@@ -222,4 +244,8 @@ span.select2-selection--multiple {
       box-shadow: none !important;
     }
   }
+}
+
+.modal.open.modal-fixed-footer {
+  max-width: 90%;
 }
