@@ -208,27 +208,23 @@
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          displayPager(pagingInfo)
+          $status.text(`${pagingInfo.totalRows.toLocaleString()} of ${pagingInfo.rowsWithoutFilter.toLocaleString()} rows found`)
+          $status.addClass('with-filter');
+          var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
+          var totalRowsLength = pagerStatusWithFilter.width();
+          var totalRowsPaddings =
+            parseInt(pagerStatusWithFilter.css('padding-left')) +
+              parseInt(pagerStatusWithFilter.css('padding-right'))
+          var slickPagerMarginLeft = parseInt($('.slick-pager').css("padding-left"));
+          var clearFilterLinkLeft =
+            totalRowsLength + totalRowsPaddings + slickPagerMarginLeft;
+          $clearFilterLink
+            .removeClass('hide')
+            .css({ left: clearFilterLinkLeft });
         }
       } else {
         $status.text("Showing page " + (pagingInfo.pageNum+1) + " of " + (Math.floor(pagingInfo.totalRows/pagingInfo.pageSize)+1));
       }
-    }
-
-    function displayPager(pagingInfo) {
-      $status.text(`${pagingInfo.totalRows.toLocaleString()} of ${pagingInfo.rowsWithoutFilter.toLocaleString()} rows found`)
-      $status.addClass('with-filter');
-      var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
-      var totalRowsLength = pagerStatusWithFilter.width();
-      var totalRowsPaddings =
-        parseInt(pagerStatusWithFilter.css('padding-left')) +
-          parseInt(pagerStatusWithFilter.css('padding-right'))
-      var slickPagerMarginLeft = parseInt($('.slick-pager').css("padding-left"));
-      var clearFilterLinkLeft =
-        totalRowsLength + totalRowsPaddings + slickPagerMarginLeft;
-      $clearFilterLink
-        .removeClass('hide')
-        .css({ left: clearFilterLinkLeft });
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -247,8 +243,7 @@
     // Ekohe Add: Expose API methods
     return {
       "resetPager": resetPager,
-      "clearPager": clearPager,
-      "displayPager": displayPager
+      "clearPager": clearPager
     };
   }
 
