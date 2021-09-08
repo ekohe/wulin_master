@@ -10,7 +10,7 @@ Inputmask.extendAliases({
     alias: 'datetime',
     placeholder: 'dd/mm/' + yearNow + ' 12:00',
     yearrange: { minyear: 1900, maxyear: 2100 },
-    positionCaretOnClick: 'none',
+    positionCaretOnClick: "none",
   }
 });
 
@@ -19,14 +19,15 @@ Inputmask.extendAliases({
     alias: 'date',
     placeholder: 'dd/mm/' + yearNow,
     yearrange: { minyear: 1900, maxyear: 2100 },
-    positionCaretOnClick: 'none',
+    positionCaretOnClick: "none",
   }
 });
 
 Inputmask.extendAliases({
   'wulinTime': {
     alias: 'hh:mm',
-    positionCaretOnClick: 'none',
+    placeholder: '12:00',
+    positionCaretOnClick: "none",
   }
 });
 
@@ -66,5 +67,5 @@ var fpConfigTime = $.extend({}, fpConfigForm, {
   onOpen: function(selectedDates, dateStr, instance) {
     var time = dateStr || '12:00';
     instance.update(time);
-  }
+  },
 });
