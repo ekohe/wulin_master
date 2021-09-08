@@ -26,7 +26,6 @@ Inputmask.extendAliases({
 Inputmask.extendAliases({
   'wulinTime': {
     alias: 'hh:mm',
-    placeholder: '12:00',
     positionCaretOnClick: "none",
   }
 });
