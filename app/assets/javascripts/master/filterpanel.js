@@ -68,6 +68,9 @@
             updateCurrentFilters();
             applyCurrentFilters(currentFilters);
             setCurrentFilter();
+
+            console.log(currentFiltersApplied)
+
             trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
           }, 1000);
         }
