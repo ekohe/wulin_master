@@ -1,0 +1,21 @@
+fix: false              # default: false
+parallel: true          # default: false
+format: progress        # default: Standard::Formatter
+default_ignores: false  # default: true
+
+ignore:                 # default: []
+  - "vendor/bundle/**/*"
+  - "lib/wulin_master/utilities/variables.rb"
+  - "lib/generators/**/*"
+  - "lib/wulin_master/**/*"
+  - "lib/tasks/**/*"
+  - "db/**/*"
+  - "bin/**/*"
+  - "config/**/*"
+  - "app/**/*"
+  - "spec/components/grid/grid_options_spec.rb"
+  - "spec/screen/grid_spec.rb"
+  - "spec/screen/grid_spec.rb"
+  - "spec/screen/screen_spec.rb"
+  - "spec/wulin_app/bin/setup"
+  - "spec/wulin_app/bin/update"

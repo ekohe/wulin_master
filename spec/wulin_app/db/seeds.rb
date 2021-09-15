@@ -12,7 +12,7 @@ JOBS = %w[Developer DevOps Designer PM].freeze
 TRAINING_NAME = %w[I hope that a study of very long sentences will arm you with strategies are almost as diverse the themselves]
 COUNTRIES = %w[China America France].freeze
 FIRST_NAMES = %w[hello ruby world].repeated_combination(3).map do |cb|
-  cb.uniq.join(' ')
+  cb.uniq.join(" ")
 end.uniq
 
 COUNTRIES.each do |country_name|
@@ -40,7 +40,7 @@ teachers = Teacher.all
 FIRST_NAMES.each_with_index do |name, index|
   person = Person.new(
     first_name: name,
-    last_name: "last name #{sprintf('%04d', index)}",
+    last_name: "last name #{sprintf("%04d", index)}",
     job: JOBS.sample,
     status: Person.statuses.values.sample,
     vip: [true, false].sample,
@@ -60,8 +60,8 @@ end
 
 7.upto(500) do |index|
   person = Person.new(
-    first_name: "first name #{sprintf('%04d', index)}",
-    last_name: "last name #{sprintf('%04d', index)}",
+    first_name: "first name #{sprintf("%04d", index)}",
+    last_name: "last name #{sprintf("%04d", index)}",
     job: JOBS.sample,
     status: Person.statuses.values.sample,
     vip: [true, false].sample,

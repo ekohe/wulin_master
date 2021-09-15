@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class ClientScreen < WulinMaster::Screen
-  title 'Clients'
+  title "Clients"
 
-  path '/clients'
+  path "/clients"
 
   grid ClientGrid
 end

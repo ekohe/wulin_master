@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class TrainingScreen < WulinMaster::Screen
-  title 'Trainings'
+  title "Trainings"
 
-  path '/trainings'
+  path "/trainings"
 
   grid TrainingGrid
 end

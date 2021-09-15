@@ -1,1 +1,1 @@
-Spring.application_root = 'spec/wulin_app'
+Spring.application_root = "spec/wulin_app"

@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   resources :posts
   resources :people
   resources :teachers
-  root to: 'homepage#index'
+  root to: "homepage#index"
 end

@@ -7,10 +7,10 @@
 # files.
 
 ENV["RAILS_ENV"] ||= "test"
-require File.expand_path('../../spec/wulin_app/config/environment.rb', __dir__)
+require File.expand_path("../../spec/wulin_app/config/environment.rb", __dir__)
 ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + "../../../spec/wulin_app"
 
-require 'cucumber/rails'
+require "cucumber/rails"
 
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
@@ -62,10 +62,10 @@ end
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
-require 'capybara/rails'
-require 'capybara/poltergeist'
+require "capybara/rails"
+require "capybara/poltergeist"
 Capybara.javascript_driver = :poltergeist
 
-require 'factory_bot'
+require "factory_bot"
 World(FactoryBot::Syntax::Methods)
 FactoryBot.find_definitions
