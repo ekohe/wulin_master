@@ -2,7 +2,7 @@
 
 class PersonGrid < WulinMaster::Grid
   JOBS = %w[Developer DevOps Designer PM].freeze
-  title 'People'
+  title "People"
 
   model Person
 
@@ -18,7 +18,7 @@ class PersonGrid < WulinMaster::Grid
   # datetime
   column :birthdate
   # string -> selector
-  column :job, choices: JOBS, editor: 'SelectEditor'
+  column :job, choices: JOBS, editor: "SelectEditor"
   # belongs_to
   column :country
   # enum

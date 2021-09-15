@@ -10,14 +10,14 @@ When(/^(?:|I )click on '([^"]*)'$/) do |button|
 end
 
 When(/^(?:|I )click on '([^"]*)' button on the grid header$/) do |button|
-  find('[name=' + button.downcase + ']').click
+  find("[name=" + button.downcase + "]").click
 end
 
 When(/^I confirm$/) do
-  find('[id=confirmed-btn]').click
+  find("[id=confirmed-btn]").click
 end
 
-Then(/^(?:|I )should see '([^\']*)'$/) do |text|
+Then(/^(?:|I )should see '([^']*)'$/) do |text|
   expect(page).to have_content(text)
 end
 
@@ -40,7 +40,7 @@ When(/^I enter '([^"]*)' in '([^"]*)'$/) do |content, field|
 end
 
 When(/^I press the '([^"]*)' key$/) do |key_code|
-  find('body').native.send_keys(key_code.downcase.to_sym)
+  find("body").native.send_keys(key_code.downcase.to_sym)
 end
 
 Given(/^I have (\d+) (.*) in the database$/) do |count, factory_name|

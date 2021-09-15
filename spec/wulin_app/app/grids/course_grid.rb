@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CourseGrid < WulinMaster::Grid
-  title 'Courses'
+  title "Courses"
 
   model Course
 

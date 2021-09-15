@@ -28,7 +28,7 @@ end
 When(/^I click on the first row of the '([^"]*)' grid$/) do |grid_name|
   title = find(:xpath, '//div[@class="grid_container"]/div[contains(@class, "grid-header")]/h2', text: grid_name)
   grid_canvas = title.find(:xpath, '../..//div[@class="grid-canvas"]')
-  first_row = grid_canvas.find(:xpath, './div[1]')
+  first_row = grid_canvas.find(:xpath, "./div[1]")
   first_row.click
 end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require './lib/wulin_master/components/grid/column'
+require "spec_helper"
+require "./lib/wulin_master/components/grid/column"
 
 describe WulinMaster::Column do
   before :each do
@@ -11,27 +11,27 @@ describe WulinMaster::Column do
     @column = WulinMaster::Column.new(:title, @grid)
   end
 
-  it 'should have a symbol name' do
-    column = WulinMaster::Column.new('name', @grid)
+  it "should have a symbol name" do
+    column = WulinMaster::Column.new("name", @grid)
     expect(column.name).to eq(:name)
   end
 
-  it 'should have default options' do
+  it "should have default options" do
     expect(@column.options).to eq("width" => 150, "sortable" => true, "default_sort_asc" => true)
   end
 
-  it 'can have customized options' do
-    @column = WulinMaster::Column.new(:title, @grid, width: 100, editable: false, label: 'Title')
-    expect(@column.options).to eq("width" => 100, "sortable" => true, "editable" => false, "default_sort_asc" => true, "label" => 'Title')
+  it "can have customized options" do
+    @column = WulinMaster::Column.new(:title, @grid, width: 100, editable: false, label: "Title")
+    expect(@column.options).to eq("width" => 100, "sortable" => true, "editable" => false, "default_sort_asc" => true, "label" => "Title")
   end
 
-  it 'should have a default label from the localization file' do
-    expect(@model).to receive(:human_attribute_name) { 'Human title' }
-    expect(@column.label).to eq('Human title')
+  it "should have a default label from the localization file" do
+    expect(@model).to receive(:human_attribute_name) { "Human title" }
+    expect(@column.label).to eq("Human title")
   end
 
-  it 'can have customized label' do
-    @column = WulinMaster::Column.new(:title, @grid, label: 'Post Title')
-    expect(@column.label).to eq('Post Title')
+  it "can have customized label" do
+    @column = WulinMaster::Column.new(:title, @grid, label: "Post Title")
+    expect(@column.label).to eq("Post Title")
   end
 end

@@ -7,4 +7,4 @@
   tmp/caching-dev.txt
 ].each { |path| Spring.watch(path) }
 
-Spring.application_root = ''
+Spring.application_root = ""
