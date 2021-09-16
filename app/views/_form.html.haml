@@ -42,7 +42,32 @@
                   "data-source"      => source,                                 |
                   "data-target"      => "#{column_name}_target_flag",           |
                   "data-target-id"   => "#{column_name}_target_flag",           |
-                  "data-field"       => field                                   |
+                  "data-field"       => field                                    |
+                - if column.options[:depend_column].present? && column.options[:choices].present? && column.options[:choices].is_a?(String)
+                  :javascript
+                    $(function(){
+                      const depend_select_id = "#{model_name}_#{column.options[:depend_column]}_id", depend_select = "select#"+depend_select_id;
+                      const target_select_id = "#{model_name}_#{column_name}", target_select = "select#"+target_select_id;
+
+                      $(depend_select).on("select2:select select2:clear", function(){
+                        const master_id = $(depend_select).select2('data')[0].id, master_model = "#{column.options[:depend_column]}";
+                        const fetch_option_url = "#{column.options[:choices]}";
+
+                        $.getJSON(`${fetch_option_url}&master_model=${master_model}&master_id=${master_id}`, function(items) {
+                          const previous_selection = $(target_select).val();
+                          $(target_select).empty();
+                          items.forEach(function({id, name}) {
+                            $(target_select).append(new Option(name, id, false, false));
+                          })
+
+                          if (items.find(item => item.id === previous_selection)) {
+                            $(target_select).val(previous_selection).change();
+                          } else {
+                            $(target_select).val(null).change();
+                          }
+                        })
+                      });
+                    });
 
             - elsif (column.sql_type.to_s == 'has_and_belongs_to_many' or column.sql_type.to_s == 'has_many')
               .input-field.input-outlined
