@@ -38,6 +38,13 @@ module WulinMaster
       logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
       values = value.split(/\s*#{logic_operator_sym}\s*/)
 
+      case value
+      when '&'
+        values = %w[&]
+      when ','
+        values = %w[,]
+      end
+
       if operator == 'exact'
         qurry_values = values
         operator = 'ilike'
