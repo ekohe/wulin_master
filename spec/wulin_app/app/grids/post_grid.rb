@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PostGrid < WulinMaster::Grid
-  title 'Posts'
+  title "Posts"
 
   model Post
 
@@ -10,7 +10,7 @@ class PostGrid < WulinMaster::Grid
   column :name
   column :first_name, through: :person, label: :person_first_name
   column :person, source: :last_name, label: :person_last_name
-  column :person_job, sql_expression: 'people.job'
+  column :person_job, sql_expression: "people.job"
   # forbide
   # column :country_name, through: :person
   # not recommand

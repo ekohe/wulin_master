@@ -1,4 +1,4 @@
-image: ruby:2.7.1
+image: ruby:2.7.4
 
 services:
   - postgres:latest
@@ -9,20 +9,45 @@ variables:
   POSTGRES_PASSWORD: ''
   POSTGRES_HOST_AUTH_METHOD: trust
 
+cache:
+  key:
+    files:
+      - Gemfile.lock
+  paths:
+    - vendor/bundle
+
+stages:
+  - test
+
 before_script:
   - apt-get update -qy
   - apt-get install -qy nodejs
   - apt-get install -qy libfontconfig1
+
+  # gems
   - gem install bundler
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
-  # - rm -rf Gemfile.lock
-  - bundle install --path /cache
-  - bundle exec rake db:drop db:create RAILS_ENV=test
-  - bundle exec rake db:migrate RAILS_ENV=test
 
-test:
+  # cache dir
+  - mkdir -p vendor/bundle
+  - bundle config set path vendor/bundle
+
+  # install gems
+  - bundle check || bundle install --jobs 8
+
+assets_precompile:
+  stage: test
   script:
-    - bundle exec rubocop
-    - bundle exec rspec
-    - bundle exec rake assets:precompile
-    # - bundle exec cucumber
+    - RAILS_ENV=development bundle exec rake assets:precompile
+
+rspec:
+  stage: test
+  script:
+    - RAILS_ENV=test bundle exec rake db:create
+    - RAILS_ENV=test bundle exec rake db:migrate
+    - RAILS_ENV=test bundle exec rspec spec
+
+ruby_lint:
+  stage: test
+  script:
+    - bundle exec rake standard

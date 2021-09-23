@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ClientGrid < WulinMaster::Grid
-  title 'Clients'
+  title "Clients"
 
   model Client
 

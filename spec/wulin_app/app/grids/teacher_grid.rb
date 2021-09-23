@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class TeacherGrid < WulinMaster::Grid
-  title 'Teachers'
+  title "Teachers"
 
   model Teacher
 
   # path '/teachers' # Define a different route for the grid
 
   column :name
-  column :students, sql_expression: 'people.first_name'
+  column :students, sql_expression: "people.first_name"
   # need to be developed
   # column :training_students
   column :courses

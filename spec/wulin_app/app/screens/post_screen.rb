@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class PostScreen < WulinMaster::Screen
-  title 'Posts'
+  title "Posts"
 
-  path '/posts'
+  path "/posts"
 
   grid PostGrid
 end

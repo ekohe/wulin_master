@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require './lib/generators/wulin_master/screen_and_grid/screen_and_grid_generator'
+require "spec_helper"
+require "./lib/generators/wulin_master/screen_and_grid/screen_and_grid_generator"
 # require 'generator_spec/test_case'
 
 describe WulinMaster::ScreenAndGridGenerator do

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class AddressScreen < WulinMaster::Screen
-  title 'Addresses'
+  title "Addresses"
 
-  path '/addresses'
+  path "/addresses"
 
   grid AddressGrid
 end
