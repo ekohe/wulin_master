@@ -1586,10 +1586,17 @@ if (typeof Slick === "undefined") {
           .on('click', function (e) {
             let index = 0
             let name = $(e.currentTarget).data('column-id')
-            let columns = self.columns
 
-            for (var i = 0; i <= columns.length; i++) {
-              if (columns[i].column_name == name) {
+            let visibleColumnNames = self.getColumns().map(e => e.column_name)
+            let orderedColumns = self.columnpicker.getAllColumns()
+
+            let availableColumns = orderedColumns.filter(e => visibleColumnNames.indexOf(e.column_name) > -1)
+
+            console.log( orderedColumns )
+            console.log( availableColumns )
+
+            for (var i = 0; i <= availableColumns.length; i++) {
+              if (columns[i].column_name === name) {
                 index = i
                 break;
               }
@@ -2251,6 +2258,11 @@ if (typeof Slick === "undefined") {
     }
 
    function setFrozenOptions() {
+      // console.log(columns)
+
+      // let visibleColumns = grid.getColumns()
+      // let orderedColumns = grid.columnpicker.getAllColumns()
+
       options.frozenColumn = ( options.frozenColumn >= 0
         && options.frozenColumn < columns.length
         )
