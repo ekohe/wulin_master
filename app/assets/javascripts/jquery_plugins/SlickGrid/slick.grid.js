@@ -1684,6 +1684,12 @@ if (typeof Slick === "undefined") {
             setupColumnReorder();
         }
       }
+
+      if (hasFrozenColumns()) {
+        trigger(self.onColumnsFrozen, {
+          "grid": self
+        })
+      }
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -6177,6 +6183,9 @@ if (typeof Slick === "undefined") {
     // Ekohe Add
 
     function getHeaders() {
+      if (hasFrozenColumns() && $headers.length === 2 && $($headers[1]).children().length > 0) {
+        return $(".slick-header-columns-left, .slick-header-columns-right")
+      }
       return $headers[0];
     }
 
@@ -6353,6 +6362,7 @@ if (typeof Slick === "undefined") {
       "onDragEnd": new Slick.Event(),
       "onSelectedRowsChanged": new Slick.Event(),
       "onCellCssStylesChanged": new Slick.Event(),
+      "onColumnsFrozen": new Slick.Event(),
 
       // Ekohe Add: New events
       "onRendered": new Slick.Event(),
