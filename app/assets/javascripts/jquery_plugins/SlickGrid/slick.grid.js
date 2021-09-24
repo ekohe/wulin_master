@@ -1587,15 +1587,7 @@ if (typeof Slick === "undefined") {
             let index = 0
             let name = $(e.currentTarget).data('column-id')
 
-            let visibleColumnNames = self.getColumns().map(e => e.column_name)
-            let orderedColumns = self.columnpicker.getAllColumns()
-
-            let availableColumns = orderedColumns.filter(e => visibleColumnNames.indexOf(e.column_name) > -1)
-
-            console.log( orderedColumns )
-            console.log( availableColumns )
-
-            for (var i = 0; i <= availableColumns.length; i++) {
+            for (var i = 0; i <= columns.length; i++) {
               if (columns[i].column_name === name) {
                 index = i
                 break;
@@ -2929,7 +2921,8 @@ if (typeof Slick === "undefined") {
       setScroller();
       zombieRowNodeFromLastMouseWheelEvent = null;
 
-      setColumns(treeColumns.extractColumns());
+      // setColumns(treeColumns.extractColumns());
+      removeInvisibleColumns()
     }
 
     function validateAndEnforceOptions() {
