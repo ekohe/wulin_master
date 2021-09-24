@@ -1597,11 +1597,24 @@ if (typeof Slick === "undefined") {
             self.setOptions({"frozenColumn": index})
           });;
 
+        var $deFreezeColumn = $(
+          `<li id='defreeze_column'><a href="javascript:void(0)"><i class="material-icons">flash_on</i>Defreeze</a></li>`
+        )
+          .off('click')
+          .on('click', function (e) {
+            let path = $("#menu li.item.active a").attr("href")
+            load_page(path)
+          });;
+
         $moreContainer
           .append($hideItem)
           .append($moveToRight)
           .append($moveToLeft)
           .append($freezeCurrentColumn)
+
+        if (hasFrozenColumns()) {
+          $moreContainer.append($deFreezeColumn)
+        }
 
         $showMoreTrigger.append($moreContainer);
         header.append($showMoreTrigger)

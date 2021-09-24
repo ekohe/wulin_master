@@ -36,6 +36,7 @@
           let input = $grid.getHeaders().find(`.slick-header-column input[data-id=${item.id}]`)
           if (input.length > 0) {
             $(input).val(item.value)
+            $(input).next("label").addClass("active")
           }
         })
 
