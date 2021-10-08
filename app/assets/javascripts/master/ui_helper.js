@@ -222,6 +222,11 @@ var Ui = {
               grid_source,
               'source=' + n.editor.source
             );
+          } else if (n['depend_column']) {
+            // For column configured with depend_column and choices as an url string.
+            // e.g. column :room_type, depend_column: :hotel, choices: "/room_types/fetch_options?"
+            const master_model = n['depend_column'], master_id = currentData[n['depend_column']]['id'];
+            editorChoices = `${editorChoices}&master_model=${master_model}&master_id=${master_id}`;
           }
 
           remotePath.push([n.field, editorChoices, formable]);
