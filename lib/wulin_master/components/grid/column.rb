@@ -176,7 +176,8 @@ module WulinMaster
           column: source.to_s,
           source: form_name,
           klass: klass_name,
-          screen: @options[:screen]
+          screen: @options[:screen],
+          options_condition: @options[:options_condition]
         }
         "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
       end
@@ -190,7 +191,8 @@ module WulinMaster
             column: @name.to_s,
             source: source,
             klass: klass_name,
-            screen: @options[:screen]
+            screen: @options[:screen],
+            options_condition: @options[:options_condition]
           }
           "/wulin_master/fetch_options?#{params_hash.to_param}"
         elsif @options[:distinct]
@@ -199,7 +201,8 @@ module WulinMaster
             column: @name.to_s,
             source: form_name,
             klass: klass_name,
-            screen: @options[:screen]
+            screen: @options[:screen],
+            options_condition: @options[:options_condition]
           }
           "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
         else

@@ -8,10 +8,20 @@ module WulinMaster
 
     def index
       if authorized? && params[:source].present?
+        options_condition = params[:options_condition].presence
+
         objects = if klass.column_names.include? params[:source]
-          klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          if options_condition
+            klass.where(options_condition).select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          else
+            klass.select("id, #{params[:source]}").order("#{params[:source]} ASC").all
+          end
         else
-          klass.all.sort { |x, y| x.send(params[:source]).to_s.downcase <=> y.send(params[:source]).to_s.downcase }
+          if options_condition
+            klass.where(options_condition).sort { |x, y| x.send(params[:source]).to_s.downcase <=> y.send(params[:source]).to_s.downcase }
+          else
+            klass.all.sort { |x, y| x.send(params[:source]).to_s.downcase <=> y.send(params[:source]).to_s.downcase }
+          end
         end
 
         self.response_body = objects.collect { |o| {:id => o.id, params[:source].to_sym => o.send(params[:source])} }.to_json
