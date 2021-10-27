@@ -56,6 +56,11 @@ var fillValues = function (scope, grid, selectedIndexes) {
     comm = {};
   if (selectedIndexes.length == 1) {
     data = grid.loader.data[selectedIndexes[0]];
+
+    const cols = grid.options["needDuplicateColumns"]
+    if (cols && cols.length > 0) {
+      data = Object.fromEntries(Object.entries(data).filter(([key]) => cols.indexOf(key) > -1 ))
+    }
     loadValue(scope, data);
   } else {
     dataArr = $.map(selectedIndexes, function (n, i) {
