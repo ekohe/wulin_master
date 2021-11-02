@@ -2071,10 +2071,16 @@ if (typeof Slick === "undefined") {
     function appendRowHtml(stringArray, row, range, dataLength) {
       var d = getDataItem(row);
       var dataLoading = row < dataLength && !d;
-      var rowCss = "slick-row" +
-          (dataLoading ? " loading" : "") +
-          (row === activeRow && options.showCellSelection ? " active" : "") +
-          (row % 2 == 1 ? " odd" : " even");
+
+      let extraRowClasses = [];
+      self.onAddExtraRowClasses.notify({rowData: d, extraRowClasses});
+
+      let rowCss = "slick-row" +
+        (dataLoading ? " loading" : "") +
+        (row === activeRow && options.showCellSelection ? " active" : "") +
+        (row % 2 === 1 ? " odd" : " even");
+
+      extraRowClasses.forEach(erc => rowCss = `${rowCss} ${erc}`);
 
       if (!d) {
         rowCss += " " + options.addNewRowCssClass;
@@ -4600,6 +4606,7 @@ if (typeof Slick === "undefined") {
       "onRendered": new Slick.Event(),
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
+      "onAddExtraRowClasses": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
