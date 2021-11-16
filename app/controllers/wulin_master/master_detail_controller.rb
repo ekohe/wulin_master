@@ -20,6 +20,8 @@ module WulinMaster
         end
       end
       render json: {status: 'OK', message: "#{self.class.helpers.pluralize(params[:detail_ids].size, 'record')} attached."}
+    rescue
+      render json: {success: false, message: $ERROR_INFO.message }
     end
   end
 end
