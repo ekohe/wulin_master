@@ -193,6 +193,21 @@
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
     },
 
+    // stored in decimal, rendered in percentage, e.g. 0.12 -> 12%
+    DecimalPercentageFormatter: function(row, cell, value, columnDef, dataContext) {
+      let {precision, style_class, style} = columnDef;
+      precision = precision || 0;
+
+      value = Number(value) * 100;
+
+      if (precision === 0) {
+        value = (value === null) ? '' : (parseInt(value) + '%');
+      } else {
+        value = (value === null) ? '' : (parseFloat(value).toFixed(precision) + '%');
+      }
+      return applyStyle(value, style_class, style || '');
+    },
+
     DeleteRedundantDecimals: function (
       row,
       cell,
