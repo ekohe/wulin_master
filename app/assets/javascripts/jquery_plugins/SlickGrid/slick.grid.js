@@ -3220,7 +3220,7 @@ if (typeof Slick === "undefined") {
           var preClickModeOn = (e.target && e.target.className === Slick.preClickClassName);
           var column = columns[cell.cell];
           var suppressActiveCellChangedEvent = (options.editable && column && column.editor && options.suppressActiveCellChangeOnEdit) ? true : false;
-  
+
           // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/180
           // Ekohe Edit start
           $(self.getContainerNode()).find(".slick-cell").removeClass("active")
@@ -4607,6 +4607,9 @@ if (typeof Slick === "undefined") {
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
+      "onOpenCreateModalEnd": new Slick.Event(),
+      "onOpenEditModalEnd": new Slick.Event(),
+      "onRelationCellEdit": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,

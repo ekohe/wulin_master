@@ -555,6 +555,8 @@
         this.choices += '&master_model=' + this.args.column.depend_column + '&master_id=' + relation_id;
       }
 
+      this.args.grid.onRelationCellEdit.notify({relationEditor: this});
+
       $.getJSON(this.choices, function(itemdata) {
         this.setOptions(itemdata);
       }.bind(this));

@@ -100,6 +100,8 @@ var Ui = {
             Ui.setupForm(grid, false);
           }
           Ui.setupComponents(grid);
+
+          grid.onOpenCreateModalEnd.notify();
         },
         onCloseStart: function (modal) {
           $(".materialnote", modal).materialnote("destroy");
