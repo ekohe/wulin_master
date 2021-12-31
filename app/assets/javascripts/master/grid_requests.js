@@ -23,7 +23,7 @@ var Requests = {
 
           grid.loader.reloadData();
           grid.loader.ensureData(vp.top, vp.bottom)
-          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+          if ((grid.reloadMasterAfterUpdates || grid.options.reloadMasterAfterUpdates) && grid.master_grid) {
             grid.master_grid.loader.reloadData();
             grid.master_grid.loader.ensureData(vp.top, vp.bottom)
           }
@@ -101,7 +101,7 @@ var Requests = {
           var from = parseInt(range[0] / 200, 10) * 200;
           var to = range[1]+1;
           grid.loader.reloadData(from, to);
-          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+          if ((grid.reloadMasterAfterUpdates || grid.options.reloadMasterAfterUpdates) && grid.master_grid) {
             grid.master_grid.loader.reloadData();
           }
 

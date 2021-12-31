@@ -248,7 +248,7 @@ var submitForm = function (grid, ids, selectedIndexes) {
         if (msg.success) {
           Ui.resetForm(grid.name);
           grid.loader.reloadData();
-          if (grid.reloadMasterAfterUpdates && grid.master_grid) {
+          if ((grid.reloadMasterAfterUpdates || grid.options.reloadMasterAfterUpdates) && grid.master_grid) {
             grid.master_grid.loader.reloadData();
           }
           if (selectedIndexes.length > 1) {
