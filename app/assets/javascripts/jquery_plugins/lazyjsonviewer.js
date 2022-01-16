@@ -56,7 +56,7 @@
     }
 
     function writeProperties(val, target) {
-        Object.keys(val).forEach(function (key) {
+        Object.keys(val).sort().forEach(function (key) {
             var propEl = $("<div>").addClass("property").attr("data-property-name", key).attr("data-property-val", val[key]).appendTo(target)
             $("<div>").addClass("property-name").text(key + ":").appendTo(propEl);
             writeValue(val[key], propEl);
