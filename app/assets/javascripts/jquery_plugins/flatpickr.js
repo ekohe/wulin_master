@@ -1205,7 +1205,7 @@ function Flatpickr(element, config) {
 		// if (self.config.mode === "single" && !self.config.enableTime) self.close();
 		if (self.config.mode === "single" && !self.config.enableTime) {
 			self.close();
-			self.input.focus();
+			// self.input.focus();
 		}
 
 		triggerEvent("Change");
