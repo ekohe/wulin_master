@@ -2072,15 +2072,14 @@ if (typeof Slick === "undefined") {
       var d = getDataItem(row);
       var dataLoading = row < dataLength && !d;
 
-      let extraRowClasses = [];
-      self.onAddExtraRowClasses.notify({rowData: d, extraRowClasses});
-
       let rowCss = "slick-row" +
         (dataLoading ? " loading" : "") +
         (row === activeRow && options.showCellSelection ? " active" : "") +
         (row % 2 === 1 ? " odd" : " even");
 
-      extraRowClasses.forEach(erc => rowCss = `${rowCss} ${erc}`);
+      let extraRowClasses = [];
+      self.onAddExtraRowClasses.notify({grid: self, row, extraRowClasses, rowData: d});
+      rowCss = [rowCss, extraRowClasses].flat().join(' ');
 
       if (!d) {
         rowCss += " " + options.addNewRowCssClass;
@@ -2167,6 +2166,10 @@ if (typeof Slick === "undefined") {
       // get addl css class names from object type formatter return and from string type return of onBeforeAppendCell
       var addlCssClasses = trigger(self.onBeforeAppendCell, { row: row, cell: cell, grid: self, value: value, dataContext: item }) || '';
       addlCssClasses += (formatterResult && formatterResult.addClasses ? (addlCssClasses ? ' ' : '') + formatterResult.addClasses : '');
+
+      let extraCellClasses = [];
+      self.onAddExtraCellClasses.notify({grid: self, row, cell, extraCellClasses});
+      cellCss = [cellCss, extraCellClasses].flat().join(' ');
 
       stringArray.push("<div class='" + cellCss + (addlCssClasses ? ' ' + addlCssClasses : '') + "'>");
 
@@ -4607,6 +4610,7 @@ if (typeof Slick === "undefined") {
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
+      "onAddExtraCellClasses": new Slick.Event(),
       "onOpenCreateModalEnd": new Slick.Event(),
       "onOpenEditModalEnd": new Slick.Event(),
       "onRelationCellEdit": new Slick.Event(),
