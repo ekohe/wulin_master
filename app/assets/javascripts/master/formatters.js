@@ -133,7 +133,12 @@
     },
 
     TextBoolCellFormatter: function(row, cell, value, columnDef, dataContext) {
-      var text = value === null ? "" : (value ? 'Yes' : 'No');
+      var text = value === null ? '' : (value ? 'Yes' : 'No');
+
+      if( Array.isArray(value) ) {
+        text = value.filter(e => e != null).map( e => ( e ? 'Yes' : 'No' )).join(', ')
+      }
+
       return applyStyle(text, columnDef.style_class, columnDef.style || 'text-align:center');
     },
 
