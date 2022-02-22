@@ -27,6 +27,8 @@ module WulinMaster
       is_authorized = case params[:action]
                       when 'index'
                         screen.authorized?(current_user)
+                      when 'show'
+                        screen.authorized?(current_user)
                       when 'create'
                         screen.authorize_create?(current_user)
                       when 'update'
