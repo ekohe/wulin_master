@@ -27,4 +27,4 @@ WulinMaster.actions.HotkeyCreate = $.extend({}, WulinMaster.actions.BaseAction, 
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyCreate);
+// WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyCreate);
