@@ -69,12 +69,12 @@ module WulinMaster
         %w[waves-effect waves-circle tooltipped]
       end
 
-      handle_options(css_classes)
+      handle_options(css_classes).except(:authorized?)
     end
 
     def anchor_tag_options_without_waves
       clean_option_class
-      handle_options
+      handle_options.except(:authorized?)
     end
 
     def handle_options(css_classes = [])
