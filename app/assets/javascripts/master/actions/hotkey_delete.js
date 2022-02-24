@@ -21,4 +21,4 @@ WulinMaster.actions.HotkeyDelete = $.extend({}, WulinMaster.actions.BaseAction, 
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyDelete);
+// WulinMaster.ActionManager.register(WulinMaster.actions.HotkeyDelete);
