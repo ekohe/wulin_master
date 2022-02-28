@@ -7,7 +7,7 @@
         %h2= grid.title
         - grid.header_actions.each do |a|
           = render "/action_partials/#{a[:name]}", grid: grid #rescue nil
-      = render './toolbar', toolbar_items: grid.toolbar_items
+      = render '/toolbar', toolbar_items: grid.toolbar_items
   .grid
   .pager
 
