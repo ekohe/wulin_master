@@ -1711,7 +1711,13 @@ if (typeof Slick === "undefined") {
     function setupColumnSort() {
       // Ekohe Edit: Material Design UI
       // $headers.click(function (e) {
-      $headers.on('click', '.slick-sort-indicator', function(e) {
+
+      let sortIndicator = `.${uid} .slick-sort-indicator`
+
+      $(sortIndicator).off("click")
+
+      // $headers.on('click', '.slick-sort-indicator', function(e) {
+      $(document).on("click", sortIndicator, function(e) {
         if (columnResizeDragging) return;
         // temporary workaround for a bug in jQuery 1.7.1 (http://bugs.jquery.com/ticket/11328)
         e.metaKey = e.metaKey || e.ctrlKey;
@@ -3834,10 +3840,13 @@ if (typeof Slick === "undefined") {
 
     function getVisibleRange(viewportTop, viewportLeft) {
       if (viewportTop == null) {
-        viewportTop = scrollTop;
+        // viewportTop = scrollTop;
+        viewportTop = $viewportScrollContainerY[0].scrollTop;
       }
+
       if (viewportLeft == null) {
-        viewportLeft = scrollLeft;
+        // viewportLeft = scrollLeft;
+        viewportLeft = $viewportScrollContainerX[0].scrollLeft;
       }
 
       return {
