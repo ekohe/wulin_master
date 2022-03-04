@@ -48,6 +48,8 @@ module WulinMaster
 
           fire_callbacks :query_ready
 
+          @aggregation_result = aggregate(@query.dup) if aggregation?
+
           # Get total counts
           @offset = params[:offset].present? ? params[:offset].to_i : 0
           if @offset.zero?
@@ -90,7 +92,7 @@ module WulinMaster
       end
       render json: {success: true}
     rescue StandardError
-      render json: {success: false, error_message: $ERROR_INFO.message }
+      render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
     def destroy
@@ -107,7 +109,7 @@ module WulinMaster
         end
       end
       if success
-        render json: {success: true }
+        render json: {success: true}
       else
         render json: {success: false, error_message: error_message}
       end
@@ -192,13 +194,19 @@ module WulinMaster
       # Render ruby objects
       t = Time.current
       @object_array = grid.arraify(@objects)
-      json = {offset: @offset,
-              total: @count,
-              totalNoFilter: @count_without_filter,
-              count: @per_page,
-              rows: @object_array}.to_json
+      data = {
+        offset: @offset,
+        total: @count,
+        totalNoFilter: @count_without_filter,
+        count: @per_page,
+        rows: @object_array
+      }
+
+      data.merge!(aggregation: @aggregation_result) if aggregation?
+
       Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
-      json
+
+      data.to_json
     end
 
     def count_without_filter
@@ -239,12 +247,12 @@ module WulinMaster
 
     def query_count(query)
       case query.class.to_s
-      when /activerecord_relation/i
-        query.unscope(:order).unscope(:select).unscope(:limit).unscope(:offset).count("DISTINCT #{grid.model.table_name}.id")
-      when /array/i
-        query.size
-      else
-        query.all.to_a
+        when /activerecord_relation/i
+          query.unscope(:order).unscope(:select).unscope(:limit).unscope(:offset).count("DISTINCT #{grid.model.table_name}.id")
+        when /array/i
+          query.size
+        else
+          query.all.to_a
       end
     end
 
@@ -268,6 +276,15 @@ module WulinMaster
       est_count = ActiveRecord::Base.connection.execute(sql).to_a.first['count_estimate'].to_i
       return query.count if est_count < grid.options[:estCount][:threshold].to_i
       est_count
+    end
+
+    def aggregation?
+      grid.behavior_configs.any? { |b| b[:name].to_sym == :aggregation }
+    end
+
+    def aggregate(query)
+      aggregation_behavior = grid.behavior_configs.find { |b| b[:name].to_sym == :aggregation }
+      aggregation_behavior[:with].call(query)
     end
   end
 end

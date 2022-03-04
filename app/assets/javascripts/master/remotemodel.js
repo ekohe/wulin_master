@@ -8,6 +8,7 @@
     var pageSize = 0;
     var pageNum = 0;
     var totalRows = 0;
+    var aggregation = ''; // Ekohe Add
     var rowsWithoutFilter = -1; // Ekohe Add
     var data = {length:0};
     var oldData = {length:0};
@@ -263,6 +264,7 @@
       }
 
       totalRows = parseInt(resp.total, 10);
+      aggregation = resp['aggregation'] || '';
 
       // Exclude detail selector from columns
       var detailSelector = $.grep(columns, function(c) { return c.id === '_detail_selector' })[0];
@@ -542,7 +544,8 @@
         pageSize: pageSize,
         pageNum: pageNum,
         totalRows: totalRows,
-        rowsWithoutFilter: rowsWithoutFilter
+        rowsWithoutFilter: rowsWithoutFilter,
+        aggregation,
       };
     }
 
