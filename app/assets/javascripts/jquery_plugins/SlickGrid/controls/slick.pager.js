@@ -21,7 +21,7 @@
     function init() {
       _options = $.extend(true, {}, _defaults, options);
       dataView.onPagingInfoChanged.subscribe(function (e, pagingInfo) {
-        // EKohe Edit: Use customized update logic (Add row count without filter)
+        // Ekohe Edit: Use customized update logic (Add row count without filter)
         // updatePager(pagingInfo);
         wulinUpdatePager(pagingInfo);
       });
@@ -139,7 +139,7 @@
 
     ////////////////////////////////////////////////////////////////////////////
     // Ekohe Add: Customized constructPagerUI
-    //   1. Remove pagging fucntion (Wulin Master loads data by scrolling)
+    //   1. Remove paging function (Wulin Master loads data by scrolling)
     //   2. Show rows count info (filtered count/all count)
     //   3. Show Clear filter link
 
