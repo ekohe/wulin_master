@@ -192,6 +192,10 @@
 .note-editor.note-frame
   .note-editing-area {
     padding-top: 16px;
+
+    .note-codable {
+      color: #333 !important;
+    }
   }
   .note-editable[contenteditable="false"] {
   background-color: #fff;
