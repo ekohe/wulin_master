@@ -100,7 +100,7 @@ WulinMaster.actions.BaseAction = {
                            modalDom.find('.pager').outerHeight();
     modalDom.find('.modal-content .slick-viewport').height(gridCanvasHeight + 'px');
     modalDom.find('.modal-content .grid-canvas').height('auto');
-    modalDom.find('.modal-content .grid').height('auto');
+    // modalDom.find('.modal-content .grid').height('auto');
   },
 
   // override this to define what the action to do
