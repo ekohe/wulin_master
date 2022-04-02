@@ -3182,8 +3182,9 @@ if (typeof Slick === "undefined") {
       var dataLoading = row < dataLength && !d;
 
       // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/ef8fd8e37693a57b44db8d19a2e93602ef5fc4a3
-      let extraRowClasses = [];
-      self.onAddExtraRowClasses.notify({rowData: d, extraRowClasses});
+      // let extraRowClasses = [];
+      // self.onAddExtraRowClasses.notify({rowData: d, extraRowClasses});
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/8fc7649cf51c51ed446c7b98795edd8bcdff0854
 
       var rowCss = "slick-row" +
           (hasFrozenRows && row <= options.frozenRow? ' frozen': '') +
@@ -3191,7 +3192,10 @@ if (typeof Slick === "undefined") {
           (row === activeRow && options.showCellSelection ? " active" : "") +
           (row % 2 == 1 ? " odd" : " even");
 
-      extraRowClasses.forEach(erc => rowCss = `${rowCss} ${erc}`);
+      // extraRowClasses.forEach(erc => rowCss = `${rowCss} ${erc}`);
+      let extraRowClasses = [];
+      self.onAddExtraRowClasses.notify({grid: self, row, extraRowClasses, rowData: d});
+      rowCss = [rowCss, extraRowClasses].flat().join(' ');
 
       if (!d) {
         rowCss += " " + options.addNewRowCssClass;
@@ -3311,6 +3315,11 @@ if (typeof Slick === "undefined") {
       // get addl css class names from object type formatter return and from string type return of onBeforeAppendCell
       var addlCssClasses = trigger(self.onBeforeAppendCell, { row: row, cell: cell, grid: self, value: value, dataContext: item }) || '';
       addlCssClasses += (formatterResult && formatterResult.addClasses ? (addlCssClasses ? ' ' : '') + formatterResult.addClasses : '');
+
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/8fc7649cf51c51ed446c7b98795edd8bcdff0854
+      let extraCellClasses = [];
+      self.onAddExtraCellClasses.notify({grid: self, row, cell, extraCellClasses});
+      cellCss = [cellCss, extraCellClasses].flat().join(' ');
 
       stringArray.push("<div class='" + cellCss + (addlCssClasses ? ' ' + addlCssClasses : '') + "'>");
 
@@ -6403,6 +6412,7 @@ if (typeof Slick === "undefined") {
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
+      "onAddExtraCellClasses": new Slick.Event(),
       "onOpenCreateModalEnd": new Slick.Event(),
       "onOpenEditModalEnd": new Slick.Event(),
       "onRelationCellEdit": new Slick.Event(),
