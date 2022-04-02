@@ -3180,11 +3180,18 @@ if (typeof Slick === "undefined") {
     function appendRowHtml(stringArrayL, stringArrayR, row, range, dataLength) {
       var d = getDataItem(row);
       var dataLoading = row < dataLength && !d;
+
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/ef8fd8e37693a57b44db8d19a2e93602ef5fc4a3
+      let extraRowClasses = [];
+      self.onAddExtraRowClasses.notify({rowData: d, extraRowClasses});
+
       var rowCss = "slick-row" +
           (hasFrozenRows && row <= options.frozenRow? ' frozen': '') +
           (dataLoading ? " loading" : "") +
           (row === activeRow && options.showCellSelection ? " active" : "") +
           (row % 2 == 1 ? " odd" : " even");
+
+      extraRowClasses.forEach(erc => rowCss = `${rowCss} ${erc}`);
 
       if (!d) {
         rowCss += " " + options.addNewRowCssClass;
@@ -6395,6 +6402,7 @@ if (typeof Slick === "undefined") {
       "onRendered": new Slick.Event(),
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
+      "onAddExtraRowClasses": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
