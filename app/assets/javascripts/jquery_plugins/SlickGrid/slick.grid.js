@@ -6403,6 +6403,9 @@ if (typeof Slick === "undefined") {
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
+      "onOpenCreateModalEnd": new Slick.Event(),
+      "onOpenEditModalEnd": new Slick.Event(),
+      "onRelationCellEdit": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,

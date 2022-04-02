@@ -457,6 +457,8 @@
     };
 
     this.getOptions = function() {
+      this.args.grid.onRelationCellEdit.notify({relationEditor: this}); // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/acfacbe10a1bbe863b5885afa053fe6785c4be0f
+
       $.getJSON(this.choices, function(itemdata) {
 
         // set options with AJAX
