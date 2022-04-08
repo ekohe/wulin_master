@@ -1602,8 +1602,7 @@ if (typeof Slick === "undefined") {
         )
           .off('click')
           .on('click', function (e) {
-            let path = $("#menu li.item.active a").attr("href")
-            load_page(path)
+            self.setOptions({"frozenColumn": -1})
           });;
 
         $moreContainer
