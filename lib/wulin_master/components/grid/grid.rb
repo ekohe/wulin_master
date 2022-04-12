@@ -137,6 +137,7 @@ module WulinMaster
     end
 
     def apply_filter(query, column_name, filtering_value, filtering_operator)
+      filtering_value, filtering_operator = transform_if_exclamation_not_equal(filtering_value, filtering_operator)
       if column = find_filter_column_by_name(column_name)
         if column.filterable?
           column.apply_filter(query, filtering_value, filtering_operator)
@@ -152,6 +153,15 @@ module WulinMaster
         virtual_filter_columns << [column_name, filtering_value, filtering_operator]
         # Rails.logger.info "Couldn't find column for #{column_name}, couldn't apply filter #{filtering_value}."
         query
+      end
+    end
+
+    def transform_if_exclamation_not_equal(filtering_value, filtering_operator)
+      return case filtering_value
+      when /^!/
+        [filtering_value[1..], 'not_equals']
+      else
+        [filtering_value, filtering_operator]
       end
     end
 

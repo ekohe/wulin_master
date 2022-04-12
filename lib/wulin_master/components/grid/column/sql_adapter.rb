@@ -25,17 +25,23 @@ module WulinMaster
       query.where("#{column_name} IS #{value} NULL")
     end
 
-    def boolean_query(query, column_name, value, column)
+    def boolean_query(query, column_name, value, column, operator = false)
       if ((column.options[:formatter] == 'YesNoCellFormatter') || (column.options[:inner_formatter] == 'YesNoCellFormatter')) && !value
         query.where("#{column_name} = ? OR #{column_name} is NULL", 'f')
       else
-        query.where(column_name => value)
+        case operator
+        when "NOT ILIKE"
+          query.where("#{column_name} <> ?", value)
+        else
+          query.where(column_name => value)
+        end
       end
     end
 
     def string_query(query, column_name, value, _column, operator = 'ilike')
       logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : '&' # ',' or '&'
       logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
+      logic_operator = ' AND ' if logic_operator_sym == ',' && operator == "NOT ILIKE"
       values = value.split(/\s*#{logic_operator_sym}\s*/)
 
       case value
