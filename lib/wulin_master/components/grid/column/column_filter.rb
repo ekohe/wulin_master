@@ -16,7 +16,6 @@ module WulinMaster
       # Although RoleUser `belongs_to` user, User (in WulinOAuth) doesn't provide
       # `has_many` relationship to RoleUser since it is not inherited from
       # ActiveRecord. For this reason, query for RoleUser should use filter_without_reflection.
-
       unless reflection && (defined?(RolesUser) ? query != RolesUser : true)
         return filter_without_reflection(query, filtering_value, filtering_operator, sql_type, adapter)
       end
@@ -126,6 +125,7 @@ module WulinMaster
       operator = match_data[1] || filtering_operator
 
       operator = "=" if operator == 'equals'
+      operator = "NOT ILIKE" if operator == 'not_equals'
 
       text = match_data[2].strip
 
@@ -135,7 +135,7 @@ module WulinMaster
       when "boolean"
         true_values = %w[y yes ye t true]
         true_or_false = true_values.include?(filtering_value.downcase)
-        adapter.boolean_query(complete_column_name, true_or_false, self)
+        adapter.boolean_query(complete_column_name, true_or_false, self, operator)
         adapter.query
       when 'enum'
         filtering_value = model.send(source.to_s.pluralize).find do |key, value|
@@ -148,11 +148,12 @@ module WulinMaster
            table_column? &&
            operator &&
            text.match(/\A[-+]?[0-9]*\.?[0-9]+\Z/)
+           operator = "<>" if operator == "NOT ILIKE"
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
           args = [complete_column_name, filtering_value, self]
-          args << operator if operator == 'exact'
+          args << operator if operator =~ /^(exact|NOT\ ILIKE)$/
           adapter.string_query(*args)
           adapter.query
         end
