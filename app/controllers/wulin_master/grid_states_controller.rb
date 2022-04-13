@@ -25,7 +25,7 @@ module WulinMaster
         end
       end
       render json: {success: true}
-    rescue StandardError
+    rescue
       render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
@@ -34,16 +34,16 @@ module WulinMaster
       grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
       # case when custom grid
       if grid.name != "default"
-        render json: { success: true, response: false, message: "Cannot set a custom view as initial"}
+        render json: {success: true, response: false, message: "Cannot set a custom view as initial"}
       # case when selected grid is an default grid
       elsif grid.user_id.nil?
-        render json: { success: true, response: false, message: "Selected Grid is already set to default"}
+        render json: {success: true, response: false, message: "Selected Grid is already set to default"}
       # search for it's default grid state or initialize one
       else
         default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
         default_grid.state_value = params[:state_val]
         default_grid.save
-        render json: { success: true, response: true }
+        render json: {success: true, response: true}
       end
     end
 
@@ -55,10 +55,14 @@ module WulinMaster
       user_filter = params[:filters].find { |x| x["column"] == "email" }
       return if user_filter.blank?
 
-      user_ids = User.all.select { |u| u.email.include?(user_filter["value"]) }.map(&:id)
+      user_ids = cached_all_user.select { |u| u.email.include?(user_filter["value"]) }.map(&:id)
 
       params[:filters].delete user_filter
       @query = @query.where(user_id: user_ids)
+    end
+
+    def cached_all_user
+      @cached_all_user ||= User.all
     end
 
     def skip_sorting_if_sort_by_user
@@ -68,10 +72,21 @@ module WulinMaster
 
     def set_user_ids_for_sorting
       return unless @skip_order
-      @query = @query.all.sort do |s1, s2|
-        return 0 if s1.user.nil? || s2.user.nil?
-        params[:sort_dir] == "DESC" ? s2.user.email <=> s1.user.email : s1.user.email <=> s2.user.email
+
+      direction = case params[:sort_dir]
+      when /desc/i
+        :desc
+      when /asc/i
+        :asc
       end
+
+      return unless direction
+
+      temporary_sorting = cached_all_user.map do |user|
+        "(#{user.id}, '#{user.email}')"
+      end.join(",")
+
+      @query = @query.joins("LEFT JOIN (VALUES #{temporary_sorting}) AS temporary_sorting(temp_user_id, temp_email) ON temporary_sorting.temp_user_id = grid_states.user_id").order("temporary_sorting.temp_email" => direction)
     end
 
     def filter_default_grids
