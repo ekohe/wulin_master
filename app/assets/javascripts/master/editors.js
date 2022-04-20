@@ -910,17 +910,13 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var flatpickrConfig = $.extend({}, this.fpConfigGrid, {
-        enableTime: true,
-        dateFormat: 'd/m/Y H:i',
-        time_24hr: true,
-      });
+      const fpConfigGridDateTime = Object.assign({}, this.fpConfigGrid, fpConfigDateTime);
 
       this.initElements();
       this.input.inputmask('wulinDateTime')
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, flatpickrConfig));
+        this.input.flatpickr($.extend({}, fpConfigGridDateTime));
       }
     };
 
@@ -938,9 +934,7 @@
 
     this.init = function() {
       let gridView = $(args.container).closest('.slick-viewport')
-      var fpConfigGridDate = $.extend({}, this.fpConfigGrid, {
-        dateFormat: 'd/m/Y',
-      });
+      const fpConfigGridDate = Object.assign({}, this.fpConfigGrid, fpConfigDate);
 
       this.initElements();
       this.input.inputmask('wulinDate')
@@ -962,12 +956,7 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      var fpConfigGridTime = $.extend({}, this.fpConfigGrid, {
-        noCalendar: true,
-        enableTime: true,
-        dateFormat: 'H:i',
-        time_24hr: true,
-      });
+      const fpConfigGridTime = Object.assign({}, this.fpConfigGrid, fpConfigTime);
 
       this.initElements();
       this.input.inputmask('wulinTime')

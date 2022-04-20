@@ -189,7 +189,7 @@ var Ui = {
       let that = this
       $(that)
       .inputmask('wulinTime')
-      .flatpickr($.extend({}, fpConfigTime, { appendTo: $(that).parent()[0] }));
+      .flatpickr($.extend({}, fpConfigFormTime, { appendTo: $(that).parent()[0] }));
     });
   },
 
