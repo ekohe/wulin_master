@@ -1,70 +1,79 @@
-// Get current year
-
-var dateNow = new Date();
-var yearNow = dateNow.getFullYear();
-
 // Config of Inputmask
 
 Inputmask.extendAliases({
-  'wulinDateTime': {
-    alias: 'datetime',
-    placeholder: 'dd/mm/' + yearNow + ' 12:00',
+  wulinDateTime: {
+    alias: "datetime",
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
-  }
+  },
 });
 
 Inputmask.extendAliases({
-  'wulinDate': {
-    alias: 'date',
-    placeholder: 'dd/mm/' + yearNow,
+  wulinDate: {
+    alias: "date",
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
-  }
+  },
 });
 
 Inputmask.extendAliases({
-  'wulinTime': {
-    alias: 'hh:mm',
+  wulinTime: {
+    alias: "hh:mm",
     positionCaretOnClick: "none",
-  }
+  },
 });
 
 // Config of flatpickr
 
-var fpConfigInit = {
+const fpConfigInit = {
   allowInput: true,
 };
 
-var fpConfigForm = $.extend({}, fpConfigInit, {
+const fpConfigDateTime = Object.assign({}, fpConfigInit, {
+  dateFormat: "d/m/Y H:i",
+  enableTime: true,
+  time_24hr: true,
+  parseDate: (str) => {
+    const [date, time] = str.split(" ");
+    const [dd, mm, yyyy] = date.split("/");
+    return new Date([`${yyyy}-${mm}-${dd}`, time].join(" "));
+  },
+});
+
+const fpConfigDate = Object.assign({}, fpConfigInit, {
+  maxDate: "31/12/2100",
+  minDate: "01/01/1900",
+  dateFormat: "d/m/Y",
+  enableTime: false,
+  parseDate: (str) => {
+    const [date, time] = str.split(" ");
+    const [dd, mm, yyyy] = date.split("/");
+    return new Date(`${yyyy}-${mm}-${dd}`);
+  },
+});
+
+const fpConfigTime = Object.assign({}, fpConfigInit, {
+  noCalendar: true,
+  enableTime: true,
+  dateFormat: "H:i",
+  time_24hr: true,
+});
+
+/* Config of flatpickr in form */
+
+const fpConfigForm = Object.assign({}, fpConfigInit, {
   clickOpens: true,
-  onOpen: function(selectedDates, dateStr, instance) {
+  onOpen: (selectedDates, dateStr, instance) => {
     instance.update(dateStr);
   },
 });
 
-var fpConfigFormDateBase = $.extend({}, fpConfigForm, {
-  maxDate: '31/12/2100',
-  minDate: '01/01/1900',
-});
+const fpConfigFormDateTime = Object.assign({}, fpConfigForm, fpConfigDateTime);
 
-var fpConfigFormDateTime = $.extend({}, fpConfigFormDateBase, {
-  enableTime: true,
-  dateFormat: 'd/m/Y H:i',
-  time_24hr: true,
-});
+const fpConfigFormDate = Object.assign({}, fpConfigForm, fpConfigDate);
 
-var fpConfigFormDate = $.extend({}, fpConfigFormDateBase, {
-  dateFormat: 'd/m/Y',
-});
-
-var fpConfigTime = $.extend({}, fpConfigForm, {
-  noCalendar: true,
-  enableTime: true,
-  dateFormat: 'H:i',
-  time_24hr: true,
-  onOpen: function(selectedDates, dateStr, instance) {
-    var time = dateStr || '12:00';
-    instance.update(time);
+const fpConfigFormTime = Object.assign({}, fpConfigForm, fpConfigTime, {
+  onOpen: (selectedDates, dateStr = "12:00", instance) => {
+    instance.update(dateStr);
   },
 });

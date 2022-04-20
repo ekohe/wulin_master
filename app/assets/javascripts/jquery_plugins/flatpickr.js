@@ -278,7 +278,40 @@ function Flatpickr(element, config) {
 	/////////////////////////////////////////////////////////////////////////////
 
 	function onKeyUp() {
-		update(self.input.value);
+    const inputValue = self.input.value;
+    const isSimilar = (value, template) => {
+      const sameLength = value.length === template.length;
+      const sameSlash = value.indexOf('/') === template.indexOf('/');
+      const sameColon = value.indexOf(':') === template.indexOf(':');
+      return sameLength && (sameSlash || sameColon);
+    };
+
+    const [isDate, isTime, isDateTime] = [
+      isSimilar(inputValue, 'dd/mm/yyyy'),
+      isSimilar(inputValue, 'hh:mm'),
+      isSimilar(inputValue, 'dd/mm/yyyy hh:mm'),
+    ];
+
+    const isValidTime = time => {
+      const [hh, mm] = time.split(':');
+      const numberReg = /^\d+$/;
+      return numberReg.test(hh) && numberReg.test(mm);
+    };
+
+    const isValidDate = date => {
+      const [dd, mm, yyyy] = date.split('/');
+      return Boolean(Date.parse(`${yyyy}-${mm}-${dd}`));
+    }
+
+    if (isDate) {
+      isValidDate(inputValue) && update(inputValue);
+    } else if (isTime) {
+			update(inputValue);
+    } else if (isDateTime) {
+      const [date, time] = inputValue.split(' ');
+			isValidDate(date) && update(date);
+      isValidDate(date) && isValidTime(time) && update(inputValue);
+    }
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
