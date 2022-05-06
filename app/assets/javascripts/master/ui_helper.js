@@ -484,6 +484,12 @@ var Ui = {
 
     $.extend(options, {
       onCloseEnd: function () {
+        //cleanup select-editor inside modal when closing
+        let modalActiveRow = $(".modal").has(".ui-widget-content.active.slick-row").length > 0
+        if(modalActiveRow){
+          let activeDataId = $(".modal").find(".ui-widget-content.active.slick-row").data("id")
+          cleanUpEditors(activeDataId)
+        }
         $modal.remove();
       },
     });
