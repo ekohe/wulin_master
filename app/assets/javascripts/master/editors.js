@@ -321,7 +321,8 @@
     this.offsetWith = this.boxWidth + 28;
 
     this.initElements = function() {
-      this.wrapper = $("<div class='select-editor' />");
+      let parentDataId = this.args.container.parentElement.dataset.id
+      this.wrapper = $(`<div class='select-editor' data-id="${parentDataId}"/>`);
       this.setWrapper(this.wrapper);
       this.wrapper.appendTo(document.querySelector('body'));
 
@@ -798,7 +799,8 @@
     this.offsetWith = this.boxWidth + 18;
 
     this.init = function() {
-      this.wrapper = $('<div />').addClass('textarea-wrapper');
+      let parentDataId = this.args.container.parentElement.dataset.id
+      this.wrapper = $('<div />').addClass('textarea-wrapper').data('id', parentDataId);
       this.setWrapper(this.wrapper);
       this.wrapper.appendTo($("body"));
 
