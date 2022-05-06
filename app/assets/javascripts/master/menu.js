@@ -47,6 +47,7 @@ function load_page(url) {
   // Ekohe Add: Remove old columnpickers, tooltips when screen changes
   $('.wulin-columnpicker').remove();
   $('.material-tooltip').remove();
+  cleanUpEditors();
 
   // Ekohe Edit: Use screen_content_loader as new indicator
 
@@ -84,6 +85,17 @@ function load_page(url) {
       // displayErrorMessage("An error occured while trying to load page. Please try again.");
     }
   });
+}
+
+function cleanUpEditors(id=false) {
+  // we should cleanup open editors
+  if(id) {
+    $(".select-editor").data("id", id).remove();
+    $(".textarea-wrapper").data("id", id).remove()
+  }else{
+    $(".select-editor").remove()
+    $(".textarea-wrapper").remove()
+  }
 }
 
 function trackGoogleAnalytics() {
