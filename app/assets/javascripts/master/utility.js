@@ -32,9 +32,6 @@ const modalScroll = (instance) => {
   $(instance.element).closest('.modal-content').css('overflow', '')
 }
 
-//pass this option to flatpick to set position
-//e.g
-//flatpickr($.extend({}, fpConfigFormDate, onCalendarOpenClose));
 const onCalendarOpenClose = {
   onOpen: [repositionOnOpen],
   onClose: [reenableScroll],
@@ -48,4 +45,3 @@ function repositionOnOpen(selectedDates, dateStr, instance) {
 function reenableScroll(selectedDates, dateStr, instance) {
   modalScroll(instance)
 }
-
