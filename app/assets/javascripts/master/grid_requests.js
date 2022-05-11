@@ -66,7 +66,7 @@ var Requests = {
       data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
       success: function(msg) {
         if(msg.success) {
-          grid.onUpdatedByAjax.notify();
+          grid.onUpdatedByAjax.notify({item, msg});
 
           var from = parseInt(currentRow / 200, 10) * 200;
           grid.loader.reloadData(from, currentRow);
