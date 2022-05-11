@@ -886,7 +886,7 @@
     this.boxWidth -= 24;
 
     let gridView = $(args.container).closest('.slick-viewport')
-    this.fpConfigGrid = $.extend({}, fpConfigInit, {
+    this.fpConfigGrid = fpMergeConfigs({}, fpConfigInit, {
       clickOpens: false,
       onReady: function(selectedDates, dateStr, instance) {
         instance.open();
@@ -912,13 +912,13 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      const fpConfigGridDateTime = Object.assign({}, this.fpConfigGrid, fpConfigDateTime);
+      const fpConfigGridDateTime = fpMergeConfigs(this.fpConfigGrid, fpConfigDateTime);
 
       this.initElements();
       this.input.inputmask('wulinDateTime')
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, fpConfigGridDateTime));
+        this.input.flatpickr(fpConfigGridDateTime);
       }
     };
 
@@ -936,12 +936,12 @@
 
     this.init = function() {
       let gridView = $(args.container).closest('.slick-viewport')
-      const fpConfigGridDate = Object.assign({}, this.fpConfigGrid, fpConfigDate);
+      const fpConfigGridDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigDate);
 
       this.initElements();
       this.input.inputmask('wulinDate')
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, fpConfigGridDate))
+        this.input.flatpickr(fpConfigGridDate)
       }
     };
 
@@ -958,13 +958,13 @@
     DateTimeBaseEditor.call(this, args);
 
     this.init = function() {
-      const fpConfigGridTime = Object.assign({}, this.fpConfigGrid, fpConfigTime);
+      const fpConfigGridTime = fpMergeConfigs({}, this.fpConfigGrid, fpConfigTime);
 
       this.initElements();
       this.input.inputmask('wulinTime')
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr($.extend({}, fpConfigGridTime))
+        this.input.flatpickr(fpConfigGridTime)
       }
     };
 

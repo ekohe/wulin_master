@@ -177,19 +177,19 @@ var Ui = {
       let that = this
       $(that)
       .inputmask('wulinDateTime')
-      .flatpickr($.extend({}, fpConfigFormDateTime, onCalendarOpenClose));
+      .flatpickr(fpMergeConfigs({}, fpConfigFormDateTime, onCalendarOpenClose));
     });
     $(`${scope} input[data-date]`).each(function() {
       let that = this
       $(that)
       .inputmask('wulinDate')
-      .flatpickr($.extend({}, fpConfigFormDate, onCalendarOpenClose));
+      .flatpickr(fpMergeConfigs({}, fpConfigFormDate, onCalendarOpenClose));
     });
     $(`${scope} input[data-time]`).each(function() {
       let that = this
       $(that)
       .inputmask('wulinTime')
-      .flatpickr($.extend({}, fpConfigFormTime, { appendTo: $(that).parent()[0] }));
+      .flatpickr(fpMergeConfigs({}, fpConfigFormTime, { appendTo: $(that).parent()[0] }));
     });
   },
 
