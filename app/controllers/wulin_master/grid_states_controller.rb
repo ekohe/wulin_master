@@ -32,19 +32,13 @@ module WulinMaster
     def set_as_initial
       return unless params[:id] || params[:grid_name] || params[:state_val]
       grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
-      # case when custom grid
-      if grid.name != "default"
-        render json: {success: true, response: false, message: "Cannot set a custom view as initial"}
       # case when selected grid is an default grid
-      elsif grid.user_id.nil?
-        render json: {success: true, response: false, message: "Selected Grid is already set to default"}
+      render json: {success: true, response: false, message: "Selected Grid is already set to default"} and return if grid.user_id.nil?
       # search for it's default grid state or initialize one
-      else
-        default_grid = GridState.where(name: "default", grid_name: params[:grid_name], user_id: nil).first_or_initialize
-        default_grid.state_value = params[:state_val]
-        default_grid.save
-        render json: {success: true, response: true}
-      end
+      default_grid = GridState.where(name: params[:name], grid_name: params[:grid_name], user_id: nil).first_or_initialize
+      default_grid.state_value = params[:state_val]
+      default_grid.save
+      render json: {success: true, response: true }
     end
 
     protected
@@ -91,7 +85,7 @@ module WulinMaster
 
     def filter_default_grids
       @query = if params[:default_grids].present?
-        @query.where(user_id: nil, name: "default")
+        @query.where(user_id: nil)
       else
         @query.where("user_id IS NOT NULL")
       end

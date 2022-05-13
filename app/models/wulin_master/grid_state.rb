@@ -11,6 +11,7 @@ module WulinMaster
     scope :default, -> { where(name: 'default') }
     scope :current_ones, -> { where(current: true) }
     scope :default_grid, ->(grid_name) { where(user_id: nil, grid_name: grid_name, name: "default") }
+    scope :initial_custom_grid, ->(grid_name, name) { where(user_id: nil, grid_name: grid_name, name: name) }
 
     reject_audit if defined? ::WulinAudit
 
@@ -54,10 +55,9 @@ module WulinMaster
       current(user_id, grid_name) || create_default(user_id, grid_name)
     end
 
-    def self.get_default_grid(grid_name)
-      defaults = default_grid(grid_name)
-      return nil if defaults.first.try(:state_value).blank?
-      defaults.first.state_value
+    def self.get_default_grid_state_val(grid_name, name=false, is_custom_view=false)
+      default_grids = is_custom_view ? initial_custom_grid(grid_name, name).first : default_grid(grid_name)
+      return default_grids.try(:state_value).blank? ? nil : default_grids.state_value
     end
     # ------------------------------ Instance Methods -------------------------------
 
