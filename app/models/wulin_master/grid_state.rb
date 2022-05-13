@@ -56,7 +56,7 @@ module WulinMaster
     end
 
     def self.get_default_grid_state_val(grid_name, name=false, is_custom_view=false)
-      default_grids = is_custom_view ? initial_custom_grid(grid_name, name).first : default_grid(grid_name)
+      default_grids = is_custom_view ? initial_custom_grid(grid_name, name).first : default_grid(grid_name).first
       return default_grids.try(:state_value).blank? ? nil : default_grids.state_value
     end
     # ------------------------------ Instance Methods -------------------------------
