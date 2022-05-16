@@ -6225,7 +6225,7 @@ if (typeof Slick === "undefined") {
 
     function getHeaders() {
       if (hasFrozenColumns() && $headers.length === 2 && $($headers[1]).children().length > 0) {
-        return $(".slick-header-columns-left, .slick-header-columns-right")
+        return $container.find(".slick-header-columns-left, .slick-header-columns-right")
       }
       return $headers[0];
     }
