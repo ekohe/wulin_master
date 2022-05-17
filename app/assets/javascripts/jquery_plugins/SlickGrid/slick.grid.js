@@ -1584,17 +1584,8 @@ if (typeof Slick === "undefined") {
         )
           .off('click')
           .on('click', function (e) {
-            let index = 0
-            let name = $(e.currentTarget).data('column-id')
-
-            for (var i = 0; i <= columns.length; i++) {
-              if (columns[i].column_name === name) {
-                index = i
-                break;
-              }
-            }
-
-            self.setOptions({"frozenColumn": index})
+            let column_name = $(e.currentTarget).data('column-id')
+            self.freezeColumnByName(column_name)
           });;
 
         var $deFreezeColumn = $(
@@ -2864,6 +2855,22 @@ if (typeof Slick === "undefined") {
         } else {
           x += columns[i].width;
         }
+      }
+    }
+
+    function freezeColumnByName (column_name) {
+      let index = -1;
+      for (var i = 0; i < columns.length; i++) {
+        if (columns[i].column_name === column_name) {
+          index = i
+          break;
+        }
+      }
+      self.setOptions({"frozenColumnName": column_name})
+      self.setOptions({"frozenColumn": index})
+
+      if (index == -1) {
+        self.setOptions({"frozenColumnName": null})
       }
     }
 
@@ -6309,10 +6316,17 @@ if (typeof Slick === "undefined") {
 
       var tmp = [];
       for (var i = 0; i < columns.length; i++) {
-        if (columns[i].visible != false) {
+        if (columns[i].hasOwnProperty("visible")) {
+          if (columns[i].visible == false) {
+            // do nothing
+          } else {
+            tmp.push(columns[i]);
+          }
+        } else {
           tmp.push(columns[i]);
         }
       }
+
       setColumns(tmp);
     }
 
@@ -6428,6 +6442,7 @@ if (typeof Slick === "undefined") {
       "autosizeColumns": autosizeColumns,
       "getOptions": getOptions,
       "setOptions": setOptions,
+      "freezeColumnByName": freezeColumnByName,
       "getData": getData,
       "getDataLength": getDataLength,
       "getDataItem": getDataItem,
