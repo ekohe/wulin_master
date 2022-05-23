@@ -60,7 +60,6 @@ module WulinMaster
 
           # Add limit and offset
           parse_pagination
-
           # Get all the objects
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
 
@@ -68,11 +67,16 @@ module WulinMaster
           if @count_query
             @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
           end
-
           fire_callbacks :objects_ready
-
           # Render json response
           render json: render_json
+
+        rescue AUTH_ERROR_CLASS => e
+          if e.class.to_s =~ /WulinOauthAuthenticationError/i
+            render(json: { success: 401, msg: e, wulin_oauth: true}, status: 401)
+          else
+            raise e
+          end
         end
       end
     end
