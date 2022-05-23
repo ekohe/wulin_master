@@ -8,7 +8,6 @@ module WulinMaster
       return "false" unless current_user
       current_state = GridState.current(current_user.id, name)
       is_custom_view = check_multiple_grid_states
-
       if current_state.nil?
         # create a new current grid
         create_current_grid(current_user.id, name)
@@ -23,7 +22,8 @@ module WulinMaster
     def create_current_grid(current_user_id, name)
       default_state_value = GridState.get_default_grid_state_val(name)
       state_val = default_state_value ? default_state_value : {}.to_json
-      current_state = GridState.create(user_id: current_user_id, grid_name: name, state_value: state_val, current: true)
+      current_state = GridState.find_or_initialize_by(user_id: current_user_id, grid_name: name, state_value: state_val)
+      current_state.update(current: true)
       current_state.state_value
     end
 
