@@ -26,8 +26,8 @@ module WulinMaster
     end
 
     def boolean_query(query, column_name, value, column, operator = false)
-      if ((column.options[:formatter] == 'YesNoCellFormatter') || (column.options[:inner_formatter] == 'YesNoCellFormatter')) && !value
-        query.where("#{column_name} = ? OR #{column_name} is NULL", 'f')
+      if ((column.options[:formatter] == "YesNoCellFormatter") || (column.options[:inner_formatter] == "YesNoCellFormatter")) && !value
+        query.where("#{column_name} = ? OR #{column_name} is NULL", "f")
       else
         case operator
         when "NOT ILIKE"
@@ -38,22 +38,22 @@ module WulinMaster
       end
     end
 
-    def string_query(query, column_name, value, _column, operator = 'ilike')
-      logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : '&' # ',' or '&'
-      logic_operator = logic_operator_sym == ',' ? ' OR ' : ' AND '
-      logic_operator = ' AND ' if logic_operator_sym == ',' && operator == "NOT ILIKE"
+    def string_query(query, column_name, value, _column, operator = "ilike")
+      logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : "&" # ',' or '&'
+      logic_operator = logic_operator_sym == "," ? " OR " : " AND "
+      logic_operator = " AND " if logic_operator_sym == "," && operator == "NOT ILIKE"
       values = value.split(/\s*#{logic_operator_sym}\s*/)
 
       case value
-      when '&'
+      when /^&+$/
         values = %w[&]
-      when ','
+      when /^,+$/
         values = %w[,]
       end
 
-      if operator == 'exact'
+      if operator == "exact"
         qurry_values = values
-        operator = 'ilike'
+        operator = "ilike"
       else
         qurry_values = values.map { |v| "#{v}%" }
       end
