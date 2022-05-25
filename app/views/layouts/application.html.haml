@@ -1,3 +1,5 @@
+- default_year = (WulinMaster.config.default_year.is_a?(Proc) && WulinMaster.config.default_year.call) || WulinMaster.config.default_year
+
 !!!
 %html
   %head
@@ -19,6 +21,10 @@
         if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
           displayNewNotification('The browser you are currently using is not supported, we recommend using Chrome.', true);
         }
+      });
+      // Pass Ruby value to frontend
+      Object.assign(window, {
+        DEFAULT_YEAR: String(#{default_year}) // see usage in `datetime.js`
       });
   %body
     = yield

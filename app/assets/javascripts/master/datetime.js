@@ -1,5 +1,10 @@
 // Config of Inputmask
-const currentYear = () => new Date().getFullYear();
+const defaultYear = () => {
+  const { DEFAULT_YEAR } = window;
+  return DEFAULT_YEAR && DEFAULT_YEAR.length === "yyyy".length
+    ? DEFAULT_YEAR
+    : new Date().getFullYear();
+};
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
 
@@ -8,7 +13,6 @@ Inputmask.extendAliases({
     alias: "datetime",
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
-    placeholder: `dd/mm/${currentYear()} hh:mm`,
     onKeyDown: function (event, buffer, caretPos, opts) {
       if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
         const [date, time] = opts.placeholder.split(" ");
@@ -16,11 +20,16 @@ Inputmask.extendAliases({
       }
     },
     onBeforeMask: function (value, opts) {
-      if (value.length === "dd/mm/yyyy hh:mm".length) {
-        const yearFromPreviousValue = value.split(" ")[0].split("/")[2];
-        const hh_mmFromPreviousValue = value.split(" ")[1];
-        opts.placeholder = `dd/mm/${yearFromPreviousValue} ${hh_mmFromPreviousValue}`;
-      }
+      const fromPreviousValue = (value) => {
+        const year = value.split(" ")[0].split("/")[2];
+        const hh_mm = value.split(" ")[1];
+        return `dd/mm/${year} ${hh_mm}`;
+      };
+
+      opts.placeholder =
+        value.length === "dd/mm/yyyy hh:mm".length
+          ? fromPreviousValue(value)
+          : `dd/mm/${defaultYear()}`;
     },
   },
 });
@@ -30,17 +39,21 @@ Inputmask.extendAliases({
     alias: "date",
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
-    placeholder: `dd/mm/${currentYear()}`,
     onKeyDown: function (event, buffer, caretPos, opts) {
       if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
         opts.placeholder = "dd/mm/yyyy";
       }
     },
     onBeforeMask: function (value, opts) {
-      if (value.length === "dd/mm/yyyy".length) {
-        const yearFromPreviousValue = value.split(" ")[0].split("/")[2];
-        opts.placeholder = `dd/mm/${yearFromPreviousValue}`;
-      }
+      const fromPreviousValue = (value) => {
+        const year = value.split(" ")[0].split("/")[2];
+        return `dd/mm/${year}`;
+      };
+
+      opts.placeholder =
+        value.length === "dd/mm/yyyy".length
+          ? fromPreviousValue(value)
+          : `dd/mm/${defaultYear()}`;
     },
   },
 });
@@ -104,6 +117,10 @@ const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
     const [dd, mm, yyyy] = date.split("/");
     return new Date([`${yyyy}-${mm}-${dd}`, time].join(" "));
   },
+  onOpen: (selectedDates, dateStr, instance) => {
+    instance.jumpToDate(`01/01/${defaultYear()} 12:00`);
+    instance.update(dateStr);
+  },
 });
 
 const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
@@ -116,6 +133,10 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
     const [dd, mm, yyyy] = date.split("/");
     return new Date(`${yyyy}-${mm}-${dd}`);
   },
+  onOpen: (selectedDates, dateStr, instance) => {
+    instance.jumpToDate(`01/01/${defaultYear()}`);
+    instance.update(dateStr);
+  },
 });
 
 const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
@@ -123,6 +144,10 @@ const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
   enableTime: true,
   dateFormat: "H:i",
   time_24hr: true,
+  onOpen: (selectedDates, dateStr, instance) => {
+    dateStr = dateStr.length === "hh:mm".length ? dateStr : "12:00";
+    $(instance.input).val(dateStr);
+  },
 });
 
 /* Config of flatpickr in form */
@@ -138,11 +163,4 @@ const fpConfigFormDateTime = fpMergeConfigs({}, fpConfigForm, fpConfigDateTime);
 
 const fpConfigFormDate = fpMergeConfigs({}, fpConfigForm, fpConfigDate);
 
-const fpConfigFormTime = Object.assign(
-  fpMergeConfigs({}, fpConfigForm, fpConfigTime),
-  {
-    onOpen: (selectedDates, dateStr = "12:00", instance) => {
-      instance.update(dateStr);
-    },
-  }
-);
+const fpConfigFormTime = fpMergeConfigs({}, fpConfigForm, fpConfigTime);
