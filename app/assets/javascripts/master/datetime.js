@@ -14,10 +14,11 @@ Inputmask.extendAliases({
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
     onKeyDown: function (event, buffer, caretPos, opts) {
-      if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
-        const [date, time] = opts.placeholder.split(" ");
-        opts.placeholder = `dd/mm/yyyy ${time}`;
-      }
+      const [date, time] = opts.placeholder.split(" ");
+      opts.placeholder =
+        caretPos === 4 && isFeb29(event, buffer, caretPos)
+          ? `dd/mm/yyyy ${time}`
+          : `dd/mm/${defaultYear()} 12:00`;
     },
     onBeforeMask: function (value, opts) {
       const fromPreviousValue = (value) => {
@@ -40,9 +41,10 @@ Inputmask.extendAliases({
     yearrange: { minyear: 1900, maxyear: 2100 },
     positionCaretOnClick: "none",
     onKeyDown: function (event, buffer, caretPos, opts) {
-      if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
-        opts.placeholder = "dd/mm/yyyy";
-      }
+      opts.placeholder =
+        caretPos === 4 && isFeb29(event, buffer, caretPos)
+          ? "dd/mm/yyyy"
+          : `dd/mm/${defaultYear()}`;
     },
     onBeforeMask: function (value, opts) {
       const fromPreviousValue = (value) => {
