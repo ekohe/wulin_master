@@ -29,7 +29,7 @@ Inputmask.extendAliases({
       opts.placeholder =
         value.length === "dd/mm/yyyy hh:mm".length
           ? fromPreviousValue(value)
-          : `dd/mm/${defaultYear()}`;
+          : `dd/mm/${defaultYear()} 12:00`;
     },
   },
 });
