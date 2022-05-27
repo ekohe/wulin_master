@@ -70,14 +70,13 @@ module WulinMaster
           fire_callbacks :objects_ready
           # Render json response
           render json: render_json
-
-        rescue AUTH_ERROR_CLASS => e
-          if e.class.to_s =~ /WulinOauthAuthenticationError/i
-            render(json: { success: 401, msg: e, wulin_oauth: true}, status: 401)
-          else
-            raise e
-          end
         end
+      end
+    rescue AUTH_ERROR_CLASS => e
+      if /WulinOauthAuthenticationError/i.match?(e.class.to_s)
+        render(json: {success: 401, msg: e, wulin_oauth: true}, status: 401)
+      else
+        raise e
       end
     end
 
