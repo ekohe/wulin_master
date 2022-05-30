@@ -376,7 +376,7 @@
       this.initElements();
 
       // get choices options from choices_column value
-      if (!this.choices && this.column.choices_column) {
+      if (this.column.choices_column) {
         choices = args.item[this.column.choices_column];
       }
 
