@@ -51,15 +51,15 @@ module WulinMaster
         values = %w[,]
       end
 
-      if operator == "exact"
-        qurry_values = values
-        operator = "ilike"
+      if operator == 'exact'
+        query_values = values
+        operator = 'ilike'
       else
-        qurry_values = values.map { |v| "#{v}%" }
+        query_values = values.map { |v| "#{v}%" }
       end
-      qurry_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
-      qurry_array = [*qurry_conditions, *qurry_values]
-      query.where(qurry_array)
+      query_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
+      query_array = [*query_conditions, *query_values]
+      query.where(query_array)
     end
 
     module_function :null_query, :boolean_query, :string_query

@@ -42,7 +42,7 @@ module WulinMaster
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       if @options[:sql_expression]
-        WulinMaster::SqlQuery.string_query(query, @options[:sql_expression], filtering_value, self)
+        WulinMaster::SqlQuery.string_query(query, @options[:sql_expression], filtering_value, self, (%w[equals =].include?(filtering_operator) ? 'ILIKE' : 'NOT ILIKE'))
       else
         column_type = column_type(reflection.klass, source)
         # for string column
