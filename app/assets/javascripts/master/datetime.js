@@ -12,6 +12,7 @@ function ConfigInputmask() {
   Inputmask.extendAliases({
     wulinDateTime: {
       alias: "datetime",
+      showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
       placeholder: `dd/mm/${defaultYear()} 12:00`,
@@ -38,6 +39,7 @@ function ConfigInputmask() {
   Inputmask.extendAliases({
     wulinDate: {
       alias: "date",
+      showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
       placeholder: `dd/mm/${defaultYear()}`,
@@ -62,6 +64,7 @@ function ConfigInputmask() {
   Inputmask.extendAliases({
     wulinTime: {
       alias: "hh:mm",
+      showMaskOnHover: false,
       positionCaretOnClick: "none",
     },
   });
@@ -161,7 +164,27 @@ const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
 const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
   clickOpens: true,
   onOpen: (selectedDates, dateStr, instance) => {
-    instance.update(dateStr);
+    $(instance.input).trigger("focus");
+    setTimeout(() => {
+      instance.open();
+    }, 200);
+  },
+  onClose: (selectedDates, dateStr, instance) => {
+    const cancelInvalidInputStr = (dateStr, instance) => {
+      const notValidReg = /[a-z]/;
+      if (notValidReg.test(dateStr)) {
+        $(instance.input).val("");
+      }
+    };
+    const dropLabels = (input) =>
+      input.labels.forEach((label) => $(label).removeClass("active"));
+    const liftLabels = (input) =>
+      input.labels.forEach((label) => $(label).addClass("active"));
+
+    cancelInvalidInputStr(dateStr, instance);
+    $(instance.input).val()
+      ? liftLabels(instance.input)
+      : dropLabels(instance.input);
   },
 });
 
