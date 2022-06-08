@@ -12,7 +12,13 @@
       asyncEditorLoading: false,
       autoEdit: false,
       cellFlashingCssClass: "master_flashing",
-      rowHeight: 26
+      rowHeight: 26,
+      checkbox: { // Can be set by grid option 'checkbox: true, triggerAfterCheck: ".trigger-dom", triggerEventName: "click", maxSelectRows: 20'
+        enable: false,
+        triggerAfterCheck: null,
+        triggerEventName: null,
+        maxSelectRows: null
+      }
     };
 
     function getEditorForType(type) {
@@ -51,6 +57,10 @@
     function appendEditor(columns) {
       var i, type_str;
       for (i = 0; i < columns.length; i++) {
+        // skip checkbox, it's type is underfined
+        if (columns[i].id == "_checkbox_selector") {
+          continue
+        }
         type_str = columns[i].type.toLowerCase();
 
         // 1. append editor
@@ -91,9 +101,20 @@
     function createNewGrid(name, model, screen, path, filters, columns, states, actions, behaviors, extend_options, select_toolbar_items, user_id) {
       var gridElement, options, loader, grid, pagerElement, pager, gridAttrs, originColumns;
 
-      originColumns = deep_clone(columns);
-
       options = $.extend({}, defaultOptions, extend_options);
+      // --------------add checkbox to column----------------------------------
+      if (options.checkbox.enable) {
+        checkboxSelector = new Slick.CheckboxSelectColumn({
+          cssClass: "slick-cell-checkboxsel"
+        })
+        checkboxColumn = checkboxSelector.getColumnDefinition()
+        checkboxColumn.style_class = "slick-cell-checkboxsel"
+        checkboxColumn.width = options.checkbox.columnWidth || 70
+
+        columns = [checkboxColumn].concat(columns)
+      }
+
+      originColumns = deep_clone(columns);
 
       gridElement = $(gridElementPrefix + name + gridElementSuffix);
 
@@ -305,6 +326,13 @@
       // ------------------------------ Install some plugins -----------------------------------
       grid.registerPlugin(new Slick.AutoTooltips());
       if (options.rowDetail) { grid.registerPlugin(rowDetailView); }
+
+      if (options.checkbox.enable) {
+        grid.setSelectionModel(
+          new Slick.RowSelectionModel({ selectActiveRow: false })
+        )
+        grid.registerPlugin(checkboxSelector)
+      }
     } // createNewGrid
 
     function asyncRespDetailView(item) {

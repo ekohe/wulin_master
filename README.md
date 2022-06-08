@@ -561,6 +561,16 @@ row_detail cssClass: 'company_row_detail', panelRows: 5, useRowClick: true, show
     }
   });
   ```
+`:checkbox`
+
+Add a checkbox column as the first column
+```ruby
+checkbox true, triggerAfterCheck: ".bulk-actions-trigger", triggerEventName: "triggerDOM", maxSelectRows: 20
+```
+- **maxSelectRows**: Max rows allow to select, default is null, means no limitation. A alert will comes out when user selelect more than 20 rows if `maxSelectRows: 20` is set
+- **triggerAfterCheck** and **triggerEventName**: Trigger the DOM every time after user click the checkbox. This is used to call function outsid of WulinMaster. 
+  - If you need to reload the rows you have modified, you can use **reloadRowsByIds(ids)**
+  - If you need to remove the rows you have modified, you can use **removeRowsByIds(ids)**
 
 #### Grid actions
 

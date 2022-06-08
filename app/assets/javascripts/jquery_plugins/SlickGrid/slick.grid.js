@@ -2799,6 +2799,18 @@ if (typeof Slick === "undefined") {
             .addClass('filtered');
         });
       }
+    }   
+
+    // Trigger the option DOM after check, such that we can receive a signal that select rows is change outside of WulinMaster
+    function triggerDOM() {
+      var triggerDomElement = options.checkbox.triggerAfterCheck
+      var triggerEventName = options.checkbox.triggerEventName
+      if (triggerDomElement != null && triggerEventName != null) {
+        const event = new Event(triggerEventName)
+        $(triggerDomElement).each((_, e) => {
+          e.dispatchEvent(event)
+        })
+      }
     }
 
     function handleHeaderScroll() {
@@ -4396,6 +4408,17 @@ if (typeof Slick === "undefined") {
       if (!selectionModel) {
         throw new Error("Selection model is not set");
       }
+      // If maxSelectRows is set. When click 'select all'. It should reset select rows to the limit count and refresh list
+      var maxSelectRows = options.checkbox.maxSelectRows;
+      if (maxSelectRows != null) {
+        if (rows.length > maxSelectRows) {
+          M.toast({html: "You can only select " + maxSelectRows + " rows.", displayLength: 5000})
+          rows = rows.slice(0, maxSelectRows);
+          selectionModel.setSelectedRanges(rowsToRanges(rows));
+          this.finishInitialization();
+          return;
+        }
+      }
       selectionModel.setSelectedRanges(rowsToRanges(rows));
     }
 
@@ -4738,7 +4761,8 @@ if (typeof Slick === "undefined") {
       "isEditing": isEditing,
       "initialRender": initialRender,
       "trigger": trigger,
-      "renderFilteredInputs": renderFilteredInputs
+      "renderFilteredInputs": renderFilteredInputs,
+      "triggerDOM": triggerDOM
     });
 
     init();
