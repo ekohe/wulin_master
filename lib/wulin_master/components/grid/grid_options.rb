@@ -33,6 +33,10 @@ module WulinMaster
         option({editable: value}.merge(options))
       end
 
+      def checkbox(value = false, options = {})
+        option({checkbox:  {enable: value}.merge(options)})
+      end
+
       def column_sortable(value = true, options = {})
         option({sortable: value}.merge(options))
       end

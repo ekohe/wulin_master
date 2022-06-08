@@ -128,6 +128,20 @@
       return [url, normalLoadingMode];
     }
 
+    function generateFindByIDsUrl(ids) {
+
+      var url = path + "&record_ids=" + ids.join()
+
+      // filters, ordering, extra parameters - not specific to the viewport
+      url += conditionalURI()
+
+      // Decide which columns will be queried
+      //  Add new params[:columns]
+      url += appendVisibleColumnsListToURL()
+
+      return url
+    }
+
     function appendVisibleColumnsListToURL() {
       return '&columns=' + visibleColumnNames();
     }
@@ -278,13 +292,21 @@
         for (var i = 0; i < resp.rows.length; i++) {
           var j = parseInt(from, 10) + parseInt(i, 10);
           var obj = {};
+          // If we used checkbox, the index will increase by 1, we should get the item by adjust the indexOffset
+          var indexOffset = 0
+          if (grid.getOptions().checkbox.enable) {
+            indexOffset = 1 // start from column after checkbox
+          }
           $.each(columns, function(index, value) {
-            var item = resp.rows[i][index];
-            // match the column and the response data (compare column name and response data key)
-            if(item && typeof(item) == 'object' && !(item instanceof Array)) {
-              $.extend(true, obj, item);
-            } else {
-              obj[value.id] = item;
+            // checkbox don't need value
+            if (value.id != "_checkbox_selector") {
+              var item = resp.rows[i][index - indexOffset]
+              // match the column and the response data (compare column name and response data key)
+              if (item && typeof item == "object" && !(item instanceof Array)) {
+                $.extend(true, obj, item)
+              } else {
+                obj[value.id] = item
+              }
             }
           });
           data[j] = obj;
@@ -301,6 +323,65 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
+    }
+
+    function onFindByIDsSuccess(resp, textStatus, request) {
+
+      // Exclude detail selector from columns
+      var detailSelector = $.grep(columns, function(c) {
+        return c.id === "_detail_selector"
+      })[0]
+      var indexDetailSelector = columns.indexOf(detailSelector)
+      if (indexDetailSelector > -1) {
+        columns.splice(indexDetailSelector, 1)
+      }
+
+      if (resp.rows) {
+        for (var i = 0; i < resp.rows.length; i++) {
+ 
+          var obj = {}
+          var indexOffset = 0
+          if (grid.getOptions().checkbox.enable) {
+            indexOffset = 1 // start from column after checkbox
+          }
+          $.each(columns, function(index, value) {
+            if (value.id != "_checkbox_selector") {
+              var item = resp.rows[i][index - indexOffset]
+              // match the column and the response data (compare column name and response data key)
+              if (item && typeof item == "object" && !(item instanceof Array)) {
+                $.extend(true, obj, item)
+              } else {
+                obj[value.id] = item
+              }
+            }
+          })
+          var j = null
+          for ( var i = 0; i < data.length; i++ ) {
+            if(data[i].id == obj.id) {
+              j = i
+            }
+          }
+          if ( j != null) {
+            data[j] = obj
+            data[j].slick_index = j
+            // Loading data
+            grid.invalidateRow(j)
+          }
+        }
+      }
+      req = null
+
+      // keep oldData as a clone of data, never get deleted
+      this.loader.oldData = deep_clone(data)
+
+      // Reset data since data is not updated automatically when row detail view added
+      grid.setData(data)
+
+      grid.updateRowCount()
+
+      grid.render()
+
+      onDataLoaded.notify()
     }
 
     function getColumns() {
@@ -330,6 +411,52 @@
       }
 
       ensureData(from,to);
+    }
+
+    function reloadRowsByIds(ids) {
+      beforeRemoteRequest.notify()
+
+      var url = generateFindByIDsUrl(ids)
+
+      connectionManager.createConnection(
+        grid,
+        url,
+        loadingIndicator,
+        onFindByIDsSuccess,
+        onError,
+        currentRequestVersionNumber
+      )
+    }
+
+    function removeRowsByIds(ids) {
+      for (var i = 0; i < ids.length; i++) {
+        var index = grid.getRowByRecordId(ids[i]).index
+        delete data[index]
+        grid.invalidateRow(index)
+        totalRows -= 1
+      }
+      new_data = {}
+      j = 0
+      for (i = 0; i < data.length; i++) {
+        if (data[i]) {
+          new_data[j] = data[i]
+          j++
+        }
+      }
+      new_data.length = j
+      new_data.getItemMetadata = data.getItemMetadata
+      // loader.oldData should also update because getDataItem() in render() will get data from it
+      grid.loader.oldData = new_data
+      data = new_data
+
+      // Reset data since data is not updated automatically when row detail view added
+      grid.setData(new_data)
+
+      grid.updateRowCount()
+
+      grid.render()
+
+      onDataLoaded.notify()
     }
 
     function decideCurrentPosition(){
@@ -562,6 +689,8 @@
       "isDataLoaded": isDataLoaded,
       "ensureData": ensureData,
       "reloadData": reloadData,
+      "reloadRowsByIds": reloadRowsByIds,
+      "removeRowsByIds": removeRowsByIds,
       "setSort": setSort,
       "setSortWithoutRefresh": setSortWithoutRefresh,
       "getSortColumn": getSortColumn,

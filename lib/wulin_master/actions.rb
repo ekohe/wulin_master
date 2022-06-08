@@ -17,6 +17,8 @@ module WulinMaster
           render 'index', layout: (request.xhr? ? false : 'application')
         end
         format.json do
+          return find_by_ids if params[:record_ids].present?
+
           fire_callbacks :initialize_query
 
           # Create initial query object
@@ -288,6 +290,53 @@ module WulinMaster
     def aggregate(query)
       aggregation_behavior = grid.behavior_configs.find { |b| b[:name].to_sym == :aggregation }
       aggregation_behavior[:with].call(query)
+    end
+
+    def find_by_ids
+      ids = params[:record_ids].split(',').map(&:strip)
+      return {} unless ids.present?
+      fire_callbacks :initialize_query
+
+      # Create initial query object
+      @query ||= grid.model
+
+      fire_callbacks :query_initialized
+
+      # Make sure the relation method is called to correctly initialize it
+      # We had issues where it's not initialized through the relation method when using
+      #  the where method
+      grid.model.relation if grid.model.respond_to?(:relation)
+
+      # Add the necessary where statements to the query
+      @query_without_filter = @query
+      @count_without_filter = count_without_filter
+
+      construct_filters
+
+      fire_callbacks :query_filters_ready
+
+      # Add includes (OUTER JOIN)
+      add_includes
+
+      # Add joins (INNER JOIN)
+      add_joins
+
+      fire_callbacks :query_ready
+
+      @aggregation_result = aggregate(@query.dup) if aggregation?
+
+      # Find by ids
+      @query = @query.where(id: ids)
+
+      # Get all the objects
+      @objects = @query
+
+      @count = @objects.size
+
+      fire_callbacks :objects_ready
+
+      # Render json response
+      render json: render_json
     end
   end
 end
