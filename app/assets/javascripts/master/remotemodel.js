@@ -357,7 +357,7 @@
           })
           var j = null
           for ( var i = 0; i < data.length; i++ ) {
-            if(data[i].id == obj.id) {
+            if(data[i] && data[i].id == obj.id) {
               j = i
             }
           }
