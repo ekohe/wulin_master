@@ -130,7 +130,7 @@
 
     function generateFindByIDsUrl(ids) {
 
-      var url = path + "&record_ids=" + ids.join()
+      var url = path + "&checkbox_record_ids=" + ids.join()
 
       // filters, ordering, extra parameters - not specific to the viewport
       url += conditionalURI()

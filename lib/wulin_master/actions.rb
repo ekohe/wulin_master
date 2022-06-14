@@ -17,7 +17,7 @@ module WulinMaster
           render 'index', layout: (request.xhr? ? false : 'application')
         end
         format.json do
-          return find_by_ids if params[:record_ids].present?
+          return find_by_ids if params[:checkbox_record_ids].present?
 
           fire_callbacks :initialize_query
 
@@ -293,7 +293,7 @@ module WulinMaster
     end
 
     def find_by_ids
-      ids = params[:record_ids].split(',').map(&:strip)
+      ids = params[:checkbox_record_ids].split(',').map(&:strip)
       return {} unless ids.present?
       fire_callbacks :initialize_query
 
