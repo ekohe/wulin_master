@@ -326,27 +326,25 @@
     }
 
     function onFindByIDsSuccess(resp, textStatus, request) {
-
       // Exclude detail selector from columns
-      var detailSelector = $.grep(columns, function(c) {
+      const detailSelector = $.grep(columns, function(c) {
         return c.id === "_detail_selector"
       })[0]
-      var indexDetailSelector = columns.indexOf(detailSelector)
+      const indexDetailSelector = columns.indexOf(detailSelector)
       if (indexDetailSelector > -1) {
         columns.splice(indexDetailSelector, 1)
       }
 
       if (resp.rows) {
         for (var i = 0; i < resp.rows.length; i++) {
- 
-          var obj = {}
+          const obj = {}
           var indexOffset = 0
           if (grid.getOptions().checkbox.enable) {
             indexOffset = 1 // start from column after checkbox
           }
           $.each(columns, function(index, value) {
             if (value.id != "_checkbox_selector") {
-              var item = resp.rows[i][index - indexOffset]
+              const item = resp.rows[i][index - indexOffset]
               // match the column and the response data (compare column name and response data key)
               if (item && typeof item == "object" && !(item instanceof Array)) {
                 $.extend(true, obj, item)
@@ -355,13 +353,8 @@
               }
             }
           })
-          var j = null
-          for ( var i = 0; i < data.length; i++ ) {
-            if(data[i] && data[i].id == obj.id) {
-              j = i
-            }
-          }
-          if ( j != null) {
+          const j = Object.values(data).findIndex((row) => row.id === obj.id)
+          if (j != null) {
             data[j] = obj
             data[j].slick_index = j
             // Loading data
@@ -369,15 +362,12 @@
           }
         }
       }
-      req = null
 
       // keep oldData as a clone of data, never get deleted
       this.loader.oldData = deep_clone(data)
 
       // Reset data since data is not updated automatically when row detail view added
       grid.setData(data)
-
-      grid.updateRowCount()
 
       grid.render()
 
