@@ -39,7 +39,7 @@ var batchUpdateByAjax = function (grid, version) {
           showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-          grid.onOpenEditModalEnd.notify();
+          grid.onOpenEditModalEnd.notify({modal});
         },
         onCloseStart: function (modal, trigger) {
           $(".materialnote", modal).materialnote('destroy');
