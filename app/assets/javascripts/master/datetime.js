@@ -181,7 +181,8 @@ const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
     const liftLabels = (input) =>
       input.labels.forEach((label) => $(label).addClass("active"));
 
-    cancelInvalidInputStr(dateStr, instance);
+    // mode is in ['single', 'multiple', 'range', undefined], undefined would behave as 'single'
+    instance.instanceConfig.mode !== "range" && cancelInvalidInputStr(dateStr, instance);
     $(instance.input).val()
       ? liftLabels(instance.input)
       : dropLabels(instance.input);
