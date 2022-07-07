@@ -12,6 +12,7 @@ module WulinMaster
     scope :current_ones, -> { where(current: true) }
     scope :default_grid, ->(grid_name) { where(user_id: nil, grid_name: grid_name, name: "default") }
     scope :initial_custom_grid, ->(grid_name, name) { where(user_id: nil, grid_name: grid_name, name: name) }
+    scope :multiple_grid_states, ->(grid_name) { where(user_id: nil, grid_name: grid_name) }
 
     reject_audit if defined? ::WulinAudit
 
@@ -47,6 +48,16 @@ module WulinMaster
 
     def self.create_default(user_id, grid_name)
       grid_state = for_user_and_grid(user_id, grid_name)
+
+      grid_state_names = grid_state.pluck(:name)
+      multiple_grid_states(grid_name).each do |state|
+        next if grid_state_names.include? state.name
+        new_state = state.dup
+        new_state.user_id = user_id
+        new_state.current = false
+        new_state.save
+      end
+
       return grid_state.first if grid_state.present?
       grid_state.current_ones.create
     end
