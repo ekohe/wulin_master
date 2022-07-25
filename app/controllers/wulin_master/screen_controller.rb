@@ -2,6 +2,7 @@
 
 require 'wulin_master/utilities/variables'
 module WulinMaster
+  AUTH_ERROR_CLASS = defined?(WulinOAuth) ? WulinOAuth::WulinOauthAuthenticationError : StandardError
   class ScreenController < ApplicationController
     include WulinMaster::Menuable
     include WulinMaster::Actions

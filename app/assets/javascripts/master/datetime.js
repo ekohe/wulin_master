@@ -1,56 +1,74 @@
-// Config of Inputmask
-const currentYear = () => new Date().getFullYear();
+const defaultYear = () => {
+  const { DEFAULT_YEAR } = window;
+  return DEFAULT_YEAR && DEFAULT_YEAR.length === "yyyy".length
+    ? DEFAULT_YEAR
+    : new Date().getFullYear();
+};
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
 
-Inputmask.extendAliases({
-  wulinDateTime: {
-    alias: "datetime",
-    yearrange: { minyear: 1900, maxyear: 2100 },
-    positionCaretOnClick: "none",
-    placeholder: `dd/mm/${currentYear()} hh:mm`,
-    onKeyDown: function (event, buffer, caretPos, opts) {
-      if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
+// Config of Inputmask
+function ConfigInputmask() {
+  Inputmask.extendAliases({
+    wulinDateTime: {
+      alias: "datetime",
+      showMaskOnHover: false,
+      yearrange: { minyear: 1900, maxyear: 2100 },
+      positionCaretOnClick: "none",
+      placeholder: `dd/mm/${defaultYear()} 12:00`,
+      onKeyDown: function (event, buffer, caretPos, opts) {
         const [date, time] = opts.placeholder.split(" ");
-        opts.placeholder = `dd/mm/yyyy ${time}`;
-      }
-    },
-    onBeforeMask: function (value, opts) {
-      if (value.length === "dd/mm/yyyy hh:mm".length) {
-        const yearFromPreviousValue = value.split(" ")[0].split("/")[2];
-        const hh_mmFromPreviousValue = value.split(" ")[1];
-        opts.placeholder = `dd/mm/${yearFromPreviousValue} ${hh_mmFromPreviousValue}`;
-      }
-    },
-  },
-});
+        if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
+          opts.placeholder = `dd/mm/yyyy ${time}`;
+        }
+      },
+      onBeforeMask: function (value, opts) {
+        const fromPreviousValue = (value) => {
+          const year = value.split(" ")[0].split("/")[2];
+          const hh_mm = value.split(" ")[1];
+          return `dd/mm/${year} ${hh_mm}`;
+        };
 
-Inputmask.extendAliases({
-  wulinDate: {
-    alias: "date",
-    yearrange: { minyear: 1900, maxyear: 2100 },
-    positionCaretOnClick: "none",
-    placeholder: `dd/mm/${currentYear()}`,
-    onKeyDown: function (event, buffer, caretPos, opts) {
-      if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
-        opts.placeholder = "dd/mm/yyyy";
-      }
+        if (value.length === "dd/mm/yyyy hh:mm".length) {
+          opts.placeholder = fromPreviousValue(value);
+        }
+      },
     },
-    onBeforeMask: function (value, opts) {
-      if (value.length === "dd/mm/yyyy".length) {
-        const yearFromPreviousValue = value.split(" ")[0].split("/")[2];
-        opts.placeholder = `dd/mm/${yearFromPreviousValue}`;
-      }
-    },
-  },
-});
+  });
 
-Inputmask.extendAliases({
-  wulinTime: {
-    alias: "hh:mm",
-    positionCaretOnClick: "none",
-  },
-});
+  Inputmask.extendAliases({
+    wulinDate: {
+      alias: "date",
+      showMaskOnHover: false,
+      yearrange: { minyear: 1900, maxyear: 2100 },
+      positionCaretOnClick: "none",
+      placeholder: `dd/mm/${defaultYear()}`,
+      onKeyDown: function (event, buffer, caretPos, opts) {
+        if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
+          opts.placeholder = `dd/mm/yyyy`;
+        }
+      },
+      onBeforeMask: function (value, opts) {
+        const fromPreviousValue = (value) => {
+          const year = value.split(" ")[0].split("/")[2];
+          return `dd/mm/${year}`;
+        };
+
+        if (value.length === "dd/mm/yyyy".length) {
+          opts.placeholder = fromPreviousValue(value);
+        }
+      },
+    },
+  });
+
+  Inputmask.extendAliases({
+    wulinTime: {
+      alias: "hh:mm",
+      showMaskOnHover: false,
+      positionCaretOnClick: "none",
+    },
+  });
+}
 
 // Config of flatpickr
 
@@ -104,6 +122,10 @@ const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
     const [dd, mm, yyyy] = date.split("/");
     return new Date([`${yyyy}-${mm}-${dd}`, time].join(" "));
   },
+  onOpen: (selectedDates, dateStr, instance) => {
+    instance.jumpToDate(`01/01/${defaultYear()} 12:00`);
+    instance.update(dateStr);
+  },
 });
 
 const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
@@ -116,6 +138,14 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
     const [dd, mm, yyyy] = date.split("/");
     return new Date(`${yyyy}-${mm}-${dd}`);
   },
+  onOpen: (selectedDates, dateStr, instance) => {
+    const jumpDate =
+      instance.config.mode === "range"
+        ? instance.config.minDate
+        : `01/01/${defaultYear()}`;
+    instance.jumpToDate(jumpDate);
+    instance.update(dateStr);
+  },
 });
 
 const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
@@ -123,6 +153,10 @@ const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
   enableTime: true,
   dateFormat: "H:i",
   time_24hr: true,
+  onOpen: (selectedDates, dateStr, instance) => {
+    dateStr = dateStr.length === "hh:mm".length ? dateStr : "12:00";
+    $(instance.input).val(dateStr);
+  },
 });
 
 /* Config of flatpickr in form */
@@ -130,7 +164,28 @@ const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
 const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
   clickOpens: true,
   onOpen: (selectedDates, dateStr, instance) => {
-    instance.update(dateStr);
+    $(instance.input).trigger("focus");
+    setTimeout(() => {
+      instance.open();
+    }, 200);
+  },
+  onClose: (selectedDates, dateStr, instance) => {
+    const cancelInvalidInputStr = (dateStr, instance) => {
+      const notValidReg = /[a-z]/;
+      if (notValidReg.test(dateStr)) {
+        $(instance.input).val("");
+      }
+    };
+    const dropLabels = (input) =>
+      input.labels.forEach((label) => $(label).removeClass("active"));
+    const liftLabels = (input) =>
+      input.labels.forEach((label) => $(label).addClass("active"));
+
+    // mode is in ['single', 'multiple', 'range', undefined], undefined would behave as 'single'
+    instance.instanceConfig.mode !== "range" && cancelInvalidInputStr(dateStr, instance);
+    $(instance.input).val()
+      ? liftLabels(instance.input)
+      : dropLabels(instance.input);
   },
 });
 
@@ -138,11 +193,4 @@ const fpConfigFormDateTime = fpMergeConfigs({}, fpConfigForm, fpConfigDateTime);
 
 const fpConfigFormDate = fpMergeConfigs({}, fpConfigForm, fpConfigDate);
 
-const fpConfigFormTime = Object.assign(
-  fpMergeConfigs({}, fpConfigForm, fpConfigTime),
-  {
-    onOpen: (selectedDates, dateStr = "12:00", instance) => {
-      instance.update(dateStr);
-    },
-  }
-);
+const fpConfigFormTime = fpMergeConfigs({}, fpConfigForm, fpConfigTime);

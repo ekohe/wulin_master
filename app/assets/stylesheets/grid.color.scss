@@ -115,8 +115,17 @@ $wulin-colors: (
   }
 }
 
+// Grid: Overwrite Grid Header colors with id
+
+@mixin grid_header_color($name, $color) {
+  #{"#"+ $name + ".grid-header.has-selected-rows"} {
+    background: lighten(rgba($color, 0.15), 20%) !important
+  }
+}
+
 @each $name, $color in $wulin-colors {
   @include grid_color($name, $color);
   @include grid_bg_color($name, $color);
   @include grid_selection_color($name, $color);
+  @include grid_header_color($name, $color)
 }

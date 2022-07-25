@@ -39,7 +39,8 @@ var batchUpdateByAjax = function (grid, version) {
           showFlagCheckBox(modal, ids);
           checkTheBox(name);
           submitForm(grid, ids, selectedIndexes);
-          grid.onOpenEditModalEnd.notify(); // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/acfacbe10a1bbe863b5885afa053fe6785c4be0f
+          // grid.onOpenEditModalEnd.notify(); // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/acfacbe10a1bbe863b5885afa053fe6785c4be0f
+          grid.onOpenEditModalEnd.notify({modal});
         },
         onCloseStart: function (modal, trigger) {
           $(".materialnote", modal).materialnote('destroy');

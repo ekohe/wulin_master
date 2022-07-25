@@ -267,7 +267,7 @@
         .attr('id', id)
         .appendTo(this.args.container);
       $('<span />').attr('for', id).appendTo(this.args.container);
-      $(this.args.container).children().wrapAll($('<label />'));
+      $(this.args.container).children().wrapAll($('<label class="checkbox-editor"/>'));
       this.setElement(this.checkbox);
     };
 
@@ -376,7 +376,7 @@
       this.initElements();
 
       // get choices options from choices_column value
-      if (!this.choices && this.column.choices_column) {
+      if (this.column.choices_column) {
         choices = args.item[this.column.choices_column];
       }
 

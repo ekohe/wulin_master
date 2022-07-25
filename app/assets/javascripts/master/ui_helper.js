@@ -529,6 +529,23 @@ var Ui = {
     return $modalFooter;
   },
 
+  appendModalFooter: function (btnName, modal) {
+    var $modalFooter = this.modalFooter(btnName).appendTo(modal);
+    this.resetHeightOfModalContent(modal.find('.modal-content'));
+
+    return $modalFooter;
+  },
+
+  resetHeightOfModalContent: function (modalContentDom) {
+    const siblingsHeight = this.getSiblingHeight(modalContentDom, '.modal-header') + this.getSiblingHeight(modalContentDom, '.modal-footer');
+
+    modalContentDom.css({height: `calc(100% - ${siblingsHeight}px)`});
+  },
+
+  getSiblingHeight: function (element, selector) {
+    return parseInt(element.siblings(selector).css('height')) || 0;
+  },
+
   pdfDownloadFooter: function (pdfUrl) {
     var $pdfDownloadFooter = Ui.modalFooter('Download PDF');
     $pdfDownloadFooter.find('.confirm-btn').on('click', function () {

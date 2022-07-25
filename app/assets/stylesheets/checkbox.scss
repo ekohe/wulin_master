@@ -1,0 +1,19 @@
+.slick-header .slick-header-column.input-field input[type="checkbox"] {
+  display: block;
+  cursor: pointer;
+  opacity: 1;
+  position: relative;
+  pointer-events: auto;
+  margin-left: 50%;
+}
+
+.slick-cell-checkboxsel input[type="checkbox"] {
+  opacity: 1;
+  position: relative;
+  pointer-events: auto;
+  margin-left: 30%;
+}
+
+[title="Select/Deselect All"] input[type="text"] {
+  display: none !important;
+}

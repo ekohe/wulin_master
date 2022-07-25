@@ -392,7 +392,8 @@ module WulinMaster
 
     def format_multiple_objects(objects)
       value = {:id => [], source => []}
-      objects.each do |obj|
+      # Sort the object by value name
+      objects.sort{|a,b| a.send(source) <=> b.send(source) }.each do |obj|
         value[:id] << obj.id
         value[source] << format(obj.send(source))
       end

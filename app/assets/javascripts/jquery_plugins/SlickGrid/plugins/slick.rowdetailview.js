@@ -193,8 +193,14 @@
       // Ekohe Edit
       // if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).hasClass("detailView-toggle")) {
       if (_options.useRowClick || _grid.getColumns()[args.cell].id === _options.columnId && $(e.target).parent().hasClass('detailView-toggle')) {
+        // Disable show detail if some rows is select. Because the detail will add 3 rows. Which will make grid.getSelectedRows() can't get right select rows
+        // And should disable show detail and show alert if we are clicking on checkbox
+        if (_grid.getOptions().checkbox.enable && _grid.getSelectedRows().length > 0 && _grid.getColumns()[args.cell].id != '_checkbox_selector') {
+          M.toast({html: "Can't show detail when checkbox is selected.", displayLength: 5000})
+        }
+        var disableDetail = _grid.getOptions().checkbox.enable && _grid.getSelectedRows().length > 0 || _grid.getColumns()[args.cell].id === '_checkbox_selector';
         // if editing, try to commit
-        if (_grid.getEditorLock().isActive() && !_grid.getEditorLock().commitCurrentEdit()) {
+        if (disableDetail || (_grid.getEditorLock().isActive() && !_grid.getEditorLock().commitCurrentEdit()) ) {
           e.preventDefault();
           e.stopImmediatePropagation();
           return;

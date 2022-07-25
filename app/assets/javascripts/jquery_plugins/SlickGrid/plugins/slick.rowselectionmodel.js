@@ -97,6 +97,8 @@
       // if ((!_ranges || _ranges.length === 0) && (!ranges || ranges.length === 0)) { return; }
       _ranges = ranges;
       _self.onSelectedRangesChanged.notify(_ranges);
+      // Tell the DOM outside of WulinMaster that we have check rows by checkbox
+      _grid.triggerDOM();
     }
 
     function getSelectedRanges() {
