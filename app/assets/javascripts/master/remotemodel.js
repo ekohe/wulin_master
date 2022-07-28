@@ -71,6 +71,25 @@
       // Reset data since data is not updated automatically when row detail view added
       grid.setData(args.data);
 
+      if (
+        $(
+          '.slick-header .slick-header-column.input-field input[type="checkbox"]'
+        ).is(":checked")
+      ) {
+        data = grid.getData()
+        selectRows = []
+        $.each(data, function(rowIndex, rowValue) {
+          if (
+            rowValue != null &&
+            rowValue != "length" &&
+            rowValue != "getItemMetadata"
+          ) {
+            selectRows.push(rowIndex)
+          }
+        })
+        grid.setSelectedRows(selectRows)
+      }
+
       grid.updateRowCount();
 
       grid.render();

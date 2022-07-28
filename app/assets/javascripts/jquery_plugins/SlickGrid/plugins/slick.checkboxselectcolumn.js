@@ -80,6 +80,10 @@
           e.stopImmediatePropagation();
           return;
         }
+        // unselect the 'Select All' checkbox
+        if (!$(e.target).is(":checked")) {
+          $('.slick-header .slick-header-column.input-field input[type="checkbox"]').attr("checked", false)
+        }
 
         toggleRowSelection(args.row);
         e.stopPropagation();
@@ -107,11 +111,18 @@
         }
 
         if ($(e.target).is(":checked")) {
-          var rows = [];
-          for (var i = 0; i < _grid.getDataLength(); i++) {
-            rows.push(i);
-          }
-          _grid.setSelectedRows(rows);
+          data = _grid.getData()
+          selectRows = []
+          $.each(data, function(rowIndex, rowValue) {
+            if (
+              rowValue != null &&
+              rowValue != "length" &&
+              rowValue != "getItemMetadata"
+            ) {
+              selectRows.push(rowIndex)
+            }
+          })
+          _grid.setSelectedRows(selectRows);
         } else {
           _grid.setSelectedRows([]);
         }
