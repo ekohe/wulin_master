@@ -90,6 +90,8 @@
         if (response == 'success') {
           $('#create-state-modal').modal('close');
           location.reload();
+        } else {
+          displayErrorMessage(response)
         }
       });
     });
@@ -132,6 +134,9 @@
             $('#current-state span').text(newName);
           }
           $('#edit-state-modal').modal('close');
+          displayNewNotification('View is updated successfully!')
+        } else {
+          displayErrorMessage(response)
         }
       });
     });
@@ -142,6 +147,8 @@
         if (response == 'success') {
           $('#edit-state-modal').modal('close');
           location.reload();
+        } else {
+          displayErrorMessage(response)
         }
       });
     });
