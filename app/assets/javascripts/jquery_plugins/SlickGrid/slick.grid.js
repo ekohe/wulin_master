@@ -4725,6 +4725,7 @@ if (typeof Slick === "undefined") {
     function handleMouseWheel(e, delta, deltaX, deltaY) {
       var $rowNode = $(e.target).closest(".slick-row");
       var rowNode = $rowNode[0];
+      deltaY = deltaY ? deltaY : 0;
       if (rowNode != rowNodeFromLastMouseWheelEvent) {
 
         var $gridCanvas = $rowNode.parents('.grid-canvas');
