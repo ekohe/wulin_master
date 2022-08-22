@@ -135,7 +135,7 @@
           active = activeRow.row < bottom ? --bottom : --top;
         }
 
-        if (active >= 0 && active < _grid.getDataLength()) {
+        if (active >= 0 && active < _grid.getPreloadSize()) {
           _grid.scrollRowIntoView(active);
           var tempRanges = rowsToRanges(getRowsRange(top, bottom));
           setSelectedRanges(tempRanges);

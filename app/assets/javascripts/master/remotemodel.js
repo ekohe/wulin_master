@@ -71,23 +71,8 @@
       // Reset data since data is not updated automatically when row detail view added
       grid.setData(args.data);
 
-      if (
-        $(
-          '.slick-header .slick-header-column.input-field input[type="checkbox"]'
-        ).is(":checked")
-      ) {
-        data = grid.getData()
-        selectRows = []
-        $.each(data, function(rowIndex, rowValue) {
-          if (
-            rowValue != null &&
-            rowValue != "length" &&
-            rowValue != "getItemMetadata"
-          ) {
-            selectRows.push(rowIndex)
-          }
-        })
-        grid.setSelectedRows(selectRows)
+      if (grid.isSelectAll()) {
+        grid.selectAll()
       }
 
       grid.updateRowCount();
@@ -281,6 +266,7 @@
     function onSuccess(resp, textStatus, request) {
       var from;
       var to;
+      var isSelectAll = grid.isSelectAll();
 
       // Ekohe Add: Save row length without filter
       rowsWithoutFilter = parseInt(resp.totalNoFilter, 10);
@@ -294,6 +280,9 @@
         from = 0;
         to = parseInt(resp.count, 10);
         data.length = to;
+      }
+      data.getPreloadSize = () => {
+        return Math.min.apply(null,[resp.offset + loadingSize * 2,parseInt(resp.total, 10)])
       }
 
       totalRows = parseInt(resp.total, 10);
@@ -342,6 +331,9 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
+      if (isSelectAll) {
+        grid.selectAll();
+      }
     }
 
     function onFindByIDsSuccess(resp, textStatus, request) {
