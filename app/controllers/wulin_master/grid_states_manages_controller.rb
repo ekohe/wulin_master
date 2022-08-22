@@ -33,18 +33,10 @@ module WulinMaster
       state_value = params[:state_value] || { visibility: [] }
       default_grid_state_val = GridState.get_default_grid_state_val(params[:grid_name])
       current_state.state_value = JSON.parse(current_state.state_value.presence || default_grid_state_val || "{}").merge(state_value).to_json
-
-      data = JSON.parse current_state.state_value
-
-      if data.values.any?(&:present?)
-        self.response_body = if current_state.save
-          {status: "success", data: {id: current_state.id, name: current_state.name}}.to_json
-        else
-          {status: "failed", data: current_state.errors.full_messages.join('\n')}.to_json
-        end
+      self.response_body = if current_state.save
+        {status: "success", data: {id: current_state.id, name: current_state.name}}.to_json
       else
-        current_state.destroy
-        self.response_body = {status: "success", data: {}}.to_json
+        {status: "failed", data: current_state.errors.full_messages.join('\n')}.to_json
       end
     end
 

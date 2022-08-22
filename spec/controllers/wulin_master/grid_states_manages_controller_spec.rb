@@ -29,19 +29,6 @@ describe GridStatesManagesTestController, type: :controller do
       expect(grid_state.reload.state_value).to eq({order: {0 => "name"}}.to_json)
     end
 
-    it "delete grid_state when filter value is empty" do
-      grid_state = WulinMaster::GridState.create(grid_name: grid_name, name: "hello", user_id: user.id)
-
-      post :save, params: {
-        grid_name: grid_name,
-        state_value: {}
-      }
-
-      expect(
-        WulinMaster::GridState.where(id: grid_state.id).exists?
-      ).to be false
-    end
-
     it "saves grid_state when multiple state_values" do
       grid_state = WulinMaster::GridState.create(grid_name: grid_name, name: "default", user_id: user.id)
 
