@@ -8,10 +8,10 @@
   current_state = WulinMaster::GridState.current(current_user.id, grid.name)
 
 .grid-states-switcher
-  %a#current-state.dropdown-trigger.btn.grey.lighten-3{"data-target" => "grid_states", "data-coverTrigger" => "true", href: "#"}
+  %a.dropdown-trigger.btn.grey.lighten-3{"data-target" => "grid_states_#{grid.name}", "data-coverTrigger" => "true", href: "#", id: "current-state-#{grid.name}"}
     %span= current_state.name
     %i.material-icons.right arrow_drop_down
-  %ul#grid_states.dropdown-content
+  %ul.dropdown-content{id: "grid_states_#{grid.name}"}
     - default_states.each do |option|
       %li
         %a.grid-state-item{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
@@ -23,18 +23,18 @@
           %i.material-icons.right mode_edit
       %li.divider
     %li
-      %a{id: 'add-view-btn'}
+      %a{id: "add-view-btn-#{grid.name}"}
         %i.material-icons.left add_box
         ADD VIEW
 
-#create-state-modal.grid-states-modal.modal
+.grid-states-modal.modal{id: "create-state-modal-#{grid.name}"}
   .modal-content
     %h5 Create a new view
     .input-field
-      %input#view-name-input-create{type: 'text'}
-      %label#view-name-label-create{for: 'view-name-input-create'} View Name
+      %input{type: 'text', id: "view-name-input-create-#{grid.name}"}
+      %label{for: "view-name-input-create-#{grid.name}", id: "view-name-label-create-#{grid.name}"} View Name
   .modal-footer
-    #create-btn.btn.right.disabled Create
+    .btn.right.disabled{id: "create-btn-#{grid.name}"} Create
     .modal-close.btn-flat Cancel
 
 #edit-state-modal.grid-states-modal.modal
@@ -51,44 +51,49 @@
 :javascript
 
   $(function(){
+    const gridName = "#{grid.name}"
+    const currentState = `#current-state-${gridName}`
+    const viewNameInputCreate = `#view-name-input-create-${gridName}`
+    const createBtn = `#create-btn-${gridName}`
+    const createStateModal = `#create-state-modal-${gridName}`
 
-    $('.dropdown-trigger').dropdown();
+    $(currentState).dropdown();
     $('.modal').modal();
 
     var id;
     var oldName;
     var newName;
 
-    $("#add-view-btn").on('click', function() {
-      $('#create-state-modal').modal('open');
+    $(`#add-view-btn-${gridName}`).on('click', function() {
+      $(createStateModal).modal('open');
     });
 
-    $("#current-state").on('click', function() {
+    $(currentState).on('click', function() {
       var $icon = $(this).children('.material-icons');
       var up = 'arrow_drop_up'
       var down = 'arrow_drop_down'
       $icon.html($icon.text() == up ? down : up);
     });
 
-    $("#view-name-input-create").on('input', function() {
-      $('#create-btn').toggleClass('disabled', !$(this).val());
+    $(viewNameInputCreate).on('input', function() {
+      $(createBtn).toggleClass('disabled', !$(this).val());
     });
 
-    $("#view-name-input-create").on('keydown', function(e) {
-      if(e.keyCode == 13 && !$('#create-btn').hasClass('disabled')) {
-        $('#create-btn').click();
+    $(viewNameInputCreate).on('keydown', function(e) {
+      if(e.keyCode == 13 && !$(createBtn).hasClass('disabled')) {
+        $(createBtn).click();
       }
     });
 
-    $('#create-btn').on('click', function() {
+    $(createBtn).on('click', () => {
       var data = {
-        grid_name: "#{grid.name}",
-        state_name: $("#view-name-input-create").val()
+        grid_name: `${gridName}`,
+        state_name: $(viewNameInputCreate).val()
       };
 
       $.post('/wulin_master/grid_states_manages/create', data, function(response){
         if (response == 'success') {
-          $('#create-state-modal').modal('close');
+          $(createStateModal).modal('close');
           location.reload();
         } else {
           displayErrorMessage(response)
@@ -131,7 +136,7 @@
           $('#view-name-input-edit').text(newName);
           $('#grid-state-' + id).text(newName);
           if ("#{current_state.id}" == id) {
-            $('#current-state span').text(newName);
+            $(`${currentState} span`).text(newName);
           }
           $('#edit-state-modal').modal('close');
           displayNewNotification('View is updated successfully!')

@@ -7,7 +7,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
     var grid = this.getGrid();
     if(!grid) return false;
 
-    var $stateItems = $('.grid-states-switcher .grid-state-item');
+    var $stateItems = $(`#grid_states_${grid.name} .grid-state-item`);
     if($stateItems.length === 0) return false;
 
     // main event, change grid state template
@@ -19,10 +19,7 @@ WulinMaster.actions.MultipleGridStates = $.extend({}, WulinMaster.actions.BaseAc
         data: { id: stateId, authenticity_token: decodeURIComponent(window._token) },
         success: function(msg) {
           if(msg == "success") {
-            var grid_url = grid.path + grid.query;
-            $.get(grid_url, function(data){
-              grid.container.replaceWith(data);
-            });
+            location.reload()
           } else {
             displayErrorMessage(msg);
           }
