@@ -2799,7 +2799,7 @@ if (typeof Slick === "undefined") {
             .addClass('filtered');
         });
       }
-    }   
+    }
 
     // Trigger the option DOM after check, such that we can receive a signal that select rows is change outside of WulinMaster
     function triggerDOM() {
@@ -4631,6 +4631,7 @@ if (typeof Slick === "undefined") {
       "onRendered": new Slick.Event(),
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
+      "onDeletedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
       "onAddExtraCellClasses": new Slick.Event(),
       "onOpenCreateModalEnd": new Slick.Event(),

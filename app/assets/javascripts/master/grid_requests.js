@@ -97,6 +97,7 @@ var Requests = {
       data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
       success: function(msg) {
         if(msg.success) {
+          grid.onDeletedByAjax.notify({ids, msg});
           grid.resetActiveCell();
           var from = parseInt(range[0] / 200, 10) * 200;
           var to = range[1]+1;
