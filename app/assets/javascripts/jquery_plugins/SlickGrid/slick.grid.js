@@ -4478,13 +4478,16 @@ if (typeof Slick === "undefined") {
     }
 
     function isColumnEditable(column_option) {
+      const readOnlyPermissionKey = [self.columnpicker.getCurrentUserId(), 'read_only_permission'].join(":")
       if(column_option.editable == undefined) {
         return options.editable;
-      } else {
+      } else if((column_option.editable === true) && column_option.hasOwnProperty(readOnlyPermissionKey) && (column_option[readOnlyPermissionKey] === true)){
+        //override editable if current_user has only read permission
+        return column_option.editable = false
+      }else {
         return column_option.editable;
       }
     }
-
     function renderLoadingRows(range) {
       var stringArray = [];
       var colCount = $headers.children().length;
