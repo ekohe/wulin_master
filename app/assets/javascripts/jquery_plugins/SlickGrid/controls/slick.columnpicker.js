@@ -41,6 +41,7 @@
     var _grid = grid;
     var $list;
     var $menu;
+    var $user_id = user_id;
     var columnCheckboxes;
     var onColumnsChanged = new Slick.Event();
 
@@ -92,6 +93,10 @@
       // Ekohe Add: bind the column pick event
       $menu.bind("click", handleColumnPick);
       bindGrid();
+    }
+
+    function getCurrentUserId() {
+      return $user_id;
     }
 
     // Ekohe Add: Assign the picker itself to grid
@@ -378,6 +383,7 @@
     // return {
       "init": init,
       "getAllColumns": getAllColumns,
+      "getCurrentUserId": getCurrentUserId,
       "destroy": destroy,
       "onColumnsPick": new Slick.Event(),
       // Ekohe Add
