@@ -18,9 +18,6 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
       let index = grid.getRowByRecordId(fileId).index;
       let selectGrid = grid.getData()[index];
       let gridId = selectGrid.id;
-      let gridName = selectGrid.grid_name;
-      let stateVal = selectGrid.state_value ? selectGrid.state_value : "";
-      let name = selectGrid.name
 
       let modal = Ui.baseModal({
         onOpenStart: function (modal, trigger) {
@@ -44,10 +41,7 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
       footer.find(".confirm-btn").on("click", function () {
         modal.modal("close");
         const data = {
-          id: gridId,
-          grid_name: gridName,
-          state_val: stateVal,
-          name: name
+          id: gridId
         }
         let url = `/wulin_master/grid_states/set_as_initial`
         $.post(url, data, function(response) {
