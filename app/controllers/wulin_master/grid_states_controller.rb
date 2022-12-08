@@ -33,7 +33,7 @@ module WulinMaster
       return unless params[:id] || params[:grid_name] || params[:state_val]
       grid = GridState.find_by(id: params[:id], name: params[:name], grid_name: params[:grid_name])
       # case when selected grid is an default grid
-      render json: {success: true, response: false, message: "Selected Grid is already set to default"} and return if grid.user_id.nil?
+      render json: {success: false, message: "Selected Grid is already set to default"} and return if grid.user_id.nil?
       # search for it's default grid state or initialize one
       default_grid = GridState.where(name: params[:name], grid_name: params[:grid_name], user_id: nil).first_or_initialize
       default_grid.state_value = params[:state_val]
