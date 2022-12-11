@@ -4,6 +4,7 @@ module WulinMaster
   class GridStatesController < ScreenController
     controller_for_screen ::GridStatesScreen
 
+    before_action :clear_users_cache
     add_callback :query_initialized, :set_user_ids_for_filtering
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
@@ -45,6 +46,11 @@ module WulinMaster
     end
 
     protected
+
+    # Make sure we fetch the new list of users
+    def clear_users_cache
+      GridState.all_users = nil
+    end
 
     def set_user_ids_for_filtering
       return if params[:filters].blank?
