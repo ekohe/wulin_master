@@ -1,0 +1,93 @@
+.grid_container {
+  // Register odd&even colors as css variables here.
+  //  - Select hex-code from _color-variables.scss
+  //  - Append hex-code with 26 for opacity if you find the color too saturated.
+  --red-even: #e5737326;
+  --red-odd: #f4433626;
+
+  --green-even: #81C78426;
+  --green-odd: #4CAF5026;
+
+  --blue-even: #64B5F626;
+  --blue-odd: #2196F326;
+
+  --orange-odd: #ff980026;
+  --orange-even: #ffb74d26;
+
+  // ---------------------
+
+  --selected-odd: #e3ebf4;
+  --selected-even: #ecf4fd;
+
+  --grid-cell-odd-filtered-bg-color: #e7eee5;
+  --grid-cell-filtered-selected-bg-color: #d4e5e3;
+  --grid-cell-even-filtered-bg-color: #f4f9f3;
+
+  .slick-row {
+    &.odd {
+      .slick-cell.colored {
+        // Add odd color here.
+        &.colored-red {
+          background-color: var(--red-odd)
+        }
+
+        &.colored-blue {
+          background-color: var(--blue-odd)
+        }
+
+        &.colored-green {
+          background-color: var(--green-odd)
+        }
+
+        &.colored-orange {
+          background-color: var(--orange-odd)
+        }
+      }
+
+      .slick-cell.colored.selected {
+        background-color: var(--selected-odd);
+      }
+
+      .slick-cell.filtered.colored {
+        background: var(--grid-cell-odd-filtered-bg-color);
+      }
+
+      .slick-cell.filtered.selected.colored {
+        background: var(--grid-cell-filtered-selected-bg-color);
+      }
+    }
+
+    &.even {
+      .slick-cell.colored {
+        // Add even color here.
+        &.colored-red {
+          background-color: var(--red-even)
+        }
+
+        &.colored-blue {
+          background-color: var(--blue-even)
+        }
+
+        &.colored-orange {
+          background-color: var(--orange-even)
+        }
+
+        &.colored-green {
+          background-color: var(--green-even)
+        }
+      }
+
+      .slick-cell.colored.selected {
+        background-color: var(--selected-even);
+      }
+
+      .slick-cell.filtered.colored {
+        background: var(--grid-cell-even-filtered-bg-color);
+      }
+
+      .slick-cell.filtered.selected.colored {
+        background: var(--grid-cell-filtered-selected-bg-color);
+      }
+    }
+  }
+}
