@@ -5,14 +5,56 @@
   --red-even: #e5737326;
   --red-odd: #f4433626;
 
-  --green-even: #81C78426;
-  --green-odd: #4CAF5026;
+  --pink-even: #f0629226;
+  --pink-odd: #e91e6326;
+
+  --purple-even: #ba68c826;
+  --purple-odd: #9c27b026;
+
+  --deep_purple-even: #9575cd26;
+  --deep_purple-odd: #673ab726;
+
+  --indigo-odd: #3f51b526;
+  --indigo-even: #7986cb26;
 
   --blue-even: #64B5F626;
   --blue-odd: #2196F326;
 
-  --orange-odd: #ff980026;
+  --light_blue-even: #4fc3f726;
+  --light_blue-odd: #03a9f426;
+
+  --cyan-even: #4dd0e126;
+  --cyan-odd: #00bcd426;
+
+  --teal-odd: #00968826;
+  --teal-even: #4db6ac26;
+
+  --green-even: #81C78426;
+  --green-odd: #4CAF5026;
+
+  --light_green-odd: #8bc34a26;
+  --light_green-even: #aed58126;
+
+  --lime-odd: #cddc3926;
+  --lime-even: #dce77526;
+
+  --yellow-even: #fff17626;
+  --yellow-odd: #ffeb3b26;
+
+  --amber-even: #ffd54f26;
+  --amber-odd: #ffc10726;
+
   --orange-even: #ffb74d26;
+  --orange-odd: #ff980026;
+
+  --deep_orange-even: #ff8a6526;
+  --deep_orange-odd: #ff572226;
+
+  --brown-even: #a1887f26;
+  --brown-odd: #79554826;
+
+  --blue_grey-even: #90a4ae26;
+  --blue_grey-odd: #607d8b26;
 
   // ---------------------
 
@@ -26,21 +68,76 @@
   .slick-row {
     &.odd {
       .slick-cell.colored {
-        // Add odd color here.
         &.colored-red {
           background-color: var(--red-odd)
+        }
+
+        &.colored-pink {
+          background-color: var(--pink-odd)
+        }
+
+        &.colored-purple {
+          background-color: var(--purple-odd)
+        }
+
+        &.colored-deep_purple {
+          background-color: var(--deep_purple-odd)
+        }
+
+        &.colored-indigo {
+          background-color: var(--indigo-odd)
         }
 
         &.colored-blue {
           background-color: var(--blue-odd)
         }
 
+        &.colored-light_blue {
+          background-color: var(--light_blue-odd)
+        }
+
+        &.colored-cyan {
+          background-color: var(--cyan-odd)
+        }
+
+        &.colored-teal {
+          background-color: var(--teal-odd)
+        }
+
         &.colored-green {
           background-color: var(--green-odd)
         }
 
+        &.colored-light_green {
+          background-color: var(--light_green-odd)
+        }
+
+        &.colored-lime {
+          background-color: var(--lime-odd)
+        }
+
+        &.colored-yellow {
+          background-color: var(--yellow-odd)
+        }
+
+        &.colored-amber {
+          background-color: var(--amber-odd)
+        }
+
         &.colored-orange {
           background-color: var(--orange-odd)
+        }
+
+        &.colored-deep_orange {
+          background-color: var(--deep_orange-odd)
+        }
+
+        &.colored-brown {
+          background-color: var(--brown-odd)
+        }
+
+        &.colored-blue_grey {
+          background-color: var(--blue_grey-odd)
         }
       }
 
@@ -59,21 +156,76 @@
 
     &.even {
       .slick-cell.colored {
-        // Add even color here.
         &.colored-red {
           background-color: var(--red-even)
+        }
+
+        &.colored-pink {
+          background-color: var(--pink-even)
+        }
+
+        &.colored-purple {
+          background-color: var(--purple-even)
+        }
+
+        &.colored-deep_purple {
+          background-color: var(--deep_purple-even)
+        }
+
+        &.colored-indigo {
+          background-color: var(--indigo-even)
         }
 
         &.colored-blue {
           background-color: var(--blue-even)
         }
 
-        &.colored-orange {
-          background-color: var(--orange-even)
+        &.colored-light_blue {
+          background-color: var(--light_blue-even)
+        }
+
+        &.colored-cyan {
+          background-color: var(--cyan-even)
+        }
+
+        &.colored-teal {
+          background-color: var(--teal-even)
         }
 
         &.colored-green {
           background-color: var(--green-even)
+        }
+
+        &.colored-light_green {
+          background-color: var(--light_green-even)
+        }
+
+        &.colored-lime {
+          background-color: var(--lime-even)
+        }
+
+        &.colored-yellow {
+          background-color: var(--yellow-even)
+        }
+
+        &.colored-amber {
+          background-color: var(--amber-even)
+        }
+
+        &.colored-orange {
+          background-color: var(--orange-even)
+        }
+
+        &.colored-deep_orange {
+          background-color: var(--deep_orange-even)
+        }
+
+        &.colored-brown {
+          background-color: var(--brown-even)
+        }
+
+        &.colored-blue_grey {
+          background-color: var(--blue_grey-even)
         }
       }
 
