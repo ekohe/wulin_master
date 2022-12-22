@@ -475,6 +475,10 @@ if (typeof Slick === "undefined") {
       var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
       var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
       var visiableSelectButtons = $gridContainer.find('.toolbar-select .toolbar_item:visible');
+      //initialize tooltip
+      $(document).ready(function(){
+        $('.tooltipped').tooltip();
+      });
       // 5 is a buffer width to void being too crowd.
       var singleSelectButtonWidth = (visiableSelectButtons.width() || 38) + 5;
       var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
@@ -718,6 +722,8 @@ if (typeof Slick === "undefined") {
     }
 
     function handleWindowResize() {
+      //tooltip position issue on window resize https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/266
+      $('.material-tooltip').remove();
       restoreButtons();
       updatePagerButtons();
       updateGridHeightInModal();
