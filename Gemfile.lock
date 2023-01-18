@@ -6,7 +6,7 @@ PATH
       haml-rails
       jquery-rails
       jquery-ui-rails
-      material_icons
+      material_icons (~> 2.2.1)
       materialize-sass (~> 1.0.0)
       rails
       responders
@@ -241,7 +241,7 @@ GEM
     puma (5.4.0)
       nio4r (~> 2.0)
     racc (1.5.2)
-    rack (2.2.3)
+    rack (2.2.6.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.0.3.7)
