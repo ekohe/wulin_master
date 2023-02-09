@@ -3302,6 +3302,7 @@ if (typeof Slick === "undefined") {
         return
       }
 
+      self.onDoubleClickBeforeColumnEdit.notify({grid: self, row: cell.row, activeCell: getColumns()[cell.cell]})
       // Ekohe Modify: Use column's editable option instead of grid's
       // if (options.editable) {
       if (isColumnEditable(getColumns()[cell.cell])) {
@@ -4646,6 +4647,7 @@ if (typeof Slick === "undefined") {
       "onOpenCreateModalEnd": new Slick.Event(),
       "onOpenEditModalEnd": new Slick.Event(),
       "onRelationCellEdit": new Slick.Event(),
+      "onDoubleClickBeforeColumnEdit": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
