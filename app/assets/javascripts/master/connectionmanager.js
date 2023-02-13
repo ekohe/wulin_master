@@ -10,9 +10,27 @@
       if (existingRequest !== null) { return; }
 
       // Ekohe Add: Use progress bar in grid header as indicator
-      var $header = grid.container.find('.slick-header');
-      $header.find('~ .progress').remove();
-      var $progress_bar = $('<div class="progress"><div class="indeterminate"></div></div>').insertAfter($header);
+      // var $header = grid.container.find('.slick-header');
+      // $header.find('~ .progress').remove();
+      // var $progress_bar = $('<div class="progress"><div class="indeterminate"></div></div>').insertAfter($header);
+
+      //
+      //because of the freeze feature, there are two .slick-header
+      //left and right, so put the .progress into .slick-pane-header
+      //
+      grid.container.find(".progress").remove();
+
+      // var $header = grid.container.find('.slick-header');
+      var $header = grid.container.find('.slick-pane-header');
+
+      for (var i = $header.length - 1; i >= 0; i--) {
+        let header = $header[i]
+        $('<div class="progress"><div class="indeterminate"></div></div>').insertAfter(header)
+      }
+
+      // var $progress_bar = $('<div class="progress"><div class="indeterminate"></div></div>').insertAfter($header);
+      var $progress_bar = grid.container.find(".progress")
+
       if ($('.slick-row').length == 0) {
         grid.renderLoadingRows({top: 0, bottom: 30});
       }

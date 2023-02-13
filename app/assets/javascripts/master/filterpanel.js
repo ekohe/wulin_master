@@ -31,6 +31,18 @@
         generateFilters();
       });
 
+      $grid.onColumnsFrozen.subscribe(function() {
+        currentFiltersApplied.forEach(item => {
+          let input = $grid.getHeaders().find(`.slick-header-column input[data-id=${item.id}]`)
+          if (input.length > 0) {
+            $(input).val(item.value)
+            $(input).next("label").addClass("active")
+          }
+        })
+
+        setupEventHander()
+      });
+
       // Ekohe Edit: Abstract event handers to method
       setupEventHander();
     }
@@ -48,7 +60,7 @@
 
       // Ekohe Edit: Use new MD headers instead of headerRow
       // $input = $("input", $($grid.getHeaderRow()));
-      $input = $($grid.getHeaders()).find('input');
+      // $input = $($grid.getHeaders()).find('input');
 
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
@@ -68,6 +80,7 @@
             updateCurrentFilters();
             applyCurrentFilters(currentFilters);
             setCurrentFilter();
+
             trigger(self.onFilterLoaded, {filterData:currentFiltersApplied});
           }, 1000);
         }

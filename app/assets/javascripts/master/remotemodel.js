@@ -71,23 +71,8 @@
       // Reset data since data is not updated automatically when row detail view added
       grid.setData(args.data);
 
-      if (
-        $(
-          '.slick-header .slick-header-column.input-field input[type="checkbox"]'
-        ).is(":checked")
-      ) {
-        data = grid.getData()
-        selectRows = []
-        $.each(data, function(rowIndex, rowValue) {
-          if (
-            rowValue != null &&
-            rowValue != "length" &&
-            rowValue != "getItemMetadata"
-          ) {
-            selectRows.push(rowIndex)
-          }
-        })
-        grid.setSelectedRows(selectRows)
+      if (grid.isSelectAll()) {
+        grid.selectAll()
       }
 
       grid.updateRowCount();
@@ -281,6 +266,7 @@
     function onSuccess(resp, textStatus, request) {
       var from;
       var to;
+      var isSelectAll = grid.isSelectAll();
 
       // Ekohe Add: Save row length without filter
       rowsWithoutFilter = parseInt(resp.totalNoFilter, 10);
@@ -294,6 +280,9 @@
         from = 0;
         to = parseInt(resp.count, 10);
         data.length = to;
+      }
+      data.getPreloadSize = () => {
+        return Math.min.apply(null,[resp.offset + loadingSize * 2,parseInt(resp.total, 10)])
       }
 
       totalRows = parseInt(resp.total, 10);
@@ -342,6 +331,58 @@
 
       // Updating pager
       onPagingInfoChanged.notify(getPagingInfo());
+      if (isSelectAll) {
+        grid.selectAll();
+      }
+    }
+
+    function onFindByIDsSuccess(resp, textStatus, request) {
+      // Exclude detail selector from columns
+      const detailSelector = $.grep(columns, function(c) {
+        return c.id === "_detail_selector"
+      })[0]
+      const indexDetailSelector = columns.indexOf(detailSelector)
+      if (indexDetailSelector > -1) {
+        columns.splice(indexDetailSelector, 1)
+      }
+
+      if (resp.rows) {
+        for (var i = 0; i < resp.rows.length; i++) {
+          const obj = {}
+          var indexOffset = 0
+          if (grid.getOptions().checkbox.enable) {
+            indexOffset = 1 // start from column after checkbox
+          }
+          $.each(columns, function(index, value) {
+            if (value.id != "_checkbox_selector") {
+              const item = resp.rows[i][index - indexOffset]
+              // match the column and the response data (compare column name and response data key)
+              if (item && typeof item == "object" && !(item instanceof Array)) {
+                $.extend(true, obj, item)
+              } else {
+                obj[value.id] = item
+              }
+            }
+          })
+          const j = Object.values(data).findIndex((row) => row.id === obj.id)
+          if (j != null) {
+            data[j] = obj
+            data[j].slick_index = j
+            // Loading data
+            grid.invalidateRow(j)
+          }
+        }
+      }
+
+      // keep oldData as a clone of data, never get deleted
+      this.loader.oldData = deep_clone(data)
+
+      // Reset data since data is not updated automatically when row detail view added
+      grid.setData(data)
+
+      grid.render()
+
+      onDataLoaded.notify()
     }
 
     function onFindByIDsSuccess(resp, textStatus, request) {

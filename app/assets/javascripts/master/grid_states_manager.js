@@ -32,6 +32,9 @@ var GridStatesManager = {
 
     // save columns sorting info when columns sorted
     grid.onSort.subscribe(function(e, args){
+      //
+      //subscribe onSort event, will perform a request to save the grid states
+      //
       var loader = grid.loader, sortJson = {};
       sortJson["sortCol"] = loader.getSortColumn();
       sortJson["sortDir"] = loader.getSortDirection();

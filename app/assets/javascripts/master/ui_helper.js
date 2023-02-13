@@ -101,7 +101,7 @@ var Ui = {
           }
           Ui.setupComponents(grid);
 
-          grid.onOpenCreateModalEnd.notify();
+          grid.onOpenCreateModalEnd.notify(); // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/commit/acfacbe10a1bbe863b5885afa053fe6785c4be0f
         },
         onCloseStart: function (modal) {
           $(".materialnote", modal).materialnote("destroy");

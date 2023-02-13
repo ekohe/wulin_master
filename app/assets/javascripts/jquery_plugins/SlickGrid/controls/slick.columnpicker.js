@@ -216,8 +216,11 @@
           return column.column_name != menuItemName;
         });
 
+        let frozenColumnName = grid.getOptions().frozenColumnName
         // Update columns
         grid.setColumns(visibleColumns);
+
+        grid.freezeColumnByName(frozenColumnName)
 
         _self.onColumnsPick.notify({});
     }
@@ -355,13 +358,34 @@
       // TODO: Use e.target instead of using columnpicker element
 
       var visibleColumns = [];
+      let index = -1;
+
       $.each($('#' + grid.name + '-columnpicker li input'), function(i, e) {
+
+        for(let idx = 0; idx < grid.columns.length; idx++) {
+          let {column_name} = grid.columns[idx]
+          if (column_name == columns[i].column_name) {
+            index = idx
+            break;
+          }
+        }
+
         if ($(this).is(":checked")) {
+          delete(columns[i].visible)
+          delete(grid.columns[index].visible)
+
           visibleColumns.push(columns[i]);
           $(this).addClass("filled-in");
+        } else {
+          grid.columns[index].visible = false
         }
       });
+
+      let frozenColumnName = grid.getOptions().frozenColumnName
+
       grid.setColumns(visibleColumns);
+
+      grid.freezeColumnByName(frozenColumnName)
 
       // Ekohe Add: Reset filters
       $(grid.getHeaders()).find('input').keyup();
