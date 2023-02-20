@@ -122,11 +122,23 @@ module WulinMaster
       uri.to_s
     end
 
+    def hash_to_query(query_parameters, namespace = nil)
+      query = query_parameters.map do |key, value|
+        if value.is_a?(Hash)
+          hash_to_query(value, namespace ? "#{namespace}[#{key}]" : key)
+        else
+          "#{CGI.escape(key.to_s)}=#{CGI.escape(value.to_s)}"
+        end
+      end.join("&")
+
+      namespace ? query : query.gsub(/^&/, '')
+    end
+
     def path_for_json
       query_parameters = controller.request.query_parameters
       uri = URI.parse(path).dup
       uri.path << ".json"
-      uri.query = [uri.query, query_parameters.to_query].compact.join('&')
+      uri.query = [uri.query, hash_to_query(query_parameters)].compact.join('&')
       uri.to_s
     end
 
