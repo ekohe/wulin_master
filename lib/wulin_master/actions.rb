@@ -97,7 +97,12 @@ module WulinMaster
       end
       render json: {success: true}
     rescue StandardError
-      render json: {success: false, error_message: $ERROR_INFO.message}
+      error_message = if record
+        record.errors.full_messages.join(',').presence || $ERROR_INFO.message
+      else
+        $ERROR_INFO.message
+      end
+      render json: {success: false, error_message: error_message}
     end
 
     def destroy
