@@ -170,9 +170,7 @@ module WulinMaster
     end
 
     def append_choices
-      return if @options[:choices].present? && !@options[:choices].is_a?(String)
-
-      @options[:choices] = begin
+      @options[:choices] ||= begin
         params_hash = {
           grid: @grid_class.name,
           column: source.to_s,
@@ -186,9 +184,7 @@ module WulinMaster
     end
 
     def reflection_options
-      return {} if @options[:choices].present? && !@options[:choices].is_a?(String)
-
-      @options[:choices] = begin
+      @options[:choices] ||= begin
         if reflection
           params_hash = {
             grid: @grid_class.name,
