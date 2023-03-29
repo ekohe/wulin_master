@@ -91,21 +91,18 @@
     },
 
     NumberWithDelimiterFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (columnDef.precision == undefined) {
-        var precision = 0;
-      } else {
-        var precision = columnDef.precision;
-      }
+      const { precision = 0, prefix = "", suffix = "", fallback = "" } = columnDef;
 
-      if (value === null || value === undefined || value === '') {
-        var text = '';
-      } else {
-        if (precision == 0){
-          var text = parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        } else {
-          var text = parseFloat(value).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-      }
+      const formatWithPrecision = (value, precision) => parseInt(precision) === 0
+        ? parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        : parseFloat(value).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      const text = (value => {
+        const isEmpty = value === null || value === undefined || value === "";
+        if (isEmpty) return fallback;
+        return `${prefix}${formatWithPrecision(value, precision)}${suffix}`;
+      })(value);
+
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
