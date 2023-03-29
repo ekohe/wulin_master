@@ -723,7 +723,9 @@ if (typeof Slick === "undefined") {
 
     function handleWindowResize() {
       //tooltip position issue on window resize https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/266
-      $('.material-tooltip').remove();
+      $(".tooltipped").map(function(i,item) {
+        $(item).tooltip("destroy")
+      })
       restoreButtons();
       updatePagerButtons();
       updateGridHeightInModal();
