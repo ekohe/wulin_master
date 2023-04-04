@@ -184,32 +184,37 @@ module WulinMaster
     end
 
     def reflection_options
-      @options[:choices] ||= begin
-        if reflection
-          params_hash = {
-            grid: @grid_class.name,
-            column: @name.to_s,
-            source: source,
-            klass: klass_name,
-            screen: @options[:screen],
-            options_condition: @options[:options_condition]
-          }
-          "/wulin_master/fetch_options?#{params_hash.to_param}"
-        elsif @options[:distinct]
-          params_hash = {
-            grid: @grid_class.name,
-            column: @name.to_s,
-            source: form_name,
-            klass: klass_name,
-            screen: @options[:screen],
-            options_condition: @options[:options_condition]
-          }
-          "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
-        else
-          []
+      choices = @options[:choices]
+
+      if choices.blank?
+        choices = begin
+          if reflection
+            params_hash = {
+              grid: @grid_class.name,
+              column: @name.to_s,
+              source: source,
+              klass: klass_name,
+              screen: @options[:screen],
+              options_condition: @options[:options_condition]
+            }
+            "/wulin_master/fetch_options?#{params_hash.to_param}"
+          elsif @options[:distinct]
+            params_hash = {
+              grid: @grid_class.name,
+              column: @name.to_s,
+              source: form_name,
+              klass: klass_name,
+              screen: @options[:screen],
+              options_condition: @options[:options_condition]
+            }
+            "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
+          else
+            []
+          end
         end
       end
-      { choices: @options[:choices], source: source }
+
+      { choices: choices, source: source }
     end
 
     # Spec: Suppose a post belongs_to an author. In the post grid, we can have columns like
