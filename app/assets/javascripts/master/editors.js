@@ -410,14 +410,14 @@
 
       // Append the current value option, otherwise this.serializeValue can't get it
       if (args.item[this.column.field]) {
-        this.select.append("<option style='display: none;' value='" + args.item[this.column.field] + "'>" + args.item[this.column.field] + "</option>");
+        this.select.append(`<option style='display: none;' value="${args.item[this.column.field]}">${args.item[this.column.field]}</option>`);
         this.select.val(args.item[this.column.field]);
       }
 
       // Append options from choices array
       $.each(selectOptions, function(index, value) {
         value = value.name || value;
-        this.select.append("<option value='" + value + "'>" + value + "</option>")
+        this.select.append(`<option value="${value}">${value}</option>`)
       }.bind(this));
 
       this.setAllowSingleDeselect();
@@ -463,7 +463,7 @@
         // set options with AJAX
         var ajaxOptions = [];
         $.each(itemdata, function(index, value) {
-          ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
+          ajaxOptions.push(`<option value="${value}">${value}</option>`);
         });
         this.select.append(ajaxOptions.join(''));
 
@@ -567,9 +567,7 @@
       $.each(dateset, function(index, value) {
         if (!this.field || this.field.id != value.id) {
           this.arrOptions.push(
-            "<option value='" + value.id + "'>" +
-            value[this.source] +
-            "</option>"
+            `<option value="${value.id}">${value[this.source]}</option>`
           );
         }
       }.bind(this));
@@ -579,9 +577,7 @@
 
     this.appendOptions = function(target, value) {
       target.append(
-        "<option value='" + value.id + "'>" +
-        value[this.source] +
-        "</option>"
+        `<option value="${value.id}">${value[this.source]}</option>`
       );
     };
   }
