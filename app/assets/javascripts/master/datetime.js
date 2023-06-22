@@ -16,13 +16,13 @@ function ConfigInputmask() {
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
       placeholder: `dd/mm/${defaultYear()} 12:00`,
-      onKeyDown: function (event, buffer, caretPos, opts) {
+      onKeyDown: function(event, buffer, caretPos, opts) {
         const [date, time] = opts.placeholder.split(" ");
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy ${time}`;
         }
       },
-      onBeforeMask: function (value, opts) {
+      onBeforeMask: function(value, opts) {
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
           const hh_mm = value.split(" ")[1];
@@ -32,8 +32,8 @@ function ConfigInputmask() {
         if (value.length === "dd/mm/yyyy hh:mm".length) {
           opts.placeholder = fromPreviousValue(value);
         }
-      },
-    },
+      }
+    }
   });
 
   Inputmask.extendAliases({
@@ -43,12 +43,12 @@ function ConfigInputmask() {
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
       placeholder: `dd/mm/${defaultYear()}`,
-      onKeyDown: function (event, buffer, caretPos, opts) {
+      onKeyDown: function(event, buffer, caretPos, opts) {
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy`;
         }
       },
-      onBeforeMask: function (value, opts) {
+      onBeforeMask: function(value, opts) {
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
           return `dd/mm/${year}`;
@@ -57,16 +57,16 @@ function ConfigInputmask() {
         if (value.length === "dd/mm/yyyy".length) {
           opts.placeholder = fromPreviousValue(value);
         }
-      },
-    },
+      }
+    }
   });
 
   Inputmask.extendAliases({
     wulinTime: {
       alias: "hh:mm",
       showMaskOnHover: false,
-      positionCaretOnClick: "none",
-    },
+      positionCaretOnClick: "none"
+    }
   });
 }
 
@@ -110,7 +110,7 @@ const fpMergeConfigs = (...configs) => {
 };
 
 const fpConfigInit = {
-  allowInput: true,
+  allowInput: true
 };
 
 const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
@@ -120,12 +120,12 @@ const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
   parseDate: (str) => {
     const [date, time] = str.split(" ");
     const [dd, mm, yyyy] = date.split("/");
-    return new Date([`${yyyy}-${mm}-${dd}`, time].join(" "));
+    return new Date(`${yyyy}-${mm}-${dd}T${time}`);
   },
   onOpen: (selectedDates, dateStr, instance) => {
     instance.jumpToDate(`01/01/${defaultYear()} 12:00`);
     instance.update(dateStr);
-  },
+  }
 });
 
 const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
@@ -136,7 +136,7 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
   parseDate: (str) => {
     const [date, time] = str.split(" ");
     const [dd, mm, yyyy] = date.split("/");
-    return new Date(`${yyyy}-${mm}-${dd}`);
+    return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
   },
   onOpen: (selectedDates, dateStr, instance) => {
     const jumpDate =
@@ -145,7 +145,7 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
         : `01/01/${defaultYear()}`;
     instance.jumpToDate(jumpDate);
     instance.update(dateStr);
-  },
+  }
 });
 
 const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
@@ -156,7 +156,7 @@ const fpConfigTime = fpMergeConfigs({}, fpConfigInit, {
   onOpen: (selectedDates, dateStr, instance) => {
     dateStr = dateStr.length === "hh:mm".length ? dateStr : "12:00";
     $(instance.input).val(dateStr);
-  },
+  }
 });
 
 /* Config of flatpickr in form */
@@ -186,7 +186,7 @@ const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
     $(instance.input).val()
       ? liftLabels(instance.input)
       : dropLabels(instance.input);
-  },
+  }
 });
 
 const fpConfigFormDateTime = fpMergeConfigs({}, fpConfigForm, fpConfigDateTime);
