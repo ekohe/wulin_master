@@ -165,8 +165,26 @@ module WulinMaster
       (enum? ? :enum : (column.try(:type) || association_type || options[:sql_type] || :unknown)).to_sym
     end
 
+    #
+    # https://github.com/rails/rails/blob/7-0-stable/activerecord/lib/active_record/reflection.rb#L420-L443
+    # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/reflection.rb#L419-L424
+    #
+    # Rails 7 will check the model is inherited from ActiveRecord::Base, it will raise an error if not
+    #
     def reflection
       @reflection ||= model.reflections[(@options[:through] || @name).to_s]
+
+      if Rails::VERSION::MAJOR >= 7
+        begin
+          @reflection.klass
+          @reflection
+        rescue => e
+          Rails.logger.warn "#{e.inspect}, at #{__FILE__}"
+          return nil
+        end
+      else
+        @reflection
+      end
     end
 
     def append_choices
