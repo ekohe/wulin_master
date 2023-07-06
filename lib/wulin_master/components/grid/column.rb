@@ -174,6 +174,8 @@ module WulinMaster
     def reflection
       @reflection ||= model.reflections[(@options[:through] || @name).to_s]
 
+      return nil if @reflection.nil?
+
       if Rails::VERSION::MAJOR >= 7
         begin
           @reflection.klass
