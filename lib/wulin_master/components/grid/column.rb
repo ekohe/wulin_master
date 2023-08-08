@@ -345,7 +345,7 @@ module WulinMaster
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(reflection.name.to_s))}
       when 'has_many'
-        {reflection.name => format_multiple_objects(object.send(@options[:through] || name))}
+        {reflection.name => format_multiple_objects(object.send(@options[:through] || name) || [])}
       else
         format(object.send(source.to_s))
       end
