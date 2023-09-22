@@ -7,6 +7,12 @@
   object = grid.model.new
   is_new = params["action"] === 'wulin_master_new_form'
   title = "#{title_prefix} #{model_name.titleize}"
+
+  modal_title_action = grid.actions.find{ |a| a[:name].to_s == action.to_s }
+  if modal_title_action && modal_title_action[:modal_title]
+    title = modal_title_action[:modal_title]
+  end
+
 .create_form{:id => "#{grid.name}_form", data: {action: action}}
   %h5.title= title
   = form_for object, :url => grid.path do |form|
