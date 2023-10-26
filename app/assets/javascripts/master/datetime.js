@@ -4,6 +4,10 @@ const defaultYear = () => {
     ? DEFAULT_YEAR
     : new Date().getFullYear();
 };
+const defaultMonth = () => {
+  const { DEFAULT_MONTH } = window;
+  return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : (new Date().getMonth() + 1).toString().padStart(2, '0');
+};
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
 
@@ -123,7 +127,7 @@ const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
     return new Date(`${yyyy}-${mm}-${dd}T${time}`);
   },
   onOpen: (selectedDates, dateStr, instance) => {
-    instance.jumpToDate(`01/01/${defaultYear()} 12:00`);
+    instance.jumpToDate(`01/${defaultMonth()}/${defaultYear()} 12:00`);
     instance.update(dateStr);
   }
 });
@@ -142,7 +146,7 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
     const jumpDate =
       instance.config.mode === "range"
         ? instance.config.minDate
-        : `01/01/${defaultYear()}`;
+        : `01/${defaultMonth()}/${defaultYear()}`;
     instance.jumpToDate(jumpDate);
     instance.update(dateStr);
   }
