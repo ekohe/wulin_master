@@ -1,4 +1,5 @@
 - default_year = (WulinMaster.config.default_year.respond_to?('call') && WulinMaster.config.default_year.call) || WulinMaster.config.default_year
+- default_year = (WulinMaster.config.default_month.respond_to?('call') && WulinMaster.config.default_month.call) || WulinMaster.config.default_month
 
 !!!
 %html
@@ -23,7 +24,8 @@
         }
       });
       Object.assign(window, {
-        DEFAULT_YEAR: String(#{default_year}) // see usage in `datetime.js`
+        DEFAULT_YEAR: String(#{default_year}), // see usage in `datetime.js`
+        DEFAULT_MONTH: String(#{default_month})
       });
       ConfigInputmask();
   %body

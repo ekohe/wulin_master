@@ -12,7 +12,7 @@ module WulinMaster
 
   class Configuration
     attr_accessor :app_title, :app_title_height, :always_reset_form,
-                  :default_year, :color_theme, :button_mode, :nav_sidebar_partial_path,
+                  :default_year, :default_month, :color_theme, :button_mode, :nav_sidebar_partial_path,
                   :master_detail_color_theme
 
     def initialize
@@ -20,6 +20,7 @@ module WulinMaster
       self.app_title_height = '42px'
       self.always_reset_form = false
       self.default_year = Time.zone ? Time.zone.today.year : nil
+      self.default_month = Time.zone ? Time.zone.today.month : nil
       self.color_theme = 'blue'
       self.button_mode = 'split'
       self.nav_sidebar_partial_path = ''
