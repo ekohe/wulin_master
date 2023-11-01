@@ -6,7 +6,7 @@ const defaultYear = () => {
 };
 const defaultMonth = () => {
   const { DEFAULT_MONTH } = window;
-  return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : (new Date().getMonth() + 1).toString().padStart(2, '0');
+  return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : DEFAULT_MONTH.padStart(2, '0');
 };
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
@@ -27,10 +27,12 @@ function ConfigInputmask() {
         }
       },
       onBeforeMask: function(value, opts) {
+        console.log(value)
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
+          const month = value.split(" ")[0].split("/")[1];
           const hh_mm = value.split(" ")[1];
-          return `dd/mm/${year} ${hh_mm}`;
+          return `dd/${month}/${year} ${hh_mm}`;
         };
 
         if (value.length === "dd/mm/yyyy hh:mm".length) {
@@ -46,7 +48,7 @@ function ConfigInputmask() {
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
-      placeholder: `dd/mm/${defaultYear()}`,
+      placeholder: `dd/${defaultMonth()}/${defaultYear()}`,
       onKeyDown: function(event, buffer, caretPos, opts) {
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy`;
@@ -55,7 +57,8 @@ function ConfigInputmask() {
       onBeforeMask: function(value, opts) {
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
-          return `dd/mm/${year}`;
+          const month = value.split(" ")[0].split("/")[1];
+          return `dd/${month}/${year}`;
         };
 
         if (value.length === "dd/mm/yyyy".length) {
