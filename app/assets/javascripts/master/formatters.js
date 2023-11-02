@@ -150,10 +150,10 @@
       input.setAttribute('type', 'checkbox');
       input.setAttribute('class', 'filled-in');
       input.setAttribute('checked', 'checked');
-      input.setAttribute('id', 'show-checkbox-' + row);
+      input.setAttribute('id', `show-checkbox-${row}-${cell}`);
 
       var span = document.createElement('span');
-      span.setAttribute('for', 'show-checkbox-' + row);
+      span.setAttribute('for', `show-checkbox-${row}-${cell}`);
 
       label.append(input);
       label.append(span);
