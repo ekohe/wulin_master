@@ -4,6 +4,10 @@ const defaultYear = () => {
     ? DEFAULT_YEAR
     : new Date().getFullYear();
 };
+const defaultMonth = () => {
+  const { DEFAULT_MONTH } = window;
+  return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : DEFAULT_MONTH.padStart(2, '0');
+};
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
 
@@ -25,8 +29,9 @@ function ConfigInputmask() {
       onBeforeMask: function(value, opts) {
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
+          const month = value.split(" ")[0].split("/")[1];
           const hh_mm = value.split(" ")[1];
-          return `dd/mm/${year} ${hh_mm}`;
+          return `dd/${month}/${year} ${hh_mm}`;
         };
 
         if (value.length === "dd/mm/yyyy hh:mm".length) {
@@ -51,7 +56,8 @@ function ConfigInputmask() {
       onBeforeMask: function(value, opts) {
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
-          return `dd/mm/${year}`;
+          const month = value.split(" ")[0].split("/")[1];
+          return `dd/${month}/${year}`;
         };
 
         if (value.length === "dd/mm/yyyy".length) {
@@ -123,7 +129,7 @@ const fpConfigDateTime = fpMergeConfigs({}, fpConfigInit, {
     return new Date(`${yyyy}-${mm}-${dd}T${time}`);
   },
   onOpen: (selectedDates, dateStr, instance) => {
-    instance.jumpToDate(`01/01/${defaultYear()} 12:00`);
+    instance.jumpToDate(`01/${defaultMonth()}/${defaultYear()} 12:00`);
     instance.update(dateStr);
   }
 });
@@ -142,7 +148,7 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
     const jumpDate =
       instance.config.mode === "range"
         ? instance.config.minDate
-        : `01/01/${defaultYear()}`;
+        : `01/${defaultMonth()}/${defaultYear()}`;
     instance.jumpToDate(jumpDate);
     instance.update(dateStr);
   }
