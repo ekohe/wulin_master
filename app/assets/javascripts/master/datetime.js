@@ -47,7 +47,7 @@ function ConfigInputmask() {
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
-      placeholder: `dd/${defaultMonth()}/${defaultYear()}`,
+      placeholder: `dd/mm/${defaultYear()}`,
       onKeyDown: function(event, buffer, caretPos, opts) {
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy`;
