@@ -27,7 +27,6 @@ function ConfigInputmask() {
         }
       },
       onBeforeMask: function(value, opts) {
-        console.log(value)
         const fromPreviousValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
           const month = value.split(" ")[0].split("/")[1];
