@@ -20,6 +20,14 @@ module WulinMaster
   def self.default_datetime_format
     @default_datetime_format || :db
   end
+
+  def self.default_date_format=(new_value)
+    @default_date_format = new_value
+  end
+
+  def self.default_date_format
+    @default_date_format || '%d/%m/%Y'
+  end
 end
 
 require "wulin_master/utilities/utilities"

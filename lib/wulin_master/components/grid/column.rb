@@ -28,6 +28,10 @@ module WulinMaster
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
 
+    def date_format
+      @options[:date_format] || WulinMaster.default_date_format
+    end
+
     def relation_table_name
       options[:join_aliased_as] || reflection.klass.table_name
     end
@@ -106,7 +110,7 @@ module WulinMaster
       elsif value.class == Date
         @datetime_value = value
         @datetime_excel_format = 'dd/mm/yyyy'
-        value.try(:strftime, "%d/%m/%Y")
+        value.try(:strftime, date_format)
       elsif value.class == Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'
