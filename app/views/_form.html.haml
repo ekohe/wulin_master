@@ -103,6 +103,12 @@
                   "data-target-id"   => "#{column_name}_target_flag",           |
                   "data-source"      => source,                                 |
                   "data-field"       => field                                   |
+                - if (column.options[:select_default_value].present?)
+                  :javascript
+                    var current_select_id = "#{model_name}_#{column_name}";
+                    var current_select = $("select#" + current_select_id);
+                    current_select.val("#{column.options[:select_default_value]}").change()
+                    current_select.parents(".field").find("label").addClass("active")
                 - if (column.options[:depend_column].present?)
                   :javascript
                     $(function(){
