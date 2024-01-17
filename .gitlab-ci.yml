@@ -25,7 +25,7 @@ before_script:
   - apt-get install -qy libfontconfig1
 
   # gems
-  - gem install bundler
+  - gem install bundler -v 2.4.22
   - cp spec/wulin_app/config/database.ci.yml spec/wulin_app/config/database.yml
 
   # cache dir
