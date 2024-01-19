@@ -4674,6 +4674,7 @@ if (typeof Slick === "undefined") {
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
       "updatePagingStatusFromView": updatePagingStatusFromView,
+      "restoreButtons": restoreButtons,
 
       "render": render,
       "invalidate": invalidate,
