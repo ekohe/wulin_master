@@ -19,7 +19,7 @@ function ConfigInputmask() {
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
-      placeholder: `dd/mm/${defaultYear()} 12:00`,
+      placeholder: `dd/${defaultMonth()}/${defaultYear()} 12:00`,
       onKeyDown: function(event, buffer, caretPos, opts) {
         const [date, time] = opts.placeholder.split(" ");
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
@@ -27,7 +27,7 @@ function ConfigInputmask() {
         }
       },
       onBeforeMask: function(value, opts) {
-        const fromPreviousValue = (value) => {
+        const fromPrefilledValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
           const month = value.split(" ")[0].split("/")[1];
           const hh_mm = value.split(" ")[1];
@@ -35,7 +35,9 @@ function ConfigInputmask() {
         };
 
         if (value.length === "dd/mm/yyyy hh:mm".length) {
-          opts.placeholder = fromPreviousValue(value);
+          opts.placeholder = fromPrefilledValue(value);
+        } else {
+          opts.placeholder = `dd/${defaultMonth()}/${defaultYear()} 12:00`;
         }
       }
     }
@@ -47,21 +49,23 @@ function ConfigInputmask() {
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
-      placeholder: `dd/mm/${defaultYear()}`,
+      placeholder: `dd/${defaultMonth()}/${defaultYear()}`,
       onKeyDown: function(event, buffer, caretPos, opts) {
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy`;
         }
       },
       onBeforeMask: function(value, opts) {
-        const fromPreviousValue = (value) => {
+        const fromPrefilledValue = (value) => {
           const year = value.split(" ")[0].split("/")[2];
           const month = value.split(" ")[0].split("/")[1];
           return `dd/${month}/${year}`;
         };
 
         if (value.length === "dd/mm/yyyy".length) {
-          opts.placeholder = fromPreviousValue(value);
+          opts.placeholder = fromPrefilledValue(value);
+        } else {
+          opts.placeholder = `dd/${defaultMonth()}/${defaultYear()}`;
         }
       }
     }
@@ -99,8 +103,8 @@ const fpMergeConfigs = (...configs) => {
 
     const allHooks = Object.fromEntries(
       Object.keys(all)
-        .filter((k) => isHook(k))
-        .map((k) => [k, []])
+      .filter((k) => isHook(k))
+      .map((k) => [k, []])
     );
 
     const targetHooks = Object.entries(target).filter(([k, v]) => isHook(k));
