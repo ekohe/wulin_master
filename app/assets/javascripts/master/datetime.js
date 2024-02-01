@@ -175,9 +175,6 @@ const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
   clickOpens: true,
   onOpen: (selectedDates, dateStr, instance) => {
     $(instance.input).trigger("focus");
-    setTimeout(() => {
-      instance.open();
-    }, 200);
   },
   onClose: (selectedDates, dateStr, instance) => {
     const cancelInvalidInputStr = (dateStr, instance) => {
