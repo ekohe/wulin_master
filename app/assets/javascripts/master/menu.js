@@ -3,20 +3,20 @@ var currentUrl = null;
 $(document).ready(function () {
   initialize_menu();
 
-  $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
+  $("#navigation").resizable({ handles: 'e, w', minWidth: 199, maxWidth: 500 });
 
-  $("#menu-toggle").click(function(){
+  $("#menu-toggle").click(function () {
     $('#content').toggleClass('extended-panel');
     $("#navigation").toggle();
   });
 
   // On resize of the left side panel, resize the grid
-  $("#navigation").bind("resize", function() {
-    $("#content").css('left', $("#navigation").width()+1);
+  $("#navigation").bind("resize", function () {
+    $("#content").css('left', $("#navigation").width() + 1);
     $("#navigation").css('height', 'auto');
   });
 
-  History.Adapter.bind(window, 'statechange', function() {
+  History.Adapter.bind(window, 'statechange', function () {
     loadPageForHistoryState();
   });
 
@@ -40,7 +40,7 @@ function loadPageForHistoryState() {
 
 function load_page(url) {
   // remove all the context-menu
-  $("ul.context-menu").remove()
+  $("ul.context-menu").remove();
 
   $("#screen_content").empty();
 
@@ -56,29 +56,29 @@ function load_page(url) {
   // indicators.find("#init_menu").show();
 
   $('<div />').attr('id', 'screen_content_loader_container')
-              .append($('<div />').attr('id', 'screen_content_loader'))
-              .prependTo($('#content'));
+    .append($('<div />').attr('id', 'screen_content_loader'))
+    .prependTo($('#content'));
 
   $.ajax({
     type: 'GET',
     dataType: 'html',
     data: { xhr: 1 },
     url: url,
-    success: function(html) {
+    success: function (html) {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
       // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader_container').remove();
       $("#screen_content").html(html);
 
-      setTimeout(function() {
+      setTimeout(function () {
         trackGoogleAnalytics();
 
-        let id = $("#screen_content > div").attr("id")
-        $("#screen_content").removeClass()
-        $("#screen_content").addClass(`content-${id}`)
+        let id = $("#screen_content > div").attr("id");
+        $("#screen_content").removeClass();
+        $("#screen_content").addClass(`content-${id}`);
       }, 250);
     },
-    error: function() {
+    error: function () {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
       // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader_container').remove();
@@ -87,19 +87,19 @@ function load_page(url) {
   });
 }
 
-function cleanUpEditors(id=false) {
+function cleanUpEditors(id = false) {
   // we should cleanup open editors
-  if(id) {
+  if (id) {
     $(".select-editor").data("id", id).remove();
-    $(".textarea-wrapper").data("id", id).remove()
-  }else{
-    $(".select-editor").remove()
-    $(".textarea-wrapper").remove()
+    $(".textarea-wrapper").data("id", id).remove();
+  } else {
+    $(".select-editor").remove();
+    $(".textarea-wrapper").remove();
   }
 }
 
 function trackGoogleAnalytics() {
-  if (typeof(ga)!='undefined') {
+  if (typeof (ga) != 'undefined') {
     ga('send', 'pageview', currentUrl);
   }
 }
@@ -108,7 +108,7 @@ function deselectMenuItems() { $("#menu .active").removeClass("active"); }
 
 function selectMenuItem(url) {
   rootUrl = History.getRootUrl(),
-  relativeUrl = url.replace(rootUrl,'/');
+    relativeUrl = url.replace(rootUrl, '/');
   deselectMenuItems();
   $currentLink = $('#menu li.item a[href="' + relativeUrl + '"]');
   $currentLink.parent().addClass('active');
@@ -116,12 +116,11 @@ function selectMenuItem(url) {
 
 function initialize_menu() {
   // Click to load screen page
-  $("#menu li.item a").on('click', function() {
+  $("#menu li.item a").on('click', function () {
     currentUrl = $(this).attr('href');
 
     // If the item in the menu is an absolute URL, then go to the change password page.
-    if (/^https?:\/\//i.test(currentUrl))
-    {
+    if (/^https?:\/\//i.test(currentUrl)) {
       window.open(currentUrl);
       return;
     }
@@ -141,15 +140,45 @@ function initialize_menu() {
     return false;
   });
 
-  // Click to open submenu
-  $("#menu li.submenu a").click(function() {
-    $(this).find(".indicator").toggleClass("closed");
+  // Click to toggle submenu
+  $("#menu li.submenu a").click(function () {
     $(this).siblings("ul").toggle();
     return false;
   });
 
+  $.fn.isInViewport = function() {
+    const elementTop = $(this).offset().top;
+    const elementBottom = elementTop + $(this).outerHeight();
+    const viewportTop = $(window).scrollTop();
+    const viewportBottom = viewportTop + $(window).height();
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+  };
+
+  // Focus on current active item
+  $("#menu-toolbar li a#focus").click(function () {
+    const menu = "#menu";
+    const item = "#menu li.item.active";
+    $(item).parent('ul').show();
+
+    if (!$(item).isInViewport()) {
+      $(menu).animate({
+        scrollTop: $(item).offset().top
+      }, 600);
+    }
+  });
+
+  // Expand all submenu
+  $("#menu-toolbar li a#expand").click(function () {
+    $("#menu li.submenu ul").show();
+  });
+
+  // Collapse all submenu
+  $("#menu-toolbar li a#collapse").click(function () {
+    $("#menu li.submenu ul").hide();
+  });
+
   // Click to go back to dashboard
-  $("#navigation h1 a").click(function() {
+  $("#navigation h1 a").click(function () {
     $("#menu .active").removeClass("active");
     // State management
     currentUrl = "/";
