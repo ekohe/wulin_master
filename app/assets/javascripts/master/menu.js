@@ -1,22 +1,22 @@
 var currentUrl = null;
 
-$(document).ready(function () {
+$(document).ready(function() {
   initialize_menu();
 
   $("#navigation").resizable({ handles: 'e, w', minWidth: 199, maxWidth: 500 });
 
-  $("#menu-toggle").click(function () {
+  $("#menu-toggle").click(function() {
     $('#content').toggleClass('extended-panel');
     $("#navigation").toggle();
   });
 
   // On resize of the left side panel, resize the grid
-  $("#navigation").bind("resize", function () {
+  $("#navigation").bind("resize", function() {
     $("#content").css('left', $("#navigation").width() + 1);
     $("#navigation").css('height', 'auto');
   });
 
-  History.Adapter.bind(window, 'statechange', function () {
+  History.Adapter.bind(window, 'statechange', function() {
     loadPageForHistoryState();
   });
 
@@ -56,21 +56,21 @@ function load_page(url) {
   // indicators.find("#init_menu").show();
 
   $('<div />').attr('id', 'screen_content_loader_container')
-    .append($('<div />').attr('id', 'screen_content_loader'))
-    .prependTo($('#content'));
+  .append($('<div />').attr('id', 'screen_content_loader'))
+  .prependTo($('#content'));
 
   $.ajax({
     type: 'GET',
     dataType: 'html',
     data: { xhr: 1 },
     url: url,
-    success: function (html) {
+    success: function(html) {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
       // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader_container').remove();
       $("#screen_content").html(html);
 
-      setTimeout(function () {
+      setTimeout(function() {
         trackGoogleAnalytics();
 
         let id = $("#screen_content > div").attr("id");
@@ -78,7 +78,7 @@ function load_page(url) {
         $("#screen_content").addClass(`content-${id}`);
       }, 250);
     },
-    error: function () {
+    error: function() {
       // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
       // indicators.find("#init_menu_indicator").fadeOut();
       $('#screen_content_loader_container').remove();
@@ -116,7 +116,7 @@ function selectMenuItem(url) {
 
 function initialize_menu() {
   // Click to load screen page
-  $("#menu li.item a").on('click', function () {
+  $("#menu li.item a").on('click', function() {
     currentUrl = $(this).attr('href');
 
     // If the item in the menu is an absolute URL, then go to the change password page.
@@ -141,44 +141,54 @@ function initialize_menu() {
   });
 
   // Click to toggle submenu
-  $("#menu li.submenu a").click(function () {
+  $("#menu li.submenu a").click(function() {
     $(this).siblings("ul").toggle();
     return false;
   });
 
-  $.fn.isInViewport = function() {
-    const elementTop = $(this).offset().top;
-    const elementBottom = elementTop + $(this).outerHeight();
-    const viewportTop = $(window).scrollTop();
-    const viewportBottom = viewportTop + $(window).height();
-    return elementBottom > viewportTop && elementTop < viewportBottom;
-  };
+  function elementRelativeToScrollArea(element, scrollArea) {
+    const elementTop = $(element).offset().top;
+    const elementBottom = elementTop + $(element).outerHeight();
+    const scrollAreaTop = $(scrollArea).offset().top;
+    const scrollAreaBottom = scrollAreaTop + $(scrollArea).outerHeight();
+
+    return {
+      onTop: elementTop < scrollAreaTop,
+      onBottom: elementBottom > scrollAreaBottom
+    };
+  }
 
   // Focus on current active item
-  $("#menu-toolbar li a#focus").click(function () {
+  $("#menu-toolbar li a#focus").click(function() {
     const menu = "#menu";
     const item = "#menu li.item.active";
     $(item).parent('ul').show();
 
-    if (!$(item).isInViewport()) {
+    const itemPosition = elementRelativeToScrollArea(item, menu);
+
+    if (itemPosition.onBottom) {
       $(menu).animate({
-        scrollTop: $(item).offset().top
-      }, 600);
+        scrollTop: $(item).offset().top - $(menu).offset().top
+      }, 400);
+    } else if (itemPosition.onTop) {
+      $(menu).animate({
+        scrollTop: $(menu).scrollTop() - ($(menu).offset().top - $(item).offset().top)
+      }, 400);
     }
   });
 
   // Expand all submenu
-  $("#menu-toolbar li a#expand").click(function () {
+  $("#menu-toolbar li a#expand").click(function() {
     $("#menu li.submenu ul").show();
   });
 
   // Collapse all submenu
-  $("#menu-toolbar li a#collapse").click(function () {
+  $("#menu-toolbar li a#collapse").click(function() {
     $("#menu li.submenu ul").hide();
   });
 
   // Click to go back to dashboard
-  $("#navigation h1 a").click(function () {
+  $("#navigation h1 a").click(function() {
     $("#menu .active").removeClass("active");
     // State management
     currentUrl = "/";
