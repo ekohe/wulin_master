@@ -758,6 +758,7 @@
     };
 
     this.init();
+    args.grid.onTextEditorInit.notify({editor: this, ...args});
   }
 
   TextEditor.prototype = Object.create(InputElementEditor.prototype);

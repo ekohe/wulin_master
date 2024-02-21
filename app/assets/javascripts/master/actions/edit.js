@@ -224,7 +224,7 @@ var grepValues = function (formData, jqForm, options) {
         '"]',
       jqForm
     );
-    if (flagDom.not(':checked').size() > 0) {
+    if (flagDom.is(':visible') && flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
   }

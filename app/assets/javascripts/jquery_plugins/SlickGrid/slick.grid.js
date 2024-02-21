@@ -4650,6 +4650,7 @@ if (typeof Slick === "undefined") {
       "onOpenEditModalEnd": new Slick.Event(),
       "onRelationCellEdit": new Slick.Event(),
       "onDoubleClickBeforeColumnEdit": new Slick.Event(),
+      "onTextEditorInit": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
