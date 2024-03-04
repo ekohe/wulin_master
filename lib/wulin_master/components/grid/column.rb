@@ -98,7 +98,7 @@ module WulinMaster
           value.try(:strftime, "%H:%M")
         elsif sql_type == :date || options[:inner_sql_type] == :date
           @datetime_excel_format = 'dd/mm/yyyy'
-          value.try(:strftime, "%d/%m/%Y")
+          value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
         else
           @datetime_excel_format = 'dd/mm/yyyy hh:mm'
           value.to_formatted_s(datetime_format)
@@ -106,7 +106,7 @@ module WulinMaster
       elsif value.class == Date
         @datetime_value = value
         @datetime_excel_format = 'dd/mm/yyyy'
-        value.try(:strftime, "%d/%m/%Y")
+        value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
       elsif value.class == Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'

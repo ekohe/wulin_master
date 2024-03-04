@@ -25,7 +25,8 @@
       });
       Object.assign(window, {
         DEFAULT_YEAR: String(#{default_year}), // see usage in `datetime.js`
-        DEFAULT_MONTH: String(#{default_month})
+        DEFAULT_MONTH: String(#{default_month}),
+        DATE_FORMAT: String(#{WulinMaster.config.date_format.inspect})
       });
       ConfigInputmask();
   %body

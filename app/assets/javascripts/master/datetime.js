@@ -8,6 +8,13 @@ const defaultMonth = () => {
   const { DEFAULT_MONTH } = window;
   return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : DEFAULT_MONTH.padStart(2, '0');
 };
+const wulinMasterDateFormat = () => {
+  const { DATE_FORMAT } = window;
+  return DATE_FORMAT;
+};
+const USDateFormat = () => {
+  return wulinMasterDateFormat() == 'us';
+};
 const isFeb29 = (event, buffer, caretPos) =>
   [buffer.join("").substring(0, caretPos), event.key].join("") === "29/02";
 
@@ -45,7 +52,7 @@ function ConfigInputmask() {
 
   Inputmask.extendAliases({
     wulinDate: {
-      alias: "date",
+      alias: 'date',
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
@@ -63,6 +70,34 @@ function ConfigInputmask() {
         };
 
         if (value.length === "dd/mm/yyyy".length) {
+          opts.placeholder = fromPrefilledValue(value);
+        } else {
+          opts.placeholder = `dd/${defaultMonth()}/${defaultYear()}`;
+        }
+      }
+    }
+  });
+
+  Inputmask.extendAliases({
+    wulinUSDate: {
+      alias: "mm/dd/yyyy",
+      showMaskOnHover: false,
+      yearrange: { minyear: 1900, maxyear: 2100 },
+      positionCaretOnClick: "none",
+      placeholder: `mm/dd/${defaultYear()}`,
+      onKeyDown: function(event, buffer, caretPos, opts) {
+        if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
+          opts.placeholder = `mm/dd/yyyy`;
+        }
+      },
+      onBeforeMask: function(value, opts) {
+        const fromPrefilledValue = (value) => {
+          const year = value.split(" ")[0].split("/")[2];
+          const month = value.split(" ")[0].split("/")[1];
+          return `${month}/dd/${year}`;
+        };
+
+        if (value.length === "mm/dd/yyyy".length) {
           opts.placeholder = fromPrefilledValue(value);
         } else {
           opts.placeholder = `dd/${defaultMonth()}/${defaultYear()}`;
@@ -146,8 +181,36 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
   parseDate: (str) => {
     const [date, time] = str.split(" ");
     const [dd, mm, yyyy] = date.split("/");
-    return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
-  },
+    try {
+      return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+    } catch(e) {
+      return null;
+    }
+},
+  onOpen: (selectedDates, dateStr, instance) => {
+    const jumpDate =
+      instance.config.mode === "range"
+        ? instance.config.minDate
+        : `01/01/${defaultYear()}`;
+    instance.jumpToDate(jumpDate);
+    instance.update(dateStr);
+  }
+});
+
+const fpConfigUSDate = fpMergeConfigs({}, fpConfigInit, {
+  maxDate: "12/31/2100",
+  minDate: "01/01/1900",
+  dateFormat: "m/d/Y",
+  enableTime: false,
+  parseDate: (str) => {
+    const [date, time] = str.split(" ");
+    let [mm, dd, yyyy] = date.split("/");
+    try {
+      return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+    } catch(e) {
+      return null;
+    }
+},
   onOpen: (selectedDates, dateStr, instance) => {
     const jumpDate =
       instance.config.mode === "range"
@@ -199,5 +262,7 @@ const fpConfigForm = fpMergeConfigs({}, fpConfigInit, {
 const fpConfigFormDateTime = fpMergeConfigs({}, fpConfigForm, fpConfigDateTime);
 
 const fpConfigFormDate = fpMergeConfigs({}, fpConfigForm, fpConfigDate);
+
+const fpConfigFormUSDate = fpMergeConfigs({}, fpConfigForm, fpConfigUSDate);
 
 const fpConfigFormTime = fpMergeConfigs({}, fpConfigForm, fpConfigTime);

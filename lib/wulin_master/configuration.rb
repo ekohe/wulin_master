@@ -12,7 +12,7 @@ module WulinMaster
 
   class Configuration
     attr_accessor :app_title, :app_title_height, :always_reset_form,
-                  :default_year, :default_month, :color_theme, :button_mode, :nav_sidebar_partial_path,
+                  :default_year, :default_month, :date_format, :color_theme, :button_mode, :nav_sidebar_partial_path,
                   :master_detail_color_theme
 
     def initialize
@@ -25,6 +25,9 @@ module WulinMaster
       self.button_mode = 'split'
       self.nav_sidebar_partial_path = ''
       self.master_detail_color_theme = 'teal'
+      # International format is: d/m/Y (Dec 31st 2024 is 31/12/2024)
+      # US format is: m/d/Y (Dec 31st 2024 is 12/31/2024)
+      self.date_format = 'international' # alternative is 'us'
     end
 
     def split_button_mode?

@@ -3,12 +3,25 @@
 module WulinMaster
   module ColumnAttr
     def assign_attribute(_object, value, new_attrs, attrs, type)
+      Rails.logger.info WulinMaster.config.date_format.inspect
+      Rails.logger.info "assign atribute #{value} #{field_sym} #{type.inspect}"
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
         if type == :create
           assign_relation_attr_for_create(new_attrs, value)
         elsif type == :update
           assign_relation_attr_for_update(new_attrs, value)
+        end
+      elsif WulinMaster.config.date_format == 'us' && sql_type.to_s.casecmp('date').zero?
+        # US date format requires custom parsing
+        Rails.logger.info "------ CUSTOM US Wulin Master Date format -----"
+        Rails.logger.info value.inspect
+        begin
+          parsed_date = DateTime.strptime(value, '%m/%d/%Y')
+          Rails.logger.info parsed_date.inspect
+          new_attrs[field_sym] = parsed_date
+        rescue => e
+          Rails.logger.warn "Incorrect date: #{value}"
         end
       elsif value.blank? # v == 'null'
         new_attrs[field_sym] = nil

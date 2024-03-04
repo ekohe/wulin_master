@@ -934,11 +934,12 @@
     this.init = function() {
       let gridView = $(args.container).closest('.slick-viewport')
       const fpConfigGridDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigDate);
+      const fpConfigGridUSDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigUSDate);
 
       this.initElements();
-      this.input.inputmask('wulinDate')
+      this.input.inputmask(USDateFormat() ? 'wulinUSDate' : 'wulinDate')
       if(!args.column.hide_calendar) {
-        this.input.flatpickr(fpConfigGridDate)
+        this.input.flatpickr(USDateFormat() ? fpConfigGridUSDate : fpConfigGridDate)
       }
     };
 

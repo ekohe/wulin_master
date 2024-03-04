@@ -180,10 +180,16 @@ var Ui = {
       .flatpickr(fpMergeConfigs({}, fpConfigFormDateTime, onCalendarOpenClose));
     });
     $(`${scope} input[data-date]`).each(function() {
-      let that = this
-      $(that)
-      .inputmask('wulinDate')
-      .flatpickr(fpMergeConfigs({}, fpConfigFormDate, onCalendarOpenClose));
+      let that = this;
+      if (USDateFormat()) {
+        $(that)
+        .inputmask('wulinUSDate')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormUSDate, onCalendarOpenClose));
+      } else {
+        $(that)
+        .inputmask('wulinDate')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormDate, onCalendarOpenClose));
+      }
     });
     $(`${scope} input[data-time]`).each(function() {
       let that = this
