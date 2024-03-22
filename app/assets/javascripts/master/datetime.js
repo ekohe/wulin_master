@@ -6,7 +6,9 @@ const defaultYear = () => {
 };
 const defaultMonth = () => {
   const { DEFAULT_MONTH } = window;
-  return DEFAULT_MONTH && DEFAULT_MONTH.length === 2 ? DEFAULT_MONTH : DEFAULT_MONTH.padStart(2, '0');
+  return DEFAULT_MONTH && DEFAULT_MONTH.length === "mm".length
+    ? DEFAULT_MONTH
+    : String(new Date().getMonth() + 1).padStart("mm".length, "0");
 };
 const wulinMasterDateFormat = () => {
   const { DATE_FORMAT } = window;
@@ -52,7 +54,7 @@ function ConfigInputmask() {
 
   Inputmask.extendAliases({
     wulinDate: {
-      alias: 'date',
+      alias: "date",
       showMaskOnHover: false,
       yearrange: { minyear: 1900, maxyear: 2100 },
       positionCaretOnClick: "none",
@@ -183,10 +185,10 @@ const fpConfigDate = fpMergeConfigs({}, fpConfigInit, {
     const [dd, mm, yyyy] = date.split("/");
     try {
       return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
-    } catch(e) {
+    } catch (e) {
       return null;
     }
-},
+  },
   onOpen: (selectedDates, dateStr, instance) => {
     const jumpDate =
       instance.config.mode === "range"
@@ -207,10 +209,10 @@ const fpConfigUSDate = fpMergeConfigs({}, fpConfigInit, {
     let [mm, dd, yyyy] = date.split("/");
     try {
       return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
-    } catch(e) {
+    } catch (e) {
       return null;
     }
-},
+  },
   onOpen: (selectedDates, dateStr, instance) => {
     const jumpDate =
       instance.config.mode === "range"
