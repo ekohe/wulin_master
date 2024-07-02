@@ -31,6 +31,11 @@ function ConfigInputmask() {
       placeholder: `dd/${defaultMonth()}/${defaultYear()} 12:00`,
       onKeyDown: function(event, buffer, caretPos, opts) {
         const [date, time] = opts.placeholder.split(" ");
+        const startTypingMonth = caretPos === 3 && ["0", "1"].includes(event.key);
+        if (startTypingMonth) {
+          const placeholderMonth = date.split("/")[1];
+          if (placeholderMonth[0] !== event.key) opts.placeholder = `dd/mm/${defaultYear()} ${time}`;
+        }
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy ${time}`;
         }
@@ -60,6 +65,11 @@ function ConfigInputmask() {
       positionCaretOnClick: "none",
       placeholder: `dd/${defaultMonth()}/${defaultYear()}`,
       onKeyDown: function(event, buffer, caretPos, opts) {
+        const startTypingMonth = caretPos === 3 && ["0", "1"].includes(event.key);
+        if (startTypingMonth) {
+          const placeholderMonth = opts.placeholder.split("/")[1];
+          if (placeholderMonth[0] !== event.key) opts.placeholder = `dd/mm/${defaultYear()}`;
+        }
         if (caretPos === 4 && isFeb29(event, buffer, caretPos)) {
           opts.placeholder = `dd/mm/yyyy`;
         }
@@ -122,7 +132,8 @@ function ConfigInputmask() {
 /**
  *  use fpMergeConfigs method to avoid configs overriding each other's hooks
  *  use Object.assign(target, source) or $.extend(target, source) if you do want to override `target` hooks with `source`
- * @param configs: Array of fpConfig
+ * @param configs
+ *  Array of fpConfig
  */
 const fpMergeConfigs = (...configs) => {
   /**
