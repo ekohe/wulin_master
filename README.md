@@ -310,7 +310,7 @@ Default is `false`. If set `true`, the column will appear in the `new`/`edit` fo
 
 `:label`
 
-Sets the title displayed on the column header. If not set, the column label will be the same as the column name.
+Sets the title displayed on the column header. If not set, the column label will be the same as the column name. The label can be a Proc.
 
 `:width`
 

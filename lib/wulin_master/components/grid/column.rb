@@ -17,7 +17,9 @@ module WulinMaster
     end
 
     def label
-      @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
+      column_label = @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
+      return column_label.call if column_label.is_a? Proc
+      column_label
     end
 
     def singular_name
