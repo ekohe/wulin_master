@@ -101,6 +101,11 @@
     setOffset: function (element, offsetWith) {
       var winWith = $(window).width(),
         offsetLeft = this.element.offset().left;
+
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/285
+      const lastElement = $(element).width() >= winWith - offsetLeft
+      if(lastElement) return;
+
       if (winWith - offsetLeft < offsetWith) {
         this.element.offset({
           left: winWith - offsetWith,
