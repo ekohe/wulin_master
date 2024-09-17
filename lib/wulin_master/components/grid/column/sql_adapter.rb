@@ -38,28 +38,40 @@ module WulinMaster
       end
     end
 
-    def string_query(query, column_name, value, _column, operator = "ilike")
-      logic_operator_sym = (sym = value.match(/[,&]/)) ? sym[0] : "&" # ',' or '&'
-      logic_operator = logic_operator_sym == "," ? " OR " : " AND "
-      logic_operator = " AND " if logic_operator_sym == "," && operator == "NOT ILIKE"
-      values = value.split(/\s*#{logic_operator_sym}\s*/)
-
-      case value
-      when /^&+$/
-        values = %w[&]
-      when /^,+$/
-        values = %w[,]
+    def string_query(query, column_name, filter, _, operator = "ILIKE")
+      # filter will be recovered from #transform_if_exclamation_not_equal
+      uncensored_filter = case operator
+      when /NOT ILIKE/i
+        "!#{filter}"
+      when /ILIKE/i
+        filter
       end
 
-      if operator == 'exact'
-        query_values = values
-        operator = 'ilike'
-      else
-        query_values = values.map { |v| "#{v}%" }
+      conditions = []
+      query_params = []
+
+      parts = uncensored_filter.split(/([,&])/).reject { |s| s.empty? }
+      parts.each do |part|
+        case part
+        when /,/
+          conditions << " OR "
+        when /&/
+          conditions << " AND "
+        when /^null$/i
+          conditions << "#{column_name} IS NULL"
+        when /^!null$/i
+          conditions << "#{column_name} IS NOT NULL"
+        when /^!/
+          value = part[1..]
+          conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
+          query_params << "#{value}%"
+        else
+          conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
+          query_params << "#{part}%"
+        end
       end
-      query_conditions = values.map { |_v| "cast((#{column_name}) as text) #{operator} ?" }.join(logic_operator)
-      query_array = [*query_conditions, *query_values]
-      query.where(query_array)
+
+      query.where([conditions.join, *query_params])
     end
 
     module_function :null_query, :boolean_query, :string_query
