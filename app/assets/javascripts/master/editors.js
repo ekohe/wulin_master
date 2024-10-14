@@ -103,8 +103,7 @@
         offsetLeft = this.element.offset().left;
 
       // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/285
-      const lastElement = $(element).width() >= winWith - offsetLeft
-      if(lastElement) return;
+      if ($(element).hasClass("editor-text")) return
 
       if (winWith - offsetLeft < offsetWith) {
         this.element.offset({
