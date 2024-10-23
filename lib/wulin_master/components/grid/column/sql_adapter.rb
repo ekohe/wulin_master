@@ -38,13 +38,26 @@ module WulinMaster
       end
     end
 
+    def clean_special_chars(str)
+      # remove all \s
+      cleaned_str = str.split(/([,&])/).select { |e| e.present? }.map { |e| e.strip }.join
+
+      # Replace consecutive `,` with a single comma and consecutive `&` with a single ampersand
+      cleaned_str = cleaned_str.gsub(/,{2,}/, ",").gsub(/&{2,}/, "&")
+
+      cleaned_str = cleaned_str.gsub(/,&/, ",").gsub(/&,/, "&")
+
+      # Remove trailing `,` or `&` if it exists at the end of the string (optional whitespace before it)
+      cleaned_str.gsub(/[,&]$/, "")
+    end
+
     def string_query(query, column_name, filter, _, operator = "ILIKE")
       # filter will be recovered from #transform_if_exclamation_not_equal
       uncensored_filter = case operator
       when /NOT ILIKE/i
-        "!#{filter}"
+        clean_special_chars "!#{filter}"
       when /ILIKE/i
-        filter
+        clean_special_chars filter
       end
 
       conditions = []
@@ -71,9 +84,17 @@ module WulinMaster
         end
       end
 
-      query.where([conditions.join, *query_params])
+      censored_conditions = [conditions.shift]
+      conditions.each_slice(2) do |op, condition|
+        if op =~ /OR|AND/i && condition.present?
+          censored_conditions << op
+          censored_conditions << condition
+        end
+      end
+
+      query.where([censored_conditions.join, *query_params])
     end
 
-    module_function :null_query, :boolean_query, :string_query
+    module_function :null_query, :boolean_query, :string_query, :clean_special_chars
   end
 end
