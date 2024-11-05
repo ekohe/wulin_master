@@ -67,6 +67,7 @@ var Ui = {
         Ui.setupForm(grid, false);
       }, 350);
       Ui.setupComponents(grid);
+      grid.onOpenCreateModalEnd.notify();
     });
   },
 
