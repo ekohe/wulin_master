@@ -1,4 +1,4 @@
-(function($) {
+window.WulinEditors = (function($) {
 
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
@@ -1009,4 +1009,25 @@
 
   RichTextEditor.prototype = Object.create(InputElementEditor.prototype);
 
+  return {
+    BaseEditor,
+    InputElementEditor,
+    IntegerEditor,
+    DecimalEditor,
+    YesNoCheckboxEditor,
+    SelectElementEditor,
+    SelectEditor,
+    DistinctEditor,
+    RelationEditor,
+    OtherRelationEditor,
+    HasManyEditor,
+    TextEditor,
+    TextEditorForForm,
+    TextAreaEditor,
+    DateTimeBaseEditor,
+    DateTimeEditor,
+    DateEditor,
+    TimeEditor,
+    RichTextEditor
+  }
 })(jQuery);
