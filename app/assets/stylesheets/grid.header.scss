@@ -50,6 +50,12 @@
           margin-right: 8px;
         }
       }
+      li > a.grid-state-item.grid-state-option-wide {
+        min-width: 75%;
+      }
+      li > a.grid-state-option-parent-wide {
+        width: 100%;
+      }
     }
   }
   .grid-states-modal {
