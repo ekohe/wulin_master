@@ -313,7 +313,7 @@
       // Ekohe Add
       // Addpend "Reset to defaults" checkbox
       $("<hr/>").appendTo($menu);
-      let viewName = grid.container[0].querySelector('#current-state > span') && grid.container[0].querySelector('#current-state > span').innerHTML;
+      let viewName = $(`#grid_${grid.name} .grid-states-switcher .dropdown-trigger span`).text()
       var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
