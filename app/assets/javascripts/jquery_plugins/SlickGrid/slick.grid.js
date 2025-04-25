@@ -6377,18 +6377,21 @@ if (typeof Slick === "undefined") {
 
     function getSelectedIds() {
       try {
-        var selectedIndexes = getSelectedRows();
-        var ids;
-        if (selectedIndexes.length > 0) {
-          ids = $.map(selectedIndexes,function(n, i) {
-            return getDataItem(n)['id'];
-          });
-          return ids;
-        } else {
+        const selectedIndexes = getSelectedRows();
+        if (!selectedIndexes || selectedIndexes.length === 0) {
           return [];
         }
+
+        return selectedIndexes
+          .map(index => {
+            const dataItem = getDataItem(index);
+            return dataItem && dataItem.id ? dataItem.id : null;
+          })
+          .filter(id => id !== null);
       } catch (e) {
+        console.error("Error in getSelectedIds:", e);
         alert('You selected too many rows! Please select again.');
+        return [];
       }
     }
 
