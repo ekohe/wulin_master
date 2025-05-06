@@ -70,11 +70,15 @@ module WulinMaster
 
     def filter_by_datetime(query, operator, field, value)
       operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
-      query.where(["to_char(#{field}::timestamp at time zone '#{time_zone_offset}', 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)", "#{value}%"])
+      query.where([
+        "to_char(#{field} AT TIME ZONE 'UTC' AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
+        time_zone_offset,
+        "#{value}%"
+      ])
     end
 
     def time_zone_offset
-      @time_zone_offset ||= (Time.zone.utc_offset / 1.hour)
+      Time.zone.tzinfo.name
     end
 
     def apply_inclusion_filter(query, operator, value)
