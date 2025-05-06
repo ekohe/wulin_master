@@ -8,11 +8,11 @@ describe WulinMaster::ColumnFilter do
   describe "#filter_by_datetime" do
     it "contains time zone offset" do
       fc = FakeClass.new(:created_at, GridStateGrid)
-      allow(Time.zone).to receive(:utc_offset).and_return(3.hours.to_i)
+      allow(Time.zone).to receive(:name).and_return("Etc/UTC")
 
       final_query = fc.send(:filter_by_datetime, query, "=", "created_at", "00:00")
 
-      expect(final_query.to_sql).to match(/time zone '3'/i)
+      expect(final_query.to_sql).to match(/time zone 'Etc\/UTC'/i)
     end
   end
 end
