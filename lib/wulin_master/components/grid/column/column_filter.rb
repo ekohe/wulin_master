@@ -70,11 +70,22 @@ module WulinMaster
 
     def filter_by_datetime(query, operator, field, value)
       operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
-      query.where([
-        "to_char(#{field} AT TIME ZONE 'UTC' AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
-        time_zone_offset,
-        "#{value}%"
-      ])
+
+      # Determine if this is a Date field (without time component)
+      is_date_only = field =~ /#{model.table_name}\.(\w+)$/ &&
+                     model.columns_hash[$1]&.type == :date
+
+      if is_date_only
+        # For Date fields (without time), don't apply timezone conversion
+        query.where(["to_char(#{field}::date, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
+      else
+        # For DateTime/timestamp fields, apply timezone conversion
+        query.where([
+          "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
+          time_zone_offset,
+          "#{value}%"
+        ])
+      end
     end
 
     def time_zone_offset
