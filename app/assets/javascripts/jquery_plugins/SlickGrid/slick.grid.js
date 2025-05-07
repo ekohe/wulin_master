@@ -6381,8 +6381,13 @@ if (typeof Slick === "undefined") {
         var ids;
         if (selectedIndexes.length > 0) {
           ids = $.map(selectedIndexes,function(n, i) {
-            return getDataItem(n)['id'];
-          });
+            var dataItem = getDataItem(n);
+            if (dataItem && dataItem.id) {
+              return dataItem.id;
+            } else {
+              return null;
+            }
+          }).filter(Boolean);
           return ids;
         } else {
           return [];
