@@ -2,20 +2,20 @@ var dialogIndex = 1;
 
 function displayErrorMessage(message, title, width) {
   if (message === undefined) {
-    message = 'An unexpected error occured.';
+    message = '予期しないエラーが発生しました。';
   }
   escapedHtml = escapeHtml(message);
   finalMessage = simpleFormat(escapedHtml);
 
   $('#error-content').html(finalMessage);
-  $('#error-modal .modal-title').text(title);
+  $('#error-modal .modal-title').text(title || 'エラー');
   $('#error-modal').modal('open');
 }
 
 const displayCustomizedConfirmModal = (params) => {
   const {
-    message = 'Are you sure to do this ?',
-    title = 'Confirmation',
+    message = '本当によろしいですか？',
+    title = '確認',
     confirmCallBack,
   } = params;
   $('#confirm-content').html(message);
