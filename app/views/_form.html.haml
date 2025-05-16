@@ -6,7 +6,7 @@
   end
   object = grid.model.new
   is_new = params["action"] === 'wulin_master_new_form'
-  title = "#{title_prefix} #{model_name.titleize}"
+  title = "#{model_name.titleize}#{title_suffix}"
 
   modal_title_action = grid.actions.find{ |a| a[:name].to_s == action.to_s || a[:name].to_s == 'edit'}
   if modal_title_action && modal_title_action[:modal_title]
