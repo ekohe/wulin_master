@@ -64,6 +64,13 @@ module WulinMaster
       query_params = []
 
       parts = uncensored_filter.split(/([,&])/).reject { |s| s.empty? }
+
+      # Remove head if it's a comma or ampersand
+      parts.shift if parts.first&.match?(/^[,&]$/)
+
+      # Remove tail if it's a comma or ampersand
+      parts.pop if parts.last&.match?(/^[,&]$/)
+
       parts.each do |part|
         case part
         when /,/
