@@ -16,11 +16,11 @@ module WulinMaster
     }
 
     @default_titles = {
-      create: '作成',
-      edit: '編集',
-      delete: '削除',
-      export: 'エクスポート',
-      audit: '監査'
+      create: 'Create',
+      edit: 'Edit',
+      delete: 'Delete',
+      export: 'Export',
+      audit: 'Audit'
     }
 
     class << self
