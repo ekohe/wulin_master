@@ -63,8 +63,11 @@ module WulinMaster
           # Add limit and offset
           parse_pagination
           # Get all the objects
-          @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
 
+          Rails.logger.info "-----------------  @objects is a #{@query.class}------------------------"
+          t = Time.current
+          @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
+          Rails.logger.info "-----------------  @objects processed in #{Time.current - t} sec. ------------------------"
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
             @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
@@ -203,12 +206,9 @@ module WulinMaster
     def render_json
       # Render ruby objects
       t = Time.current
-      Rails.logger.info "----------------- Rendered JSON triggered on #{t}. ------------------------"
 
       @object_array = grid.arraify(@objects)
 
-      Rails.logger.info "----------------- Rendered JSON arraified in #{Time.current - t} sec. ------------------------"
-      
       data = {
         offset: @offset,
         total: @count,
@@ -216,8 +216,6 @@ module WulinMaster
         count: @per_page,
         rows: @object_array
       }
-
-      Rails.logger.info "----------------- Rendered JSON data hash created in #{Time.current - t} sec. ------------------------"
 
       data.merge!(aggregation: @aggregation_result) if aggregation?
 
