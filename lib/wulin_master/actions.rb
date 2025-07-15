@@ -63,11 +63,7 @@ module WulinMaster
           # Add limit and offset
           parse_pagination
           # Get all the objects
-
-          Rails.logger.info "-----------------  @objects is a #{@query.class}------------------------"
-          t = Time.current
           @objects = (@query.is_a?(Array) ? @query : @query.all.to_a)
-          Rails.logger.info "-----------------  @objects processed in #{Time.current - t} sec. ------------------------"
           # If we are on the first page and the dataset size is smaller than the page size, then we return the dataset size
           if @count_query
             @count = @objects.size < @per_page ? @objects.size : smart_query_count(@count_query)
