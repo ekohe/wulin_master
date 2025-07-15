@@ -203,7 +203,12 @@ module WulinMaster
     def render_json
       # Render ruby objects
       t = Time.current
+      Rails.logger.info "----------------- Rendered JSON triggered on #{t}. ------------------------"
+
       @object_array = grid.arraify(@objects)
+
+      Rails.logger.info "----------------- Rendered JSON arraified in #{Time.current - t} sec. ------------------------"
+      
       data = {
         offset: @offset,
         total: @count,
@@ -211,6 +216,8 @@ module WulinMaster
         count: @per_page,
         rows: @object_array
       }
+
+      Rails.logger.info "----------------- Rendered JSON data hash created in #{Time.current - t} sec. ------------------------"
 
       data.merge!(aggregation: @aggregation_result) if aggregation?
 
