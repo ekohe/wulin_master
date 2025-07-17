@@ -30,6 +30,10 @@ module WulinMaster
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
 
+    def date_format
+      @options[:date_format] || WulinMaster.default_date_format
+    end
+
     def relation_table_name
       options[:join_aliased_as] || reflection.klass.table_name
     end
@@ -100,7 +104,7 @@ module WulinMaster
           value.try(:strftime, "%H:%M")
         elsif sql_type == :date || options[:inner_sql_type] == :date
           @datetime_excel_format = 'dd/mm/yyyy'
-          value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
+          value.try(:strftime, format_date)
         else
           @datetime_excel_format = 'dd/mm/yyyy hh:mm'
           value.to_formatted_s(datetime_format)
@@ -108,7 +112,7 @@ module WulinMaster
       elsif value.class == Date
         @datetime_value = value
         @datetime_excel_format = 'dd/mm/yyyy'
-        value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
+        value.try(:strftime, format_date)
       elsif value.class == Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'
@@ -121,6 +125,17 @@ module WulinMaster
         value.attached? ? value.filename.to_s : ''
       else
         value
+      end
+    end
+
+    def format_date
+      case WulinMaster.config.date_format
+      when "us"
+        "%m/%d/%Y"
+      when "ja"
+        "%Y/%m/%d"
+      else
+        "%d/%m/%Y"
       end
     end
 
