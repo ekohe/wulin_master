@@ -916,12 +916,21 @@ window.WulinEditors = (function($) {
 
     this.init = function() {
       const fpConfigGridDateTime = fpMergeConfigs(this.fpConfigGrid, fpConfigDateTime);
+      const fpConfigGridJaDateTime = fpMergeConfigs(this.fpConfigGrid, fpConfigJaDateTime);
 
       this.initElements();
-      this.input.inputmask('wulinDateTime')
+      if (JaDatetimeFormat()) {
+        this.input.inputmask('wulinJaDateTime')
+      } else {
+        this.input.inputmask('wulinDateTime')
+      }
 
       if(!args.column.hide_calendar) {
-        this.input.flatpickr(fpConfigGridDateTime);
+        if (JaDatetimeFormat()) {
+          this.input.flatpickr(fpConfigGridJaDateTime);
+        } else {
+          this.input.flatpickr(fpConfigGridDateTime);
+        }
       }
     };
 
@@ -941,11 +950,24 @@ window.WulinEditors = (function($) {
       let gridView = $(args.container).closest('.slick-viewport')
       const fpConfigGridDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigDate);
       const fpConfigGridUSDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigUSDate);
+      const fpConfigGridJaDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigJaDate);
 
       this.initElements();
-      this.input.inputmask(USDateFormat() ? 'wulinUSDate' : 'wulinDate')
+      if (USDateFormat()) {
+        this.input.inputmask('wulinUSDate')
+      } else if (JaDateFormat()) {
+        this.input.inputmask('wulinJaDate')
+      } else {
+        this.input.inputmask('wulinDate')
+      }
       if(!args.column.hide_calendar) {
-        this.input.flatpickr(USDateFormat() ? fpConfigGridUSDate : fpConfigGridDate)
+        if (USDateFormat()) {
+          this.input.flatpickr(fpConfigGridUSDate)
+        } else if (JaDateFormat()) {
+          this.input.flatpickr(fpConfigGridJaDate)
+        } else {
+          this.input.flatpickr(fpConfigGridDate)
+        }
       }
     };
 

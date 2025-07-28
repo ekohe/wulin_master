@@ -176,9 +176,15 @@ var Ui = {
     // setup datepicker
     $(`${scope} input[data-datetime]`).each(function() {
       let that = this
-      $(that)
-      .inputmask('wulinDateTime')
-      .flatpickr(fpMergeConfigs({}, fpConfigFormDateTime, onCalendarOpenClose));
+      if (JaDatetimeFormat()) {
+        $(that)
+        .inputmask('wulinJaDateTime')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormJaDateTime, onCalendarOpenClose));
+      } else {
+        $(that)
+        .inputmask('wulinDateTime')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormDateTime, onCalendarOpenClose));
+      }
     });
     $(`${scope} input[data-date]`).each(function() {
       let that = this;
@@ -186,6 +192,10 @@ var Ui = {
         $(that)
         .inputmask('wulinUSDate')
         .flatpickr(fpMergeConfigs({}, fpConfigFormUSDate, onCalendarOpenClose));
+      } else if (JaDateFormat()) {
+        $(that)
+        .inputmask('wulinJaDate')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormJaDate, onCalendarOpenClose));
       } else {
         $(that)
         .inputmask('wulinDate')
