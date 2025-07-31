@@ -198,7 +198,7 @@
           .show()
           .focus();
 
-        let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>Copy Cell</li>`;
+        let copyItem = `<li id='contextMenuCopy'><i class='material-icons'>content_copy</i>セルコピー</li>`;
         $(copyItem).appendTo($contextMenu);
         let contextActions = grid.select_toolbar_items
         // Put Edit in front of Delete
