@@ -344,6 +344,22 @@ module WulinMaster
 
     # Returns the json for the object in argument
     def json(object)
+      per_row_editable = nil
+      # Prefer explicit editable_by; otherwise treat editable Proc with arity>0 as per-row
+      editable_proc = if @options[:editable_by].respond_to?(:call)
+        @options[:editable_by]
+      elsif @options[:editable].respond_to?(:call) && @options[:editable].arity != 0
+        @options[:editable]
+      end
+      if editable_proc
+        begin
+          per_row_editable = !!editable_proc.call(object)
+        rescue => e
+          Rails.logger.error("WulinMaster::Column editable_by error on #{full_name}: #{e.message}")
+          per_row_editable = nil
+        end
+      end
+
       case association_type.to_s
       when 'belongs_to', 'has_one'
         reflection_info = {}
@@ -358,13 +374,20 @@ module WulinMaster
         reflection_info[source] = format(association_object.try(:send, source))
         reflection_info[editor_source] = format(association_object.try(:send, editor_source)) if editor_source
 
-        { reflection.name => reflection_info }
+        payload = { reflection.name => reflection_info }
+        payload.merge!("#{full_name}__editable" => per_row_editable) unless per_row_editable.nil?
+        payload
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(reflection.name.to_s))}
       when 'has_many'
         {reflection.name => format_multiple_objects(object.send(@options[:through] || name) || [])}
       else
-        format(object.send(source.to_s))
+        value = format(object.send(source.to_s))
+        if per_row_editable.nil?
+          value
+        else
+          { full_name => value, "#{full_name}__editable" => per_row_editable }
+        end
       end
     end
 

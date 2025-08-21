@@ -3178,7 +3178,7 @@ if (typeof Slick === "undefined") {
           } else if (e.which == keyCode.ENTER) {
             // Ekohe Modify: Use editable option form column instead of grid
             // if (options.editable) {
-            if (isColumnEditable(getColumns()[activeCell])) {
+            if (isColumnEditable(getColumns()[activeCell], activeRow)) {
               if (currentEditor) {
                 // adding new row
                 if (activeRow === getDataLength()) {
@@ -3307,7 +3307,7 @@ if (typeof Slick === "undefined") {
       self.onDoubleClickBeforeColumnEdit.notify({grid: self, row: cell.row, activeCell: getColumns()[cell.cell]})
       // Ekohe Modify: Use column's editable option instead of grid's
       // if (options.editable) {
-      if (isColumnEditable(getColumns()[cell.cell])) {
+      if (isColumnEditable(getColumns()[cell.cell], cell.row)) {
         gotoCell(cell.row, cell.cell, true);
       }
     }
@@ -4282,7 +4282,7 @@ if (typeof Slick === "undefined") {
         (forceEdit || (row === getDataLength()) || options.autoEdit),
         null,
         options.editable,
-        isColumnEditable(getColumns()[cell])
+        isColumnEditable(getColumns()[cell], row)
       )
 
       // if no editor was created, set the focus back on the grid
@@ -4486,16 +4486,44 @@ if (typeof Slick === "undefined") {
       editController = c;
     }
 
-    function isColumnEditable(column_option) {
+    function isColumnEditable(column_option, rowIndex) {
       const readOnlyPermissionKey = [self.columnpicker.getCurrentUserId(), 'read_only_permission'].join(":")
+      // If current user has read-only permission, force non-editable regardless of column setting
+      if (column_option.hasOwnProperty(readOnlyPermissionKey) && (column_option[readOnlyPermissionKey] === true)) {
+        return false
+      }
       if(column_option.editable == undefined) {
         return options.editable;
-      } else if((column_option.editable === true) && column_option.hasOwnProperty(readOnlyPermissionKey) && (column_option[readOnlyPermissionKey] === true)){
-        //override editable if current_user has only read permission
-        return column_option.editable = false
-      }else {
-        return column_option.editable;
       }
+
+      // Support function name or function for per-row editability
+      const editableOpt = column_option.editable
+      if (typeof editableOpt === 'function' || typeof editableOpt === 'string') {
+        try {
+          const fn = (typeof editableOpt === 'function') ? editableOpt : window[editableOpt]
+          if (typeof fn === 'function') {
+            const item = getDataItem(rowIndex)
+            const value = item ? getDataItemValueForColumn(item, { field: column_option.field || column_option.column_name }) : undefined
+            return !!fn({row: rowIndex, item: item, column: column_option, value: value, grid: self})
+          }
+        } catch (e) {
+          console.error('Error evaluating editable option for column', column_option, e)
+        }
+      }
+
+      // If server provided a per-cell flag, honor it: expect field like `${column.id}__editable`
+      try {
+        const item = getDataItem(rowIndex)
+        const key = (column_option.id || column_option.field || column_option.column_name) + "__editable"
+        if (item && Object.prototype.hasOwnProperty.call(item, key)) {
+          const flag = item[key]
+          if (flag === true || flag === false) return flag
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      return column_option.editable;
     }
     function renderLoadingRows(range) {
       var stringArray = [];
