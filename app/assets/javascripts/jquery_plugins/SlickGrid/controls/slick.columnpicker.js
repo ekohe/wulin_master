@@ -337,12 +337,16 @@
         })
       });
 
-      // Ekohe Edit: MD implementation
+      // Ekohe Edit: MD implementation with height constraint and scrolling
+      let windowHeight = $(window).height();
+      let menuTop = e.pageY + 10;
+      let maxHeight = windowHeight - menuTop - 40; // 40px buffer from bottom
+
       $menu
-        // .css("top", e.pageY - 10)
-        .css("top", e.pageY + 10)
+        .css("top", menuTop)
         .css("left", e.pageX - 10)
-        // .css("max-height", $(window).height() - e.pageY -10)
+        .css("max-height", maxHeight + "px")
+        .css("overflow-y", "auto")
         .fadeIn(options.fadeSpeed);
     }
 
