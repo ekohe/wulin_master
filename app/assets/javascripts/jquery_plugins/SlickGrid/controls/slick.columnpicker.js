@@ -310,11 +310,12 @@
 
         $li.children().wrapAll($('<label />'));
       }
-      // Ekohe Add
-      // Addpend "Reset to defaults" checkbox
-      $("<hr/>").appendTo($menu);
+
+      // Ekohe Add: Create sticky footer container for reset section
+      var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
+      $("<hr/>").appendTo($footerContainer);
       let viewName = $(`#grid_${grid.name} .grid-states-switcher .dropdown-trigger span`).text()
-      var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+      var $a = $("<a id='reset_to_default' href='#' />").appendTo($footerContainer);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
       $a.on("click", function() {
@@ -346,7 +347,6 @@
         .css("top", menuTop)
         .css("left", e.pageX - 10)
         .css("max-height", maxHeight + "px")
-        .css("overflow-y", "auto")
         .fadeIn(options.fadeSpeed);
     }
 
