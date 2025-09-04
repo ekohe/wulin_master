@@ -2,12 +2,26 @@
 
 // Grid Column Picker (Right click on Grid Table Header)
 
-.column-container {
-  padding-top: 10px;
-}
-
 .wulin-columnpicker {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Prevent the entire container from scrolling
+
+  .column-container {
+    padding-top: 10px;
+    flex: 1;
+    overflow-y: auto; // Make this container scrollable
+    min-height: 0; // Allow flex item to shrink below content size
+  }
+
+  .footer-container {
+    flex-shrink: 0; // Don't shrink the footer
+    background: inherit;
+    margin-top: auto; // Stick to bottom
+    padding: 10px 0;
+  }
+
   li {
     list-style: none;
     padding-left: $columnpicker-li-padding;
@@ -18,15 +32,25 @@
     border-width: 0.5px;
     border-color: $border-color;
     opacity: 0.2;
+    margin: 0;
   }
   #reset_to_default {
-    padding-left: $columnpicker-li-padding;
-    padding-right: $columnpicker-li-padding;
+    padding: 8px $columnpicker-li-padding;
     color: $label-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px; // Space between icon and text
+    text-decoration: none;
+
+    i.material-icons {
+      font-size: 18px;
+      line-height: 1;
+    }
+
     span {
-      float: right;
-      padding-right: $columnpicker-li-padding;
       font-size: $font-size-small-middle;
+      line-height: 1;
     }
   }
 }
