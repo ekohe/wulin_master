@@ -10,17 +10,21 @@ WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.Base
       return;
     }
 
+    // Use the precomputed asset URLs from the layout
+    const dropzoneJsUrl = window.DROPZONE_JS_URL || '/assets/dropzone.min.js';
+    const dropzoneCssUrl = window.DROPZONE_CSS_URL || '/assets/dropzone.min.css';
+
     // Load CSS
     if (!$('link[href*="dropzone"]').length) {
       $('<link>')
         .attr('rel', 'stylesheet')
-        .attr('href', '/assets/dropzone.min.css')
+        .attr('href', dropzoneCssUrl)
         .attr('data-dropzone-css', 'true') // Add identifier for cleanup
         .appendTo('head');
     }
 
     // Load JS
-    $.getScript('/assets/dropzone.min.js')
+    $.getScript(dropzoneJsUrl)
       .done(function() {
         // Disable Dropzone auto-discovery
         window.Dropzone.autoDiscover = false;
