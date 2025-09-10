@@ -76,10 +76,10 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
+          conditions << "normalize_japanese_sql((CAST(#{column_name} AS TEXT)) NOT ILIKE ? OR #{column_name} IS NULL)"
           query_params << "#{value}%"
         else
-          conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
+          conditions << "normalize_japanese_sql(CAST(#{column_name} AS TEXT)) ILIKE ?"
           query_params << "#{part}%"
         end
       end
