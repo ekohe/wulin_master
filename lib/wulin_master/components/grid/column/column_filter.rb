@@ -75,13 +75,15 @@ module WulinMaster
       is_date_only = field =~ /#{model.table_name}\.(\w+)$/ &&
                      model.columns_hash[$1]&.type == :date
 
+      date_format = WulinMaster.config.date_format == 'ja' ? 'YYYY/MM/DD' : 'DD/MM/YYYY'
+
       if is_date_only
         # For Date fields (without time), don't apply timezone conversion
-        query.where(["to_char(#{field}::date, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
+        query.where(["to_char(#{field}::date, '#{date_format}') #{operator} UPPER(?)", "#{value}%"])
       else
         # For DateTime/timestamp fields, apply timezone conversion
         query.where([
-          "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
+          "to_char(#{field}::timestamptz AT TIME ZONE ?, '#{date_format} HH24:MI') #{operator} UPPER(?)",
           time_zone_offset,
           "#{value}%"
         ])
