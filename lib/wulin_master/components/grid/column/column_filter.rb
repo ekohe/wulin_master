@@ -155,10 +155,11 @@ module WulinMaster
         adapter.boolean_query(complete_column_name, true_or_false, self, operator)
         adapter.query
       when 'enum'
-        filtering_value = model.send(source.to_s.pluralize).find do |key, value|
-          value if key.downcase.start_with?(filtering_value.downcase)
+        matching_keys = []
+        model.send(source.to_s.pluralize).select do |key, value|
+          matching_keys << value if key.downcase.start_with?(filtering_value.downcase)
         end
-        query.where(source => filtering_value)
+        query.where(source => matching_keys || nil)
       else
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
