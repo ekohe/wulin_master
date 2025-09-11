@@ -367,9 +367,33 @@
       });
       grid.setColumns(visibleColumns);
 
+      // Force layout recalculation to fix flexbox positioning issue
+      forceLayoutRecalculation();
+
       // Ekohe Add: Reset filters
       $(grid.getHeaders()).find('input').keyup();
       grid.filterPanel.generateFilters();
+    }
+
+    function forceLayoutRecalculation() {
+      var $menu = $('#' + grid.name + '-columnpicker');
+      var $columnContainer = $menu.find('.column-container');
+
+      if ($menu.length > 0 && $columnContainer.length > 0) {
+        // Store the current scroll position
+        var scrollTop = $columnContainer.scrollTop();
+        var currentMaxHeight = $menu.css('max-height');
+
+        // Temporarily remove max-height
+        $menu.css('max-height', 'none');
+        // Force reflow by accessing offsetHeight
+        $menu[0].offsetHeight;
+        // Restore max-height
+        $menu.css('max-height', currentMaxHeight);
+
+        // Restore the scroll position after layout recalculation
+        $columnContainer.scrollTop(scrollTop);
+      }
     }
 
     function getMenu() {
