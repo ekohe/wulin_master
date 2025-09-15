@@ -52,6 +52,11 @@ module WulinMaster
     end
 
     def string_query(query, column_name, filter, _, operator = "ILIKE")
+      if filter.start_with?("\"") && filter.end_with?("\"")
+        filter = filter[1..-2]
+        return query.where(["normalize_japanese_sql(CAST(#{column_name} AS TEXT)) ILIKE ?", "#{filter}%"])
+      end
+
       # filter will be recovered from #transform_if_exclamation_not_equal
       uncensored_filter = case operator
       when /NOT ILIKE/i
