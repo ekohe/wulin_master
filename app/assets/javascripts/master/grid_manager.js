@@ -420,6 +420,6 @@
   $.extend(true, window, { GridManager: GridManager });
 })(jQuery);
 
-var gridManager = new GridManager();
+window.gridManager = new GridManager();
 
-$(window).resize(function() { gridManager.resizeGrids(); });
+$(window).resize(function() { window.gridManager.resizeGrids(); });

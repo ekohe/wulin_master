@@ -1,4 +1,4 @@
-var GridStatesManager = {
+window.GridStatesManager = {
   // do ajax save
   saveStates: function(gridName, type, value){
     if(gridName) {

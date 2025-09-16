@@ -127,6 +127,8 @@ function ConfigInputmask() {
   });
 }
 
+ConfigInputmask();
+
 // Config of flatpickr
 
 /**

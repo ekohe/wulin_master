@@ -1,13 +1,14 @@
+@use 'materialize/components/color-variables' as materialize_color;
 // colors
 // toolbar
-//$border-color: #ffffff !default;
+$border-color: #ffffff !default;
 $toolbar-color: #ffffff;
 $toolbar-overlay-color: #eeeeee !default;
 $toolbar-btn-color: #fff !default;
 $toolbar-color-lighten: #dee0e2 !default;
 
 // scrollbars
-$scrollbar-color: color("grey", "lighten-2") !default;
+$scrollbar-color: materialize_color.color("grey", "lighten-2") !default;
 $scrollbar-background-color: #ffffff !default;
 $scrollbar-highlight-color: #535353 !default;
 
