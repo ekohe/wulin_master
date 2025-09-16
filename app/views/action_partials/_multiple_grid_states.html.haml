@@ -10,7 +10,7 @@
 .grid-states-switcher
   %a.dropdown-trigger.btn.grey.lighten-3{"data-target" => "grid_states_#{grid.name}", "data-coverTrigger" => "true", href: "#", id: "current-state-#{grid.name}"}
     %span= current_state.name
-    %i.material-icons.right arrow_drop_down
+    %span.material-icons.right arrow_drop_down
   %ul.dropdown-content{id: "grid_states_#{grid.name}"}
     - default_states.each do |option|
       %li
@@ -20,11 +20,11 @@
       %li
         %a.grid-state-item.grid-state-option-wide{id: "grid-state-#{option[1]}", "data-state-id" => option[1], href: '#!'}= option[0]
         %a.edit-icon-container.right{"data-state-id" => option[1], "data-state-name" => option[0]}
-          %i.material-icons.right mode_edit
+          %span.material-icons.right mode_edit
       %li.divider
     %li
       %a.grid-state-option-parent-wide{id: "add-view-btn-#{grid.name}"}
-        %i.material-icons.left add_box
+        %span.material-icons.left add_box
         ADD VIEW
 
 .grid-states-modal.modal{id: "create-state-modal-#{grid.name}"}

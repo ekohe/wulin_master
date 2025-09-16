@@ -519,7 +519,7 @@ window.Ui = {
       .addClass('modal-header')
       .append($('<span/>').text(title))
       .append(
-        $('<i/>').text('close').addClass('modal-close material-icons right')
+        $('<span/>').text('close').addClass('modal-close material-icons right')
       )
       .prependTo($headerModal);
 

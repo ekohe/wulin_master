@@ -20,10 +20,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "haml-rails"
-  s.add_dependency "jquery-rails"
-  s.add_dependency "jquery-ui-rails"
-  s.add_dependency "material_icons", "~> 2.2.1"
-  s.add_dependency "materialize-sass", "~> 1.0.0"
   s.add_dependency "rails"
   s.add_dependency "responders"
   s.add_dependency "dartsass-rails"

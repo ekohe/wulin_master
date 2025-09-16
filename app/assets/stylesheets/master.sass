@@ -1,27 +1,8 @@
-@use 'materialize'
+@use 'material-icons/iconfont/material-icons'
 @use 'setting/setting' as setting
+@use 'materialize-css/sass/materialize'
 
-// Material Symbols CSS
-.material-symbols-outlined
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
-  font-family: 'Material Symbols Outlined'
-  font-weight: normal
-  font-style: normal
-  font-size: 24px
-  line-height: 1
-  letter-spacing: normal
-  text-transform: none
-  display: inline-block
-  white-space: nowrap
-  word-wrap: normal
-  direction: ltr
-  -webkit-font-feature-settings: 'liga'
-  -webkit-font-smoothing: antialiased
-
-// Backward compatibility: make material-icons class work with Material Symbols
-.material-icons
-  @extend .material-symbols-outlined
-@import 'materialize/components/color-variables'
+@import 'materialize-css/sass/components/color-variables'
 $primary-color: var(--wulin-primary-color, color(#{setting.$color-theme}, 'lighten-2')) !default
 $secondary-color: var(--wulin-secondary-color, color(#{setting.$color-theme}, 'base')) !default
 

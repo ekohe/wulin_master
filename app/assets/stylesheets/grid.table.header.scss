@@ -66,7 +66,7 @@
       transition: right 0.1s linear;
       top: 24px;
       background-color: $slick-header-bg-color;
-      i.material-icons {
+      span.material-icons {
         background-color: $slick-header-bg-color;
         font-size: $font-size-middle;
         color: $slick-header-color;
@@ -90,7 +90,7 @@
     .slick-show-more {
       right: 5px;
       border-radius: 50%;
-      i {
+      span {
         &.material-icons {
           border-radius: 50%;
         }
@@ -117,7 +117,7 @@
             font-size: 14px;
             color: #4d4d4e;
             padding: 7px 16px;
-            i {
+            span {
               &.material-icons {
                 height: unset;
                 line-height: unset;

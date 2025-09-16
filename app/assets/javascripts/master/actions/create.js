@@ -51,7 +51,7 @@ WulinMaster.actions.Create = $.extend({}, WulinMaster.actions.BaseAction, {
 
   fillHiddenColumns: function(grid, hiddenColumns) {
     var self = this;
-    if(!hiddenColumns instanceof Array) return false;
+    if (!(hiddenColumns instanceof Array)) return false;
 
     var currentFilters = grid.loader.getFilters();
     $.each(currentFilters, function(index, filter) {

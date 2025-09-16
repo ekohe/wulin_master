@@ -1,6 +1,6 @@
 @use "mixins";
 @use "setting/setting" as setting;
-@use "materialize/components/color-variables" as materialize_color;
+@use 'materialize-css/sass/components/color-variables' as materialize_color;
 
 // Common
 $main-color: materialize_color.color(setting.$color-theme, "base");
@@ -16,11 +16,9 @@ $font-size-small: 12px;
 $font-size-small-middle: 14px;
 $font-size-middle: 16px;
 $font-size-large: 20px;
-
 $box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
 // Layout
-
 $body-bg-color: white;
 $nav-height: 48px;
 $menu-width: 235px;

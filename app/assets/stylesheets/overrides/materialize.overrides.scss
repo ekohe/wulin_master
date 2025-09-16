@@ -12,7 +12,7 @@ nav {
     float: left;
     margin-right: 10px;
   }
-  i.material-icons {
+  span.material-icons {
     font-size: $font-size-large;
   }
 }
@@ -22,9 +22,9 @@ nav {
     min-height: 50px;
   }
   nav,
-  nav .nav-wrapper i,
+  nav .nav-wrapper span.material-icons,
   nav a.button-collapse,
-  nav a.button-collapse i {
+  nav a.button-collapse span.material-icons {
     height: 47px;
     line-height: 50px;
   }
