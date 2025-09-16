@@ -156,3 +156,6 @@ var Requests = {
     return [indexes[0], indexes[indexes.length-1]];
   }
 }; // Requests
+
+// Expose Requests to global window object
+window.Requests = Requests;
