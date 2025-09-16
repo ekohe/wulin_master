@@ -1,5 +1,5 @@
 // ------------------------------------ UI tools -----------------------------------------
-var Ui = {
+window.Ui = {
   // return true if the dialog of grid with "name" is open, unless return false
   isOpen: function () {
     return $('.ui-dialog:visible').size() > 0;
@@ -574,13 +574,13 @@ var Ui = {
       .height(modalSize.height)
       .css({ 'max-height': '90%' });
 
-    __globalWillAppend = true;
+    window.__globalWillAppend = true;
     $modelModal.addClass('modal-fixed-footer');
     $modelModal.find('.modal-content').append(data);
 
     var $modelFooter = $('<div/>').addClass('modal-footer').attr('id','modal-footer').appendTo($modelModal);
 
-    __globalWillAppend = false;
+    window.__globalWillAppend = false;
     return $modelModal;
   },
 

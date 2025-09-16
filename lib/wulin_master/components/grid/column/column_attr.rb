@@ -9,8 +9,6 @@ module WulinMaster
     end
 
     def assign_attribute(_object, value, new_attrs, attrs, type)
-      Rails.logger.info WulinMaster.config.date_format.inspect
-      Rails.logger.info "assign atribute #{value} #{field_sym} #{type.inspect}"
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
         if type == :create

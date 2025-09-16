@@ -3703,6 +3703,8 @@
 
   Sortable.mount(new SwapPlugin());
   Sortable.mount(new MultiDragPlugin());
+  
+  window.Sortable = Sortable;
 
   return Sortable;
 

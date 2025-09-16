@@ -1,7 +1,7 @@
 %nav
   .nav-wrapper
     %a#menu-toggle.left{href: '#'}
-      %i.material-icons menu
+      %span.material-symbols-outlined menu
     %a.brand-logo{:href => root_path}
       = WulinMaster.config.app_title
     %ul.right
@@ -11,7 +11,7 @@
         - main_menu_url = main_menu_options[:url] && (main_menu_options[:url].is_a?(Proc) ? instance_exec(&main_menu_options[:url]) : main_menu_options[:url])
         %li
           = link_to main_menu_url || '#', id: main_menu.name, class: main_menu_options[:class], data: main_menu_options[:data] do
-            %i.material-icons= main_menu_options[:icon]
+            %span.material-symbols-outlined= main_menu_options[:icon]
             %span= label if label
           %ul.dropdown-content.collection{id: "#{main_menu.name}-list"}
             - if main_menu.menus.present?
@@ -20,6 +20,6 @@
                 - sub_menu_url = sub_menu_options[:url] && (sub_menu_options[:url].is_a?(Proc) ? instance_exec(&sub_menu_options[:url]) : sub_menu_options[:url])
                 %li
                   = link_to sub_menu_url, target: sub_menu_options[:target] do
-                    %i.material-icons
+                    %span.material-symbols-outlined
                       = sub_menu_options[:icon].presence || 'help'
                     = sub_menu_options[:label]

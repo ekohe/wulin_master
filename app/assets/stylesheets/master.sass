@@ -1,12 +1,65 @@
-@import 'setting/setting'
-@import 'materialize/components/color-variables'
-$primary-color: color(#{$color-theme}, 'lighten-2') !default
-$secondary-color: color(#{$color-theme}, 'base') !default
-@import 'materialize'
-@import 'material_icons'
+@use 'materialize'
+@use 'setting/setting' as setting
 
-@import 'lib/*'
-@import 'lib/SlickGrid/*'
-@import 'lib/materialnote/*'
-@import 'overrides/*'
-@import '/*'
+// Material Symbols CSS
+.material-symbols-outlined
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
+  font-family: 'Material Symbols Outlined'
+  font-weight: normal
+  font-style: normal
+  font-size: 24px
+  line-height: 1
+  letter-spacing: normal
+  text-transform: none
+  display: inline-block
+  white-space: nowrap
+  word-wrap: normal
+  direction: ltr
+  -webkit-font-feature-settings: 'liga'
+  -webkit-font-smoothing: antialiased
+
+// Backward compatibility: make material-icons class work with Material Symbols
+.material-icons
+  @extend .material-symbols-outlined
+@import 'materialize/components/color-variables'
+$primary-color: var(--wulin-primary-color, color(#{setting.$color-theme}, 'lighten-2')) !default
+$secondary-color: var(--wulin-secondary-color, color(#{setting.$color-theme}, 'base')) !default
+
+@import 'lib/chosen'
+@import 'lib/flatpickr_material_blue'
+@import 'lib/jquery-ui-1.8.5.custom'
+@import 'lib/lazyjsonviewer'
+@import 'lib/materialnote/elements'
+@import 'lib/materialnote/materialnote'
+@import 'lib/materialnote/overrides'
+@import 'lib/materialnote/variables'
+@import 'lib/SlickGrid/slick.columnpicker'
+@import 'lib/SlickGrid/slick.grid'
+@import 'lib/SlickGrid/slick.headerbuttons'
+@import 'lib/SlickGrid/slick.headermenu'
+@import 'lib/SlickGrid/slick.pager'
+@import 'lib/SlickGrid/slick.rowdetailview'
+@import 'overrides/chosen.overrides'
+@import 'overrides/flatpickr.override'
+@import 'overrides/jquery.ui.overrides'
+@import 'overrides/materialize.overrides'
+
+@import 'menu'
+@import '_base'
+@import 'body'
+@import 'checkbox'
+@import 'color_columns'
+@import 'context_menu'
+@import 'editor'
+@import 'form'
+@import 'grid_states'
+@import 'grid.cell'
+@import 'grid.color'
+@import 'grid.columnpicker'
+@import 'grid.container'
+@import 'grid.header'
+@import 'grid.table.header'
+@import 'mixins'
+@import 'nav'
+@import 'panel'
+@import 'select2'

@@ -51,7 +51,7 @@ var batchUpdateByAjax = function (grid, version) {
   }
 };
 
-var fillValues = function (scope, grid, selectedIndexes) {
+window.fillValues = function (scope, grid, selectedIndexes) {
   var data,
     inputBox,
     dataArr,

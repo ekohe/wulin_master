@@ -2,13 +2,14 @@
 - default_month = (WulinMaster.config.default_month.respond_to?('call') && WulinMaster.config.default_month.call) || WulinMaster.config.default_month
 
 !!!
-%html
+%html{data: {color_theme: WulinMaster.config.color_theme}}
   %head
     %title= WulinMaster.config.app_title
     %meta(http-equiv="content-type" content="text/html; charset=UTF-8")
     %meta(http-equiv="content-language" content="en")
     = csrf_meta_tags
     = stylesheet_link_tag 'application', :media => :all
+    %link{href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200", rel: "stylesheet"}
     :javascript
       if (typeof(console) === "undefined") {
         console = { log: function() {} };
@@ -18,11 +19,6 @@
     = javascript_include_tag 'application'
     = yield :header_tags
     :javascript
-      $(function(){
-        if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
-          displayNewNotification('The browser you are currently using is not supported, we recommend using Chrome.', true);
-        }
-      });
       Object.assign(window, {
         DEFAULT_YEAR: String(#{default_year}), // see usage in `datetime.js`
         DEFAULT_MONTH: String(#{default_month}),
@@ -30,6 +26,5 @@
         DROPZONE_JS_URL: '#{asset_path('dropzone.min.js')}',
         DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}'
       });
-      ConfigInputmask();
   %body
     = yield
