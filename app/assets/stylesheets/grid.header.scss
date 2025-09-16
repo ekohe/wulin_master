@@ -71,7 +71,7 @@
     .toolbar-global {
       position: relative;
       top: 4px;
-      i.material-icons {
+      span.material-icons {
         font-size: $font-size-large;
       }
       ul {
@@ -87,8 +87,13 @@
               float: right;
               padding-top: 1px;
               padding-left: 5px;
+              padding-bottom: 8px;
               font-weight: bold;
               text-transform: uppercase;
+            }
+            .material-icons {
+              text-transform: none;
+              font-size: 18px;
             }
             &:hover {
               background: rgba(158, 158, 158, 0.2);
@@ -99,7 +104,7 @@
     }
     .toolbar-select {
       float: right;
-      i.material-icons {
+      span.material-icons {
         font-size: $font-size-large;
         position: relative;
         top: 6px;
@@ -126,7 +131,7 @@
           font-size: 14px;
           color: #4d4d4e;
           padding: 7px 15px;
-          i.material-icons {
+          span.material-icons {
             position: static;
             font-size: $font-size-middle;
             margin-right: 16px;

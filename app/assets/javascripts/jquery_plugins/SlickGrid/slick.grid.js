@@ -974,7 +974,7 @@ if (typeof Slick === "undefined") {
         }
 
         // Ekohe More Action: (Hide, Move to the right, Move to the left)
-        var $moreVertIcon = $("<i class='waves-effect waves-circle' />").addClass('material-icons').text('more_vert');
+        var $moreVertIcon = $("<span class='waves-effect'/>").addClass('material-icons').text('more_vert');
         var columnName = m.column_name;
         var $showMoreBtn = $(
           `<a href='javascript:void(0)' id='more_vert_${columnName}' class='dropdown-trigger' data-target='dropdown_${columnName}' />`
@@ -1025,7 +1025,7 @@ if (typeof Slick === "undefined") {
           // header.append("<span class='slick-sort-indicator"
           //   + (options.numberedMultiColumnSort && !options.sortColNumberInSeparateSpan ? " slick-sort-indicator-numbered" : "" ) + "' />");
           // if (options.numberedMultiColumnSort && options.sortColNumberInSeparateSpan) { header.append("<span class='slick-sort-indicator-numbered' />"); }
-          var $sortIcon = $('<i />').addClass('material-icons').text('arrow_downward');
+          var $sortIcon = $('<span/>').addClass('material-icons').text('arrow_downward');
           var $sortIndicator = $('<div />')
             .addClass('slick-sort-indicator')
             .css({right: '10px'})
@@ -1704,7 +1704,7 @@ if (typeof Slick === "undefined") {
 
           headerColumnEls.eq(columnIndex).find('.slick-sort-indicator .material-icons').remove();
 
-          var $sortIcon = $('<i class="material-icons"></i>');
+          var $sortIcon = $('<span class="material-icons"></i>');
           $sortIcon.text(col.sortAsc ? 'arrow_upward' : 'arrow_downward')
           headerColumnEls.eq(columnIndex)
             .addClass("slick-header-column-sorted")
@@ -1760,7 +1760,7 @@ if (typeof Slick === "undefined") {
         selectionInfo.empty().append(textElement);
 
         var clearLink = $("<a/>").attr('href', '#').addClass('clear').addClass('waves-effect');
-        clearLink.append($("<i/>").addClass('material-icons').text('close'));
+        clearLink.append($("<span/>").addClass('material-icons').text('close'));
         clearLink.append($('<span/>').text('CLEAR SELECTION'));
         var buttonMode = $gridContainer.find('.toolbar-select').data('mode');
         var isSplitMode = buttonMode === 'split';
@@ -4710,7 +4710,6 @@ if (typeof Slick === "undefined") {
       "getActiveCellNode": getActiveCellNode,
       "setActiveCellNode": setActiveCellNode,
       "setActiveRow": setActiveRow,
-      "setActiveCell": setActiveCell,
       "setActiveCellPosX": setActiveCellPosX,
       "getActiveCellPosition": getActiveCellPosition,
       "resetActiveCell": resetActiveCell,

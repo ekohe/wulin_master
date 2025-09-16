@@ -1,4 +1,4 @@
-@import "materialize/components/color-variables";
+@use 'materialize-css/sass/components/color-variables' as materialize_color;
 @import "base";
 
 $wulin-colors: (
@@ -76,7 +76,7 @@ $wulin-colors: (
           .slick-show-more,
           .slick-resizable-handle {
             background: rgba($color, 0);
-            i.material-icons {
+            span.material-icons {
               background: rgba($color, 0);
             }
           }

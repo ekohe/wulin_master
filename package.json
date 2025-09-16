@@ -1,0 +1,12 @@
+{
+  "name": "wulin_master",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WulinMaster gem JavaScript dependencies",
+  "dependencies": {
+    "jquery": "1.12.4",
+    "jquery-ui": "^1.13.0",
+    "materialize-css": "^1.0.0",
+    "material-icons": "^0.7.4"
+  }
+}
