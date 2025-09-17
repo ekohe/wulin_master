@@ -8,7 +8,7 @@ class Person < ApplicationRecord
 
   delegate :name, to: :country, prefix: true, allow_nil: true
 
-  enum status: %i[busy avaialbe free]
+  enum :status, { busy: 0, available: 1, free: 2 }
 
   def name
     first_name
