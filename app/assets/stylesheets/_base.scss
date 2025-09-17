@@ -1,10 +1,8 @@
 @use "mixins";
-@use "setting/setting" as setting;
 @use 'materialize-css/sass/components/color-variables' as materialize_color;
 
 // Common
-$main-color: materialize_color.color(setting.$color-theme, "base");
-
+$main-color: materialize_color.color($color-theme, "base");
 $text-color: materialize_color.color("grey", "darken-2");
 $label-color: materialize_color.color("grey", "base");
 $tag-color: materialize_color.color("grey", "lighten-1");

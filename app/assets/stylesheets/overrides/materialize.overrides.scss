@@ -151,9 +151,9 @@ textarea.materialize-textarea {
 
 // Form: Check Box
 
-[type="checkbox"].filled-in:checked + label:after {
-  border-color: $main-color;
-  background-color: $main-color;
+[type=checkbox].filled-in:checked+span:not(.lever):after {
+  border-color: $main-color !important;
+  background-color: $main-color !important;
 }
 
 .static-waves-effect {

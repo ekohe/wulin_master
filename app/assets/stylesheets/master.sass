@@ -1,10 +1,11 @@
+$color-theme: 'blue';
+@use 'materialize-css/sass/components/color-variables' as materialize_color;
+$primary-color: var(--wulin-primary-color,materialize_color.color($color-theme, 'lighten-2')) !default
+$secondary-color: var(--wulin-secondary-color, materialize_color.color($color-theme, 'base')) !default
+
 @use 'material-icons/iconfont/material-icons'
-@use 'setting/setting' as setting
 @use 'materialize-css/sass/materialize'
 
-@import 'materialize-css/sass/components/color-variables'
-$primary-color: var(--wulin-primary-color, color(#{setting.$color-theme}, 'lighten-2')) !default
-$secondary-color: var(--wulin-secondary-color, color(#{setting.$color-theme}, 'base')) !default
 
 @import 'lib/chosen'
 @import 'lib/flatpickr_material_blue'
