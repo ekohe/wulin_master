@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   and other tools to make grids easy to build as well as flexible configurations.'
 
   s.files = `git ls-files`.split("\n")
-  s.test_files = Dir["spec/**/*"]
   s.executables = []
   s.require_paths = ["lib"]
 
