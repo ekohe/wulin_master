@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 gem "phantomjs", "~> 2.1.1.0", require: "phantomjs/poltergeist"
 
+gem "propshaft"
+
 group :development, :test do
   gem "byebug"
   gem "pg"
