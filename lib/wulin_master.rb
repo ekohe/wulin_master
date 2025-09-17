@@ -33,6 +33,6 @@ Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds
 
 WulinMaster::AppBarMenu.menus.add_menu :activity_menu, icon: :notifications,
-                                                       class: "dropdown-trigger btn disabled",
-                                                       data: {target: "activity_menu-list"},
-                                                       order: 1
+  class: "dropdown-trigger btn disabled",
+  data: {target: "activity_menu-list"},
+  order: 1

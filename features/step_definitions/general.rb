@@ -22,7 +22,9 @@ Then(/^(?:|I )should see '([^']*)'$/) do |text|
 end
 
 Then(/^take a screenshot$/) do
+  # rubocop:disable Lint/Debugger
   page.save_screenshot("~/Desktop/screenshot-#{Time.now.to_i}.png")
+  # rubocop:enable Lint/Debugger
 end
 
 Given(/^I wait for (.+) seconds?$/) do |n|
