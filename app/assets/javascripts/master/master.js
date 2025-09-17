@@ -7,7 +7,6 @@ import './jquery_ui_setup.js'
 // External dependencies
 import 'rails-ujs'
 import 'materialize-css'
-// CSS import handled by dartsass - material-icons CSS is included in application.sass
 
 $(function(){
   if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
@@ -44,9 +43,6 @@ import '../jquery_plugins/SlickGrid/plugins/slick.cellselectionmodel.js'
 import '../jquery_plugins/SlickGrid/plugins/slick.checkboxselectcolumn.js'
 import '../jquery_plugins/SlickGrid/plugins/slick.rowdetailview.js'
 import '../jquery_plugins/SlickGrid/plugins/slick.rowselectionmodel.js'
-
-// Settings
-import '../setting/setting.js'
 
 // Overrides
 import '../overrides/chosen.jquery.js'
