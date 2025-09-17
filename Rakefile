@@ -3,5 +3,5 @@
 require "bundler"
 Bundler::GemHelper.install_tasks
 
-require_relative "spec/wulin_app/config/application"
+require_relative "spec/wulin_app/config/environment"
 Rails.application.load_tasks
