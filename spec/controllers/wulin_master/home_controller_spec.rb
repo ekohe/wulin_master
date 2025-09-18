@@ -22,6 +22,7 @@ describe HomepageController, type: :controller do
     @menu = WulinMaster::Menu.new
     @submenu = WulinMaster::SubMenu.new("Posts")
     allow_message_expectations_on_nil
+    allow(controller.class).to receive(:define_menu)
   end
 
   describe "get :index" do
@@ -56,16 +57,20 @@ describe HomepageController, type: :controller do
 
     it "should add item to submenu if submenu is not nil" do
       controller.class.menu { mock_block }
-      controller.class.submenu("Posts") { mock_block }
+      controller.class.menu = @menu
+      controller.class.instance_variable_set(:@submenu, @submenu)
       allow(mock_item).to receive(:title).and_return("Post")
-      expect(WulinMaster::MenuEntry).to receive(:new).with("Post", "/", screen_name: nil)
+      expect(WulinMaster::MenuEntry).to receive(:new).with("Post", "/", screen_name: nil).and_return(mock_entry)
+      expect(@submenu).to receive(:<<).with(mock_entry)
       controller.class.item(mock_item)
     end
 
     it "should add item to menu if submenu is nil" do
+      controller.class.menu { mock_block }
+      controller.class.menu = @menu
       allow(mock_item).to receive(:title).and_return("Post")
       expect(WulinMaster::MenuEntry).to receive(:new).with("Post", "/", screen_name: nil).and_return(mock_entry)
-      expect(controller.menu).to receive(:<<).with(mock_entry)
+      expect(@menu).to receive(:<<).with(mock_entry)
       expect(controller.class.submenu).not_to receive(:<<).with(mock_entry)
       controller.class.item(mock_item)
     end

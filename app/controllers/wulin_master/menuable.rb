@@ -58,9 +58,9 @@ module WulinMaster
         end
         options[:screen_name] = screen_instance.try(:name)
         if @submenu
-          @submenu << MenuEntry.new(title, path, options)
+          @submenu << MenuEntry.new(title, path, **options)
         else
-          @menu << MenuEntry.new(title, path, options)
+          @menu << MenuEntry.new(title, path, **options)
         end
       end
 
