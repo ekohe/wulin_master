@@ -3,29 +3,29 @@
 run "git submodule add -b v3 https://github.com/ekohe/wulin_master.git vendor/gems/wulin_master"
 run "git config -f .gitmodules submodule.vendor/gems/wulin_master.branch v3"
 
-gem "wulin_master", path: 'vendor/gems/wulin_master'
+gem "wulin_master", path: "vendor/gems/wulin_master"
 
 gem "dartsass-rails"
 
 # Add wulin master javascript to application.js:
-file "app/javascript/application.js", <<-JS
-// Import Wulin Master modules
-import '../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js'
+file "app/javascript/application.js", <<~JS
+  // Import Wulin Master modules
+  import '../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js'
 JS
 
 # Remove application.css file
 remove_file "app/assets/stylesheets/application.css"
 
 # Add wulin master stylesheet to application.sass
-file "app/assets/stylesheets/application.sass", <<-CSS
-@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master";
+file "app/assets/stylesheets/application.sass", <<~CSS
+  @use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master";
 CSS
 
 # Remove application.html.erb
 remove_file "app/views/layouts/application.html.erb"
 
 # Setup package.json
-file "package.json", <<-JSON
+file "package.json", <<~JSON
   {
     "name": "app",
     "private": true,
@@ -51,7 +51,7 @@ run "mkdir -p app/assets/fonts"
 # Add fonts in assets.rb initializer
 run "rm config/initializers/assets.rb"
 
-initializer "assets.rb", <<-RB
+initializer "assets.rb", <<~RB
   # Be sure to restart your server when you modify this file.
 
   # Version of your assets, change this if you want to expire all your assets.
@@ -63,7 +63,7 @@ initializer "assets.rb", <<-RB
 RB
 
 # Setup script/copy_material_icons.js
-file "script/copy_material_icons.js", <<-JS
+file "script/copy_material_icons.js", <<~JS
   const fs = require("fs");
   const path = require("path");
 
@@ -82,14 +82,14 @@ file "script/copy_material_icons.js", <<-JS
 JS
 
 # Setup Procfile.dev
-file "Procfile.dev", <<-PROCFILE
-web: env RUBY_DEBUG_OPEN=true bin/rails server
-js: yarn build --watch
-css: bin/rails dartsass:watch
+file "Procfile.dev", <<~PROCFILE
+  web: env RUBY_DEBUG_OPEN=true bin/rails server
+  js: yarn build --watch
+  css: bin/rails dartsass:watch
 PROCFILE
 
 # Setup Wulin Master assets initializer
-initializer "wulin_master_assets.rb", <<-RB
+initializer "wulin_master_assets.rb", <<~RB
   # frozen_string_literal: true
 
   require 'dartsass-rails'
