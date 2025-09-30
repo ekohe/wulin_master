@@ -56,7 +56,7 @@ module WulinMaster
       uncensored_filter = case operator
       when /NOT ILIKE/i
         clean_special_chars "!#{filter}"
-      when /ILIKE/i
+      when /ILIKE/i, /exact/i
         clean_special_chars filter
       end
 
@@ -83,11 +83,33 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
-          query_params << "#{value}%"
+          if operator =~ /exact/i
+            # If the value starts or ends with %, use NOT LIKE for pattern matching, otherwise use exact <>
+            if value.start_with?('%') || value.end_with?('%')
+              conditions << "(CAST(#{column_name} AS TEXT) NOT LIKE ? OR #{column_name} IS NULL)"
+              query_params << value
+            else
+              conditions << "(CAST(#{column_name} AS TEXT) <> ? OR #{column_name} IS NULL)"
+              query_params << value
+            end
+          else
+            conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
+            query_params << "#{value}%"
+          end
         else
-          conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
-          query_params << "#{part}%"
+          if operator =~ /exact/i
+            # If the value starts or ends with %, use LIKE for pattern matching, otherwise use exact =
+            if part.start_with?('%') || part.end_with?('%')
+              conditions << "CAST(#{column_name} AS TEXT) LIKE ?"
+              query_params << part
+            else
+              conditions << "CAST(#{column_name} AS TEXT) = ?"
+              query_params << part
+            end
+          else
+            conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
+            query_params << "#{part}%"
+          end
         end
       end
 
