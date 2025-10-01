@@ -39,35 +39,33 @@ function loadPageForHistoryState() {
 }
 
 function load_page(url) {
-  // remove all the context-menu
-  $("ul.context-menu").remove();
-
+  // Empty the current screen content
   $("#screen_content").empty();
 
-  // Ekohe Add: Remove old columnpickers, tooltips when screen changes
+  // Remove all the context-menu
+  $("ul.context-menu").remove();
+
+  // Remove old columnpickers, tooltips when screen changes
   $('.wulin-columnpicker').remove();
   $('.material-tooltip').remove();
   cleanUpEditors();
 
-  // Ekohe Edit: Use screen_content_loader as new indicator
-
-  // var indicators = $("#activity #indicators");
-  // indicators.html(gridManager.buildIndicatorHtml("init_menu", "Loading page..."));
-  // indicators.find("#init_menu").show();
-
+  // Display the loading indicator
   $('<div />').attr('id', 'screen_content_loader_container')
   .append($('<div />').attr('id', 'screen_content_loader'))
   .prependTo($('#content'));
 
+  // Fetch the new screen content
   $.ajax({
     type: 'GET',
     dataType: 'html',
     data: { xhr: 1 },
     url: url,
     success: function(html) {
-      // Ekohe Edit: Use screen_content_loader defined in content view as new indicator
-      // indicators.find("#init_menu_indicator").fadeOut();
+      // Remove Indicator
       $('#screen_content_loader_container').remove();
+
+      // Inject screen content
       $("#screen_content").html(html);
 
       setTimeout(function() {

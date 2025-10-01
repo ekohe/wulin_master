@@ -1,4 +1,4 @@
-var adjustPanelButtons = function(panelId){
+window.adjustPanelButtons = function(panelId){
   var $panel = $("#" + panelId);
   var $btns = $panel.find(".panel_btns");
   if($btns.length === 0) return false;
