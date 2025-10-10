@@ -73,5 +73,109 @@ RSpec.describe WulinMaster::SqlQuery do
         WulinMaster::SqlQuery.string_query(query, "column_name", "!value%", nil, "exact")
       end
     end
+
+    context "when the filter contains mixed operators" do
+      it "handles ,& combination (comma-ampersand-comma)" do
+        expect(query).to receive(:where).with([
+          "(CAST(column_name AS TEXT) NOT ILIKE ? OR column_name IS NULL) OR (CAST(column_name AS TEXT) NOT ILIKE ? OR column_name IS NULL)",
+          "booking%", "broadcast%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "!booking,&,!broadcast", nil)
+      end
+
+      it "handles &, combination (ampersand-comma)" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? AND CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1&,value2", nil)
+      end
+
+      it "handles ,& combination (comma-ampersand)" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? OR CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1,&value2", nil)
+      end
+
+      it "handles complex pattern ,&,&, (multiple mixed operators)" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? OR CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1,&,&,value2", nil)
+      end
+
+      it "handles complex pattern &,&,& (alternating ampersand-comma)" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? AND CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1&,&,&value2", nil)
+      end
+
+      it "handles consecutive commas" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? OR CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1,,,value2", nil)
+      end
+
+      it "handles consecutive ampersands" do
+        expect(query).to receive(:where).with([
+          "CAST(column_name AS TEXT) ILIKE ? AND CAST(column_name AS TEXT) ILIKE ?",
+          "value1%", "value2%"
+        ])
+        WulinMaster::SqlQuery.string_query(query, "column_name", "value1&&&value2", nil)
+      end
+    end
+  end
+
+  describe "#clean_special_chars" do
+    it "removes leading and trailing whitespace" do
+      expect(WulinMaster::SqlQuery.clean_special_chars(" value1 , value2 ")).to eq("value1,value2")
+    end
+
+    it "normalizes ,& to ," do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1,&value2")).to eq("value1,value2")
+    end
+
+    it "normalizes &, to &" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1&,value2")).to eq("value1&value2")
+    end
+
+    it "normalizes ,&, to ," do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1,&,value2")).to eq("value1,value2")
+    end
+
+    it "handles consecutive commas" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1,,,value2")).to eq("value1,value2")
+    end
+
+    it "handles consecutive ampersands" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1&&&value2")).to eq("value1&value2")
+    end
+
+    it "handles complex pattern ,&,&," do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1,&,&,value2")).to eq("value1,value2")
+    end
+
+    it "handles complex pattern &,&,&" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1&,&,&value2")).to eq("value1&value2")
+    end
+
+    it "removes trailing comma" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1,value2,")).to eq("value1,value2")
+    end
+
+    it "removes trailing ampersand" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("value1&value2&")).to eq("value1&value2")
+    end
+
+    it "handles the original bug case" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("!booking,&,!broadcast")).to eq("!booking,!broadcast")
+    end
   end
 end
