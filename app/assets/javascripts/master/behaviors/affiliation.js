@@ -55,6 +55,7 @@ WulinMaster.behaviors.Affiliation = $.extend({}, WulinMaster.behaviors.BaseBehav
       }
 
       // Set master grid's style for selection
+      var configuredMasterDetailColorTheme = window.MASTER_DETAIL_COLOR_THEME || 'teal';
       var selectionColor = 'grid-selection-color-' + (this.master_grid.options['selectionColor'] || configuredMasterDetailColorTheme);
       this.master_grid.container.addClass(selectionColor);
 

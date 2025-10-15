@@ -23,7 +23,8 @@
         DEFAULT_MONTH: String(#{default_month}),
         DATE_FORMAT: String("#{WulinMaster.config.date_format}"),
         DROPZONE_JS_URL: '#{asset_path('dropzone.min.js')}',
-        DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}'
+        DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}',
+        MASTER_DETAIL_COLOR_THEME: '#{WulinMaster.config.master_detail_color_theme}'
       });
   %body
     = yield
