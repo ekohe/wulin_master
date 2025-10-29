@@ -208,7 +208,7 @@ module WulinMaster
     def reflection_options
       choices = @options[:choices]
 
-      if choices.blank?
+      if choices.nil?
         choices = begin
           if reflection
             params_hash = {
