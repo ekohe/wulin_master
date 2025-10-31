@@ -205,8 +205,6 @@ module WulinMaster
 
       @object_array = grid.arraify(@objects)
 
-      Rails.logger.info "----------------- Arrayified objects in #{Time.current - t} sec. ------------------------"
-
       data = {
         offset: @offset,
         total: @count,
