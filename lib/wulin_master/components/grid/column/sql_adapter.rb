@@ -52,9 +52,24 @@ module WulinMaster
     end
 
     def string_query(query, column_name, filter, _, operator = "ILIKE")
+      # Use materialized normalized_full_name column if querying customer name via customers table
+      # This avoids expensive normalize_japanese_sql() computation on every row
+      use_normalized_column = column_name =~ /customers\.(last_name|first_name)/ || 
+                               column_name.include?("customers.last_name || ' ' || customers.first_name")
+      
+      # Get the model class from the ActiveRecord::Relation
+      model_class = query.respond_to?(:klass) ? query.klass : query
+      
+      if use_normalized_column && model_class.reflect_on_association(:customer)
+        # Replace the computed expression with the materialized column
+        normalized_column = "customers.normalized_full_name"
+      else
+        normalized_column = "normalize_japanese_sql(CAST(#{column_name} AS TEXT))"
+      end
+
       if filter.start_with?("\"") && filter.end_with?("\"")
         filter = filter[1..-2]
-        return query.where(["normalize_japanese_sql(CAST(#{column_name} AS TEXT)) ILIKE ?", "#{filter}%"])
+        return query.where(["#{normalized_column} ILIKE ?", "#{filter}%"])
       end
 
       # filter will be recovered from #transform_if_exclamation_not_equal
@@ -81,10 +96,14 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          conditions << "normalize_japanese_sql((CAST(#{column_name} AS TEXT)) NOT ILIKE ? OR #{column_name} IS NULL)"
+          if use_normalized_column && model_class.reflect_on_association(:customer)
+            conditions << "(#{normalized_column} NOT ILIKE ? OR #{normalized_column} IS NULL)"
+          else
+            conditions << "(#{normalized_column} NOT ILIKE ? OR #{column_name} IS NULL)"
+          end
           query_params << "#{value}%"
         else
-          conditions << "normalize_japanese_sql(CAST(#{column_name} AS TEXT)) ILIKE ?"
+          conditions << "#{normalized_column} ILIKE ?"
           query_params << "#{part}%"
         end
       end
