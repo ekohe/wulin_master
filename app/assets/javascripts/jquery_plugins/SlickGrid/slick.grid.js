@@ -703,6 +703,10 @@ if (typeof Slick === "undefined") {
       var availableWidth = toolbarWrapperWidth - globalBottunsWidth;
       var selectButtons = $gridContainer.find('.toolbar-select .toolbar_item');
       var visiableSelectButtons = $gridContainer.find('.toolbar-select .toolbar_item:visible');
+      //initialize tooltip
+      $(document).ready(function(){
+        $('.tooltipped').tooltip();
+      });
       // 5 is a buffer width to void being too crowd.
       var singleSelectButtonWidth = (visiableSelectButtons.width() || 38) + 5;
       var capableSelectButtonNumber = Math.max(Math.floor(availableWidth / singleSelectButtonWidth), 1);
@@ -1154,6 +1158,10 @@ if (typeof Slick === "undefined") {
     }
 
     function handleWindowResize() {
+      //tooltip position issue on window resize https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/266
+      $(".tooltipped").map(function(i,item) {
+        $(item).tooltip("destroy")
+      })
       restoreButtons();
       updatePagerButtons();
       updateGridHeightInModal();
@@ -1509,6 +1517,7 @@ if (typeof Slick === "undefined") {
         var header = $("<div class='ui-state-default slick-header-column input-field' />")
             .width(m.width - headerColumnWidthDiff)
             .attr("id", "" + uid + m.id)
+            .attr("data-column-id", m.id)
             .attr("title", m.toolTip || "")
             .data("column", m)
             .addClass(m.headerCssClass || "")
@@ -4282,7 +4291,7 @@ if (typeof Slick === "undefined") {
             .addClass('filtered');
         });
       }
-    }   
+    }
 
     // Trigger the option DOM after check, such that we can receive a signal that select rows is change outside of WulinMaster
     function triggerDOM() {
@@ -4966,6 +4975,7 @@ if (typeof Slick === "undefined") {
         return
       }
 
+      self.onDoubleClickBeforeColumnEdit.notify({grid: self, row: cell.row, activeCell: getColumns()[cell.cell]})
       // Ekohe Modify: Use column's editable option instead of grid's
       // if (options.editable) {
       if (isColumnEditable(getColumns()[cell.cell])) {
@@ -6286,13 +6296,16 @@ if (typeof Slick === "undefined") {
     }
 
     function isColumnEditable(column_option) {
+      const readOnlyPermissionKey = [self.columnpicker.getCurrentUserId(), 'read_only_permission'].join(":")
       if(column_option.editable == undefined) {
         return options.editable;
-      } else {
+      } else if((column_option.editable === true) && column_option.hasOwnProperty(readOnlyPermissionKey) && (column_option[readOnlyPermissionKey] === true)){
+        //override editable if current_user has only read permission
+        return column_option.editable = false
+      }else {
         return column_option.editable;
       }
     }
-
     function renderLoadingRows(range) {
       var stringArray = [];
       var colCount = $headers.children().length;
@@ -6447,11 +6460,15 @@ if (typeof Slick === "undefined") {
       "onRendered": new Slick.Event(),
       "onCanvasResized": new Slick.Event(),
       "onUpdatedByAjax": new Slick.Event(),
+      "onDeletedByAjax": new Slick.Event(),
       "onAddExtraRowClasses": new Slick.Event(),
       "onAddExtraCellClasses": new Slick.Event(),
       "onOpenCreateModalEnd": new Slick.Event(),
       "onOpenEditModalEnd": new Slick.Event(),
       "onRelationCellEdit": new Slick.Event(),
+      "onHasManyCellEdit": new Slick.Event(),
+      "onDoubleClickBeforeColumnEdit": new Slick.Event(),
+      "onTextEditorInit": new Slick.Event(),
 
       // Methods
       "registerPlugin": registerPlugin,
@@ -6477,6 +6494,7 @@ if (typeof Slick === "undefined") {
       "setSelectedRows": setSelectedRows,
       "getContainerNode": getContainerNode,
       "updatePagingStatusFromView": updatePagingStatusFromView,
+      "restoreButtons": restoreButtons,
 
       "render": render,
       "invalidate": invalidate,

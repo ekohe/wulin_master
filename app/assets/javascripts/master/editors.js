@@ -1,4 +1,4 @@
-(function($) {
+window.WulinEditors = (function($) {
 
   ///////////////////////////////////////////////////////////////////////////
   // BaseEditor
@@ -101,6 +101,10 @@
     setOffset: function (element, offsetWith) {
       var winWith = $(window).width(),
         offsetLeft = this.element.offset().left;
+
+      // https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/issues/285
+      if ($(element).hasClass("editor-text")) return
+
       if (winWith - offsetLeft < offsetWith) {
         this.element.offset({
           left: winWith - offsetWith,
@@ -410,14 +414,14 @@
 
       // Append the current value option, otherwise this.serializeValue can't get it
       if (args.item[this.column.field]) {
-        this.select.append("<option style='display: none;' value='" + args.item[this.column.field] + "'>" + args.item[this.column.field] + "</option>");
+        this.select.append(`<option style='display: none;' value="${args.item[this.column.field]}">${args.item[this.column.field]}</option>`);
         this.select.val(args.item[this.column.field]);
       }
 
       // Append options from choices array
       $.each(selectOptions, function(index, value) {
         value = value.name || value;
-        this.select.append("<option value='" + value + "'>" + value + "</option>")
+        this.select.append(`<option value="${value}">${value}</option>`)
       }.bind(this));
 
       this.setAllowSingleDeselect();
@@ -465,7 +469,7 @@
         // set options with AJAX
         var ajaxOptions = [];
         $.each(itemdata, function(index, value) {
-          ajaxOptions.push("<option value='" + value + "'>" + value + "</option>");
+          ajaxOptions.push(`<option value="${value}">${value}</option>`);
         });
         this.select.append(ajaxOptions.join(''));
 
@@ -567,9 +571,7 @@
       $.each(dateset, function(index, value) {
         if (!this.field || this.field.id != value.id) {
           this.arrOptions.push(
-            "<option value='" + value.id + "'>" +
-            value[this.source] +
-            "</option>"
+            `<option value="${value.id}">${value[this.source]}</option>`
           );
         }
       }.bind(this));
@@ -579,9 +581,7 @@
 
     this.appendOptions = function(target, value) {
       target.append(
-        "<option value='" + value.id + "'>" +
-        value[this.source] +
-        "</option>"
+        `<option value="${value.id}">${value[this.source]}</option>`
       );
     };
   }
@@ -683,6 +683,8 @@
       this.select.empty();
       this.select.append($("<option />"));
 
+      this.args.grid.onHasManyCellEdit.notify({ editor: this });
+
       $.getJSON(this.choices, function(itemdata) {
         $.each(itemdata, function(index, value) {
           this.appendOptions(this.select, value);
@@ -762,6 +764,7 @@
     };
 
     this.init();
+    args.grid.onTextEditorInit.notify({editor: this, ...args});
   }
 
   TextEditor.prototype = Object.create(InputElementEditor.prototype);
@@ -937,11 +940,12 @@
     this.init = function() {
       let gridView = $(args.container).closest('.slick-viewport')
       const fpConfigGridDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigDate);
+      const fpConfigGridUSDate = fpMergeConfigs({}, this.fpConfigGrid, fpConfigUSDate);
 
       this.initElements();
-      this.input.inputmask('wulinDate')
+      this.input.inputmask(USDateFormat() ? 'wulinUSDate' : 'wulinDate')
       if(!args.column.hide_calendar) {
-        this.input.flatpickr(fpConfigGridDate)
+        this.input.flatpickr(USDateFormat() ? fpConfigGridUSDate : fpConfigGridDate)
       }
     };
 
@@ -1005,4 +1009,25 @@
 
   RichTextEditor.prototype = Object.create(InputElementEditor.prototype);
 
+  return {
+    BaseEditor,
+    InputElementEditor,
+    IntegerEditor,
+    DecimalEditor,
+    YesNoCheckboxEditor,
+    SelectElementEditor,
+    SelectEditor,
+    DistinctEditor,
+    RelationEditor,
+    OtherRelationEditor,
+    HasManyEditor,
+    TextEditor,
+    TextEditorForForm,
+    TextAreaEditor,
+    DateTimeBaseEditor,
+    DateTimeEditor,
+    DateEditor,
+    TimeEditor,
+    RichTextEditor
+  }
 })(jQuery);

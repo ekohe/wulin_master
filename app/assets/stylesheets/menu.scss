@@ -1,5 +1,12 @@
 @import "base";
 
+#logo-group:hover {
+
+  #menu-toolbar {
+    display: block !important;
+  }
+}
+
 #navigation {
   position: absolute;
   top: $nav-height;
@@ -12,20 +19,55 @@
   display: flex;
   flex-direction: column;
 
-  #menu {
+  #logo-group {
+    position: relative;
     margin-top: 20px;
+    margin-bottom: 6px;
+
+    #menu-toolbar {
+      display: none;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding-left: 4px;
+
+      ul {
+        display: flex;
+        flex-direction: column;
+        gap: .4rem;
+        justify-content: end;
+        margin: 0;
+
+        a.waves-effect {
+
+          i.material-icons {
+            font-size: 1.4rem;
+            color: #616161;
+            transform: translateY(.3rem);
+          }
+        }
+      }
+    }
+  }
+
+
+  #menu {
     overflow-y: auto;
 
     ul {
       margin-bottom: $menu-padding;
       // Menu groups
       li.submenu {
+        margin-bottom: 1rem;
+
         a {
           font-size: 13px;
           padding-left: 10px;
           text-transform: uppercase;
           color: $text-color;
         }
+
         // Second level menu
         ul {
           li.item {
@@ -57,6 +99,7 @@
 
             a:hover {
               background: color("grey", "lighten-3");
+
               .material-icons {
                 color: black;
               }
@@ -78,6 +121,7 @@
             a,
             a:hover {
               color: $menu-item-active-color;
+
               .material-icons {
                 color: $menu-item-active-color;
               }

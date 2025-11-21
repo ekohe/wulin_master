@@ -24,13 +24,13 @@
  * @constructor
  */
 
- /*
-  * Ekohe fork:
-  *
-  *   1. Material Design
-  *   2. Add "Reset to defaults" feature
-  *   3. Remove "Force Fit Columns" & "Synchronous Resizing" features
-  */
+/*
+ * Ekohe fork:
+ *
+ *   1. Material Design
+ *   2. Add "Reset to defaults" feature
+ *   3. Remove "Force Fit Columns" & "Synchronous Resizing" features
+ */
 
 'use strict';
 
@@ -41,6 +41,7 @@
     var _grid = grid;
     var $list;
     var $menu;
+    var $user_id = user_id;
     var columnCheckboxes;
     var onColumnsChanged = new Slick.Event();
 
@@ -72,7 +73,7 @@
         .appendTo(document.body);
 
       // user could pass a title on top of the columns list
-      if(options.columnPickerTitle || (options.columnPicker && options.columnPicker.columnTitle)) {
+      if (options.columnPickerTitle || (options.columnPicker && options.columnPicker.columnTitle)) {
         var columnTitle = options.columnPickerTitle || options.columnPicker.columnTitle;
         var $title = $("<div class='title'/>").append(columnTitle);
         $title.appendTo($menu);
@@ -92,6 +93,10 @@
       // Ekohe Add: bind the column pick event
       $menu.bind("click", handleColumnPick);
       bindGrid();
+    }
+
+    function getCurrentUserId() {
+      return $user_id;
     }
 
     // Ekohe Add: Assign the picker itself to grid
@@ -135,9 +140,9 @@
         }
 
         $("<span />")
-            .html(columns[i].name)
-            .prepend($input)
-            .appendTo($li);
+          .html(columns[i].name)
+          .prepend($input)
+          .appendTo($li);
 
         $li.children().wrapAll($('<label />'));
       }
@@ -151,9 +156,9 @@
         $li = $("<li />").appendTo($list);
         $input = $("<input type='checkbox' />").data("option", "autoresize");
         $("<span />")
-            .text(forceFitTitle)
-            .prepend($input)
-            .appendTo($li);
+          .text(forceFitTitle)
+          .prepend($input)
+          .appendTo($li);
         if (_grid.getOptions().forceFitColumns) {
           $input.attr("checked", "checked");
         }
@@ -165,9 +170,9 @@
         $li = $("<li />").appendTo($list);
         $input = $("<input type='checkbox' />").data("option", "syncresize");
         $("<span />")
-            .text(syncResizeTitle)
-            .prepend($input)
-            .appendTo($li);
+          .text(syncResizeTitle)
+          .prepend($input)
+          .appendTo($li);
         if (_grid.getOptions().syncColumnCellResize) {
           $input.attr("checked", "checked");
         }
@@ -175,10 +180,10 @@
       }
 
       $menu
-          .css("top", e.pageY - 10)
-          .css("left", e.pageX - 10)
-          .css("max-height", $(window).height() - e.pageY -10)
-          .fadeIn(options.fadeSpeed);
+        .css("top", e.pageY - 10)
+        .css("left", e.pageX - 10)
+        .css("max-height", $(window).height() - e.pageY - 10)
+        .fadeIn(options.fadeSpeed);
 
       $list.appendTo($menu);
     }
@@ -193,7 +198,7 @@
       var current = grid.getColumns().slice(0);
       var ordered = new Array(columns.length);
       for (var i = 0; i < ordered.length; i++) {
-        if ( grid.getColumnIndex(columns[i].id) === undefined ) {
+        if (grid.getColumnIndex(columns[i].id) === undefined) {
           // If the column doesn't return a value from getColumnIndex,
           // it is hidden. Leave it in this position.
           ordered[i] = columns[i];
@@ -207,17 +212,17 @@
 
     function removeThisColumnEvent() {
       var menuItemName = this.data('column-id');
-        var visibleColumns = getAllVisibleColumns().filter(function (column) {
-          return column.column_name != menuItemName;
-        });
+      var visibleColumns = getAllVisibleColumns().filter(function (column) {
+        return column.column_name != menuItemName;
+      });
 
-        let frozenColumnName = grid.getOptions().frozenColumnName
-        // Update columns
-        grid.setColumns(visibleColumns);
+      let frozenColumnName = grid.getOptions().frozenColumnName
+      // Update columns
+      grid.setColumns(visibleColumns);
 
-        grid.freezeColumnByName(frozenColumnName)
+      grid.freezeColumnByName(frozenColumnName)
 
-        _self.onColumnsPick.notify({});
+      _self.onColumnsPick.notify({});
     }
 
     function moveThisColumnEvent() {
@@ -228,7 +233,7 @@
       var swappedColumns;
 
       var menuAction = this.attr('id')
-      switch(menuAction) {
+      switch (menuAction) {
         case 'move_to_right':
           if (currentPostion < visibleColumns.length - 1) {
             swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion + 1)
@@ -296,8 +301,8 @@
 
         if (grid.getColumnIndex(columns[i].id) != null) {
           $input.attr("checked", "checked")
-                // Ekohe Add: MD implementation
-                .addClass("filled-in");
+            // Ekohe Add: MD implementation
+            .addClass("filled-in");
         }
 
         // Ekohe Edit: MD implementation
@@ -308,39 +313,44 @@
 
         $li.children().wrapAll($('<label />'));
       }
-      // Ekohe Add
-      // Addpend "Reset to defaults" checkbox
-      $("<hr/>").appendTo($menu);
-      let viewName = grid.container[0].querySelector('#current-state > span') && grid.container[0].querySelector('#current-state > span').innerHTML;
-      var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+
+      // Ekohe Add: Create sticky footer container for reset section
+      var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
+      $("<hr/>").appendTo($footerContainer);
+      let viewName = $(`#grid_${grid.name} .grid-states-switcher .dropdown-trigger span`).text()
+      var $a = $("<a id='reset_to_default' href='#' />").appendTo($footerContainer);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
-      $a.on("click", function() {
-        $('#confirm-modal').modal('open').css('z-index','1005');
-        $('#confirmed-btn').on('click', function() {
+      $a.on("click", function () {
+        $('#confirm-modal').modal('open').css('z-index', '1005');
+        $('#confirmed-btn').on('click', function () {
           $.post('/wulin_master/grid_states_manages/reset_default',
-                 { _method: 'PUT',
-                   grid_name: grid.name,
-                   user_id: user_id,
-                   view_name: viewName
-                 },
-                 function(data) {
-                   if (data == 'ok') {
-                     load_page(History.getState().url);
-                   } else {
-                     displayErrorMessage(data);
-                   }
-                 });
+            {
+              _method: 'PUT',
+              grid_name: grid.name,
+              user_id: user_id,
+              view_name: viewName
+            },
+            function (data) {
+              if (data == 'ok') {
+                load_page(History.getState().url);
+              } else {
+                displayErrorMessage(data);
+              }
+            });
           $('#confirm-modal').modal('close');
         })
       });
 
-      // Ekohe Edit: MD implementation
+      // Ekohe Edit: MD implementation with height constraint and scrolling
+      let windowHeight = $(window).height();
+      let menuTop = e.pageY + 10;
+      let maxHeight = windowHeight - menuTop - 40; // 40px buffer from bottom
+
       $menu
-        // .css("top", e.pageY - 10)
-        .css("top", e.pageY + 10)
+        .css("top", menuTop)
         .css("left", e.pageX - 10)
-        // .css("max-height", $(window).height() - e.pageY -10)
+        .css("max-height", maxHeight + "px")
         .fadeIn(options.fadeSpeed);
     }
 
@@ -355,10 +365,10 @@
       var visibleColumns = [];
       let index = -1;
 
-      $.each($('#' + grid.name + '-columnpicker li input'), function(i, e) {
+      $.each($('#' + grid.name + '-columnpicker li input'), function (i, e) {
 
-        for(let idx = 0; idx < grid.columns.length; idx++) {
-          let {column_name} = grid.columns[idx]
+        for (let idx = 0; idx < grid.columns.length; idx++) {
+          let { column_name } = grid.columns[idx]
           if (column_name == columns[i].column_name) {
             index = idx
             break;
@@ -366,8 +376,8 @@
         }
 
         if ($(this).is(":checked")) {
-          delete(columns[i].visible)
-          delete(grid.columns[index].visible)
+          delete (columns[i].visible)
+          delete (grid.columns[index].visible)
 
           visibleColumns.push(columns[i]);
           $(this).addClass("filled-in");
@@ -382,9 +392,33 @@
 
       grid.freezeColumnByName(frozenColumnName)
 
+      // Force layout recalculation to fix flexbox positioning issue
+      forceLayoutRecalculation();
+
       // Ekohe Add: Reset filters
       $(grid.getHeaders()).find('input').keyup();
       grid.filterPanel.generateFilters();
+    }
+
+    function forceLayoutRecalculation() {
+      var $menu = $('#' + grid.name + '-columnpicker');
+      var $columnContainer = $menu.find('.column-container');
+
+      if ($menu.length > 0 && $columnContainer.length > 0) {
+        // Store the current scroll position
+        var scrollTop = $columnContainer.scrollTop();
+        var currentMaxHeight = $menu.css('max-height');
+
+        // Temporarily remove max-height
+        $menu.css('max-height', 'none');
+        // Force reflow by accessing offsetHeight
+        $menu[0].offsetHeight;
+        // Restore max-height
+        $menu.css('max-height', currentMaxHeight);
+
+        // Restore the scroll position after layout recalculation
+        $columnContainer.scrollTop(scrollTop);
+      }
     }
 
     function getMenu() {
@@ -399,9 +433,10 @@
 
     // Ekohe Modify: Use extend instead of returning to set APIs to this
     $.extend(this, {
-    // return {
+      // return {
       "init": init,
       "getAllColumns": getAllColumns,
+      "getCurrentUserId": getCurrentUserId,
       "destroy": destroy,
       "onColumnsPick": new Slick.Event(),
       // Ekohe Add
@@ -412,5 +447,5 @@
   }
 
   // Slick.Controls.ColumnPicker
-  $.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
+  $.extend(true, window, { Slick: { Controls: { ColumnPicker: SlickColumnPicker } } });
 })(jQuery);

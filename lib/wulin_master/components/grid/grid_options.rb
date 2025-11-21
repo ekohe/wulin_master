@@ -97,6 +97,7 @@ module WulinMaster
     end
 
     def options
+      add_options_user_read_only_permission
       # make sure the common option comes first so that the specific option for a screen can override it when merging
       the_options = self.class.options_pool.sort_by { |s| s[:only] || s[:except] || [] }.
                     select { |option| valid_option?(option) }.
@@ -129,6 +130,12 @@ module WulinMaster
       return option if params[:screen].blank?
       option[:editable] = screen.authorize_create? if option[:editable].is_a?(TrueClass)
       option
+    end
+
+    def add_options_user_read_only_permission
+      return unless current_user
+      key = [current_user.id, :read_only_permission].join(":")
+      columns_pool.each { |column_pool| column_pool.options[key] = !screen.authorize_create? if column_pool.options.key?('editable') }
     end
   end
 end

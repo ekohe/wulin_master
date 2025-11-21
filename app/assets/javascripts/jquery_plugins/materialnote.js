@@ -5860,6 +5860,16 @@
                 cmEditor.setSize(null, $editable.outerHeight());
                 $codable.data('cmEditor', cmEditor);
             }
+            //add keyup on Codeview to sync input value to editor
+            //https://gitlab.ekohe.com/ekohe/hbs/bss/-/issues/411
+            $codable.keyup(function() {
+               var value = dom.value($codable, options.prettifyHtml) || dom.emptyPara;
+               var isChange = $editable.html() !== value;
+               $editable.html(value);
+               if (isChange) {
+                context.triggerEvent('change', $editable.html(), $editable);
+               }
+            })
         };
 
         /**

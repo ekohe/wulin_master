@@ -17,7 +17,9 @@ module WulinMaster
     end
 
     def label
-      @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
+      column_label = @options[:label] || model.human_attribute_name(@name) || @name.to_s.underscore.humanize
+      return column_label.call if column_label.is_a? Proc
+      column_label
     end
 
     def singular_name
@@ -98,7 +100,7 @@ module WulinMaster
           value.try(:strftime, "%H:%M")
         elsif sql_type == :date || options[:inner_sql_type] == :date
           @datetime_excel_format = 'dd/mm/yyyy'
-          value.try(:strftime, "%d/%m/%Y")
+          value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
         else
           @datetime_excel_format = 'dd/mm/yyyy hh:mm'
           value.to_formatted_s(datetime_format)
@@ -106,7 +108,7 @@ module WulinMaster
       elsif value.class == Date
         @datetime_value = value
         @datetime_excel_format = 'dd/mm/yyyy'
-        value.try(:strftime, "%d/%m/%Y")
+        value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
       elsif value.class == Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'
@@ -165,8 +167,28 @@ module WulinMaster
       (enum? ? :enum : (column.try(:type) || association_type || options[:sql_type] || :unknown)).to_sym
     end
 
+    #
+    # https://github.com/rails/rails/blob/7-0-stable/activerecord/lib/active_record/reflection.rb#L420-L443
+    # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/reflection.rb#L419-L424
+    #
+    # Rails 7 will check the model is inherited from ActiveRecord::Base, it will raise an error if not
+    #
     def reflection
       @reflection ||= model.reflections[(@options[:through] || @name).to_s]
+
+      return nil if @reflection.nil?
+
+      if Rails::VERSION::MAJOR >= 7
+        begin
+          @reflection.klass
+          @reflection
+        rescue => e
+          Rails.logger.warn "#{e.inspect}, at #{__FILE__}"
+          return nil
+        end
+      else
+        @reflection
+      end
     end
 
     def append_choices
@@ -184,32 +206,37 @@ module WulinMaster
     end
 
     def reflection_options
-      @options[:choices] ||= begin
-        if reflection
-          params_hash = {
-            grid: @grid_class.name,
-            column: @name.to_s,
-            source: source,
-            klass: klass_name,
-            screen: @options[:screen],
-            options_condition: @options[:options_condition]
-          }
-          "/wulin_master/fetch_options?#{params_hash.to_param}"
-        elsif @options[:distinct]
-          params_hash = {
-            grid: @grid_class.name,
-            column: @name.to_s,
-            source: form_name,
-            klass: klass_name,
-            screen: @options[:screen],
-            options_condition: @options[:options_condition]
-          }
-          "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
-        else
-          []
+      choices = @options[:choices]
+
+      if choices.nil?
+        choices = begin
+          if reflection
+            params_hash = {
+              grid: @grid_class.name,
+              column: @name.to_s,
+              source: source,
+              klass: klass_name,
+              screen: @options[:screen],
+              options_condition: @options[:options_condition]
+            }
+            "/wulin_master/fetch_options?#{params_hash.to_param}"
+          elsif @options[:distinct]
+            params_hash = {
+              grid: @grid_class.name,
+              column: @name.to_s,
+              source: form_name,
+              klass: klass_name,
+              screen: @options[:screen],
+              options_condition: @options[:options_condition]
+            }
+            "/wulin_master/fetch_distinct_options?#{params_hash.to_param}"
+          else
+            []
+          end
         end
       end
-      { choices: @options[:choices], source: source }
+
+      { choices: choices, source: source }
     end
 
     # Spec: Suppose a post belongs_to an author. In the post grid, we can have columns like
@@ -320,7 +347,7 @@ module WulinMaster
       when 'has_and_belongs_to_many'
         {reflection.name => format_multiple_objects(object.send(reflection.name.to_s))}
       when 'has_many'
-        {reflection.name => format_multiple_objects(object.send(@options[:through] || name))}
+        {reflection.name => format_multiple_objects(object.send(@options[:through] || name) || [])}
       else
         format(object.send(source.to_s))
       end
@@ -393,7 +420,12 @@ module WulinMaster
     def format_multiple_objects(objects)
       value = {:id => [], source => []}
       # Sort the object by value name
-      objects.sort{|a,b| a.send(source) <=> b.send(source) }.each do |obj|
+      objects.sort do |a, b|
+        va = a.send(source)
+        vb = b.send(source)
+        (va <=> vb) || 0
+      end
+      .each do |obj|
         value[:id] << obj.id
         value[source] << format(obj.send(source))
       end

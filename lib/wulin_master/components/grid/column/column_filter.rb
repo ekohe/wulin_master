@@ -42,7 +42,12 @@ module WulinMaster
 
     def filter_with_reflection(query, filtering_value, filtering_operator, adapter)
       if @options[:sql_expression]
-        WulinMaster::SqlQuery.string_query(query, @options[:sql_expression], filtering_value, self, (%w[equals =].include?(filtering_operator) ? 'ILIKE' : 'NOT ILIKE'))
+        operator = if @options[:exact_filter]
+          'exact'
+        else
+          %w[equals =].include?(filtering_operator) ? 'ILIKE' : 'NOT ILIKE'
+        end
+        WulinMaster::SqlQuery.string_query(query, @options[:sql_expression], filtering_value, self, operator)
       else
         column_type = column_type(reflection.klass, source)
         # for string column
@@ -70,11 +75,26 @@ module WulinMaster
 
     def filter_by_datetime(query, operator, field, value)
       operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
-      query.where(["to_char(#{field}::timestamp at time zone '#{time_zone_offset}', 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)", "#{value}%"])
+
+      # Determine if this is a Date field (without time component)
+      is_date_only = field =~ /#{model.table_name}\.(\w+)$/ &&
+                     model.columns_hash[$1]&.type == :date
+
+      if is_date_only
+        # For Date fields (without time), don't apply timezone conversion
+        query.where(["to_char(#{field}::date, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
+      else
+        # For DateTime/timestamp fields, apply timezone conversion
+        query.where([
+          "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
+          time_zone_offset,
+          "#{value}%"
+        ])
+      end
     end
 
     def time_zone_offset
-      @time_zone_offset ||= (Time.zone.utc_offset / 1.hour)
+      Time.zone.tzinfo.name
     end
 
     def apply_inclusion_filter(query, operator, value)
@@ -98,9 +118,17 @@ module WulinMaster
     end
 
     def apply_string_filter(query, operator, value)
-      operator = case operator
-      when 'equals' then 'ILIKE'
-      when 'not_equals' then 'NOT ILIKE'
+      if @options[:exact_filter]
+        # For exact filter with not_equals, prefix the value with !
+        if operator == 'not_equals'
+          value = "!#{value}"
+        end
+        operator = 'exact'
+      else
+        operator = case operator
+        when 'equals' then 'ILIKE'
+        when 'not_equals' then 'NOT ILIKE'
+        end
       end
       WulinMaster::SqlQuery.string_query(query, "#{relation_table_name}.#{source}", value, self, operator)
     end
@@ -152,8 +180,17 @@ module WulinMaster
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
-          args = [complete_column_name, filtering_value, self]
-          args << operator if operator =~ /^(exact|NOT\ ILIKE)$/
+          # Check if exact_filter option is set
+          if @options[:exact_filter]
+            # For exact filter with not_equals, we need to add ! prefix back
+            if operator == 'NOT ILIKE' || filtering_operator == 'not_equals'
+              filtering_value = "!#{filtering_value}"
+            end
+            args = [complete_column_name, filtering_value, self, 'exact']
+          else
+            args = [complete_column_name, filtering_value, self]
+            args << operator if operator =~ /^(exact|NOT\ ILIKE)$/
+          end
           adapter.string_query(*args)
           adapter.query
         end

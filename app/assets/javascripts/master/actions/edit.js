@@ -225,7 +225,7 @@ var grepValues = function (formData, jqForm, options) {
         '"]',
       jqForm
     );
-    if (flagDom.not(':checked').size() > 0) {
+    if (flagDom.is(':visible') && flagDom.not(':checked').size() > 0) {
       formData.splice(i, 1);
     }
   }
@@ -237,10 +237,14 @@ var submitForm = function (grid, ids, selectedIndexes) {
     $form = $('form', $scope);
   var submitButton = $form.find("input[type='submit']");
   $scope.off('click', '.update_btn').on('click', '.update_btn', function () {
+    const gridParams = Object.fromEntries(
+      grid.loader.getParams().map(param => [param[0], param[1]])
+    );
+
     var options = {
       dateType: 'json',
       url: grid.path + '/' + ids + '.json' + grid.query,
-      data: { _method: 'PUT' },
+      data: { _method: 'PUT', gridParams: gridParams },
       beforeSubmit: grepValues,
       beforeSend: function () {
         submitButton.prop('disabled', 'disabled');

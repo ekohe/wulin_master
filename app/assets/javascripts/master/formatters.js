@@ -91,21 +91,18 @@
     },
 
     NumberWithDelimiterFormatter: function(row, cell, value, columnDef, dataContext) {
-      if (columnDef.precision == undefined) {
-        var precision = 0;
-      } else {
-        var precision = columnDef.precision;
-      }
+      const { precision = 0, prefix = "", suffix = "", fallback = "" } = columnDef;
 
-      if (value === null || value === undefined || value === '') {
-        var text = '';
-      } else {
-        if (precision == 0){
-          var text = parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        } else {
-          var text = parseFloat(value).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-      }
+      const formatWithPrecision = (value, precision) => parseInt(precision) === 0
+        ? parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        : parseFloat(value).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      const text = (value => {
+        const isEmpty = value === null || value === undefined || value === "";
+        if (isEmpty) return fallback;
+        return `${prefix}${formatWithPrecision(value, precision)}${suffix}`;
+      })(value);
+
       return applyStyle(text, columnDef.style_class, columnDef.style || '');
     },
 
@@ -153,10 +150,10 @@
       input.setAttribute('type', 'checkbox');
       input.setAttribute('class', 'filled-in');
       input.setAttribute('checked', 'checked');
-      input.setAttribute('id', 'show-checkbox-' + row);
+      input.setAttribute('id', `show-checkbox-${row}-${cell}`);
 
       var span = document.createElement('span');
-      span.setAttribute('for', 'show-checkbox-' + row);
+      span.setAttribute('for', `show-checkbox-${row}-${cell}`);
 
       label.append(input);
       label.append(span);
@@ -183,6 +180,8 @@
 
     // Support growth values
     PercentageFormatter: function(row, cell, value, columnDef, dataContext) {
+      const {percentageSign = "%"} = columnDef
+
       if (columnDef.precision == undefined) {
         var precision = 0;
       } else {
@@ -190,9 +189,9 @@
       }
 
       if (precision == 0) {
-        value = (value === null) ? '' : (parseInt(value) + '%');
+        value = (value === null) ? '' : (parseInt(value) + percentageSign);
       } else {
-        value = (value === null) ? '' : (parseFloat(value).toFixed(precision) + '%');
+        value = (value === null) ? '' : (parseFloat(value).toFixed(precision) + percentageSign);
       }
 
       return applyStyle(value, columnDef.style_class, columnDef.style || '');
@@ -200,16 +199,21 @@
 
     // stored in decimal, rendered in percentage, e.g. 0.12 -> 12%
     DecimalPercentageFormatter: function(row, cell, value, columnDef, dataContext) {
-      let {precision, style_class, style} = columnDef;
+      let {precision, style_class, style, percentageSign = "%"} = columnDef;
       precision = precision || 0;
 
-      value = Number(value) * 100;
-
-      if (precision === 0) {
-        value = (value === null) ? '' : (parseInt(value) + '%');
+      if(Number(value) === 0) {
+        value = ""
       } else {
-        value = (value === null) ? '' : (parseFloat(value).toFixed(precision) + '%');
+        const parsedNum = Number(value) * 100
+
+        if (precision === 0) {
+          value = parseInt(parsedNum) + percentageSign
+        } else {
+          value = parseFloat(parsedNum).toFixed(precision) + percentageSign
+        }
       }
+
       return applyStyle(value, style_class, style || '');
     },
 

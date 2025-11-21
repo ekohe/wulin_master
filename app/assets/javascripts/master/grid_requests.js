@@ -59,11 +59,17 @@ var Requests = {
   updateByAjax: function(grid, item, editCommand) {
     delete item.slick_index;
     var currentRow = this.getCurrentRows(grid, [item.id])[1];
+
+    var gridParams = {}
+    $.each(grid.loader.getParams(), function(_, value) {
+      gridParams[value[0]] = value[1]
+    })
+
     $.ajax({
       type: "POST",
       dateType: 'json',
       url: grid.path + "/" + item.id + ".json" + grid.query,
-      data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token)},
+      data: {_method: 'PUT', item: item, authenticity_token: decodeURIComponent(window._token), gridParams: gridParams},
       success: function(msg) {
         if(msg.success) {
           grid.onUpdatedByAjax.notify({item, msg});
@@ -97,6 +103,7 @@ var Requests = {
       data: decodeURIComponent($.param({_method: 'DELETE', authenticity_token: window._token})),
       success: function(msg) {
         if(msg.success) {
+          grid.onDeletedByAjax.notify({ids, msg});
           grid.resetActiveCell();
           var from = parseInt(range[0] / 200, 10) * 200;
           var to = range[1]+1;

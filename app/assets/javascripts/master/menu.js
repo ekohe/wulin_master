@@ -1,18 +1,18 @@
 var currentUrl = null;
 
-$(document).ready(function () {
+$(document).ready(function() {
   initialize_menu();
 
-  $("#navigation").resizable({handles: 'e, w', minWidth:199, maxWidth:500});
+  $("#navigation").resizable({ handles: 'e, w', minWidth: 199, maxWidth: 500 });
 
-  $("#menu-toggle").click(function(){
+  $("#menu-toggle").click(function() {
     $('#content').toggleClass('extended-panel');
     $("#navigation").toggle();
   });
 
   // On resize of the left side panel, resize the grid
   $("#navigation").bind("resize", function() {
-    $("#content").css('left', $("#navigation").width()+1);
+    $("#content").css('left', $("#navigation").width() + 1);
     $("#navigation").css('height', 'auto');
   });
 
@@ -40,7 +40,7 @@ function loadPageForHistoryState() {
 
 function load_page(url) {
   // remove all the context-menu
-  $("ul.context-menu").remove()
+  $("ul.context-menu").remove();
 
   $("#screen_content").empty();
 
@@ -56,8 +56,8 @@ function load_page(url) {
   // indicators.find("#init_menu").show();
 
   $('<div />').attr('id', 'screen_content_loader_container')
-              .append($('<div />').attr('id', 'screen_content_loader'))
-              .prependTo($('#content'));
+  .append($('<div />').attr('id', 'screen_content_loader'))
+  .prependTo($('#content'));
 
   $.ajax({
     type: 'GET',
@@ -73,9 +73,9 @@ function load_page(url) {
       setTimeout(function() {
         trackGoogleAnalytics();
 
-        let id = $("#screen_content > div").attr("id")
-        $("#screen_content").removeClass()
-        $("#screen_content").addClass(`content-${id}`)
+        let id = $("#screen_content > div").attr("id");
+        $("#screen_content").removeClass();
+        $("#screen_content").addClass(`content-${id}`);
       }, 250);
     },
     error: function() {
@@ -87,19 +87,19 @@ function load_page(url) {
   });
 }
 
-function cleanUpEditors(id=false) {
+function cleanUpEditors(id = false) {
   // we should cleanup open editors
-  if(id) {
+  if (id) {
     $(".select-editor").data("id", id).remove();
-    $(".textarea-wrapper").data("id", id).remove()
-  }else{
-    $(".select-editor").remove()
-    $(".textarea-wrapper").remove()
+    $(".textarea-wrapper").data("id", id).remove();
+  } else {
+    $(".select-editor").remove();
+    $(".textarea-wrapper").remove();
   }
 }
 
 function trackGoogleAnalytics() {
-  if (typeof(ga)!='undefined') {
+  if (typeof (ga) != 'undefined') {
     ga('send', 'pageview', currentUrl);
   }
 }
@@ -108,7 +108,7 @@ function deselectMenuItems() { $("#menu .active").removeClass("active"); }
 
 function selectMenuItem(url) {
   rootUrl = History.getRootUrl(),
-  relativeUrl = url.replace(rootUrl,'/');
+    relativeUrl = url.replace(rootUrl, '/');
   deselectMenuItems();
   $currentLink = $('#menu li.item a[href="' + relativeUrl + '"]');
   $currentLink.parent().addClass('active');
@@ -120,8 +120,7 @@ function initialize_menu() {
     currentUrl = $(this).attr('href');
 
     // If the item in the menu is an absolute URL, then go to the change password page.
-    if (/^https?:\/\//i.test(currentUrl))
-    {
+    if (/^https?:\/\//i.test(currentUrl)) {
       window.open(currentUrl);
       return;
     }
@@ -141,11 +140,51 @@ function initialize_menu() {
     return false;
   });
 
-  // Click to open submenu
+  // Click to toggle submenu
   $("#menu li.submenu a").click(function() {
-    $(this).find(".indicator").toggleClass("closed");
     $(this).siblings("ul").toggle();
     return false;
+  });
+
+  function elementRelativeToScrollArea(element, scrollArea) {
+    const elementTop = $(element).offset().top;
+    const elementBottom = elementTop + $(element).outerHeight();
+    const scrollAreaTop = $(scrollArea).offset().top;
+    const scrollAreaBottom = scrollAreaTop + $(scrollArea).outerHeight();
+
+    return {
+      onTop: elementTop < scrollAreaTop,
+      onBottom: elementBottom > scrollAreaBottom
+    };
+  }
+
+  // Focus on current active item
+  $("#menu-toolbar li a#focus").click(function() {
+    const menu = "#menu";
+    const item = "#menu li.item.active";
+    $(item).parent('ul').show();
+
+    const itemPosition = elementRelativeToScrollArea(item, menu);
+
+    if (itemPosition.onBottom) {
+      $(menu).animate({
+        scrollTop: $(item).offset().top - $(menu).offset().top
+      }, 400);
+    } else if (itemPosition.onTop) {
+      $(menu).animate({
+        scrollTop: $(menu).scrollTop() - ($(menu).offset().top - $(item).offset().top)
+      }, 400);
+    }
+  });
+
+  // Expand all submenu
+  $("#menu-toolbar li a#expand").click(function() {
+    $("#menu li.submenu ul").show();
+  });
+
+  // Collapse all submenu
+  $("#menu-toolbar li a#collapse").click(function() {
+    $("#menu li.submenu ul").hide();
   });
 
   // Click to go back to dashboard

@@ -67,6 +67,7 @@ var Ui = {
         Ui.setupForm(grid, false);
       }, 350);
       Ui.setupComponents(grid);
+      grid.onOpenCreateModalEnd.notify();
     });
   },
 
@@ -180,10 +181,16 @@ var Ui = {
       .flatpickr(fpMergeConfigs({}, fpConfigFormDateTime, onCalendarOpenClose));
     });
     $(`${scope} input[data-date]`).each(function() {
-      let that = this
-      $(that)
-      .inputmask('wulinDate')
-      .flatpickr(fpMergeConfigs({}, fpConfigFormDate, onCalendarOpenClose));
+      let that = this;
+      if (USDateFormat()) {
+        $(that)
+        .inputmask('wulinUSDate')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormUSDate, onCalendarOpenClose));
+      } else {
+        $(that)
+        .inputmask('wulinDate')
+        .flatpickr(fpMergeConfigs({}, fpConfigFormDate, onCalendarOpenClose));
+      }
     });
     $(`${scope} input[data-time]`).each(function() {
       let that = this
@@ -202,7 +209,7 @@ var Ui = {
     var distinctColumn = [];
     var path;
     var formType = $scope.data('action');
-    var columns = window[name + '_columns'] || grid.getColumns();
+    var columns = window[name + '_columns'] || grid.allColumns
     var currentData = {};
 
     if (grid.loader) currentData = grid.loader.data[grid.getSelectedRows()[0]];
@@ -230,7 +237,6 @@ var Ui = {
             const master_model = n['depend_column'], master_id = currentData[n['depend_column']]['id'];
             editorChoices = `${editorChoices}&master_model=${master_model}&master_id=${master_id}`;
           }
-
           remotePath.push([n.field, editorChoices, formable]);
         }
       } else if (currentData && n['choices_column']) {

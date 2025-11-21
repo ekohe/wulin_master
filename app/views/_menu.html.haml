@@ -3,6 +3,7 @@
 #navigation
   - if WulinMaster.config.nav_sidebar_partial_path.present?
     = render partial: WulinMaster.config.nav_sidebar_partial_path
+
   #menu
     %ul
       - menu.each do |menu_entry|

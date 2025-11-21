@@ -310,7 +310,7 @@ Default is `false`. If set `true`, the column will appear in the `new`/`edit` fo
 
 `:label`
 
-Sets the title displayed on the column header. If not set, the column label will be the same as the column name.
+Sets the title displayed on the column header. If not set, the column label will be the same as the column name. The label can be a Proc.
 
 `:width`
 
@@ -439,6 +439,23 @@ This option is only useful for some relation columns. For example, `Post` belong
 `:distinct`
 
 This option is only useful for the text column.
+
+`:exact_filter`
+
+When set to `true`, enables exact string matching for the column filter instead of the default partial matching with wildcards. This is useful when you need to search for precise values that contain special characters or when you want to match complete strings only.
+
+```ruby
+class PostGrid < WulinMaster::Grid
+  column :code, exact_filter: true  # Will match exact values only
+end
+```
+
+With exact filtering:
+- Search terms are matched exactly without wildcards
+- Multiple values can be separated by commas for OR logic (e.g., "value1,value2")
+- Multiple values can be separated by ampersands for AND logic (e.g., "value1&value2")
+- Negation is supported with exclamation mark prefix (e.g., "!value")
+- Special characters in values are preserved and matched literally
 
 `:style`
 

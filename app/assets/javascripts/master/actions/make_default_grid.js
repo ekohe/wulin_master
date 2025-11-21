@@ -18,9 +18,6 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
       let index = grid.getRowByRecordId(fileId).index;
       let selectGrid = grid.getData()[index];
       let gridId = selectGrid.id;
-      let gridName = selectGrid.grid_name;
-      let stateVal = selectGrid.state_value ? selectGrid.state_value : "";
-      let name = selectGrid.name
 
       let modal = Ui.baseModal({
         onOpenStart: function (modal, trigger) {
@@ -43,29 +40,20 @@ WulinMaster.actions.MakeDefaultGrid = $.extend(
       let footer = Ui.modalFooter("Set as Initial").appendTo(modal);
       footer.find(".confirm-btn").on("click", function () {
         modal.modal("close");
-        let url = `/wulin_master/grid_states/set_as_initial?id=${gridId}&grid_name=${gridName}&state_val=${stateVal}&name=${name}`;
-        $.ajax({
-          method: "POST",
-          dataType: "json",
-          contentType: "application/json",
-          url: url,
-          success: function (res) {
-            if (res.response) {
-              displayNewNotification("Initial grid has been successfully set!");
-              grid.loader.reloadData();
-            } else {
-              displayErrorMessage(res.message);
-            }
-          },
-          error: function (error) {
-            displayErrorMessage("An error occurred.");
-          },
-          async: true,
-          cache: false,
-          contentType: false,
-          processData: false,
-          timeout: 60000,
-        });
+        const data = {
+          id: gridId
+        }
+        let url = `/wulin_master/grid_states/set_as_initial`
+        $.post(url, data, function(response) {
+          if (response.success === true) {
+            displayNewNotification("Initial grid has been successfully set!");
+            grid.loader.reloadData();
+          } else if(response.success === false ) {
+            displayErrorMessage(response.message);
+          }else{
+            displayErrorMessage("We're sorry, but something went wrong");
+          }
+        })
       });
     },
   }
