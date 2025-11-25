@@ -147,11 +147,11 @@ module WulinMaster
     def apply_order(query, direction)
       return query unless %w[ASC DESC].include?(direction)
       if @options[:sql_expression]
-        query.order(Arel.sql("#{@options[:sql_expression]} #{direction}, #{model.table_name}.id ASC"))
+        query.order(Arel.sql("#{@options[:sql_expression]} #{direction} NULLS LAST, #{model.table_name}.id ASC"))
       elsif reflection
-        query.order(Arel.sql("#{relation_table_name}.#{source} #{direction}, #{model.table_name}.id ASC"))
+        query.order(Arel.sql("#{relation_table_name}.#{source} #{direction} NULLS LAST, #{model.table_name}.id ASC"))
       elsif table_column?
-        order_str = "#{model.table_name}.#{source} #{direction}"
+        order_str = "#{model.table_name}.#{source} #{direction} NULLS LAST"
         order_str += ", #{model.table_name}.id ASC" if model < ActiveRecord::Base
         query.order(Arel.sql(order_str))
       else
