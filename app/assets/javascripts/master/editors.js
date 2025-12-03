@@ -387,11 +387,10 @@ window.WulinEditors = (function($) {
       // construce select option
       if ($.isArray(choices)) {
         selectOptions = $.map(choices, function(e, index) {
-          if ($.isPlainObject(e)) {
-            return e;
-          } else {
-            return { id: e, name: e };
-          }
+          // Support either plain strings/symbols, [label, key] pairs, or {id, name} objects
+          if ($.isPlainObject(e)) return e;
+          if ($.isArray(e) && e.length >= 2) return { id: e[1], name: e[0] };
+          return { id: e, name: e };
         });
       } else if ($.isPlainObject(choices)) {
         selectOptions = {};
@@ -400,6 +399,8 @@ window.WulinEditors = (function($) {
             selectOptions[i] = [];
           } else {
             var option = $.map(choices[i], function(e, index) {
+              if ($.isPlainObject(e)) return e;
+              if ($.isArray(e) && e.length >= 2) return { id: e[1], name: e[0] };
               return { id: e, name: e };
             });
             selectOptions[i] = option;
@@ -420,9 +421,16 @@ window.WulinEditors = (function($) {
 
       // Append options from choices array
       $.each(selectOptions, function(index, value) {
-        value = value.name || value;
-        this.select.append(`<option value="${value}">${value}</option>`)
+        var id = (value && value.id !== undefined) ? value.id : value;
+        var name = (value && value.name !== undefined) ? value.name : value;
+        this.select.append(`<option value="${id}">${name}</option>`)
       }.bind(this));
+
+      // Replace hidden placeholder with real labeled option as selected
+      if (args.item[this.column.field]) {
+        this.select.find(`option[style*='display: none'][value="${args.item[this.column.field]}"]`).remove();
+        this.select.val(args.item[this.column.field]);
+      }
 
       this.setAllowSingleDeselect();
       this.openDropDrown();

@@ -33,6 +33,7 @@ end
 require "wulin_master/utilities/utilities"
 require "wulin_master/configuration"
 require "wulin_master/extension"
+require "wulin_master/extensions/enum_i18n"
 require "wulin_master/actions"
 require "wulin_master/menu/menu"
 require "wulin_master/screen/screen"

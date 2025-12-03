@@ -97,6 +97,19 @@ module WulinMaster
       @datetime_value = nil
       @datetime_excel_format = nil
 
+      # Translate enum values using Rails I18n if this column is an enum
+      if enum?
+        return value if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+        begin
+          # value is the enum key (string); translate via ApplicationRecord helper
+          return model.human_enum_name(source, value)
+        rescue => e
+          Rails.logger.debug("WulinMaster::Column enum translation fallback for #{model}.#{source} (#{value}): #{e.message}")
+          # fall through to default formatting
+          return value
+        end
+      end
+
       if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
         @datetime_value = value
         if sql_type == :time || options[:inner_sql_type] == :time
