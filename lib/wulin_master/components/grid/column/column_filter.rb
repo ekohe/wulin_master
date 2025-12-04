@@ -156,10 +156,13 @@ module WulinMaster
         adapter.query
       when 'enum'
         matching_keys = []
-        model.send(source.to_s.pluralize).select do |key, value|
-          matching_keys << value if key.downcase.start_with?(filtering_value.downcase)
+        model.send(source.to_s.pluralize).each do |key, value|
+          if key.downcase.start_with?(filtering_value.downcase) ||
+             model.human_enum_name(source, key).downcase.start_with?(filtering_value.downcase)
+            matching_keys << value
+          end
         end
-        query.where(source => matching_keys || nil)
+        query.where(source => matching_keys.presence)
       else
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
