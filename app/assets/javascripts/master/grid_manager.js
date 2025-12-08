@@ -135,6 +135,8 @@
       GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
       // Restore the width states to columns
       GridStatesManager.restoreWidthStates(columns, states["width"]);
+      // Restore the pinned columns states
+      columns = GridStatesManager.restorePinnedColumnsStates(columns, states["pinnedColumns"], options);
 
       // create the row detail plugin
       if (options.rowDetail) {

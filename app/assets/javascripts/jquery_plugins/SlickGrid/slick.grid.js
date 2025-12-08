@@ -113,6 +113,7 @@ if (typeof Slick === "undefined") {
 
       frozenBottom: false,
       frozenColumn: -1,
+      pinnedColumns: [],  // Array of pinned column names
       frozenRow: -1,
 
       fullWidthRows: false,
@@ -783,7 +784,15 @@ if (typeof Slick === "undefined") {
     }
 
     function hasFrozenColumns() {
-      return options.frozenColumn > -1;
+      return options.pinnedColumns && options.pinnedColumns.length > 0;
+    }
+
+    function isColumnPinned(columnName) {
+      return options.pinnedColumns && options.pinnedColumns.indexOf(columnName) !== -1;
+    }
+
+    function getPinnedColumns() {
+      return options.pinnedColumns || [];
     }
 
     function registerPlugin(plugin) {
@@ -1588,31 +1597,35 @@ if (typeof Slick === "undefined") {
             trigger(self.onColumnsReordered, {grid: self});
           });;
 
-        var $freezeCurrentColumn = $(
-          `<li id='freeze_up_to_current_column' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons">flash_on</i>Freeze</a></li>`
+        var isPinned = isColumnPinned(columnName);
+
+        var $pinColumn = $(
+          `<li id='pin_column' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons">lock</i>Pin</a></li>`
         )
           .off('click')
           .on('click', function (e) {
             let column_name = $(e.currentTarget).data('column-id')
-            self.freezeColumnByName(column_name)
-          });;
+            self.pinColumn(column_name)
+          });
 
-        var $deFreezeColumn = $(
-          `<li id='defreeze_column'><a href="javascript:void(0)"><i class="material-icons">flash_on</i>Defreeze</a></li>`
+        var $unpinColumn = $(
+          `<li id='unpin_column' data-column-id='${columnName}'><a href="javascript:void(0)"><i class="material-icons">lock_open</i>Unpin</a></li>`
         )
           .off('click')
           .on('click', function (e) {
-            self.setOptions({"frozenColumn": -1, "frozenColumnName": null})
-          });;
+            let column_name = $(e.currentTarget).data('column-id')
+            self.unpinColumn(column_name)
+          });
 
         $moreContainer
           .append($hideItem)
           .append($moveToRight)
           .append($moveToLeft)
-          .append($freezeCurrentColumn)
 
-        if (hasFrozenColumns()) {
-          $moreContainer.append($deFreezeColumn)
+        if (isPinned) {
+          $moreContainer.append($unpinColumn)
+        } else {
+          $moreContainer.append($pinColumn)
         }
 
         $showMoreTrigger.append($moreContainer);
@@ -2273,11 +2286,16 @@ if (typeof Slick === "undefined") {
       // let visibleColumns = grid.getColumns()
       // let orderedColumns = grid.columnpicker.getAllColumns()
 
-      options.frozenColumn = ( options.frozenColumn >= 0
-        && options.frozenColumn < columns.length
-        )
-        ? parseInt(options.frozenColumn)
-        : -1;
+      // Calculate frozenColumn from pinnedColumns array
+      if (options.pinnedColumns && options.pinnedColumns.length > 0) {
+        options.frozenColumn = options.pinnedColumns.length - 1;
+      } else {
+        options.frozenColumn = ( options.frozenColumn >= 0
+          && options.frozenColumn < columns.length
+          )
+          ? parseInt(options.frozenColumn)
+          : -1;
+      }
 
       options.frozenRow = ( options.frozenRow >= 0
         && options.frozenRow < numVisibleRows
@@ -2867,34 +2885,143 @@ if (typeof Slick === "undefined") {
       }
     }
 
-    function freezeColumnByName (column_name) {
-      let index = -1;
+    function pinColumn(columnName) {
+      if (!options.pinnedColumns) {
+        options.pinnedColumns = [];
+      }
+
+      // Check if already pinned
+      if (options.pinnedColumns.indexOf(columnName) !== -1) {
+        return;
+      }
+
+      // Find the column
+      var columnToPin = null;
+      var columnIndex = -1;
       for (var i = 0; i < columns.length; i++) {
-        if (columns[i].column_name === column_name) {
-          index = i;
+        if (columns[i].column_name === columnName) {
+          columnToPin = columns[i];
+          columnIndex = i;
           break;
         }
       }
 
-      // Validate frozen columns won't exceed viewport
-      if (index >= 0) {
-        var frozenWidth = 0;
-        for (var j = 0; j <= index; j++) {
-          frozenWidth += columns[j].width;
-        }
+      if (!columnToPin) {
+        return;
+      }
 
-        if (frozenWidth >= viewportW * 0.8) {
-          M.toast({html: "Cannot freeze: frozen columns would exceed viewport width", displayLength: 3000});
-          return;
+      // Validate pinned columns won't exceed viewport
+      var pinnedWidth = 0;
+      for (var j = 0; j < options.pinnedColumns.length; j++) {
+        for (var k = 0; k < columns.length; k++) {
+          if (columns[k].column_name === options.pinnedColumns[j]) {
+            pinnedWidth += columns[k].width;
+            break;
+          }
+        }
+      }
+      pinnedWidth += columnToPin.width;
+
+      if (pinnedWidth >= viewportW * 0.8) {
+        M.toast({html: "Cannot pin: pinned columns would exceed viewport width", displayLength: 3000});
+        return;
+      }
+
+      // Add to pinned columns array
+      options.pinnedColumns.push(columnName);
+
+      // Reorder columns: move pinned column to the end of pinned group
+      var newColumns = [];
+      var pinnedCols = [];
+      var unpinnedCols = [];
+
+      for (var i = 0; i < columns.length; i++) {
+        if (options.pinnedColumns.indexOf(columns[i].column_name) !== -1) {
+          pinnedCols.push(columns[i]);
+        } else {
+          unpinnedCols.push(columns[i]);
         }
       }
 
-      self.setOptions({"frozenColumnName": column_name});
-      self.setOptions({"frozenColumn": index});
+      // Sort pinned columns by their order in pinnedColumns array
+      pinnedCols.sort(function(a, b) {
+        return options.pinnedColumns.indexOf(a.column_name) - options.pinnedColumns.indexOf(b.column_name);
+      });
 
-      if (index == -1) {
-        self.setOptions({"frozenColumnName": null});
+      newColumns = pinnedCols.concat(unpinnedCols);
+
+      // Set frozenColumn before setColumns so headers render correctly
+      var newFrozenColumn = options.pinnedColumns.length - 1;
+      options.frozenColumn = newFrozenColumn;
+
+      // Set the new columns order
+      setColumns(newColumns);
+
+      // Call setOptions to properly initialize frozen panes (setFrozenOptions, setScroller, etc.)
+      self.setOptions({"frozenColumn": newFrozenColumn});
+
+      // Trigger event for state saving
+      trigger(self.onColumnsPinned, {grid: self, pinnedColumns: options.pinnedColumns});
+    }
+
+    function unpinColumn(columnName) {
+      if (!options.pinnedColumns || options.pinnedColumns.length === 0) {
+        return;
       }
+
+      var pinnedIndex = options.pinnedColumns.indexOf(columnName);
+      if (pinnedIndex === -1) {
+        return;
+      }
+
+      // Remove from pinned columns array
+      options.pinnedColumns.splice(pinnedIndex, 1);
+
+      // Reorder columns: move unpinned column to the start of unpinned group
+      var newColumns = [];
+      var pinnedCols = [];
+      var unpinnedCols = [];
+      var unpinnedColumn = null;
+
+      for (var i = 0; i < columns.length; i++) {
+        if (columns[i].column_name === columnName) {
+          unpinnedColumn = columns[i];
+        } else if (options.pinnedColumns.indexOf(columns[i].column_name) !== -1) {
+          pinnedCols.push(columns[i]);
+        } else {
+          unpinnedCols.push(columns[i]);
+        }
+      }
+
+      // Sort pinned columns by their order in pinnedColumns array
+      pinnedCols.sort(function(a, b) {
+        return options.pinnedColumns.indexOf(a.column_name) - options.pinnedColumns.indexOf(b.column_name);
+      });
+
+      // Place unpinned column at the start of unpinned group
+      if (unpinnedColumn) {
+        unpinnedCols.unshift(unpinnedColumn);
+      }
+
+      newColumns = pinnedCols.concat(unpinnedCols);
+
+      // Calculate new frozenColumn value and set it before setColumns
+      var newFrozenColumn = options.pinnedColumns.length > 0 ? options.pinnedColumns.length - 1 : -1;
+      options.frozenColumn = newFrozenColumn;
+
+      // Set the new columns order
+      setColumns(newColumns);
+
+      // Call setOptions to properly initialize frozen panes (setFrozenOptions, setScroller, etc.)
+      self.setOptions({"frozenColumn": newFrozenColumn});
+
+      // Trigger event for state saving
+      trigger(self.onColumnsPinned, {grid: self, pinnedColumns: options.pinnedColumns});
+    }
+
+    // Keep for backwards compatibility
+    function freezeColumnByName(column_name) {
+      pinColumn(column_name);
     }
 
     function setColumns(columnDefinitions) {
@@ -6455,6 +6582,7 @@ if (typeof Slick === "undefined") {
       "onValidationError": new Slick.Event(),
       "onViewportChanged": new Slick.Event(),
       "onColumnsReordered": new Slick.Event(),
+      "onColumnsPinned": new Slick.Event(),
       "onColumnsResized": new Slick.Event(),
       "onCellChange": new Slick.Event(),
       "onBeforeEditCell": new Slick.Event(),
@@ -6498,6 +6626,10 @@ if (typeof Slick === "undefined") {
       "getOptions": getOptions,
       "setOptions": setOptions,
       "freezeColumnByName": freezeColumnByName,
+      "pinColumn": pinColumn,
+      "unpinColumn": unpinColumn,
+      "isColumnPinned": isColumnPinned,
+      "getPinnedColumns": getPinnedColumns,
       "getData": getData,
       "getDataLength": getDataLength,
       "getDataItem": getDataItem,

@@ -216,11 +216,25 @@
         return column.column_name != menuItemName;
       });
 
-      let frozenColumnName = grid.getOptions().frozenColumnName
+      // Get pinned columns and remove this column from pinned list if it was pinned
+      var pinnedColumns = grid.getPinnedColumns().slice();
+      var pinnedIndex = pinnedColumns.indexOf(menuItemName);
+      var newFrozenColumn = grid.getOptions().frozenColumn;
+
+      if (pinnedIndex !== -1) {
+        pinnedColumns.splice(pinnedIndex, 1);
+        grid.getOptions().pinnedColumns = pinnedColumns;
+        newFrozenColumn = pinnedColumns.length > 0 ? pinnedColumns.length - 1 : -1;
+      }
+
+      // Set frozenColumn before setColumns so headers render correctly
+      grid.getOptions().frozenColumn = newFrozenColumn;
+
       // Update columns
       grid.setColumns(visibleColumns);
 
-      grid.freezeColumnByName(frozenColumnName)
+      // Use setOptions to properly reinitialize frozen panes
+      grid.setOptions({"frozenColumn": newFrozenColumn});
 
       _self.onColumnsPick.notify({});
     }
@@ -229,31 +243,68 @@
       var menuItemName = this.data('column-id');
       var visibleColumns = getAllVisibleColumns();
       var currentItem = visibleColumns.find(item => item.column_name === menuItemName);
-      var currentPostion = visibleColumns.indexOf(currentItem);
-      var swappedColumns;
+      var currentPosition = visibleColumns.indexOf(currentItem);
+      var swappedColumns = visibleColumns;
 
-      var menuAction = this.attr('id')
+      // Get pinned columns to determine boundaries
+      var pinnedColumns = grid.getPinnedColumns().slice();
+      var isPinned = pinnedColumns.indexOf(menuItemName) !== -1;
+      var pinnedCount = pinnedColumns.length;
+
+      var menuAction = this.attr('id');
       switch (menuAction) {
         case 'move_to_right':
-          if (currentPostion < visibleColumns.length - 1) {
-            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion + 1)
+          if (isPinned) {
+            // Pinned column: can only move right within pinned group (up to pinnedCount - 1)
+            if (currentPosition < pinnedCount - 1) {
+              swappedColumns = swapWithTheFrontOne(visibleColumns, currentPosition + 1);
+              // Update pinnedColumns order
+              var pinnedIndex = pinnedColumns.indexOf(menuItemName);
+              if (pinnedIndex < pinnedColumns.length - 1) {
+                [pinnedColumns[pinnedIndex], pinnedColumns[pinnedIndex + 1]] = [pinnedColumns[pinnedIndex + 1], pinnedColumns[pinnedIndex]];
+                grid.getOptions().pinnedColumns = pinnedColumns;
+              }
+            }
+          } else {
+            // Unpinned column: can move right within unpinned group
+            if (currentPosition < visibleColumns.length - 1) {
+              swappedColumns = swapWithTheFrontOne(visibleColumns, currentPosition + 1);
+            }
           }
           break;
         case 'move_to_left':
-          if (currentPostion > 0) {
-            swappedColumns = swapWithTheFrontOne(visibleColumns, currentPostion);
+          if (isPinned) {
+            // Pinned column: can only move left within pinned group (down to 0)
+            if (currentPosition > 0) {
+              swappedColumns = swapWithTheFrontOne(visibleColumns, currentPosition);
+              // Update pinnedColumns order
+              var pinnedIndex = pinnedColumns.indexOf(menuItemName);
+              if (pinnedIndex > 0) {
+                [pinnedColumns[pinnedIndex - 1], pinnedColumns[pinnedIndex]] = [pinnedColumns[pinnedIndex], pinnedColumns[pinnedIndex - 1]];
+                grid.getOptions().pinnedColumns = pinnedColumns;
+              }
+            }
+          } else {
+            // Unpinned column: can only move left within unpinned group (not past pinnedCount)
+            if (currentPosition > pinnedCount) {
+              swappedColumns = swapWithTheFrontOne(visibleColumns, currentPosition);
+            }
           }
           break;
         default:
           swappedColumns = visibleColumns;
           break;
       }
+
+      // Set frozenColumn before setColumns so headers render correctly
+      var newFrozenColumn = pinnedCount > 0 ? pinnedCount - 1 : -1;
+      grid.getOptions().frozenColumn = newFrozenColumn;
+
       // Update columns
       grid.setColumns(swappedColumns);
 
-      // Preserve frozen column state
-      let frozenColumnName = grid.getOptions().frozenColumnName;
-      grid.freezeColumnByName(frozenColumnName);
+      // Use setOptions to properly reinitialize frozen panes
+      grid.setOptions({"frozenColumn": newFrozenColumn});
 
       grid.filterPanel.generateFilters();
     }
@@ -391,11 +442,41 @@
         }
       });
 
-      let frozenColumnName = grid.getOptions().frozenColumnName
+      // Preserve pinned columns and reorder visible columns
+      var pinnedColumns = grid.getPinnedColumns();
+      var pinnedVisibleCols = [];
+      var unpinnedVisibleCols = [];
 
-      grid.setColumns(visibleColumns);
+      // Remove hidden columns from pinnedColumns
+      var updatedPinnedColumns = pinnedColumns.filter(function(colName) {
+        return visibleColumns.some(function(col) { return col.column_name === colName; });
+      });
 
-      grid.freezeColumnByName(frozenColumnName)
+      // Sort visible columns: pinned first, then unpinned
+      visibleColumns.forEach(function(col) {
+        if (updatedPinnedColumns.indexOf(col.column_name) !== -1) {
+          pinnedVisibleCols.push(col);
+        } else {
+          unpinnedVisibleCols.push(col);
+        }
+      });
+
+      // Sort pinned columns by their order in pinnedColumns
+      pinnedVisibleCols.sort(function(a, b) {
+        return updatedPinnedColumns.indexOf(a.column_name) - updatedPinnedColumns.indexOf(b.column_name);
+      });
+
+      var sortedVisibleColumns = pinnedVisibleCols.concat(unpinnedVisibleCols);
+
+      // Update pinnedColumns option and set frozenColumn before setColumns
+      grid.getOptions().pinnedColumns = updatedPinnedColumns;
+      var newFrozenColumn = updatedPinnedColumns.length > 0 ? updatedPinnedColumns.length - 1 : -1;
+      grid.getOptions().frozenColumn = newFrozenColumn;
+
+      grid.setColumns(sortedVisibleColumns);
+
+      // Use setOptions to properly reinitialize frozen panes
+      grid.setOptions({"frozenColumn": newFrozenColumn});
 
       // Force layout recalculation to fix flexbox positioning issue
       forceLayoutRecalculation();

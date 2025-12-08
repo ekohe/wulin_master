@@ -53,6 +53,19 @@ var GridStatesManager = {
       self.saveStates(grid.name, "order", orderJson);
     });
 
+    // save pinned columns when columns are pinned/unpinned
+    grid.onColumnsPinned.subscribe(function(e, args){
+      var pinnedColumns = args.pinnedColumns || [];
+      self.saveStates(grid.name, "pinnedColumns", pinnedColumns);
+
+      // Also save the new order since pinning changes column order
+      var orderJson = {};
+      $.each(grid.getColumns(), function(index, column){
+        orderJson[index] = column.id;
+      });
+      self.saveStates(grid.name, "order", orderJson);
+    });
+
     // save filter states when input filter value
     if(grid.filterPanel) {
       grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
@@ -183,6 +196,44 @@ var GridStatesManager = {
       });
     }
     return originalFilters;
+  },
+
+  // Restore pinned columns states
+  restorePinnedColumnsStates: function(columns, pinnedColumnsStates, gridOptions) {
+    if (!pinnedColumnsStates || !Array.isArray(pinnedColumnsStates) || pinnedColumnsStates.length === 0) {
+      gridOptions.pinnedColumns = [];
+      gridOptions.frozenColumn = -1;
+      return columns;
+    }
+
+    // Set the pinned columns in grid options
+    gridOptions.pinnedColumns = pinnedColumnsStates;
+    gridOptions.frozenColumn = pinnedColumnsStates.length - 1;
+
+    // Reorder columns: pinned columns first in the order specified
+    var pinnedCols = [];
+    var unpinnedCols = [];
+
+    // First, collect pinned columns in the correct order
+    pinnedColumnsStates.forEach(function(pinnedColName) {
+      for (var i = 0; i < columns.length; i++) {
+        if (columns[i].column_name === pinnedColName || columns[i].id === pinnedColName) {
+          pinnedCols.push(columns[i]);
+          break;
+        }
+      }
+    });
+
+    // Then collect unpinned columns
+    columns.forEach(function(col) {
+      var isPinned = pinnedColumnsStates.indexOf(col.column_name) !== -1 ||
+                     pinnedColumnsStates.indexOf(col.id) !== -1;
+      if (!isPinned) {
+        unpinnedCols.push(col);
+      }
+    });
+
+    return pinnedCols.concat(unpinnedCols);
   }
 
 };
