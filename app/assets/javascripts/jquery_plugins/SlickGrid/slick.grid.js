@@ -1602,7 +1602,7 @@ if (typeof Slick === "undefined") {
         )
           .off('click')
           .on('click', function (e) {
-            self.setOptions({"frozenColumn": -1})
+            self.setOptions({"frozenColumn": -1, "frozenColumnName": null})
           });;
 
         $moreContainer
@@ -6268,7 +6268,7 @@ if (typeof Slick === "undefined") {
       if (hasFrozenColumns() && $headers.length === 2 && $($headers[1]).children().length > 0) {
         return $container.find(".slick-header-columns-left, .slick-header-columns-right")
       }
-      return $headers[0];
+      return $($headers[0]);
     }
 
     function getRows() {

@@ -250,6 +250,11 @@
       }
       // Update columns
       grid.setColumns(swappedColumns);
+
+      // Preserve frozen column state
+      let frozenColumnName = grid.getOptions().frozenColumnName;
+      grid.freezeColumnByName(frozenColumnName);
+
       grid.filterPanel.generateFilters();
     }
 
