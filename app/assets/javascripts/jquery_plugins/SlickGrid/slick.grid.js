@@ -2871,15 +2871,29 @@ if (typeof Slick === "undefined") {
       let index = -1;
       for (var i = 0; i < columns.length; i++) {
         if (columns[i].column_name === column_name) {
-          index = i
+          index = i;
           break;
         }
       }
-      self.setOptions({"frozenColumnName": column_name})
-      self.setOptions({"frozenColumn": index})
+
+      // Validate frozen columns won't exceed viewport
+      if (index >= 0) {
+        var frozenWidth = 0;
+        for (var j = 0; j <= index; j++) {
+          frozenWidth += columns[j].width;
+        }
+
+        if (frozenWidth >= viewportW * 0.8) {
+          M.toast({html: "Cannot freeze: frozen columns would exceed viewport width", displayLength: 3000});
+          return;
+        }
+      }
+
+      self.setOptions({"frozenColumnName": column_name});
+      self.setOptions({"frozenColumn": index});
 
       if (index == -1) {
-        self.setOptions({"frozenColumnName": null})
+        self.setOptions({"frozenColumnName": null});
       }
     }
 
