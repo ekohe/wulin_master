@@ -643,20 +643,18 @@ if (typeof Slick === "undefined") {
             // .on("click", handleClick)
             .on("scroll", handleScroll);
 
-        // Bind wheel event for frozen columns/rows scrolling
-        // Use native wheel event instead of jQuery mousewheel plugin
-        if (options.frozenColumn > -1 || hasFrozenRows) {
-          $viewport.each(function() {
-            this.addEventListener('wheel', function(e) {
-              // Normalize deltaY/deltaX - scale down for smoother scrolling
-              // Native wheel deltaY is typically ~100 pixels per tick
-              // Divide by 20 for approximately 5 rows per tick
-              var normalizedDeltaY = -e.deltaY / 20;
-              var normalizedDeltaX = e.deltaX / 20;
-              handleMouseWheel(e, null, normalizedDeltaX, normalizedDeltaY);
-            }, { passive: false });
-          });
-        }
+        // Bind wheel event for scrolling (supports frozen columns/rows)
+        // Always bind to ensure scrolling works when columns are pinned dynamically
+        $viewport.each(function() {
+          this.addEventListener('wheel', function(e) {
+            // Normalize deltaY/deltaX - scale down for smoother scrolling
+            // Native wheel deltaY is typically ~100 pixels per tick
+            // Divide by 20 for approximately 5 rows per tick
+            var normalizedDeltaY = -e.deltaY / 20;
+            var normalizedDeltaX = e.deltaX / 20;
+            handleMouseWheel(e, null, normalizedDeltaX, normalizedDeltaY);
+          }, { passive: false });
+        });
 
         $headerScroller
             //.on("scroll", handleHeaderScroll)
