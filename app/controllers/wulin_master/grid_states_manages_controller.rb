@@ -30,7 +30,7 @@ module WulinMaster
 
     def save
       current_state = GridState.current_or_default(current_user.id, params[:grid_name])
-      state_value = params[:state_value] || { visibility: [] }
+      state_value = params[:state_value].is_a?(String) ? JSON.parse(params[:state_value]) : (params[:state_value] || { visibility: [] })
       default_grid_state_val = GridState.get_default_grid_state_val(params[:grid_name])
       current_state.state_value = JSON.parse(current_state.state_value.presence || default_grid_state_val || "{}").merge(state_value).to_json
       self.response_body = if current_state.save

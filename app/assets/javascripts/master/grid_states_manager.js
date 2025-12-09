@@ -11,7 +11,7 @@ var GridStatesManager = {
 
       return $.post(url, {
         grid_name: gridName,
-        state_value: state_value,
+        state_value: JSON.stringify(state_value),
         authenticity_token: window._token
       });
     }
@@ -45,25 +45,42 @@ var GridStatesManager = {
 
     // save columns order when columns re-ordered
     grid.onColumnsReordered.subscribe(function(e, args){
+      var columns = this.getColumns();
       var orderJson = {};
-      $.each(this.getColumns(), function(index, column){
+      $.each(columns, function(index, column){
         orderJson[index] = column.id;
       });
 
-      self.saveStates(grid.name, "order", orderJson);
+      // Also update pinnedColumns order based on current column positions
+      var currentPinnedColumns = this.getOptions().pinnedColumns || [];
+      if (currentPinnedColumns.length > 0) {
+        // Rebuild pinnedColumns array in the order they appear in the grid
+        var newPinnedColumns = [];
+        $.each(columns, function(index, column){
+          var colName = column.column_name || column.id;
+          if (currentPinnedColumns.indexOf(colName) !== -1) {
+            newPinnedColumns.push(colName);
+          }
+        });
+        // Save both order and updated pinnedColumns
+        self.saveStates(grid.name, {order: orderJson, pinnedColumns: newPinnedColumns});
+      } else {
+        self.saveStates(grid.name, "order", orderJson);
+      }
     });
 
     // save pinned columns when columns are pinned/unpinned
     grid.onColumnsPinned.subscribe(function(e, args){
       var pinnedColumns = args.pinnedColumns || [];
-      self.saveStates(grid.name, "pinnedColumns", pinnedColumns);
 
       // Also save the new order since pinning changes column order
       var orderJson = {};
       $.each(grid.getColumns(), function(index, column){
         orderJson[index] = column.id;
       });
-      self.saveStates(grid.name, "order", orderJson);
+
+      // Save both pinnedColumns and order in a single request to avoid race condition
+      self.saveStates(grid.name, {pinnedColumns: pinnedColumns, order: orderJson});
     });
 
     // save filter states when input filter value
@@ -206,10 +223,6 @@ var GridStatesManager = {
       return columns;
     }
 
-    // Set the pinned columns in grid options
-    gridOptions.pinnedColumns = pinnedColumnsStates;
-    gridOptions.frozenColumn = pinnedColumnsStates.length - 1;
-
     // Reorder columns: pinned columns first in the order specified
     var pinnedCols = [];
     var unpinnedCols = [];
@@ -232,6 +245,33 @@ var GridStatesManager = {
         unpinnedCols.push(col);
       }
     });
+
+    // Only count visible pinned columns for frozenColumn
+    var visiblePinnedCount = 0;
+    for (var i = 0; i < pinnedCols.length; i++) {
+      if (pinnedCols[i].visible !== false) {
+        visiblePinnedCount++;
+      }
+    }
+
+    // Only include visible pinned columns in the pinnedColumns option
+    var visiblePinnedNames = [];
+    for (var j = 0; j < pinnedColumnsStates.length; j++) {
+      var colName = pinnedColumnsStates[j];
+      // Find the column in pinnedCols
+      var col = null;
+      for (var k = 0; k < pinnedCols.length; k++) {
+        if (pinnedCols[k].column_name === colName || pinnedCols[k].id === colName) {
+          col = pinnedCols[k];
+          break;
+        }
+      }
+      if (col && col.visible !== false) {
+        visiblePinnedNames.push(colName);
+      }
+    }
+    gridOptions.pinnedColumns = visiblePinnedNames;
+    gridOptions.frozenColumn = visiblePinnedCount > 0 ? visiblePinnedCount - 1 : -1;
 
     return pinnedCols.concat(unpinnedCols);
   }

@@ -2288,7 +2288,14 @@ if (typeof Slick === "undefined") {
 
       // Calculate frozenColumn from pinnedColumns array
       if (options.pinnedColumns && options.pinnedColumns.length > 0) {
-        options.frozenColumn = options.pinnedColumns.length - 1;
+        // Count only visible pinned columns
+        var visiblePinnedCount = 0;
+        for (var i = 0; i < columns.length; i++) {
+          if (options.pinnedColumns.indexOf(columns[i].column_name) !== -1 && columns[i].visible !== false) {
+            visiblePinnedCount++;
+          }
+        }
+        options.frozenColumn = visiblePinnedCount > 0 ? visiblePinnedCount - 1 : -1;
       } else {
         options.frozenColumn = ( options.frozenColumn >= 0
           && options.frozenColumn < columns.length
