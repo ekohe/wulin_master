@@ -643,9 +643,19 @@ if (typeof Slick === "undefined") {
             // .on("click", handleClick)
             .on("scroll", handleScroll);
 
-        if (jQuery.fn.mousewheel && ( options.frozenColumn > -1 || hasFrozenRows )) {
-          $viewport
-            .on("mousewheel", handleMouseWheel);
+        // Bind wheel event for frozen columns/rows scrolling
+        // Use native wheel event instead of jQuery mousewheel plugin
+        if (options.frozenColumn > -1 || hasFrozenRows) {
+          $viewport.each(function() {
+            this.addEventListener('wheel', function(e) {
+              // Normalize deltaY/deltaX - scale down for smoother scrolling
+              // Native wheel deltaY is typically ~100 pixels per tick
+              // Divide by 20 for approximately 5 rows per tick
+              var normalizedDeltaY = -e.deltaY / 20;
+              var normalizedDeltaX = e.deltaX / 20;
+              handleMouseWheel(e, null, normalizedDeltaX, normalizedDeltaY);
+            }, { passive: false });
+          });
         }
 
         $headerScroller
