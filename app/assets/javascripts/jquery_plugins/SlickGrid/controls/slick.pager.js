@@ -208,7 +208,7 @@
           $status.removeClass('with-filter');
           $clearFilterLink.addClass('hide');
         } else {
-          $status.text(pagingInfo.totalRows.toLocaleString() + "個中" + pagingInfo.rowsWithoutFilter.toLocaleString() + "個のアイテムが見つかりました");
+          $status.text(pagingInfo.rowsWithoutFilter.toLocaleString() + "個中" + pagingInfo.totalRows.toLocaleString() + "個のアイテムが見つかりました");
           $status.addClass('with-filter');
           var pagerStatusWithFilter = $('.slick-pager-status.with-filter');
           var totalRowsLength = pagerStatusWithFilter.width();
