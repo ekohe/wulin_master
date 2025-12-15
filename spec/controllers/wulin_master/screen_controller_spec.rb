@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "set"
 require "spec_helper"
 require "wulin_master/utilities/variables"
 require "./lib/wulin_master/actions"
@@ -121,7 +122,7 @@ describe PeopleTestController, type: :controller do
           allow(@grid).to receive(:columns).and_return([column1, column2, column3, column4])
           allow(@grid).to receive(:params).and_return(columns: "first_name")
 
-          expect(@grid.send(:request_columns)).to eq(["first_name"])
+          expect(@grid.send(:request_columns)).to eq(Set.new(["first_name"]))
           expect(@grid.send(:visible_columns)).to eq([column1, column2])
         end
 
@@ -134,7 +135,7 @@ describe PeopleTestController, type: :controller do
           allow(@grid).to receive(:columns).and_return([column1, column2, column3, column4])
           allow(@grid).to receive(:params).and_return(grid: "PersonGrid")
 
-          expect(@grid.send(:request_columns)).to eq([])
+          expect(@grid.send(:request_columns)).to eq(Set.new)
           expect(@grid.send(:visible_columns)).to eq([column1, column2, column3, column4])
         end
       end
