@@ -74,6 +74,32 @@ RSpec.describe WulinMaster::SqlQuery do
       end
     end
 
+    context "when the filter contains only special characters" do
+      it "returns query unchanged when filter is just &" do
+        expect(query).not_to receive(:where)
+        result = WulinMaster::SqlQuery.string_query(query, "column_name", "&", nil)
+        expect(result).to eq(query)
+      end
+
+      it "returns query unchanged when filter is just ," do
+        expect(query).not_to receive(:where)
+        result = WulinMaster::SqlQuery.string_query(query, "column_name", ",", nil)
+        expect(result).to eq(query)
+      end
+
+      it "returns query unchanged when filter is &,&" do
+        expect(query).not_to receive(:where)
+        result = WulinMaster::SqlQuery.string_query(query, "column_name", "&,&", nil)
+        expect(result).to eq(query)
+      end
+
+      it "returns query unchanged when filter is empty after cleaning" do
+        expect(query).not_to receive(:where)
+        result = WulinMaster::SqlQuery.string_query(query, "column_name", ",,,", nil)
+        expect(result).to eq(query)
+      end
+    end
+
     context "when the filter contains mixed operators" do
       it "handles ,& combination (comma-ampersand-comma)" do
         expect(query).to receive(:where).with([
@@ -176,6 +202,18 @@ RSpec.describe WulinMaster::SqlQuery do
 
     it "handles the original bug case" do
       expect(WulinMaster::SqlQuery.clean_special_chars("!booking,&,!broadcast")).to eq("!booking,!broadcast")
+    end
+
+    it "returns empty string when input is just &" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("&")).to eq("")
+    end
+
+    it "returns empty string when input is just ," do
+      expect(WulinMaster::SqlQuery.clean_special_chars(",")).to eq("")
+    end
+
+    it "returns empty string when input is &,&" do
+      expect(WulinMaster::SqlQuery.clean_special_chars("&,&")).to eq("")
     end
   end
 end
