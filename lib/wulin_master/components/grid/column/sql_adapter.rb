@@ -75,6 +75,9 @@ module WulinMaster
       # Remove tail if it's a comma or ampersand
       parts.pop if parts.last&.match?(/^[,&]$/)
 
+      # If no valid filter parts remain after cleaning, return query unchanged
+      return query if parts.empty?
+
       parts.each do |part|
         case part
         when /,/
