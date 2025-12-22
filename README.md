@@ -272,7 +272,15 @@ A column can be a real field in the database table of the current model, or a vi
 
 `:visible`
 
-Default is `true`. If set `false`, the column will be invisible initially (can make it visible from column picker).
+Default is `true`. If set `false`, the column will be invisible initially (can make it visible from column picker). Can also accept a Proc for dynamic evaluation.
+
+```ruby
+class PostGrid < WulinMaster::Grid
+  ...
+  column :admin_notes, visible: proc { current_user.admin? }
+  ...
+end
+```
 
 `:always_include`
 
@@ -280,7 +288,15 @@ Default is `false`. if set, this column will be available in the data even if no
 
 `:editable`
 
-Default is `true`. If set, `false`, the grid cell of this column can not be edited.
+Default is `true`. If set `false`, the grid cell of this column can not be edited. Can also accept a Proc for dynamic evaluation.
+
+```ruby
+class PostGrid < WulinMaster::Grid
+  ...
+  column :content, editable: proc { current_user.admin? }
+  ...
+end
+```
 
 `:sortable`
 
@@ -292,7 +308,7 @@ Default is `true`. If set `false`, this column default sort direction is DESC.
 
 `:formable`
 
-Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them.
+Whether to show the column in the `create` and `update` form or not. You can either set it to true or false, or pass an array `[:new, :edit]` for one or both of them. Can also accept a Proc for dynamic evaluation.
 
 ```ruby
 class PostGrid < WulinMaster::Grid
@@ -300,6 +316,7 @@ class PostGrid < WulinMaster::Grid
   column :author, formable: true          # author column will appear in both create and update form.
   column :title, formable: [:new, :edit]  # same to `formable: true`.
   column :content, formable: [:new]       # content column will appear in only create form.
+  column :details, formable: proc { [:new] }  # dynamically determine formable options.
   ...
 end
 ```

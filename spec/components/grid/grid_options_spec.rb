@@ -122,6 +122,114 @@ describe WulinMaster::GridOptions do
     end
   end
 
+  # Proc support for visible option
+  describe "visible with Proc in columns_pool" do
+    it "proc returning true: column has visible as Proc" do
+      class VisibleProcTrueGrid < WulinMaster::Grid
+        column :title, visible: proc { true }
+      end
+      column = VisibleProcTrueGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["visible"]).to be_a(Proc)
+      expect(column.options["visible"].call).to eq(true)
+    end
+
+    it "proc returning false: column has visible as Proc" do
+      class VisibleProcFalseGrid < WulinMaster::Grid
+        column :title, visible: proc { false }
+      end
+      column = VisibleProcFalseGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["visible"]).to be_a(Proc)
+      expect(column.options["visible"].call).to eq(false)
+    end
+
+    it "proc with dynamic condition" do
+      condition = true
+      class VisibleProcDynamicGrid < WulinMaster::Grid
+        column :title, visible: proc { condition }
+      end
+      column = VisibleProcDynamicGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["visible"]).to be_a(Proc)
+    end
+  end
+
+  # Proc support for editable option
+  describe "editable with Proc in columns_pool" do
+    it "proc returning true: column has editable as Proc" do
+      class EditableProcTrueGrid < WulinMaster::Grid
+        column :title, editable: proc { true }
+      end
+      column = EditableProcTrueGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["editable"]).to be_a(Proc)
+      expect(column.options["editable"].call).to eq(true)
+    end
+
+    it "proc returning false: column has editable as Proc" do
+      class EditableProcFalseGrid < WulinMaster::Grid
+        column :title, editable: proc { false }
+      end
+      column = EditableProcFalseGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["editable"]).to be_a(Proc)
+      expect(column.options["editable"].call).to eq(false)
+    end
+
+    it "proc with dynamic condition" do
+      is_admin = false
+      class EditableProcDynamicGrid < WulinMaster::Grid
+        column :title, editable: proc { is_admin }
+      end
+      column = EditableProcDynamicGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["editable"]).to be_a(Proc)
+    end
+  end
+
+  # Proc support for formable option
+  describe "formable with Proc in columns_pool" do
+    it "proc returning true: column has formable as Proc" do
+      class FormableProcTrueGrid < WulinMaster::Grid
+        column :title, formable: proc { true }
+      end
+      column = FormableProcTrueGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["formable"]).to be_a(Proc)
+      expect(column.options["formable"].call).to eq(true)
+    end
+
+    it "proc returning false: column has formable as Proc" do
+      class FormableProcFalseGrid < WulinMaster::Grid
+        column :title, formable: proc { false }
+      end
+      column = FormableProcFalseGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["formable"]).to be_a(Proc)
+      expect(column.options["formable"].call).to eq(false)
+    end
+
+    it "proc returning [:new]: column has formable as Proc returning array" do
+      class FormableProcNewGrid < WulinMaster::Grid
+        column :title, formable: proc { [:new] }
+      end
+      column = FormableProcNewGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["formable"]).to be_a(Proc)
+      expect(column.options["formable"].call).to eq([:new])
+    end
+
+    it "proc returning [:edit]: column has formable as Proc returning array" do
+      class FormableProcEditGrid < WulinMaster::Grid
+        column :title, formable: proc { [:edit] }
+      end
+      column = FormableProcEditGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["formable"]).to be_a(Proc)
+      expect(column.options["formable"].call).to eq([:edit])
+    end
+
+    it "proc returning [:new, :edit]: column has formable as Proc returning array" do
+      class FormableProcNewEditGrid < WulinMaster::Grid
+        column :title, formable: proc { [:new, :edit] }
+      end
+      column = FormableProcNewEditGrid.columns_pool.find { |c| c.name == :title }
+      expect(column.options["formable"]).to be_a(Proc)
+      expect(column.options["formable"].call).to eq([:new, :edit])
+    end
+  end
+
   # Combinations: cell_editable × editable × visible × formable (81 tests)
   describe "cell_editable, editable, visible, formable combinations" do
     CELL_EDITABLE_OPTIONS = [nil, true, false].freeze
