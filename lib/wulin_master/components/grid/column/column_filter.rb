@@ -180,8 +180,23 @@ module WulinMaster
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
-          # Check if exact_filter option is set
-          if @options[:exact_filter]
+          # Use IN/NOT IN for numeric columns: matches number(,number)*
+          if %w[integer float decimal].include?(sql_type.to_s) &&
+             table_column? &&
+             filtering_value.match?(/\A[-+]?\d*\.?\d+(,[-+]?\d*\.?\d+)*\Z/)
+
+            values = filtering_value.split(',')
+            numeric_values = sql_type.to_s == 'integer' ? values.map(&:to_i) : values.map(&:to_f)
+
+            if filtering_operator == 'not_equals'
+              return query.where.not(source => numeric_values)
+            else
+              return query.where(source => numeric_values)
+            end
+          end
+
+          # Fall through to string_query for complex patterns (AND, null, etc.)
+          if @options[:exact_filter] || %w[integer float decimal].include?(sql_type.to_s)
             # For exact filter with not_equals, we need to add ! prefix back
             if operator == 'NOT ILIKE' || filtering_operator == 'not_equals'
               filtering_value = "!#{filtering_value}"
