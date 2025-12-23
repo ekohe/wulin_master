@@ -207,6 +207,10 @@ classes should alter those!
   width: 100%;
 }
 
+.slick-pane-top.slick-pane-left {
+  border-right: 3px solid rgba(0, 0, 0, 0.3);
+}
+
 .slick-pane-header {
   display: block;
 }
