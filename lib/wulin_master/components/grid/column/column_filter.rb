@@ -74,22 +74,44 @@ module WulinMaster
     end
 
     def filter_by_datetime(query, operator, field, value)
-      operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
+      sql_operator = %w[equals =].include?(operator) ? 'LIKE' : 'NOT LIKE'
 
       # Determine if this is a Date field (without time component)
       is_date_only = field =~ /#{model.table_name}\.(\w+)$/ &&
                      model.columns_hash[$1]&.type == :date
 
-      if is_date_only
-        # For Date fields (without time), don't apply timezone conversion
-        query.where(["to_char(#{field}::date, 'DD/MM/YYYY') #{operator} UPPER(?)", "#{value}%"])
+      # Handle comma-separated values (e.g., "11,12,13" to match 11/*, 12/*, 13/*)
+      if value.include?(',')
+        values = value.split(',').map(&:strip).reject(&:empty?)
+
+        # If no valid values after splitting, return query unchanged
+        return query if values.empty?
+
+        if is_date_only
+          # For Date fields (without time), don't apply timezone conversion
+          conditions = values.map { "to_char(#{field}::date, 'DD/MM/YYYY') #{sql_operator} UPPER(?)" }
+          params = values.map { |v| "#{v}%" }
+        else
+          # For DateTime/timestamp fields, apply timezone conversion
+          conditions = values.map { "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{sql_operator} UPPER(?)" }
+          params = values.flat_map { |v| [time_zone_offset, "#{v}%"] }
+        end
+
+        # Use OR for LIKE (equals), AND for NOT LIKE (not_equals)
+        joiner = sql_operator == 'LIKE' ? ' OR ' : ' AND '
+        query.where([conditions.join(joiner), *params])
       else
-        # For DateTime/timestamp fields, apply timezone conversion
-        query.where([
-          "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{operator} UPPER(?)",
-          time_zone_offset,
-          "#{value}%"
-        ])
+        if is_date_only
+          # For Date fields (without time), don't apply timezone conversion
+          query.where(["to_char(#{field}::date, 'DD/MM/YYYY') #{sql_operator} UPPER(?)", "#{value}%"])
+        else
+          # For DateTime/timestamp fields, apply timezone conversion
+          query.where([
+            "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{sql_operator} UPPER(?)",
+            time_zone_offset,
+            "#{value}%"
+          ])
+        end
       end
     end
 
