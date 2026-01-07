@@ -358,22 +358,17 @@ module WulinMaster
     # Returns the json for the object in argument
     def json(object)
       per_row_editable = nil
-      # Prefer explicit editable_by; otherwise treat editable Proc with arity>0 as per-row
-      editable_proc = if @options[:editable_by].respond_to?(:call)
-        @options[:editable_by]
-      elsif @options[:editable].respond_to?(:call) && @options[:editable].arity != 0
-        @options[:editable]
-      end
-      if editable_proc
+      # Use cached editable_proc to avoid repeated proc detection
+      if has_editable_proc?
         begin
-          per_row_editable = !!editable_proc.call(object)
+          per_row_editable = !!cached_editable_proc.call(object)
         rescue => e
           Rails.logger.error("WulinMaster::Column editable_by error on #{full_name}: #{e.message}")
           per_row_editable = nil
         end
       end
 
-      case association_type.to_s
+      case cached_association_type
       when 'belongs_to', 'has_one'
         reflection_info = {}
         association_object = if reflection.klass < ActiveRecord::Base
@@ -416,8 +411,35 @@ module WulinMaster
     end
 
     def enum?
+      return @is_enum if defined?(@is_enum)
+
       enums = model.try(:defined_enums)
-      enums&.key?(source.to_s)
+      @is_enum = enums&.key?(source.to_s) || false
+    end
+
+    # Cache the editable proc detection to avoid repeated checks per row
+    def has_editable_proc?
+      return @has_editable_proc if defined?(@has_editable_proc)
+
+      @has_editable_proc = cached_editable_proc.present?
+    end
+
+    # Cache the editable proc itself
+    def cached_editable_proc
+      return @cached_editable_proc if defined?(@cached_editable_proc)
+
+      @cached_editable_proc = if @options[:editable_by].respond_to?(:call)
+        @options[:editable_by]
+      elsif @options[:editable].respond_to?(:call) && @options[:editable].arity != 0
+        @options[:editable]
+      end
+    end
+
+    # Cache association_type.to_s to avoid repeated string conversion
+    def cached_association_type
+      return @cached_association_type if defined?(@cached_association_type)
+
+      @cached_association_type = association_type.to_s
     end
 
     alias filterable? sortable?
@@ -461,7 +483,9 @@ module WulinMaster
     end
 
     def association_type
-      reflection.try(:macro)
+      return @association_type if defined?(@association_type)
+
+      @association_type = reflection.try(:macro)
     end
 
     def association_through
