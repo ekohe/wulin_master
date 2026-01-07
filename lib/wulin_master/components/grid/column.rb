@@ -94,12 +94,16 @@ module WulinMaster
     # Format a value
     # Called during json rendering
     def format(value)
+      # Reset datetime tracking for Excel export compatibility
       @datetime_value = nil
       @datetime_excel_format = nil
 
+      # Skip nil/empty values early for performance
+      return value if value.nil?
+
       # Translate enum values using Rails I18n if this column is an enum
       if enum?
-        return value if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+        return value if value.respond_to?(:empty?) && value.empty?
         begin
           # value is the enum key (string); translate via ApplicationRecord helper
           return model.human_enum_name(source, value)
@@ -110,39 +114,57 @@ module WulinMaster
         end
       end
 
-      if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
-        @datetime_value = value
-        if sql_type == :time || options[:inner_sql_type] == :time
-          @datetime_excel_format = 'hh:mm'
-          value.try(:strftime, "%H:%M")
-        elsif sql_type == :date || options[:inner_sql_type] == :date
-          @datetime_excel_format = 'dd/mm/yyyy'
-          value.try(:strftime, format_date)
-        else
-          @datetime_excel_format = 'dd/mm/yyyy hh:mm'
-          value.to_formatted_s(datetime_format)
-        end
-      elsif value.class == Date
+      # Use case/when with class for faster type dispatch
+      case value
+      when ActiveSupport::TimeWithZone
+        format_datetime_value(value)
+      when Date
         @datetime_value = value
         @datetime_excel_format = 'dd/mm/yyyy'
-        value.try(:strftime, format_date)
-      elsif value.class == Time
+        value.strftime(cached_format_date)
+      when Time
         @datetime_value = value
         @datetime_excel_format = 'hh:mm'
         value.strftime('%H:%M')
-      elsif value.class == Hash
-        value.to_json
-      elsif value.class.name == 'BSON::ObjectId'
-        value.to_s
-      elsif value.class.name == 'ActiveStorage::Attached::One'
-        value.attached? ? value.filename.to_s : ''
-      else
+      when Hash
+        # Return hash as-is, Oj will serialize it efficiently
         value
+      else
+        # Check for special types by class name (rare cases)
+        case value.class.name
+        when 'BSON::ObjectId'
+          value.to_s
+        when 'ActiveStorage::Attached::One'
+          value.attached? ? value.filename.to_s : ''
+        else
+          value
+        end
       end
     end
 
-    def format_date
-      case WulinMaster.config.date_format
+    # Optimized datetime formatting with Excel format tracking
+    def format_datetime_value(value)
+      @datetime_value = value
+      cached_type = cached_sql_type
+      inner_type = options[:inner_sql_type]
+
+      if cached_type == :time || inner_type == :time
+        @datetime_excel_format = 'hh:mm'
+        value.strftime("%H:%M")
+      elsif cached_type == :date || inner_type == :date
+        @datetime_excel_format = 'dd/mm/yyyy'
+        value.strftime(cached_format_date)
+      else
+        @datetime_excel_format = 'dd/mm/yyyy hh:mm'
+        value.to_formatted_s(datetime_format)
+      end
+    end
+
+    # Cache format_date result since WulinMaster.config.date_format doesn't change per-request
+    def cached_format_date
+      return @cached_format_date if defined?(@cached_format_date)
+
+      @cached_format_date = case WulinMaster.config.date_format
       when "us"
         "%m/%d/%Y"
       when "ja"
@@ -150,6 +172,18 @@ module WulinMaster
       else
         "%d/%m/%Y"
       end
+    end
+
+    # Cache sql_type for performance
+    def cached_sql_type
+      return @cached_sql_type if defined?(@cached_sql_type)
+
+      @cached_sql_type = sql_type
+    end
+
+    # Keep original for backward compatibility (Excel export uses these)
+    def format_date
+      cached_format_date
     end
 
     # Dynamically add some new options to the column

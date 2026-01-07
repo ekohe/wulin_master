@@ -204,6 +204,7 @@ module WulinMaster
       t = Time.current
 
       @object_array = grid.arraify(@objects)
+      arraify_time = Time.current - t
 
       data = {
         offset: @offset,
@@ -215,9 +216,19 @@ module WulinMaster
 
       data.merge!(aggregation: @aggregation_result) if aggregation?
 
-      Rails.logger.info "----------------- Rendered JSON in #{Time.current - t} sec. ------------------------"
+      t2 = Time.current
+      # Use Oj.dump if available for faster JSON serialization
+      json_result = if defined?(Oj)
+        Oj.dump(data, mode: :compat, time_format: :ruby)
+      else
+        data.to_json
+      end
+      json_time = Time.current - t2
 
-      data.to_json
+      total_time = arraify_time + json_time
+      Rails.logger.info "----------------- Rendered JSON in #{total_time} sec. (arraify: #{arraify_time.round(3)}s, json: #{json_time.round(3)}s) ------------------------"
+
+      json_result
     end
 
     def count_without_filter
