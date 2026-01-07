@@ -203,9 +203,13 @@ module WulinMaster
     # Add logic to verify request params[:columns]
     #
     # => Load only the data of the request columns
+    # Optimized: Pre-compute visible columns once, then only iterate those
     def arraify(objects)
+      # Cache visible columns with their indices for efficient row building
+      cols_with_visibility = columns.map { |col| [col, visible_column?(col)] }
+
       objects.collect do |object|
-        columns.collect { |col| visible_column?(col) ? col.json(object) : nil }
+        cols_with_visibility.collect { |col, visible| visible ? col.json(object) : nil }
       end
     end
 

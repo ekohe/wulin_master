@@ -389,8 +389,36 @@ module WulinMaster
       @options[:editor][:source] if @options[:editor].is_a?(Hash)
     end
 
+    # Check if this column can use the fast path (no associations, no per-row editable, no enum)
+    def simple_column?
+      return @is_simple_column if defined?(@is_simple_column)
+
+      @is_simple_column = cached_association_type.empty? && !has_editable_proc? && !enum?
+    end
+
+    # Fast path for simple columns - minimal overhead
+    def json_simple(object)
+      value = object.send(source.to_s)
+      return value if value.nil?
+
+      # Only format dates/times, pass everything else through
+      case value
+      when ActiveSupport::TimeWithZone
+        format_datetime_value(value)
+      when Date
+        value.strftime(cached_format_date)
+      when Time
+        value.strftime('%H:%M')
+      else
+        value
+      end
+    end
+
     # Returns the json for the object in argument
     def json(object)
+      # Use fast path for simple columns (no associations, no per-row editable)
+      return json_simple(object) if simple_column?
+
       per_row_editable = nil
       # Use cached editable_proc to avoid repeated proc detection
       if has_editable_proc?
