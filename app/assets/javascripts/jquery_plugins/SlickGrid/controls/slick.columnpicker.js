@@ -310,11 +310,12 @@
 
         $li.children().wrapAll($('<label />'));
       }
-      // Ekohe Add
-      // Addpend "Reset to defaults" checkbox
-      $("<hr/>").appendTo($menu);
+
+      // Ekohe Add: Create sticky footer container for reset section
+      var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
+      $("<hr/>").appendTo($footerContainer);
       let viewName = $(`#grid_${grid.name} .grid-states-switcher .dropdown-trigger span`).text()
-      var $a = $("<a id='reset_to_default' href='#' />").appendTo($menu);
+      var $a = $("<a id='reset_to_default' href='#' />").appendTo($footerContainer);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
       $a.on("click", function() {
@@ -337,12 +338,15 @@
         })
       });
 
-      // Ekohe Edit: MD implementation
+      // Ekohe Edit: MD implementation with height constraint and scrolling
+      let windowHeight = $(window).height();
+      let menuTop = e.pageY + 10;
+      let maxHeight = windowHeight - menuTop - 40; // 40px buffer from bottom
+
       $menu
-        // .css("top", e.pageY - 10)
-        .css("top", e.pageY + 10)
+        .css("top", menuTop)
         .css("left", e.pageX - 10)
-        // .css("max-height", $(window).height() - e.pageY -10)
+        .css("max-height", maxHeight + "px")
         .fadeIn(options.fadeSpeed);
     }
 
@@ -363,9 +367,33 @@
       });
       grid.setColumns(visibleColumns);
 
+      // Force layout recalculation to fix flexbox positioning issue
+      forceLayoutRecalculation();
+
       // Ekohe Add: Reset filters
       $(grid.getHeaders()).find('input').keyup();
       grid.filterPanel.generateFilters();
+    }
+
+    function forceLayoutRecalculation() {
+      var $menu = $('#' + grid.name + '-columnpicker');
+      var $columnContainer = $menu.find('.column-container');
+
+      if ($menu.length > 0 && $columnContainer.length > 0) {
+        // Store the current scroll position
+        var scrollTop = $columnContainer.scrollTop();
+        var currentMaxHeight = $menu.css('max-height');
+
+        // Temporarily remove max-height
+        $menu.css('max-height', 'none');
+        // Force reflow by accessing offsetHeight
+        $menu[0].offsetHeight;
+        // Restore max-height
+        $menu.css('max-height', currentMaxHeight);
+
+        // Restore the scroll position after layout recalculation
+        $columnContainer.scrollTop(scrollTop);
+      }
     }
 
     function getMenu() {

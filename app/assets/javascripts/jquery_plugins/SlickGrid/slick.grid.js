@@ -940,6 +940,7 @@ if (typeof Slick === "undefined") {
         var header = $("<div class='ui-state-default slick-header-column input-field' />")
             .width(m.width - headerColumnWidthDiff)
             .attr("id", "" + uid + m.id)
+            .attr("data-column-id", m.id)
             .attr("title", m.toolTip || "")
             .data("column", m)
             .addClass(m.headerCssClass || "")

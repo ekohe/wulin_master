@@ -75,6 +75,12 @@ module WulinMaster
       sort_col_name = @options[:sort_column] || full_name
       column_type = sql_type
       new_options = @options.dup
+
+      # Evaluate Proc options for visible, editable, formable
+      %i[visible editable].each do |opt|
+        new_options[opt] = boolean_cast(new_options[opt].call) if new_options[opt].is_a?(Proc)
+      end
+      new_options[:formable] = new_options[:formable].call if new_options[:formable].is_a?(Proc)
       h = {
         id: full_name,
         column_name: name,
@@ -270,7 +276,7 @@ module WulinMaster
     def reflection_options
       choices = @options[:choices]
 
-      if choices.blank?
+      if choices.nil?
         choices = begin
           if reflection
             params_hash = {
@@ -557,7 +563,12 @@ module WulinMaster
     def format_multiple_objects(objects)
       value = {:id => [], source => []}
       # Sort the object by value name
-      objects.sort{|a,b| a.send(source) <=> b.send(source) }.each do |obj|
+      objects.sort do |a, b|
+        va = a.send(source)
+        vb = b.send(source)
+        (va <=> vb) || 0
+      end
+      .each do |obj|
         value[:id] << obj.id
         value[source] << format(obj.send(source))
       end

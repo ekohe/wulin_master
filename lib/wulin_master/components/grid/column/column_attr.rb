@@ -2,6 +2,12 @@
 
 module WulinMaster
   module ColumnAttr
+    BOOLEAN_TYPE = ActiveRecord::Type::Boolean.new
+
+    def boolean_cast(value)
+      BOOLEAN_TYPE.serialize(value)
+    end
+
     def assign_attribute(_object, value, new_attrs, attrs, type)
       Rails.logger.info WulinMaster.config.date_format.inspect
       Rails.logger.info "assign atribute #{value} #{field_sym} #{type.inspect}"

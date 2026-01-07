@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'set'
 require 'wulin_master/components/grid/toolbar'
 require 'wulin_master/components/grid/column'
 require 'wulin_master/components/grid/grid_options'
@@ -205,11 +206,9 @@ module WulinMaster
     # => Load only the data of the request columns
     # Optimized: Pre-compute visible columns once, then only iterate those
     def arraify(objects)
-      # Cache visible columns with their indices for efficient row building
-      cols_with_visibility = columns.map { |col| [col, visible_column?(col)] }
-
+      visible_set = Set.new(visible_columns)  # Pre-compute for O(1) lookup
       objects.collect do |object|
-        cols_with_visibility.collect { |col, visible| visible ? col.json(object) : nil }
+        columns.collect { |col| visible_set.include?(col) ? col.json(object) : nil }
       end
     end
 
@@ -277,7 +276,7 @@ module WulinMaster
     end
 
     def request_columns
-      params[:columns]&.split(/\,/) || []
+      @request_columns ||= Set.new(params[:columns]&.split(/\,/) || [])
     end
   end
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module WulinMasterGridHelper
+  BOOLEAN_TYPE = ActiveRecord::Type::Boolean.new
+
   def select_options(column)
     choices = column.options[:choices]
     if choices.is_a?(Array)
@@ -63,17 +65,16 @@ module WulinMasterGridHelper
   end
 
   def new_form_able?(column)
-    formable = column.options[:formable]
-    visible  = column.options[:visible]
+    formable = evaluate_column_option(column.options[:formable])
     return true if formable.nil?
     return false unless formable
     formable.is_a?(Array) ? formable.include?(:new) : !formable.nil?
   end
 
   def edit_form_able?(column)
-    formable = column.options[:formable]
-    editable = column.options[:editable]
-    visible  = column.options[:visible]
+    formable = evaluate_column_option(column.options[:formable])
+    editable = evaluate_column_option(column.options[:editable])
+    visible  = evaluate_column_option(column.options[:visible])
     return false if editable.is_a?(FalseClass)
     if editable || editable.nil?
       return true if formable.nil?
@@ -81,6 +82,13 @@ module WulinMasterGridHelper
       return formable.is_a?(Array) ? formable.include?(:edit) : !formable.nil?
     end
     return false if visible.is_a?(FalseClass)
+  end
+
+  def evaluate_column_option(option_value)
+    value = option_value.is_a?(Proc) ? option_value.call : option_value
+    return value if value.is_a?(Array) # formable can be [:new, :edit]
+
+    BOOLEAN_TYPE.serialize value
   end
 
   def auto_complete_field?(column)

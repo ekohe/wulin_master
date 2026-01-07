@@ -27,7 +27,9 @@
         DEFAULT_YEAR: String(#{default_year}), // see usage in `datetime.js`
         DEFAULT_MONTH: String(#{default_month}),
         DATE_FORMAT: String("#{WulinMaster.config.date_format}"),
-        DATETIME_FORMAT: String("#{WulinMaster.config.datetime_format}")
+        DATETIME_FORMAT: String("#{WulinMaster.config.datetime_format}"),
+        DROPZONE_JS_URL: '#{asset_path('dropzone.min.js')}',
+        DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}'
       });
       ConfigInputmask();
   %body

@@ -42,10 +42,14 @@ module WulinMaster
       # remove all \s
       cleaned_str = str.split(/([,&])/).select { |e| e.present? }.map { |e| e.strip }.join
 
-      # Replace consecutive `,` with a single comma and consecutive `&` with a single ampersand
-      cleaned_str = cleaned_str.gsub(/,{2,}/, ",").gsub(/&{2,}/, "&")
-
-      cleaned_str = cleaned_str.gsub(/,&/, ",").gsub(/&,/, "&")
+      # Normalize operator combinations (,& or &,) and consecutive operators to a single operator
+      # Loop until no more replacements are made to handle patterns like &,&,& or ,&,&,
+      loop do
+        before = cleaned_str
+        cleaned_str = cleaned_str.gsub(/,&/, ",").gsub(/&,/, "&")
+        cleaned_str = cleaned_str.gsub(/,{2,}/, ",").gsub(/&{2,}/, "&")
+        break if cleaned_str == before
+      end
 
       # Remove trailing `,` or `&` if it exists at the end of the string (optional whitespace before it)
       cleaned_str.gsub(/[,&]$/, "")
@@ -89,7 +93,7 @@ module WulinMaster
       uncensored_filter = case operator
       when /NOT ILIKE/i
         clean_special_chars "!#{filter}"
-      when /ILIKE/i
+      when /ILIKE/i, /exact/i
         clean_special_chars filter
       end
 
@@ -97,6 +101,16 @@ module WulinMaster
       query_params = []
 
       parts = uncensored_filter.split(/([,&])/).reject { |s| s.empty? }
+
+      # Remove head if it's a comma or ampersand
+      parts.shift if parts.first&.match?(/^[,&]$/)
+
+      # Remove tail if it's a comma or ampersand
+      parts.pop if parts.last&.match?(/^[,&]$/)
+
+      # If no valid filter parts remain after cleaning, return query unchanged
+      return query if parts.empty?
+
       parts.each do |part|
         case part
         when /,/
