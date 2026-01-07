@@ -1,7 +1,7 @@
-// Toolbar Item 'Import Role Permission'
+// Toolbar Item 'Import Privilege Permission'
 
-WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.BaseAction, {
-  name: 'import_role_permission',
+WulinMaster.actions.ImportPrivilegePermission = $.extend({}, WulinMaster.actions.BaseAction, {
+  name: 'import_privilege_permission',
 
   loadDropzone: function(callback) {
     // Check if Dropzone is already loaded
@@ -32,7 +32,7 @@ WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.Base
       })
       .fail(function() {
         displayErrorMessage("Failed to load file upload component.");
-      });
+    });
   },
 
   cleanupDropzone: function() {
@@ -50,18 +50,18 @@ WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.Base
     const grid = this.getGrid();
     const self = this;
 
-        // Load Dropzone first, then create modal
+    // Load Dropzone first, then create modal
     this.loadDropzone(function() {
       let modal = Ui.baseModal({
         onOpenStart: function (modal, trigger) {
           var content = `
-          <h5>Import Role Permission</h5>
-          <div id="import-role-permission-dropzone" class="dropzone" style="border-radius: 10px; border: 2px dashed rgba(42, 177, 201, 0.8);">
+          <h5>Import Privilege Permission</h5>
+          <div id="import-privilege-permission-dropzone" class="dropzone" style="border-radius: 10px; border: 2px dashed rgba(42, 177, 201, 0.8);">
             <div class="dz-message" style="color: rgba(42, 177, 201, 0.8);">
               Drop JSON file to import or click to browse
             </div>
           </div>
-          `
+            `
           $(modal).find(".modal-content").html(content)
 
           // Store modal reference for Dropzone callbacks
@@ -69,12 +69,12 @@ WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.Base
 
           // Initialize Dropzone after modal content is added
           setTimeout(function() {
-            new Dropzone("#import-role-permission-dropzone", {
-              url: "/roles/import_role_permission",
+            new Dropzone("#import-privilege-permission-dropzone", {
+              url: "/privileges/import_privilege_permission",
               acceptedFiles: ".json,application/json",
               maxFiles: 1,
               addRemoveLinks: true,
-              paramName: "import_role_permission_file",
+              paramName: "import_privilege_permission_file",
               headers: {
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
               },
@@ -111,4 +111,4 @@ WulinMaster.actions.ImportRolePermission = $.extend({}, WulinMaster.actions.Base
   }
 });
 
-WulinMaster.ActionManager.register(WulinMaster.actions.ImportRolePermission);
+WulinMaster.ActionManager.register(WulinMaster.actions.ImportPrivilegePermission);
