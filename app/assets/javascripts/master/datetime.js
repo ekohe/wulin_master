@@ -261,6 +261,7 @@ const fpConfigJaDateTime = fpMergeConfigs({}, fpConfigInit, {
   dateFormat: "Y/m/d H:i",
   enableTime: true,
   time_24hr: true,
+  locale: "ja",
   parseDate: (str) => {
     const [date, time] = str.split(" ");
     const [yyyy, mm, dd] = date.split("/");
@@ -325,6 +326,7 @@ const fpConfigJaDate = fpMergeConfigs({}, fpConfigInit, {
   minDate: "1900/01/01",
   dateFormat: "Y/m/d",
   enableTime: false,
+  locale: "ja",
   parseDate: (str) => {
     const [date, time] = str.split(" ");
     let [yyyy, mm, dd] = date.split("/");
