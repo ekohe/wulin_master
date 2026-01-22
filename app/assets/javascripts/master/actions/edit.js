@@ -50,6 +50,22 @@ var batchUpdateByAjax = function (grid, version) {
   }
 };
 
+// #272 - JP enum support for select fields in edit modal
+var setSelectValue = function ($select, value) {
+  if (value === null || value === undefined) return;
+  var valueAsString = value.toString();
+  var matchedValue;
+  $select.find('option').each(function () {
+    if (this.value === valueAsString || $(this).text() === valueAsString) {
+      matchedValue = this.value;
+      return false;
+    }
+  });
+  if (matchedValue !== undefined) {
+    $select.val(matchedValue);
+  }
+};
+
 var fillValues = function (scope, grid, selectedIndexes) {
   var data,
     inputBox,
@@ -126,8 +142,8 @@ var loadValue = function (scope, data) {
     } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-field="' + i + '"]', scope);
       inputBox.siblings('label').addClass('active');
-      if ($.type(data[i]) === 'string') {
-        inputBox.val(data[i]);
+      if ($.type(data[i]) === 'string' || $.type(data[i]) === 'number') {
+        setSelectValue(inputBox, data[i]);
       } else if ($.type(data[i]) === 'object') {
         if ($.type(data[i]['id']) === 'array') {
           inputBox.val(data[i]['id']);
