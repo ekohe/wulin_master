@@ -86,6 +86,9 @@ var GridStatesManager = {
     // save filter states when input filter value
     if(grid.filterPanel) {
       grid.filterPanel.onFilterLoaded.subscribe(function(e, args){
+        // Skip saving filter state if option is set
+        if (grid.options && grid.options.skipFilterGridStateSave) return;
+
         if (args.filterData.length == 0) {
           self.saveStates(grid.name, "filter", null);
         } else {
@@ -98,6 +101,9 @@ var GridStatesManager = {
       });
 
       grid.filterPanel.onFilterPanelClosed.subscribe(function(e, args){
+        // Skip saving filter state if option is set
+        if (grid.options && grid.options.skipFilterGridStateSave) return;
+
         $(grid.getHeaderRow()).find('input[type="text"]').val('');
         self.saveStates(grid.name, "filter", {});
       });
