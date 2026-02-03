@@ -67,15 +67,21 @@ module WulinMaster
     end
 
     def string_query(query, column_name, filter, _, operator = "ILIKE")
+      # Skip normalization for columns that don't need normalizaiton, speed up grid load
+      skip_normalization = column_name =~ /products\.sku/
+
       # Use materialized normalized_full_name column if querying customer name via customers table
       # This avoids expensive normalize_japanese_sql() computation on every row
-      use_normalized_column = column_name =~ /customers\.(last_name|first_name)/ || 
+      use_normalized_column = column_name =~ /customers\.(last_name|first_name)/ ||
                                column_name.include?("customers.last_name || ' ' || customers.first_name")
-      
+
       # Get the model class from the ActiveRecord::Relation
       model_class = query.respond_to?(:klass) ? query.klass : query
-      
-      if use_normalized_column && model_class.reflect_on_association(:customer)
+
+      if skip_normalization
+        # Use column directly - no normalization needed for alphanumeric fields like SKU
+        normalized_column = column_name
+      elsif use_normalized_column && model_class.reflect_on_association(:customer)
         # Replace the computed expression with the materialized column
         normalized_column = "customers.normalized_full_name"
       else
@@ -84,8 +90,8 @@ module WulinMaster
 
       if filter.start_with?("\"") && filter.end_with?("\"")
         filter = filter[1..-2]
-        # Normalize the search pattern for consistent comparison
-        normalized_filter = normalize_search_term(filter)
+        # Normalize the search pattern for consistent comparison (skip for alphanumeric columns)
+        normalized_filter = skip_normalization ? filter : normalize_search_term(filter)
         return query.where(["#{normalized_column} ILIKE ?", "#{normalized_filter}%"])
       end
 
@@ -123,8 +129,8 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          # Normalize the search value for consistent comparison
-          normalized_value = normalize_search_term(value)
+          # Normalize the search value for consistent comparison (skip for alphanumeric columns)
+          normalized_value = skip_normalization ? value : normalize_search_term(value)
           if use_normalized_column && model_class.reflect_on_association(:customer)
             conditions << "(#{normalized_column} NOT ILIKE ? OR #{normalized_column} IS NULL)"
           else
@@ -132,8 +138,8 @@ module WulinMaster
           end
           query_params << "#{normalized_value}%"
         else
-          # Normalize the search pattern for consistent comparison
-          normalized_part = normalize_search_term(part)
+          # Normalize the search pattern for consistent comparison (skip for alphanumeric columns)
+          normalized_part = skip_normalization ? part : normalize_search_term(part)
           conditions << "#{normalized_column} ILIKE ?"
           query_params << "#{normalized_part}%"
         end
