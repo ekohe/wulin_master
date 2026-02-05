@@ -66,32 +66,33 @@ module WulinMaster
       term
     end
 
-    def string_query(query, column_name, filter, _, operator = "ILIKE")
-      # Skip normalization for columns that don't need normalizaiton, speed up grid load
-      skip_normalization = column_name =~ /products\.sku/
+    def string_query(query, column_name, filter, column, operator = "ILIKE")
+      # Opt-in normalization: only normalize if column has normalize_query: true
+      # This avoids expensive normalize_japanese_sql() computation on columns that don't need it
+      normalize_query = column&.options&.dig(:normalize_query)
 
-      # Use materialized normalized_full_name column if querying customer name via customers table
-      # This avoids expensive normalize_japanese_sql() computation on every row
-      use_normalized_column = column_name =~ /customers\.(last_name|first_name)/ ||
-                               column_name.include?("customers.last_name || ' ' || customers.first_name")
+      # Check if this is a customer name column that can use the materialized normalized_full_name
+      is_customer_name = column_name =~ /customers\.(last_name|first_name)/ ||
+                         column_name.include?("customers.last_name || ' ' || customers.first_name")
 
       # Get the model class from the ActiveRecord::Relation
       model_class = query.respond_to?(:klass) ? query.klass : query
 
-      if skip_normalization
-        # Use column directly - no normalization needed for alphanumeric fields like SKU
-        normalized_column = column_name
-      elsif use_normalized_column && model_class.reflect_on_association(:customer)
-        # Replace the computed expression with the materialized column
+      if normalize_query && is_customer_name && model_class.reflect_on_association(:customer)
+        # Use materialized column for customer names
         normalized_column = "customers.normalized_full_name"
-      else
+      elsif normalize_query
+        # Use normalize_japanese_sql for other columns that need it
         normalized_column = "normalize_japanese_sql(CAST(#{column_name} AS TEXT))"
+      else
+        # Default: use column directly (fast, index-friendly)
+        normalized_column = column_name
       end
 
       if filter.start_with?("\"") && filter.end_with?("\"")
         filter = filter[1..-2]
-        # Normalize the search pattern for consistent comparison (skip for alphanumeric columns)
-        normalized_filter = skip_normalization ? filter : normalize_search_term(filter)
+        # Only normalize search term if normalize_query is enabled
+        normalized_filter = normalize_query ? normalize_search_term(filter) : filter
         return query.where(["#{normalized_column} ILIKE ?", "#{normalized_filter}%"])
       end
 
@@ -129,17 +130,17 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          # Normalize the search value for consistent comparison (skip for alphanumeric columns)
-          normalized_value = skip_normalization ? value : normalize_search_term(value)
-          if use_normalized_column && model_class.reflect_on_association(:customer)
+          # Only normalize search term if normalize_query is enabled
+          normalized_value = normalize_query ? normalize_search_term(value) : value
+          if normalize_query && is_customer_name && model_class.reflect_on_association(:customer)
             conditions << "(#{normalized_column} NOT ILIKE ? OR #{normalized_column} IS NULL)"
           else
             conditions << "(#{normalized_column} NOT ILIKE ? OR #{column_name} IS NULL)"
           end
           query_params << "#{normalized_value}%"
         else
-          # Normalize the search pattern for consistent comparison (skip for alphanumeric columns)
-          normalized_part = skip_normalization ? part : normalize_search_term(part)
+          # Only normalize search term if normalize_query is enabled
+          normalized_part = normalize_query ? normalize_search_term(part) : part
           conditions << "#{normalized_column} ILIKE ?"
           query_params << "#{normalized_part}%"
         end
