@@ -188,14 +188,20 @@ module WulinMaster
         adapter.boolean_query(complete_column_name, true_or_false, self, operator)
         adapter.query
       when 'enum'
-        matching_keys = []
-        model.send(source.to_s.pluralize).each do |key, value|
-          if key.downcase.start_with?(filtering_value.downcase) ||
-             model.human_enum_name(source, key).downcase.start_with?(filtering_value.downcase)
-            matching_keys << value
+        # Support comma-separated search terms (e.g. "保留, 受注確定")
+        search_terms = filtering_value.split(',').map(&:strip).reject(&:empty?)
+        matching_values = []
+
+        search_terms.each do |term|
+          model.send(source.to_s.pluralize).each do |key, value|
+            if key.to_s.downcase.start_with?(term.downcase) ||
+               model.human_enum_name(source, key).to_s.downcase.start_with?(term.downcase)
+              matching_values << value
+            end
           end
         end
-        query.where(source => matching_keys.presence)
+
+        query.where(source => matching_values.uniq.presence)
       else
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
@@ -206,18 +212,18 @@ module WulinMaster
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
-          # Use IN/NOT IN for numeric columns: matches number(,number)*
+          # Use IN/NOT IN for numeric columns: matches number(,number)* with optional whitespace
           if %w[integer float decimal].include?(sql_type.to_s) &&
              table_column? &&
-             filtering_value.match?(/\A[-+]?\d*\.?\d+(,[-+]?\d*\.?\d+)*\Z/)
+             filtering_value.match?(/\A\s*[-+]?\d*\.?\d+(\s*,\s*[-+]?\d*\.?\d+)*\s*\Z/)
 
-            values = filtering_value.split(',')
+            values = filtering_value.split(',').map(&:strip).reject(&:empty?)
             numeric_values = sql_type.to_s == 'integer' ? values.map(&:to_i) : values.map(&:to_f)
 
             if filtering_operator == 'not_equals'
-              return query.where.not(source => numeric_values)
+              return query.where(["#{field} NOT IN (?)", numeric_values])
             else
-              return query.where(source => numeric_values)
+              return query.where(["#{field} IN (?)", numeric_values])
             end
           end
 
