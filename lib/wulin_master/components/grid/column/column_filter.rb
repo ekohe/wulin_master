@@ -156,7 +156,7 @@ module WulinMaster
     end
 
     def format_filtering_value(value, column_type)
-      formatted_value = case column_type
+      case column_type
       when :integer
         value.to_i
       when :float, :decimal
@@ -165,7 +165,8 @@ module WulinMaster
         true_values = %w[y yes ye t true]
         true_values.include?(value.downcase)
       else
-        value
+        # Strip trailing commas (e.g. "26973889," from paste) so exact match works
+        value.to_s.strip.gsub(/\s*,\s*\z/, "")
       end
     end
 
@@ -212,12 +213,15 @@ module WulinMaster
           query.where(["#{field} #{operator} ?", text])
         # string etc.
         else
+          # Strip trailing commas so "26973889," matches and uses IN clause (avoids ILIKE on bigint)
+          normalized_for_numeric = filtering_value.to_s.strip.gsub(/\s*,\s*\z/, "")
+
           # Use IN/NOT IN for numeric columns: matches number(,number)* with optional whitespace
           if %w[integer float decimal].include?(sql_type.to_s) &&
              table_column? &&
-             filtering_value.match?(/\A\s*[-+]?\d*\.?\d+(\s*,\s*[-+]?\d*\.?\d+)*\s*\Z/)
+             normalized_for_numeric.match?(/\A\s*[-+]?\d*\.?\d+(\s*,\s*[-+]?\d*\.?\d+)*\s*\Z/)
 
-            values = filtering_value.split(',').map(&:strip).reject(&:empty?)
+            values = normalized_for_numeric.split(',').map(&:strip).reject(&:empty?)
             numeric_values = sql_type.to_s == 'integer' ? values.map(&:to_i) : values.map(&:to_f)
 
             if filtering_operator == 'not_equals'
