@@ -202,7 +202,11 @@ module WulinMaster
           end
         end
 
-        query.where(source => matching_values.uniq.presence)
+        if filtering_operator == 'not_equals'
+          query.where.not(source => matching_values.uniq.presence)
+        else
+          query.where(source => matching_values.uniq.presence)
+        end
       else
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
