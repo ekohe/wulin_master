@@ -45,3 +45,9 @@ function repositionOnOpen(selectedDates, dateStr, instance) {
 function reenableScroll(selectedDates, dateStr, instance) {
   modalScroll(instance)
 }
+
+window.formatNum = formatNum;
+window.formatDate = formatDate;
+window.positionCalendar = positionCalendar;
+window.modalScroll = modalScroll;
+window.onCalendarOpenClose = onCalendarOpenClose;

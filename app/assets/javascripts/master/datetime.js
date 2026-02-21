@@ -281,3 +281,16 @@ const fpConfigFormDate = fpMergeConfigs({}, fpConfigForm, fpConfigDate);
 const fpConfigFormUSDate = fpMergeConfigs({}, fpConfigForm, fpConfigUSDate);
 
 const fpConfigFormTime = fpMergeConfigs({}, fpConfigForm, fpConfigTime);
+
+window.USDateFormat = USDateFormat;
+window.fpMergeConfigs = fpMergeConfigs;
+window.fpConfigInit = fpConfigInit;
+window.fpConfigDateTime = fpConfigDateTime;
+window.fpConfigDate = fpConfigDate;
+window.fpConfigUSDate = fpConfigUSDate;
+window.fpConfigTime = fpConfigTime;
+window.fpConfigForm = fpConfigForm;
+window.fpConfigFormDateTime = fpConfigFormDateTime;
+window.fpConfigFormDate = fpConfigFormDate;
+window.fpConfigFormUSDate = fpConfigFormUSDate;
+window.fpConfigFormTime = fpConfigFormTime;

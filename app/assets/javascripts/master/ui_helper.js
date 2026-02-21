@@ -173,6 +173,14 @@ window.Ui = {
       .addClass('active');
     $(`${scope} input[data-time]`).siblings('label').addClass('active');
 
+    // make label active for select with a pre-selected value
+    $(`${scope} .field`)
+      .filter(function () {
+        return !!$(this).find('select').val();
+      })
+      .find('label')
+      .addClass('active');
+
     // setup datepicker
     $(`${scope} input[data-datetime]`).each(function() {
       let that = this
