@@ -23,7 +23,10 @@ import '../jquery_plugins/jquery.inputmask.bundle.js'
 import '../jquery_plugins/jquery.namespace.js'
 import '../jquery_plugins/lazyjsonviewer.js'
 import '../jquery_plugins/materialnote.js'
-import '../jquery_plugins/select2.js'
+import select2Factory from '../jquery_plugins/select2.js'
+if (typeof select2Factory === 'function' && !jQuery.fn.select2) {
+  select2Factory(window, jQuery);
+}
 import '../jquery_plugins/sortable.js'
 window.Sortable = Sortable;
 
