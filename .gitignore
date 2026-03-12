@@ -1,13 +1,40 @@
+# Gem build artifacts
 pkg/*
 *.gem
+
+# Bundler
 .bundle
+vendor/bundle
+
+# Logs
 *.log
-spec/tmp/*
+spec/wulin_app/db/log/*.log
+
+# Documentation
 doc
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Ruby
 .ruby-version
 rubocop.html
-spec/wulin_app/db/log/*.log
+
+# Node / Yarn
+node_modules/
+.yarn/install-state.gz
+.pnp.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Spec app
+spec/tmp/*
 spec/wulin_app/tmp/
 spec/wulin_app/.sass-cache
 spec/wulin_app/.ruby-version

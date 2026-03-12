@@ -6,7 +6,7 @@
   "dependencies": {
     "jquery": "1.12.4",
     "jquery-ui": "^1.13.0",
-    "materialize-css": "^1.0.0",
-    "material-icons": "^0.7.4"
+    "material-icons": "^0.7.4",
+    "materialize-css": "^1.0.0"
   }
 }
