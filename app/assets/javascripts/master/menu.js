@@ -24,7 +24,7 @@ $(document).ready(function() {
   loadPageForHistoryState();
 });
 
-function loadPageForHistoryState() {
+window.loadPageForHistoryState = function loadPageForHistoryState() {
   var url = History.getState().url;
   if (url != currentUrl) {
     if (url === undefined) {
@@ -38,7 +38,7 @@ function loadPageForHistoryState() {
   }
 }
 
-function load_page(url) {
+window.load_page = function load_page(url) {
   // Empty the current screen content
   $("#screen_content").empty();
 
@@ -85,7 +85,7 @@ function load_page(url) {
   });
 }
 
-function cleanUpEditors(id = false) {
+window.cleanUpEditors = function cleanUpEditors(id = false) {
   // we should cleanup open editors
   if (id) {
     $(".select-editor").data("id", id).remove();
