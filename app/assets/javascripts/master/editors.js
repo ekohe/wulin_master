@@ -567,6 +567,9 @@ window.WulinEditors = (function($) {
         var relation_id = this.args.item[this.args.column.depend_column].id;
         this.choices += '&master_model=' + this.args.column.depend_column + '&master_id=' + relation_id;
       }
+      if (this.args.column.scope_to_self && this.args.item.id) {
+        this.choices += (this.choices.includes('?') ? '&' : '?') + 'record_id=' + this.args.item.id;
+      }
 
       this.args.grid.onRelationCellEdit.notify({relationEditor: this});
 

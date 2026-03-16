@@ -247,6 +247,9 @@ var Ui = {
             const master_model = n['depend_column'], master_id = currentData[n['depend_column']]['id'];
             editorChoices = `${editorChoices}&master_model=${master_model}&master_id=${master_id}`;
           }
+          if (currentData && currentData.id && n['scope_to_self']) {
+            editorChoices += (editorChoices.includes('?') ? '&' : '?') + 'record_id=' + currentData.id;
+          }
           remotePath.push([n.field, editorChoices, formable]);
         }
       } else if (currentData && n['choices_column']) {
