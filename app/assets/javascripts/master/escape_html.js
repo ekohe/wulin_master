@@ -1,11 +1,11 @@
-function escapeHtml(html) {
+window.escapeHtml = function escapeHtml(html) {
   var text = document.createTextNode(html);
   var p = document.createElement("p");
   p.appendChild(text);
   return p.innerHTML;
 }
 
-function simpleFormat(str) {
+window.simpleFormat = function simpleFormat(str) {
   str = str.replace(/\r\n?/, "\n");
   str = $.trim(str);
   if (str.length > 0) {

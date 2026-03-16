@@ -12,7 +12,7 @@ WulinMaster.actions.Edit = $.extend({}, WulinMaster.actions.BaseAction, {
   },
 });
 
-var batchUpdateByAjax = function (grid, version) {
+window.batchUpdateByAjax = function (grid, version) {
   var ids, name, scope, width, height, selectedIndexes, url;
   selectedIndexes = grid.getSelectedRows();
   name = grid.name;
