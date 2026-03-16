@@ -1,6 +1,6 @@
 var dialogIndex = 1;
 
-function displayErrorMessage(message, title, width) {
+window.displayErrorMessage = function displayErrorMessage(message, title, width) {
   if (message === undefined) {
     message = 'An unexpected error occured.';
   }
@@ -12,7 +12,7 @@ function displayErrorMessage(message, title, width) {
   $('#error-modal').modal('open');
 }
 
-const displayCustomizedConfirmModal = (params) => {
+window.displayCustomizedConfirmModal = (params) => {
   const {
     message = 'Are you sure to do this ?',
     title = 'Confirmation',
