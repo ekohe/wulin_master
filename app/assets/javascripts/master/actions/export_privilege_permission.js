@@ -1,14 +1,14 @@
-// Toolbar Item 'Export Role Permission'
+// Toolbar Item 'Export Privilege Permission'
 
-WulinMaster.actions.ExportRolePermission = $.extend({}, WulinMaster.actions.BaseAction, {
-  name: 'export_role_permission',
+WulinMaster.actions.ExportPrivilegePermission = $.extend({}, WulinMaster.actions.BaseAction, {
+  name: 'export_privilege_permission',
 
   handler: function(e) {
     const grid = this.getGrid();
     const ids = grid.getSelectedIds();
 
     const query = $.param({ ids: ids });
-    const url = `/roles/export_role_permission${query ? `?${query}` : ''}`;
+    const url = `/privileges/export_privilege_permission${query ? `?${query}` : ''}`;
 
     const req = new XMLHttpRequest();
     req.open('GET', url, true);
@@ -16,7 +16,7 @@ WulinMaster.actions.ExportRolePermission = $.extend({}, WulinMaster.actions.Base
 
     req.onload = function() {
       const blob = req.response;
-      let filename = 'roles_permissions.json';
+      let filename = 'privileges_permissions.json';
       const cd = req.getResponseHeader('Content-Disposition');
       if (cd) {
         const match = cd.match(/filename="?([^";]+)"?/);
@@ -34,5 +34,4 @@ WulinMaster.actions.ExportRolePermission = $.extend({}, WulinMaster.actions.Base
     req.send();
   },
 });
-
-WulinMaster.ActionManager.register(WulinMaster.actions.ExportRolePermission);
+WulinMaster.ActionManager.register(WulinMaster.actions.ExportPrivilegePermission);

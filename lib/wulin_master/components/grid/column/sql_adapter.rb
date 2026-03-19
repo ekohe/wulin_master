@@ -42,10 +42,14 @@ module WulinMaster
       # remove all \s
       cleaned_str = str.split(/([,&])/).select { |e| e.present? }.map { |e| e.strip }.join
 
-      # Replace consecutive `,` with a single comma and consecutive `&` with a single ampersand
-      cleaned_str = cleaned_str.gsub(/,{2,}/, ",").gsub(/&{2,}/, "&")
-
-      cleaned_str = cleaned_str.gsub(/,&/, ",").gsub(/&,/, "&")
+      # Normalize operator combinations (,& or &,) and consecutive operators to a single operator
+      # Loop until no more replacements are made to handle patterns like &,&,& or ,&,&,
+      loop do
+        before = cleaned_str
+        cleaned_str = cleaned_str.gsub(/,&/, ",").gsub(/&,/, "&")
+        cleaned_str = cleaned_str.gsub(/,{2,}/, ",").gsub(/&{2,}/, "&")
+        break if cleaned_str == before
+      end
 
       # Remove trailing `,` or `&` if it exists at the end of the string (optional whitespace before it)
       cleaned_str.gsub(/[,&]$/, "")
@@ -56,7 +60,7 @@ module WulinMaster
       uncensored_filter = case operator
       when /NOT ILIKE/i
         clean_special_chars "!#{filter}"
-      when /ILIKE/i
+      when /ILIKE/i, /exact/i
         clean_special_chars filter
       end
 
@@ -71,6 +75,9 @@ module WulinMaster
       # Remove tail if it's a comma or ampersand
       parts.pop if parts.last&.match?(/^[,&]$/)
 
+      # If no valid filter parts remain after cleaning, return query unchanged
+      return query if parts.empty?
+
       parts.each do |part|
         case part
         when /,/
@@ -83,11 +90,33 @@ module WulinMaster
           conditions << "#{column_name} IS NOT NULL"
         when /^!/
           value = part[1..]
-          conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
-          query_params << "#{value}%"
+          if operator =~ /exact/i
+            # If the value starts or ends with %, use NOT LIKE for pattern matching, otherwise use exact <>
+            if value.start_with?('%') || value.end_with?('%')
+              conditions << "(CAST(#{column_name} AS TEXT) NOT LIKE ? OR #{column_name} IS NULL)"
+              query_params << value
+            else
+              conditions << "(CAST(#{column_name} AS TEXT) <> ? OR #{column_name} IS NULL)"
+              query_params << value
+            end
+          else
+            conditions << "(CAST(#{column_name} AS TEXT) NOT ILIKE ? OR #{column_name} IS NULL)"
+            query_params << "#{value}%"
+          end
         else
-          conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
-          query_params << "#{part}%"
+          if operator =~ /exact/i
+            # If the value starts or ends with %, use LIKE for pattern matching, otherwise use exact =
+            if part.start_with?('%') || part.end_with?('%')
+              conditions << "CAST(#{column_name} AS TEXT) LIKE ?"
+              query_params << part
+            else
+              conditions << "CAST(#{column_name} AS TEXT) = ?"
+              query_params << part
+            end
+          else
+            conditions << "CAST(#{column_name} AS TEXT) ILIKE ?"
+            query_params << "#{part}%"
+          end
         end
       end
 

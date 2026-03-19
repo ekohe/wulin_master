@@ -2,6 +2,12 @@
 
 module WulinMaster
   module ColumnAttr
+    BOOLEAN_TYPE = ActiveRecord::Type::Boolean.new
+
+    def boolean_cast(value)
+      BOOLEAN_TYPE.serialize(value)
+    end
+
     def assign_attribute(_object, value, new_attrs, attrs, type)
       if relation_field?
         attrs.delete(field_str) # Must remove the old one
