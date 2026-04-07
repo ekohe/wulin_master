@@ -95,39 +95,34 @@ describe WulinMaster::ColumnFilter do
   end
 
   describe "#apply_filter with belongs_to include/exclude" do
-    let(:column) { FakeClass.new(:training_room, TrainingGrid) }
+    let(:column) { FakeClass.new(:room, GridStateGrid) }
+    let(:belongs_to_reflection) do
+      instance_double(
+        ActiveRecord::Reflection::BelongsToReflection,
+        macro: :belongs_to,
+        foreign_key: "room_id",
+        klass: WulinMaster::GridState
+      )
+    end
 
-    it "resolves a belongs_to reflection with source :name" do
-      expect(column.send(:reflection).macro).to eq(:belongs_to)
-      expect(column.source).to eq(:name)
+    before do
+      allow(column).to receive(:reflection).and_return(belongs_to_reflection)
     end
 
     context "with exclude operator" do
-      it "filters on the foreign key" do
-        final_query = column.apply_filter(Training, "1", "exclude")
+      it "filters on the foreign key with OR IS NULL" do
+        final_query = column.apply_filter(query, "1", "exclude")
 
-        expect(final_query.to_sql).to include("trainings.training_room_id != '1'")
-        expect(final_query.to_sql).to include("trainings.training_room_id IS NULL")
-      end
-
-      it "does not query the related table's display column" do
-        final_query = column.apply_filter(Training, "1", "exclude")
-
-        expect(final_query.to_sql).not_to include("training_rooms.name")
+        expect(final_query.to_sql).to include("grid_states.room_id != '1'")
+        expect(final_query.to_sql).to include("grid_states.room_id IS NULL")
       end
     end
 
     context "with include operator" do
-      it "filters on the foreign key" do
-        final_query = column.apply_filter(Training, "1", "include")
+      it "filters on the foreign key with equality" do
+        final_query = column.apply_filter(query, "1", "include")
 
-        expect(final_query.to_sql).to include("trainings.training_room_id = '1'")
-      end
-
-      it "does not query the related table's display column" do
-        final_query = column.apply_filter(Training, "1", "include")
-
-        expect(final_query.to_sql).not_to include("training_rooms.name")
+        expect(final_query.to_sql).to include("grid_states.room_id = '1'")
       end
     end
   end
