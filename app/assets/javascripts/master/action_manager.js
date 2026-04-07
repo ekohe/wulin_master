@@ -79,13 +79,15 @@ WulinMaster.actions.BaseAction = {
     var self = this;
     $('#confirm-modal').modal('open');
     $('#confirmed-btn').off('click').on('click', function() {
+      if(self.reload_master && grid.master_grid) {
+        grid.onDeletedByAjax.subscribe(function onReloadMaster() {
+          grid.onDeletedByAjax.unsubscribe(onReloadMaster);
+          grid.master_grid.loader.reloadData();
+        });
+      }
       Requests.deleteByAjax(grid, ids);
       $('#confirm-modal').modal('close');
       ids = [];
-      // reload the master grid (for dettach detail action)
-      if(self.reload_master && grid.master_grid) {
-        grid.master_grid.loader.reloadData();
-      }
     })
   },
 
