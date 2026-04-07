@@ -93,6 +93,44 @@ describe WulinMaster::ColumnFilter do
       end
     end
   end
+
+  describe "#apply_filter with belongs_to include/exclude" do
+    let(:column) { FakeClass.new(:training_room, TrainingGrid) }
+
+    it "resolves a belongs_to reflection with source :name" do
+      expect(column.send(:reflection).macro).to eq(:belongs_to)
+      expect(column.source).to eq(:name)
+    end
+
+    context "with exclude operator" do
+      it "filters on the foreign key" do
+        final_query = column.apply_filter(Training, "1", "exclude")
+
+        expect(final_query.to_sql).to include("trainings.training_room_id != '1'")
+        expect(final_query.to_sql).to include("trainings.training_room_id IS NULL")
+      end
+
+      it "does not query the related table's display column" do
+        final_query = column.apply_filter(Training, "1", "exclude")
+
+        expect(final_query.to_sql).not_to include("training_rooms.name")
+      end
+    end
+
+    context "with include operator" do
+      it "filters on the foreign key" do
+        final_query = column.apply_filter(Training, "1", "include")
+
+        expect(final_query.to_sql).to include("trainings.training_room_id = '1'")
+      end
+
+      it "does not query the related table's display column" do
+        final_query = column.apply_filter(Training, "1", "include")
+
+        expect(final_query.to_sql).not_to include("training_rooms.name")
+      end
+    end
+  end
 end
 
 class FakeClass < WulinMaster::Column
