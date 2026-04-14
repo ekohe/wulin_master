@@ -52,11 +52,53 @@ module WulinMaster
         column_type = column_type(reflection.klass, source)
         # for string column
         normal_type = %i[integer float decimal boolean date datetime].include?(column_type)
+        return apply_association_subquery_filter(query, filtering_value, filtering_operator) if association_subquery_filter?(column_type)
         return apply_string_filter(query, filtering_operator, filtering_value) unless source =~ /(_)?id$/ || normal_type
         # for special column,
         filtering_value = format_filtering_value(filtering_value, column_type)
         return apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter) if %w[equals not_equals].include? filtering_operator
         return apply_inclusion_filter(query, filtering_operator, filtering_value) if %w[include exclude].include? filtering_operator
+      end
+    end
+
+    def association_subquery_filter?(column_type)
+      return false unless reflection
+      return false if @options[:sql_expression]
+      return false if reflection.respond_to?(:polymorphic?) && reflection.polymorphic?
+      return false unless reflection.klass < ActiveRecord::Base
+      return false unless %i[has_many has_and_belongs_to_many].include?(reflection.macro)
+      return false if source =~ /(_)?id$/
+
+      !%i[integer float decimal boolean date datetime].include?(column_type)
+    end
+
+    def apply_association_subquery_filter(query, filtering_value, filtering_operator)
+      operator, value = association_filter_operator_and_value(filtering_operator, filtering_value)
+      matching_ids = WulinMaster::SqlQuery.string_query(
+        association_subquery_relation(query),
+        "#{relation_table_name}.#{source}",
+        value,
+        self,
+        operator
+      ).distinct.select(model.arel_table[:id])
+
+      query.where(model.table_name => {id: matching_ids})
+    end
+
+    def association_subquery_relation(query)
+      query.all.except(:select, :order).joins(association_filter_name)
+    end
+
+    def association_filter_name
+      (@options[:through] || name).to_sym
+    end
+
+    def association_filter_operator_and_value(filtering_operator, filtering_value)
+      if @options[:exact_filter]
+        filtering_value = "!#{filtering_value}" if filtering_operator == 'not_equals'
+        ['exact', filtering_value]
+      else
+        [filtering_operator == 'not_equals' ? 'NOT ILIKE' : 'ILIKE', filtering_value]
       end
     end
 
