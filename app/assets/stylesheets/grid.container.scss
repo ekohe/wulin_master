@@ -7,7 +7,15 @@
   float: left;
   // Grid
   .grid {
+    // Keep Slick panes absolutely positioned even if generic layout CSS leaks in.
+    position: relative;
     box-shadow: 0px 1px 1px $border-color;
+    .slick-pane {
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      outline: 0;
+    }
     .slick-viewport {
       .grid-canvas {
         border-top: 1px solid $border-color;
