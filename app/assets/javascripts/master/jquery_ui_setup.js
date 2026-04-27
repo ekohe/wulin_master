@@ -3,6 +3,7 @@ import ui from 'jquery-ui'
 import 'jquery-ui/ui/widgets/mouse'
 import 'jquery-ui/ui/plugin'
 import 'jquery-ui/ui/widget'
+import 'jquery-ui/ui/data'
 import 'jquery-ui/ui/widgets/resizable'
 import 'jquery-ui/ui/widgets/sortable'
 
