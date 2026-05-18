@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "yaml"
+
 module WulinMaster
   class AppConfigsController < ScreenController
     controller_for_screen AppConfigsScreen
@@ -9,8 +11,11 @@ module WulinMaster
     private
 
     def load_app_config
-      file = Rails.root.join("config/app_config.yml")
-      @app_config_content = File.exist?(file) ? File.read(file) : "Can't read #{file}"
+      @app_config_content = if defined?(::APP_CONFIG)
+        ::APP_CONFIG.to_hash.to_yaml
+      else
+        "APP_CONFIG is not defined"
+      end
     end
   end
 end
