@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "set"
 require "spec_helper"
 require "wulin_master/utilities/variables"
 require "./lib/wulin_master/actions"
