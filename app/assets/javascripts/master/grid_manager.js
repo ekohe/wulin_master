@@ -231,6 +231,25 @@
           }
         });
 
+        // Reposition once the items are rendered so the full height is known,
+        // flipping the menu up/left when it would overflow the viewport.
+        var menuHeight = $contextMenu.outerHeight();
+        var menuWidth = $contextMenu.outerWidth();
+        var scrollTop = $(window).scrollTop();
+        var scrollLeft = $(window).scrollLeft();
+        var viewportBottom = scrollTop + $(window).height();
+        var viewportRight = scrollLeft + $(window).width();
+
+        var top = e.pageY;
+        var left = e.pageX;
+        if (top + menuHeight > viewportBottom) {
+          top = e.pageY - menuHeight;
+        }
+        if (left + menuWidth > viewportRight) {
+          left = e.pageX - menuWidth;
+        }
+        $contextMenu.css({ top: Math.max(top, scrollTop), left: Math.max(left, scrollLeft) });
+
         $("ul.context-menu").not($contextMenu).remove()
         $('body').one('click',function(){
           $("ul.context-menu").remove();
