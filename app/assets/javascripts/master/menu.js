@@ -1,7 +1,9 @@
 var currentUrl = null;
+var pinnedItemsCache = [];
 
 $(document).ready(function() {
   initialize_menu();
+  initializePinnedMenu();
 
   $("#navigation").resizable({ handles: 'e, w', minWidth: 199, maxWidth: 500 });
 
@@ -193,5 +195,143 @@ function initialize_menu() {
     History.pushState(null, document.title, currentUrl);
     load_page(currentUrl);
     return false;
+  });
+}
+
+function csrfToken() {
+  return $('meta[name="csrf-token"]').attr('content');
+}
+
+function pinMenuItem(path) {
+  var $menuItem = $('#menu li.item[data-path="' + path + '"]');
+  if (!$menuItem.length) return;
+
+  var pins = pinnedItemsCache.slice();
+  pins.push({ path: path, title: $menuItem.data('title') });
+
+  $.ajax({
+    type: 'PUT',
+    url: '/wulin_master/user_preferences/pinned_menus',
+    headers: { 'X-CSRF-Token': csrfToken() },
+    data: { value: JSON.stringify(pins) },
+    dataType: 'json',
+    success: function() { loadPinnedItems(); }
+  });
+}
+
+function unpinMenuItem(path) {
+  var pins = pinnedItemsCache.filter(function(item) { return item.path !== path; });
+
+  if (pins.length === 0) {
+    $.ajax({
+      type: 'DELETE',
+      url: '/wulin_master/user_preferences/pinned_menus',
+      headers: { 'X-CSRF-Token': csrfToken() },
+      dataType: 'json',
+      success: function() { loadPinnedItems(); }
+    });
+  } else {
+    $.ajax({
+      type: 'PUT',
+      url: '/wulin_master/user_preferences/pinned_menus',
+      headers: { 'X-CSRF-Token': csrfToken() },
+      data: { value: JSON.stringify(pins) },
+      dataType: 'json',
+      success: function() { loadPinnedItems(); }
+    });
+  }
+}
+
+function loadPinnedItems(callback) {
+  $.ajax({
+    type: 'GET',
+    url: '/wulin_master/user_preferences/pinned_menus',
+    dataType: 'json',
+    success: function(items) {
+      pinnedItemsCache = items || [];
+      renderPinnedGroup();
+      updatePinStates();
+      if (currentUrl) selectMenuItem(currentUrl);
+      if (callback) callback();
+    }
+  });
+}
+
+function renderPinnedGroup() {
+  var $group = $('#pinned-group');
+  var $list = $group.find('.pinned-items');
+  $list.empty();
+
+  if (pinnedItemsCache.length === 0) {
+    $group.hide();
+    return;
+  }
+
+  pinnedItemsCache.forEach(function(item) {
+    var $original = $('#menu li.item[data-path="' + item.path + '"]');
+    if (!$original.length) return;
+    var icon = $original.data('icon') || 'crop_16_9';
+
+    var $li = $('<li>', { class: 'item pinned-item', 'data-path': item.path });
+    var $link = $('<a>', { href: item.path, class: 'waves-effect' })
+      .append($('<i>', { class: 'material-icons' }).text(icon))
+      .append($('<span>').text(item.title));
+    var $unpin = $('<span>', { class: 'pin-toggle is-pinned', title: 'Unpin' });
+
+    $li.append($link).append($unpin);
+    var $reverse = $original.find('a.reverse');
+    if ($reverse.length) $li.append($reverse.clone());
+    $list.append($li);
+
+    $link.on('click', function() {
+      currentUrl = $(this).attr('href');
+      History.pushState(null, document.title, currentUrl);
+      return false;
+    });
+
+    $unpin.on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      unpinMenuItem(item.path);
+    });
+  });
+
+  if ($list.children().length === 0) {
+    $group.hide();
+  } else {
+    $group.show();
+  }
+}
+
+function updatePinStates() {
+  var pinnedPaths = pinnedItemsCache.map(function(item) { return item.path; });
+
+  $('#menu li.item[data-path]').not('.pinned-item').each(function() {
+    var path = $(this).data('path');
+    if (pinnedPaths.indexOf(path) > -1) {
+      $(this).hide();
+    } else {
+      $(this).show();
+    }
+  });
+
+  $('#menu > ul > li.submenu').not('#pinned-group').each(function() {
+    var $visible = $(this).find('li.item:visible');
+    if ($visible.length === 0) {
+      $(this).hide();
+    } else {
+      $(this).show();
+    }
+  });
+}
+
+function initializePinnedMenu() {
+  loadPinnedItems();
+
+  $('#menu').on('click', 'li.item[data-path]:not(.pinned-item) .pin-toggle', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var path = $(this).closest('li.item').data('path');
+    pinMenuItem(path);
   });
 }
