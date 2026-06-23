@@ -6,6 +6,12 @@
 
   #menu
     %ul
+      #pinned-group{style: "display:none"}
+        %li.submenu.pinned-submenu
+          %a{href: "#"}
+            Pinned
+          %ul.pinned-items
+
       - menu.each do |menu_entry|
         - if menu_entry.submenu?
           %li.submenu
@@ -13,10 +19,11 @@
               = menu_entry.title
             %ul
               - menu_entry.each do |submenu_entry|
-                %li.item{:style => submenu_entry.hidden? ? "display:none" : ""}
+                %li.item{"data-path" => submenu_entry.path, "data-icon" => (submenu_entry.options[:icon] || 'crop_16_9'), "data-title" => submenu_entry.title, :style => submenu_entry.hidden? ? "display:none" : ""}
                   = link_to submenu_entry.path, class: 'waves-effect' do
                     %i.material-icons= submenu_entry.options[:icon] || 'crop_16_9'
                     %span= submenu_entry.title
+                  %span.pin-toggle{title: "Pin to top"}
                   - if submenu_entry.reverse_present?
                     = link_to submenu_entry.reverse_path, class: 'waves-effect reverse' do
                       %i.material-icons= 'autorenew'

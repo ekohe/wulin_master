@@ -26,5 +26,9 @@ Rails.application.routes.draw do
     post "attach_details", to: WulinMaster::MasterDetailController.action(:attach_details)
     post "detach_details", to: WulinMaster::MasterDetailController.action(:detach_details)
     post "uploads", to: "uploads#create"
+
+    get "user_preferences/:name", to: "user_preferences#show"
+    put "user_preferences/:name", to: "user_preferences#update"
+    delete "user_preferences/:name", to: "user_preferences#destroy"
   end
 end
