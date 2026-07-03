@@ -5,7 +5,6 @@
     - break if component.respond_to?(:fill_window?) and component.fill_window?
   :javascript
     saveMessage("#{params[:screen]} loaded", 'info');
-    document.title = $("#menu .active").find('span').text() + " | " + "#{WulinMaster.config.app_title}";
 - else
   = render '/header'
   = render '/menu'

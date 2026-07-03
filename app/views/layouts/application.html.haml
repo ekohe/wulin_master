@@ -28,7 +28,8 @@
         DEFAULT_MONTH: String(#{default_month}),
         DATE_FORMAT: String("#{WulinMaster.config.date_format}"),
         DROPZONE_JS_URL: '#{asset_path('dropzone.min.js')}',
-        DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}'
+        DROPZONE_CSS_URL: '#{asset_path('dropzone.min.css')}',
+        _appTitle: "#{j WulinMaster.config.app_title}"
       });
       ConfigInputmask();
   %body
