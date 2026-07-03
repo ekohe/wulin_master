@@ -69,6 +69,7 @@ window.load_page = function load_page(url) {
 
       // Inject screen content
       $("#screen_content").html(html);
+      updateDocumentTitle();
 
       setTimeout(function() {
         trackGoogleAnalytics();
@@ -106,12 +107,54 @@ function trackGoogleAnalytics() {
 
 function deselectMenuItems() { $("#menu .active").removeClass("active"); }
 
+function urlPath(url) {
+  var anchor = document.createElement("a");
+  anchor.href = url;
+  return anchor.pathname + anchor.search;
+}
+
+function appTitle() {
+  if (window._appTitle) return window._appTitle;
+  var parts = document.title.split(" | ");
+  return parts.length > 1 ? parts[parts.length - 1] : document.title;
+}
+
+function menuTitleFromItem($item) {
+  if (!$item.length) return "";
+  var title = $item.data("title");
+  if (title) return title;
+  var $label = $item.find("a.waves-effect span, a:not(.reverse) span").first();
+  if ($label.length) return $label.text().trim();
+  return $item.find("a").first().text().trim();
+}
+
+function updateDocumentTitle() {
+  var $activeItem = $("#menu li.item.active:visible").first();
+  if (!$activeItem.length) $activeItem = $("#menu li.item.active").first();
+  setDocumentTitleFromMenuItem($activeItem);
+}
+
+function updateDocumentTitleFromLink($link) {
+  setDocumentTitleFromMenuItem($link.closest("li.item"));
+}
+
+function setDocumentTitleFromMenuItem($item) {
+  var menuTitle = menuTitleFromItem($item);
+  if (!menuTitle) return;
+  document.title = menuTitle + " | " + appTitle();
+}
+
 function selectMenuItem(url) {
-  rootUrl = History.getRootUrl(),
-    relativeUrl = url.replace(rootUrl, '/');
+  var path = urlPath(url);
   deselectMenuItems();
-  $currentLink = $('#menu li.item a[href="' + relativeUrl + '"]');
-  $currentLink.parent().addClass('active');
+  var $items = $("#menu li.item").filter(function() {
+    if ($(this).attr("data-path") === path) return true;
+    var href = $(this).find("a.waves-effect, a:not(.reverse)").first().attr("href");
+    return href === path;
+  });
+  var $active = $items.filter(":visible").first();
+  if (!$active.length) $active = $items.first();
+  $active.addClass("active");
 }
 
 function initialize_menu() {
@@ -133,6 +176,8 @@ function initialize_menu() {
         currentUrl = $("a:not(.reverse)", $(this).parent()).attr('href');
       }
     }
+
+    updateDocumentTitleFromLink($(this));
 
     // State management
     History.pushState(null, document.title, currentUrl);
@@ -190,6 +235,7 @@ function initialize_menu() {
   // Click to go back to dashboard
   $("#navigation h1 a").click(function() {
     $("#menu .active").removeClass("active");
+    document.title = appTitle();
     // State management
     currentUrl = "/";
     History.pushState(null, document.title, currentUrl);
@@ -272,7 +318,7 @@ function renderPinnedGroup() {
     if (!$original.length) return;
     var icon = $original.data('icon') || 'crop_16_9';
 
-    var $li = $('<li>', { class: 'item pinned-item', 'data-path': item.path });
+    var $li = $('<li>', { class: 'item pinned-item', 'data-path': item.path, 'data-title': item.title });
     var $link = $('<a>', { href: item.path, class: 'waves-effect' })
       .append($('<i>', { class: 'material-icons' }).text(icon))
       .append($('<span>').text(item.title));
@@ -285,6 +331,7 @@ function renderPinnedGroup() {
 
     $link.on('click', function() {
       currentUrl = $(this).attr('href');
+      updateDocumentTitleFromLink($(this));
       History.pushState(null, document.title, currentUrl);
       return false;
     });
