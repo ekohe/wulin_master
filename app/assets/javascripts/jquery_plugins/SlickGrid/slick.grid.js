@@ -1718,11 +1718,9 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      if (hasFrozenColumns()) {
-        trigger(self.onColumnsFrozen, {
-          "grid": self
-        })
-      }
+      trigger(self.onColumnsFrozen, {
+        "grid": self
+      });
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -4571,9 +4569,14 @@ if (typeof Slick === "undefined") {
     }
     */
 
-    function handleScroll() {
+    function handleScroll(force) {
       scrollTop = $viewportScrollContainerY[0].scrollTop;
       scrollLeft = $viewportScrollContainerX[0].scrollLeft;
+      if (force) {
+        // Reset prev values so _handleScroll treats everything as changed
+        prevScrollTop = scrollTop + 1;
+        prevScrollLeft = scrollLeft + 1;
+      }
       return _handleScroll(false);
     }
 

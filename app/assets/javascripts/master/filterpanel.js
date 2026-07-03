@@ -65,14 +65,18 @@
       // Hook between the filter input box and the data loader setFilter
       // Applay filter after 1000ms
       $($grid.getHeaders()).off('keyup', 'input').on('keyup', 'input', function(e) {
-        var containerWidth = $grid.container.innerWidth();
-        var $viewPort = $($grid.getCanvasNode()).parent();
+        // When columns are frozen the right pane scrolls horizontally; $canvasTopR is index 1.
+        // Input positions are relative to their own pane, so measure against that pane's width.
+        var $canvases = $grid.getCanvases();
+        var hasPinned = $grid.getOptions().pinnedColumns && $grid.getOptions().pinnedColumns.length > 0;
+        var $scrollViewPort = hasPinned ? $($canvases[1]).parent() : $($canvases[0]).parent();
+        var containerWidth = hasPinned ? $scrollViewPort.innerWidth() : $grid.container.innerWidth();
         var inputLeft = $(this).position().left + $(this).outerWidth();
-        var inputRight = $(this).position().left - $viewPort.scrollLeft() + $(this).outerWidth();
+        var inputRight = $(this).position().left - $scrollViewPort.scrollLeft() + $(this).outerWidth();
         var ignoreKeyCodes = [9, 224, 13];
 
         if ((containerWidth - inputRight) < 0) {
-          $viewPort.scrollLeft(inputLeft - containerWidth);
+          $scrollViewPort.scrollLeft(inputLeft - containerWidth);
         }
 
         if (ignoreKeyCodes.indexOf(e.which) == -1) {
@@ -99,7 +103,8 @@
       var $headerRow = $($grid.getHeaderRow());
       // Ekohe Add: Use new MD headers instead of headerRow
       var $headers = $($grid.getHeaders());
-      var headerWidth = $($grid.getCanvasNode()).width() + 16;      // 16 is the vertical scrollbar width
+      // When columns are frozen, total canvas width = left + right pane widths.
+      var headerWidth = $grid.getCanvasWidth() + 16;      // 16 is the vertical scrollbar width
       var ua = navigator.userAgent.toLowerCase();
 
       html = "";

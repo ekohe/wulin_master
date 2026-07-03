@@ -221,7 +221,8 @@
       var pinnedIndex = pinnedColumns.indexOf(menuItemName);
       var newFrozenColumn = grid.getOptions().frozenColumn;
 
-      if (pinnedIndex !== -1) {
+      var wasPinned = pinnedIndex !== -1;
+      if (wasPinned) {
         pinnedColumns.splice(pinnedIndex, 1);
         grid.getOptions().pinnedColumns = pinnedColumns;
         newFrozenColumn = pinnedColumns.length > 0 ? pinnedColumns.length - 1 : -1;
@@ -235,6 +236,11 @@
 
       // Use setOptions to properly reinitialize frozen panes
       grid.setOptions({"frozenColumn": newFrozenColumn});
+
+      // Persist updated pinnedColumns when a pinned column was hidden
+      if (wasPinned) {
+        grid.trigger(grid.onColumnsPinned, {grid: grid, pinnedColumns: grid.getOptions().pinnedColumns});
+      }
 
       _self.onColumnsPick.notify({});
     }
@@ -468,6 +474,10 @@
 
       var sortedVisibleColumns = pinnedVisibleCols.concat(unpinnedVisibleCols);
 
+      // Track whether the pinned set changed before updating the option
+      var pinnedSetChanged = updatedPinnedColumns.length !== pinnedColumns.length ||
+        updatedPinnedColumns.some(function(c, i) { return c !== pinnedColumns[i]; });
+
       // Update pinnedColumns option and set frozenColumn before setColumns
       grid.getOptions().pinnedColumns = updatedPinnedColumns;
       var newFrozenColumn = updatedPinnedColumns.length > 0 ? updatedPinnedColumns.length - 1 : -1;
@@ -477,6 +487,11 @@
 
       // Use setOptions to properly reinitialize frozen panes
       grid.setOptions({"frozenColumn": newFrozenColumn});
+
+      // Persist updated pinnedColumns when a pinned column was hidden/shown
+      if (pinnedSetChanged) {
+        grid.trigger(grid.onColumnsPinned, {grid: grid, pinnedColumns: updatedPinnedColumns});
+      }
 
       // Force layout recalculation to fix flexbox positioning issue
       forceLayoutRecalculation();
