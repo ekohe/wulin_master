@@ -329,7 +329,7 @@ function renderPinnedGroup() {
     var $link = $('<a>', { href: item.path, class: 'waves-effect' })
       .append($('<i>', { class: 'material-icons' }).text(icon))
       .append($('<span>').text(item.title));
-    var $unpin = $('<span>', { class: 'pin-toggle is-pinned', title: 'Remove from shortcuts' });
+    var $unpin = $('<span>', { class: 'pin-toggle is-pinned', title: 'Unpin' });
 
     $li.append($link).append($unpin);
     var $reverse = $original.find('a.reverse');
@@ -351,7 +351,7 @@ function updatePinStates() {
     var pinned = pinnedPaths.indexOf($(this).data('path')) > -1;
     $(this).find('.pin-toggle')
       .toggleClass('is-pinned', pinned)
-      .attr('title', pinned ? 'Remove from shortcuts' : 'Add to shortcuts');
+      .attr('title', pinned ? 'Unpin' : 'Pin');
   });
 }
 
