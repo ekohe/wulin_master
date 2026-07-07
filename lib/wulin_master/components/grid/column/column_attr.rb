@@ -27,6 +27,13 @@ module WulinMaster
         rescue => e
           Rails.logger.warn "Incorrect date: #{value}"
         end
+      elsif options[:file]
+        if file_remove_requested?(attrs)
+          new_attrs[field_sym] = nil
+        elsif value.blank?
+          attrs.delete(field_str)
+          attrs.delete(field_sym)
+        end
       elsif value.blank? # v == 'null'
         new_attrs[field_sym] = nil
       end
@@ -147,6 +154,11 @@ module WulinMaster
 
     def relation_field?
       model_associations.key?(field_str)
+    end
+
+    def file_remove_requested?(attrs)
+      remove_key = "remove_#{field_str}"
+      boolean_cast(attrs[remove_key]) || boolean_cast(attrs[remove_key.to_sym])
     end
   end
 end

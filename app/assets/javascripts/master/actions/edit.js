@@ -124,6 +124,23 @@ var loadValue = function (scope, data) {
         $('input:checkbox[data-field="' + i + '"]', scope)
           .removeAttr('checked');
       }
+    } else if ($('.wulin-file-field-input[data-field="' + i + '"]', scope).size() > 0) {
+      var $fileField = $('.wulin-file-field-input[data-field="' + i + '"]', scope).closest('.wulin-file-field');
+      var $removeFlag = $fileField.find('input.remove-file-flag[data-field="' + i + '"]');
+      var $currentName = $fileField.find('small.current-file-name[data-field="' + i + '"]');
+      var $clearLink = $fileField.find('a.clear-file-link[data-field="' + i + '"]');
+
+      $removeFlag.val('0');
+      $fileField.find('input[type="file"]').val('');
+
+      if (data[i]) {
+        var fileName = data[i].toString().split('/').pop();
+        $currentName.text('Current: ' + fileName).show();
+        $clearLink.show();
+      } else {
+        $currentName.text('').hide();
+        $clearLink.hide();
+      }
     } else if ($('select[data-field="' + i + '"]', scope).size() > 0) {
       inputBox = $('select[data-field="' + i + '"]', scope);
       inputBox.siblings('label').addClass('active');
@@ -178,10 +195,35 @@ var checkTheBox = function (name, scope) {
   $scope
     .off('change', 'input:checkbox, input:file')
     .on('change', 'input:checkbox:not(.target_flag), input:file', function (e) {
+      if ($(e.currentTarget).is('input.wulin-file-field-input')) {
+        $(e.currentTarget)
+          .closest('.wulin-file-field')
+          .find('input.remove-file-flag')
+          .val('0');
+      }
       $(
         'input.target_flag:checkbox[data-target-id="' +
           $(e.currentTarget).attr('data-target-id') +
           '"]'
+      ).prop('checked', true);
+    });
+
+  $scope
+    .off('click', 'a.clear-file-link')
+    .on('click', 'a.clear-file-link', function (e) {
+      e.preventDefault();
+      var field = $(this).data('field');
+      var $fileField = $(this).closest('.wulin-file-field');
+
+      $fileField.find('input.remove-file-flag[data-field="' + field + '"]').val('1');
+      $fileField.find('input[type="file"]').val('');
+      $fileField
+        .find('small.current-file-name[data-field="' + field + '"]')
+        .text('File will be removed on update')
+        .show();
+      $(this).hide();
+      $(
+        'input.target_flag:checkbox[data-target-id="' + field + '_target_flag"]'
       ).prop('checked', true);
     });
 

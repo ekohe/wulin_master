@@ -132,8 +132,13 @@
                     });
 
             - elsif column.options[:file]
-              %label{:for => "#{model_name}_#{column_name}"}= label
-              = form.file_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px', "data-target-id" => "#{column_name}_target_flag"
+              .input-field.input-outlined.wulin-file-field
+                %label.wulin-file-field-label{:for => "#{model_name}_#{column_name}"}= label
+                = form.file_field column_name, class: 'wulin-file-field-input browser-default', "data-target" => "#{column_name}_target_flag", "data-field" => field, "data-target-id" => "#{column_name}_target_flag"
+                = form.hidden_field :"remove_#{column_name}", value: "0", class: "remove-file-flag", "data-field" => field, "data-target" => "#{column_name}_target_flag", "data-target-id" => "#{column_name}_target_flag"
+                .wulin-file-field-meta
+                  %small.current-file-name{"data-field" => field}
+                  %a.clear-file-link{:href => "#", "data-field" => field}= "✕ Clear file"
             - elsif column.options[:password]
               %label{:for => "#{model_name}_#{column_name}"}= label
               = form.password_field column_name, "data-target" => "#{column_name}_target_flag", "data-field" => field, :style => 'width: 250px', "data-target-id" => "#{column_name}_target_flag"
