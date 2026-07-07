@@ -125,6 +125,8 @@ module WulinMaster
         value.to_s
       elsif value.class.name == 'ActiveStorage::Attached::One'
         value.attached? ? value.filename.to_s : ''
+      elsif defined?(CarrierWave::Uploader::Base) && value.is_a?(CarrierWave::Uploader::Base)
+        value.file ? value.file.filename.to_s : ''
       else
         value
       end
