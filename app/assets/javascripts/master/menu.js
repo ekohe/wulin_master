@@ -1,5 +1,6 @@
 var currentUrl = null;
 var pinnedItemsCache = [];
+var lastClickedMenuItem = null;
 
 $(document).ready(function() {
   initialize_menu();
@@ -148,35 +149,51 @@ function setDocumentTitleFromMenuItem($item) {
 
 function selectMenuItem(url) {
   var path = urlPath(url);
+  // Prefer the copy the user clicked: an item can exist twice (original + shortcut),
+  // and reverse URLs match no item's data-path at all
+  var $active = $(lastClickedMenuItem);
+  lastClickedMenuItem = null;
+  if (!$active.closest("#menu").length) {
+    var $items = $("#menu li.item").filter(function() {
+      if ($(this).attr("data-path") === path) return true;
+      var href = $(this).find("a.waves-effect, a:not(.reverse)").first().attr("href");
+      return href === path;
+    });
+    if (!$items.length) return; // unknown URL (e.g. a reverse view): keep the current highlight
+    $active = $items.filter(".active").first(); // keep the copy already highlighted
+    if (!$active.length) $active = $items.filter(":visible").first();
+    if (!$active.length) $active = $items.first();
+  }
   deselectMenuItems();
-  var $items = $("#menu li.item").filter(function() {
-    if ($(this).attr("data-path") === path) return true;
-    var href = $(this).find("a.waves-effect, a:not(.reverse)").first().attr("href");
-    return href === path;
-  });
-  var $active = $items.filter(":visible").first();
-  if (!$active.length) $active = $items.first();
   $active.addClass("active");
 }
 
 function initialize_menu() {
-  // Click to load screen page
-  $("#menu li.item a").on('click', function() {
-    currentUrl = $(this).attr('href');
+  // Click to load screen page (delegated: shortcut copies are rendered dynamically)
+  $("#menu").on('click', 'li.item a', function() {
+    var href = $(this).attr('href');
 
     // If the item in the menu is an absolute URL, then go to the change password page.
-    if (/^https?:\/\//i.test(currentUrl)) {
-      window.open(currentUrl);
-      return;
+    if (/^https?:\/\//i.test(href)) {
+      window.open(href);
+      return false;
     }
 
-    if ($(this).hasClass('reverse')) {
-      var currentWindowUrl = window.location.pathname + window.location.search;
+    currentUrl = href;
+    lastClickedMenuItem = $(this).closest('li.item')[0];
+    var currentWindowUrl = window.location.pathname + window.location.search;
 
-      if (currentUrl == currentWindowUrl) {
-        // go back to the original one
-        currentUrl = $("a:not(.reverse)", $(this).parent()).attr('href');
-      }
+    if ($(this).hasClass('reverse') && currentUrl == currentWindowUrl) {
+      // go back to the original one
+      currentUrl = $("a:not(.reverse)", $(this).parent()).attr('href');
+    }
+
+    // Already on this screen (e.g. clicked the other copy of a pinned item):
+    // just move the highlight, pushing an identical URL fires no statechange
+    if (currentUrl == currentWindowUrl) {
+      currentUrl = History.getState().url; // keep the format loadPageForHistoryState stores
+      selectMenuItem(currentUrl);
+      return false;
     }
 
     updateDocumentTitleFromLink($(this));
@@ -187,8 +204,9 @@ function initialize_menu() {
     return false;
   });
 
-  // Click to toggle submenu
-  $("#menu li.submenu a").click(function() {
+  // Click to toggle submenu (header link only — "li.submenu a" would also
+  // match item links and swallow their clicks before they bubble to #menu)
+  $("#menu li.submenu > a").click(function() {
     $(this).siblings("ul").toggle();
     return false;
   });
@@ -240,8 +258,11 @@ function initialize_menu() {
     document.title = appTitle();
     // State management
     currentUrl = "/";
-    History.pushState(null, document.title, currentUrl);
-    load_page(currentUrl);
+    if (currentUrl == window.location.pathname + window.location.search) {
+      load_page(currentUrl); // pushing an identical URL fires no statechange
+    } else {
+      History.pushState(null, document.title, currentUrl); // statechange loads the page
+    }
     return false;
   });
 }
@@ -253,56 +274,42 @@ function csrfToken() {
 function pinMenuItem(path) {
   var $menuItem = $('#menu li.item[data-path="' + path + '"]');
   if (!$menuItem.length) return;
+  if (pinnedItemsCache.some(function(item) { return item.path === path; })) return;
 
   var pins = pinnedItemsCache.slice();
   pins.push({ path: path, title: $menuItem.data('title') });
-
-  $.ajax({
-    type: 'PUT',
-    url: '/wulin_master/user_preferences/pinned_menus',
-    headers: { 'X-CSRF-Token': csrfToken() },
-    data: { value: JSON.stringify(pins) },
-    dataType: 'json',
-    success: function() { loadPinnedItems(); }
-  });
+  savePinnedItems(pins);
 }
 
 function unpinMenuItem(path) {
-  var pins = pinnedItemsCache.filter(function(item) { return item.path !== path; });
-
-  if (pins.length === 0) {
-    $.ajax({
-      type: 'DELETE',
-      url: '/wulin_master/user_preferences/pinned_menus',
-      headers: { 'X-CSRF-Token': csrfToken() },
-      dataType: 'json',
-      success: function() { loadPinnedItems(); }
-    });
-  } else {
-    $.ajax({
-      type: 'PUT',
-      url: '/wulin_master/user_preferences/pinned_menus',
-      headers: { 'X-CSRF-Token': csrfToken() },
-      data: { value: JSON.stringify(pins) },
-      dataType: 'json',
-      success: function() { loadPinnedItems(); }
-    });
-  }
+  savePinnedItems(pinnedItemsCache.filter(function(item) { return item.path !== path; }));
 }
 
-function loadPinnedItems(callback) {
+function savePinnedItems(pins) {
+  $.ajax({
+    type: pins.length ? 'PUT' : 'DELETE',
+    url: '/wulin_master/user_preferences/pinned_menus',
+    headers: { 'X-CSRF-Token': csrfToken() },
+    data: pins.length ? { value: JSON.stringify(pins) } : undefined,
+    dataType: 'json',
+    success: function() { applyPinnedItems(pins); }
+  });
+}
+
+function loadPinnedItems() {
   $.ajax({
     type: 'GET',
     url: '/wulin_master/user_preferences/pinned_menus',
     dataType: 'json',
-    success: function(items) {
-      pinnedItemsCache = items || [];
-      renderPinnedGroup();
-      updatePinStates();
-      if (currentUrl) selectMenuItem(currentUrl);
-      if (callback) callback();
-    }
+    success: applyPinnedItems
   });
+}
+
+function applyPinnedItems(items) {
+  pinnedItemsCache = items || [];
+  renderPinnedGroup();
+  updatePinStates();
+  if (currentUrl) selectMenuItem(currentUrl);
 }
 
 function renderPinnedGroup() {
@@ -324,25 +331,12 @@ function renderPinnedGroup() {
     var $link = $('<a>', { href: item.path, class: 'waves-effect' })
       .append($('<i>', { class: 'material-icons' }).text(icon))
       .append($('<span>').text(item.title));
-    var $unpin = $('<span>', { class: 'pin-toggle is-pinned', title: 'Unpin' });
+    var $unpin = $('<span>', { class: 'pin-toggle is-pinned', title: 'Remove from shortcuts' });
 
     $li.append($link).append($unpin);
     var $reverse = $original.find('a.reverse');
     if ($reverse.length) $li.append($reverse.clone());
     $list.append($li);
-
-    $link.on('click', function() {
-      currentUrl = $(this).attr('href');
-      updateDocumentTitleFromLink($(this));
-      History.pushState(null, document.title, currentUrl);
-      return false;
-    });
-
-    $unpin.on('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      unpinMenuItem(item.path);
-    });
   });
 
   if ($list.children().length === 0) {
@@ -356,31 +350,24 @@ function updatePinStates() {
   var pinnedPaths = pinnedItemsCache.map(function(item) { return item.path; });
 
   $('#menu li.item[data-path]').not('.pinned-item').each(function() {
-    var path = $(this).data('path');
-    if (pinnedPaths.indexOf(path) > -1) {
-      $(this).hide();
-    } else {
-      $(this).show();
-    }
-  });
-
-  $('#menu > ul > li.submenu').not('#pinned-group').each(function() {
-    var $visible = $(this).find('li.item:visible');
-    if ($visible.length === 0) {
-      $(this).hide();
-    } else {
-      $(this).show();
-    }
+    var pinned = pinnedPaths.indexOf($(this).data('path')) > -1;
+    $(this).find('.pin-toggle')
+      .toggleClass('is-pinned', pinned)
+      .attr('title', pinned ? 'Remove from shortcuts' : 'Add to shortcuts');
   });
 }
 
 function initializePinnedMenu() {
   loadPinnedItems();
 
-  $('#menu').on('click', 'li.item[data-path]:not(.pinned-item) .pin-toggle', function(e) {
+  $('#menu').on('click', 'li.item[data-path] .pin-toggle', function(e) {
     e.preventDefault();
     e.stopPropagation();
     var path = $(this).closest('li.item').data('path');
-    pinMenuItem(path);
+    if ($(this).hasClass('is-pinned')) {
+      unpinMenuItem(path);
+    } else {
+      pinMenuItem(path);
+    }
   });
 }
