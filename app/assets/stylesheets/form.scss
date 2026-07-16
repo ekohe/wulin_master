@@ -250,3 +250,80 @@ span.select2-selection--multiple {
 .modal.open.modal-fixed-footer {
   max-width: 90%;
 }
+
+.input-field.input-outlined.wulin-file-field {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  &:focus-within > .wulin-file-field-label {
+    transform: none;
+    top: auto;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  > .wulin-file-field-label {
+    position: static;
+    display: block;
+    transform: none;
+    left: auto;
+    max-width: 100%;
+    margin-bottom: 6px;
+    font-size: $font-size-small-middle;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  > input[type="file"].wulin-file-field-input {
+    display: block;
+    position: static;
+    opacity: 1;
+    width: calc(100% - 2.3rem);
+    height: auto;
+    padding: 8px 12px;
+    border: 2px solid #eee;
+    border-radius: 4px;
+    font-size: $font-size-small-middle;
+    color: $text-color;
+    background: white;
+    cursor: pointer;
+
+    &::file-selector-button {
+      margin-right: 12px;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: $font-size-small-middle;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $main-color;
+    }
+  }
+
+  .current-file-name {
+    display: block;
+    color: #888;
+    font-size: $font-size-small-middle;
+  }
+
+  .wulin-file-field-meta {
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+    gap: 12px;
+  }
+
+  .clear-file-link {
+    display: none;
+    flex-shrink: 0;
+    font-size: $font-size-small-middle;
+    color: #e53935;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
