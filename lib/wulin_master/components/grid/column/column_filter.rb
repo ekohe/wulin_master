@@ -140,7 +140,7 @@ module WulinMaster
           params = values.map { |v| "#{v}%" }
         else
           # For DateTime/timestamp fields, apply timezone conversion
-          conditions = values.map { "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{sql_operator} UPPER(?)" }
+          conditions = values.map { "to_char(#{field}::timestamptz AT TIME ZONE ?, '#{datetime_to_char_format}') #{sql_operator} UPPER(?)" }
           params = values.flat_map { |v| [time_zone_offset, "#{v}%"] }
         end
 
@@ -153,15 +153,19 @@ module WulinMaster
       else
         # For DateTime/timestamp fields, apply timezone conversion
         query.where([
-          "to_char(#{field}::timestamptz AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') #{sql_operator} UPPER(?)",
+          "to_char(#{field}::timestamptz AT TIME ZONE ?, '#{datetime_to_char_format}') #{sql_operator} UPPER(?)",
           time_zone_offset,
           "#{value}%"
         ])
       end
     end
 
+    def datetime_to_char_format
+      (datetime_format == :with_seconds) ? "DD/MM/YYYY HH24:MI:SS" : "DD/MM/YYYY HH24:MI"
+    end
+
     def time_zone_offset
-      Time.zone.tzinfo.name
+      @options[:time_zone].presence || Time.zone.tzinfo.name
     end
 
     def apply_foreign_key_filter(query, operator, value)

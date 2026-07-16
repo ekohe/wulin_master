@@ -6,13 +6,57 @@ describe WulinMaster::ColumnFilter do
   subject(:query) { WulinMaster::GridState }
 
   describe "#filter_by_datetime" do
-    it "contains time zone offset" do
+    it "uses the Rails app time zone by default" do
       fc = FakeClass.new(:created_at, GridStateGrid)
-      allow(Time.zone).to receive(:name).and_return("Etc/UTC")
+      allow(Time.zone).to receive(:tzinfo).and_return(ActiveSupport::TimeZone["America/New_York"].tzinfo)
 
-      final_query = fc.send(:filter_by_datetime, query, "=", "created_at", "00:00")
+      final_query = fc.send(:filter_by_datetime, query, "=", "grid_states.created_at", "00:00")
 
-      expect(final_query.to_sql).to match(/time zone 'Etc\/UTC'/i)
+      expect(final_query.to_sql).to match(/time zone 'America\/New_York'/i)
+    end
+
+    it "uses the column time_zone option when present" do
+      fc = FakeClass.new(:created_at, GridStateGrid, time_zone: "UTC")
+
+      final_query = fc.send(:filter_by_datetime, query, "=", "grid_states.created_at", "13/07/2026 11:")
+
+      expect(final_query.to_sql).to match(/time zone 'UTC'/i)
+      expect(final_query.to_sql).not_to match(/time zone 'America\/New_York'/i)
+    end
+
+    it "includes seconds in the filter format when datetime_format is :with_seconds" do
+      fc = FakeClass.new(:created_at, GridStateGrid, time_zone: "UTC", datetime_format: :with_seconds)
+
+      final_query = fc.send(:filter_by_datetime, query, "=", "grid_states.created_at", "13/07/2026 11:59:45")
+
+      expect(final_query.to_sql).to include("DD/MM/YYYY HH24:MI:SS")
+      expect(final_query.to_sql).to match(/time zone 'UTC'/i)
+    end
+
+    it "keeps the minute filter format by default" do
+      fc = FakeClass.new(:created_at, GridStateGrid)
+
+      final_query = fc.send(:filter_by_datetime, query, "=", "grid_states.created_at", "13/07/2026 11:")
+
+      expect(final_query.to_sql).to include("DD/MM/YYYY HH24:MI")
+      expect(final_query.to_sql).not_to include("DD/MM/YYYY HH24:MI:SS")
+    end
+
+    it "filters virtual datetime columns using their source" do
+      fc = FakeClass.new(
+        :created_at_local,
+        GridStateGrid,
+        source: :created_at,
+        sql_expression: "grid_states.created_at",
+        sql_type: :datetime
+      )
+      adapter = WulinMaster::SqlAdapter.new(WulinMaster::GridState, query)
+
+      final_query = fc.send(:filter_without_reflection, query, "13/07/2026 11:", "equals", :datetime, adapter)
+
+      expect(final_query.to_sql).to include("grid_states.created_at::timestamptz")
+      expect(final_query.to_sql).not_to include("grid_states.created_at_local")
+      expect(final_query.to_sql).to match(/time zone '#{Regexp.escape(Time.zone.tzinfo.name)}'/i)
     end
   end
 

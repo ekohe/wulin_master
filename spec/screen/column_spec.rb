@@ -34,4 +34,33 @@ describe WulinMaster::Column do
     @column = WulinMaster::Column.new(:title, @grid, label: "Post Title")
     expect(@column.label).to eq("Post Title")
   end
+
+  it "formats datetime values in the configured time zone without a zone suffix" do
+    column = WulinMaster::Column.new(
+      :created_at,
+      @grid,
+      type: "Datetime",
+      datetime_format: :with_seconds,
+      time_zone: "UTC"
+    )
+    allow(column).to receive(:sql_type).and_return(:datetime)
+    value = ActiveSupport::TimeZone["America/New_York"].local(2026, 7, 13, 7, 59, 11)
+
+    expect(column.format(value)).to eq("13/07/2026 11:59:11")
+    expect(column.format(value)).not_to match(/UTC|[-+]\d{4}/)
+  end
+
+  it "formats local datetime values without an offset suffix" do
+    column = WulinMaster::Column.new(
+      :created_at_local,
+      @grid,
+      type: "Datetime",
+      datetime_format: :with_seconds
+    )
+    allow(column).to receive(:sql_type).and_return(:datetime)
+    value = ActiveSupport::TimeZone["America/New_York"].local(2026, 7, 13, 7, 59, 11)
+
+    expect(column.format(value)).to eq("13/07/2026 07:59:11")
+    expect(column.format(value)).not_to match(/UTC|[-+]\d{4}/)
+  end
 end
