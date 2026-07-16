@@ -30,6 +30,15 @@ module WulinMaster
       @options[:datetime_format] || WulinMaster.default_datetime_format
     end
 
+    def datetime_format_fallback(format_key)
+      {
+        no_seconds: "%d/%m/%Y %H:%M",
+        with_seconds: "%d/%m/%Y %H:%M:%S",
+        date: "%d/%m/%Y",
+        time: "%H:%M"
+      }[format_key]
+    end
+
     def relation_table_name
       options[:join_aliased_as] || reflection.klass.table_name
     end
@@ -100,6 +109,7 @@ module WulinMaster
       @datetime_excel_format = nil
 
       if (value.class == ActiveSupport::TimeWithZone) || (@options[:type] == 'Datetime')
+        value = value.in_time_zone(@options[:time_zone]) if value && @options[:time_zone].present?
         @datetime_value = value
         if sql_type == :time || options[:inner_sql_type] == :time
           @datetime_excel_format = 'hh:mm'
@@ -108,8 +118,15 @@ module WulinMaster
           @datetime_excel_format = 'dd/mm/yyyy'
           value.try(:strftime, (WulinMaster.config.date_format == 'us' ? "%m/%d/%Y" : "%d/%m/%Y"))
         else
-          @datetime_excel_format = 'dd/mm/yyyy hh:mm'
-          value.to_formatted_s(datetime_format)
+          format_key = datetime_format.to_sym
+          formatter = Time::DATE_FORMATS[format_key] || datetime_format_fallback(format_key)
+          @datetime_excel_format = (format_key == :with_seconds) ? "dd/mm/yyyy hh:mm:ss" : "dd/mm/yyyy hh:mm"
+          # Prefer strftime so TimeWithZone#to_s never appends "UTC" / "-0400".
+          if formatter.is_a?(String)
+            value.try(:strftime, formatter)
+          else
+            value.to_formatted_s(format_key)
+          end
         end
       elsif value.class == Date
         @datetime_value = value

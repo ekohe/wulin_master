@@ -34,6 +34,7 @@ require "wulin_master/components/panel/panel"
 require "wulin_master/components/nav/app_bar_menu"
 
 Time::DATE_FORMATS[:no_seconds] = "%d/%m/%Y %H:%M"
+Time::DATE_FORMATS[:with_seconds] = "%d/%m/%Y %H:%M:%S"
 Time::DATE_FORMATS[:date] = "%d/%m/%Y"
 Time::DATE_FORMATS[:time] = "%H:%M"
 WulinMaster.default_datetime_format = :no_seconds
