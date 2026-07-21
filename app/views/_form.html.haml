@@ -29,7 +29,7 @@
           _klass = model_name.classify
           field = column.options[:through] || column.name
           source = column.editor_source || column.source
-        .field-line
+        .field-line{data: {"batch-editable" => batch_editable?(column).to_s}}
           - unless is_new
             .switch.target_flag_container
               %label

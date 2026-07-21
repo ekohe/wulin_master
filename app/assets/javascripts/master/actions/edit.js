@@ -162,10 +162,22 @@ var loadValue = function (scope, data) {
 };
 
 var showFlagCheckBox = function (scope, ids) {
+  var $modal = $(scope);
+  var $nonBatchFields = $('.field-line[data-batch-editable="false"]', scope);
   if (ids.length > 1) {
     $('.target_flag_container', scope).show();
+    // The modal height was already fixed by Ui.getModalSize() based on the
+    // full form, so shrink it by the space these hidden fields would take.
+    var hiddenHeight = $nonBatchFields.toArray().reduce(function (total, el) {
+      return total + $(el).outerHeight(true);
+    }, 0);
+    $nonBatchFields.hide().find('input, select, textarea').prop('disabled', true);
+    if (hiddenHeight > 0) {
+      $modal.height(Math.max($modal.height() - hiddenHeight, 0));
+    }
   } else {
     $('.target_flag_container', scope).hide();
+    $nonBatchFields.show().find('input, select, textarea').prop('disabled', false);
   }
 };
 

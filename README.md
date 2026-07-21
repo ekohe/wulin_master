@@ -7,26 +7,45 @@ and other tools to make grids easy to build as well as flexible configurations.
 
 ## Table of contents
 
-- [Installation](#installation)
-  - [1. Add `gem wulin_master` to your Gemfile](#1-add-gem-wulinmaster-to-your-gemfile)
-  - [2. Run bundler command to install the gem](#2-run-bundler-command-to-install-the-gem)
-  - [3. Run the generator to install the base building](#3-run-the-generator-to-install-the-base-building)
-  - [5. Update Rails' default configs](#5-update-rails-default-configs)
-  - [6. Include Wulin Master Javascript and Stylesheets](#6-include-wulin-master-javascript-and-stylesheets)
-- [Getting Started](#getting-started)
-  - [1. Generate resource files](#1-generate-resource-files)
-  - [2. Run migration](#2-run-migration)
-  - [3. Add grids](#3-add-grids)
-  - [4. Add screens](#4-add-screens)
-  - [5. Add controllers](#5-add-controllers)
-  - [6. Add indexes](#6-add-indexes)
-- [Usage](#usage)
-  - [1. Grid configuration](#1-grid-configuration)
-  - [2. Panel configuration](#2-panel-configuration)
-  - [3. Screen configuration](#3-screen-configuration)
-  - [4. All grids filtering and sorting testing](#4-all-grids-filtering-and-sorting-testingexperiment-feature)
-- [Contributing](#contributing)
-- [License](#license)
+- [WulinMaster](#wulinmaster)
+  - [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+    - [1. Add `gem wulin_master` to your Gemfile](#1-add-gem-wulin_master-to-your-gemfile)
+    - [2. Run bundler command to install the gem](#2-run-bundler-command-to-install-the-gem)
+    - [3. Run the generator to install the base building](#3-run-the-generator-to-install-the-base-building)
+    - [5. Update Rails' default configs](#5-update-rails-default-configs)
+    - [6. Include Wulin Master Javascript and Stylesheets](#6-include-wulin-master-javascript-and-stylesheets)
+  - [Getting Started](#getting-started)
+    - [1. Generate resource files](#1-generate-resource-files)
+    - [2. Run migration](#2-run-migration)
+    - [3. Add grids](#3-add-grids)
+    - [4. Add screens](#4-add-screens)
+    - [5. Add controllers](#5-add-controllers)
+    - [6. Add Indexes](#6-add-indexes)
+  - [Usage](#usage)
+    - [1. Grid configuration](#1-grid-configuration)
+      - [Basic grid configuration](#basic-grid-configuration)
+      - [Column options](#column-options)
+      - [Grid styles](#grid-styles)
+      - [Grid options](#grid-options)
+      - [Grid actions](#grid-actions)
+      - [Grid behaviors](#grid-behaviors)
+      - [Configuration for different screens](#configuration-for-different-screens)
+      - [Configuration for different users](#configuration-for-different-users)
+      - [Configuration for multi-level joins support to ActiveRecord](#configuration-for-multi-level-joins-support-to-activerecord)
+          - [1. Define the relationship to `person` for `Travel`](#1-define-the-relationship-to-person-for-travel)
+          - [2. Define `first_name` through `person` in grid](#2-define-first_name-through-person-in-grid)
+    - [2. Panel configuration](#2-panel-configuration)
+    - [3. Screen configuration](#3-screen-configuration)
+      - [Basic screen configuration](#basic-screen-configuration)
+      - [Grid and Panel options in screen](#grid-and-panel-options-in-screen)
+      - [Master-Detail grids](#master-detail-grids)
+        - [`add_detail` action](#add_detail-action)
+        - [`detail_model` option](#detail_model-option)
+      - [Define Inclusion-Exclusion grids](#define-inclusion-exclusion-grids)
+    - [4. All grids filtering and sorting testing(Experiment Feature)](#4-all-grids-filtering-and-sorting-testingexperiment-feature)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Installation
 
@@ -321,6 +340,18 @@ class PostGrid < WulinMaster::Grid
 end
 ```
 
+`:batch_editable`
+
+Default is `true`. If set `false`, the column is removed from the update form when more than one record is selected (batch update), while remaining editable when updating a single record. Can also accept a Proc for dynamic evaluation.
+
+```ruby
+class ClientGrid < WulinMaster::Grid
+  ...
+  column :status, batch_editable: false  # status can only be updated one record at a time.
+  ...
+end
+```
+
 `:auto_fill`
 
 Default is `false`. If set `true`, the column will appear in the `new`/`edit` form in readonly.
@@ -403,11 +434,11 @@ If the column is a file field, like image or any file, you should add this optio
 
 `:hide_autocomplete`
 
-Set hide_autocomplete: true to disable the autocomplete. 
+Set hide_autocomplete: true to disable the autocomplete.
 
 `:autocomplete_minlength`
 
-You can define an number which represent the minimum number of characters before autocomplete starts. 
+You can define an number which represent the minimum number of characters before autocomplete starts.
 ex: `autocomplete_minlength: 3` trigger the autocomplete from the 3nd characters.
 
 `:password`
@@ -602,7 +633,7 @@ Add a checkbox column as the first column
 checkbox true, triggerAfterCheck: ".bulk-actions-trigger", triggerEventName: "triggerDOM", maxSelectRows: 20
 ```
 - **maxSelectRows**: Max rows allow to select, default is null, means no limitation. A alert will comes out when user selelect more than 20 rows if `maxSelectRows: 20` is set
-- **triggerAfterCheck** and **triggerEventName**: Trigger the DOM every time after user click the checkbox. This is used to call function outsid of WulinMaster. 
+- **triggerAfterCheck** and **triggerEventName**: Trigger the DOM every time after user click the checkbox. This is used to call function outsid of WulinMaster.
   - If you need to reload the rows you have modified, you can use **reloadRowsByIds(ids)**
   - If you need to remove the rows you have modified, you can use **removeRowsByIds(ids)**
 

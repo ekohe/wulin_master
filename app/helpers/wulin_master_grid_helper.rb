@@ -84,6 +84,10 @@ module WulinMasterGridHelper
     return false if visible.is_a?(FalseClass)
   end
 
+  def batch_editable?(column)
+    evaluate_column_option(column.options[:batch_editable]) != false
+  end
+
   def evaluate_column_option(option_value)
     value = option_value.is_a?(Proc) ? option_value.call : option_value
     return value if value.is_a?(Array) # formable can be [:new, :edit]
