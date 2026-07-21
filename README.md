@@ -340,6 +340,18 @@ class PostGrid < WulinMaster::Grid
 end
 ```
 
+`:batch_editable`
+
+Default is `true`. If set `false`, the column is removed from the update form when more than one record is selected (batch update), while remaining editable when updating a single record. Can also accept a Proc for dynamic evaluation.
+
+```ruby
+class ClientGrid < WulinMaster::Grid
+  ...
+  column :status, batch_editable: false  # status can only be updated one record at a time.
+  ...
+end
+```
+
 `:auto_fill`
 
 Default is `false`. If set `true`, the column will appear in the `new`/`edit` form in readonly.
@@ -422,11 +434,11 @@ If the column is a file field, like image or any file, you should add this optio
 
 `:hide_autocomplete`
 
-Set hide_autocomplete: true to disable the autocomplete. 
+Set hide_autocomplete: true to disable the autocomplete.
 
 `:autocomplete_minlength`
 
-You can define an number which represent the minimum number of characters before autocomplete starts. 
+You can define an number which represent the minimum number of characters before autocomplete starts.
 ex: `autocomplete_minlength: 3` trigger the autocomplete from the 3nd characters.
 
 `:password`
@@ -621,7 +633,7 @@ Add a checkbox column as the first column
 checkbox true, triggerAfterCheck: ".bulk-actions-trigger", triggerEventName: "triggerDOM", maxSelectRows: 20
 ```
 - **maxSelectRows**: Max rows allow to select, default is null, means no limitation. A alert will comes out when user selelect more than 20 rows if `maxSelectRows: 20` is set
-- **triggerAfterCheck** and **triggerEventName**: Trigger the DOM every time after user click the checkbox. This is used to call function outsid of WulinMaster. 
+- **triggerAfterCheck** and **triggerEventName**: Trigger the DOM every time after user click the checkbox. This is used to call function outsid of WulinMaster.
   - If you need to reload the rows you have modified, you can use **reloadRowsByIds(ids)**
   - If you need to remove the rows you have modified, you can use **removeRowsByIds(ids)**
 
