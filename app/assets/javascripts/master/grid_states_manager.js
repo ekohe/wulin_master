@@ -9,63 +9,132 @@ window.GridStatesManager = {
       else if (typeof type == 'string') { state_value[type] = value }
       else if (typeof type == 'object' && !$.isArray(type)) { state_value = type }
 
-      return $.post(url, {
-        grid_name: gridName,
-        state_value: JSON.stringify(state_value),
-        authenticity_token: window._token
+      return $.ajax({
+        url: url,
+        type: 'POST',
+        data: JSON.stringify({
+          grid_name: gridName,
+          state_value: state_value,
+          authenticity_token: window._token
+        }),
+        contentType: 'application/json'
       });
     }
+  },
+
+  // Build unified columns state from current grid
+  buildColumnsState: function(grid) {
+    var visible = grid.getColumns();
+    var visibleSet = {};
+    $.each(visible, function(i, col) { visibleSet[col.id] = col; });
+
+    var filterState = grid.states ? grid.states["filter"] : null;
+    var sortCol = grid.loader ? grid.loader.getSortColumn() : null;
+    var sortDir = grid.loader ? grid.loader.getSortDirection() : null;
+
+    function makeEntry(col, isVisible) {
+      var entry = {id: col.id, visible: isVisible};
+      if (col.width) entry.width = col.width;
+      if (filterState && filterState[col.id]) entry.filter = filterState[col.id];
+      if (sortCol === col.id) entry.sort = (sortDir == 1) ? "asc" : "desc";
+      return entry;
+    }
+
+    // Group hidden columns by the visible column they follow in definition order
+    var hiddenAfter = {};
+    var hiddenBefore = [];
+    $.each(grid.allColumns, function(defIdx, col) {
+      if (visibleSet[col.id]) return;
+      var afterId = null;
+      for (var k = defIdx - 1; k >= 0; k--) {
+        if (visibleSet[grid.allColumns[k].id]) { afterId = grid.allColumns[k].id; break; }
+      }
+      if (afterId) {
+        if (!hiddenAfter[afterId]) hiddenAfter[afterId] = [];
+        hiddenAfter[afterId].push(makeEntry(col, false));
+      } else {
+        hiddenBefore.push(makeEntry(col, false));
+      }
+    });
+
+    // Interleave: hidden-before-any, then each visible column followed by its trailing hidden group
+    var result = hiddenBefore.slice();
+    $.each(visible, function(i, col) {
+      result.push(makeEntry(col, true));
+      if (hiddenAfter[col.id]) {
+        result = result.concat(hiddenAfter[col.id]);
+      }
+    });
+
+    return result;
+  },
+
+  // Normalize hash-with-numeric-keys (from old form-encoded saves) to array
+  normalizeColumns: function(savedColumns) {
+    if (!savedColumns) return null;
+    if ($.isArray(savedColumns)) return savedColumns;
+    var arr = [];
+    var keys = Object.keys(savedColumns).sort(function(a, b) { return parseInt(a, 10) - parseInt(b, 10); });
+    for (var k = 0; k < keys.length; k++) arr.push(savedColumns[keys[k]]);
+    return arr;
+  },
+
+  // Extract filter hash from columns array
+  extractFilterFromColumns: function(savedColumns) {
+    savedColumns = this.normalizeColumns(savedColumns);
+    if (!savedColumns) return null;
+    var filter = {};
+    $.each(savedColumns, function(i, c) {
+      if (c.filter !== undefined && c.filter !== null && c.filter !== "") {
+        filter[c.id] = c.filter;
+      }
+    });
+    return Object.keys(filter).length > 0 ? filter : null;
+  },
+
+  // Extract sort object from columns array
+  extractSortFromColumns: function(savedColumns) {
+    savedColumns = this.normalizeColumns(savedColumns);
+    if (!savedColumns) return null;
+    for (var i = 0; i < savedColumns.length; i++) {
+      if (savedColumns[i].sort) {
+        return {sortCol: savedColumns[i].id, sortDir: savedColumns[i].sort === "asc" ? 1 : -1};
+      }
+    }
+    return null;
   },
 
   // grid events
   onStateEvents: function(grid) {
     var self = this;
 
-    // save columns width when columns resized
+    // save columns state when columns resized
     grid.onColumnsResized.subscribe(function(){
-      var widthJson = {};
-      $.each(this.getColumns(), function(index, column){
-        widthJson[column.id] = column.width;
-      });
-      self.saveStates(grid.name, "width", widthJson);
+      self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
     });
 
-    // save columns sorting info when columns sorted
+    // save columns state when columns sorted
     grid.onSort.subscribe(function(e, args){
-      //
-      //subscribe onSort event, will perform a request to save the grid states
-      //
-      var loader = grid.loader, sortJson = {};
-      sortJson["sortCol"] = loader.getSortColumn();
-      sortJson["sortDir"] = loader.getSortDirection();
-      // update sort state and save it to db
-      grid.states["sort"] = {sortCol: sortJson["sortCol"], sortDir: sortJson["sortDir"]};
-      self.saveStates(grid.name, "sort", sortJson);
+      self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
     });
 
-    // save columns order when columns re-ordered
+    // save columns state when columns re-ordered
     grid.onColumnsReordered.subscribe(function(e, args){
-      var columns = this.getColumns();
-      var orderJson = {};
-      $.each(columns, function(index, column){
-        orderJson[index] = column.id;
-      });
-
       // Also update pinnedColumns order based on current column positions
-      var currentPinnedColumns = this.getOptions().pinnedColumns || [];
+      var currentPinnedColumns = grid.getOptions().pinnedColumns || [];
       if (currentPinnedColumns.length > 0) {
         // Rebuild pinnedColumns array in the order they appear in the grid
         var newPinnedColumns = [];
-        $.each(columns, function(index, column){
+        $.each(grid.getColumns(), function(index, column){
           var colName = column.column_name || column.id;
           if (currentPinnedColumns.indexOf(colName) !== -1) {
             newPinnedColumns.push(colName);
           }
         });
-        // Save both order and updated pinnedColumns
-        self.saveStates(grid.name, {order: orderJson, pinnedColumns: newPinnedColumns});
+        // Save both the columns state and updated pinnedColumns
+        self.saveStates(grid.name, {columns: self.buildColumnsState(grid), pinnedColumns: newPinnedColumns});
       } else {
-        self.saveStates(grid.name, "order", orderJson);
+        self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
       }
     });
 
@@ -73,14 +142,9 @@ window.GridStatesManager = {
     grid.onColumnsPinned.subscribe(function(e, args){
       var pinnedColumns = args.pinnedColumns || [];
 
-      // Also save the new order since pinning changes column order
-      var orderJson = {};
-      $.each(grid.getColumns(), function(index, column){
-        orderJson[index] = column.id;
-      });
-
-      // Save both pinnedColumns and order in a single request to avoid race condition
-      self.saveStates(grid.name, {pinnedColumns: pinnedColumns, order: orderJson});
+      // Save both pinnedColumns and the columns state in a single request to avoid
+      // a race condition, since pinning also changes column order
+      self.saveStates(grid.name, {pinnedColumns: pinnedColumns, columns: self.buildColumnsState(grid)});
     });
 
     // save filter states when input filter value
@@ -89,15 +153,15 @@ window.GridStatesManager = {
         // Skip saving filter state if option is set
         if (grid.options && grid.options.skipFilterGridStateSave) return;
 
-        if (args.filterData.length == 0) {
-          self.saveStates(grid.name, "filter", null);
-        } else {
-          var filterJson = {};
+        var filterJson = null;
+        if (args.filterData.length > 0) {
+          filterJson = {};
           $.each(args.filterData, function(index,data){
             filterJson[data['id']] = data['value'];
           });
-          self.saveStates(grid.name, "filter", filterJson);
         }
+        grid.states["filter"] = filterJson;
+        self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
       });
 
       grid.filterPanel.onFilterPanelClosed.subscribe(function(e, args){
@@ -105,98 +169,57 @@ window.GridStatesManager = {
         if (grid.options && grid.options.skipFilterGridStateSave) return;
 
         $(grid.getHeaderRow()).find('input[type="text"]').val('');
-        self.saveStates(grid.name, "filter", {});
+        grid.states["filter"] = {};
+        self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
       });
     }
 
-    // save columns visibility when pick columns
+    // save columns state when pick columns
     if(grid.picker){
       grid.picker.onColumnsPick.subscribe(function(e, args){
-        var hiddenArr = [], hiddenJson = {}, visibilityColumns = grid.getColumns();
-
         // Regenerate Filter panel
         if(grid.filterPanel) {
           grid.filterPanel.generateFilters();
         }
-
-        visibilityColumns = $.map(visibilityColumns, function(n, i){
-            return n.id;
-        });
-        allColumns = $.map(grid.columns, function(n, i){
-            return n.id;
-        });
-
-        hiddenArr = $.grep(allColumns, function(n, i){
-            return visibilityColumns.indexOf(n) < 0;
-        });
-
-        $.each(hiddenArr, function(index, column){
-            hiddenJson[index] = column;
-        });
-        self.saveStates(grid.name, "visibility", hiddenArr);
+        self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
       });
     }
   },
 
-  // Restore columns order states
-  restoreOrderStates: function(columns, orderStates){
-    if(!orderStates) return columns;
+  // Restore order, visibility, and width from unified columns array
+  restoreColumnStates: function(columns, savedColumns) {
+    savedColumns = this.normalizeColumns(savedColumns);
+    if (!savedColumns) return columns;
 
-    var new_columns = [], i, j, k;
-    // push other columns according to states
-    for(j in orderStates){
-      for(k in columns) {
-        if(columns[k].id == orderStates[j]){
-          new_columns.push(columns[k]);
+    var savedMap = {};
+    $.each(savedColumns, function(i, sc) { savedMap[sc.id] = sc; });
+
+    // Apply saved properties to each column
+    for (var i in columns) {
+      var saved = savedMap[columns[i].id];
+      if (!saved) continue; // new column — leave definition as-is
+
+      if (saved.visible !== undefined) columns[i].visible = (saved.visible === true || saved.visible === "true");
+      if (saved.width !== undefined) columns[i].width = parseInt(saved.width, 10);
+    }
+
+    // Reorder: saved positions first, new columns appended at end
+    var ordered = [];
+    var used = {};
+    $.each(savedColumns, function(i, sc) {
+      for (var j in columns) {
+        if (columns[j].id === sc.id) {
+          ordered.push(columns[j]);
+          used[columns[j].id] = true;
           break;
         }
       }
+    });
+    for (var i in columns) {
+      if (!used[columns[i].id]) ordered.push(columns[i]);
     }
-    // push columns that are not in the state in abritrary order
-    for(i in columns) {
-      var found = false;
-      for(j in new_columns) {
-        if (columns[i].id == new_columns[j].id) {
-          found = true;
-        }
-      }
-      if (found === false) {
-        new_columns.push(columns[i]);
-      }
-    }
-    return new_columns;
-  },
 
-  // Restore columns visibility states
-  restoreVisibilityStates: function(columns, visibilityStates) {
-    if(!visibilityStates) return false;
-
-    // push visible columns according to states
-    for(var i in columns){
-      var visible = true;
-      for(var j in visibilityStates){
-        if(columns[i].id == visibilityStates[j]){
-          visible = false;
-          break;
-        }
-      }
-      columns[i].visible = visible;
-    }
-  },
-
-  // Restore columns width states
-  restoreWidthStates: function(columns, widthStates) {
-    if(!widthStates) return false;
-
-    // restore width
-    for(var i in widthStates){
-      for(var j in columns){
-        if(columns[j].id == i){
-          columns[j].width = parseInt(widthStates[i], 10);
-          break;
-        }
-      }
-    }
+    return ordered;
   },
 
   // Restore columns sorting states
@@ -215,7 +238,6 @@ window.GridStatesManager = {
       originalFilters = originalFilters || [];
       $.each(filterStates, function(k, v){
         originalFilters.push({column: k, value: v, operator: 'equals'});
-        //path += "&filters[][column]=" + encodeURIComponent(k) + "&filters[][value]=" + encodeURIComponent(v);
       });
     }
     return originalFilters;

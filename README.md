@@ -139,7 +139,19 @@ route  resources :posts
 bundle exec rake db:migrate
 ```
 
-This will create `grid_states` table for wulin_master to store the grid states for each user, including column's width/order/visibility, sort column and filter states.
+This will create `grid_states` table for wulin_master to store the grid states for each user. Each grid state stores a unified `columns` array in `state_value` where every column entry carries its order (by position), width, visibility, filter, and sort:
+
+```json
+{
+  "columns": [
+    {"id": "name", "visible": true, "width": 250},
+    {"id": "rank", "visible": true, "width": 150, "filter": "10", "sort": "asc"},
+    {"id": "id", "visible": false}
+  ]
+}
+```
+
+New columns added to a grid definition that are not in the saved array fall back to their grid definition — a column defined with `visible: false` stays hidden even for users with an existing saved state.
 
 ### 3. Add grids
 
