@@ -146,7 +146,7 @@
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
   border: 1px solid #cccccc;
-  background: #f6f6f6 image-url("jquery_ui/ui-bg_glass_100_f6f6f6_1x400.png")
+  background: #f6f6f6 url("jquery_ui/ui-bg_glass_100_f6f6f6_1x400.png")
     50% 50% repeat-x;
   font-weight: bold;
   color: #5f83b9;
@@ -162,7 +162,7 @@
 .ui-state-focus,
 .ui-widget-content .ui-state-focus {
   border: 1px solid #749aaf;
-  background: #fdf5ce image-url("jquery_ui/ui-bg_glass_100_fdf5ce_1x400.png")
+  background: #fdf5ce url("jquery_ui/ui-bg_glass_100_fdf5ce_1x400.png")
     50% 50% repeat-x;
   font-weight: bold;
   color: #c77405;
@@ -176,7 +176,7 @@
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
   border: 1px solid #fbd850;
-  background: #ffffff image-url("jquery_ui/ui-bg_glass_65_ffffff_1x400.png") 50%
+  background: #ffffff url("jquery_ui/ui-bg_glass_65_ffffff_1x400.png") 50%
     50% repeat-x;
   font-weight: normal;
   color: black;
@@ -266,30 +266,30 @@
 .ui-icon {
   width: 16px;
   height: 16px;
-  background-image: image-url("jquery_ui/ui-icons_222222_256x240.png");
+  background-image: url("jquery_ui/ui-icons_222222_256x240.png");
 }
 .ui-widget-content .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_222222_256x240.png");
+  background-image: url("jquery_ui/ui-icons_222222_256x240.png");
 }
 .ui-widget-header .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_ffffff_256x240.png");
+  background-image: url("jquery_ui/ui-icons_ffffff_256x240.png");
 }
 .ui-state-default .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_222222_256x240.png");
+  background-image: url("jquery_ui/ui-icons_222222_256x240.png");
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_222222_256x240.png");
+  background-image: url("jquery_ui/ui-icons_222222_256x240.png");
 }
 .ui-state-active .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_222222_256x240.png");
+  background-image: url("jquery_ui/ui-icons_222222_256x240.png");
 }
 .ui-state-highlight .ui-icon {
-  background-image: image-url("jquery_ui/ui-icons_228ef1_256x240.png");
+  background-image: url("jquery_ui/ui-icons_228ef1_256x240.png");
 }
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-  background: image-url("icon_sprite.png") -16px 0px no-repeat !important;
+  background: url("icon_sprite.png") -16px 0px no-repeat !important;
 }
 
 /* positioning */
@@ -657,7 +657,7 @@
   background-position: 0 -144px;
 }
 .ui-icon-info {
-  background: image-url("icon_sprite.png") 0px 0px no-repeat !important;
+  background: url("icon_sprite.png") 0px 0px no-repeat !important;
 }
 .ui-icon-notice {
   background-position: -32px -144px;
@@ -888,7 +888,7 @@
 .ui-widget-shadow {
   margin: -5px 0 0 -5px;
   padding: 5px;
-  background: #000000 image-url("jquery_ui/ui-bg_flat_10_000000_40x100.png") 50%
+  background: #000000 url("jquery_ui/ui-bg_flat_10_000000_40x100.png") 50%
     50% repeat-x;
   opacity: 0.2;
   filter: Alpha(Opacity=20);
@@ -1008,7 +1008,7 @@
   position: relative;
   margin-top: 1px;
   zoom: 1;
-  background: image-url("button_bg.png") repeat-x;
+  background: url("button_bg.png") repeat-x;
 }
 .ui-accordion .ui-accordion-header .ui-state-default {
   background-position: 0px 0px;
@@ -1025,7 +1025,7 @@
   color: #1c4257;
 }
 .ui-accordion .ui-accordion-header .ui-icon {
-  background: image-url("icon_sprite.png");
+  background: url("icon_sprite.png");
 }
 .ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
   background-position: 0px -64px;
@@ -1106,7 +1106,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 .ui-autocomplete-loading {
-  background: white image-url("jquery_ui/ui-anim_basic_16x16.gif") right center
+  background: white url("jquery_ui/ui-anim_basic_16x16.gif") right center
     no-repeat;
 }
 /* workarounds */
@@ -1206,7 +1206,7 @@ button.ui-button-icons-only {
 
 /* === INPUT:SUBMIT BUG FIX === */
 input.ui-button {
-  background: image-url("button_bg.png") 0px 0px repeat-x !important;
+  background: url("button_bg.png") 0px 0px repeat-x !important;
   color: #4f4f4f;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -1215,7 +1215,7 @@ input.ui-button {
   outline: none;
 }
 input.ui-button:hover {
-  background: image-url("button_bg.png") 0px 0px repeat-x !important;
+  background: url("button_bg.png") 0px 0px repeat-x !important;
   color: #313131;
   border-color: #9d9d9d;
   -moz-box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
@@ -1223,7 +1223,7 @@ input.ui-button:hover {
   box-shadow: 0px 0px 8px rgba(212, 212, 212, 1);
 }
 input.ui-button:active {
-  background: image-url("button_bg.png") 0px bottom repeat-x !important;
+  background: url("button_bg.png") 0px bottom repeat-x !important;
   color: #4f4f4f;
   border-color: #b6b6b6;
 }
@@ -1234,12 +1234,12 @@ input.ui-button:active {
 }
 
 .ui-state-default .ui-button-text {
-  background: image-url("button_bg.png") 0px 0px repeat-x !important;
+  background: url("button_bg.png") 0px 0px repeat-x !important;
   color: #4f4f4f;
   border-color: #b6b6b6;
 }
 .ui-state-hover .ui-button-text {
-  background: image-url("button_bg.png") 0px 0px repeat-x !important;
+  background: url("button_bg.png") 0px 0px repeat-x !important;
   color: #313131;
   border-color: #9d9d9d;
   -moz-box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
@@ -1247,7 +1247,7 @@ input.ui-button:active {
   box-shadow: 0px 0px 8px rgba(212, 212, 212, 1);
 }
 .ui-state-active .ui-button-text {
-  background: image-url("button_bg.png") 0px bottom repeat-x !important;
+  background: url("button_bg.png") 0px bottom repeat-x !important;
   color: #4f4f4f;
   border-color: #b6b6b6;
 }
@@ -1348,7 +1348,7 @@ input.ui-button {
 }
 .ui-buttonset .ui-state-active .ui-button-text {
   cursor: default;
-  background: image-url("button_bg.png") 0px -33px repeat-x !important;
+  background: url("button_bg.png") 0px -33px repeat-x !important;
   color: #1c4257;
   border-color: #7096ab;
   -moz-box-shadow: none !important;
@@ -1386,7 +1386,7 @@ button.ui-button::-moz-focus-inner {
   position: relative;
   border-width: 0px 0px 1px 0px;
   border-color: #979797;
-  background: image-url("the_gradient.gif") 0px 0px repeat-x;
+  background: url("the_gradient.gif") 0px 0px repeat-x;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
   border-radius: 0px;
@@ -1410,7 +1410,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-dialog .ui-dialog-titlebar-close span {
   display: block;
-  background: image-url("icon_sprite.png") 0px -16px no-repeat;
+  background: url("icon_sprite.png") 0px -16px no-repeat;
 }
 .ui-dialog-titlebar .ui-state-hover {
   -moz-border-radius: 0px;
@@ -1484,7 +1484,7 @@ button.ui-button::-moz-focus-inner {
   border: 0px none;
 }
 .ui-slider .ui-slider-handle {
-  background: image-url("slider_handles.png") 0px -23px no-repeat;
+  background: url("slider_handles.png") 0px -23px no-repeat;
   position: absolute;
   z-index: 2;
   width: 23px;
@@ -1507,7 +1507,7 @@ button.ui-button::-moz-focus-inner {
 
 .ui-slider-horizontal {
   height: 5px;
-  background: image-url("slider_h_bg.gif") 0px 0px repeat-x;
+  background: url("slider_h_bg.gif") 0px 0px repeat-x;
 }
 .ui-slider-horizontal .ui-slider-handle {
   top: -9px;
@@ -1516,7 +1516,7 @@ button.ui-button::-moz-focus-inner {
 .ui-slider-horizontal .ui-slider-range {
   top: 0;
   height: 100%;
-  background: image-url("slider_h_bg.gif") 0px -5px repeat-x;
+  background: url("slider_h_bg.gif") 0px -5px repeat-x;
 }
 .ui-slider-horizontal .ui-slider-range-min {
   left: 0;
@@ -1528,7 +1528,7 @@ button.ui-button::-moz-focus-inner {
 .ui-slider-vertical {
   width: 5px;
   height: 100px;
-  background: image-url("slider_v_bg.gif") -5px 0px repeat-y;
+  background: url("slider_v_bg.gif") -5px 0px repeat-y;
 }
 .ui-slider-vertical .ui-slider-handle {
   left: -0.3em;
@@ -1538,7 +1538,7 @@ button.ui-button::-moz-focus-inner {
 .ui-slider-vertical .ui-slider-range {
   left: 0;
   width: 100%;
-  background: image-url("slider_v_bg.gif") 0px 0px repeat-y;
+  background: url("slider_v_bg.gif") 0px 0px repeat-y;
 }
 .ui-slider-vertical .ui-slider-range-min {
   bottom: 0;
@@ -1628,7 +1628,7 @@ button.ui-button::-moz-focus-inner {
   display: none !important;
 }
 .ui-tabs .ui-tabs-nav li.ui-state-default {
-  background: #cccccc image-url("button_bg.png") 0px 0px repeat-x;
+  background: #cccccc url("button_bg.png") 0px 0px repeat-x;
   border-color: #a8a8a8;
 }
 .ui-tabs .ui-tabs-nav li.ui-state-default a {
@@ -1655,12 +1655,12 @@ button.ui-button::-moz-focus-inner {
 .ui-progressbar {
   height: 12px;
   text-align: left;
-  background: image-url("progress_bar.gif") 0px -14px repeat-x;
+  background: url("progress_bar.gif") 0px -14px repeat-x;
 }
 .ui-progressbar .ui-progressbar-value {
   margin: -1px;
   height: 100%;
-  background: image-url("progress_bar.gif") 0px 0px repeat-x;
+  background: url("progress_bar.gif") 0px 0px repeat-x;
 }
 
 ul.chzn-results li {
