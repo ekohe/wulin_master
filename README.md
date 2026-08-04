@@ -15,6 +15,8 @@ and other tools to make grids easy to build as well as flexible configurations.
     - [3. Run the generator to install the base building](#3-run-the-generator-to-install-the-base-building)
     - [5. Update Rails' default configs](#5-update-rails-default-configs)
     - [6. Include Wulin Master Javascript and Stylesheets](#6-include-wulin-master-javascript-and-stylesheets)
+      - [On an app still using Sprockets](#on-an-app-still-using-sprockets)
+      - [Note for macOS 12 and older](#note-for-macos-12-and-older)
   - [Getting Started](#getting-started)
     - [1. Generate resource files](#1-generate-resource-files)
     - [2. Run migration](#2-run-migration)
@@ -52,7 +54,7 @@ and other tools to make grids easy to build as well as flexible configurations.
 ### 1. Add `gem wulin_master` to your Gemfile
 
 ```bash
-gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master', branch: 'develop'
+gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master', branch: 'v3-pin'
 ```
 
 ### 2. Run bundler command to install the gem
@@ -90,24 +92,106 @@ config.autoload_paths += Dir[Rails.root.join('app', 'grids', '{**}')]
 
 ### 6. Include Wulin Master Javascript and Stylesheets
 
-Add to your app/assets/config/manifest.js
+`master/master.js` is an ES module and `master.sass` uses the Sass module
+system, so neither can go through Sprockets on its own. jQuery, jQuery UI,
+materialize-css and material-icons all come from npm now, not from the
+jquery-rails, jquery-ui-rails and material_icons gems. Bundle the javascript
+with esbuild and compile the stylesheet with dart-sass; the app then serves the
+results out of `app/assets/builds`.
+
+`wulin_master_template.rb` in the root of this repository sets all of this up
+for a new app. The steps below are what it does.
+
+Add the gem's npm dependencies as a yarn workspace, in your package.json:
+
+```json
+{
+  "private": true,
+  "workspaces": ["vendor/gems/wulin_master"],
+  "devDependencies": { "esbuild": "^0.25.9" },
+  "dependencies": { "rails-ujs": "^5.2.0" },
+  "scripts": {
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css"
+  }
+}
+```
+
+Import the javascript from your esbuild entry point, `app/javascript/application.js`:
+
+```js
+import '../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js'
+```
+
+and the stylesheet from your dart-sass entry point, `app/assets/stylesheets/application.sass`:
+
+```sass
+@use 'master'
+```
+
+Then point dart-sass at it, in `config/initializers/wulin_master_assets.rb`:
+
+```ruby
+require 'dartsass-rails'
+
+Rails.application.configure do
+  config.assets.paths << Rails.root.join('app/assets/builds')
+
+  config.dartsass.builds = { 'application.sass' => 'application.css' }
+  config.dartsass.build_options << '--load-path=node_modules'
+end
+```
+
+`master.sass` reads `$color-theme` from `_theme.generated.scss`, which is
+generated from `config/initializers/wulin_master.rb`. Write it before the first
+build, and again whenever the theme changes:
+
+```bash
+bundle exec rake wulin_master:generate_theme_color_css
+```
+
+material-icons keeps its webfonts inside node_modules and the compiled CSS
+refers to them by bare filename, so copy them into `app/assets/fonts` and add
+`.woff`/`.woff2` to `config.assets.precompile`. See `script/copy_material_icons.js`
+in the template.
+
+For development, run both watchers alongside the server:
 
 ```
-//= link master/master.js
-//= link master.css
+web: bin/rails server
+js:  yarn build --watch
+css: bin/rails dartsass:watch
 ```
 
-to your application.js
+`rails dartsass:build` is already attached to `assets:precompile`. Attach your
+javascript build to it as well so deploys pick both up.
+
+#### On an app still using Sprockets
+
+Sprockets can serve the built files rather than compile the sources. Keep the
+dart-sass entry point out of `app/assets/stylesheets` itself — put it in a
+subdirectory and link `application.css` by name in `manifest.js` rather than
+using `link_directory`, so Sprockets never tries to compile it with sassc.
+Then require the build products from your Sprockets manifests:
 
 ```
-//= require 'master/master.js'
+//= require wulin        # app/assets/builds/wulin.js
 ```
 
-and to your application.css
+```
+ *= require wulin        # app/assets/builds/wulin.css
+```
 
-```
- *= require 'master'
-```
+The bundle installs the `$` and `WulinMaster` globals, so it has to be required
+before anything that uses them. Watch out for other engines whose manifests
+start with `//= require jquery`: if that lands after the bundle it replaces
+`window.$` with a bare jQuery and every plugin attached by the bundle
+disappears. Require `jquery` first so Sprockets deduplicates it.
+
+#### Note for macOS 12 and older
+
+`sass-embedded` ships a Dart VM binary, and builds from 1.7x onwards refuse to
+start below macOS 14 (`VM initialization failed`). Pin `sass-embedded` to
+`~> 1.69.7` until every machine is on macOS 14 or newer.
 
 ## Getting Started
 
