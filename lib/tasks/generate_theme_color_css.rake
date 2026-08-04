@@ -12,7 +12,7 @@ namespace :wulin_master do
       // and generate using: bundle exec rake wulin_master:generate_theme_color_css
       $color-theme: '#{WulinMaster.config.color_theme}';
     SCSS
-    File.write Rails.root.join("app/assets/stylesheets/_theme.generated.sass"), content
+    File.write Rails.root.join("app/assets/stylesheets/_theme.generated.scss"), content
     puts "Set $color-theme to #{WulinMaster.config.color_theme}"
     puts "Wrote _theme.generated.scss"
   end

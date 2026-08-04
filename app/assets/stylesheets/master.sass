@@ -1,6 +1,6 @@
-@use 'theme.generated' as theme_generated;
-$color-theme: theme_generated.$color-theme;
-@use 'materialize-css/sass/components/color-variables' as materialize_color;
+@use 'theme.generated' as theme_generated
+$color-theme: theme_generated.$color-theme
+@use 'materialize-css/sass/components/color-variables' as materialize_color
 $primary-color: var(--wulin-primary-color,materialize_color.color($color-theme, 'lighten-2')) !default
 $secondary-color: var(--wulin-secondary-color, materialize_color.color($color-theme, 'base')) !default
 
