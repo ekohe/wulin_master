@@ -121,7 +121,11 @@
       // Append editor attribute to columns
       appendEditor(columns);
 
-      // Apply current filters
+      // Extract filter and sort from columns array and populate states["filter"]
+      // and states["sort"] so buildColumnsState, FilterPanel and the affiliation
+      // behavior all read the correct value
+      states["filter"] = GridStatesManager.extractFilterFromColumns(states["columns"]);
+      states["sort"] = GridStatesManager.extractSortFromColumns(states["columns"]);
       filters = GridStatesManager.applyFilters(filters, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
       query = path.split(".json")[1];
@@ -129,12 +133,8 @@
       // Set Loader
       loader = new WulinMaster.Data.RemoteModel(path, filters, columns);
 
-      // Restore the order states to columns
-      columns = GridStatesManager.restoreOrderStates(columns, states["order"]);
-      // Restore the visibility states to columns
-      GridStatesManager.restoreVisibilityStates(columns, states["visibility"]);
-      // Restore the width states to columns
-      GridStatesManager.restoreWidthStates(columns, states["width"]);
+      // Restore column states (order, visibility, width)
+      columns = GridStatesManager.restoreColumnStates(columns, states["columns"]);
       // Restore the pinned columns states
       columns = GridStatesManager.restorePinnedColumnsStates(columns, states["pinnedColumns"], options);
 
@@ -317,7 +317,7 @@
         }
       }
 
-      // Restore the sorting states to grid
+      // Restore the sorting states from columns array
       GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 
       // Dispatch actions
