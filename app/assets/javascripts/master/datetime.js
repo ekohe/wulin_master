@@ -282,6 +282,12 @@ const fpConfigFormUSDate = fpMergeConfigs({}, fpConfigForm, fpConfigUSDate);
 
 const fpConfigFormTime = fpMergeConfigs({}, fpConfigForm, fpConfigTime);
 
+// Host layouts re-run this from an inline script after setting DATE_FORMAT /
+// DEFAULT_YEAR / DEFAULT_MONTH on window, so the masks pick up the app's date
+// format -- the call on load above runs before those exist. esbuild wraps the
+// bundle in an IIFE, so a bare `function` declaration is module-scoped and an
+// inline caller gets a ReferenceError unless it is published here.
+window.ConfigInputmask = ConfigInputmask;
 window.defaultYear = defaultYear;
 window.defaultMonth = defaultMonth;
 window.wulinMasterDateFormat = wulinMasterDateFormat;
