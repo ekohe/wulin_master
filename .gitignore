@@ -14,3 +14,7 @@ spec/wulin_app/.ruby-version
 spec/wulin_app/config/database.yml
 spec/wulin_app/.byebug_history
 spec/wulin_app/public/assets/*
+
+# `bundle config set path vendor/bundle` in .gitlab-ci.yml puts the whole gem
+# tree here; it must never be committed.
+/vendor/bundle/

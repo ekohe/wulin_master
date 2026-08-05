@@ -21,6 +21,15 @@ describe HomepageController, type: :controller do
   before :each do
     @menu = WulinMaster::Menu.new
     @submenu = WulinMaster::SubMenu.new("Posts")
+    # @menu and @submenu live on the controller *class*, so RSpec does not reset
+    # them between examples. "should add item to submenu if submenu is not nil"
+    # assigns @submenu and never clears it -- item() doesn't either -- so a later
+    # example inherited a leftover SubMenu. Empty, so it inspects as [], but
+    # truthy, which sent item() down the submenu branch and broke
+    # "should add item to menu if submenu is nil" whenever the random order put
+    # the two in that sequence. Clear both so every example starts from nil.
+    controller.class.instance_variable_set(:@menu, nil)
+    controller.class.instance_variable_set(:@submenu, nil)
     allow_message_expectations_on_nil
     allow(controller.class).to receive(:define_menu)
   end
