@@ -1,2 +1,9 @@
-%div{style: "padding: 8px;"}
+%div{style: "padding: 12px; font-size: 0.9em; font-family: monospace;"}
+  %div{style: "display: flex; gap: 8px; margin-bottom: 12px;"}
+    %span{style: "padding: 4px 10px; background: #e0e0e0; border-radius: 4px; font-size: 0.85em;"}
+      %strong Rails
+      = @rails_version
+    %span{style: "padding: 4px 10px; background: #e0e0e0; border-radius: 4px; font-size: 0.85em;"}
+      %strong Deployed at
+      = @deployed_at
   %pre= @app_config_content

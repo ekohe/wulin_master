@@ -16,6 +16,9 @@ module WulinMaster
       else
         "APP_CONFIG is not defined"
       end
+
+      @rails_version = Rails.version
+      @deployed_at = File.mtime(Rails.root.join("Gemfile").to_s).strftime("%Y-%m-%d %H:%M:%S %Z")
     end
   end
 end
