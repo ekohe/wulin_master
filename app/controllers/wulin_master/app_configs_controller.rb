@@ -18,7 +18,16 @@ module WulinMaster
       end
 
       @rails_version = Rails.version
-      @deployed_at = File.mtime(Rails.root.join("Gemfile").to_s).strftime("%Y-%m-%d %H:%M:%S %Z")
+
+      # The Gemfile is rewritten on every deploy, so its mtime is when this
+      # copy of the app went out. Not every app root has one -- the dummy app
+      # the specs boot does not -- so fall back rather than raise.
+      gemfile = Rails.root.join("Gemfile")
+      @deployed_at = if File.exist?(gemfile)
+        File.mtime(gemfile).strftime("%Y-%m-%d %H:%M:%S %Z")
+      else
+        "unknown"
+      end
     end
   end
 end
