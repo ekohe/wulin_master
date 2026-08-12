@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module WulinMaster
-  class GridStatesManagesController < ::ActionController::Metal
-    include AbstractController::Rendering
-    include ActionController::RequestForgeryProtection
+  # Inherits the host's ApplicationController, like every other controller in
+  # this engine. It subclassed ActionController::Metal from 2012 until now, but
+  # every action here calls current_user, and Metal never had it: hosts get
+  # current_user from an auth layer that patches ActionController::Base
+  # (wulin_oauth does `::ActionController::Base.send :include,
+  # WulinOAuth::Controller`), which a Metal subclass does not inherit. So every
+  # save raised NameError: undefined local variable or method `current_user'.
+  class GridStatesManagesController < ApplicationController
     include WulinMasterGridHelper
-    include ActionView::Layouts
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
     before_action :set_state, only: %i[update destroy set_current]
@@ -30,7 +34,7 @@ module WulinMaster
 
     def save
       current_state = GridState.current_or_default(current_user.id, params[:grid_name])
-      state_value = params[:state_value].is_a?(String) ? JSON.parse(params[:state_value]) : (params[:state_value] || { visibility: [] })
+      state_value = parsed_state_value
       default_grid_state_val = GridState.get_default_grid_state_val(params[:grid_name])
       current_state.state_value = JSON.parse(current_state.state_value.presence || default_grid_state_val || "{}").merge(state_value).to_json
       self.response_body = if current_state.save
@@ -106,6 +110,21 @@ module WulinMaster
 
     def set_state
       @state = GridState.find(params[:id])
+    end
+
+    # The grid posts state either as a JSON string or as nested params. Now that
+    # this controller is an ActionController::Base, nested params arrive as
+    # ActionController::Parameters, which Hash#merge refuses with
+    # UnfilteredParameters -- under ActionController::Metal they were a plain
+    # Hash. to_unsafe_h is fine here: the result is serialised to a JSON column,
+    # never mass-assigned.
+    def parsed_state_value
+      case (raw = params[:state_value])
+      when String then JSON.parse(raw)
+      when ActionController::Parameters then raw.to_unsafe_h
+      when nil then {visibility: []}
+      else raw
+      end
     end
   end
 end
