@@ -178,6 +178,9 @@ after_bundle do
   # plain db:migrate picks all of them up -- nothing needs install:migrations.
   rails_command "db:create db:migrate"
 
+  # Seeds the admin user every app needs, since current_user is User.first.
+  rails_command "db:seed"
+
   @wulin_db_post.each(&:call)
 
   # Rails ships a placeholder checklist. Render templates/README.md.erb instead,
