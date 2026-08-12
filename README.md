@@ -99,8 +99,13 @@ jquery-rails, jquery-ui-rails and material_icons gems. Bundle the javascript
 with esbuild and compile the stylesheet with dart-sass; the app then serves the
 results out of `app/assets/builds`.
 
-`wulin_master_template.rb` in the root of this repository sets all of this up
-for a new app. The steps below are what it does.
+`template.rb` in the root of this repository sets all of this up for a new app:
+
+```bash
+rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+```
+
+The steps below are what it does.
 
 Add the gem's npm dependencies as a yarn workspace, in your package.json:
 

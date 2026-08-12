@@ -1,7 +1,7 @@
-# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./wulin_master_template.rb
+# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
 
-run "git submodule add -b v3 https://github.com/ekohe/wulin_master.git vendor/gems/wulin_master"
-run "git config -f .gitmodules submodule.vendor/gems/wulin_master.branch v3"
+run "git submodule add -b v3-pin https://github.com/ekohe/wulin_master.git vendor/gems/wulin_master"
+run "git config -f .gitmodules submodule.vendor/gems/wulin_master.branch v3-pin"
 
 gem "wulin_master", path: "vendor/gems/wulin_master"
 
