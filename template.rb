@@ -1,128 +1,163 @@
-# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+# rails new wulin_app --skip-hotwire --skip-solid --database=postgresql -j esbuild -m ./template.rb
+#
+# Asks which Wulin components you want, then vendors and configures each one.
+# Set WULIN_COMPONENTS to skip the questions:
+#
+#   WULIN_COMPONENTS=all rails new ... -m ./template.rb
+#   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
+#
+# --skip-solid matters: Rails 8 otherwise generates its own Solid Queue setup in
+# a separate queue database, and wulin_queue creates the same tables in the
+# primary one. Two schemas for one set of tables.
 
-run "git submodule add -b v3-pin https://github.com/ekohe/wulin_master.git vendor/gems/wulin_master"
-run "git config -f .gitmodules submodule.vendor/gems/wulin_master.branch v3-pin"
+# v3-pin only exists on gitlab; the develop branches are identical on both
+# hosts, so everything comes from one place.
+@wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"
+@wulin_templates = File.expand_path("templates", __dir__)
 
-gem "wulin_master", path: "vendor/gems/wulin_master"
+# Order here is install order, and it matters: wulin_permits must land before
+# wulin_queue so the Permission model exists when the queue migrations seed it.
+@wulin_catalog = [
+  {name: "wulin_master", branch: "v3-pin", required: true,
+   summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
+  {name: "wulin_permits", branch: "develop",
+   summary: "users, roles, privileges, per-screen permissions"},
+  {name: "wulin_queue", branch: "develop", needs: %w[wulin_permits],
+   summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
+  {name: "wulin_audit", branch: "develop",
+   summary: "audit trail for every model write, plus request action logs"},
+  {name: "wulin_excel", branch: "develop",
+   summary: "Excel export button on grid toolbars"}
+]
 
-gem "dartsass-rails"
+# The component templates fill these in; this file assembles them at the end.
+# All of them are written unindented -- wulin_indent puts them where they go.
+@wulin_js = []           # paths to import from app/javascript/application.js
+@wulin_sass = []         # indented-Sass rules for application.sass
+@wulin_menus = []        # submenu blocks for ApplicationController.define_menu
+@wulin_methods = []      # methods ApplicationController must define
+@wulin_post = []         # runs after bundle, before the database is set up
+@wulin_db_post = []      # runs after db:migrate, for anything needing tables
+@wulin_notes = []        # printed last, once everything has run
 
-# Add wulin master javascript to application.js:
-file "app/javascript/application.js", <<~JS
-  // Import Wulin Master modules
-  import '../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js'
-JS
+def wulin_vendor(name, branch)
+  # rails new has not run git init yet at template time.
+  run "git init -q" unless File.exist?(".git")
+  run "git submodule add -q -b #{branch} #{@wulin_git_base}/#{name}.git vendor/gems/#{name}"
+  run "git config -f .gitmodules submodule.vendor/gems/#{name}.branch #{branch}"
+  gem name, path: "vendor/gems/#{name}"
+end
 
-# Remove application.css file
-remove_file "app/assets/stylesheets/application.css"
+def wulin_js(*paths)
+  @wulin_js.concat(paths)
+end
 
-# Add wulin master stylesheet to application.sass
-file "app/assets/stylesheets/application.sass", <<~CSS
-  @use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master";
-CSS
+def wulin_sass(rules)
+  @wulin_sass << rules
+end
 
-# Remove application.html.erb
-remove_file "app/views/layouts/application.html.erb"
+def wulin_menu(block)
+  @wulin_menus << block
+end
 
-# Setup package.json
-file "package.json", <<~JSON
-  {
-    "name": "app",
-    "private": true,
-    "workspaces": [
-      "vendor/gems/wulin_master"
-    ],
-    "devDependencies": {
-      "esbuild": "^0.25.9"
-    },
-    "scripts": {
-      "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
-      "copy-icons": "node script/copy_material_icons.js"
-    },
-    "dependencies": {
-      "rails-ujs": "^5.2.0"
-    }
-  }
-JSON
+def wulin_method(code)
+  @wulin_methods << code
+end
 
-# Create fonts directory
-run "mkdir -p app/assets/fonts"
+def wulin_post(&block)
+  @wulin_post << block
+end
 
-# Add fonts in assets.rb initializer
-run "rm config/initializers/assets.rb"
+def wulin_db_post(&block)
+  @wulin_db_post << block
+end
 
-initializer "assets.rb", <<~RB
-  # Be sure to restart your server when you modify this file.
+def wulin_note(text)
+  @wulin_notes << text
+end
 
-  # Version of your assets, change this if you want to expire all your assets.
-  Rails.application.config.assets.version = "1.0"
+def wulin_indent(blocks, spaces)
+  blocks.map { |block|
+    block.lines.map { |line| line.strip.empty? ? line : (" " * spaces) + line }.join
+  }.join("\n")
+end
 
-  # Add additional assets to the asset load path.
-  # Rails.application.config.assets.paths << Emoji.images_path
-  Rails.application.config.assets.paths << Rails.root.join("app/assets/fonts")
-RB
+def wulin_selection
+  requested = ENV["WULIN_COMPONENTS"].to_s.strip
+  optional = @wulin_catalog.reject { |c| c[:required] }
 
-# Setup script/copy_material_icons.js
-file "script/copy_material_icons.js", <<~JS
-  const fs = require("fs");
-  const path = require("path");
-
-  const srcDir = path.join(__dirname, "..", "node_modules", "material-icons", "iconfont");
-  const dstDir = path.join(__dirname, "..", "app", "assets", "fonts");
-
-  fs.mkdirSync(dstDir, { recursive: true });
-
-  for (const name of [
-    "material-icons.woff2",
-    "material-icons.woff"
-  ]) {
-    fs.copyFileSync(path.join(srcDir, name), path.join(dstDir, name));
-    console.log(`Copied ${name}`);
-  }
-JS
-
-# Setup Procfile.dev
-file "Procfile.dev", <<~PROCFILE
-  web: env RUBY_DEBUG_OPEN=true bin/rails server
-  js: yarn build --watch
-  css: bin/rails dartsass:watch
-PROCFILE
-
-# Setup Wulin Master assets initializer
-initializer "wulin_master_assets.rb", <<~RB
-  # frozen_string_literal: true
-
-  require 'dartsass-rails'
-
-  # Wulin Master assets configuration for Propshaft
-  Rails.application.configure do
-    # Add builds directory to asset paths
-    config.assets.paths << Rails.root.join("app/assets/builds")
-    
-    # Add assets to precompile
-    config.assets.precompile += %w[
-      *.woff
-      *.woff2
-    ]
-    
-    Rails.application.config.dartsass.builds = {
-      "application.sass"  => "application.css"
-    }
-    
-    # Add node_modules to Sass load path for npm packages
-    Rails.application.config.dartsass.build_options << "--load-path=node_modules"
+  chosen = if requested == "all"
+    optional.map { |c| c[:name] }
+  elsif requested.empty?
+    optional.select { |c| yes?("Install #{c[:name]}? (#{c[:summary]}) [y/N]") }.map { |c| c[:name] }
+  else
+    requested.split(",").map(&:strip).reject(&:empty?)
   end
-RB
+
+  unknown = chosen - @wulin_catalog.map { |c| c[:name] }
+  raise Thor::Error, "Unknown component: #{unknown.join(", ")}" if unknown.any?
+
+  # A component's `needs` are code dependencies, not suggestions -- wulin_queue's
+  # grids call current_user.has_permission_with_name? and its migration seeds
+  # Permission rows, both of which come from wulin_permits.
+  chosen.dup.each do |name|
+    @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |dep|
+      next if chosen.include?(dep)
+      chosen << dep
+      say "  + #{dep} (#{name} needs it to run)", :yellow
+    end
+  end
+
+  @wulin_catalog.select { |c| c[:required] || chosen.include?(c[:name]) }
+end
+
+@wulin_install = wulin_selection
+
+@wulin_install.each do |component|
+  say_status :component, "#{component[:name]} (#{component[:branch]})", :green
+  path = File.join(@wulin_templates, "#{component[:name]}.rb")
+  instance_eval(File.read(path), path)
+end
+
+# --- assembly, once every component has had its say ------------------------
 
 after_bundle do
+  # wulin_master:install writes its own ApplicationController with a stub menu,
+  # so this has to come after it and replace the file wholesale.
   rails_command "generate wulin_master:install"
 
-  # Run yarn install
-  run "yarn install"
+  file "app/javascript/application.js", <<~JS, force: true
+    // wulin_master must be first: the other components attach to its globals
+    // (WulinMaster.actions, gridManager, Ui, displayErrorMessage) at load time.
+    #{@wulin_js.map { |path| "import \"#{path}\"" }.join("\n")}
+  JS
 
-  # Run copy fonts
-  run "yarn run copy-icons"
+  file "app/assets/stylesheets/application.sass",
+    @wulin_sass.map(&:strip).join("\n\n") + "\n", force: true
 
-  # Run generate color theme
-  run "bundle exec rake wulin_master:generate_theme_color_css"
+  file "app/controllers/application_controller.rb", <<~RB, force: true
+    # frozen_string_literal: true
+
+    class ApplicationController < ActionController::Base
+      protect_from_forgery with: :exception
+
+    #{wulin_indent(@wulin_methods, 2)}
+      def self.define_menu
+        menu do |c|
+    #{wulin_indent(@wulin_menus, 6)}
+        end
+      end
+    end
+  RB
+
+  @wulin_post.each(&:call)
+
+  # Every engine appends its own db/migrate to the app's migration paths, so a
+  # plain db:migrate picks all of them up -- nothing needs install:migrations.
+  rails_command "db:create db:migrate"
+
+  @wulin_db_post.each(&:call)
+
+  say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
+  @wulin_notes.each { |note| say "  - #{note}", :yellow }
 end

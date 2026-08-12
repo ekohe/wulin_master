@@ -99,13 +99,37 @@ jquery-rails, jquery-ui-rails and material_icons gems. Bundle the javascript
 with esbuild and compile the stylesheet with dart-sass; the app then serves the
 results out of `app/assets/builds`.
 
-`template.rb` in the root of this repository sets all of this up for a new app:
+`template.rb` in the root of this repository sets all of this up for a new app,
+and asks which of the Wulin components you want alongside it:
 
 ```bash
-rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+rails new wulin_app --skip-hotwire --skip-solid --database=postgresql -j esbuild -m ./template.rb
 ```
 
-The steps below are what it does.
+`--skip-solid` matters if you say yes to `wulin_queue`: Rails 8 otherwise
+generates its own Solid Queue setup in a separate queue database, and
+wulin_queue's migration creates the same tables in the primary one.
+
+Each component is a file under `templates/`, and the questions can be skipped:
+
+```bash
+WULIN_COMPONENTS=all rails new ... -m ./template.rb
+WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
+```
+
+| component | branch | what it adds |
+| --- | --- | --- |
+| `wulin_master` | `v3-pin` | always installed: grids, screens, menus, this asset pipeline |
+| `wulin_permits` | `develop` | users, roles, privileges, per-screen permissions |
+| `wulin_queue` | `develop` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
+| `wulin_audit` | `develop` | audit trail for every model write, plus request action logs |
+| `wulin_excel` | `develop` | Excel export button on grid toolbars |
+
+Everything is vendored as a git submodule under `vendor/gems/`, because esbuild
+and dart-sass reach into these gems by relative path and a bundler git source
+lands somewhere unpredictable.
+
+The steps below are what the template does for wulin_master itself.
 
 Add the gem's npm dependencies as a yarn workspace, in your package.json:
 
@@ -130,7 +154,7 @@ import '../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js'
 and the stylesheet from your dart-sass entry point, `app/assets/stylesheets/application.sass`:
 
 ```sass
-@use 'master'
+@use '../../../vendor/gems/wulin_master/app/assets/stylesheets/master'
 ```
 
 Then point dart-sass at it, in `config/initializers/wulin_master_assets.rb`:
@@ -142,9 +166,22 @@ Rails.application.configure do
   config.assets.paths << Rails.root.join('app/assets/builds')
 
   config.dartsass.builds = { 'application.sass' => 'application.css' }
+
   config.dartsass.build_options << '--load-path=node_modules'
+  config.dartsass.build_options << '--load-path=app/assets/stylesheets'
+  config.dartsass.build_options << '--load-path=vendor/gems/wulin_master/app/assets/stylesheets'
 end
 ```
+
+All three load paths are load-bearing, and the build fails without them:
+
+- `node_modules`, because `master.sass` `@use`s npm packages by bare name
+- `app/assets/stylesheets`, because that is where `_theme.generated.scss` is
+  written and `master.sass` reads `$color-theme` from it
+- the gem's own stylesheets, because its SlickGrid partials `@import "base"`
+  and friends relative to that directory
+
+With the third one set you can shorten the entry point to `@use 'master'`.
 
 `master.sass` reads `$color-theme` from `_theme.generated.scss`, which is
 generated from `config/initializers/wulin_master.rb`. Write it before the first

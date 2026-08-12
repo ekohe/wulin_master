@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2021_06_15_152900) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_21_082348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,5 +104,15 @@ ActiveRecord::Schema[8.0].define(version: 2021_06_15_152900) do
     t.integer "client_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_preferences", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", null: false
+    t.text "value"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["user_id", "name"], name: "index_user_preferences_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_user_preferences_on_user_id"
   end
 end
