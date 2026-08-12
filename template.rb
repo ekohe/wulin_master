@@ -36,6 +36,7 @@
 @wulin_sass = []         # indented-Sass rules for application.sass
 @wulin_menus = []        # submenu blocks for ApplicationController.define_menu
 @wulin_methods = []      # methods ApplicationController must define
+@wulin_app_config = []   # YAML sections for config/app_config.yml
 @wulin_post = []         # runs after bundle, before the database is set up
 @wulin_db_post = []      # runs after db:migrate, for anything needing tables
 @wulin_notes = []        # printed last, once everything has run
@@ -74,6 +75,10 @@ end
 
 def wulin_note(text)
   @wulin_notes << text
+end
+
+def wulin_app_config(yaml)
+  @wulin_app_config << yaml
 end
 
 def wulin_indent(blocks, spaces)
@@ -121,6 +126,23 @@ end
 
 # --- assembly, once every component has had its say ------------------------
 
+# app_config.yml holds real credentials in a deployed app, so it is gitignored
+# and app_config.example.yml is what gets committed. Both start identical.
+app_config = <<~YAML + @wulin_app_config.map(&:strip).join("\n\n") + "\n"
+  # Read through APP_CONFIG, loaded in config/application.rb.
+  #
+  # This file is gitignored because it holds credentials in a deployed app.
+  # Commit your changes to config/app_config.example.yml instead, and copy that
+  # back to config/app_config.yml on a fresh checkout.
+
+  time_zone: UTC
+
+YAML
+
+create_file "config/app_config.yml", app_config
+create_file "config/app_config.example.yml", app_config
+append_to_file ".gitignore", "\n/config/app_config.yml\n"
+
 after_bundle do
   # wulin_master:install writes its own ApplicationController with a stub menu,
   # so this has to come after it and replace the file wholesale.
@@ -157,6 +179,83 @@ after_bundle do
   rails_command "db:create db:migrate"
 
   @wulin_db_post.each(&:call)
+
+  # Rails' generated README is a placeholder checklist. Replace it with one that
+  # describes the app that actually got built.
+  file "README.md", <<~MD, force: true
+    # #{app_name}
+
+    A Wulin Master application. Grids, screens and menus come from the gem; the
+    components below are vendored as git submodules under `vendor/gems/`.
+
+    | component | branch | what it gives you |
+    | --- | --- | --- |
+    #{@wulin_install.map { |c| "| `#{c[:name]}` | `#{c[:branch]}` | #{c[:summary]} |" }.join("\n")}
+
+    ## Setting up a fresh clone
+
+    The gems are submodules, so a plain `git clone` leaves them empty:
+
+    ```bash
+    git submodule update --init --recursive
+    bundle install
+    yarn install
+    bin/rails db:create db:migrate db:seed
+    ```
+
+    ## Running it
+
+    ```bash
+    bin/dev
+    ```
+
+    That runs the three processes in `Procfile.dev`: the server, `yarn build
+    --watch` for javascript, and `bin/rails dartsass:watch` for CSS. Running
+    `bin/rails server` on its own is not enough -- the layout asks Propshaft for
+    `application.js` and `application.css`, and if they were never built every
+    page raises `Propshaft::MissingAssetError`.
+
+    To build the assets once, without the watchers:
+
+    ```bash
+    yarn build
+    bin/rails dartsass:build
+    ```
+
+    ## Adding a screen
+
+    ```bash
+    bin/rails generate wulin_master:screen_and_grid Post title content:text
+    ```
+
+    Then add it to the menu in `ApplicationController.define_menu`, alongside
+    the entries the components put there.
+
+    ## How the assets fit together
+
+    `master.js` is an ES module and `master.sass` uses the Sass module system,
+    so neither can go through Sprockets. esbuild bundles the javascript and
+    dart-sass compiles the stylesheet, both into `app/assets/builds`, which
+    Propshaft serves. The gem's npm dependencies (jquery, jquery-ui,
+    materialize-css, material-icons) arrive through the yarn workspace declared
+    in `package.json`, not as gems.
+
+    Three things are easy to trip over:
+
+    - `_theme.generated.scss` holds `$color-theme` and is written by
+      `bin/rails wulin_master:generate_theme_color_css`. Re-run it after
+      changing the theme in `config/initializers/wulin_master.rb`.
+    - material-icons' webfonts live in `node_modules` and the compiled CSS
+      refers to them by bare filename, so `yarn run copy-icons` copies them
+      into `app/assets/fonts`.
+    - Components ship Sprockets-style asset manifests this app cannot read, so
+      their javascript is imported file by file in
+      `app/javascript/application.js`. Adding a component means adding its
+      imports there.
+
+    ## Worth knowing
+    #{@wulin_notes.map { |note| "\n- #{note}" }.join}
+  MD
 
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
   @wulin_notes.each { |note| say "  - #{note}", :yellow }

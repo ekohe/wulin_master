@@ -29,16 +29,18 @@ wulin_menu <<~RB
   end
 RB
 
-# lib/wulin_audit/extension.rb reads APP_CONFIG without a defined? guard. The
-# surrounding rescue keeps the audit itself intact, but an undefined constant
-# means three logger.fatal lines on every single create, update and destroy.
-initializer "app_config.rb", <<~RB
-  # frozen_string_literal: true
-
-  # wulin_audit expects this to exist. Real apps load it from a YAML file; the
-  # only key it looks for is APP_CONFIG["wulin_audit"]["influxdb"].
-  APP_CONFIG = {}
-RB
+# lib/wulin_audit/extension.rb reads APP_CONFIG without a defined? guard, so an
+# undefined constant means three logger.fatal lines on every create, update and
+# destroy. wulin_master's template defines it in config/application.rb; this
+# just documents the one key wulin_audit looks for.
+wulin_app_config <<~YAML
+  # wulin_audit only reads the influxdb key, and only if you set it.
+  # wulin_audit:
+  #   influxdb:
+  #     host: localhost
+  #     port: 8086
+  #     database: audit
+YAML
 
 wulin_note "wulin_audit: every model is audited by default -- use reject_audit in a model to opt out"
 wulin_note "wulin_audit: the record_audit#read permission is not created for you; add it if you use wulin_permits"
