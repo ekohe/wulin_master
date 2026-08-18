@@ -262,7 +262,8 @@ module WulinMaster
         when /array/i
           query.size
         else
-          query.all.to_a
+          records = query.respond_to?(:all) ? query.all.to_a : Array(query)
+          records.size
       end
     end
 
