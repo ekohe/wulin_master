@@ -82,7 +82,6 @@ module WulinMaster
     end
 
     def email
-      # The user email configured from `app/controllers/wulin_master/grid_states_controller.rb` method `clear_invalid_states_and_users_cache`
       user.try(:email)
     end
 
@@ -102,7 +101,9 @@ module WulinMaster
     end
 
     def prepare_user
-      self.class.all_users.find { |x| x.id == user_id }
+      return if user_id.blank?
+
+      self.class.all_users.find { |x| x.id.to_i == user_id.to_i }
     end
 
     def grid_state_params
