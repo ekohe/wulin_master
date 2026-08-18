@@ -117,16 +117,15 @@
             font-size: 14px;
             color: #4d4d4e;
             padding: 7px 16px;
-            span {
-              &.material-icons {
-                height: unset;
-                line-height: unset;
-                width: unset;
-                border-radius: unset;
-                background-color: unset;
-                font-size: $font-size-middle;
-                margin-right: 16px;
-              }
+            .material-icons {
+              height: unset;
+              line-height: unset;
+              width: unset;
+              border-radius: unset;
+              background-color: unset;
+              font-size: $font-size-middle;
+              margin-right: 16px;
+
               &.move_back {
                 transform: rotate(180deg);
               }
