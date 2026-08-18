@@ -61,7 +61,7 @@ describe AddColumnsToGridStates do
       expect(columns.find { |c| c["id"] == "name" }).not_to have_key("sort")
     end
 
-    it "removes old keys after conversion" do
+    it "preserves old keys alongside columns" do
       state = create_state(
         "order" => {"0" => "name"},
         "width" => {"name" => 200},
@@ -73,11 +73,11 @@ describe AddColumnsToGridStates do
       migration.up
 
       val = JSON.parse(state.reload.state_value)
-      expect(val).not_to have_key("order")
-      expect(val).not_to have_key("width")
-      expect(val).not_to have_key("visibility")
-      expect(val).not_to have_key("filter")
-      expect(val).not_to have_key("sort")
+      expect(val).to have_key("order")
+      expect(val).to have_key("width")
+      expect(val).to have_key("visibility")
+      expect(val).to have_key("filter")
+      expect(val).to have_key("sort")
       expect(val).to have_key("columns")
     end
 
@@ -96,7 +96,7 @@ describe AddColumnsToGridStates do
       migration.up
 
       val = JSON.parse(state.reload.state_value)
-      expect(val).not_to have_key("filter")
+      expect(val).to have_key("filter")
       expect(val["columns"]).to eq([{"id" => "name", "visible" => true, "filter" => "test"}])
     end
 
@@ -106,7 +106,7 @@ describe AddColumnsToGridStates do
       migration.up
 
       val = JSON.parse(state.reload.state_value)
-      expect(val).not_to have_key("sort")
+      expect(val).to have_key("sort")
       expect(val["columns"]).to eq([{"id" => "created_at", "visible" => true, "sort" => "asc"}])
     end
 
@@ -137,8 +137,13 @@ describe AddColumnsToGridStates do
   end
 
   describe "#down" do
-    it "reconstructs order, width, visibility, filter, and sort from the columns array" do
+    it "removes columns key and preserves legacy keys" do
       state = create_state(
+        "order" => {"0" => "name", "1" => "rank", "2" => "id"},
+        "width" => {"name" => 200},
+        "visibility" => ["id"],
+        "filter" => {"rank" => "10"},
+        "sort" => {"sortCol" => "rank", "sortDir" => 1},
         "columns" => [
           {"id" => "name", "visible" => true, "width" => 200},
           {"id" => "rank", "visible" => true, "filter" => "10", "sort" => "asc"},

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 # Adds a unified "columns" key to grid_states.state_value alongside the existing
-# order/width/visibility keys. The "columns" array carries order (by position),
-# width, and visibility per column. New columns not in the array fall back to
-# their grid definition — fixing the bug where visible: false columns appeared
-# visible for users with a saved grid state.
+# order/width/visibility/filter/sort keys (which are preserved for backward
+# compatibility). The "columns" array carries order (by position), width,
+# visibility, filter, and sort per column. New columns not in the array fall
+# back to their grid definition — fixing the bug where visible: false columns
+# appeared visible for users with a saved grid state.
 #
 # See: https://gitlab.ekohe.com/ekohe/wulin/wulin_master/-/work_items/290
 class AddColumnsToGridStates < ActiveRecord::Migration[5.0]
@@ -55,7 +56,6 @@ class AddColumnsToGridStates < ActiveRecord::Migration[5.0]
       next if columns.empty?
 
       val["columns"] = columns
-      %w[order width visibility filter sort].each { |k| val.delete(k) }
       state.update_column(:state_value, val.to_json)
     end
   end
@@ -69,32 +69,8 @@ class AddColumnsToGridStates < ActiveRecord::Migration[5.0]
       rescue JSON::ParserError
         next
       end
-      next unless val.is_a?(Hash) && val["columns"].is_a?(Array)
+      next unless val.is_a?(Hash) && val.key?("columns")
 
-      order = {}
-      width = {}
-      visibility = []
-      filter = {}
-      sort = {}
-
-      val["columns"].each_with_index do |col, index|
-        next unless col.is_a?(Hash) && col["id"]
-
-        order[index.to_s] = col["id"]
-        width[col["id"]] = col["width"] if col["width"]
-        visibility << col["id"] if col["visible"] == false
-        filter[col["id"]] = col["filter"] if col["filter"]
-        if col["sort"]
-          sort["sortCol"] = col["id"]
-          sort["sortDir"] = col["sort"] == "asc" ? 1 : -1
-        end
-      end
-
-      val["order"] = order
-      val["width"] = width if width.any?
-      val["visibility"] = visibility if visibility.any?
-      val["filter"] = filter if filter.any?
-      val["sort"] = sort if sort.any?
       val.delete("columns")
       state.update_column(:state_value, val.to_json)
     end
