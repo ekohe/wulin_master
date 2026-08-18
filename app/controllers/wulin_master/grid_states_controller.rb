@@ -5,6 +5,7 @@ module WulinMaster
     controller_for_screen ::GridStatesScreen
 
     before_action :clear_users_cache
+    before_action :ensure_users_request_uri
     add_callback :query_initialized, :set_user_ids_for_filtering
     add_callback :query_initialized, :skip_sorting_if_sort_by_user
     add_callback :query_ready, :set_user_ids_for_sorting
@@ -13,9 +14,10 @@ module WulinMaster
     def copy
       GridState.transaction do
         params[:user_ids].each do |uid|
+          uid = uid.to_i
           params[:state_ids].each do |sid|
             state = GridState.find(sid)
-            next if state.user_id == uid
+            next if state.user_id.to_i == uid
             new_state = GridState.where(user_id: uid, name: state.name, grid_name: state.grid_name).first
             if new_state
               new_state.update!(state_value: state.state_value)
@@ -50,6 +52,15 @@ module WulinMaster
     # Make sure we fetch the new list of users
     def clear_users_cache
       GridState.all_users = nil
+      Thread.current[:all] = nil
+    end
+
+    # User.all reuses a class-level request URI. UsersGrid leaves a paginated
+    # URI (count=200), so GridState#email would only resolve users on that page.
+    def ensure_users_request_uri
+      return unless defined?(User) && User.respond_to?(:set_request_uri)
+
+      User.set_request_uri("/users.json?columns=id,email")
     end
 
     def set_user_ids_for_filtering
