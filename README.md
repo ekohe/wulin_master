@@ -54,7 +54,7 @@ and other tools to make grids easy to build as well as flexible configurations.
 ### 1. Add `gem wulin_master` to your Gemfile
 
 ```bash
-gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master', branch: 'v3-pin'
+gem 'wulin_master', git: 'http://github.com/ekohe/wulin_master', branch: 'v3'
 ```
 
 ### 2. Run bundler command to install the gem
@@ -119,7 +119,7 @@ WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 
 | component | branch | what it adds |
 | --- | --- | --- |
-| `wulin_master` | `v3-pin` | always installed: grids, screens, menus, this asset pipeline |
+| `wulin_master` | `v3` | always installed: grids, screens, menus, this asset pipeline |
 | `wulin_permits` | `develop` | users, roles, privileges, per-screen permissions |
 | `wulin_queue` | `develop` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
 | `wulin_audit` | `develop` | audit trail for every model write, plus request action logs |

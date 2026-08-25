@@ -10,15 +10,15 @@
 # a separate queue database, and wulin_queue creates the same tables in the
 # primary one. Two schemas for one set of tables.
 
-# v3-pin only exists on gitlab; the develop branches are identical on both
-# hosts, so everything comes from one place.
+# The develop branches are identical on both hosts, so everything comes
+# from one place.
 @wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"
 @wulin_templates = File.expand_path("templates", __dir__)
 
 # Order here is install order, and it matters: wulin_permits must land before
 # wulin_queue so the Permission model exists when the queue migrations seed it.
 @wulin_catalog = [
-  {name: "wulin_master", branch: "v3-pin", required: true,
+  {name: "wulin_master", branch: "v3", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
   {name: "wulin_permits", branch: "develop",
    summary: "users, roles, privileges, per-screen permissions"},
