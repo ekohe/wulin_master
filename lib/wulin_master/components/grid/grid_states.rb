@@ -7,12 +7,11 @@ module WulinMaster
     def states_for_user
       return "false" unless current_user
       current_state = GridState.current(current_user.id, name)
-      is_custom_view = check_multiple_grid_states
-      if current_state.nil?
+      state_value = if current_state.nil?
         # create a new current grid
         create_current_grid(current_user.id, name)
       else
-        current_state.try(:state_value).presence || GridState.get_default_grid_state_val(name, current_state.name, is_custom_view ) || {}.to_json
+        current_state.state_value.presence || GridState.get_default_grid_state_val(name, current_state.name, check_multiple_grid_states) || {}.to_json
       end
     rescue StandardError => e
       Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"

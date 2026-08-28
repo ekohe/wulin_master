@@ -373,19 +373,22 @@
       // Ekohe Add: Create sticky footer container for reset section
       var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
       $("<hr/>").appendTo($footerContainer);
-      let viewName = $(`#grid_${grid.name} .grid-states-switcher .dropdown-trigger span`).text()
       var $a = $("<a id='reset_to_default' href='#' />").appendTo($footerContainer);
       var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
-      $a.on("click", function () {
+      $a.on("click", function (e) {
+        // Keep the click inside this handler: the picker also listens on $menu
+        // and would save the very column state we are about to reset
+        e.preventDefault();
+        e.stopPropagation();
+
         $('#confirm-modal').modal('open').css('z-index', '1005');
-        $('#confirmed-btn').on('click', function () {
+        // #confirmed-btn is shared by every confirmation in the app
+        $('#confirmed-btn').off('click').on('click', function () {
           $.post('/wulin_master/grid_states_manages/reset_default',
             {
               _method: 'PUT',
-              grid_name: grid.name,
-              user_id: user_id,
-              view_name: viewName
+              grid_name: grid.name
             },
             function (data) {
               if (data == 'ok') {
