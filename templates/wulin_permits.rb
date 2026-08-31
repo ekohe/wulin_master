@@ -7,7 +7,7 @@
 # User.find_by_ids. So the template supplies a minimal version of all of it.
 # Replace it with your real user model and auth.
 
-wulin_vendor "wulin_permits", "develop"
+wulin_vendor "wulin_permits"
 
 wulin_js "../../vendor/gems/wulin_permits/app/assets/javascripts/actions/user_role.js",
   "../../vendor/gems/wulin_permits/app/assets/javascripts/actions/export_privilege_permission.js",

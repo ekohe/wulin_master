@@ -4,7 +4,7 @@
 # are plain ActiveRecord. It does need PostgreSQL, because the audit tables use
 # jsonb columns.
 
-wulin_vendor "wulin_audit", "develop"
+wulin_vendor "wulin_audit"
 
 # The gem does `require "haml-rails"` at load but only lists it as a development
 # dependency, so without this the app raises LoadError on boot.

@@ -4,7 +4,7 @@
 # alongside it, and never mount WulinQueue::Engine -- config/routes.rb draws
 # into the host app directly.
 
-wulin_vendor "wulin_queue", "develop"
+wulin_vendor "wulin_queue"
 
 # solid_queue arrives as a dependency of the gem, but declaring it here is what
 # puts bin/jobs on the path.

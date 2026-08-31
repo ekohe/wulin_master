@@ -4,7 +4,7 @@
 # initializers. It reopens WulinMaster::Actions#index and registers a default
 # global grid action at load time.
 
-wulin_vendor "wulin_excel", "develop"
+wulin_vendor "wulin_excel"
 
 # Must be imported after master.js: the file touches WulinMaster.actions at the
 # top level. wulin_master is always first in the catalog, so ordering holds.
