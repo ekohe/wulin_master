@@ -199,6 +199,10 @@ end
   instance_eval(wulin_read(path), path)
 end
 
+# The development stack, which every app gets. After the components: the image it writes
+# depends on which path gems ended up in the Gemfile.
+instance_eval(wulin_read("templates/docker.rb"), "templates/docker.rb")
+
 # --- assembly, once every component has had its say ------------------------
 
 # app_config.yml holds real credentials in a deployed app, so it is gitignored
