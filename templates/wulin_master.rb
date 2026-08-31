@@ -4,9 +4,26 @@
 # dart-sass compiles the stylesheet, and Propshaft serves the results out of
 # app/assets/builds.
 
-wulin_vendor "wulin_master", "v3"
+wulin_vendor "wulin_master"
 
 gem "dartsass-rails"
+
+# The production assets:precompile hook. Guarded because `-j esbuild` already puts this
+# line in the Gemfile, and bundler refuses a gem declared twice.
+gem "jsbundling-rails" unless File.read("Gemfile").include?("jsbundling-rails")
+
+# Runs Procfile.dev via bin/dev. In the Gemfile rather than jsbundling's runtime
+# `gem install foreman`, so the runtime container gets it from bundle install.
+gem "foreman", group: :development unless File.read("Gemfile").include?('gem "foreman"')
+
+# Scaffolded with --skip-test there is otherwise no way to run a test at all: no test/
+# because the flag removed it, no spec/ without these.
+unless File.read("Gemfile").include?("rspec-rails")
+  gem_group :development, :test do
+    gem "rspec-rails"
+    gem "factory_bot_rails"
+  end
+end
 
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
 # newest release. sass-embedded 1.98 raised its floor to macOS 14: on anything
@@ -98,6 +115,20 @@ JS
 
 empty_directory "app/assets/fonts"
 
+# The esbuild output directory. `-j esbuild` creates it; --skip-javascript does not.
+create_file "app/assets/builds/.keep", ""
+
+# A component can drag Sprockets in (wulin_auth declares sass-rails), and Sprockets
+# refuses to boot without this file. Unconditional: keying it off a list of component
+# gems breaks the first time one of them changes its dependencies.
+#
+# ../builds and not ../stylesheets -- dart-sass writes application.css into builds, and
+# linking both declares two sources for one output (Sprockets::DoubleLinkError).
+file "app/assets/config/manifest.js", <<~JS, force: true
+  //= link_tree ../images
+  //= link_tree ../builds
+JS
+
 initializer "wulin_master_assets.rb", <<~RB
   # frozen_string_literal: true
 
@@ -107,6 +138,11 @@ initializer "wulin_master_assets.rb", <<~RB
     config.assets.paths << Rails.root.join("app/assets/builds")
     config.assets.paths << Rails.root.join("app/assets/fonts")
     config.assets.precompile += %w[*.woff *.woff2]
+
+    # Not a no-op: sassc-rails arrives with Sprockets and sets this to :sass everywhere
+    # but development, and libsass cannot re-parse dart-sass output -- SassC::SyntaxError
+    # on every page under test and production.
+    config.assets.css_compressor = nil
 
     config.dartsass.builds = {"application.sass" => "application.css"}
 
@@ -122,18 +158,25 @@ initializer "wulin_master_assets.rb", <<~RB
   end
 RB
 
-file "Procfile.dev", <<~PROCFILE
-  web: env RUBY_DEBUG_OPEN=true bin/rails server
-  js: yarn build --watch
-  css: bin/rails dartsass:watch
-PROCFILE
+# Rails' .gitignore lists none of these, and under --skip-javascript nothing else adds
+# them -- so without this the first commit carries node_modules.
+append_to_file ".gitignore", <<~GIT
+
+  # Node dependencies and the bundled assets, both rebuilt by bin/dev
+  /node_modules
+  /app/assets/builds/*
+  !/app/assets/builds/.keep
+GIT
 
 wulin_post do
-  # All of this waits until after_bundle on purpose. `rails new -j esbuild` runs
-  # javascript:install:esbuild after the template body, and that installer
-  # rewrites package.json's build script with `npm pkg set` and calls
-  # `yarn add`, which fails outright against a package.json declaring
-  # workspaces. Writing it here means it lands after the installer, not before.
+  # These three files are written here, not in the template body: `-j esbuild` runs
+  # javascript:install:esbuild in between and overwrites them.
+  esbuild = "esbuild app/javascript/application.js --bundle --sourcemap --format=esm " \
+    "--outdir=app/assets/builds --public-path=/assets " \
+    "--loader:.woff=file --loader:.woff2=file --external:*.css"
+
+  # --watch=forever, not --watch: foreman closes stdin, plain --watch takes that as the
+  # signal to stop, and foreman then SIGTERMs the container seconds after boot.
   file "package.json", <<~JSON, force: true
     {
       "name": "app",
@@ -145,7 +188,8 @@ wulin_post do
         "esbuild": "^0.25.9"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
+        "build": "#{esbuild}",
+        "build:watch": "#{esbuild} --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       },
       "dependencies": {
@@ -153,6 +197,23 @@ wulin_post do
       }
     }
   JSON
+
+  # -b 0.0.0.0: Rails 7.1+ binds development to localhost, unreachable through a
+  # published container port. -p 3000: foreman assigns PORT from 5000 up and `rails
+  # server` honours it, so the app would answer on 5000 while compose expects 3000.
+  file "Procfile.dev", <<~PROCFILE, force: true
+    web: env RUBY_DEBUG_OPEN=true bin/rails server -b 0.0.0.0 -p 3000
+    js: npm run build:watch
+    css: bin/rails dartsass:watch
+  PROCFILE
+
+  # Rails' bin/dev is `exec "./bin/rails", "server", *ARGV` -- it never reads
+  # Procfile.dev, so the asset watchers never start.
+  file "bin/dev", <<~SH, force: true
+    #!/usr/bin/env bash
+    exec bundle exec foreman start -f Procfile.dev "$@"
+  SH
+  chmod "bin/dev", 0o755
 
   # The engine ships its own layout; removing the generated one here rather than
   # in the template body keeps jsbundling from warning about a missing layout.
@@ -197,15 +258,27 @@ wulin_post do
   # javascript_include_tag, so an app whose assets did not build raises
   # Propshaft::MissingAssetError on every page. Failing here is far better than
   # printing "components installed" over a broken app.
-  run "yarn install", abort_on_failure: true
-  run "yarn run copy-icons", abort_on_failure: true
+  #
+  # npm, not yarn or pnpm. yarn's shell refuses to exec node_modules binaries on a
+  # Docker Desktop bind mount ("permission denied: esbuild", exit 128) and globs unquoted
+  # script arguments; yarn 2+ also needs nodeLinker to produce a real node_modules, which
+  # copy_material_icons.js and dart-sass's --load-path both read by path, and pnpm's
+  # symlinked tree is not it. A yarn.lock left by `-j esbuild` has to go too: jsbundling
+  # picks its tool from whichever lockfile it finds first.
+  remove_file "yarn.lock" if File.exist?("yarn.lock")
+  run "npm install", abort_on_failure: true
+  run "npm run copy-icons", abort_on_failure: true
 
   # Writes _theme.generated.scss, which master.sass reads $color-theme from, so
   # it has to happen before the first CSS build.
   rails_command "wulin_master:generate_theme_color_css", abort_on_failure: true
 
-  run "yarn build", abort_on_failure: true
+  run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
+
+  # Before any other generator: rspec-rails takes over `generate`, so the model below
+  # writes a spec that cannot run without this harness.
+  rails_command "generate rspec:install"
 
   # The admin column is here rather than in wulin_permits so that the model is
   # generated once, whichever components are selected.

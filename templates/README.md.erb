@@ -16,7 +16,7 @@ The gems are submodules, so a plain `git clone` leaves them empty:
 ```bash
 git submodule update --init --recursive
 bundle install
-yarn install
+npm install
 cp config/app_config.example.yml config/app_config.yml
 bin/rails db:create db:migrate db:seed
 ```
@@ -27,8 +27,8 @@ bin/rails db:create db:migrate db:seed
 bin/dev
 ```
 
-That runs the three processes in `Procfile.dev`: the server, `yarn build
---watch` for javascript, and `bin/rails dartsass:watch` for CSS. Running
+That runs the three processes in `Procfile.dev`: the server, `npm run
+build:watch` for javascript, and `bin/rails dartsass:watch` for CSS. Running
 `bin/rails server` on its own is not enough -- the layout asks Propshaft for
 `application.js` and `application.css`, and if they were never built every page
 raises `Propshaft::MissingAssetError`.
@@ -36,7 +36,7 @@ raises `Propshaft::MissingAssetError`.
 To build the assets once, without the watchers:
 
 ```bash
-yarn build
+npm run build
 bin/rails dartsass:build
 ```
 
@@ -70,12 +70,12 @@ entries the components put there.
 neither can go through Sprockets. esbuild bundles the javascript and dart-sass
 compiles the stylesheet, both into `app/assets/builds`, which Propshaft serves.
 The gem's npm dependencies (jquery, jquery-ui, materialize-css, material-icons)
-arrive through the yarn workspace declared in `package.json`, not as gems.
+arrive through the npm workspace declared in `package.json`, not as gems.
 
 Two things are easy to trip over:
 
 - material-icons' webfonts live in `node_modules` and the compiled CSS refers to
-  them by bare filename, so `yarn run copy-icons` copies them into
+  them by bare filename, so `npm run copy-icons` copies them into
   `app/assets/fonts`.
 - Components ship Sprockets-style asset manifests this app cannot read, so their
   javascript is imported file by file in `app/javascript/application.js`. Adding
