@@ -36,7 +36,7 @@ require "shellwords"
 # wulin_master is pinned because the gem's code has to match the template configuring
 # it.
 @wulin_catalog = [
-  {name: "wulin_master", branch: "v3", required: true,
+  {name: "wulin_master", branch: "v3-aida", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
   {name: "wulin_permits",
    summary: "users, roles, privileges, per-screen permissions"},
