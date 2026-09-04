@@ -40,12 +40,21 @@ end
 wulin_js "../../vendor/gems/wulin_master/app/assets/javascripts/master/master.js"
 wulin_sass '@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master"'
 
-# wulin_master itself needs a user, not just wulin_permits: grid_states and
-# user_preferences are keyed by user_id, and GridStatesManagesController calls
-# current_user on every save. Replace both with your real user model and auth.
+# grid_states and user_preferences are keyed by user_id, so wulin_master needs a user of its own.
+#
+# The auth layer first. An auth gem installs its current_user into an ancestor of ApplicationController
+# (wulin_auth: `AbstractController::Base.include WulinAuth::AbstractController`), and a method defined
+# here sits closer -- so without `super` it wins, and the app authenticates one user while authorizing
+# whoever is first in the table. `User.first` is the fallback for an app with no auth gem, where
+# wulin_permits generates a `User`. Both guarded: an app with neither has no current user, which the
+# gem's controllers answer for rather than raise on.
 wulin_method <<~RB
   def current_user
-    @current_user ||= User.first
+    @current_user ||= if defined?(super)
+      super
+    elsif defined?(User)
+      User.first
+    end
   end
 RB
 
@@ -276,17 +285,16 @@ wulin_post do
   run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
 
-  # Before any other generator: rspec-rails takes over `generate`, so the model below
-  # writes a spec that cannot run without this harness.
+  # Before any other generator: rspec-rails takes over `generate`, so a model generated after this
+  # writes a spec that needs the harness to be there already.
   rails_command "generate rspec:install"
 
-  # The admin column is here rather than in wulin_permits so that the model is
-  # generated once, whichever components are selected.
-  generate :model, "User email:string admin:boolean"
-
-  append_to_file "db/seeds.rb", <<~RB
-    # current_user is User.first, so the first user has to be an admin or every
-    # require_admin screen 403s.
-    User.find_or_create_by!(email: "admin@example.com") { |user| user.admin = true }
-  RB
+  # No `User` model and no user seed here. The `users` table belongs to whichever auth gem the app
+  # installs: wulin_auth ships `CreateUsers` on its own migration path, and a second migration class
+  # of that name raises DuplicateMigrationNameError while Rails scans, before any migration runs. Its
+  # body is `unless table_exists?(:users)` -- the table is meant to be shared, the class name is what
+  # collides.
+  #
+  # An app with no auth gem therefore has no user, and wulin_master works without one: a grid renders,
+  # a grid state or a menu pin is not stored. Add a `User` and a `current_user` to get them back.
 end

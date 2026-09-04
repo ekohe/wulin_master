@@ -71,6 +71,16 @@ file "bin/docker-entrypoint-dev.sh", <<~SH, force: true
     bin/rails db:prepare
   fi
 
+  # The test database as well: rspec connects to it and neither branch above creates it, so a
+  # fresh app's suite dies on ActiveRecord::NoDatabaseError before it loads one example --
+  # maintain_test_schema! reaches for the connection before it can create anything with it.
+  # db:prepare rather than db:test:prepare, so the test database is created, migrated AND
+  # seeded the way the development one is, and a suite that reads a seeded row finds it.
+  # Idempotent, so every boot after the first is a no-op; the `||` keeps a container that
+  # serves the app from refusing to start over a test database it could not make.
+  echo "[entrypoint] Preparing the test database..."
+  RAILS_ENV=test bin/rails db:prepare || echo "[entrypoint] Test database not prepared -- the suite will fail until it is."
+
   exec "$@"
 SH
 chmod "bin/docker-entrypoint-dev.sh", 0o755
