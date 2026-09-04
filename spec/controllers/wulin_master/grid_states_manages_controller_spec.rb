@@ -92,4 +92,28 @@ describe GridStatesManagesTestController, type: :controller do
       expect(response.body).to eq("ok")
     end
   end
+
+  # An app with no auth gem, saving a state on every column resize, sort and reorder.
+  describe "an app with no current user" do
+    before :each do
+      allow(controller).to receive(:current_user).and_return(nil)
+    end
+
+    it "does not save a state" do
+      routes.draw { post :save, to: "grid_states_manages_test#save" }
+
+      post :save, params: {grid_name: grid_name, state_value: {order: {0 => "name"}}}
+
+      expect(response.body).to eq("no current user")
+      expect(WulinMaster::GridState.count).to eq(0)
+    end
+
+    it "answers the reason on every action, not a nil error" do
+      routes.draw { put :reset_default, to: "grid_states_manages_test#reset_default" }
+
+      put :reset_default, params: {grid_name: grid_name}
+
+      expect(response.body).to eq("no current user")
+    end
+  end
 end

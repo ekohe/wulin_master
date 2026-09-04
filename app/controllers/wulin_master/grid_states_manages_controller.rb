@@ -12,6 +12,7 @@ module WulinMaster
     include WulinMasterGridHelper
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
+    before_action :require_current_user
     before_action :set_state, only: %i[update destroy set_current]
 
     def create
@@ -104,6 +105,12 @@ module WulinMaster
     end
 
     private
+
+    # Every state is keyed by user_id, and an app with no auth gem has no current_user. The grid
+    # renders without a state either way -- GridStates#states_for_user returns "false".
+    def require_current_user
+      self.response_body = "no current user" unless current_user
+    end
 
     def set_state
       @state = GridState.find(params[:id])
