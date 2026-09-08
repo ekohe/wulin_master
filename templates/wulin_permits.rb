@@ -30,7 +30,15 @@ SASS
 # current_user and the User model come from templates/wulin_master.rb, which
 # needs them too. This is the part only wulin_permits wants: five of its
 # controllers declare before_action :require_admin and none of them define it.
+# wulin_auth's current_user returns WulinAuth::User.find(...), but
+# wulin_permits includes has_permission_with_name? only on the app's
+# User subclass. Override current_user to return a User instance.
 wulin_method <<~RB
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = session[:user_id] ? User.find_by(id: session[:user_id]) : nil
+  end
+
   def require_admin
     head :forbidden unless current_user&.admin?
   end
