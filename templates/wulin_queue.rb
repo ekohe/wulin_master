@@ -1,4 +1,4 @@
-# wulin_queue -- Solid Queue's job tables plus nine screens over them.
+# wulin_queue -- Solid Queue's job tables plus screens over them.
 #
 # Its migration IS Solid Queue's schema, so never run solid_queue:install
 # alongside it, and never mount WulinQueue::Engine -- config/routes.rb draws
@@ -16,15 +16,10 @@ wulin_js "#{queue_js}/action_helpers.js",
 
 wulin_menu <<~RB
   submenu "Background Jobs" do
-    item SolidQueuePendingJobScreen, icon: :hourglass_empty
-    item SolidQueueInProgressJobScreen, icon: :autorenew
-    item SolidQueueBlockedJobScreen, icon: :block
-    item SolidQueueFailedJobScreen, icon: :error_outline
-    item SolidQueueScheduledJobScreen, icon: :schedule
-    item SolidQueueFinishedJobScreen, icon: :done_all
+    item SolidQueueJobScreen, icon: :work
+    item SolidQueueQueueScreen, icon: :layers
     item SolidQueueProcessScreen, icon: :memory
     item SolidQueueRecurringTaskScreen, icon: :repeat
-    item SolidQueueQueueScreen, icon: :layers
   end
 RB
 
