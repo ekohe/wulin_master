@@ -9,9 +9,7 @@
 
 wulin_vendor "wulin_permits", "develop"
 
-wulin_js "../../vendor/gems/wulin_permits/app/assets/javascripts/actions/user_role.js",
-  "../../vendor/gems/wulin_permits/app/assets/javascripts/actions/export_privilege_permission.js",
-  "../../vendor/gems/wulin_permits/app/assets/javascripts/actions/import_privilege_permission.js"
+wulin_js "../../vendor/gems/wulin_permits/app/assets/javascripts/wulin_permits.esm.js"
 
 # Inlined rather than @use'd: the gem's file is named role_screen.css.scss, and
 # dart-sass reads a .css extension as plain CSS rather than Sass.

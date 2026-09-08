@@ -6,13 +6,7 @@
 
 wulin_vendor "wulin_queue", "develop"
 
-# app/assets/javascripts/wulin_queue.js is a Sprockets manifest (//= require
-# plus require_tree), which esbuild cannot read, so the files it names are
-# imported directly. action_helpers first: every action builds on it.
-queue_js = "../../vendor/gems/wulin_queue/app/assets/javascripts/wulin_queue"
-wulin_js "#{queue_js}/action_helpers.js",
-  *%w[clear discard discard_all pause resume retry retry_all run_now show_error]
-    .map { |action| "#{queue_js}/actions/#{action}.js" }
+wulin_js "../../vendor/gems/wulin_queue/app/assets/javascripts/wulin_queue.esm.js"
 
 wulin_menu <<~RB
   submenu "Background Jobs" do

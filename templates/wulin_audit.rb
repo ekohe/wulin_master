@@ -10,9 +10,7 @@ wulin_vendor "wulin_audit", "develop"
 # dependency, so without this the app raises LoadError on boot.
 gem "haml-rails"
 
-# app/assets/javascripts/audit.js is just a Sprockets manifest; this is the file
-# it points at.
-wulin_js "../../vendor/gems/wulin_audit/app/assets/javascripts/actions/show_audit_logs.js"
+wulin_js "../../vendor/gems/wulin_audit/app/assets/javascripts/audit.esm.js"
 
 # The gem's audit.css.scss uses image-url(), a sass-rails function dart-sass
 # does not have, so the one rule in it is reproduced here. Propshaft indexes the

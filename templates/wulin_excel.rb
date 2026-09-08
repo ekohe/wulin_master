@@ -6,9 +6,7 @@
 
 wulin_vendor "wulin_excel", "develop"
 
-# Must be imported after master.js: the file touches WulinMaster.actions at the
-# top level. wulin_master is always first in the catalog, so ordering holds.
-wulin_js "../../vendor/gems/wulin_excel/vendor/assets/javascripts/excel.js"
+wulin_js "../../vendor/gems/wulin_excel/vendor/assets/javascripts/excel.esm.js"
 
 # Same image-url() problem as wulin_audit, same one-rule fix.
 wulin_sass <<~SASS
