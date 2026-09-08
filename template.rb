@@ -13,12 +13,9 @@ gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
 gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 
 # Remove gems we don't use.
-gsub_file "Gemfile", /^.*gem "debug".*\n/, ""
-gsub_file "Gemfile", /^.*gem "rubocop-rails-omakase".*\n/, ""
-gsub_file "Gemfile", /^.*gem "web-console".*\n/, ""
-gsub_file "Gemfile", /^.*gem "capybara".*\n/, ""
-gsub_file "Gemfile", /^.*gem "selenium-webdriver".*\n/, ""
-gsub_file "Gemfile", /^.*gem "tzinfo-data".*\n/, ""
+%w[debug rubocop-rails-omakase web-console capybara selenium-webdriver tzinfo-data].each do |name|
+  gsub_file "Gemfile", /^.*gem "#{name}".*\n/, ""
+end
 
 gem_group :development, :test do
   gem "standard"

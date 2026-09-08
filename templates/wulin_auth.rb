@@ -15,9 +15,11 @@ wulin_post do
   generate :migration, "AddAdminToUsers admin:boolean"
 
   append_to_file "db/seeds.rb", <<~RB
+    admin_password = SecureRandom.alphanumeric(16)
     User.find_or_create_by!(email: "admin@example.com") do |user|
-      user.password = "password"
+      user.password = admin_password
       user.admin = true
     end
+    puts "Admin user: admin@example.com / \#{admin_password}"
   RB
 end
