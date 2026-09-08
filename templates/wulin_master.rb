@@ -9,6 +9,11 @@ wulin_vendor "wulin_master", "v3"
 gem "bcrypt"
 gem "dartsass-rails"
 
+# json 3.0 changed JSON.parse to accept only 1 argument; Rails 8.1's
+# ActiveSupport::JSON.decode passes 2. Every request that touches the session
+# (including csrf_meta_tags) dies with ArgumentError.
+gem "json", "< 3.0"
+
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
 # newest release. sass-embedded 1.98 raised its floor to macOS 14: on anything
 # older the bundled Dart VM exits with "Current Mac OS X version 12.0 is lower
