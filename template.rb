@@ -12,6 +12,18 @@ gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
 gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
 gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 
+# Remove gems we don't use.
+gsub_file "Gemfile", /^.*gem "debug".*\n/, ""
+gsub_file "Gemfile", /^.*gem "rubocop-rails-omakase".*\n/, ""
+gsub_file "Gemfile", /^.*gem "web-console".*\n/, ""
+gsub_file "Gemfile", /^.*gem "capybara".*\n/, ""
+gsub_file "Gemfile", /^.*gem "selenium-webdriver".*\n/, ""
+gsub_file "Gemfile", /^.*gem "tzinfo-data".*\n/, ""
+
+gem_group :development, :test do
+  gem "standard"
+end
+
 # The develop branches are identical on both hosts, so everything comes
 # from one place.
 @wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"
