@@ -10,6 +10,14 @@
 # a separate queue database, and wulin_queue creates the same tables in the
 # primary one. Two schemas for one set of tables.
 
+# Rails 8 installs Solid Queue/Cache/Cable by default, creating a separate
+# queue database that conflicts with wulin_queue's migrations in the primary
+# database. Abort early so the user doesn't end up with a broken app.
+if !options[:skip_solid]
+  say "ERROR: run with --skip-solid -- wulin_queue owns the Solid Queue schema", :red
+  raise Thor::Error, "Aborting: add --skip-solid to the rails new command"
+end
+
 # The develop branches are identical on both hosts, so everything comes
 # from one place.
 @wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"

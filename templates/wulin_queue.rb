@@ -6,10 +6,6 @@
 
 wulin_vendor "wulin_queue", "develop"
 
-# solid_queue arrives as a dependency of the gem, but declaring it here is what
-# puts bin/jobs on the path.
-gem "solid_queue"
-
 # app/assets/javascripts/wulin_queue.js is a Sprockets manifest (//= require
 # plus require_tree), which esbuild cannot read, so the files it names are
 # imported directly. action_helpers first: every action builds on it.
