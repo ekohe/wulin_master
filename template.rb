@@ -200,10 +200,11 @@ after_bundle do
 
   @wulin_db_post.each(&:call)
 
-  # Rails ships a placeholder checklist. Render templates/README.md.erb instead,
-  # which describes the app that actually got built.
-  readme = File.join(@wulin_templates, "README.md.erb")
-  file "README.md", ERB.new(File.read(readme), trim_mode: "-").result(binding), force: true
+  # Rails ships a placeholder checklist. Render templates/*.md.erb instead.
+  %w[README.md AGENTS.md].each do |name|
+    template_path = File.join(@wulin_templates, "#{name}.erb")
+    file name, ERB.new(File.read(template_path), trim_mode: "-").result(binding), force: true
+  end
 
   # Format all generated Ruby files.
   run "bundle exec standardrb --fix"

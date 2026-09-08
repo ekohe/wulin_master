@@ -1,0 +1,63 @@
+# <%= app_name.titleize %>
+
+Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node -v`.strip.delete_prefix("v") %>
+
+## Stack
+
+- **Framework**: Wulin Master (SlickGrid-based admin grids, screens, menus)
+- **Database**: PostgreSQL
+- **Assets**: esbuild (JS) + dart-sass (CSS) + Propshaft (serving)
+- **Auth**: wulin_auth (session-based email/password)
+- **Linter**: Standard (`bundle exec standardrb`)
+
+## Commands
+
+```bash
+bin/dev                    # start server + asset watchers
+yarn build                 # one-off JS build
+bin/rails dartsass:build   # one-off CSS build
+bundle exec standardrb     # lint
+bundle exec standardrb --fix  # lint + auto-fix
+bin/rails db:migrate       # run migrations (engines included)
+bin/rails db:seed          # seed admin user
+```
+
+## Architecture
+
+Components are vendored as git submodules under `vendor/gems/`:
+
+<% @wulin_install.each do |component| -%>
+- `<%= component[:name] %>` (`<%= component[:branch] %>`) — <%= component[:summary] %>
+<% end -%>
+
+Each gem is a Rails engine. Migrations live in the engine and are picked up
+automatically — do not run `install:migrations`.
+
+### Assets
+
+- JS entry: `app/javascript/application.js` — imports each component's `.esm.js`
+- CSS entry: `app/assets/stylesheets/application.sass` — `@use`s each component
+- Output: `app/assets/builds/` (gitignored, built by esbuild and dart-sass)
+- npm deps come through the yarn workspace in `package.json`, not gems
+
+### Configuration
+
+`config/app_config.yml` → `APP_CONFIG` (loaded in `config/application.rb`).
+Gitignored — the committed copy is `config/app_config.example.yml`.
+
+### Screens and menus
+
+Screens are registered in `ApplicationController.define_menu`. To add a screen:
+
+```bash
+bin/rails generate wulin_master:screen_and_grid ModelName field1 field2:type
+```
+
+Then add `item ModelNameScreen` to the menu.
+
+## Conventions
+
+- Do not modify files under `vendor/gems/` — those are submodules
+- Do not run `solid_queue:install` — wulin_queue owns that schema
+- `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`
+- `current_user` returns a `User` instance (overridden in `ApplicationController`)
