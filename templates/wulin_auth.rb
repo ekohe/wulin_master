@@ -17,13 +17,13 @@ wulin_vendor "wulin_auth", "rails8"
 # directly and @import's the rest from the gem.
 file "app/assets/stylesheets/wulin_auth.sass", <<~'SASS'
   // Login page stylesheet — compiled by dart-sass, served by Propshaft.
-  // Replaces the ERB-based setting.scss.erb with a static variable.
   $main-color: blue
-  @import 'materialize/components/color-variables'
-  $primary-color: color(#{$main-color}, "lighten-2") !default
-  $secondary-color: color(#{$main-color}, "base") !default
-  @import 'materialize'
-  @import 'material-icons/css/material-icons'
+  @use 'materialize-css/sass/components/color-variables' as materialize_color
+  $primary-color: materialize_color.color($main-color, "lighten-2") !default
+  $secondary-color: materialize_color.color($main-color, "base") !default
+
+  @use 'material-icons/iconfont/material-icons'
+  @use 'materialize-css/sass/materialize'
   @import 'materialize.overrides'
 
   html
@@ -59,7 +59,7 @@ SASS
 # wulin_auth.js is a Sprockets manifest (//= require). We create an
 # esbuild entry that imports jQuery, materialize, and login.js.
 file "app/javascript/wulin_auth.js", <<~JS
-  import jQuery from "../../vendor/gems/wulin_master/vendor/assets/javascripts/jquery/jquery.js"
+  import jQuery from "jquery"
   window.$ = window.jQuery = jQuery
   import "materialize-css"
   import "../../vendor/gems/wulin_auth/app/assets/javascripts/login.js"
