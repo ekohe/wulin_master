@@ -124,7 +124,7 @@ RB
 
 file "Procfile.dev", <<~PROCFILE
   web: env RUBY_DEBUG_OPEN=true bin/rails server
-  js: yarn build --watch
+  js: yarn build:watch
   css: bin/rails dartsass:watch
 PROCFILE
 
@@ -136,20 +136,21 @@ wulin_post do
   # workspaces. Writing it here means it lands after the installer, not before.
   file "package.json", <<~JSON, force: true
     {
-      "name": "app",
+      "name": "#{app_name}",
       "private": true,
       "workspaces": [
         "vendor/gems/wulin_master"
       ],
       "devDependencies": {
-        "esbuild": "^0.25.9"
-      },
-      "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
-        "copy-icons": "node script/copy_material_icons.js"
+        "esbuild": "^0.28.0"
       },
       "dependencies": {
         "rails-ujs": "^5.2.0"
+      },
+      "scripts": {
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
+        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --watch=forever",
+        "copy-icons": "node script/copy_material_icons.js"
       }
     }
   JSON
