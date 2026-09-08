@@ -13,6 +13,8 @@ file "config/puma.rb", <<~RB, force: true
   threads_count = ENV.fetch("RAILS_MAX_THREADS", 2)
   threads threads_count, threads_count
 
+  port ENV.fetch("PORT", 3000)
+
   plugin :solid_queue
 RB
 
