@@ -205,6 +205,9 @@ after_bundle do
   readme = File.join(@wulin_templates, "README.md.erb")
   file "README.md", ERB.new(File.read(readme), trim_mode: "-").result(binding), force: true
 
+  # Format all generated Ruby files.
+  run "bundle exec standardrb --fix"
+
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
   @wulin_notes.each { |note| say "  - #{note}", :yellow }
 end
