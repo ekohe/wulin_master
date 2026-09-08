@@ -64,7 +64,7 @@ inject_into_file "config/application.rb", <<~RB, before: "Bundler.require(*Rails
   begin
     require_relative "app_config_loader"
     APP_CONFIG = AppConfigLoader.load
-  rescue Exception => e
+  rescue StandardError => e
     APP_CONFIG = {}
     puts e.message
     puts "config/app_config.yml is not configured -- copy config/app_config.example.yml over it."
