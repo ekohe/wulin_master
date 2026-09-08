@@ -178,6 +178,7 @@ after_bundle do
 
     class ApplicationController < ActionController::Base
       protect_from_forgery with: :exception
+      before_action :require_login
 
     #{wulin_indent(@wulin_methods, 2)}
       def self.define_menu
