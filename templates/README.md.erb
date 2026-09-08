@@ -1,17 +1,15 @@
 # <%= app_name.titleize %>
 
-A Wulin Master application. Grids, screens and menus come from the gem; the
-components below are vendored as git submodules under `vendor/gems/`.
+Built with [Wulin Master](https://gitlab.ekohe.com/ekohe/wulin/wulin_master).
+Components are vendored as git submodules under `vendor/gems/`.
 
-| component | branch | what it gives you |
+| Component | Branch | Role |
 | --- | --- | --- |
 <% @wulin_install.each do |component| -%>
 | `<%= component[:name] %>` | `<%= component[:branch] %>` | <%= component[:summary] %> |
 <% end -%>
 
-## Setting up a fresh clone
-
-The gems are submodules, so a plain `git clone` leaves them empty:
+## Setup
 
 ```bash
 git submodule update --init --recursive
@@ -21,19 +19,17 @@ cp config/app_config.example.yml config/app_config.yml
 bin/rails db:create db:migrate db:seed
 ```
 
-## Running it
+## Development
 
 ```bash
 bin/dev
 ```
 
-That runs the three processes in `Procfile.dev`: the server, `yarn build
---watch` for javascript, and `bin/rails dartsass:watch` for CSS. Running
-`bin/rails server` on its own is not enough -- the layout asks Propshaft for
-`application.js` and `application.css`, and if they were never built every page
-raises `Propshaft::MissingAssetError`.
+Runs three processes from `Procfile.dev`: the Rails server, esbuild (JS), and
+dart-sass (CSS). Both output to `app/assets/builds/`, served by Propshaft.
+Running `bin/rails server` alone skips asset compilation.
 
-To build the assets once, without the watchers:
+One-off build without watchers:
 
 ```bash
 yarn build
@@ -42,14 +38,10 @@ bin/rails dartsass:build
 
 ## Configuration
 
-Settings live in `config/app_config.yml`, read through `APP_CONFIG`, which is
-loaded in `config/application.rb`. That file is gitignored because it holds
-credentials in a deployed app, so commit changes to
-`config/app_config.example.yml` and copy it across on a fresh checkout.
+`config/app_config.yml` → `APP_CONFIG` (loaded in `config/application.rb`).
+Gitignored — commit changes to `config/app_config.example.yml` instead.
 
-`config/initializers/wulin_master.rb` reads the `wulin_master` section, so
-changing the title or theme is a YAML edit rather than a code change. After
-changing `color_theme`, regenerate the Sass variable it compiles from:
+To change the color theme, edit `app_config.yml` then regenerate:
 
 ```bash
 bin/rails wulin_master:generate_theme_color_css
@@ -61,28 +53,12 @@ bin/rails wulin_master:generate_theme_color_css
 bin/rails generate wulin_master:screen_and_grid Post title content:text
 ```
 
-Then add it to the menu in `ApplicationController.define_menu`, alongside the
-entries the components put there.
+Add it to the menu in `ApplicationController.define_menu`.
+<% if @wulin_notes.any? -%>
 
-## How the assets fit together
-
-`master.js` is an ES module and `master.sass` uses the Sass module system, so
-neither can go through Sprockets. esbuild bundles the javascript and dart-sass
-compiles the stylesheet, both into `app/assets/builds`, which Propshaft serves.
-The gem's npm dependencies (jquery, jquery-ui, materialize-css, material-icons)
-arrive through the yarn workspace declared in `package.json`, not as gems.
-
-Two things are easy to trip over:
-
-- material-icons' webfonts live in `node_modules` and the compiled CSS refers to
-  them by bare filename, so `yarn run copy-icons` copies them into
-  `app/assets/fonts`.
-- Components ship Sprockets-style asset manifests this app cannot read, so their
-  javascript is imported file by file in `app/javascript/application.js`. Adding
-  a component means adding its imports there.
-
-## Worth knowing
+## Notes
 
 <% @wulin_notes.each do |note| -%>
 - <%= note %>
+<% end -%>
 <% end -%>
