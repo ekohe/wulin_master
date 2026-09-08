@@ -119,13 +119,16 @@ initializer "wulin_master_assets.rb", <<~RB
   end
 RB
 
-file "Procfile.dev", <<~PROCFILE
-  web: env RUBY_DEBUG_OPEN=true bin/rails server
-  js: yarn build:watch
-  css: bin/rails dartsass:watch
-PROCFILE
-
 wulin_post do
+  # Procfile.dev must be written here, not in the template body. `rails new
+  # -j esbuild` appends `js: yarn build --watch` to Procfile.dev after the
+  # template body runs, creating a duplicate js entry. Writing with force:
+  # true inside wulin_post (which runs in after_bundle) replaces it cleanly.
+  file "Procfile.dev", <<~PROCFILE, force: true
+    web: env RUBY_DEBUG_OPEN=true bin/rails server
+    js: yarn build:watch
+    css: bin/rails dartsass:watch
+  PROCFILE
   # All of this waits until after_bundle on purpose. `rails new -j esbuild` runs
   # javascript:install:esbuild after the template body, and that installer
   # rewrites package.json's build script with `npm pkg set` and calls
