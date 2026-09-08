@@ -191,6 +191,11 @@ after_bundle do
 
   @wulin_post.each(&:call)
 
+  # Build assets after all wulin_post blocks have run, so every component's
+  # esbuild entries and dartsass config changes are in place.
+  run "yarn build", abort_on_failure: true
+  rails_command "dartsass:build", abort_on_failure: true
+
   # Every engine appends its own db/migrate to the app's migration paths, so a
   # plain db:migrate picks all of them up -- nothing needs install:migrations.
   rails_command "db:create db:migrate"

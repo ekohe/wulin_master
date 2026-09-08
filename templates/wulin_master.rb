@@ -194,17 +194,14 @@ wulin_post do
     end
   RB
 
-  # abort_on_failure on all four: the layout calls stylesheet_link_tag and
-  # javascript_include_tag, so an app whose assets did not build raises
-  # Propshaft::MissingAssetError on every page. Failing here is far better than
-  # printing "components installed" over a broken app.
+  # yarn install + copy-icons + theme CSS generation happen here so they're
+  # ready before any other wulin_post block runs. The final yarn build and
+  # dartsass:build run in template.rb AFTER all wulin_post blocks, so every
+  # component's esbuild/dartsass config changes are in place.
   run "yarn install", abort_on_failure: true
   run "yarn run copy-icons", abort_on_failure: true
 
   # Writes _theme.generated.scss, which master.sass reads $color-theme from, so
   # it has to happen before the first CSS build.
   rails_command "wulin_master:generate_theme_color_css", abort_on_failure: true
-
-  run "yarn build", abort_on_failure: true
-  rails_command "dartsass:build", abort_on_failure: true
 end
