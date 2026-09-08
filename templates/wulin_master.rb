@@ -6,6 +6,7 @@
 
 wulin_vendor "wulin_master", "v3"
 
+gem "bcrypt"
 gem "dartsass-rails"
 
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
@@ -210,11 +211,18 @@ wulin_post do
 
   # The admin column is here rather than in wulin_permits so that the model is
   # generated once, whichever components are selected.
-  generate :model, "User email:string admin:boolean"
+  generate :model, "User email:string password_digest:string admin:boolean"
+
+  inject_into_class "app/models/user.rb", "User", <<-RB
+  has_secure_password
+  RB
 
   append_to_file "db/seeds.rb", <<~RB
     # current_user is User.first, so the first user has to be an admin or every
     # require_admin screen 403s.
-    User.find_or_create_by!(email: "admin@example.com") { |user| user.admin = true }
+    User.find_or_create_by!(email: "admin@example.com") do |user|
+      user.password = "password"
+      user.admin = true
+    end
   RB
 end
