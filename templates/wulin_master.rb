@@ -29,7 +29,6 @@ end
 wulin_js "../../vendor/gems/wulin_master/app/assets/javascripts/master/master.esm.js"
 wulin_sass '@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master"'
 
-
 wulin_app_config <<~YAML
   wulin_master:
     app_title: "#{app_name.titleize}"

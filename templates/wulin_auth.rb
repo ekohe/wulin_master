@@ -15,7 +15,7 @@ wulin_vendor "wulin_auth", "rails8"
 # reads WulinMaster.config.color_theme) and materialize. dart-sass can't
 # process ERB, so we write a plain-Sass entry that sets the variable
 # directly and @import's the rest from the gem.
-file "app/assets/stylesheets/wulin_auth.sass", <<~'SASS'
+file "app/assets/stylesheets/wulin_auth.sass", <<~SASS
   // Login page stylesheet — compiled by dart-sass, served by Propshaft.
   $main-color: blue
   @use 'materialize-css/sass/components/color-variables' as materialize_color
@@ -70,25 +70,25 @@ wulin_post do
   inject_into_file "config/initializers/wulin_master_assets.rb",
     after: '  config.dartsass.builds = {"application.sass" => "application.css"}' + "\n" do
     <<~RB
-        config.dartsass.builds["wulin_auth.sass"] = "wulin_auth.css"
+      config.dartsass.builds["wulin_auth.sass"] = "wulin_auth.css"
     RB
   end
 
   inject_into_file "config/initializers/wulin_master_assets.rb",
     after: '--load-path=vendor/gems/wulin_master/app/assets/stylesheets"' + "\n" do
     <<~RB
-        config.dartsass.build_options << "--load-path=vendor/gems/wulin_auth/app/assets/stylesheets"
+      config.dartsass.build_options << "--load-path=vendor/gems/wulin_auth/app/assets/stylesheets"
     RB
   end
 
   # Add wulin_auth.js as a second esbuild entry point. Switch from
   # --outfile (single entry) to --outdir (multiple entries).
   gsub_file "package.json",
-    '--outfile=app/assets/builds/application.js',
-    '--outdir=app/assets/builds'
+    "--outfile=app/assets/builds/application.js",
+    "--outdir=app/assets/builds"
   gsub_file "package.json",
-    'app/javascript/application.js',
-    'app/javascript/application.js app/javascript/wulin_auth.js'
+    "app/javascript/application.js",
+    "app/javascript/application.js app/javascript/wulin_auth.js"
 
   # wulin_auth's migration lives in the engine. Add the admin column
   # via a separate app-level migration.
