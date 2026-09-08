@@ -8,6 +8,14 @@ wulin_vendor "wulin_queue", "develop"
 
 wulin_js "../../vendor/gems/wulin_queue/app/assets/javascripts/wulin_queue.esm.js"
 
+# Run the Solid Queue supervisor inside puma — no separate jobs process.
+file "config/puma.rb", <<~RB, force: true
+  threads_count = ENV.fetch("RAILS_MAX_THREADS", 2)
+  threads threads_count, threads_count
+
+  plugin :solid_queue
+RB
+
 wulin_menu <<~RB
   submenu "Background Jobs" do
     item SolidQueueJobScreen, icon: :work
