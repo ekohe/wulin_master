@@ -10,13 +10,9 @@ wulin_vendor "wulin_auth", "rails8"
 # stub current_user (User.first) is replaced by the real one.
 
 wulin_post do
-  # wulin_auth's migration creates users with email + password_digest +
-  # token + token_expires_at. The admin column comes from wulin_permits
-  # or wulin_master's own User generation — wulin_auth doesn't add it,
-  # so we add it here if not already present.
-  inject_into_file Dir.glob("db/migrate/*_create_users.rb").first,
-    "      t.boolean :admin, default: false\n",
-    after: "t.timestamps\n"
+  # wulin_auth's migration lives in the engine. Add the admin column
+  # via a separate app-level migration.
+  generate :migration, "AddAdminToUsers admin:boolean"
 
   append_to_file "db/seeds.rb", <<~RB
     User.find_or_create_by!(email: "admin@example.com") do |user|
