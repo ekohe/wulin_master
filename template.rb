@@ -22,6 +22,8 @@ gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 @wulin_catalog = [
   {name: "wulin_master", branch: "v3", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
+  {name: "wulin_auth", branch: "rails8", required: true,
+   summary: "login/logout, current_user, password reset"},
   {name: "wulin_permits", branch: "develop",
    summary: "users, roles, privileges, per-screen permissions"},
   {name: "wulin_queue", branch: "develop", needs: %w[wulin_permits],

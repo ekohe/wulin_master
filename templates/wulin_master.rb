@@ -29,14 +29,6 @@ end
 wulin_js "../../vendor/gems/wulin_master/app/assets/javascripts/master/master.esm.js"
 wulin_sass '@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master"'
 
-# wulin_master itself needs a user, not just wulin_permits: grid_states and
-# user_preferences are keyed by user_id, and GridStatesManagesController calls
-# current_user on every save. Replace both with your real user model and auth.
-wulin_method <<~RB
-  def current_user
-    @current_user ||= User.first
-  end
-RB
 
 wulin_app_config <<~YAML
   wulin_master:
@@ -213,21 +205,4 @@ wulin_post do
 
   run "yarn build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
-
-  # The admin column is here rather than in wulin_permits so that the model is
-  # generated once, whichever components are selected.
-  generate :model, "User email:string password_digest:string admin:boolean"
-
-  inject_into_class "app/models/user.rb", "User", <<-RB
-  has_secure_password
-  RB
-
-  append_to_file "db/seeds.rb", <<~RB
-    # current_user is User.first, so the first user has to be an admin or every
-    # require_admin screen 403s.
-    User.find_or_create_by!(email: "admin@example.com") do |user|
-      user.password = "password"
-      user.admin = true
-    end
-  RB
 end
