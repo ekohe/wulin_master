@@ -17,6 +17,9 @@ gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
   gsub_file "Gemfile", /^.*gem "#{name}".*\n/, ""
 end
 
+# Strip empty group blocks left behind after removing gems.
+gsub_file "Gemfile", /^group :[^\n]+\n(#[^\n]*\n|\s*\n)*end\n/, ""
+
 gem_group :development, :test do
   gem "standard"
 end
