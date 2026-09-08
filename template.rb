@@ -1,4 +1,4 @@
-# rails new wulin_app --skip-hotwire --skip-solid --database=postgresql -j esbuild -m ./template.rb
+# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
 #
 # Asks which Wulin components you want, then vendors and configures each one.
 # Set WULIN_COMPONENTS to skip the questions:
@@ -6,17 +6,11 @@
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
-# --skip-solid matters: Rails 8 otherwise generates its own Solid Queue setup in
-# a separate queue database, and wulin_queue creates the same tables in the
-# primary one. Two schemas for one set of tables.
-
-# Rails 8 installs Solid Queue/Cache/Cable by default, creating a separate
-# queue database that conflicts with wulin_queue's migrations in the primary
-# database. Abort early so the user doesn't end up with a broken app.
-if !options[:skip_solid]
-  say "ERROR: run with --skip-solid -- wulin_queue owns the Solid Queue schema", :red
-  raise Thor::Error, "Aborting: add --skip-solid to the rails new command"
-end
+# Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
+# owns the Solid Queue schema in the primary database, so strip the duplicate.
+gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
+gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
+gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 
 # The develop branches are identical on both hosts, so everything comes
 # from one place.
