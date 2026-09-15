@@ -13,13 +13,13 @@ Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node 
 ## Commands
 
 ```bash
-bin/dev                    # start server + asset watchers
-yarn build                 # one-off JS build
-bin/rails dartsass:build   # one-off CSS build
-bundle exec standardrb     # lint
+bin/dev                       # start server + asset watchers
+npm run build                 # one-off JS build
+bin/rails dartsass:build      # one-off CSS build
+bundle exec standardrb        # lint
 bundle exec standardrb --fix  # lint + auto-fix
-bin/rails db:migrate       # run migrations (engines included)
-bin/rails db:seed          # seed admin user
+bin/rails db:migrate          # run migrations (engines included)
+bin/rails db:seed             # seed admin user
 ```
 
 ## Architecture
@@ -38,7 +38,7 @@ automatically — do not run `install:migrations`.
 - JS entry: `app/javascript/application.js` — imports each component's `.esm.js`
 - CSS entry: `app/assets/stylesheets/application.sass` — `@use`s each component
 - Output: `app/assets/builds/` (gitignored, built by esbuild and dart-sass)
-- npm deps come through the yarn workspace in `package.json`, not gems
+- npm deps come through the npm workspace in `package.json`, not gems
 
 ### Configuration
 
