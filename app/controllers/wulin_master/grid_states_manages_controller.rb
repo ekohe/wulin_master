@@ -106,10 +106,11 @@ module WulinMaster
 
     private
 
-    # Every state is keyed by user_id, and an app with no auth gem has no current_user. The grid
-    # renders without a state either way -- GridStates#states_for_user returns "false".
+    # Every state is keyed by user_id, and an app with no auth gem does not DEFINE current_user --
+    # the NameError named above is what asking for it raises there. The grid renders without a state
+    # either way -- GridStates#states_for_user returns "false".
     def require_current_user
-      self.response_body = "no current user" unless current_user
+      self.response_body = "no current user" unless respond_to?(:current_user) && current_user
     end
 
     def set_state

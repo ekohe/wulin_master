@@ -1,3 +1,7 @@
+-# Saved views are per user, and an app with no auth gem does not define current_user. The action
+-# that renders this partial is offered either way -- Grid#valid_by_action_authorized? treats "no
+-# user" as unrestricted -- so the switcher is what stands down, not the action.
+- return "" unless respond_to?(:current_user) && current_user
 :ruby
   WulinMaster::GridState.create_default(current_user.id, grid.name)
   states = grid_states_options(current_user.id, grid.name)
