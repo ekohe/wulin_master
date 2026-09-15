@@ -8,7 +8,7 @@
 # Both are Sprockets-era manifests, so the template creates Propshaft-
 # compatible entry points: a dart-sass source and an esbuild bundle.
 
-wulin_vendor "wulin_auth", "rails8"
+wulin_vendor "wulin_auth"
 
 # --- login page CSS ---
 # wulin_auth's wulin_auth.css.sass imports setting.scss.erb (ERB that

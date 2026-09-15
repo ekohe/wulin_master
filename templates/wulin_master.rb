@@ -4,7 +4,7 @@
 # dart-sass compiles the stylesheet, and Propshaft serves the results out of
 # app/assets/builds.
 
-wulin_vendor "wulin_master", "v3"
+wulin_vendor "wulin_master"
 
 gem "bcrypt"
 gem "dartsass-rails"

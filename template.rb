@@ -1,13 +1,34 @@
-# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+# rails new APP_NAME --skip-hotwire --database=postgresql --skip-javascript -m ./template.rb
 #
-# Asks which Wulin components you want, then vendors and configures each one.
-# Set WULIN_COMPONENTS to skip the questions:
+# Asks which Wulin components to install, then vendors and configures each one. Set
+# WULIN_COMPONENTS to skip the questions:
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
-# Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
-# owns the Solid Queue schema in the primary database, so strip the duplicate.
+# Forge/AIDA runs a copy of that command verbatim (build contract: `scaffold`), so keep
+# the two in sync. --skip-javascript is the one load-bearing flag: this template owns
+# package.json, Procfile.dev, bin/dev and app/assets/builds, and `-j esbuild` runs
+# jsbundling's installer in between the body and after_bundle, overwriting two of them.
+# That path still works; this one is supported.
+
+require "open-uri"
+require "shellwords"
+
+# Applied over a URL, this file's __FILE__ *is* that URL, so File.read cannot reach the
+# component templates next to it. AIDA always scaffolds over a URL.
+@wulin_source = File.dirname(__FILE__)
+@wulin_remote_source = @wulin_source.match?(%r{\Ahttps?://})
+
+# GitHub over public HTTPS, not the GitLab mirror over SSH: this URL lands in the
+# generated app's .gitmodules, and that app is delivered to GitHub, where
+# git@gitlab.ekohe.com is unclonable without a key -- including by its own image build.
+@wulin_git_base = "https://github.com/ekohe"
+
+# Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue owns the
+# Solid Queue schema in the primary database, so strip the duplicate. Done here rather
+# than by requiring --skip-solid on the command line: the flag has to be requested by
+# whoever invokes `rails new`, and Forge/AIDA runs a fixed command it does not vary.
 gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
 gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
 gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
@@ -24,25 +45,27 @@ gem_group :development, :test do
   gem "standard"
 end
 
-# The develop branches are identical on both hosts, so everything comes
-# from one place.
-@wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"
-@wulin_templates = File.expand_path("templates", __dir__)
-
-# Order here is install order, and it matters: wulin_permits must land before
-# wulin_queue so the Permission model exists when the queue migrations seed it.
+# Install order, and it matters: wulin_permits must land before wulin_queue so the
+# Permission model exists when the queue migrations seed it.
+#
+# `branch` pins a component; without one it tracks the repository's default branch.
+# wulin_auth is pinned because its code has to match the template configuring it.
+# wulin_master is pinned to v3-aida specifically, matching the branch this very file
+# is served from: this file *is* wulin_master, and a generated app must vendor its gem
+# from the same ref as the template that configured it, not from whatever branch
+# happens to be the repository default.
 @wulin_catalog = [
-  {name: "wulin_master", branch: "v3", required: true,
+  {name: "wulin_master", branch: "v3-aida", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
   {name: "wulin_auth", branch: "rails8", required: true,
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", branch: "develop",
+  {name: "wulin_permits",
    summary: "users, roles, privileges, per-screen permissions"},
-  {name: "wulin_queue", branch: "develop", needs: %w[wulin_permits],
+  {name: "wulin_queue", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
-  {name: "wulin_audit", branch: "develop",
+  {name: "wulin_audit",
    summary: "audit trail for every model write, plus request action logs"},
-  {name: "wulin_excel", branch: "develop",
+  {name: "wulin_excel",
    summary: "Excel export button on grid toolbars"}
 ]
 
@@ -57,11 +80,43 @@ end
 @wulin_db_post = []      # runs after db:migrate, for anything needing tables
 @wulin_notes = []        # printed last, once everything has run
 
-def wulin_vendor(name, branch)
+# A file shipping next to this template, read from disk or over HTTPS depending on how
+# the template itself arrived.
+def wulin_read(relative)
+  path = "#{@wulin_source}/#{relative}"
+  @wulin_remote_source ? URI.parse(path).open(&:read) : File.read(path)
+end
+
+# Asked of the remote rather than assumed -- the components do not agree on a name and
+# are being renamed. Fatal on failure: a guessed branch vendors code that fails later.
+def wulin_default_branch(url)
+  symref = `git ls-remote --symref #{Shellwords.escape(url)} HEAD 2>/dev/null`
+  symref[%r{^ref: refs/heads/(\S+)\s}, 1] or
+    raise Thor::Error, "could not read the default branch of #{url} -- is it reachable?"
+end
+
+def wulin_vendor(name)
+  component = @wulin_catalog.find { |c| c[:name] == name }
+  url = "#{@wulin_git_base}/#{name}.git"
+  # Written back so templates/README.md.erb reports what was vendored.
+  branch = component[:branch] ||= wulin_default_branch(url)
+  say_status :vendor, "#{name} (#{branch})", :green
+
   # rails new has not run git init yet at template time.
   run "git init -q" unless File.exist?(".git")
-  run "git submodule add -q -b #{branch} #{@wulin_git_base}/#{name}.git vendor/gems/#{name}"
-  run "git config -f .gitmodules submodule.vendor/gems/#{name}.branch #{branch}"
+
+  # Idempotent, so a retry over a partial tree recovers. Guarded on the .gitmodules url
+  # key, not the directory: a half-registered submodule has the directory but no mapping,
+  # and skipping the re-add there leaves a .gitmodules that git rejects from then on.
+  run <<~SH
+    if ! git config -f .gitmodules --get submodule.vendor/gems/#{name}.url >/dev/null 2>&1; then
+      git rm -f --cached vendor/gems/#{name} 2>/dev/null || true
+      rm -rf vendor/gems/#{name} .git/modules/vendor/gems/#{name}
+      git submodule add -q -b #{branch} #{url} vendor/gems/#{name}
+    fi
+    git config -f .gitmodules submodule.vendor/gems/#{name}.branch #{branch}
+  SH
+
   gem name, path: "vendor/gems/#{name}"
 end
 
@@ -109,10 +164,15 @@ def wulin_selection
 
   chosen = if requested == "all"
     optional.map { |c| c[:name] }
-  elsif requested.empty?
+  elsif !requested.empty?
+    requested.split(",").map(&:strip).reject(&:empty?)
+  elsif $stdin.tty?
     optional.select { |c| yes?("Install #{c[:name]}? (#{c[:summary]}) [y/N]") }.map { |c| c[:name] }
   else
-    requested.split(",").map(&:strip).reject(&:empty?)
+    # Asking a closed stdin reads EOF and answers no to everything, which looks like a
+    # successful build of an app missing four components.
+    say_status :components, "stdin is not a tty and WULIN_COMPONENTS is unset -- installing only #{@wulin_catalog.select { |c| c[:required] }.map { |c| c[:name] }.join(", ")}", :yellow
+    []
   end
 
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
@@ -135,9 +195,8 @@ end
 @wulin_install = wulin_selection
 
 @wulin_install.each do |component|
-  say_status :component, "#{component[:name]} (#{component[:branch]})", :green
-  path = File.join(@wulin_templates, "#{component[:name]}.rb")
-  instance_eval(File.read(path), path)
+  path = "templates/#{component[:name]}.rb"
+  instance_eval(wulin_read(path), path)
 end
 
 # --- assembly, once every component has had its say ------------------------
@@ -193,7 +252,7 @@ after_bundle do
 
   # Build assets after all wulin_post blocks have run, so every component's
   # esbuild entries and dartsass config changes are in place.
-  run "yarn build", abort_on_failure: true
+  run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
 
   # Every engine appends its own db/migrate to the app's migration paths, so a
@@ -205,10 +264,20 @@ after_bundle do
 
   @wulin_db_post.each(&:call)
 
-  # Rails ships a placeholder checklist. Render templates/*.md.erb instead.
-  %w[README.md AGENTS.md].each do |name|
-    template_path = File.join(@wulin_templates, "#{name}.erb")
-    file name, ERB.new(File.read(template_path), trim_mode: "-").result(binding), force: true
+  # README.md belongs to whoever created the repository -- on a Forge project it is
+  # derived from the design. So the generated description always goes to
+  # docs/wulin_app.md, and claims README.md only while it is still Rails' placeholder.
+  # AGENTS.md is this template's own file either way -- there is no placeholder to step
+  # around.
+  readme = ERB.new(wulin_read("templates/README.md.erb"), trim_mode: "-").result(binding)
+  file "docs/wulin_app.md", readme, force: true
+  file "AGENTS.md", ERB.new(wulin_read("templates/AGENTS.md.erb"), trim_mode: "-").result(binding), force: true
+
+  existing_readme = File.exist?("README.md") ? File.read("README.md") : ""
+  if existing_readme.empty? || existing_readme.include?("Things you may want to cover:")
+    file "README.md", readme, force: true
+  else
+    wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
   end
 
   # Format all generated Ruby files.
