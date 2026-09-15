@@ -1,11 +1,10 @@
 # wulin_permits -- users, roles, privileges and per-screen permissions.
 #
-# This gem assumes a host app that already has an authentication layer. It has
-# no generators and no fallbacks: app/grids/user_grid.rb runs `model User` in
-# the class body, five of its controllers declare `before_action :require_admin`
-# without defining it, and its grids call user.admin?, user.email and
-# User.find_by_ids. So the template supplies a minimal version of all of it.
-# Replace it with your real user model and auth.
+# This gem assumes a host app that already has an authentication layer, which is why it needs
+# wulin_auth: app/grids/user_grid.rb runs `model User` in the class body and its grids call
+# user.admin?, user.email and User.find_by_ids. It has no generators and no fallbacks, so five of
+# its controllers declare `before_action :require_admin` without defining it and the template
+# supplies that. Replace it with your real authorization.
 
 wulin_vendor "wulin_permits"
 
@@ -27,9 +26,9 @@ wulin_sass <<~SASS.strip
         margin-top: 10px
 SASS
 
-# current_user and the User model come from templates/wulin_master.rb, which
-# needs them too. This is the part only wulin_permits wants: five of its
-# controllers declare before_action :require_admin and none of them define it.
+# The User model comes from wulin_auth, which this component `needs`. This is the part only
+# wulin_permits wants: five of its controllers declare before_action :require_admin and none of
+# them define it.
 # wulin_auth's current_user returns WulinAuth::User.find(...), but
 # wulin_permits includes has_permission_with_name? only on the app's
 # User subclass. Override current_user to return a User instance.
@@ -57,15 +56,11 @@ wulin_menu <<~RB
 RB
 
 wulin_post do
-  # wulin_auth's User lives at WulinAuth::User. wulin_permits' grids
-  # reference a top-level User class and call find_by_ids on it.
-  file "app/models/user.rb", <<~RB, force: true
-    class User < WulinAuth::User
-      self.table_name = "users"
-
-      def self.find_by_ids(ids)
-        where(id: ids)
-      end
+  # The User class comes from wulin_auth, which this component needs. Its grids call
+  # find_by_ids on it, which nothing else defines.
+  inject_into_class "app/models/user.rb", "User", <<~RB
+    def self.find_by_ids(ids)
+      where(id: ids)
     end
   RB
 end

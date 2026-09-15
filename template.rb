@@ -57,9 +57,9 @@ end
 @wulin_catalog = [
   {name: "wulin_master", branch: "v3-aida", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth", branch: "main", required: true,
+  {name: "wulin_auth", branch: "main",
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", branch: "main",
+  {name: "wulin_permits", branch: "main", needs: %w[wulin_auth],
    summary: "users, roles, privileges, per-screen permissions"},
   {name: "wulin_queue", branch: "main", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
@@ -74,6 +74,7 @@ end
 @wulin_js = []           # paths to import from app/javascript/application.js
 @wulin_sass = []         # indented-Sass rules for application.sass
 @wulin_menus = []        # submenu blocks for ApplicationController.define_menu
+@wulin_filters = []      # before_action lines ApplicationController must run
 @wulin_methods = []      # methods ApplicationController must define
 @wulin_app_config = []   # YAML sections for config/app_config.yml
 @wulin_post = []         # runs after bundle, before the database is set up
@@ -132,6 +133,10 @@ def wulin_menu(block)
   @wulin_menus << block
 end
 
+def wulin_filter(code)
+  @wulin_filters << code
+end
+
 def wulin_method(code)
   @wulin_methods << code
 end
@@ -178,10 +183,13 @@ def wulin_selection
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
   raise Thor::Error, "Unknown component: #{unknown.join(", ")}" if unknown.any?
 
-  # A component's `needs` are code dependencies, not suggestions -- wulin_queue's
-  # grids call current_user.has_permission_with_name? and its migration seeds
-  # Permission rows, both of which come from wulin_permits.
-  chosen.dup.each do |name|
+  # A component's `needs` are code dependencies, not suggestions -- wulin_queue's grids call
+  # current_user.has_permission_with_name? and its migration seeds Permission rows, both of which
+  # come from wulin_permits, whose own grids reference the User wulin_auth owns.
+  #
+  # `each` over the array being appended to, not a copy of it: it walks by index against the current
+  # length, so a dependency added here is visited too and the chain is followed to its end.
+  chosen.each do |name|
     @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |dep|
       next if chosen.include?(dep)
       chosen << dep
@@ -241,8 +249,7 @@ after_bundle do
 
     class ApplicationController < ActionController::Base
       protect_from_forgery with: :exception
-      before_action :require_login
-
+    #{wulin_indent(@wulin_filters, 2)}
     #{wulin_indent(@wulin_methods, 2)}
       def self.define_menu
         menu do |c|
@@ -263,7 +270,8 @@ after_bundle do
   # plain db:migrate picks all of them up -- nothing needs install:migrations.
   rails_command "db:create db:migrate"
 
-  # Seeds the admin user every app needs, since current_user is User.first.
+  # Components append to db/seeds.rb -- wulin_auth's admin user, for one. Rails' own file holds
+  # only comments, so this is a no-op when none of them did.
   rails_command "db:seed"
 
   @wulin_db_post.each(&:call)

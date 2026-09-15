@@ -59,5 +59,7 @@ Then add `item ModelNameScreen` to the menu.
 
 - Do not modify files under `vendor/gems/` — those are submodules
 - Do not run `solid_queue:install` — wulin_queue owns that schema
+<% if @wulin_install.any? { |c| c[:name] == "wulin_auth" } -%>
 - `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`
 - `current_user` returns a `User` instance (overridden in `ApplicationController`)
+<% end -%>

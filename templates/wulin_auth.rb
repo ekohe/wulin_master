@@ -10,6 +10,11 @@
 
 wulin_vendor "wulin_auth"
 
+# Nothing in the app answers without a session. The filter that says so is declared here rather
+# than by wulin_master, because require_login is defined in this gem and the login page it
+# redirects to is this gem's.
+wulin_filter "before_action :require_login"
+
 # --- login page CSS ---
 # wulin_auth's wulin_auth.css.sass imports setting.scss.erb (ERB that
 # reads WulinMaster.config.color_theme) and materialize. dart-sass can't
@@ -89,6 +94,14 @@ wulin_post do
   gsub_file "package.json",
     "app/javascript/application.js",
     "app/javascript/application.js app/javascript/wulin_auth.js"
+
+  # The engine defines WulinAuth::User; the app's own User is the subclass everything else
+  # names. It is written here because the seed below creates one and the login page signs it in.
+  file "app/models/user.rb", <<~RB
+    class User < WulinAuth::User
+      self.table_name = "users"
+    end
+  RB
 
   # wulin_auth's migration lives in the engine. Add the admin column
   # via a separate app-level migration.
