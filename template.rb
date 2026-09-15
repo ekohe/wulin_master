@@ -57,15 +57,15 @@ end
 @wulin_catalog = [
   {name: "wulin_master", branch: "v3-aida", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth", branch: "rails8", required: true,
+  {name: "wulin_auth", branch: "main", required: true,
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits",
+  {name: "wulin_permits", branch: "main",
    summary: "users, roles, privileges, per-screen permissions"},
-  {name: "wulin_queue", needs: %w[wulin_permits],
+  {name: "wulin_queue", branch: "main", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
-  {name: "wulin_audit",
+  {name: "wulin_audit", branch: "main",
    summary: "audit trail for every model write, plus request action logs"},
-  {name: "wulin_excel",
+  {name: "wulin_excel", branch: "main",
    summary: "Excel export button on grid toolbars"}
 ]
 
