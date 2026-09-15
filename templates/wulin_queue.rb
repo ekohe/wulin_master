@@ -6,7 +6,9 @@
 
 wulin_vendor "wulin_queue"
 
-wulin_js "../../vendor/gems/wulin_queue/app/assets/javascripts/wulin_queue.esm.js"
+# wulin_queue keeps its ESM entry on `develop`; the catalogue pins `main`, which
+# does not have one. Selecting this component fails its esbuild step until it does.
+wulin_js "../../vendor/gems/wulin_queue/app/javascript/wulin_queue.esm.js"
 
 # Run the Solid Queue supervisor inside puma — no separate jobs process.
 file "config/puma.rb", <<~RB, force: true

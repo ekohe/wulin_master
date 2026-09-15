@@ -1,8 +1,7 @@
 # wulin_audit -- records every ActiveRecord write, plus a log of each request.
 #
-# Despite what the old docs claimed, this no longer needs MongoDB: the models
-# are plain ActiveRecord. It does need PostgreSQL, because the audit tables use
-# jsonb columns.
+# Its models are plain ActiveRecord; the audit tables use jsonb columns, so it
+# needs PostgreSQL.
 
 wulin_vendor "wulin_audit"
 
@@ -10,7 +9,7 @@ wulin_vendor "wulin_audit"
 # dependency, so without this the app raises LoadError on boot.
 gem "haml-rails"
 
-wulin_js "../../vendor/gems/wulin_audit/app/assets/javascripts/audit.esm.js"
+wulin_js "../../vendor/gems/wulin_audit/app/javascript/wulin_audit.esm.js"
 
 # The gem's audit.css.scss uses image-url(), a sass-rails function dart-sass
 # does not have, so the one rule in it is reproduced here. Propshaft indexes the

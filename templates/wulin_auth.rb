@@ -5,8 +5,8 @@
 #
 # The login page has its own layout (wulin_auth.html.haml) that loads
 # wulin_auth.css and wulin_auth.js independently of the main app assets.
-# Both are Sprockets-era manifests, so the template creates Propshaft-
-# compatible entry points: a dart-sass source and an esbuild bundle.
+# The stylesheet is a Sprockets-era manifest, so the template creates
+# Propshaft-compatible entry points: a dart-sass source and an esbuild bundle.
 
 wulin_vendor "wulin_auth"
 
@@ -56,13 +56,13 @@ file "app/assets/stylesheets/wulin_auth.sass", <<~SASS
 SASS
 
 # --- login page JS ---
-# wulin_auth.js is a Sprockets manifest (//= require). We create an
-# esbuild entry that imports jQuery, materialize, and login.js.
+# The gem's ESM entry needs jQuery and materialize as globals. We create an
+# esbuild entry that supplies them and imports it.
 file "app/javascript/wulin_auth.js", <<~JS
   import jQuery from "jquery"
   window.$ = window.jQuery = jQuery
   import "materialize-css"
-  import "../../vendor/gems/wulin_auth/app/assets/javascripts/login.js"
+  import "../../vendor/gems/wulin_auth/app/javascript/wulin_auth.esm.js"
 JS
 
 wulin_post do

@@ -45,7 +45,7 @@ if RbConfig::CONFIG["host_os"].include?("darwin") && `sw_vers -productVersion`.t
   wulin_note "sass-embedded is pinned below 1.98 because this app was generated on macOS #{`sw_vers -productVersion`.to_i}; 1.98 raised dart-sass's floor to macOS 14. Drop the pin when everyone is on 14+"
 end
 
-wulin_js "../../vendor/gems/wulin_master/app/assets/javascripts/master/master.esm.js"
+wulin_js "../../vendor/gems/wulin_master/app/javascript/wulin_master.esm.js"
 wulin_sass '@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master"'
 
 wulin_app_config <<~YAML
