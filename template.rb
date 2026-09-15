@@ -284,8 +284,15 @@ after_bundle do
     wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
   end
 
-  # Format all generated Ruby files.
-  run "bundle exec standardrb --fix"
+  # Rails writes STDOUT here; standard wants $stdout and classes the rewrite unsafe, so
+  # `--fix` leaves it. They are the same object, and it is the one offence below that the
+  # formatter cannot clear.
+  gsub_file "config/environments/production.rb", "logger(STDOUT)", "logger($stdout)"
+
+  # The generated app declares `standard`, and Rails writes its files for
+  # rubocop-rails-omakase -- 23 offences in a bare `rails new`. This is where the two meet.
+  # Not gated: a formatter's exit code says what is left to tidy, not whether the app exists.
+  run "bundle exec standardrb --fix || true"
 
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
   @wulin_notes.each { |note| say "  - #{note}", :yellow }
