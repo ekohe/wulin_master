@@ -6,7 +6,7 @@
 
 wulin_vendor "wulin_excel", "develop"
 
-wulin_js "../../vendor/gems/wulin_excel/vendor/assets/javascripts/excel.esm.js"
+wulin_js "../../vendor/gems/wulin_excel/app/javascript/wulin_excel.esm.js"
 
 # Same image-url() problem as wulin_audit, same one-rule fix.
 wulin_sass <<~SASS

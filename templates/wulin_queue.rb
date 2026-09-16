@@ -6,7 +6,7 @@
 
 wulin_vendor "wulin_queue", "develop"
 
-wulin_js "../../vendor/gems/wulin_queue/app/assets/javascripts/wulin_queue.esm.js"
+wulin_js "../../vendor/gems/wulin_queue/app/javascript/wulin_queue.esm.js"
 
 # Run the Solid Queue supervisor inside puma — no separate jobs process.
 file "config/puma.rb", <<~RB, force: true

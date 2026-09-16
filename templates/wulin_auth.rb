@@ -57,12 +57,12 @@ SASS
 
 # --- login page JS ---
 # wulin_auth.js is a Sprockets manifest (//= require). We create an
-# esbuild entry that imports jQuery, materialize, and login.js.
+# esbuild entry that imports jQuery, materialize, and the gem's ESM entry.
 file "app/javascript/wulin_auth.js", <<~JS
   import jQuery from "jquery"
   window.$ = window.jQuery = jQuery
   import "materialize-css"
-  import "../../vendor/gems/wulin_auth/app/assets/javascripts/login.js"
+  import "../../vendor/gems/wulin_auth/app/javascript/wulin_auth.esm.js"
 JS
 
 wulin_post do
