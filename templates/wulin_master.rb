@@ -121,11 +121,18 @@ create_file "app/assets/builds/.keep", ""
 # refuses to boot without this file. Unconditional: keying it off a list of component
 # gems breaks the first time one of them changes its dependencies.
 #
+# The two dropzone links are this gem's own assets, named because the application layout calls
+# `asset_path` on them (app/views/layouts/application.html.haml) and Sprockets serves nothing it was
+# not told to. Without them EVERY page through that layout raises AssetNotPrecompiledError -- the app
+# boots and `/up` answers 200, so the healthcheck passes and only a request for a real page shows it.
+#
 # ../builds and not ../stylesheets -- dart-sass writes application.css into builds, and
 # linking both declares two sources for one output (Sprockets::DoubleLinkError).
 file "app/assets/config/manifest.js", <<~JS, force: true
   //= link_tree ../images
   //= link_tree ../builds
+  //= link dropzone.min.js
+  //= link dropzone.min.css
 JS
 
 initializer "wulin_master_assets.rb", <<~RB
