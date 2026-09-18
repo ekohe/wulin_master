@@ -6598,6 +6598,7 @@ if (typeof Slick === "undefined") {
       "onColumnsReordered": new Slick.Event(),
       "onColumnsPinned": new Slick.Event(),
       "onColumnsResized": new Slick.Event(),
+      "onAutosizeColumns": new Slick.Event(),
       "onCellChange": new Slick.Event(),
       "onBeforeEditCell": new Slick.Event(),
       "onBeforeCellEditorDestroy": new Slick.Event(),
