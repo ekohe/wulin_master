@@ -19,7 +19,7 @@ WulinMaster.actions.ImportOldFormatState = $.extend(
         onOpenStart: function (modal) {
           $(modal).css({width: "640px", height: "520px", maxHeight: "90%"});
           $(modal).find(".modal-content").html(
-            "<p>Paste a state value from a previous event. It will be converted to the current format and saved on the selected grid state.</p>" +
+            "<p>Paste a old format state value from a previous event. It will be converted to the current format and saved on the selected grid state.</p>" +
             "<textarea class='old-format-state-value' style='height:280px;font-family:monospace;'></textarea>"
           );
         }
