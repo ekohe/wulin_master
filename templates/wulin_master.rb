@@ -24,8 +24,11 @@ gem "jsbundling-rails" unless File.read("Gemfile").include?("jsbundling-rails")
 # `gem install foreman`, so the runtime container gets it from bundle install.
 gem "foreman", group: :development unless File.read("Gemfile").include?('gem "foreman"')
 
-# Scaffolded with --skip-test there is otherwise no way to run a test at all: no test/
-# because the flag removed it, no spec/ without these.
+# Scaffolded with --skip-test there is otherwise no way to run a test at all: no test/ because the
+# flag removed it, no spec/ without these.
+#
+# These two and no more. A matcher library (shoulda-matchers, rspec-collection_matchers) is a
+# choice about how to write a spec, and an app makes it for itself -- nothing here needs one.
 unless File.read("Gemfile").include?("rspec-rails")
   gem_group :development, :test do
     gem "rspec-rails"
@@ -256,6 +259,35 @@ wulin_post do
   # by a later component (wulin_auth's admin-column migration, for one) writes a spec
   # that needs the harness to be there already.
   rails_command "generate rspec:install"
+
+  # The two things `rspec:install` leaves undone. `factory_bot_rails` does not include its syntax
+  # methods just by being in the Gemfile, and the generated rails_helper ships its support-file
+  # loader commented out -- so `create(:thing)` raises NoMethodError in an app whose `spec/` looks
+  # complete, which is what makes it expensive to meet rather than merely wrong.
+  #
+  # They are here because whoever installs a gem owes it working: this template is what puts
+  # `factory_bot_rails` in the Gemfile and runs `rspec:install`, so the wiring between them is its
+  # own unfinished work, not the first spec author's problem to discover.
+  #
+  # The loader is APPENDED rather than uncommented because there is no stable line to uncomment:
+  # rspec-rails has already moved it once, from `Dir[Rails.root.join('spec', 'support', ...)]` to
+  # `Rails.root.glob('spec/support/**/*.rb')`, and `uncomment_lines` against a pattern that stops
+  # matching does nothing and says nothing. Appending needs no pattern. Support files call
+  # `RSpec.configure` themselves, which merges, so the end of the file is early enough.
+  append_to_file "spec/rails_helper.rb", <<~RB
+
+    # rspec:install ships the equivalent line commented out; without it nothing in spec/support is
+    # loaded and every `create(:thing)` raises NoMethodError.
+    Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
+  RB
+
+  file "spec/support/factory_bot.rb", <<~RB
+    # frozen_string_literal: true
+
+    RSpec.configure do |config|
+      config.include FactoryBot::Syntax::Methods
+    end
+  RB
 
   # npm, not yarn or pnpm. yarn's shell refuses to exec node_modules binaries on a
   # Docker Desktop bind mount ("permission denied: esbuild", exit 128) and globs unquoted
