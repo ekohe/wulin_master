@@ -14,6 +14,7 @@
 
 require "open-uri"
 require "shellwords"
+require "yaml"
 
 # Applied over a URL, this file's __FILE__ *is* that URL, so File.read cannot reach the
 # component templates next to it. AIDA always scaffolds over a URL.
@@ -54,18 +55,23 @@ end
 # is served from: this file *is* wulin_master, and a generated app must vendor its gem
 # from the same ref as the template that configured it, not from whatever branch
 # happens to be the repository default.
+# What the components ARE. Which code they resolve to is `components.lock.yml` beside this file --
+# the split a Gemfile and a Gemfile.lock make, so nothing is stated in both places.
+#
+# Install order, and it matters: wulin_permits must land before wulin_queue so the Permission model
+# exists when the queue migrations seed it.
 @wulin_catalog = [
-  {name: "wulin_master", branch: "v3-aida", required: true,
+  {name: "wulin_master", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth", branch: "main",
+  {name: "wulin_auth",
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", branch: "main", needs: %w[wulin_auth],
+  {name: "wulin_permits", needs: %w[wulin_auth],
    summary: "users, roles, privileges, per-screen permissions"},
-  {name: "wulin_queue", branch: "main", needs: %w[wulin_permits],
+  {name: "wulin_queue", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
-  {name: "wulin_audit", branch: "main",
+  {name: "wulin_audit",
    summary: "audit trail for every model write, plus request action logs"},
-  {name: "wulin_excel", branch: "main",
+  {name: "wulin_excel",
    summary: "Excel export button on grid toolbars"}
 ]
 
@@ -88,20 +94,21 @@ def wulin_read(relative)
   @wulin_remote_source ? URI.parse(path).open(&:read) : File.read(path)
 end
 
-# Asked of the remote rather than assumed -- the components do not agree on a name and
-# are being renamed. Fatal on failure: a guessed branch vendors code that fails later.
-def wulin_default_branch(url)
-  symref = `git ls-remote --symref #{Shellwords.escape(url)} HEAD 2>/dev/null`
-  symref[%r{^ref: refs/heads/(\S+)\s}, 1] or
-    raise Thor::Error, "could not read the default branch of #{url} -- is it reachable?"
+# `components.lock.yml`, read beside this file -- over HTTPS when this template arrived that way,
+# exactly like the component templates. Memoized: one read per scaffold, not one per component.
+def wulin_lock
+  @wulin_lock ||= YAML.safe_load(wulin_read("components.lock.yml")).fetch("components")
 end
 
 def wulin_vendor(name)
   component = @wulin_catalog.find { |c| c[:name] == name }
+  pin = wulin_lock[name] or
+    raise Thor::Error, "#{name} is in the catalog but not in components.lock.yml -- nothing says which commit to vendor"
   url = "#{@wulin_git_base}/#{name}.git"
   # Written back so templates/README.md.erb reports what was vendored.
-  branch = component[:branch] ||= wulin_default_branch(url)
-  say_status :vendor, "#{name} (#{branch})", :green
+  branch = component[:branch] = pin.fetch("branch")
+  ref = pin["ref"]
+  say_status :vendor, "#{name} (#{ref ? ref[0, 8] : branch})", :green
 
   # rails new has not run git init yet at template time.
   run "git init -q" unless File.exist?(".git")
@@ -117,6 +124,22 @@ def wulin_vendor(name)
     fi
     git config -f .gitmodules submodule.vendor/gems/#{name}.branch #{branch}
   SH
+
+  # Outside the idempotence guard, so a retry over an already-registered submodule still lands on
+  # the pinned commit. `submodule add -b` checks out the branch TIP; this is what makes the app
+  # reproducible — its gitlink records the ref below rather than whatever the tip was today.
+  #
+  # The trailing `git add` is not decoration. `submodule add` stages the gitlink at the branch tip
+  # the moment it runs, and a checkout INSIDE the submodule does not restage it -- so without this
+  # the app's files are the pinned commit while the commit AIDA makes records the tip, and a fresh
+  # clone of that app checks out the tip. The working tree looked right and the record did not.
+  if ref
+    run <<~SH
+      git -C vendor/gems/#{name} fetch -q --depth 1 origin #{ref} &&
+        git -C vendor/gems/#{name} checkout -q #{ref} &&
+        git add vendor/gems/#{name}
+    SH
+  end
 
   gem name, path: "vendor/gems/#{name}"
 end

@@ -50,3 +50,17 @@ ruby_lint:
   stage: test
   script:
     - bundle exec rake standard
+
+# Will a scaffold still work as pinned? The catalog names a commit per component, so this is not
+# asking whether anything moved -- it asks whether the commits it names can still be fetched, which
+# is the one way a generated app breaks without anybody here changing a line. A branch that has
+# moved ahead is printed as an upgrade available and does not fail the job: taking it is a decision
+# with a re-verification attached, not something to be nagged about on every push.
+#
+# `before_script: []` because this needs git and network and nothing else: no bundle, no database,
+# five `ls-remote` calls and five shallow fetches.
+components_pins:
+  stage: test
+  before_script: []
+  script:
+    - ruby script/check_components.rb

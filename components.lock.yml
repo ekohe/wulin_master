@@ -1,0 +1,51 @@
+# Which commit each component is vendored at. Read by `template.rb` at scaffold time.
+#
+# The split is the one a Gemfile and a Gemfile.lock make: `template.rb` declares WHAT the components
+# are — their names, what each needs, what it is for — and this file declares WHICH CODE they
+# resolve to. Nothing is stated in both places, so there is nothing to reconcile.
+#
+# It is data rather than lines in the template for three reasons, and all three cost something:
+# a routine bump would otherwise be a commit to executable code served over HTTP; `--bump` would
+# have to rewrite Ruby source by regex, which stops matching the day somebody reformats the catalog;
+# and both this repository and Forge would parse an executable to learn a fact. A parser reads this.
+#
+# `ref` is what a generated app actually gets. Without it the app receives whatever the branch
+# tipped to on the day it was scaffolded — two apps a week apart holding different code, neither one
+# anybody ran, which is how a stale line went on being vendored while the catalog still read
+# correctly. `branch` is the line the ref is tracked on: `script/check_components.rb` compares the
+# two and reports when the line has moved ahead.
+#
+# `wulin_master` carries a branch and no ref on purpose: it is this repository, and `template.rb` is
+# served from the same branch as the gem it vendors, so the two move together and a ref would only
+# be a self-bump chore.
+verified_at: "2026-09-24"
+verified_by: >-
+  A real `rails new` with WULIN_COMPONENTS naming all five, against this template: six submodules
+  vendored at the refs below, 22 migrations applied, and each engine's own model resolving under
+  RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process. Those four
+  are the constants the build contract probes ask for, so a green run is the contract already met at
+  scaffold time. Re-run it after any bump and commit the result with the new refs:
+
+    WULIN_COMPONENTS=wulin_auth,wulin_permits,wulin_queue,wulin_audit,wulin_excel \
+      rails new /tmp/verify --force --quiet --name=verify --skip-hotwire --skip-solid \
+      --database=postgresql --skip-javascript --skip-ci --skip-test -m <template.rb>
+    cd /tmp/verify && RAILS_ENV=test bin/rails db:prepare && RAILS_ENV=test bin/rails runner \
+      'p [WulinAuth::User.count, Privilege.count, WulinAudit::AuditLog.count, WulinQueue::Process.count]'
+components:
+  wulin_master:
+    branch: v3-aida
+  wulin_auth:
+    branch: main
+    ref: 680a67e2c209f15ef112dc876d361006dcc97acb
+  wulin_permits:
+    branch: main
+    ref: 0f4e07af9b7e12c633387101b917ebc3d1b2ca9e
+  wulin_queue:
+    branch: main
+    ref: 3371ac47c0d1282d9a0c1d459fc21d75ffa42707
+  wulin_audit:
+    branch: main
+    ref: 9573ed1111d8076e0028fd477017fa3ab83d9b09
+  wulin_excel:
+    branch: main
+    ref: 7db8650e0458cac71901c2b0faab7d977f3af12d
