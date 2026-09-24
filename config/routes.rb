@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       collection do
         post "copy"
         post "set_as_initial"
+        post "import_old_format"
       end
     end
 
