@@ -123,6 +123,24 @@ file "Dockerfile.dev", <<~DOCKERFILE, force: true
   CMD ["./bin/dev"]
 DOCKERFILE
 
+# `config.hosts` is read at boot, and the only way to change it afterwards is to restart the app --
+# which, under `bin/dev`, means making foreman's web child exit, which takes the container down with
+# it (foreman is PID 1). So the service name the app is reachable by IN the compose network is
+# written in now, while there is no runtime to disturb. A role that has to add this line later
+# cannot make it take effect, and the documented way to try killed a live app on a real build.
+#
+# Additive: Rails' development default already allows localhost and .localhost, which is what the
+# provisioning probes address it as.
+environment_config = "config/environments/development.rb"
+inject_into_file environment_config, after: "Rails.application.configure do\n" do
+  <<~RB
+    # Reachable by its compose service name from inside the network, not only as localhost.
+    # Read at boot: adding it to a RUNNING app requires a restart this runtime cannot survive.
+    config.hosts << "app" if config.respond_to?(:hosts)
+
+  RB
+end
+
 file "docker-compose.yml", <<~YAML, force: true
   name: #{app_name}
 
@@ -169,6 +187,14 @@ file "docker-compose.yml", <<~YAML, force: true
           required: false
       environment:
         DB_HOST: db
+      # `bin/dev` runs foreman as PID 1, and foreman answers ANY child exiting by shutting the rest
+      # down -- so one watcher crashing, or anything that makes the web process exit, ends the
+      # container with status 0. Nothing inside can restart it, and an agent working against this
+      # app has no compose operation either: on a real build the container was gone one second
+      # after a `touch tmp/restart.txt` and stayed gone. `unless-stopped` rather than `on-failure`
+      # because that exit IS a zero. An app that cannot boot will loop here, which the healthcheck
+      # below reports and is the louder failure of the two.
+      restart: unless-stopped
       depends_on:
         db:
           condition: service_healthy
