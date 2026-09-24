@@ -32,6 +32,18 @@ module WulinMaster
       render json: {success: false, error_message: $ERROR_INFO.message}
     end
 
+    def import_old_format
+      grid_state = GridState.find(params[:id])
+      grid_state.update!(state_value: GridState.convert_old_format(params[:state_value]))
+      render json: {success: true}
+    rescue ArgumentError => e
+      render json: {success: false, message: e.message}
+    rescue ActiveRecord::RecordInvalid => e
+      render json: {success: false, message: e.record.errors.full_messages.to_sentence}
+    rescue ActiveRecord::RecordNotFound
+      render json: {success: false, message: "Grid state not found"}
+    end
+
     def set_as_initial
       return unless params[:id]
       grid = GridState.find(params[:id])
