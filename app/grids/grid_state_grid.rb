@@ -14,6 +14,7 @@ class GridStateGrid < WulinMaster::Grid
   column :current, label: 'Is Current View?', sortable: false, filterable: false
 
   action :make_default_grid, title: "Set as Initial", icon: :publish, authorized?: ->(user) { user.has_permission_with_name?("grid_states#set_as_initial") }
+  action :import_old_format_state, title: "Import Old Format", icon: :import_export, authorized?: ->(user) { user.has_permission_with_name?("grid_states#import_old_format") }
   action :filter_default_grid_states, toolbar_item: false
 
   action :delete

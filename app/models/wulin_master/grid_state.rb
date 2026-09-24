@@ -69,6 +69,59 @@ module WulinMaster
       default_grids = is_custom_view ? initial_custom_grid(grid_name, name).first : default_grid(grid_name).first
       return default_grids.try(:state_value).blank? ? nil : default_grids.state_value
     end
+
+    # Previous events stored column order, width, hidden ids, filter, and sort as
+    # separate keys. The grid now reads a single columns array.
+    def self.convert_old_format(raw)
+      val = JSON.parse(raw.to_s)
+      raise ArgumentError, "State value must be a JSON object" unless val.is_a?(Hash)
+
+      columns = if val["columns"].is_a?(Array)
+        val["columns"]
+      elsif legacy_format?(val)
+        unified_columns(val)
+      end
+      raise ArgumentError, "Could not read columns from the old format state value" unless columns.is_a?(Array) && columns.any?
+
+      result = {"columns" => columns}
+      result["pinnedColumns"] = val["pinnedColumns"] if val["pinnedColumns"].is_a?(Array)
+      result.to_json
+    rescue JSON::ParserError
+      raise ArgumentError, "Invalid JSON"
+    end
+
+    def self.legacy_format?(val)
+      %w[order width visibility filter sort].any? { |key| val.key?(key) }
+    end
+    private_class_method :legacy_format?
+
+    # "order" is the visible sequence (index => column id). "visibility" lists
+    # hidden ids, which are kept in the array so they stay hidden. Width is
+    # applied to those columns only — a width entry alone is the default width
+    # of a column the view did not include.
+    def self.unified_columns(val)
+      order, width, visibility, filter, sort = val.values_at("order", "width", "visibility", "filter", "sort")
+      ordered_ids = order.is_a?(Hash) ? order.sort_by { |k, _| k.to_i }.map(&:last) : []
+      extra_ids = (
+        Array(visibility) +
+        (filter.is_a?(Hash) ? filter.select { |_, value| value.present? }.keys : []) +
+        (sort.is_a?(Hash) && sort["sortCol"] ? [sort["sortCol"]] : [])
+      ) - ordered_ids
+      hidden_ids = Array(visibility)
+
+      (ordered_ids + extra_ids.uniq).filter_map do |id|
+        next unless id.is_a?(String)
+
+        entry = {"id" => id, "visible" => !hidden_ids.include?(id)}
+        entry["width"] = width[id].to_i if width.is_a?(Hash) && width.key?(id)
+        entry["filter"] = filter[id] if filter.is_a?(Hash) && filter.key?(id) && filter[id].present?
+        if sort.is_a?(Hash) && sort["sortCol"] == id && sort["sortDir"].present?
+          entry["sort"] = sort["sortDir"].to_i == 1 ? "asc" : "desc"
+        end
+        entry
+      end
+    end
+    private_class_method :unified_columns
     # ------------------------------ Instance Methods -------------------------------
 
     def brother_states
