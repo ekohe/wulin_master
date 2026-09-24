@@ -11,13 +11,7 @@ module WulinMaster
         # create a new current grid
         create_current_grid(current_user.id, name)
       else
-        # A view the user named themselves has no shared state published under
-        # that name, so fall back to the grid's default state. Without it the
-        # grid gets no state at all and renders every column.
-        current_state.state_value.presence ||
-          GridState.get_default_grid_state_val(name, current_state.name, check_multiple_grid_states) ||
-          GridState.get_default_grid_state_val(name) ||
-          {}.to_json
+        current_state.state_value.presence || GridState.get_default_grid_state_val(name, current_state.name, check_multiple_grid_states) || {}.to_json
       end
     rescue StandardError => e
       Rails.logger.info "Exception thrown while trying to get user states: #{e.inspect}"
