@@ -98,6 +98,10 @@ end
 # exactly like the component templates. Memoized: one read per scaffold, not one per component.
 def wulin_lock
   @wulin_lock ||= YAML.safe_load(wulin_read("components.lock.yml")).fetch("components")
+rescue => e
+  raise Thor::Error,
+    "could not read components.lock.yml beside this template (#{@wulin_source}): #{e.class}: #{e.message}. " \
+    "It names the commit each component is vendored at, and nothing else does."
 end
 
 def wulin_vendor(name)
@@ -133,11 +137,18 @@ def wulin_vendor(name)
   # the moment it runs, and a checkout INSIDE the submodule does not restage it -- so without this
   # the app's files are the pinned commit while the commit AIDA makes records the tip, and a fresh
   # clone of that app checks out the tip. The working tree looked right and the record did not.
+  #
+  # The fetch is guarded on the object rather than run unconditionally, and carries no `--depth`.
+  # `submodule add` has already cloned the branch in full, so a ref on that branch is present and
+  # the fetch is a network round trip per component for nothing; a shallow one on top of a complete
+  # clone is worse still -- it pays for the full history and then truncates it, leaving `git log`
+  # in a vendored gem showing a single commit. The fetch is only for a ref the cloned branch does
+  # not reach, and then it should bring real history.
   if ref
     run <<~SH
-      git -C vendor/gems/#{name} fetch -q --depth 1 origin #{ref} &&
-        git -C vendor/gems/#{name} checkout -q #{ref} &&
-        git add vendor/gems/#{name}
+      git -C vendor/gems/#{name} cat-file -e #{ref}^{commit} 2>/dev/null ||
+        git -C vendor/gems/#{name} fetch -q origin #{ref}
+      git -C vendor/gems/#{name} checkout -q #{ref} && git add vendor/gems/#{name}
     SH
   end
 

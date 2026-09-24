@@ -114,10 +114,12 @@ end
 
 if problems.empty?
   pinned = pins.count { |_, pin| pin["ref"] }
-  puts "✓ #{pinned} pinned component(s) fetchable" \
-       "#{upgrades.any? ? ", #{upgrades.size} with something newer" : ""}" \
-       "#{unreachable.any? ? ", #{unreachable.size} unchecked" : ""}" \
-       " (verified #{YAML.safe_load(lock_source)["verified_at"]})"
+  # Built as nils rather than ternaries inside the interpolation: nil renders as nothing, and the
+  # line stays one sentence instead of three fragments joined by conditionals.
+  newer = ", #{upgrades.size} with something newer" if upgrades.any?
+  unchecked = ", #{unreachable.size} unchecked" if unreachable.any?
+  puts "✓ #{pinned} pinned component(s) fetchable#{newer}#{unchecked} " \
+       "(verified #{YAML.safe_load(lock_source)["verified_at"]})"
   exit 0
 end
 
