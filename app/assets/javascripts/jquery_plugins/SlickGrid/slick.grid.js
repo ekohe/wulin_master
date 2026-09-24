@@ -657,7 +657,7 @@ if (typeof Slick === "undefined") {
         });
 
         $headerScroller
-            //.on("scroll", handleHeaderScroll)
+            .on("scroll", handleHeaderScroll)
             .on("contextmenu", handleHeaderContextMenu)
             .on("click", handleHeaderClick)
             .on("mouseenter", ".slick-header-column", handleHeaderMouseEnter)
@@ -4462,9 +4462,13 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    // Focusing an off-screen filter input makes the browser scroll the header on its own,
+    // so snap it back to the viewport to keep the header aligned with the rows.
     function handleHeaderScroll() {
-      // handleElementScroll($headerScroller[0]);
-      handleElementScroll($headerScrollContainer[0]);
+      var viewport = this === $headerScrollContainer[0] ? $viewportScrollContainerX[0] : $viewportTopL[0];
+      if (this.scrollLeft != viewport.scrollLeft) {
+        this.scrollLeft = viewport.scrollLeft;
+      }
     }
 
     function handleHeaderRowScroll() {
