@@ -104,7 +104,7 @@ module WulinMaster
       ordered_ids = order.is_a?(Hash) ? order.sort_by { |k, _| k.to_i }.map(&:last) : []
       extra_ids = (
         Array(visibility) +
-        (filter.is_a?(Hash) ? filter.keys : []) +
+        (filter.is_a?(Hash) ? filter.select { |_, value| value.present? }.keys : []) +
         (sort.is_a?(Hash) && sort["sortCol"] ? [sort["sortCol"]] : [])
       ) - ordered_ids
       hidden_ids = Array(visibility)
