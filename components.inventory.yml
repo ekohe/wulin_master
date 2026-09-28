@@ -1,0 +1,76 @@
+# DERIVED — do not edit. Regenerate with `ruby script/check_components.rb --inventory`.
+#
+# What each component contributes, read off the commit `components.lock.yml` pins it at. Three
+# file-existence facts and nothing else: the screens that belong in a menu group, the esbuild
+# entry an app must import, and how many migrations it appends.
+#
+# It exists so that nobody — person or agent — has to read a gem's source to find out what
+# installing it puts in front of a user. The prose version of this rotted into naming a gem that
+# does not exist; `git ls-tree` cannot.
+#
+# Every run of check_components.rb verifies this file is current, so a bumped ref that did not
+# regenerate it fails rather than lying.
+wulin_master:
+  screens:
+  - AppConfigsScreen
+  - GridStatesScreen
+  esm:
+  - wulin_master.esm.js
+  migrations: 4
+wulin_auth:
+  screens: []
+  esm:
+  - wulin_auth.esm.js
+  migrations: 2
+wulin_permits:
+  screens:
+  - AddPermissionToPrivilegeScreen
+  - AddPermissionToRoleScreen
+  - AddPrivilegeForUserScreen
+  - AddPrivilegeToPermissionScreen
+  - AddPrivilegeToRoleScreen
+  - AddRoleForUserScreen
+  - AddRoleToPermissionScreen
+  - AddRoleToPrivilegeScreen
+  - AddUserForPrivilegeScreen
+  - AddUserForRoleScreen
+  - MasterPermissionDetailUserScreen
+  - MasterPermissionPrivilegeScreen
+  - MasterPermissionRoleScreen
+  - MasterPrivilegeDetailUserScreen
+  - MasterPrivilegeRoleScreen
+  - MasterRoleDetailUserScreen
+  - MasterRolePrivilegeScreen
+  - MasterUserDetailPermissionScreen
+  - MasterUserDetailPrivilegeScreen
+  - MasterUserDetailRoleScreen
+  - PermissionScreen
+  - PrivilegeScreen
+  - RoleScreen
+  - RolesUserScreen
+  - UserScreen
+  esm:
+  - wulin_permits.esm.js
+  migrations: 6
+wulin_queue:
+  screens:
+  - SolidQueueJobScreen
+  - SolidQueueProcessScreen
+  - SolidQueueQueueScreen
+  - SolidQueueRecurringTaskScreen
+  esm:
+  - wulin_queue.esm.js
+  migrations: 3
+wulin_audit:
+  screens:
+  - ActionLogScreen
+  - AuditLogScreen
+  - RecordAuditScreen
+  esm:
+  - wulin_audit.esm.js
+  migrations: 6
+wulin_excel:
+  screens: []
+  esm:
+  - wulin_excel.esm.js
+  migrations: 0

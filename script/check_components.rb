@@ -26,6 +26,8 @@ LOCK = File.join(ROOT, "components.lock.yml")
 GIT_BASE = "https://github.com/ekohe"
 
 bump = ARGV.include?("--bump")
+write_inventory = ARGV.include?("--inventory")
+INVENTORY = File.join(ROOT, "components.inventory.yml")
 lock_source = File.read(LOCK)
 pins = YAML.safe_load(lock_source).fetch("components")
 
@@ -50,9 +52,37 @@ def ref_fetchable?(name, ref, dir)
     out: File::NULL, err: File::NULL)
 end
 
+# What a component CONTRIBUTES, read off the ref that was just fetched. Three file-existence facts,
+# nothing about what any of it means:
+#
+#   screens     the pages that belong in a menu group, as class names
+#   esm         the esbuild entry an app has to import, if it ships one
+#   migrations  how many it appends, so `db:migrate` doing nothing is visibly wrong
+#
+# Derived, never written. The prose enumeration this replaces rotted into claiming a gem that does
+# not exist and attributing one gem's method to another; `git ls-tree` can do neither. It is also the
+# answer to the question that cost one build ten minutes -- which screens does a capability bring --
+# and which no amount of reading the app could give, because the answer is in the gem.
+#
+# `ls-tree` on FETCH_HEAD rather than a checkout: the objects are already here from the fetch above,
+# and a checkout of six components per run is the slow way to read a file list.
+def inventory_at(dir, treeish)
+  out = `git -C #{Shellwords.escape(dir)} ls-tree -r --name-only #{Shellwords.escape(treeish)} 2>/dev/null`
+  return nil unless $?.success?
+
+  paths = out.lines(chomp: true)
+  {
+    "screens" => paths.grep(%r{\Aapp/screens/.+\.rb\z})
+      .map { |f| File.basename(f, ".rb").split("_").map(&:capitalize).join }.sort,
+    "esm" => paths.grep(%r{\Aapp/javascript/.+\.esm\.js\z}).map { |f| File.basename(f) }.sort,
+    "migrations" => paths.count { |f| f.start_with?("db/migrate/") && f.end_with?(".rb") }
+  }
+end
+
 problems = []
 upgrades = []
 unreachable = []
+inventory = {}
 
 (pins.keys - catalog).each { |name| problems << "#{name}: pinned here but template.rb's catalog does not name it" }
 (catalog - pins.keys).each { |name| problems << "#{name}: in template.rb's catalog with nothing pinning it" }
@@ -68,15 +98,27 @@ Dir.mktmpdir do |dir|
     ref = pin["ref"]&.to_s
 
     # wulin_master is this repository: the template is served from the same branch as the gem it
-    # vendors, so the two move together and a pin would only be a self-bump chore.
-    next if ref.nil? && name == "wulin_master"
+    # vendors, so the two move together and a pin would only be a self-bump chore. Its inventory is
+    # read from HEAD here for the same reason — there is no other copy to fetch.
+    if ref.nil? && name == "wulin_master"
+      if (facts = inventory_at(ROOT, "HEAD"))
+        inventory[name] = facts
+      end
+      next
+    end
 
     if ref.nil?
       problems << "#{name}: no ref — apps get whatever #{branch} tips to on the day they are built"
       next
     end
 
-    unless ref_fetchable?(name, ref, dir)
+    if ref_fetchable?(name, ref, dir)
+      # Only from a ref that fetched: an inventory read off anything else is a claim about code
+      # nobody can get.
+      if (facts = inventory_at(dir, "FETCH_HEAD"))
+        inventory[name] = facts
+      end
+    else
       problems << "#{name}: pinned at #{ref[0, 8]}, which the remote will not serve — every " \
                   "scaffold fails here (force-push?)"
     end
@@ -88,6 +130,36 @@ Dir.mktmpdir do |dir|
     else upgrades << [name, branch, ref, tip] if tip != ref
     end
   end
+end
+
+# The inventory is DERIVED, so it is written by a flag and verified by every other run. A generated
+# file nobody checks is a generated file that goes stale the first time somebody bumps a ref and
+# forgets — which is exactly how the prose enumeration this replaces became wrong.
+if write_inventory
+  File.write(INVENTORY, <<~HEAD + YAML.dump(inventory).sub(/\A---\n/, ""))
+    # DERIVED — do not edit. Regenerate with `ruby script/check_components.rb --inventory`.
+    #
+    # What each component contributes, read off the commit `components.lock.yml` pins it at. Three
+    # file-existence facts and nothing else: the screens that belong in a menu group, the esbuild
+    # entry an app must import, and how many migrations it appends.
+    #
+    # It exists so that nobody — person or agent — has to read a gem's source to find out what
+    # installing it puts in front of a user. The prose version of this rotted into naming a gem that
+    # does not exist; `git ls-tree` cannot.
+    #
+    # Every run of check_components.rb verifies this file is current, so a bumped ref that did not
+    # regenerate it fails rather than lying.
+  HEAD
+  puts "wrote #{File.basename(INVENTORY)} for #{inventory.size} component(s)"
+  exit 0
+end
+
+if inventory.any? && File.exist?(INVENTORY)
+  recorded = YAML.safe_load_file(INVENTORY) || {}
+  stale = inventory.reject { |name, facts| recorded[name] == facts }
+  stale.each_key { |name| problems << "#{name}: components.inventory.yml is stale — re-run with --inventory" }
+elsif inventory.any?
+  problems << "components.inventory.yml is missing — run `ruby script/check_components.rb --inventory`"
 end
 
 if bump
