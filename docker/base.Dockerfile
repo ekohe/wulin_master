@@ -1,9 +1,10 @@
 # Ruby + Node + build toolchain + bundler: the layer every wulin_master-generated app is
 # built FROM, so a cold build pulls it instead of re-running apt and the NodeSource
-# install. It ships into each app through the wulin_master submodule, which is what lets
-# one be built with no registry access:
+# install. The scaffold COPIES this file into each app as `docker/base.Dockerfile`, so an
+# app can build it from its own checkout with no registry access and no dependency on how
+# the gem got there:
 #
-#   docker build -f vendor/gems/wulin_master/docker/base.Dockerfile -t wulin-base:local .
+#   docker build -f docker/base.Dockerfile -t wulin-base:local .
 #   docker compose up --build
 #
 # `wulin-base:local` is what the generated compose file defaults BASE_IMAGE to. AIDA

@@ -85,8 +85,15 @@ file "bin/docker-entrypoint-dev.sh", <<~SH, force: true
 SH
 chmod "bin/docker-entrypoint-dev.sh", 0o755
 
-# FROM the shared base that ships in through the wulin_master submodule; see
-# vendor/gems/wulin_master/docker/base.Dockerfile for what it is and how to build it.
+# The recipe for the base image, copied INTO the app rather than reached through the
+# wulin_master submodule. An app has to be buildable from its own checkout: a recipe that
+# lives inside a vendored dependency is one `git clone` without `--recursive` away from
+# being gone, and it is the offline fallback -- the thing you reach for when the private
+# registry is exactly what you cannot reach.
+file "docker/base.Dockerfile", wulin_read("docker/base.Dockerfile"), force: true
+
+# FROM the shared base this app now carries the recipe for; see docker/base.Dockerfile for
+# what it is and how to build it.
 # No `# syntax=` line here either -- that opts into BuildKit.
 file "Dockerfile.dev", <<~DOCKERFILE, force: true
   ARG BASE_IMAGE=wulin-base:local
@@ -215,6 +222,6 @@ file "docker-compose.yml", <<~YAML, force: true
 YAML
 
 wulin_note "docker: Rails' own Dockerfile (production/Kamal) needs Node added before it works -- the app was scaffolded --skip-javascript, so that image has no node, and assets:precompile runs `npm run build`. Dockerfile.dev and docker-compose.yml are the development stack and are unaffected"
-wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build -f vendor/gems/wulin_master/docker/base.Dockerfile -t wulin-base:local .\n      docker compose up --build"
+wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build -f docker/base.Dockerfile -t wulin-base:local .\n      docker compose up --build"
 wulin_note "docker: the entrypoint runs db:prepare on the first boot and db:migrate afterwards, so no database setup step is needed"
 wulin_note "docker: the container runs bin/dev, which builds the javascript and CSS on start and watches them -- `rails server` alone would raise Propshaft::MissingAssetError on every page"
