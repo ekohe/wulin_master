@@ -280,6 +280,20 @@ after_bundle do
   # so this has to come after it and replace the file wholesale.
   rails_command "generate wulin_master:install"
 
+  # `app/screens` and `app/grids` from the start, even before anything lives in them. Rails builds
+  # its autoload paths from the directories under `app/` that exist AT BOOT, so a directory the
+  # first `wulin_master:screen_and_grid` creates is invisible to the already-running server: the
+  # class does not resolve, the route 404s, and specs pass the whole time because each spec run is
+  # a fresh boot that does see it. Measured on one build: about forty of that step's sixty-eight
+  # rounds went into a discrepancy the implementer had no way to fix, since restarting the runtime
+  # is not something it can do. Existing directories reload normally, which is why models — created
+  # by the scaffold — never showed this.
+  #
+  # `.keep`, not `empty_directory`: git does not track an empty directory, so it would be gone from
+  # the next clone and the image build that copies from it.
+  create_file "app/screens/.keep"
+  create_file "app/grids/.keep"
+
   file "app/javascript/application.js", <<~JS, force: true
     // wulin_master must be first: the other components attach to its globals
     // (WulinMaster.actions, gridManager, Ui, displayErrorMessage) at load time.
