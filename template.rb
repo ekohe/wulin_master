@@ -107,52 +107,26 @@ end
 def wulin_vendor(name)
   component = @wulin_catalog.find { |c| c[:name] == name }
   pin = wulin_lock[name] or
-    raise Thor::Error, "#{name} is in the catalog but not in components.lock.yml -- nothing says which commit to vendor"
-  url = "#{@wulin_git_base}/#{name}.git"
-  # Written back so templates/README.md.erb reports what was vendored.
+    raise Thor::Error, "#{name} is in the catalog but not in components.lock.yml -- nothing says which commit to install"
+  # Written back so templates/README.md.erb reports what was installed.
   branch = component[:branch] = pin.fetch("branch")
-  ref = pin["ref"]
-  say_status :vendor, "#{name} (#{ref ? ref[0, 8] : branch})", :green
+  ref = pin["ref"]&.to_s
+  say_status :component, "#{name} (#{ref ? ref[0, 8] : branch})", :green
 
-  # rails new has not run git init yet at template time.
-  run "git init -q" unless File.exist?(".git")
-
-  # Idempotent, so a retry over a partial tree recovers. Guarded on the .gitmodules url
-  # key, not the directory: a half-registered submodule has the directory but no mapping,
-  # and skipping the re-add there leaves a .gitmodules that git rejects from then on.
-  run <<~SH
-    if ! git config -f .gitmodules --get submodule.vendor/gems/#{name}.url >/dev/null 2>&1; then
-      git rm -f --cached vendor/gems/#{name} 2>/dev/null || true
-      rm -rf vendor/gems/#{name} .git/modules/vendor/gems/#{name}
-      git submodule add -q -b #{branch} #{url} vendor/gems/#{name}
-    fi
-    git config -f .gitmodules submodule.vendor/gems/#{name}.branch #{branch}
-  SH
-
-  # Outside the idempotence guard, so a retry over an already-registered submodule still lands on
-  # the pinned commit. `submodule add -b` checks out the branch TIP; this is what makes the app
-  # reproducible — its gitlink records the ref below rather than whatever the tip was today.
+  # A Bundler git gem, not a submodule. Bundler pins a commit natively and records the resolution in
+  # the app's own Gemfile.lock, which is what makes the app reproducible; the submodule this replaces
+  # was forty lines re-implementing that, and each of its failure modes had already been paid for --
+  # a gitlink staged at the branch tip while the working tree held the pin, and a `--depth 1` fetch
+  # that truncated a complete clone to one commit.
   #
-  # The trailing `git add` is not decoration. `submodule add` stages the gitlink at the branch tip
-  # the moment it runs, and a checkout INSIDE the submodule does not restage it -- so without this
-  # the app's files are the pinned commit while the commit AIDA makes records the tip, and a fresh
-  # clone of that app checks out the tip. The working tree looked right and the record did not.
-  #
-  # The fetch is guarded on the object rather than run unconditionally, and carries no `--depth`.
-  # `submodule add` has already cloned the branch in full, so a ref on that branch is present and
-  # the fetch is a network round trip per component for nothing; a shallow one on top of a complete
-  # clone is worse still -- it pays for the full history and then truncates it, leaving `git log`
-  # in a vendored gem showing a single commit. The fetch is only for a ref the cloned branch does
-  # not reach, and then it should bring real history.
+  # wulin_master carries a branch and no ref on purpose (it is this repository, served from the same
+  # branch), so its resolution is whatever that branch holds when the app is built -- recorded, like
+  # every other gem, in the Gemfile.lock the app commits.
   if ref
-    run <<~SH
-      git -C vendor/gems/#{name} cat-file -e #{ref}^{commit} 2>/dev/null ||
-        git -C vendor/gems/#{name} fetch -q origin #{ref}
-      git -C vendor/gems/#{name} checkout -q #{ref} && git add vendor/gems/#{name}
-    SH
+    gem name, github: "ekohe/#{name}", ref: ref
+  else
+    gem name, github: "ekohe/#{name}", branch: branch
   end
-
-  gem name, path: "vendor/gems/#{name}"
 end
 
 def wulin_js(*paths)
@@ -265,6 +239,43 @@ create_file "config/app_config.example.yml", app_config
 append_to_file ".gitignore", "\n/config/app_config.yml\n"
 
 after_bundle do
+  # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
+  # container and changes on every bump. esbuild, dart-sass and this template's own conventions all
+  # address the components as `vendor/gems/<name>`, so that stable path is linked at the real
+  # checkout. Derived, so it is gitignored — and rebuilt by the image build after every
+  # `bundle install`, because the SHA in the path is exactly what a bump changes.
+  file "script/link_wulin_gems.rb", <<~RB, force: true
+    # The wulin components are Bundler git gems, so they live under a path that carries a commit SHA
+    # and differs between host and container. esbuild, dart-sass and the app's own JavaScript all
+    # resolve them as `vendor/gems/<name>`, so link that stable path at the real checkout.
+    #
+    # Run after `bundle install`, before `npm run build`:
+    #
+    #   bundle exec ruby script/link_wulin_gems.rb
+    require "bundler"
+    require "fileutils"
+
+    target = File.expand_path("../vendor/gems", __dir__)
+    FileUtils.mkdir_p(target)
+
+    specs = Bundler.load.specs.select { |s| s.name.start_with?("wulin_") }
+    abort("no wulin gems in the bundle — run bundle install first") if specs.empty?
+
+    specs.each do |spec|
+      link = File.join(target, spec.name)
+      FileUtils.rm_rf(link)
+      FileUtils.ln_s(spec.full_gem_path, link)
+      puts "\#{spec.name} -> \#{spec.full_gem_path}"
+    end
+  RB
+  append_to_file ".gitignore", <<~IGNORE
+
+    # The wulin components are Bundler git gems; vendor/gems is symlinks built by
+    # script/link_wulin_gems.rb, so it is derived and never committed.
+    /vendor/gems
+  IGNORE
+  run "bundle exec ruby script/link_wulin_gems.rb", abort_on_failure: true
+
   # wulin_master:install writes its own ApplicationController with a stub menu,
   # so this has to come after it and replace the file wholesale.
   rails_command "generate wulin_master:install"

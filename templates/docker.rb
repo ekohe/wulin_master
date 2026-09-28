@@ -101,16 +101,21 @@ file "Dockerfile.dev", <<~DOCKERFILE, force: true
 
   FROM base AS deps
 
-  # The whole vendor/gems tree, not a list of gemspecs: a path gem's gemspec can require
-  # anything from its own tree. App source arrives later, so editing it does not
-  # invalidate bundle install.
+  # App source arrives later, so editing it does not invalidate bundle install. The wulin
+  # components are git gems: bundler clones them here, and nothing of them needs copying in.
   COPY Gemfile Gemfile.lock ./
-  COPY vendor/gems ./vendor/gems
   RUN bundle install --jobs "$(nproc)" || { \\
         echo "[deps] bundle install failed -- retrying after cache clear..." && \\
         rm -rf /usr/local/bundle/cache/*.gem && \\
         bundle install --jobs "$(nproc)"; \\
       }
+
+  # A git gem's checkout path carries a commit SHA, so it differs between this image and the
+  # host the app was scaffolded on. esbuild, dart-sass and the app's own JavaScript all address
+  # the components as vendor/gems/<name>; this links that stable path at the real checkout, and
+  # it has to run HERE because the SHA is this image's.
+  COPY script/link_wulin_gems.rb ./script/
+  RUN bundle exec ruby script/link_wulin_gems.rb
 
   COPY package.json package-lock.json ./
   RUN npm ci || { echo "[deps] npm ci failed -- retrying after cache clear..." && npm cache clean --force && npm ci; }

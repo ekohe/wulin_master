@@ -24,7 +24,8 @@ bin/rails db:seed             # seed admin user
 
 ## Architecture
 
-Components are vendored as git submodules under `vendor/gems/`:
+Components are Bundler git gems, reachable as `vendor/gems/<name>` — symlinks into
+Bundler's checkouts, rebuilt by `script/link_wulin_gems.rb` after every `bundle install`:
 
 <% @wulin_install.each do |component| -%>
 - `<%= component[:name] %>` (`<%= component[:branch] %>`) — <%= component[:summary] %>
@@ -57,7 +58,7 @@ Then add `item ModelNameScreen` to the menu.
 
 ## Conventions
 
-- Do not modify files under `vendor/gems/` — those are submodules
+- Do not modify files under `vendor/gems/` — those are symlinks into installed gems
 - Do not run `solid_queue:install` — wulin_queue owns that schema
 <% if @wulin_install.any? { |c| c[:name] == "wulin_auth" } -%>
 - `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`

@@ -1,7 +1,7 @@
 # <%= app_name.titleize %>
 
 A Wulin Master application. Grids, screens and menus come from the gem; the
-components below are vendored as git submodules under `vendor/gems/`.
+components below are Bundler git gems, pinned in `Gemfile.lock`.
 
 | component | branch | what it gives you |
 | --- | --- | --- |
@@ -11,11 +11,11 @@ components below are vendored as git submodules under `vendor/gems/`.
 
 ## Setting up a fresh clone
 
-The gems are submodules, so a plain `git clone` leaves them empty:
+`vendor/gems/` is symlinks into Bundler's checkouts, so it is built rather than cloned:
 
 ```bash
-git submodule update --init --recursive
 bundle install
+bundle exec ruby script/link_wulin_gems.rb
 npm install
 cp config/app_config.example.yml config/app_config.yml
 bin/rails db:create db:migrate db:seed

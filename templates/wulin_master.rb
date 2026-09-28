@@ -195,6 +195,12 @@ wulin_post do
   SH
   chmod "bin/dev", 0o755
 
+  # `--preserve-symlinks` on both esbuild commands: the components are Bundler git gems reached
+  # through `vendor/gems/<name>` symlinks, and esbuild otherwise resolves every import to the gem's
+  # REAL path under the bundler checkout. A bare specifier in the gem's own JavaScript
+  # (`import 'jquery-ui/ui/widget'`) is then resolved by walking up from THERE, which never reaches
+  # this app's node_modules -- measured on a real scaffold: thirteen unresolved imports and a
+  # non-zero exit before anything was written.
   file "package.json", <<~JSON, force: true
     {
       "name": "#{app_name}",
@@ -209,8 +215,8 @@ wulin_post do
         "rails-ujs": "^5.2.0"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
-        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --watch=forever",
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks",
+        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       }
     }
