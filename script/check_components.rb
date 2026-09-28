@@ -75,8 +75,28 @@ def inventory_at(dir, treeish)
     "screens" => paths.grep(%r{\Aapp/screens/.+\.rb\z})
       .map { |f| File.basename(f, ".rb").split("_").map(&:capitalize).join }.sort,
     "esm" => paths.grep(%r{\Aapp/javascript/.+\.esm\.js\z}).map { |f| File.basename(f) }.sort,
-    "migrations" => paths.count { |f| f.start_with?("db/migrate/") && f.end_with?(".rb") }
+    "migrations" => paths.count { |f| f.start_with?("db/migrate/") && f.end_with?(".rb") },
+    "editors" => editors_at(dir, treeish, paths)
+  }.compact
+end
+
+# The cell editors a component registers, by name. Derived for the same reason as the rest, and
+# added because naming one that does not exist is the worst failure this catalogue can prevent:
+# SlickGrid raises while building the column, so the page loads, the toolbar renders, the JSON
+# endpoint answers 200 -- and the grid is simply absent, with nothing in the server log. A generated
+# app shipped two screens that way, off a hand-written page that named `TimeCellEditor`, which the
+# gem has never had.
+#
+# `git show` per file rather than a checkout: only wulin_master defines any, so this reads one blob.
+def editors_at(dir, treeish, paths)
+  files = paths.grep(%r{\Aapp/assets/javascripts/.*editors\.js\z})
+  return nil if files.empty?
+
+  names = files.flat_map { |f|
+    blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:#{f}")} 2>/dev/null`
+    $?.success? ? blob.scan(/^\s*this\.([A-Z][A-Za-z0-9]*Editor)\s*=\s*function/).flatten : []
   }
+  names.empty? ? nil : names.uniq.sort
 end
 
 problems = []

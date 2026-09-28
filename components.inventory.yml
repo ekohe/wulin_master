@@ -17,6 +17,20 @@ wulin_master:
   esm:
   - wulin_master.esm.js
   migrations: 4
+  editors:
+  - DateEditor
+  - DateTimeEditor
+  - DecimalEditor
+  - DistinctEditor
+  - HasManyEditor
+  - IntegerEditor
+  - OtherRelationEditor
+  - RichTextEditor
+  - SelectEditor
+  - TextAreaEditor
+  - TextEditor
+  - TimeEditor
+  - YesNoCheckboxEditor
 wulin_auth:
   screens: []
   esm:
