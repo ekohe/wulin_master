@@ -148,7 +148,6 @@ Improvements:
 * Enable select multiple grids in one screen.
 * Define grid.getSelectedIds() instead of UI.getSelectedIds(grid)
 * Add MoneyFormatter
-* Add TimeCellEditor
 
 Bug fix:
 
