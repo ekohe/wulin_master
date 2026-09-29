@@ -486,6 +486,13 @@
       var newFrozenColumn = updatedPinnedColumns.length > 0 ? updatedPinnedColumns.length - 1 : -1;
       grid.getOptions().frozenColumn = newFrozenColumn;
 
+      // The loader already fetches every column, so showing or hiding one only
+      // needs a redraw. Reload only when a hidden column had a filter to drop.
+      var hidesFilteredColumn = grid.getFilteredInputs().filter(function () {
+        var columnId = this.getAttribute('data-id');
+        return !visibleColumns.some(function (col) { return col.id == columnId; });
+      }).length > 0;
+
       grid.setColumns(sortedVisibleColumns);
 
       // Use setOptions to properly reinitialize frozen panes
@@ -500,7 +507,9 @@
       forceLayoutRecalculation();
 
       // Ekohe Add: Reset filters
-      $(grid.getHeaders()).find('input').keyup();
+      if (hidesFilteredColumn) {
+        $(grid.getHeaders()).find('input').keyup();
+      }
       grid.filterPanel.generateFilters();
     }
 
