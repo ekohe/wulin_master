@@ -83,9 +83,7 @@ end
 # The cell editors a component registers, by name. Derived for the same reason as the rest, and
 # added because naming one that does not exist is the worst failure this catalogue can prevent:
 # SlickGrid raises while building the column, so the page loads, the toolbar renders, the JSON
-# endpoint answers 200 -- and the grid is simply absent, with nothing in the server log. A generated
-# app shipped two screens that way, off a hand-written page that named `TimeCellEditor`, which the
-# gem has never had.
+# endpoint answers 200 -- and the grid is simply absent, with nothing in the server log.
 #
 # `git show` per file rather than a checkout: only wulin_master defines any, so this reads one blob.
 def editors_at(dir, treeish, paths)
@@ -99,10 +97,25 @@ def editors_at(dir, treeish, paths)
   names.empty? ? nil : names.uniq.sort
 end
 
+# The editor names a component's README TEACHES, which is a different question from the ones it
+# registers. A README outlives the code it documents, and the conventions pack AIDA gives its agents
+# sends them here and calls it authoritative for the gem's API -- so a name it keeps after the class
+# is gone is copied into a generated app verbatim.
+#
+# Checked against the union of every component's editors rather than its own, because a README may
+# reasonably name an editor another gem in the suite registers.
+def readme_editors_at(dir, treeish)
+  blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:README.md")} 2>/dev/null`
+  return [] unless $?.success?
+
+  blob.scan(/\b([A-Z][A-Za-z0-9]*Editor)\b/).flatten.uniq.sort
+end
+
 problems = []
 upgrades = []
 unreachable = []
 inventory = {}
+readme_editors = {}
 
 (pins.keys - catalog).each { |name| problems << "#{name}: pinned here but template.rb's catalog does not name it" }
 (catalog - pins.keys).each { |name| problems << "#{name}: in template.rb's catalog with nothing pinning it" }
@@ -124,6 +137,7 @@ Dir.mktmpdir do |dir|
       if (facts = inventory_at(ROOT, "HEAD"))
         inventory[name] = facts
       end
+      readme_editors[name] = readme_editors_at(ROOT, "HEAD")
       next
     end
 
@@ -138,6 +152,7 @@ Dir.mktmpdir do |dir|
       if (facts = inventory_at(dir, "FETCH_HEAD"))
         inventory[name] = facts
       end
+      readme_editors[name] = readme_editors_at(dir, "FETCH_HEAD")
     else
       problems << "#{name}: pinned at #{ref[0, 8]}, which the remote will not serve — every " \
                   "scaffold fails here (force-push?)"
@@ -148,6 +163,19 @@ Dir.mktmpdir do |dir|
     when :unreachable then unreachable << "#{name} (#{branch})"
     when :gone then problems << "#{name}: the tracked branch #{branch} no longer exists"
     else upgrades << [name, branch, ref, tip] if tip != ref
+    end
+  end
+end
+
+# A name a README teaches must be a name some component registers. Skipped when nothing fetched an
+# editor at all, because then the union is empty for a reason that has nothing to do with the READMEs
+# and every mention would be reported.
+known_editors = inventory.values.flat_map { |f| f["editors"] || [] }.uniq
+if known_editors.any?
+  readme_editors.each do |name, taught|
+    (taught - known_editors).each do |bogus|
+      problems << "#{name}: README.md teaches `#{bogus}`, which no component registers — an app " \
+                  "that copies the example renders no grid at all, silently"
     end
   end
 end
