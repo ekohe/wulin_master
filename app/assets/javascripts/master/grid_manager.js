@@ -121,9 +121,11 @@
       // Append editor attribute to columns
       appendEditor(columns);
 
-      // Extract filter from columns array and populate states["filter"] so
-      // buildColumnsState and FilterPanel both read the correct value
+      // Extract filter and sort from columns array and populate states["filter"]
+      // and states["sort"] so buildColumnsState, FilterPanel and the affiliation
+      // behavior all read the correct value
       states["filter"] = GridStatesManager.extractFilterFromColumns(states["columns"]);
+      states["sort"] = GridStatesManager.extractSortFromColumns(states["columns"]);
       filters = GridStatesManager.applyFilters(filters, states["filter"]);
       pathWithoutQuery = path.split(".json")[0];
       query = path.split(".json")[1];
@@ -316,7 +318,7 @@
       }
 
       // Restore the sorting states from columns array
-      GridStatesManager.restoreSortingStates(grid, loader, GridStatesManager.extractSortFromColumns(states["columns"]));
+      GridStatesManager.restoreSortingStates(grid, loader, states["sort"]);
 
       // Dispatch actions
       WulinMaster.ActionManager.dispatchActions(grid, actions);

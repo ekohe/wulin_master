@@ -115,6 +115,9 @@ window.GridStatesManager = {
 
     // save columns state when columns sorted
     grid.onSort.subscribe(function(e, args){
+      // Keep states["sort"] in sync so the affiliation behavior re-applies the
+      // current sort rather than the one the page loaded with
+      grid.states["sort"] = {sortCol: grid.loader.getSortColumn(), sortDir: grid.loader.getSortDirection()};
       self.saveStates(grid.name, "columns", self.buildColumnsState(grid));
     });
 
