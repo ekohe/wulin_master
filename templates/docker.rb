@@ -62,6 +62,13 @@ file "bin/docker-entrypoint-dev.sh", <<~SH, force: true
     bundle install --jobs "$(nproc)"
   }
 
+  # The deps stage links these, and `.:/rails` hides that copy on every start. They are
+  # gitignored, so the mount does not bring them either, and a passing `bundle check` does not
+  # mean they are here: the bundle volume can already be warm while this directory is empty.
+  # Outside the block above, on every boot, before foreman starts `npm run build:watch`.
+  echo "[entrypoint] Linking vendored gems..."
+  bundle exec ruby script/link_wulin_gems.rb
+
   echo "[entrypoint] Checking database..."
   if bin/rails db:version > /dev/null 2>&1; then
     echo "[entrypoint] Database exists -- running migrations..."
