@@ -68,8 +68,11 @@ wulin_post do
 end
 
 wulin_db_post do
-  # Creates a read/cud Permission row per registered screen, plus one per
-  # non-CRUD route. Singular "load_permission" -- the plural form does not exist.
+  # Creates a read/cud Permission row for every screen CLASS the task can load -- it globs
+  # vendor/gems/*/app/screens and app/screens and requires them, and WulinMaster::Screen.inherited
+  # registers each subclass as it is defined. The menu does not come into it, so a screen left off one
+  # still gets its pair. Plus one row per non-CRUD route. Singular "load_permission" -- the plural
+  # form does not exist.
   rails_command "wulin_permits:load_permission"
 end
 
