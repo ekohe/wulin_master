@@ -107,12 +107,48 @@ wulin_post do
   # via a separate app-level migration.
   generate :migration, "AddAdminToUsers admin:boolean"
 
+  # The first account, from the design that asked for this app rather than from this run.
+  #
+  # A password minted here is different every time the seed runs, lives only in the line that printed
+  # it, and is not the one whoever ordered the app is already holding — so the app ships unopenable by
+  # the person it was built for. `docs/platform.yaml` carries the account when a designer wrote one;
+  # `email` is the word this gem signs people in with, which is why this file is the one that reads it.
   append_to_file "db/seeds.rb", <<~RB
-    admin_password = SecureRandom.alphanumeric(16)
-    User.find_or_create_by!(email: "admin@example.com") do |user|
-      user.password = admin_password
-      user.admin = true
+    first_account = begin
+      design = YAML.load_file(Rails.root.join("docs/platform.yaml")) || {}
+      Array(design["capabilities"]).filter_map { |capability| capability["first_account"] }.first
+    rescue Errno::ENOENT, Psych::SyntaxError
+      nil
     end
-    puts "Admin user: admin@example.com / \#{admin_password}"
+
+    if first_account
+      User.find_or_create_by!(email: first_account.fetch("email")) do |user|
+        user.password = first_account.fetch("password")
+        user.admin = true
+      end
+      puts "Admin user: \#{first_account.fetch("email")} -- password in docs/platform.yaml"
+    else
+      puts "No first account in docs/platform.yaml. Create one: " \\
+           "User.create!(email: ..., password: ..., admin: true)"
+    end
   RB
+end
+
+wulin_note "wulin_auth: db/seeds.rb creates the first admin from docs/platform.yaml (capabilities[].first_account) and leaves an existing one alone; with no such file it creates nobody and prints what to run"
+
+# Seeding nobody is idempotent, so a document that yields no account leaves every probe green and
+# ships an app its owner cannot open. Said here because a note reaches AGENTS.md and the seed's own
+# stdout does not -- and read here only to decide whether to say it: the seed reads the values itself,
+# at seed time, so no part of the credential passes through the scaffold.
+if File.exist?("docs/platform.yaml")
+  designed = begin
+    Array((YAML.load_file("docs/platform.yaml") || {})["capabilities"]).any? { |c| c["first_account"] }
+  rescue Psych::SyntaxError
+    false
+  end
+  unless designed
+    wulin_note "wulin_auth: docs/platform.yaml is here but names no capabilities[].first_account, so " \
+               "db/seeds.rb will create NO admin and nothing behind the login is reachable. Either no " \
+               "sign-in capability was selected, or that document's shape moved."
+  end
 end
