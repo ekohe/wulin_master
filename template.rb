@@ -21,6 +21,20 @@ require "yaml"
 @wulin_source = File.dirname(__FILE__)
 @wulin_remote_source = @wulin_source.match?(%r{\Ahttps?://})
 
+# `rails new -m` builds the app; `rails app:template LOCATION=...` re-applies this to one that exists,
+# which is how a component SELECTED LATER gets its import, its menu block and its migrations. Both run
+# the component templates and both reach the assembly at the bottom -- `apply_rails_template` calls
+# `run_after_bundle_callbacks` -- and the assembly rewrites the files it owns from the full set, so it
+# is correct either way as long as every component the app should have is named.
+#
+# What the two paths do NOT share is the handful of steps that CREATE the app. Those append a line or
+# claim a file, so a second run would write the line twice or prompt over a config holding real
+# credentials. They are skipped below, keyed on this.
+#
+# Read here, before anything is written: the file it asks about is created further down, so asking
+# later would always answer "existing".
+@wulin_existing_app = File.exist?("config/app_config.example.yml")
+
 # GitHub over public HTTPS, not the GitLab mirror over SSH: this URL lands in the
 # generated app's .gitmodules, and that app is delivered to GitHub, where
 # git@gitlab.ekohe.com is unclonable without a key -- including by its own image build.
@@ -42,8 +56,10 @@ end
 # Strip empty group blocks left behind after removing gems.
 gsub_file "Gemfile", /^group :[^\n]+\n(#[^\n]*\n|\s*\n)*end\n/, ""
 
-gem_group :development, :test do
-  gem "standard"
+unless @wulin_existing_app
+  gem_group :development, :test do
+    gem "standard"
+  end
 end
 
 # Install order, and it matters: wulin_permits must land before wulin_queue so the
@@ -122,6 +138,10 @@ def wulin_vendor(name)
   # wulin_master carries a branch and no ref on purpose (it is this repository, served from the same
   # branch), so its resolution is whatever that branch holds when the app is built -- recorded, like
   # every other gem, in the Gemfile.lock the app commits.
+  # `gem` APPENDS, and bundler refuses the same gem twice — so a re-applied template would break the
+  # bundle of every app that already has this component. Removing the old declaration first makes the
+  # one in the Gemfile the one this run computed, which is also how a moved pin lands.
+  gsub_file "Gemfile", /^gem "#{name}",.*\n/, "", verbose: false
   if ref
     gem name, github: "ekohe/#{name}", ref: ref
   else
@@ -171,6 +191,19 @@ def wulin_indent(blocks, spaces)
   }.join("\n")
 end
 
+# What an app that already exists declares for itself. The assembly rewrites application.js, the Sass
+# entry and ApplicationController from the FULL set, so a re-applied template told only about the new
+# component would strip the wiring of every other one. The Gemfile is the authority: it is what
+# bundler resolves, and what a dependency step appends to.
+def wulin_declared
+  return [] unless @wulin_existing_app
+
+  known = @wulin_catalog.map { |c| c[:name] }
+  File.read("Gemfile").scan(/^gem "(wulin_[a-z_]+)"/).flatten & known
+rescue Errno::ENOENT
+  []
+end
+
 def wulin_selection
   requested = ENV["WULIN_COMPONENTS"].to_s.strip
   optional = @wulin_catalog.reject { |c| c[:required] }
@@ -187,6 +220,8 @@ def wulin_selection
     say_status :components, "stdin is not a tty and WULIN_COMPONENTS is unset -- installing only #{@wulin_catalog.select { |c| c[:required] }.map { |c| c[:name] }.join(", ")}", :yellow
     []
   end
+
+  chosen |= wulin_declared
 
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
   raise Thor::Error, "Unknown component: #{unknown.join(", ")}" if unknown.any?
@@ -234,9 +269,11 @@ app_config = <<~YAML + @wulin_app_config.map(&:strip).join("\n\n") + "\n"
 
 YAML
 
-create_file "config/app_config.yml", app_config
-create_file "config/app_config.example.yml", app_config
-append_to_file ".gitignore", "\n/config/app_config.yml\n"
+unless @wulin_existing_app
+  create_file "config/app_config.yml", app_config
+  create_file "config/app_config.example.yml", app_config
+  append_to_file ".gitignore", "\n/config/app_config.yml\n"
+end
 
 after_bundle do
   # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
@@ -268,17 +305,21 @@ after_bundle do
       puts "\#{spec.name} -> \#{spec.full_gem_path}"
     end
   RB
-  append_to_file ".gitignore", <<~IGNORE
+  unless @wulin_existing_app
+    append_to_file ".gitignore", <<~IGNORE
 
-    # The wulin components are Bundler git gems; vendor/gems is symlinks built by
-    # script/link_wulin_gems.rb, so it is derived and never committed.
-    /vendor/gems
-  IGNORE
+      # The wulin components are Bundler git gems; vendor/gems is symlinks built by
+      # script/link_wulin_gems.rb, so it is derived and never committed.
+      /vendor/gems
+    IGNORE
+  end
   run "bundle exec ruby script/link_wulin_gems.rb", abort_on_failure: true
 
   # wulin_master:install writes its own ApplicationController with a stub menu,
-  # so this has to come after it and replace the file wholesale.
-  rails_command "generate wulin_master:install"
+  # so this has to come after it and replace the file wholesale. Skipped on an app that exists: it
+  # also copies a homepage controller and prepends a root route, and a second root is a route the
+  # router never reaches behind the one already there.
+  rails_command "generate wulin_master:install" unless @wulin_existing_app
 
   # `app/screens` and `app/grids` from the start, even before anything lives in them. Rails builds
   # its autoload paths from the directories under `app/` that exist AT BOOT, so a directory the
