@@ -52,12 +52,14 @@ def ref_fetchable?(name, ref, dir)
     out: File::NULL, err: File::NULL)
 end
 
-# What a component CONTRIBUTES, read off the ref that was just fetched. Three file-existence facts,
+# What a component CONTRIBUTES, read off the ref that was just fetched. Facts about what is there,
 # nothing about what any of it means:
 #
-#   screens     the pages that belong in a menu group, as class names
-#   esm         the esbuild entry an app has to import, if it ships one
-#   migrations  how many it appends, so `db:migrate` doing nothing is visibly wrong
+#   screens         the pages that belong in a menu group, as class names
+#   esm             the esbuild entry an app has to import, if it ships one
+#   migrations      how many it appends, so `db:migrate` doing nothing is visibly wrong
+#   editors         the cell editors it registers, by name
+#   unfilled_hooks  the `before_action` names it declares and defines nowhere
 #
 # Derived, never written. The prose enumeration this replaces rotted into claiming a gem that does
 # not exist and attributing one gem's method to another; `git ls-tree` can do neither. It is also the
@@ -76,8 +78,46 @@ def inventory_at(dir, treeish)
       .map { |f| File.basename(f, ".rb").split("_").map(&:capitalize).join }.sort,
     "esm" => paths.grep(%r{\Aapp/javascript/.+\.esm\.js\z}).map { |f| File.basename(f) }.sort,
     "migrations" => paths.count { |f| f.start_with?("db/migrate/") && f.end_with?(".rb") },
-    "editors" => editors_at(dir, treeish, paths)
+    "editors" => editors_at(dir, treeish, paths),
+    "unfilled_hooks" => unfilled_hooks_at(dir, treeish, paths)
   }.compact
+end
+
+# The `before_action` names a component's own controllers declare and nothing defines — neither the
+# component nor `wulin_master`, whose ScreenController they all inherit from. Recorded by controller
+# because that is the claim a component template's comment makes, and a controller that gains or loses
+# the hook upstream makes it wrong with nothing else to notice.
+def unfilled_hooks_at(dir, treeish, paths)
+  controllers = paths.grep(%r{\Aapp/controllers/.+_controller\.rb\z})
+  return nil if controllers.empty?
+
+  declared = Hash.new { |h, k| h[k] = [] }
+  controllers.each do |file|
+    blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:#{file}")} 2>/dev/null`
+    next unless $?.success?
+
+    blob.scan(/^\s*before_action\s+:([a-z_][a-z0-9_]*)/).flatten.uniq.each do |hook|
+      declared[hook] << File.basename(file, "_controller.rb")
+    end
+  end
+
+  # `app lib` on the wulin_master side: its `templates/` hold the very methods the scaffold supplies,
+  # so an unrestricted look there reports every hook as already filled by the thing meant to fill it.
+  unfilled = declared.reject do |hook, _|
+    defines?(dir, treeish, hook) || defines?(ROOT, "HEAD", hook, %w[app lib])
+  end
+  unfilled.empty? ? nil : unfilled.sort.to_h.transform_values(&:sort)
+end
+
+# `git grep` over the fetched tree rather than a blob per file: the question is about the whole
+# component, and the objects are already here.
+#
+# `-w` rather than a `\\b` in the pattern: `git grep -E` is POSIX ERE, where `\\b` is not a word
+# boundary and silently matches nothing -- which reads as "defined nowhere" for every hook there is.
+def defines?(dir, treeish, name, paths = [])
+  argv = ["git", "-C", dir, "grep", "-qwE", "def +#{name}", treeish]
+  argv += ["--", *paths] if paths.any?
+  system(*argv, out: File::NULL, err: File::NULL)
 end
 
 # The cell editors a component registers, by name. Derived for the same reason as the rest, and
@@ -167,6 +207,24 @@ Dir.mktmpdir do |dir|
   end
 end
 
+# A hook nothing defines has to be supplied by the component's own template, or the first request to
+# those screens is a NoMethodError. The template is where that decision lives, so that is where it is
+# checked -- and the check is what keeps the template's comment naming the right controllers.
+inventory.each do |name, facts|
+  supplied = begin
+    File.read(File.join(ROOT, "templates", "#{name}.rb")).scan(/^\s*def +([a-z_][a-z0-9_]*)/).flatten
+  rescue Errno::ENOENT
+    []
+  end
+  (facts["unfilled_hooks"] || {}).each do |hook, controllers|
+    next if supplied.include?(hook)
+
+    problems << "#{name}: #{controllers.join(", ")} declare `before_action :#{hook}` and nothing " \
+                "defines it — templates/#{name}.rb must supply it, or those screens raise on the " \
+                "first request"
+  end
+end
+
 # A name a README teaches must be a name some component registers. Skipped when nothing fetched an
 # editor at all, because then the union is empty for a reason that has nothing to do with the READMEs
 # and every mention would be reported.
@@ -187,9 +245,8 @@ if write_inventory
   File.write(INVENTORY, <<~HEAD + YAML.dump(inventory).sub(/\A---\n/, ""))
     # DERIVED — do not edit. Regenerate with `ruby script/check_components.rb --inventory`.
     #
-    # What each component contributes, read off the commit `components.lock.yml` pins it at. Three
-    # file-existence facts and nothing else: the screens that belong in a menu group, the esbuild
-    # entry an app must import, and how many migrations it appends.
+    # What each component contributes, read off the commit `components.lock.yml` pins it at. What
+    # each key holds is stated once, beside the code that derives it, in script/check_components.rb.
     #
     # It exists so that nobody — person or agent — has to read a gem's source to find out what
     # installing it puts in front of a user. The prose version of this rotted into naming a gem that
