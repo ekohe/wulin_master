@@ -39,5 +39,6 @@ wulin_app_config <<~YAML
   #     database: audit
 YAML
 
+wulin_note "wulin_audit: RecordAuditScreen is not on the menu on purpose -- its grid is AuditLogGrid on the same model with class_name and record_id removed, so listed on its own it shows every audit row without saying which record each one belongs to. It is the drill-down, reached as /wulin_audit/record_audits?class_name=Order&record_ids=1"
 wulin_note "wulin_audit: every model is audited by default -- use reject_audit in a model to opt out"
 wulin_note "wulin_audit: the record_audit#read permission is not created for you; add it if you use wulin_permits"
