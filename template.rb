@@ -350,8 +350,12 @@ after_bundle do
     #{@wulin_js.map { |path| "import \"#{path}\"" }.join("\n")}
   JS
 
+  # Sass refuses an @use after any other rule, and the components arrive in catalog order -- so
+  # wulin_permits' inline rules would otherwise land between wulin_master's @use and a later
+  # component's. Every @use goes first; the order within each group is kept.
+  uses, rules = @wulin_sass.map(&:strip).partition { |block| block.start_with?("@use ") }
   file "app/assets/stylesheets/application.sass",
-    @wulin_sass.map(&:strip).join("\n\n") + "\n", force: true
+    (uses + rules).join("\n\n") + "\n", force: true
 
   file "app/controllers/application_controller.rb", <<~RB, force: true
     # frozen_string_literal: true
