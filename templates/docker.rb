@@ -14,7 +14,9 @@ file ".env.example", <<~ENV
   DB_PORT=5432
 ENV
 
-run "cp .env.example .env"
+# Only when there is none: on an app that already exists (`rails app:template`, which is how a
+# component selected later is added), .env holds the values somebody filled in, secrets included.
+run "cp .env.example .env" unless File.exist?(".env")
 
 # Rails' `/.env*` also swallows the template that is meant to be committed, so only the
 # exception is needed -- and it has to come after.
