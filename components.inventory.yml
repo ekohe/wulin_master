@@ -92,3 +92,8 @@ wulin_excel:
   esm:
   - wulin_excel.esm.js
   migrations: 0
+wulin_agent:
+  screens: []
+  esm:
+  - wulin_agent.esm.js
+  migrations: 10

@@ -49,3 +49,6 @@ components:
   wulin_excel:
     branch: main
     ref: 7db8650e0458cac71901c2b0faab7d977f3af12d
+  wulin_agent:
+    branch: v3
+    ref: 90bce66a2d376768e1a674176784c8eeccde7042
