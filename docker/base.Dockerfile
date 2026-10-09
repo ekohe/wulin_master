@@ -31,7 +31,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 ARG BUNDLER_VERSION=2.7.2
 RUN gem install bundler -v "${BUNDLER_VERSION}" --no-document
 
-ARG NODE_MAJOR=20
+ARG NODE_MAJOR=22
 # Both apt-get updates are needed: the second re-indexes after the NodeSource repository
 # is added. curl outlives the install step -- the generated compose healthcheck uses it.
 RUN apt-get update -qq && \
