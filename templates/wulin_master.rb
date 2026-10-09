@@ -201,6 +201,9 @@ wulin_post do
   # (`import 'jquery-ui/ui/widget'`) is then resolved by walking up from THERE, which never reaches
   # this app's node_modules -- measured on a real scaffold: thirteen unresolved imports and a
   # non-zero exit before anything was written.
+  #
+  # `--minify` on `build` only: it is what assets:precompile runs, and it also selects React's
+  # production build for components that use it. `build:watch` stays readable for development.
   file "package.json", <<~JSON, force: true
     {
       "name": "#{app_name}",
@@ -213,7 +216,7 @@ wulin_post do
         "rails-ujs": "^5.2.0"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks",
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --minify",
         "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       }
