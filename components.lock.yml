@@ -1,0 +1,41 @@
+# Which commit each component is vendored at. Read by `template.rb` at scaffold time.
+#
+# `ref` is what a generated app actually gets; without it the app receives whatever the branch
+# tipped to that day. `branch` is the line the ref is tracked on, and `script/check_components.rb`
+# reports when it has moved ahead.
+#
+# `wulin_master` carries a branch and no ref on purpose: it is this repository, served from the same
+# branch as the gem it vendors.
+#
+# `verified_at` is the last date a real `rails new` was run against these refs end to end. It is a
+# record of a run, not a property of the file: a bump, or a change to how components are vendored,
+# leaves it stale until somebody re-runs the recipe below and commits the date with the new refs.
+verified_at: "2026-10-13"
+verified_by: >-
+  A real `rails new` with WULIN_COMPONENTS naming every optional component, against this template:
+  each one vendored at the ref below, 22 migrations applied, and each engine's own model resolving
+  under RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process.
+verify_with: |-
+  WULIN_COMPONENTS=all \
+    rails new /tmp/verify --force --quiet --name=verify --skip-hotwire --skip-solid \
+    --database=postgresql --skip-javascript --skip-ci --skip-test -m <template.rb>
+  cd /tmp/verify && RAILS_ENV=test bin/rails db:prepare && RAILS_ENV=test bin/rails runner \
+    'p [WulinAuth::User.count, Privilege.count, WulinAudit::AuditLog.count, WulinQueue::Process.count]'
+components:
+  wulin_master:
+    branch: v3
+  wulin_auth:
+    branch: main
+    ref: 680a67e2c209f15ef112dc876d361006dcc97acb
+  wulin_permits:
+    branch: main
+    ref: 0f4e07af9b7e12c633387101b917ebc3d1b2ca9e
+  wulin_queue:
+    branch: main
+    ref: 3371ac47c0d1282d9a0c1d459fc21d75ffa42707
+  wulin_audit:
+    branch: main
+    ref: 9573ed1111d8076e0028fd477017fa3ab83d9b09
+  wulin_excel:
+    branch: main
+    ref: 7db8650e0458cac71901c2b0faab7d977f3af12d

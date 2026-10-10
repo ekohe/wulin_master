@@ -120,18 +120,22 @@ WULIN_COMPONENTS=all rails new ... -m ./template.rb
 WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 ```
 
-| component | branch | what it adds |
-| --- | --- | --- |
-| `wulin_master` | `v3` | always installed: grids, screens, menus, this asset pipeline |
-| `wulin_auth` | `main` | login/logout, `current_user`, password reset |
-| `wulin_permits` | `main` | users, roles, privileges, per-screen permissions |
-| `wulin_queue` | `main` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
-| `wulin_audit` | `main` | audit trail for every model write, plus request action logs |
-| `wulin_excel` | `main` | Excel export button on grid toolbars |
+| component | what it adds |
+| --- | --- |
+| `wulin_master` | always installed: grids, screens, menus, this asset pipeline |
+| `wulin_auth` | login/logout, `current_user`, password reset |
+| `wulin_permits` | users, roles, privileges, per-screen permissions |
+| `wulin_queue` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
+| `wulin_audit` | audit trail for every model write, plus request action logs |
+| `wulin_excel` | Excel export button on grid toolbars |
 
-Everything is vendored as a git submodule under `vendor/gems/`, because esbuild
-and dart-sass reach into these gems by relative path and a bundler git source
-lands somewhere unpredictable.
+Which commit each one is installed at is `components.lock.yml`, and only there.
+
+Each is a Bundler git gem, so Bundler pins the commit and the app's own
+`Gemfile.lock` records what it resolved to. A git gem lives under a path
+carrying that commit's SHA, while esbuild and dart-sass reach into these gems
+by relative path, so `script/link_wulin_gems.rb` links `vendor/gems/<name>` at
+the real checkout after every `bundle install`.
 
 The steps below are what the template does for wulin_master itself.
 
@@ -144,7 +148,7 @@ Add the gem's npm dependencies as an npm workspace, in your package.json:
   "devDependencies": { "esbuild": "^0.28.0" },
   "dependencies": { "rails-ujs": "^5.2.0" },
   "scripts": {
-    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --minify"
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --minify"
   }
 }
 ```
