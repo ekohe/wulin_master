@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module WulinMasterGridHelper
+  # Nothing here calls it: this is how `current_user?` reaches the grid partials, which are rendered
+  # by screen controllers rather than by the two controllers that include the module themselves.
+  include WulinMaster::HostUser
+
   BOOLEAN_TYPE = ActiveRecord::Type::Boolean.new
 
   def select_options(column)

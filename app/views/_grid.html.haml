@@ -1,7 +1,7 @@
 .grid_container{:id => "grid_#{grid.name}", :name => "#{grid.name}",:style => grid.style}
   - unless grid.hide_header?
     :ruby
-      user_id = (respond_to?(:current_user) && current_user) ? current_user.id : -1
+      user_id = current_user? ? current_user.id : -1
     .grid-header
       .title-with-actions
         %h2= grid.title
