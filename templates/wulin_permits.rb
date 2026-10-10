@@ -29,9 +29,10 @@ SASS
 # wulin_permits wants: permission_all_users, user_all_permissions and users_privileges each declare
 # `before_action :require_admin`, and nothing in the gem defines it. Replace this one with your real
 # authorization.
-# wulin_auth's current_user returns WulinAuth::User.find(...), but
-# wulin_permits includes has_permission_with_name? only on the app's
-# User subclass. Override current_user to return a User instance.
+#
+# wulin_auth's current_user returns WulinAuth::User.find(...), while the engine includes the
+# permission methods into the app's User subclass -- so the object the enforcement callback is handed
+# would not carry the methods it calls. Override current_user to return a User instance.
 wulin_method <<~RB
   def current_user
     return @current_user if defined?(@current_user)
@@ -56,8 +57,8 @@ wulin_menu <<~RB
 RB
 
 wulin_post do
-  # The User class comes from wulin_auth, which this component needs. Its grids call
-  # find_by_ids on it, which nothing else defines.
+  # Called from the query_initialized callback of roles_users, permission_all_users and
+  # users_privileges, so it runs as those grids load. Defined in no gem on this stack.
   inject_into_class "app/models/user.rb", "User", <<~RB
     def self.find_by_ids(ids)
       where(id: ids)
@@ -66,8 +67,11 @@ wulin_post do
 end
 
 wulin_db_post do
-  # Creates a read/cud Permission row per registered screen, plus one per
-  # non-CRUD route. Singular "load_permission" -- the plural form does not exist.
+  # Creates a read/cud Permission row for every screen CLASS the task can load -- it globs
+  # vendor/gems/*/app/screens and app/screens and requires them, and WulinMaster::Screen.inherited
+  # registers each subclass as it is defined. The menu does not come into it, so a screen left off one
+  # still gets its pair. Plus one row per non-CRUD route. Singular "load_permission" -- the plural
+  # form does not exist.
   rails_command "wulin_permits:load_permission"
 end
 
