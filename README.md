@@ -103,12 +103,15 @@ results out of `app/assets/builds`.
 and asks which of the Wulin components you want alongside it:
 
 ```bash
-rails new wulin_app --skip-hotwire --skip-solid --database=postgresql -j esbuild -m ./template.rb
+rails new wulin_app --skip-hotwire --skip-solid --database=postgresql --skip-javascript -m ./template.rb
 ```
 
 `--skip-solid` matters if you say yes to `wulin_queue`: Rails 8 otherwise
 generates its own Solid Queue setup in a separate queue database, and
 wulin_queue's migration creates the same tables in the primary one.
+
+`--skip-javascript` is required, not a preference; the header of `template.rb`
+says what any other JavaScript option breaks.
 
 Each component is a file under `templates/`, and the questions can be skipped:
 
@@ -132,16 +135,16 @@ lands somewhere unpredictable.
 
 The steps below are what the template does for wulin_master itself.
 
-Add the gem's npm dependencies as a yarn workspace, in your package.json:
+Add the gem's npm dependencies as an npm workspace, in your package.json:
 
 ```json
 {
   "private": true,
   "workspaces": ["vendor/gems/wulin_master"],
-  "devDependencies": { "esbuild": "^0.25.9" },
+  "devDependencies": { "esbuild": "^0.28.0" },
   "dependencies": { "rails-ujs": "^5.2.0" },
   "scripts": {
-    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css"
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css"
   }
 }
 ```
@@ -197,12 +200,20 @@ refers to them by bare filename, so copy them into `app/assets/fonts` and add
 `.woff`/`.woff2` to `config.assets.precompile`. See `script/copy_material_icons.js`
 in the template.
 
-For development, run both watchers alongside the server:
+For development, run both watchers alongside the server. `Procfile.dev`:
 
 ```
-web: bin/rails server
-js:  yarn build --watch
+web: env RUBY_DEBUG_OPEN=true bin/rails server
+js: npm run build:watch
 css: bin/rails dartsass:watch
+```
+
+and `bin/dev`, which exports PORT first -- foreman otherwise gives the web process 5000:
+
+```bash
+#!/usr/bin/env bash
+export PORT="${PORT:-3000}"
+exec bundle exec foreman start -f Procfile.dev "$@"
 ```
 
 `rails dartsass:build` is already attached to `assets:precompile`. Attach your

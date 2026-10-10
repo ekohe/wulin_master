@@ -1,11 +1,22 @@
-# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+# rails new APP_NAME --skip-hotwire --skip-solid --database=postgresql --skip-javascript -m ./template.rb
 #
-# Asks which Wulin components you want, then vendors and configures each one.
-# Set WULIN_COMPONENTS to skip the questions:
+# Asks which Wulin components to install, then vendors and configures each one. Set
+# WULIN_COMPONENTS to skip the questions:
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
+# --skip-javascript is required. This template owns the JavaScript build -- package.json,
+# Procfile.dev, bin/dev and app/assets/builds -- and any other choice installs a second one between
+# this body and after_bundle: importmap's pins, or a jsbundling installer that rewrites those files
+# with whatever package manager it finds (under Yarn 4, a Plug'n'Play manifest that esbuild then
+# resolves through, so none of the gems' npm imports resolve). Refused up front rather than at the
+# first build.
+unless options[:skip_javascript]
+  raise Thor::Error, "This template builds the JavaScript itself: run `rails new` with " \
+    "--skip-javascript (this run asked for #{options[:javascript]})."
+end
+
 # Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
 # owns the Solid Queue schema in the primary database, so strip the duplicate.
 gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
@@ -261,7 +272,7 @@ after_bundle do
 
   # Build assets after all wulin_post blocks have run, so every component's
   # esbuild entries and dartsass config changes are in place.
-  run "yarn build", abort_on_failure: true
+  run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
 
   # Every engine appends its own db/migrate to the app's migration paths, so a
