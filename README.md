@@ -321,7 +321,7 @@ class PostGrid < WulinMaster::Grid
   # Define the grid columns
   column :title, sortable: true, visible: true, editable: true
   column :category, width: 100, label: "Category"
-  column :created_at, editor: "TimeCellEditor"
+  column :created_at, editor: "DateTimeEditor"
   ...
 
   # Define dynamic edit form
@@ -548,15 +548,15 @@ This option is only used when the column is a virtual attribute column. Since it
 
 `:editor`
 
-By default, if the column is editable, the type of cell editor is determined from the column types such as `string`, `integer`, `boolean` etc. Therefore you don't need to specify the editor manually for general cases. However in some cases you have to define the `:editor`. For example, `SelectEditor` renders a dropdown of possible values of the column, `TimeCellEditor` renders a time-picker for the column which is of `datetime` type, etc.
+By default, if the column is editable, the type of cell editor is determined from the column types such as `string`, `integer`, `boolean` etc. Therefore you don't need to specify the editor manually for general cases. However in some cases you have to define the `:editor`. For example, `SelectEditor` renders a dropdown of possible values of the column, `DateTimeEditor` renders a date-and-time picker for a `datetime` column, etc.
 
-You can define a new type of editor by yourself. All editor definitions can be found in `editor.js`
+You can define a new type of editor by yourself. All editor definitions can be found in `app/assets/javascripts/master/editors.js`
 
 `:formatter`
 
 This option defines how the value is displayed in the grid cell. For example, `MoneyFormatter` renders the number value as money format, etc.
 
-You can also define a new formatter by yourself. The formatter definitions are all located in `slick.editor.js`.
+You can also define a new formatter by yourself. The formatter definitions are all located in `app/assets/javascripts/master/formatters.js`.
 
 `:choices`
 
