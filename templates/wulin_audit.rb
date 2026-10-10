@@ -1,10 +1,9 @@
 # wulin_audit -- records every ActiveRecord write, plus a log of each request.
 #
-# Despite what the old docs claimed, this no longer needs MongoDB: the models
-# are plain ActiveRecord. It does need PostgreSQL, because the audit tables use
-# jsonb columns.
+# Its models are plain ActiveRecord; the audit tables use jsonb columns, so it
+# needs PostgreSQL.
 
-wulin_vendor "wulin_audit", "develop"
+wulin_vendor "wulin_audit"
 
 # The gem does `require "haml-rails"` at load but only lists it as a development
 # dependency, so without this the app raises LoadError on boot.
