@@ -14,14 +14,15 @@
 verified_at: "2026-10-13"
 verified_by: >-
   A real `rails new` with WULIN_COMPONENTS naming every optional component, against this template:
-  each one vendored at the ref below, 22 migrations applied, and each engine's own model resolving
-  under RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process.
+  each one vendored at the ref below, 32 migrations applied, and each engine's own model resolving
+  under RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process,
+  WulinAgent::Conversation.
 verify_with: |-
   WULIN_COMPONENTS=all \
     rails new /tmp/verify --force --quiet --name=verify --skip-hotwire --skip-solid \
     --database=postgresql --skip-javascript --skip-ci --skip-test -m <template.rb>
   cd /tmp/verify && RAILS_ENV=test bin/rails db:prepare && RAILS_ENV=test bin/rails runner \
-    'p [WulinAuth::User.count, Privilege.count, WulinAudit::AuditLog.count, WulinQueue::Process.count]'
+    'p [WulinAuth::User.count, Privilege.count, WulinAudit::AuditLog.count, WulinQueue::Process.count, WulinAgent::Conversation.count]'
 components:
   wulin_master:
     branch: v3
@@ -40,3 +41,6 @@ components:
   wulin_excel:
     branch: main
     ref: 7db8650e0458cac71901c2b0faab7d977f3af12d
+  wulin_agent:
+    branch: v3
+    ref: 90bce66a2d376768e1a674176784c8eeccde7042

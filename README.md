@@ -128,6 +128,7 @@ WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 | `wulin_queue` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
 | `wulin_audit` | audit trail for every model write, plus request action logs |
 | `wulin_excel` | Excel export button on grid toolbars |
+| `wulin_agent` | AI assistant over the grids: in-app chat and an MCP endpoint |
 
 Which commit each one is installed at is `components.lock.yml`, and only there.
 

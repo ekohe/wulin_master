@@ -86,7 +86,9 @@ end
   {name: "wulin_audit",
    summary: "audit trail for every model write, plus request action logs"},
   {name: "wulin_excel",
-   summary: "Excel export button on grid toolbars"}
+   summary: "Excel export button on grid toolbars"},
+  {name: "wulin_agent", needs: %w[wulin_permits],
+   summary: "AI assistant over the grids: in-app chat and an MCP endpoint"}
 ]
 
 # The component templates fill these in; this file assembles them at the end.
