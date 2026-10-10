@@ -1,3 +1,6 @@
+-# Guarded here, not on the action: Grid#valid_by_action_authorized? reads "no user" as
+-# unrestricted, so the action is offered and this partial rendered on every page load.
+- return "" unless current_user?
 :ruby
   WulinMaster::GridState.create_default(current_user.id, grid.name)
   states = grid_states_options(current_user.id, grid.name)

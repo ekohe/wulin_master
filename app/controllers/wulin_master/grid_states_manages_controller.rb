@@ -10,8 +10,10 @@ module WulinMaster
   # save raised NameError: undefined local variable or method `current_user'.
   class GridStatesManagesController < ApplicationController
     include WulinMasterGridHelper
+    include WulinMaster::HostUser
 
     append_view_path "#{WulinMaster::Engine.root}/app/views"
+    before_action :require_current_user
     before_action :set_state, only: %i[update destroy set_current]
 
     def create
@@ -104,6 +106,12 @@ module WulinMaster
     end
 
     private
+
+    # The grid already renders without a saved state -- GridStates#states_for_user answers "false"
+    # when there is no user -- so refusing here costs nothing.
+    def require_current_user
+      self.response_body = "no current user" unless current_user?
+    end
 
     def set_state
       @state = GridState.find(params[:id])
