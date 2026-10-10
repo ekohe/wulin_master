@@ -1,0 +1,245 @@
+# The development stack: an image FROM the shared wulin base, compose with postgres, and
+# an entrypoint that prepares the database.
+#
+# Rails' own Dockerfile is left alone (it is a production/Kamal image), hence
+# Dockerfile.dev. Its .dockerignore is reused as-is -- it already excludes .git,
+# node_modules, app/assets/builds and .env*, and keeps vendor/, which this image needs.
+
+file ".env.example", <<~ENV
+  # Copied to .env at scaffold time; .env is gitignored, and compose treats it as
+  # optional -- without it the defaults in docker-compose.yml apply.
+  POSTGRES_USER=postgres
+  POSTGRES_PASSWORD=password
+  DB_HOST=db
+  DB_PORT=5432
+ENV
+
+# Only when there is none: on an app that already exists (`rails app:template`, which is how a
+# component selected later is added), .env holds the values somebody filled in, secrets included.
+run "cp .env.example .env" unless File.exist?(".env")
+
+# Rails' `/.env*` also swallows the template that is meant to be committed, so only the
+# exception is needed -- and it has to come after.
+append_to_file ".gitignore", <<~GIT
+
+  !/.env.example
+GIT
+
+# One file for the container (DB_HOST=db, from compose) and a local machine (no DB_HOST).
+# `.presence ||` rather than ENV.fetch: compose passes these through as empty strings, and
+# fetch would return "" where the fallback is wanted.
+file "config/database.yml", <<~YAML, force: true
+  default: &default
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    host: <%= ENV["DB_HOST"].presence || "localhost" %>
+    port: <%= ENV["DB_PORT"].presence || 5432 %>
+    username: <%= ENV["POSTGRES_USER"].presence || "postgres" %>
+    password: <%= ENV["POSTGRES_PASSWORD"].presence || "password" %>
+
+  development:
+    <<: *default
+    database: #{app_name}_development
+
+  test:
+    <<: *default
+    database: #{app_name}_test
+
+  # No fallbacks in production: an unset variable means "the compose defaults" in development, and
+  # it has to mean "fail" here rather than "try the password this file happens to name".
+  production:
+    <<: *default
+    host: <%= ENV["DB_HOST"] %>
+    username: <%= ENV["POSTGRES_USER"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    database: #{app_name}_production
+YAML
+
+# A committed file, not a Dockerfile heredoc: `COPY <<'EOF'` needs BuildKit, and this
+# builds on the legacy builder, where it fails with "no source files were specified".
+file "bin/docker-entrypoint-dev.sh", <<~SH, force: true
+  #!/bin/sh
+  set -e
+
+  # The bundle lives in a named volume seeded from the image, so gems are normally
+  # already here and this is a no-op. It matters after a Gemfile change.
+  bundle check > /dev/null 2>&1 || {
+    echo "[entrypoint] Gems out of sync -- running bundle install..."
+    bundle install --jobs "$(nproc)"
+  }
+
+  # The deps stage links these, and `.:/rails` hides that copy on every start. They are
+  # gitignored, so the mount does not bring them either, and a passing `bundle check` does not
+  # mean they are here: the bundle volume can already be warm while this directory is empty.
+  # Outside the block above, on every boot, before foreman starts `npm run build:watch`.
+  echo "[entrypoint] Linking vendored gems..."
+  bundle exec ruby script/link_wulin_gems.rb
+
+  echo "[entrypoint] Checking database..."
+  if bin/rails db:version > /dev/null 2>&1; then
+    echo "[entrypoint] Database exists -- running migrations..."
+    bin/rails db:migrate
+  else
+    echo "[entrypoint] Database missing -- running db:prepare..."
+    bin/rails db:prepare
+  fi
+
+  # The test database as well: rspec connects to it and neither branch above creates it, so a
+  # fresh app's suite dies on ActiveRecord::NoDatabaseError before it loads one example --
+  # maintain_test_schema! reaches for the connection before it can create anything with it.
+  # db:prepare rather than db:test:prepare, so the test database is created, migrated AND
+  # seeded the way the development one is, and a suite that reads a seeded row finds it.
+  # Idempotent, so every boot after the first is a no-op; the `||` keeps a container that
+  # serves the app from refusing to start over a test database it could not make.
+  echo "[entrypoint] Preparing the test database..."
+  RAILS_ENV=test bin/rails db:prepare || echo "[entrypoint] Test database not prepared -- the suite will fail until it is."
+
+  exec "$@"
+SH
+chmod "bin/docker-entrypoint-dev.sh", 0o755
+
+# The recipe for the base image, copied INTO the app rather than reached through the wulin_master
+# gem. An app has to be buildable from its own checkout: a recipe that lives inside a vendored
+# dependency is gone the moment the bundle cannot be installed, and this is the offline fallback --
+# the thing you reach for when the private registry is exactly what you cannot reach.
+file "docker/base.Dockerfile", wulin_read("docker/base.Dockerfile"), force: true
+
+# FROM the shared base this app now carries the recipe for; see docker/base.Dockerfile for
+# what it is and how to build it.
+# No `# syntax=` line here either -- that opts into BuildKit.
+file "Dockerfile.dev", <<~DOCKERFILE, force: true
+  ARG BASE_IMAGE=wulin-base:local
+  FROM ${BASE_IMAGE} AS base
+
+  FROM base AS deps
+
+  # App source arrives later, so editing it does not invalidate bundle install. The wulin
+  # components are git gems: bundler clones them here, and nothing of them needs copying in.
+  COPY Gemfile Gemfile.lock ./
+  RUN bundle install --jobs "$(nproc)" || { \\
+        echo "[deps] bundle install failed -- retrying after cache clear..." && \\
+        rm -rf /usr/local/bundle/cache/*.gem && \\
+        bundle install --jobs "$(nproc)"; \\
+      }
+
+  # A git gem's checkout path carries a commit SHA, so it differs between this image and the
+  # host the app was scaffolded on. esbuild, dart-sass and the app's own JavaScript all address
+  # the components as vendor/gems/<name>; this links that stable path at the real checkout, and
+  # it has to run HERE because the SHA is this image's.
+  COPY script/link_wulin_gems.rb ./script/
+  RUN bundle exec ruby script/link_wulin_gems.rb
+
+  COPY package.json package-lock.json ./
+  RUN npm ci || { echo "[deps] npm ci failed -- retrying after cache clear..." && npm cache clean --force && npm ci; }
+
+  FROM deps AS development
+  COPY . .
+
+  # Copied out of /rails so the runtime's `.:/rails` bind mount cannot shadow it.
+  COPY bin/docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint-dev.sh
+  RUN chmod +x /usr/local/bin/docker-entrypoint-dev.sh
+  ENTRYPOINT ["/usr/local/bin/docker-entrypoint-dev.sh"]
+
+  EXPOSE 3000
+
+  # bin/dev, not `rails server`: Procfile.dev's esbuild and dart-sass watchers are what
+  # produce the bundles, without which every page raises Propshaft::MissingAssetError.
+  CMD ["./bin/dev"]
+DOCKERFILE
+
+# `config.hosts` is read at boot, and the only way to change it afterwards is to restart the app --
+# which, under `bin/dev`, means making foreman's web child exit, which takes the container down with
+# it (foreman is PID 1). So the service name the app is reachable by IN the compose network is
+# written in now, while there is no runtime to disturb. A role that has to add this line later
+# cannot make it take effect, and the documented way to try killed a live app on a real build.
+#
+# Additive: Rails' development default already allows localhost and .localhost, which is what the
+# provisioning probes address it as.
+environment_config = "config/environments/development.rb"
+inject_into_file environment_config, after: "Rails.application.configure do\n" do
+  <<~RB
+    # Reachable by its compose service name from inside the network, not only as localhost.
+    # Read at boot: adding it to a RUNNING app requires a restart this runtime cannot survive.
+    config.hosts << "app" if config.respond_to?(:hosts)
+
+  RB
+end
+
+file "docker-compose.yml", <<~YAML, force: true
+  name: #{app_name}
+
+  services:
+    db:
+      image: postgres:16-alpine
+      # A named volume, never a path under the project: that tree gets reset and
+      # re-cloned, and a data directory that disappears mid-run corrupts itself.
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_USER: ${POSTGRES_USER:-postgres}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+        POSTGRES_HOST_AUTH_METHOD: trust
+        PGDATA: /var/lib/postgresql/data/pgdata
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile.dev
+        target: development
+        args:
+          # The tag base.Dockerfile produces, so `docker compose build` works with no
+          # registry credentials. Set BASE_IMAGE to use a published base instead.
+          BASE_IMAGE: ${BASE_IMAGE:-wulin-base:local}
+      volumes:
+        - .:/rails
+        # Named volumes, not host paths: Docker seeds these from the image, so what was
+        # installed at build time is already there. A host bind starts empty, shadows it,
+        # and forces a full reinstall on every first boot.
+        - bundle_cache:/usr/local/bundle
+        - node_modules:/rails/node_modules
+      ports:
+        # Overridable (PORT=3001 docker compose up) so two apps can run side by side.
+        # The container port stays 3000, matching EXPOSE and Procfile.dev.
+        - "${PORT:-3000}:3000"
+      env_file:
+        - path: .env
+          required: false
+      environment:
+        DB_HOST: db
+      # `bin/dev` runs foreman as PID 1, and foreman answers ANY child exiting by shutting the rest
+      # down -- so one watcher crashing, or anything that makes the web process exit, ends the
+      # container with status 0. Nothing inside can restart it, and an agent working against this
+      # app has no compose operation either: on a real build the container was gone one second
+      # after a `touch tmp/restart.txt` and stayed gone. `unless-stopped` rather than `on-failure`
+      # because that exit IS a zero. An app that cannot boot will loop here, which the healthcheck
+      # below reports and is the louder failure of the two.
+      restart: unless-stopped
+      depends_on:
+        db:
+          condition: service_healthy
+      # Answers on the port rather than merely having a process -- whatever waits on this
+      # container waits to make a request. /up is Rails' own route, so it needs no
+      # application routes and no database.
+      healthcheck:
+        test: ["CMD-SHELL", "curl -fsS -o /dev/null http://localhost:3000/up"]
+        interval: 10s
+        timeout: 5s
+        retries: 30
+        start_period: 180s
+
+  volumes:
+    postgres_data:
+    bundle_cache:
+    node_modules:
+YAML
+
+wulin_note "docker: Rails' own Dockerfile (production/Kamal) needs Node added before it works -- the app was scaffolded --skip-javascript, so that image has no node, and assets:precompile runs `npm run build`. Dockerfile.dev and docker-compose.yml are the development stack and are unaffected"
+wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build -f docker/base.Dockerfile -t wulin-base:local .\n      docker compose up --build"
+wulin_note "docker: the entrypoint runs db:prepare on the first boot and db:migrate afterwards, so no database setup step is needed"
+wulin_note "docker: the container runs bin/dev, which builds the javascript and CSS on start and watches them -- `rails server` alone would raise Propshaft::MissingAssetError on every page"
