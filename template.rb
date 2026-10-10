@@ -66,6 +66,7 @@ end
 @wulin_js = []           # paths to import from app/javascript/application.js
 @wulin_sass = []         # indented-Sass rules for application.sass
 @wulin_menus = []        # submenu blocks for ApplicationController.define_menu
+@wulin_filters = []      # before_action lines ApplicationController must run
 @wulin_methods = []      # methods ApplicationController must define
 @wulin_app_config = []   # YAML sections for config/app_config.yml
 @wulin_post = []         # runs after bundle, before the database is set up
@@ -120,6 +121,10 @@ end
 
 def wulin_menu(block)
   @wulin_menus << block
+end
+
+def wulin_filter(code)
+  @wulin_filters << code
 end
 
 def wulin_method(code)
@@ -271,8 +276,7 @@ after_bundle do
 
     class ApplicationController < ActionController::Base
       protect_from_forgery with: :exception
-      before_action :require_login
-
+    #{wulin_indent(@wulin_filters, 2)}
     #{wulin_indent(@wulin_methods, 2)}
       def self.define_menu
         menu do |c|
