@@ -120,6 +120,7 @@ WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 | component | branch | what it adds |
 | --- | --- | --- |
 | `wulin_master` | `v3` | always installed: grids, screens, menus, this asset pipeline |
+| `wulin_auth` | `main` | login/logout, `current_user`, password reset |
 | `wulin_permits` | `main` | users, roles, privileges, per-screen permissions |
 | `wulin_queue` | `main` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
 | `wulin_audit` | `main` | audit trail for every model write, plus request action logs |
