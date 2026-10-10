@@ -164,6 +164,8 @@ wulin_post do
   SH
   chmod "bin/dev", 0o755
 
+  # `--minify` on `build` only: it is what assets:precompile runs, and it also selects React's
+  # production build for components that use it. `build:watch` stays readable for development.
   file "package.json", <<~JSON, force: true
     {
       "name": "#{app_name}",
@@ -178,7 +180,7 @@ wulin_post do
         "rails-ujs": "^5.2.0"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --minify",
         "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       }

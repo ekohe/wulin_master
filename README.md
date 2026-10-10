@@ -144,7 +144,7 @@ Add the gem's npm dependencies as an npm workspace, in your package.json:
   "devDependencies": { "esbuild": "^0.28.0" },
   "dependencies": { "rails-ujs": "^5.2.0" },
   "scripts": {
-    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css"
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --minify"
   }
 }
 ```
