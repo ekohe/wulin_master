@@ -14,6 +14,18 @@ gem "dartsass-rails"
 # (including csrf_meta_tags) dies with ArgumentError.
 gem "json", "< 3.0"
 
+# Scaffolded with --skip-test there is otherwise no way to run a test at all: no test/ because the
+# flag removed it, no spec/ without these.
+#
+# These two and no more. A matcher library (shoulda-matchers, rspec-collection_matchers) is a
+# choice about how to write a spec, and an app makes it for itself -- nothing here needs one.
+unless File.read("Gemfile").include?("rspec-rails")
+  gem_group :development, :test do
+    gem "rspec-rails"
+    gem "factory_bot_rails"
+  end
+end
+
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
 # newest release. sass-embedded 1.98 raised its floor to macOS 14: on anything
 # older the bundled Dart VM exits with "Current Mac OS X version 12.0 is lower
@@ -233,6 +245,36 @@ wulin_post do
       if wulin["nav_sidebar_partial_path"].present?
         config.nav_sidebar_partial_path = wulin["nav_sidebar_partial_path"]
       end
+    end
+  RB
+
+  # Before any other generator: rspec-rails takes over `generate`, so a model generated
+  # by a later component (wulin_auth's admin-column migration, for one) writes a spec
+  # that needs the harness to be there already.
+  rails_command "generate rspec:install"
+
+  # The two things `rspec:install` leaves undone. `factory_bot_rails` does not include its syntax
+  # methods just by being in the Gemfile, and the generated rails_helper ships its support-file
+  # loader commented out -- so `create(:thing)` raises NoMethodError in an app whose `spec/` looks
+  # complete, which is what makes it expensive to meet rather than merely wrong.
+  #
+  # The loader is APPENDED rather than uncommented because there is no stable line to uncomment:
+  # rspec-rails has already moved it once, from `Dir[Rails.root.join('spec', 'support', ...)]` to
+  # `Rails.root.glob('spec/support/**/*.rb')`, and `uncomment_lines` against a pattern that stops
+  # matching does nothing and says nothing. Appending needs no pattern. Support files call
+  # `RSpec.configure` themselves, which merges, so the end of the file is early enough.
+  append_to_file "spec/rails_helper.rb", <<~RB
+
+    # rspec:install ships the equivalent line commented out; without it nothing in spec/support is
+    # loaded and every `create(:thing)` raises NoMethodError.
+    Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
+  RB
+
+  file "spec/support/factory_bot.rb", <<~RB
+    # frozen_string_literal: true
+
+    RSpec.configure do |config|
+      config.include FactoryBot::Syntax::Methods
     end
   RB
 
