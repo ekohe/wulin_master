@@ -226,7 +226,7 @@ after_bundle do
     # and differs between host and container. esbuild, dart-sass and the app's own JavaScript all
     # resolve them as `vendor/gems/<name>`, so link that stable path at the real checkout.
     #
-    # Run after `bundle install`, before `yarn build`:
+    # Run after `bundle install`, before `npm run build`:
     #
     #   bundle exec ruby script/link_wulin_gems.rb
     require "bundler"
@@ -286,7 +286,7 @@ after_bundle do
 
   # Build assets after all wulin_post blocks have run, so every component's
   # esbuild entries and dartsass config changes are in place.
-  run "yarn build", abort_on_failure: true
+  run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
 
   # Every engine appends its own db/migrate to the app's migration paths, so a
