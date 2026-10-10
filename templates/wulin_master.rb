@@ -95,6 +95,27 @@ JS
 
 empty_directory "app/assets/fonts"
 
+# The esbuild output directory. `-j esbuild` creates it; --skip-javascript does not.
+create_file "app/assets/builds/.keep", ""
+
+# A component can drag Sprockets in (wulin_auth declares sass-rails), and Sprockets
+# refuses to boot without this file. Unconditional: keying it off a list of component
+# gems breaks the first time one of them changes its dependencies.
+#
+# The two dropzone links are this gem's own assets, named because the application layout calls
+# `asset_path` on them (app/views/layouts/application.html.haml) and Sprockets serves nothing it was
+# not told to. Without them EVERY page through that layout raises AssetNotPrecompiledError -- the app
+# boots and `/up` answers 200, so the healthcheck passes and only a request for a real page shows it.
+#
+# ../builds and not ../stylesheets -- dart-sass writes application.css into builds, and
+# linking both declares two sources for one output (Sprockets::DoubleLinkError).
+file "app/assets/config/manifest.js", <<~JS, force: true
+  //= link_tree ../images
+  //= link_tree ../builds
+  //= link dropzone.min.js
+  //= link dropzone.min.css
+JS
+
 initializer "wulin_master_assets.rb", <<~RB
   # frozen_string_literal: true
 
@@ -104,6 +125,11 @@ initializer "wulin_master_assets.rb", <<~RB
     config.assets.paths << Rails.root.join("app/assets/builds")
     config.assets.paths << Rails.root.join("app/assets/fonts")
     config.assets.precompile += %w[*.woff *.woff2]
+
+    # Not a no-op: sassc-rails arrives with Sprockets and sets this to :sass everywhere
+    # but development, and libsass cannot re-parse dart-sass output -- SassC::SyntaxError
+    # on every page under test and production.
+    config.assets.css_compressor = nil
 
     config.dartsass.builds = {"application.sass" => "application.css"}
 
@@ -118,6 +144,16 @@ initializer "wulin_master_assets.rb", <<~RB
     config.dartsass.build_options << "--load-path=vendor/gems/wulin_master/app/assets/stylesheets"
   end
 RB
+
+# Rails' .gitignore lists none of these, and under --skip-javascript nothing else adds
+# them -- so without this the first commit carries node_modules.
+append_to_file ".gitignore", <<~GIT
+
+  # Node dependencies and the bundled assets, both rebuilt by bin/dev
+  /node_modules
+  /app/assets/builds/*
+  !/app/assets/builds/.keep
+GIT
 
 wulin_post do
   # Procfile.dev must be written here, not in the template body. `rails new
