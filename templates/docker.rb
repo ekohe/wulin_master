@@ -19,11 +19,14 @@ ENV
 run "cp .env.example .env" unless File.exist?(".env")
 
 # Rails' `/.env*` also swallows the template that is meant to be committed, so only the
-# exception is needed -- and it has to come after.
-append_to_file ".gitignore", <<~GIT
+# exception is needed -- and it has to come after. Appended once: a re-applied template would
+# otherwise add the line again on every run.
+unless File.exist?(".gitignore") && File.read(".gitignore").include?("!/.env.example")
+  append_to_file ".gitignore", <<~GIT
 
-  !/.env.example
-GIT
+    !/.env.example
+  GIT
+end
 
 # One file for the container (DB_HOST=db, from compose) and a local machine (no DB_HOST).
 # `.presence ||` rather than ENV.fetch: compose passes these through as empty strings, and
