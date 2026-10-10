@@ -28,7 +28,7 @@ verify_with: |-
     'p [WulinAuth::User.count, Privilege.count, WulinAudit::AuditLog.count, WulinQueue::Process.count]'
 components:
   wulin_master:
-    branch: v3
+    branch: v3-aida
   wulin_auth:
     branch: main
     ref: 680a67e2c209f15ef112dc876d361006dcc97acb
