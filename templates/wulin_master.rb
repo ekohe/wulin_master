@@ -208,9 +208,7 @@ wulin_post do
     {
       "name": "#{app_name}",
       "private": true,
-      "workspaces": [
-        "vendor/gems/wulin_master"
-      ],
+      "workspaces": #{JSON.generate(["vendor/gems/wulin_master", *@wulin_workspaces])},
       "devDependencies": {
         "esbuild": "^0.28.0"
       },
