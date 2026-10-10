@@ -59,11 +59,13 @@ RB
 wulin_post do
   # Called from the query_initialized callback of roles_users, permission_all_users and
   # users_privileges, so it runs as those grids load. Defined in no gem on this stack.
-  inject_into_class "app/models/user.rb", "User", <<~RB
-    def self.find_by_ids(ids)
-      where(id: ids)
-    end
-  RB
+  unless wulin_written?("app/models/user.rb", "def self.find_by_ids")
+    inject_into_class "app/models/user.rb", "User", <<~RB
+      def self.find_by_ids(ids)
+        where(id: ids)
+      end
+    RB
+  end
 end
 
 wulin_db_post do

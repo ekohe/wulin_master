@@ -5,26 +5,33 @@
 # Dockerfile.dev. Its .dockerignore is reused as-is -- it already excludes .git,
 # node_modules, app/assets/builds and .env*, and keeps vendor/, which this image needs.
 
-file ".env.example", <<~ENV
-  # Read by docker compose only -- nothing on the host loads it, and DB_HOST=db resolves only inside
-  # the compose network. Copied to .env at scaffold time; .env is gitignored, and compose treats it
-  # as optional -- without it the defaults in docker-compose.yml apply.
-  POSTGRES_USER=postgres
-  POSTGRES_PASSWORD=password
-  DB_HOST=db
-  DB_PORT=5432
-ENV
+# Written once: components add their own variables to it after this, and re-applying must not
+# put the bare file back over them.
+unless File.exist?(".env.example")
+  file ".env.example", <<~ENV
+    # Read by docker compose only -- nothing on the host loads it, and DB_HOST=db resolves only inside
+    # the compose network. Copied to .env at scaffold time; .env is gitignored, and compose treats it
+    # as optional -- without it the defaults in docker-compose.yml apply.
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    DB_HOST=db
+    DB_PORT=5432
+  ENV
+end
 
 # Only when there is none: on an app that already exists (`rails app:template`, which is how a
 # component selected later is added), .env holds the values somebody filled in, secrets included.
 run "cp .env.example .env" unless File.exist?(".env")
 
 # Rails' `/.env*` also swallows the template that is meant to be committed, so only the
-# exception is needed -- and it has to come after.
-append_to_file ".gitignore", <<~GIT
+# exception is needed -- and it has to come after. Appended once: a re-applied template would
+# otherwise add the line again on every run.
+unless File.exist?(".gitignore") && File.read(".gitignore").include?("!/.env.example")
+  append_to_file ".gitignore", <<~GIT
 
-  !/.env.example
-GIT
+    !/.env.example
+  GIT
+end
 
 # One file for the container and for a local machine. Every connection setting comes from the
 # environment and is otherwise left to libpq: on a local machine that is Rails' own default -- the
@@ -163,13 +170,15 @@ DOCKERFILE
 #
 # Additive: Rails' development default already allows localhost and .localhost.
 environment_config = "config/environments/development.rb"
-inject_into_file environment_config, after: "Rails.application.configure do\n" do
-  <<~RB
-    # Reachable by its compose service name from inside the network, not only as localhost.
-    # Read at boot: changing it means restarting the app.
-    config.hosts << "app" if config.respond_to?(:hosts)
+unless wulin_written?(environment_config, 'config.hosts << "app"')
+  inject_into_file environment_config, after: "Rails.application.configure do\n" do
+    <<~RB
+      # Reachable by its compose service name from inside the network, not only as localhost.
+      # Read at boot: changing it means restarting the app.
+      config.hosts << "app" if config.respond_to?(:hosts)
 
-  RB
+    RB
+  end
 end
 
 file "docker-compose.yml", <<~YAML, force: true
