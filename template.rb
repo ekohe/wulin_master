@@ -100,6 +100,7 @@ end
 @wulin_post = []         # runs after bundle, before the database is set up
 @wulin_db_post = []      # runs after db:migrate, for anything needing tables
 @wulin_notes = []        # printed last, once everything has run
+@wulin_workspaces = []   # npm workspaces besides wulin_master's, for components with npm dependencies
 
 # A file shipping next to this template, read from disk or over HTTPS depending on how
 # the template itself arrived.
@@ -214,6 +215,13 @@ end
 
 def wulin_note(text)
   @wulin_notes << text
+end
+
+# A component whose JavaScript imports npm packages of its own. Its package.json joins the app's
+# workspaces, so `npm install` puts those packages in the app's node_modules, where the app's esbuild
+# resolves them -- the same way wulin_master's jQuery and Materialize arrive.
+def wulin_workspace(path)
+  @wulin_workspaces << path
 end
 
 def wulin_app_config(yaml)
