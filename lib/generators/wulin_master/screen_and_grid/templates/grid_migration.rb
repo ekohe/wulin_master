@@ -1,17 +1,12 @@
-class <%= migration_class_name %> < ActiveRecord::Migration[5.0]
+class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Migration.current_version %>]
   def change
     create_table :<%= table_name %> do |t|
 <% attributes.each do |attribute| -%>
-      t.<%= attribute.type %> :<%= attribute.name %>
+      t.<%= attribute.type %> :<%= attribute.name %><%= inject_column_options(attribute) %>
 <% end -%>
 <% unless options[:no_timestamps] %>
       t.timestamps
 <% end -%>
     end
-<% if options[:indexes] -%>
-<% attributes.select {|attr| attr.reference? }.each do |attribute| -%>
-    add_index :<%= table_name %>, :<%= attribute.name %>_id
-<% end -%>
-<% end -%>
   end
 end

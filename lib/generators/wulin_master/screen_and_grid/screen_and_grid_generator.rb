@@ -54,5 +54,25 @@ module WulinMaster
     def human_name
       name.underscore.humanize.pluralize
     end
+
+    # Rails' inject_options already adds null: false + foreign_key for a required
+    # belongs_to. `{optional}` would otherwise leak into t.references and still
+    # force NOT NULL, so strip it and skip the null constraint.
+    def inject_column_options(attribute)
+      if attribute.reference? && attribute.attr_options[:optional]
+        options = attribute.attr_options.except(:optional)
+        options[:foreign_key] = true unless attribute.polymorphic?
+        options.map { |key, value| ", #{key}: #{value.inspect}" }.join
+      else
+        attribute.inject_options
+      end
+    end
+
+    def belongs_to_options(attribute)
+      extras = []
+      extras << "polymorphic: true" if attribute.polymorphic?
+      extras << "optional: true" if attribute.attr_options[:optional]
+      extras.empty? ? "" : ", #{extras.join(', ')}"
+    end
   end
 end
