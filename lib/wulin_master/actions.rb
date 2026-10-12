@@ -134,10 +134,8 @@ module WulinMaster
       @record.assign_attributes(attrs)
       message = if !custom_errors.empty?
         {success: false, error_message: custom_errors}
-      elsif @record.save
-        {success: true, id: @record.id}
       else
-        {success: false, error_message: @record.errors}
+        save_for_create(@record)
       end
       respond_to do |format|
         format.json { render json: message }
@@ -157,6 +155,16 @@ module WulinMaster
     end
 
     protected
+
+    # A constraint the model does not validate is refused by the database. The create form shows it as
+    # a base error, the shape it reads every other failure in.
+    def save_for_create(record)
+      return {success: true, id: record.id} if record.save
+
+      {success: false, error_message: record.errors}
+    rescue ActiveRecord::ActiveRecordError => e
+      {success: false, error_message: {base: [e.message]}}
+    end
 
     def construct_filters
       return unless params[:filters]
