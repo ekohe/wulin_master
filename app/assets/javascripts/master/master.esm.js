@@ -5,8 +5,12 @@ import './jquery_setup.js'
 import './jquery_ui_setup.js'
 
 // External dependencies
-import 'rails-ujs'
+import Rails from 'rails-ujs'
 import 'materialize-css'
+
+// rails-ujs only auto-starts when it is loaded as a global script. Bundled, it
+// must be started by hand, or data-remote/data-method/data-confirm do nothing.
+Rails.start()
 
 $(function(){
   if (navigator.userAgent.indexOf('AppleWebKit') === -1 && navigator.userAgent.indexOf('Gecko') === -1) {
