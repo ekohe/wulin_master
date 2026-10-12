@@ -28,6 +28,14 @@ nav {
     height: 47px;
     line-height: 50px;
   }
+  // Icons are spans now, not <i> (materialize only blocks <i>): keep them
+  // from growing the line box, and keep links (hover/focus shade) in the bar.
+  nav .nav-wrapper span.material-icons {
+    vertical-align: top;
+  }
+  nav ul a {
+    height: 47px;
+  }
   .navbar-fixed {
     height: 50px;
   }
