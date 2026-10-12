@@ -174,6 +174,16 @@ describe PeopleTestController, type: :controller do
           expect(response.body).to eq({success: false, error_message: "person error"}.to_json)
         end
       end
+
+      describe "when the database refuses the row" do
+        it "renders the refusal as a base error" do
+          person = mock_person
+          allow(@grid.model).to receive(:new).and_return(person)
+          allow(person).to receive(:save).and_raise(ActiveRecord::InvalidForeignKey, "violates foreign key constraint")
+          post :create, format: :json
+          expect(response.body).to eq({success: false, error_message: {base: ["violates foreign key constraint"]}}.to_json)
+        end
+      end
     end
 
     describe "post :update" do
