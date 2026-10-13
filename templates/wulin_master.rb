@@ -147,8 +147,8 @@ append_to_file ".gitignore", <<~GIT
 GIT
 
 wulin_post do
-  # Procfile.dev, bin/dev and package.json are this template's, written with `force: true` over
-  # what Rails generated. In after_bundle, so nothing Rails runs after the template body follows.
+  # Procfile.dev and bin/dev are this template's, written with `force: true` over what Rails
+  # generated. In after_bundle, so nothing Rails runs after the template body follows.
   #
   # The server takes its port and address from PORT and BINDING, as `rails server` reads them, so
   # neither is fixed here: development stays on localhost unless something (a container) says
@@ -182,24 +182,24 @@ wulin_post do
   #
   # `--minify` on `build` only: it is what assets:precompile runs, and it also selects React's
   # production build for components that use it. `build:watch` stays readable for development.
-  file "package.json", <<~JSON, force: true
-    {
-      "name": "#{app_name}",
-      "private": true,
-      "workspaces": #{JSON.generate(["vendor/gems/wulin_master", *@wulin_workspaces])},
-      "devDependencies": {
-        "esbuild": "^0.28.0"
-      },
-      "dependencies": {
-        "rails-ujs": "^5.2.0"
-      },
-      "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --minify",
-        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --watch=forever",
-        "copy-icons": "node script/copy_material_icons.js"
-      }
+  entries = ["app/javascript/application.js", *@wulin_entries]
+  esbuild = [
+    "esbuild", *entries, "--bundle --sourcemap --format=iife",
+    entries.one? ? "--outfile=app/assets/builds/application.js" : "--outdir=app/assets/builds",
+    "--public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks"
+  ].join(" ")
+  wulin_package_json(
+    "name" => app_name,
+    "private" => true,
+    "workspaces" => ["vendor/gems/wulin_master", *@wulin_workspaces],
+    "devDependencies" => {"esbuild" => "^0.28.0"},
+    "dependencies" => {"rails-ujs" => "^5.2.0"},
+    "scripts" => {
+      "build" => "#{esbuild} --minify",
+      "build:watch" => "#{esbuild} --watch=forever",
+      "copy-icons" => "node script/copy_material_icons.js"
     }
-  JSON
+  )
 
   # The engine ships its own layout; removing the generated one here rather than
   # in the template body keeps jsbundling from warning about a missing layout.

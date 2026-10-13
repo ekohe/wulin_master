@@ -103,6 +103,7 @@ end
 @wulin_db_post = []      # runs after db:migrate, for anything needing tables
 @wulin_notes = []        # printed last, once everything has run
 @wulin_workspaces = []   # npm workspaces besides wulin_master's, for components with npm dependencies
+@wulin_entries = []      # esbuild entry points besides app/javascript/application.js
 
 # A file shipping next to this template, read from disk or over HTTPS depending on how
 # the template itself arrived.
@@ -187,6 +188,22 @@ def wulin_block(path, id, content)
   create_file path, text, force: true
 end
 
+# package.json is the app's as much as this template's. A workspace or a package the template needs is
+# added when missing, and the app's own version of one is kept; the scripts given here are the
+# template's and rewritten. Everything else in the file is left as the app has it.
+def wulin_package_json(package)
+  if File.exist?("package.json")
+    app = JSON.parse(File.read("package.json"))
+    package = app.merge(
+      "workspaces" => app.fetch("workspaces", []) | package["workspaces"],
+      "dependencies" => package["dependencies"].merge(app.fetch("dependencies", {})),
+      "devDependencies" => package["devDependencies"].merge(app.fetch("devDependencies", {})),
+      "scripts" => app.fetch("scripts", {}).merge(package["scripts"])
+    )
+  end
+  create_file "package.json", "#{JSON.pretty_generate(package)}\n", force: true
+end
+
 def wulin_js(*paths)
   @wulin_js.concat(paths)
 end
@@ -224,6 +241,11 @@ end
 # resolves them -- the same way wulin_master's jQuery and Materialize arrive.
 def wulin_workspace(path)
   @wulin_workspaces << path
+end
+
+# A page that loads a bundle of its own rather than application.js -- the login page.
+def wulin_entry(path)
+  @wulin_entries << path
 end
 
 def wulin_app_config(yaml)

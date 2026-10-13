@@ -69,6 +69,7 @@ file "app/javascript/wulin_auth.js", <<~JS
   import "materialize-css"
   import "../../vendor/gems/wulin_auth/app/javascript/wulin_auth.esm.js"
 JS
+wulin_entry "app/javascript/wulin_auth.js"
 
 wulin_post do
   # Add wulin_auth as a second dart-sass build and load path.
@@ -87,15 +88,6 @@ wulin_post do
       RB
     end
   end
-
-  # Add wulin_auth.js as a second esbuild entry point. Switch from
-  # --outfile (single entry) to --outdir (multiple entries).
-  gsub_file "package.json",
-    "--outfile=app/assets/builds/application.js",
-    "--outdir=app/assets/builds"
-  gsub_file "package.json",
-    "app/javascript/application.js",
-    "app/javascript/application.js app/javascript/wulin_auth.js"
 
   # The engine defines WulinAuth::User; the app's own User is the subclass everything else
   # names. It is written here because the seed below creates one and the login page signs it in --
