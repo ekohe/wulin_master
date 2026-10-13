@@ -62,6 +62,14 @@ describe WulinMaster::ScreenAndGridGenerator do
     expect(model).to include("belongs_to :owner, polymorphic: true")
   end
 
+  it "starts every Ruby file it writes with the frozen string literal comment" do
+    generate "Member", "first_name:string"
+
+    files = Dir[File.join(@root, "{app,db}/**/*.rb")]
+    expect(files.size).to eq(5)
+    files.each { |file| expect(File.read(file)).to start_with("# frozen_string_literal: true\n") }
+  end
+
   it "writes the migration for the running Rails" do
     generate "Member", "first_name:string"
 
