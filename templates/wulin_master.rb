@@ -4,7 +4,7 @@
 # dart-sass compiles the stylesheet, and Propshaft serves the results out of
 # app/assets/builds.
 
-wulin_vendor "wulin_master", "v3"
+wulin_vendor "wulin_master"
 
 gem "bcrypt"
 gem "dartsass-rails"
@@ -164,6 +164,13 @@ wulin_post do
   SH
   chmod "bin/dev", 0o755
 
+  # `--preserve-symlinks` on both esbuild commands: the components are Bundler git gems reached
+  # through `vendor/gems/<name>` symlinks, and esbuild otherwise resolves every import to the gem's
+  # REAL path under the bundler checkout. A bare specifier in the gem's own JavaScript
+  # (`import 'jquery-ui/ui/widget'`) is then resolved by walking up from THERE, which never reaches
+  # this app's node_modules -- measured on a real scaffold: thirteen unresolved imports and a
+  # non-zero exit before anything was written.
+  #
   # `--minify` on `build` only: it is what assets:precompile runs, and it also selects React's
   # production build for components that use it. `build:watch` stays readable for development.
   file "package.json", <<~JSON, force: true
@@ -180,8 +187,8 @@ wulin_post do
         "rails-ujs": "^5.2.0"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --minify",
-        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --watch=forever",
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --minify",
+        "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --preserve-symlinks --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       }
     }
@@ -227,10 +234,10 @@ wulin_post do
   RB
 
   # npm, and no yarn.lock. The components declare their npm dependencies in the gems' OWN
-  # package.json and arrive as workspaces under vendor/gems, so the manager has to put those
-  # dependencies in the app's own node_modules -- which the icon copy below, dart-sass's
-  # --load-path and esbuild's resolution of the gems' bare imports all read by path. yarn 4 writes
-  # no node_modules at all.
+  # package.json and arrive as workspaces, so the manager has to follow a workspace through the
+  # vendor/gems symlink and put its dependencies in the app's own node_modules -- which the icon
+  # copy below, dart-sass's --load-path and esbuild's resolution of the gems' bare imports all
+  # read by path. npm does both; pnpm does neither; yarn 4 writes no node_modules at all.
   #
   # jsbundling-rails picks its tool from whichever lockfile it finds, npm last, so a stray
   # yarn.lock sends `assets:precompile` to `yarn build`.

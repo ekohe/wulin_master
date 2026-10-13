@@ -8,7 +8,7 @@
 # The stylesheet is a Sprockets-era manifest, so the template creates
 # Propshaft-compatible entry points: a dart-sass source and an esbuild bundle.
 
-wulin_vendor "wulin_auth", "main"
+wulin_vendor "wulin_auth"
 
 # Nothing in the app answers without a session. The filter that says so is declared here rather
 # than by wulin_master, because require_login is defined in this gem and the login page it

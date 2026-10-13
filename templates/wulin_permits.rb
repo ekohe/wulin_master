@@ -6,7 +6,7 @@
 # brings the User model and the columns, and the names the gem calls but defines nowhere are supplied
 # below.
 
-wulin_vendor "wulin_permits", "main"
+wulin_vendor "wulin_permits"
 
 wulin_js "../../vendor/gems/wulin_permits/app/javascript/wulin_permits.esm.js"
 

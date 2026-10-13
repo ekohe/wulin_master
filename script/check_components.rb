@@ -1,0 +1,326 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Will a scaffold still work as pinned, and has anything newer landed?
+#
+#   ruby script/check_components.rb                   # report
+#   ruby script/check_components.rb --bump [NAME ...]  # move refs to their branch tips (all, or NAMEs)
+#   ruby script/check_components.rb --inventory       # regenerate components.inventory.yml
+#
+# Not a drift alarm: a branch that moved ahead is an upgrade somebody may take. A fault is anything
+# that makes a scaffold fail — a pin that is no longer fetchable, a tracked branch that is gone, a
+# component nobody pinned.
+#
+# Exit status is the whole interface: 0 when every scaffold will work, 1 when one will not.
+
+require "yaml"
+require "shellwords"
+require "tmpdir"
+
+ROOT = File.expand_path("..", __dir__)
+LOCK = File.join(ROOT, "components.lock.yml")
+GIT_BASE = "https://github.com/ekohe"
+
+bump = ARGV.include?("--bump")
+write_inventory = ARGV.include?("--inventory")
+bump_names = ARGV.reject { |arg| arg.start_with?("--") }
+INVENTORY = File.join(ROOT, "components.inventory.yml")
+lock_source = File.read(LOCK)
+pins = YAML.safe_load(lock_source).fetch("components")
+
+# The catalog names the components; the lock resolves them. Neither is allowed to know about a
+# component the other does not, or a scaffold fails on a name nothing pins — or carries a pin for
+# something it never vendors, which is dead data that reads as coverage.
+catalog = File.read(File.join(ROOT, "template.rb")).scan(/\{name: "([^"]+)"/).flatten
+
+def remote_tip(name, branch)
+  url = "#{GIT_BASE}/#{name}.git"
+  out = `git ls-remote #{Shellwords.escape(url)} #{Shellwords.escape("refs/heads/#{branch}")} 2>/dev/null`
+  # A branch that is gone exits 0 with empty output; a remote that could not be reached exits 128.
+  # Collapsing them turns somebody else's outage into a red build blaming a branch that is fine.
+  return [:unreachable, nil] unless $?.success?
+
+  sha = out[/\A(\h{40})/, 1]
+  sha ? [:ok, sha] : [:gone, nil]
+end
+
+def ref_fetchable?(name, ref, dir)
+  system("git", "-C", dir, "fetch", "-q", "--depth", "1", "#{GIT_BASE}/#{name}.git", ref,
+    out: File::NULL, err: File::NULL)
+end
+
+# What a component CONTRIBUTES, read off the ref that was just fetched. Facts about what is there,
+# nothing about what any of it means:
+#
+#   screens         the pages that belong in a menu group, as class names
+#   esm             the esbuild entry an app has to import, if it ships one
+#   migrations      how many it appends, so `db:migrate` doing nothing is visibly wrong
+#   editors         the cell editors it registers, by name
+#   unfilled_hooks  the `before_action` names it declares and defines nowhere
+#
+# `ls-tree` on FETCH_HEAD rather than a checkout: the objects are already here from the fetch above.
+def inventory_at(dir, treeish)
+  out = `git -C #{Shellwords.escape(dir)} ls-tree -r --name-only #{Shellwords.escape(treeish)} 2>/dev/null`
+  return nil unless $?.success?
+
+  paths = out.lines(chomp: true)
+  {
+    "screens" => paths.grep(%r{\Aapp/screens/.+\.rb\z})
+      .map { |f| File.basename(f, ".rb").split("_").map(&:capitalize).join }.sort,
+    "esm" => paths.grep(%r{\Aapp/javascript/.+\.esm\.js\z}).map { |f| File.basename(f) }.sort,
+    "migrations" => paths.count { |f| f.start_with?("db/migrate/") && f.end_with?(".rb") },
+    "editors" => editors_at(dir, treeish, paths),
+    "unfilled_hooks" => unfilled_hooks_at(dir, treeish, paths)
+  }.compact
+end
+
+# The `before_action` names a component's own controllers declare and nothing defines — neither the
+# component nor `wulin_master`, whose ScreenController they all inherit from. Recorded by controller
+# because that is the claim a component template's comment makes, and a controller that gains or loses
+# the hook upstream makes it wrong with nothing else to notice.
+def unfilled_hooks_at(dir, treeish, paths)
+  controllers = paths.grep(%r{\Aapp/controllers/.+_controller\.rb\z})
+  return nil if controllers.empty?
+
+  declared = Hash.new { |h, k| h[k] = [] }
+  controllers.each do |file|
+    blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:#{file}")} 2>/dev/null`
+    next unless $?.success?
+
+    blob.scan(/^\s*before_action\s+:([a-z_][a-z0-9_]*)/).flatten.uniq.each do |hook|
+      declared[hook] << File.basename(file, "_controller.rb")
+    end
+  end
+
+  # `app lib` on the wulin_master side: its `templates/` hold the very methods the scaffold supplies,
+  # so an unrestricted look there reports every hook as already filled by the thing meant to fill it.
+  unfilled = declared.reject do |hook, _|
+    defines?(dir, treeish, hook) || defines?(ROOT, "HEAD", hook, %w[app lib])
+  end
+  unfilled.empty? ? nil : unfilled.sort.to_h.transform_values(&:sort)
+end
+
+# `git grep` over the fetched tree rather than a blob per file: the question is about the whole
+# component, and the objects are already here.
+#
+# `-w` rather than a `\\b` in the pattern: `git grep -E` is POSIX ERE, where `\\b` is not a word
+# boundary and silently matches nothing -- which reads as "defined nowhere" for every hook there is.
+def defines?(dir, treeish, name, paths = [])
+  argv = ["git", "-C", dir, "grep", "-qwE", "def +#{name}", treeish]
+  argv += ["--", *paths] if paths.any?
+  system(*argv, out: File::NULL, err: File::NULL)
+end
+
+# The cell editors a component registers, by name. Derived for the same reason as the rest, and
+# added because naming one that does not exist is the worst failure this catalogue can prevent:
+# SlickGrid raises while building the column, so the page loads, the toolbar renders, the JSON
+# endpoint answers 200 -- and the grid is simply absent, with nothing in the server log.
+#
+# `git show` per file rather than a checkout: only wulin_master defines any, so this reads one blob.
+def editors_at(dir, treeish, paths)
+  files = paths.grep(%r{\Aapp/assets/javascripts/.*editors\.js\z})
+  return nil if files.empty?
+
+  names = files.flat_map { |f|
+    blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:#{f}")} 2>/dev/null`
+    $?.success? ? blob.scan(/^\s*this\.([A-Z][A-Za-z0-9]*Editor)\s*=\s*function/).flatten : []
+  }
+  names.empty? ? nil : names.uniq.sort
+end
+
+# The editor names a component's README TEACHES, which is a different question from the ones it
+# registers. A README outlives the code it documents, and coding agents are sent to it as the
+# authority on the gem's API -- so a name it keeps after the class is gone is copied into a
+# generated app verbatim.
+#
+# Checked against the union of every component's editors rather than its own, because a README may
+# reasonably name an editor another gem in the suite registers.
+def readme_editors_at(dir, treeish)
+  blob = `git -C #{Shellwords.escape(dir)} show #{Shellwords.escape("#{treeish}:README.md")} 2>/dev/null`
+  return [] unless $?.success?
+
+  blob.scan(/\b([A-Z][A-Za-z0-9]*Editor)\b/).flatten.uniq.sort
+end
+
+problems = []
+upgrades = []
+unreachable = []
+inventory = {}
+readme_editors = {}
+
+(pins.keys - catalog).each { |name| problems << "#{name}: pinned here but template.rb's catalog does not name it" }
+(catalog - pins.keys).each { |name| problems << "#{name}: in template.rb's catalog with nothing pinning it" }
+
+Dir.mktmpdir do |dir|
+  system("git", "-C", dir, "init", "-q", out: File::NULL, err: File::NULL)
+
+  pins.each do |name, pin|
+    branch = pin.fetch("branch")
+    # `.to_s` because YAML types a scalar, and a sha that happens to be all digits parses as an
+    # Integer -- which `system` refuses outright and `ref[0, 8]` silently bit-slices. Unlikely, and
+    # the failure is a stack trace rather than an answer, which is the wrong way round for a check.
+    ref = pin["ref"]&.to_s
+
+    # wulin_master is this repository: the template is served from the same branch as the gem it
+    # vendors, so the two move together and a pin would only be a self-bump chore. Its inventory is
+    # read from HEAD here for the same reason — there is no other copy to fetch.
+    if ref.nil? && name == "wulin_master"
+      if (facts = inventory_at(ROOT, "HEAD"))
+        inventory[name] = facts
+      end
+      readme_editors[name] = readme_editors_at(ROOT, "HEAD")
+      next
+    end
+
+    if ref.nil?
+      problems << "#{name}: no ref — apps get whatever #{branch} tips to on the day they are built"
+      next
+    end
+
+    if ref_fetchable?(name, ref, dir)
+      # Only from a ref that fetched: an inventory read off anything else is a claim about code
+      # nobody can get.
+      if (facts = inventory_at(dir, "FETCH_HEAD"))
+        inventory[name] = facts
+      end
+      readme_editors[name] = readme_editors_at(dir, "FETCH_HEAD")
+    else
+      problems << "#{name}: pinned at #{ref[0, 8]}, which the remote will not serve — every " \
+                  "scaffold fails here (force-push?)"
+    end
+
+    status, tip = remote_tip(name, branch)
+    case status
+    when :unreachable then unreachable << "#{name} (#{branch})"
+    when :gone then problems << "#{name}: the tracked branch #{branch} no longer exists"
+    else upgrades << [name, branch, ref, tip] if tip != ref
+    end
+  end
+end
+
+# A hook nothing defines has to be supplied by the component's own template, or the first request to
+# those screens is a NoMethodError. The template is where that decision lives, so that is where it is
+# checked -- and the check is what keeps the template's comment naming the right controllers.
+inventory.each do |name, facts|
+  supplied = begin
+    File.read(File.join(ROOT, "templates", "#{name}.rb")).scan(/^\s*def +([a-z_][a-z0-9_]*)/).flatten
+  rescue Errno::ENOENT
+    []
+  end
+  (facts["unfilled_hooks"] || {}).each do |hook, controllers|
+    next if supplied.include?(hook)
+
+    problems << "#{name}: #{controllers.join(", ")} declare `before_action :#{hook}` and nothing " \
+                "defines it — templates/#{name}.rb must supply it, or those screens raise on the " \
+                "first request"
+  end
+end
+
+# A name a README teaches must be a name some component registers. Skipped when nothing fetched an
+# editor at all, because then the union is empty for a reason that has nothing to do with the READMEs
+# and every mention would be reported.
+known_editors = inventory.values.flat_map { |f| f["editors"] || [] }.uniq
+if known_editors.any?
+  readme_editors.each do |name, taught|
+    (taught - known_editors).each do |bogus|
+      problems << "#{name}: README.md teaches `#{bogus}`, which no component registers — an app " \
+                  "that copies the example renders no grid at all, silently"
+    end
+  end
+end
+
+# The inventory is DERIVED, so it is written by a flag and verified by every other run. A generated
+# file nobody checks is a generated file that goes stale the first time somebody bumps a ref and
+# forgets — which is exactly how the prose enumeration this replaces became wrong.
+if write_inventory
+  # Written only from a clean run. A pin that did not fetch is simply missing from `inventory`, so a
+  # file written now would drop that component and still read as current.
+  if problems.any?
+    warn "components.inventory.yml not written -- this run is not clean:"
+    problems.each { |p| warn "  - #{p}" }
+    exit 1
+  end
+  File.write(INVENTORY, <<~HEAD + YAML.dump(inventory).sub(/\A---\n/, ""))
+    # DERIVED — do not edit. Regenerate with `ruby script/check_components.rb --inventory`.
+    #
+    # What each component contributes, read off the commit `components.lock.yml` pins it at. What
+    # each key holds is stated once, beside the code that derives it, in script/check_components.rb.
+    #
+    # It exists so that nobody — person or agent — has to read a gem's source to find out what
+    # installing it puts in front of a user. The prose version of this rotted into naming a gem that
+    # does not exist; `git ls-tree` cannot.
+    #
+    # Every run of check_components.rb verifies this file is current, so a bumped ref that did not
+    # regenerate it fails rather than lying.
+  HEAD
+  puts "wrote #{File.basename(INVENTORY)} for #{inventory.size} component(s)"
+  exit 0
+end
+
+if inventory.any? && File.exist?(INVENTORY)
+  recorded = YAML.safe_load_file(INVENTORY) || {}
+  stale = inventory.reject { |name, facts| recorded[name] == facts }
+  stale.each_key { |name| problems << "#{name}: components.inventory.yml is stale — re-run with --inventory" }
+elsif inventory.any?
+  problems << "components.inventory.yml is missing — run `ruby script/check_components.rb --inventory`"
+end
+
+if bump
+  unknown = bump_names - pins.keys
+  abort "--bump: not in components.lock.yml: #{unknown.join(", ")}" if unknown.any?
+
+  # Not refused when the run has problems: bumping a pin the remote no longer serves to the branch tip
+  # is how that problem gets fixed.
+  targets = bump_names.empty? ? upgrades : upgrades.select { |name, *| bump_names.include?(name) }
+  if targets.empty?
+    puts "nothing to bump"
+    exit 0
+  end
+  # Substituted rather than re-serialised: YAML.dump would drop every comment in the file, and what
+  # the file is FOR is largely in them. A ref line is `ref: <40 hex>`, which is unambiguous.
+  targets.each do |name, _branch, ref, tip|
+    lock_source = lock_source.sub(/(^\s*#{Regexp.escape(name)}:\n(?:.*\n)*?\s*ref: )#{ref}$/, "\\1#{tip}")
+    puts "#{name}: #{ref[0, 8]} → #{tip[0, 8]}"
+  end
+  # The verification no longer covers these refs, and a date left in place would say it does. Every
+  # other run fails until the recipe is re-run and the date put back.
+  lock_source = lock_source.sub(/^verified_at: .*$/, "verified_at: null")
+  File.write(LOCK, lock_source)
+  warn "\nRefs rewritten and verified_at cleared: run --inventory, re-run the scaffold in " \
+       "`verify_with`, set verified_at to its date, and commit all three together."
+  exit 0
+end
+
+if YAML.safe_load(lock_source)["verified_at"].nil?
+  problems << "verified_at is empty: these refs have not been through the scaffold in `verify_with` -- " \
+              "run it, then set verified_at to its date"
+end
+
+unreachable.each { |what| warn "? #{what}: remote unreachable, not checked" }
+upgrades.each do |name, branch, ref, tip|
+  puts "↑ #{name}: #{branch} is at #{tip[0, 8]}, pinned at #{ref[0, 8]} — an upgrade is available"
+end
+
+if problems.empty?
+  pinned = pins.count { |_, pin| pin["ref"] }
+  # Built as nils rather than ternaries inside the interpolation: nil renders as nothing, and the
+  # line stays one sentence instead of three fragments joined by conditionals.
+  newer = ", #{upgrades.size} with something newer" if upgrades.any?
+  unchecked = ", #{unreachable.size} unchecked" if unreachable.any?
+  puts "✓ #{pinned} pinned component(s) fetchable#{newer}#{unchecked} " \
+       "(verified #{YAML.safe_load(lock_source)["verified_at"]})"
+  exit 0
+end
+
+warn "\nA scaffold would not work as pinned:"
+problems.each { |p| warn "  - #{p}" }
+warn <<~NEXT
+
+  A pin that cannot be fetched is not an upgrade decision — it breaks every new app until the lock
+  names a commit that exists.
+
+  If you are changing which BRANCH a component is tracked on, change it too in anything outside
+  this repository that names branches for the same gems, or an app follows different lines
+  depending on whether a component was selected at creation or added later.
+NEXT
+exit 1
