@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class <%= class_name %>Grid < WulinMaster::Grid
   title '<%= human_name %>'
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class <%= class_name %>Screen < WulinMaster::Screen
   title '<%= human_name %>'
 
