@@ -49,7 +49,7 @@ module WulinMaster
       if relation_macro == :belongs_to
         if value.is_a?(String)
           new_attrs[relation_object.foreign_key] = value
-        elsif value.is_a?(Hash) && value['id'] && (value['id'] != 'null')
+        elsif (value.is_a?(Hash) || value.is_a?(ActionController::Parameters)) && value['id'] && (value['id'] != 'null')
           new_attrs[relation_object.foreign_key] = value['id']
         end
       elsif relation_macro.match?(/^has_many$|^has_and_belongs_to_many$/)
