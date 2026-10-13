@@ -4,7 +4,7 @@
 # alongside it, and never mount WulinQueue::Engine -- config/routes.rb draws
 # into the host app directly.
 
-wulin_vendor "wulin_queue", "develop"
+wulin_vendor "wulin_queue", "main"
 
 wulin_js "../../vendor/gems/wulin_queue/app/javascript/wulin_queue.esm.js"
 

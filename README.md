@@ -120,10 +120,10 @@ WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 | component | branch | what it adds |
 | --- | --- | --- |
 | `wulin_master` | `v3` | always installed: grids, screens, menus, this asset pipeline |
-| `wulin_permits` | `develop` | users, roles, privileges, per-screen permissions |
-| `wulin_queue` | `develop` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
-| `wulin_audit` | `develop` | audit trail for every model write, plus request action logs |
-| `wulin_excel` | `develop` | Excel export button on grid toolbars |
+| `wulin_permits` | `main` | users, roles, privileges, per-screen permissions |
+| `wulin_queue` | `main` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
+| `wulin_audit` | `main` | audit trail for every model write, plus request action logs |
+| `wulin_excel` | `main` | Excel export button on grid toolbars |
 
 Everything is vendored as a git submodule under `vendor/gems/`, because esbuild
 and dart-sass reach into these gems by relative path and a bundler git source
