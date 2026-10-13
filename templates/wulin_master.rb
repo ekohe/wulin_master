@@ -157,10 +157,14 @@ wulin_post do
   # Rails' bin/dev is `exec "./bin/rails", "server", *ARGV` -- it never reads
   # Procfile.dev, so the asset watchers never start. PORT is exported first because foreman
   # otherwise hands the web process 5000.
+  #
+  # `--env /dev/null`, as jsbundling's own bin/dev has it: foreman reads .env by default, and the
+  # .env this app gets is for docker compose -- its DB_HOST=db names a host only the container
+  # network resolves, so on a local machine every request failed to reach the database.
   file "bin/dev", <<~SH, force: true
     #!/usr/bin/env bash
     export PORT="${PORT:-3000}"
-    exec bundle exec foreman start -f Procfile.dev "$@"
+    exec bundle exec foreman start -f Procfile.dev --env /dev/null "$@"
   SH
   chmod "bin/dev", 0o755
 

@@ -6,8 +6,9 @@
 # node_modules, app/assets/builds and .env*, and keeps vendor/, which this image needs.
 
 file ".env.example", <<~ENV
-  # Copied to .env at scaffold time; .env is gitignored, and compose treats it as
-  # optional -- without it the defaults in docker-compose.yml apply.
+  # Read by docker compose only -- nothing on the host loads it, and DB_HOST=db resolves only inside
+  # the compose network. Copied to .env at scaffold time; .env is gitignored, and compose treats it
+  # as optional -- without it the defaults in docker-compose.yml apply.
   POSTGRES_USER=postgres
   POSTGRES_PASSWORD=password
   DB_HOST=db
