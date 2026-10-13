@@ -14,6 +14,15 @@ gem "dartsass-rails"
 # (including csrf_meta_tags) dies with ArgumentError.
 gem "json", "< 3.0"
 
+# The production assets:precompile hook. This template drives esbuild itself, so
+# jsbundling-rails' installer is not relied on (with --skip-javascript it never
+# runs) -- only the gem and the rake task it hooks are needed.
+gem "jsbundling-rails" unless File.read("Gemfile").include?("jsbundling-rails")
+
+# Runs Procfile.dev via bin/dev. In the Gemfile rather than jsbundling's runtime
+# `gem install foreman`, so the runtime container gets it from bundle install.
+gem "foreman", group: :development unless File.read("Gemfile").include?('gem "foreman"')
+
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
 # newest release. sass-embedded 1.98 raised its floor to macOS 14: on anything
 # older the bundled Dart VM exits with "Current Mac OS X version 12.0 is lower
@@ -133,20 +142,30 @@ append_to_file ".gitignore", <<~GIT
 GIT
 
 wulin_post do
-  # Procfile.dev must be written here, not in the template body. `rails new
-  # -j esbuild` appends `js: yarn build --watch` to Procfile.dev after the
-  # template body runs, creating a duplicate js entry. Writing with force:
-  # true inside wulin_post (which runs in after_bundle) replaces it cleanly.
+  # Procfile.dev, bin/dev and package.json are this template's, written with `force: true` over
+  # what Rails generated. In after_bundle, so nothing Rails runs after the template body follows.
+  #
+  # The server takes its port and address from PORT and BINDING, as `rails server` reads them, so
+  # neither is fixed here: development stays on localhost unless something (a container) says
+  # otherwise.
   file "Procfile.dev", <<~PROCFILE, force: true
     web: env RUBY_DEBUG_OPEN=true bin/rails server
-    js: yarn build:watch
+    js: npm run build:watch
     css: bin/rails dartsass:watch
   PROCFILE
-  # All of this waits until after_bundle on purpose. `rails new -j esbuild` runs
-  # javascript:install:esbuild after the template body, and that installer
-  # rewrites package.json's build script with `npm pkg set` and calls
-  # `yarn add`, which fails outright against a package.json declaring
-  # workspaces. Writing it here means it lands after the installer, not before.
+
+  # Rails' bin/dev is `exec "./bin/rails", "server", *ARGV` -- it never reads
+  # Procfile.dev, so the asset watchers never start. PORT is exported first because foreman
+  # otherwise hands the web process 5000.
+  file "bin/dev", <<~SH, force: true
+    #!/usr/bin/env bash
+    export PORT="${PORT:-3000}"
+    exec bundle exec foreman start -f Procfile.dev "$@"
+  SH
+  chmod "bin/dev", 0o755
+
+  # `--minify` on `build` only: it is what assets:precompile runs, and it also selects React's
+  # production build for components that use it. `build:watch` stays readable for development.
   file "package.json", <<~JSON, force: true
     {
       "name": "#{app_name}",
@@ -161,7 +180,7 @@ wulin_post do
         "rails-ujs": "^5.2.0"
       },
       "scripts": {
-        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css",
+        "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --minify",
         "build:watch": "esbuild app/javascript/application.js --bundle --sourcemap --format=iife --outfile=app/assets/builds/application.js --public-path=/assets --loader:.woff=file --loader:.woff2=file --external:*.css --watch=forever",
         "copy-icons": "node script/copy_material_icons.js"
       }
@@ -207,12 +226,22 @@ wulin_post do
     end
   RB
 
-  # yarn install + copy-icons + theme CSS generation happen here so they're
-  # ready before any other wulin_post block runs. The final yarn build and
-  # dartsass:build run in template.rb AFTER all wulin_post blocks, so every
-  # component's esbuild/dartsass config changes are in place.
-  run "yarn install", abort_on_failure: true
-  run "yarn run copy-icons", abort_on_failure: true
+  # npm, and no yarn.lock. The components declare their npm dependencies in the gems' OWN
+  # package.json and arrive as workspaces under vendor/gems, so the manager has to put those
+  # dependencies in the app's own node_modules -- which the icon copy below, dart-sass's
+  # --load-path and esbuild's resolution of the gems' bare imports all read by path. yarn 4 writes
+  # no node_modules at all.
+  #
+  # jsbundling-rails picks its tool from whichever lockfile it finds, npm last, so a stray
+  # yarn.lock sends `assets:precompile` to `yarn build`.
+  #
+  # install + copy-icons + theme CSS generation happen here so they're ready before any
+  # other wulin_post block runs. The final npm build and dartsass:build run in
+  # template.rb AFTER all wulin_post blocks, so every component's esbuild/dartsass
+  # config changes are in place.
+  remove_file "yarn.lock" if File.exist?("yarn.lock")
+  run "npm install", abort_on_failure: true
+  run "npm run copy-icons", abort_on_failure: true
 
   # Writes _theme.generated.scss, which master.sass reads $color-theme from, so
   # it has to happen before the first CSS build.

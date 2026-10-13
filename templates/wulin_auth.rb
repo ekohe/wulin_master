@@ -5,10 +5,15 @@
 #
 # The login page has its own layout (wulin_auth.html.haml) that loads
 # wulin_auth.css and wulin_auth.js independently of the main app assets.
-# Both are Sprockets-era manifests, so the template creates Propshaft-
-# compatible entry points: a dart-sass source and an esbuild bundle.
+# The stylesheet is a Sprockets-era manifest, so the template creates
+# Propshaft-compatible entry points: a dart-sass source and an esbuild bundle.
 
 wulin_vendor "wulin_auth", "main"
+
+# Nothing in the app answers without a session. The filter that says so is declared here rather
+# than by wulin_master, because require_login is defined in this gem and the login page it
+# redirects to is this gem's.
+wulin_filter "before_action :require_login"
 
 # --- login page CSS ---
 # wulin_auth's wulin_auth.css.sass imports setting.scss.erb (ERB that
@@ -56,8 +61,8 @@ file "app/assets/stylesheets/wulin_auth.sass", <<~SASS
 SASS
 
 # --- login page JS ---
-# wulin_auth.js is a Sprockets manifest (//= require). We create an
-# esbuild entry that imports jQuery, materialize, and the gem's ESM entry.
+# The gem's ESM entry needs jQuery and materialize as globals. We create an
+# esbuild entry that supplies them and imports it.
 file "app/javascript/wulin_auth.js", <<~JS
   import jQuery from "jquery"
   window.$ = window.jQuery = jQuery
@@ -89,6 +94,14 @@ wulin_post do
   gsub_file "package.json",
     "app/javascript/application.js",
     "app/javascript/application.js app/javascript/wulin_auth.js"
+
+  # The engine defines WulinAuth::User; the app's own User is the subclass everything else
+  # names. It is written here because the seed below creates one and the login page signs it in.
+  file "app/models/user.rb", <<~RB
+    class User < WulinAuth::User
+      self.table_name = "users"
+    end
+  RB
 
   # wulin_auth's migration lives in the engine. Add the admin column
   # via a separate app-level migration.

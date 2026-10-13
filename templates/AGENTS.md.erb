@@ -14,14 +14,14 @@ Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node 
 ## Commands
 
 ```bash
-bin/dev                    # start server + asset watchers
-yarn build                 # one-off JS build
-bin/rails dartsass:build   # one-off CSS build
-bundle exec rspec          # run the specs
-bundle exec standardrb     # lint
+bin/dev                       # start server + asset watchers
+npm run build                 # one-off JS build
+bin/rails dartsass:build      # one-off CSS build
+bundle exec rspec             # run the specs
+bundle exec standardrb        # lint
 bundle exec standardrb --fix  # lint + auto-fix
-bin/rails db:migrate       # run migrations (engines included)
-bin/rails db:seed          # seed admin user
+bin/rails db:migrate          # run migrations (engines included)
+bin/rails db:seed             # seed admin user
 ```
 
 ## Architecture
@@ -40,7 +40,7 @@ automatically — do not run `install:migrations`.
 - JS entry: `app/javascript/application.js` — imports each component's `.esm.js`
 - CSS entry: `app/assets/stylesheets/application.sass` — `@use`s each component
 - Output: `app/assets/builds/` (gitignored, built by esbuild and dart-sass)
-- npm deps come through the yarn workspace in `package.json`, not gems
+- npm deps come through the npm workspace in `package.json`, not gems
 
 ### Configuration
 
@@ -60,6 +60,21 @@ Then add `item ModelNameScreen` to the menu.
 ## Conventions
 
 - Do not modify files under `vendor/gems/` — those are submodules
-- Do not run `solid_queue:install` — wulin_queue owns that schema
+<% if @wulin_install.any? { |c| c[:name] == "wulin_auth" } -%>
 - `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`
+<% end -%>
+<% if @wulin_install.any? { |c| c[:name] == "wulin_permits" } -%>
 - `current_user` returns a `User` instance (overridden in `ApplicationController`)
+<% end -%>
+<% if @wulin_notes.any? -%>
+
+## What the components do that their code does not say
+
+The scaffold installed and wired every component listed above — the gem, its JS, its Sass, its menu,
+its migrations and its seeds. These are what is left over: a behaviour that will surprise you, or the
+one part that is still yours to do.
+
+<% @wulin_notes.each do |note| -%>
+- <%= note %>
+<% end -%>
+<% end -%>

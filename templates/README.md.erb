@@ -14,7 +14,7 @@ Components are vendored as git submodules under `vendor/gems/`.
 ```bash
 git submodule update --init --recursive
 bundle install
-yarn install
+npm install
 cp config/app_config.example.yml config/app_config.yml
 bin/rails db:create db:migrate db:seed
 ```
@@ -32,7 +32,7 @@ Running `bin/rails server` alone skips asset compilation.
 One-off build without watchers:
 
 ```bash
-yarn build
+npm run build
 bin/rails dartsass:build
 ```
 

@@ -1,11 +1,22 @@
-# rails new wulin_app --skip-hotwire --database=postgresql -j esbuild -m ./template.rb
+# rails new APP_NAME --skip-hotwire --skip-solid --database=postgresql --skip-javascript -m ./template.rb
 #
-# Asks which Wulin components you want, then vendors and configures each one.
-# Set WULIN_COMPONENTS to skip the questions:
+# Asks which Wulin components to install, then vendors and configures each one. Set
+# WULIN_COMPONENTS to skip the questions:
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
+# --skip-javascript is required. This template owns the JavaScript build -- package.json,
+# Procfile.dev, bin/dev and app/assets/builds -- and any other choice installs a second one between
+# this body and after_bundle: importmap's pins, or a jsbundling installer that rewrites those files
+# with whatever package manager it finds (under Yarn 4, a Plug'n'Play manifest that esbuild then
+# resolves through, so none of the gems' npm imports resolve). Refused up front rather than at the
+# first build.
+unless options[:skip_javascript]
+  raise Thor::Error, "This template builds the JavaScript itself: run `rails new` with " \
+    "--skip-javascript (this run asked for #{options[:javascript]})."
+end
+
 # Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
 # owns the Solid Queue schema in the primary database, so strip the duplicate.
 gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
@@ -37,9 +48,9 @@ end
 @wulin_catalog = [
   {name: "wulin_master", branch: "v3", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth", branch: "main", required: true,
+  {name: "wulin_auth", branch: "main",
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", branch: "main",
+  {name: "wulin_permits", branch: "main", needs: %w[wulin_auth],
    summary: "users, roles, privileges, per-screen permissions"},
   {name: "wulin_queue", branch: "main", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
@@ -54,6 +65,7 @@ end
 @wulin_js = []           # paths to import from app/javascript/application.js
 @wulin_sass = []         # indented-Sass rules for application.sass
 @wulin_menus = []        # submenu blocks for ApplicationController.define_menu
+@wulin_filters = []      # before_action lines ApplicationController must run
 @wulin_methods = []      # methods ApplicationController must define
 @wulin_app_config = []   # YAML sections for config/app_config.yml
 @wulin_post = []         # runs after bundle, before the database is set up
@@ -78,6 +90,10 @@ end
 
 def wulin_menu(block)
   @wulin_menus << block
+end
+
+def wulin_filter(code)
+  @wulin_filters << code
 end
 
 def wulin_method(code)
@@ -121,10 +137,13 @@ def wulin_selection
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
   raise Thor::Error, "Unknown component: #{unknown.join(", ")}" if unknown.any?
 
-  # A component's `needs` are code dependencies, not suggestions -- wulin_queue's
-  # grids call current_user.has_permission_with_name? and its migration seeds
-  # Permission rows, both of which come from wulin_permits.
-  chosen.dup.each do |name|
+  # A component's `needs` are code dependencies, not suggestions -- wulin_queue's grids call
+  # current_user.has_permission_with_name? and its migration seeds Permission rows, both of which
+  # come from wulin_permits, whose own grids reference the User wulin_auth owns.
+  #
+  # `each` over the array being appended to, not a copy of it: it walks by index against the current
+  # length, so a dependency added here is visited too and the chain is followed to its end.
+  chosen.each do |name|
     @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |dep|
       next if chosen.include?(dep)
       chosen << dep
@@ -239,8 +258,7 @@ after_bundle do
 
     class ApplicationController < ActionController::Base
       protect_from_forgery with: :exception
-      before_action :require_login
-
+    #{wulin_indent(@wulin_filters, 2)}
     #{wulin_indent(@wulin_methods, 2)}
       def self.define_menu
         menu do |c|
@@ -254,14 +272,15 @@ after_bundle do
 
   # Build assets after all wulin_post blocks have run, so every component's
   # esbuild entries and dartsass config changes are in place.
-  run "yarn build", abort_on_failure: true
+  run "npm run build", abort_on_failure: true
   rails_command "dartsass:build", abort_on_failure: true
 
   # Every engine appends its own db/migrate to the app's migration paths, so a
   # plain db:migrate picks all of them up -- nothing needs install:migrations.
   rails_command "db:create db:migrate"
 
-  # Seeds the admin user every app needs, since current_user is User.first.
+  # Components append to db/seeds.rb -- wulin_auth's admin user, for one. Rails' own file holds
+  # only comments, so this is a no-op when none of them did.
   rails_command "db:seed"
 
   @wulin_db_post.each(&:call)
