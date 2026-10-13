@@ -72,18 +72,20 @@ JS
 
 wulin_post do
   # Add wulin_auth as a second dart-sass build and load path.
-  inject_into_file "config/initializers/wulin_master_assets.rb",
-    after: '  config.dartsass.builds = {"application.sass" => "application.css"}' + "\n" do
-    <<~RB
-      config.dartsass.builds["wulin_auth.sass"] = "wulin_auth.css"
-    RB
-  end
+  unless wulin_written?("config/initializers/wulin_master_assets.rb", "wulin_auth.sass")
+    inject_into_file "config/initializers/wulin_master_assets.rb",
+      after: '  config.dartsass.builds = {"application.sass" => "application.css"}' + "\n" do
+      <<~RB
+        config.dartsass.builds["wulin_auth.sass"] = "wulin_auth.css"
+      RB
+    end
 
-  inject_into_file "config/initializers/wulin_master_assets.rb",
-    after: '--load-path=vendor/gems/wulin_master/app/assets/stylesheets"' + "\n" do
-    <<~RB
-      config.dartsass.build_options << "--load-path=vendor/gems/wulin_auth/app/assets/stylesheets"
-    RB
+    inject_into_file "config/initializers/wulin_master_assets.rb",
+      after: '--load-path=vendor/gems/wulin_master/app/assets/stylesheets"' + "\n" do
+      <<~RB
+        config.dartsass.build_options << "--load-path=vendor/gems/wulin_auth/app/assets/stylesheets"
+      RB
+    end
   end
 
   # Add wulin_auth.js as a second esbuild entry point. Switch from
@@ -96,16 +98,20 @@ wulin_post do
     "app/javascript/application.js app/javascript/wulin_auth.js"
 
   # The engine defines WulinAuth::User; the app's own User is the subclass everything else
-  # names. It is written here because the seed below creates one and the login page signs it in.
-  file "app/models/user.rb", <<~RB
-    class User < WulinAuth::User
-      self.table_name = "users"
-    end
-  RB
+  # names. It is written here because the seed below creates one and the login page signs it in --
+  # once: after that it is the app's model.
+  unless File.exist?("app/models/user.rb")
+    file "app/models/user.rb", <<~RB
+      class User < WulinAuth::User
+        self.table_name = "users"
+      end
+    RB
+  end
 
   # wulin_auth's migration lives in the engine. Add the admin column
-  # via a separate app-level migration.
-  generate :migration, "AddAdminToUsers admin:boolean"
+  # via a separate app-level migration -- once: once the app has edited it, the generator refuses
+  # the name rather than skipping it.
+  generate :migration, "AddAdminToUsers admin:boolean" if Dir.glob("db/migrate/*_add_admin_to_users.rb").empty?
 
   # The first admin's sign-in. .env holds it for docker compose -- gitignored, and kept out of the
   # image by .dockerignore -- and the environment `docker compose up` runs in can hand it over
@@ -149,7 +155,7 @@ wulin_post do
   # `bin/rails db:seed` on this machine needs nothing exported. Only those two: the rest of .env is
   # the container's. Without the bang: a password wulin_auth's complexity check rejects leaves a
   # message, not a db:prepare that fails and takes the container's boot down with it.
-  append_to_file "db/seeds.rb", <<~RB
+  seed = <<~RB
     dotenv = Rails.root.join(".env").then { |path| path.exist? ? path.read : "" }
     admin_setting = lambda do |key|
       value = ENV[key].to_s
@@ -176,6 +182,17 @@ wulin_post do
       end
     end
   RB
+  # A block of its own, so a re-apply replaces it rather than appending a second copy. Earlier
+  # templates appended theirs unmarked; one left above this would create the account first with a
+  # password of its own, and this one would then find it there and leave it alone.
+  seeds = File.read("db/seeds.rb")
+  legacy = [
+    /^admin_password = SecureRandom\.alphanumeric\(16\)\n.*?^puts "Admin user: admin@example\.com \/ .*?\n/m,
+    /^first_account = begin\n.*?^if first_account\n.*?^end\n/m
+  ]
+  cleaned = legacy.reduce(seeds) { |text, pattern| text.sub(pattern, "") }
+  create_file "db/seeds.rb", cleaned, force: true unless cleaned == seeds
+  wulin_block "db/seeds.rb", "wulin_auth/first_admin", seed
 end
 
 wulin_note "wulin_auth: the first admin signs in with ADMIN_EMAIL / ADMIN_PASSWORD -- from .env (gitignored), or from the environment `docker compose up` runs in; db:seed creates that account and leaves an existing one alone"

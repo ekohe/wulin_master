@@ -5,10 +5,21 @@
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
+
+# `rails app:template LOCATION=...` re-applies this to an app that exists, which is how a component
+# SELECTED LATER arrives. The steps that CREATE the app are skipped on this flag: they append a line
+# or claim a file, so a second run would write it twice.
 #
+# It answers "has this template run HERE before", not "is there an app here" -- the file it names is
+# one this template writes, so a Rails app built some other way is scaffolded into. Read at the top,
+# before anything is written, because that file is created further down.
+@wulin_scaffolded_before = File.exist?("config/app_config.example.yml")
+
 # The flags in the command above are the ones this template depends on. A run without one is
 # refused before this template changes anything, rather than finishing as a broken app. `rails new`
-# has already written the app by then, so it has to be removed before running again:
+# has already written the app by then, so it has to be removed before running again. Not on a
+# re-apply: `rails app:template` hands this file Rails' default options, so there is no flag to read,
+# and what each one protects was settled when the app was created:
 #
 # --skip-javascript  This template owns the JavaScript build -- package.json, Procfile.dev, bin/dev
 #                    and app/assets/builds -- and any other choice installs a second one between
@@ -24,7 +35,7 @@ missing = {
   "--skip-solid" => options[:skip_solid],
   "--database=postgresql" => options[:database] == "postgresql"
 }.reject { |_, given| given }.keys
-if missing.any?
+if missing.any? && !@wulin_scaffolded_before
   raise Thor::Error, "This template needs `rails new` run with #{missing.join(" ")} -- the header of " \
     "template.rb says why. Remove the generated app and run it again."
 end
@@ -39,7 +50,9 @@ require "yaml"
 @wulin_source = File.dirname(__FILE__)
 @wulin_remote_source = @wulin_source.match?(%r{\Ahttps?://})
 
-# Remove gems we don't use.
+# Remove gems we don't use. These blocks shape the Gemfile `rails new` wrote, so on a re-apply
+# they have nothing left to do -- except where one of these gems was put back on purpose, which this
+# removes again, in whatever group it was written: the pattern matches the line, not the block.
 %w[debug rubocop-rails-omakase web-console capybara selenium-webdriver tzinfo-data].each do |name|
   gsub_file "Gemfile", /^.*gem "#{name}".*\n/, ""
 end
@@ -48,10 +61,12 @@ end
 gsub_file "Gemfile", /^group :[^\n]+\n(#[^\n]*\n|\s*\n)*end\n/, ""
 
 # RSpec and factory_bot are every app's test stack, whichever components it selects.
-gem_group :development, :test do
-  gem "standard"
-  gem "rspec-rails"
-  gem "factory_bot_rails"
+unless @wulin_scaffolded_before
+  gem_group :development, :test do
+    gem "standard"
+    gem "rspec-rails"
+    gem "factory_bot_rails"
+  end
 end
 
 # What the components ARE. Which code they resolve to is `components.lock.yml` beside this file --
@@ -121,11 +136,52 @@ def wulin_vendor(name)
   # The branch goes in beside the ref. Bundler installs the ref either way; the branch is what
   # `bundle config local.<name>` checks a local checkout against, and without it pointing the app at a
   # copy of the gem being edited is refused outright.
-  if ref
-    gem name, github: "ekohe/#{name}", branch: branch, ref: ref
+  #
+  # `gem` APPENDS and bundler refuses the same gem twice, so a changed declaration replaces the old
+  # one -- which is how a moved pin lands. An unchanged one is left where it is, so re-applying the
+  # template is no change to the Gemfile.
+  source = {github: "ekohe/#{name}", branch: branch, ref: ref}.compact
+  line = %(gem "#{name}", ) + source.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
+  return if File.read("Gemfile").lines.map(&:chomp).include?(line)
+
+  gsub_file "Gemfile", /^gem "#{name}",.*\n/, "", verbose: false
+  gem name, **source
+end
+
+# Re-applying runs every component template again, over files the first run wrote and
+# `standardrb --fix` then reformatted -- so Thor's own duplicate check, which compares text exactly,
+# misses. Writes into a file the app already has are keyed on something the first write left in it.
+#
+# A gem the Gemfile already declares, by an earlier run or by the app, is left as it is -- it may be
+# the app's own choice -- and a requirement this template asks for that the declaration lacks is
+# noted rather than imposed.
+def wulin_gem(name, *args, **opts)
+  declared = File.read("Gemfile")[/^\s*gem ["']#{Regexp.escape(name)}["'].*$/]
+  return gem(name, *args, **opts) unless declared
+
+  wanted = args.map(&:inspect) + opts.map { |key, value| "#{key}: #{value.inspect}" }
+  missing = wanted.reject { |part| declared.include?(part) }
+  wulin_note "Gemfile declares #{name} without #{missing.join(", ")}, which this template asks for -- left as it is" if missing.any?
+end
+
+def wulin_written?(path, marker)
+  File.exist?(path) && File.read(path).include?(marker)
+end
+
+# A block this template owns inside a file the app writes to as well, replaced whole on every run and
+# appended the first time. It is found by `# wulin:begin <id>` and `# wulin:end <id>` alone, so the
+# explanation after the first marker may change between versions of this template; the id may not.
+def wulin_block(path, id, content)
+  body = "# wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it\n" \
+    "#{content}# wulin:end #{id}\n"
+  block = /^# wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^# wulin:end #{Regexp.escape(id)}\n/m
+  text = File.exist?(path) ? File.read(path) : ""
+  text = if text.match?(block)
+    text.sub(block) { body }
   else
-    gem name, github: "ekohe/#{name}", branch: branch
+    [text.chomp, body].reject(&:empty?).join("\n\n")
   end
+  create_file path, text, force: true
 end
 
 def wulin_js(*paths)
@@ -170,6 +226,19 @@ def wulin_indent(blocks, spaces)
   }.join("\n")
 end
 
+# What an app that already exists declares for itself. The assembly rewrites application.js, the Sass
+# entry and ApplicationController from the FULL set, so a re-applied template told only about the new
+# component would strip the wiring of every other one. The Gemfile is the authority: it is what
+# bundler resolves, and what a dependency step appends to.
+def wulin_declared
+  return [] unless @wulin_scaffolded_before
+
+  known = @wulin_catalog.map { |c| c[:name] }
+  File.read("Gemfile").scan(/^gem "(wulin_[a-z_]+)"/).flatten & known
+rescue Errno::ENOENT
+  []
+end
+
 def wulin_selection
   requested = ENV["WULIN_COMPONENTS"].to_s.strip
   optional = @wulin_catalog.reject { |c| c[:required] }
@@ -186,6 +255,8 @@ def wulin_selection
     say_status :components, "stdin is not a tty and WULIN_COMPONENTS is unset -- installing only #{@wulin_catalog.select { |c| c[:required] }.map { |c| c[:name] }.join(", ")}", :yellow
     []
   end
+
+  chosen |= wulin_declared
 
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
   raise Thor::Error, "Unknown component: #{unknown.join(", ")}" if unknown.any?
@@ -233,9 +304,27 @@ app_config = <<~YAML + @wulin_app_config.map(&:strip).join("\n\n") + "\n"
 
 YAML
 
-create_file "config/app_config.yml", app_config
-create_file "config/app_config.example.yml", app_config
-append_to_file ".gitignore", "\n/config/app_config.yml\n"
+unless @wulin_scaffolded_before
+  create_file "config/app_config.yml", app_config
+  create_file "config/app_config.example.yml", app_config
+  append_to_file ".gitignore", "\n/config/app_config.yml\n"
+end
+
+# On a re-apply the files are the app's own, edited and holding credentials, so only the section of a
+# component they do not mention yet is appended -- the way a component selected later brings its
+# settings with it.
+if @wulin_scaffolded_before
+  %w[config/app_config.example.yml config/app_config.yml].each do |path|
+    next unless File.exist?(path)
+
+    @wulin_app_config.each do |section|
+      key = section[/^#?\s*(wulin_[a-z_]+):/, 1]
+      next if key.nil? || File.read(path).match?(/^#?\s*#{key}:/)
+
+      append_to_file path, "\n#{section.strip}\n"
+    end
+  end
+end
 
 after_bundle do
   # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
@@ -267,12 +356,14 @@ after_bundle do
       puts "\#{spec.name} -> \#{spec.full_gem_path}"
     end
   RB
-  append_to_file ".gitignore", <<~IGNORE
+  unless @wulin_scaffolded_before
+    append_to_file ".gitignore", <<~IGNORE
 
-    # The wulin components are Bundler git gems; vendor/gems is symlinks built by
-    # script/link_wulin_gems.rb, so it is derived and never committed.
-    /vendor/gems
-  IGNORE
+      # The wulin components are Bundler git gems; vendor/gems is symlinks built by
+      # script/link_wulin_gems.rb, so it is derived and never committed.
+      /vendor/gems
+    IGNORE
+  end
   run "bundle exec ruby script/link_wulin_gems.rb", abort_on_failure: true
 
   # bin/setup is how a fresh clone gets going, and on its own it would leave vendor/gems empty and
@@ -285,57 +376,63 @@ after_bundle do
   end
 
   # wulin_master:install writes its own ApplicationController with a stub menu,
-  # so this has to come after it and replace the file wholesale.
-  rails_command "generate wulin_master:install"
+  # so this has to come after it and replace the file wholesale. Skipped on an app that exists: it
+  # also copies a homepage controller and prepends a root route, and a second root is a route the
+  # router never reaches behind the one already there.
+  rails_command "generate wulin_master:install" unless @wulin_scaffolded_before
 
-  # RSpec is the test framework whatever `rails new` was passed: without --skip-test it also wrote
-  # Minitest's test/, which nothing here runs.
-  remove_dir "test"
-  rails_command "generate rspec:install"
+  # The app's test stack, set up once: a re-applied template would remove a test/ the app now owns
+  # and append the support loader a second time.
+  unless @wulin_scaffolded_before
+    # RSpec is the test framework whatever `rails new` was passed: without --skip-test it also wrote
+    # Minitest's test/, which nothing here runs.
+    remove_dir "test"
+    rails_command "generate rspec:install"
 
-  # What `rspec:install` leaves undone: factory_bot's syntax methods are not included, and the
-  # support-file loader in rails_helper is commented out, so `create(:thing)` raises NoMethodError.
-  # The loader is appended, not uncommented: its commented line has moved between rspec-rails
-  # versions, and `uncomment_lines` on a pattern that no longer matches silently does nothing.
-  append_to_file "spec/rails_helper.rb", <<~RB
+    # What `rspec:install` leaves undone: factory_bot's syntax methods are not included, and the
+    # support-file loader in rails_helper is commented out, so `create(:thing)` raises NoMethodError.
+    # The loader is appended, not uncommented: its commented line has moved between rspec-rails
+    # versions, and `uncomment_lines` on a pattern that no longer matches silently does nothing.
+    append_to_file "spec/rails_helper.rb", <<~RB
 
-    # Loads spec/support (rspec:install ships this line commented out).
-    Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
-  RB
+      # Loads spec/support (rspec:install ships this line commented out).
+      Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
+    RB
 
-  file "spec/support/factory_bot.rb", <<~RB
-    # frozen_string_literal: true
+    file "spec/support/factory_bot.rb", <<~RB
+      # frozen_string_literal: true
 
-    RSpec.configure do |config|
-      config.include FactoryBot::Syntax::Methods
+      RSpec.configure do |config|
+        config.include FactoryBot::Syntax::Methods
+      end
+    RB
+
+    # CI runs the same specs. Rails points its CI at `bin/rails test`, which with test/ gone passes having
+    # run nothing, and at system tests, which need the Capybara this template removes: config/ci.rb
+    # (Rails 8.1+) always, the GitHub workflow unless --skip-ci -- 8.0 runs `test test:system` in one
+    # job, 8.1 adds a separate system-test job. With --skip-test neither file has a test step; ci.rb
+    # gets one, the workflow does not, as that would mean writing a whole job.
+    if File.exist?("config/ci.rb")
+      gsub_file "config/ci.rb", /^ *step "Tests: Rails".*\n/, ""
+      gsub_file "config/ci.rb", /^ *# Optional: Run system tests\n *# step "Tests: System".*\n\n?/, ""
+      inject_into_file "config/ci.rb", <<~STEPS.gsub(/^/, "  "), after: /\A.*^  step [^\n]*\n/m
+        step "Build: assets", "bin/rails javascript:build dartsass:build"
+        step "Tests: RSpec", "bundle exec rspec"
+      STEPS
     end
-  RB
+    workflow = ".github/workflows/ci.yml"
+    if File.exist?(workflow)
+      gsub_file workflow, %r{run: bin/rails db:test:prepare test(?: test:system)?\n},
+        "run: bin/rails db:test:prepare javascript:build dartsass:build && bundle exec rspec\n"
+      gsub_file workflow, /\n+  system-test:\n(?: {4}.*\n|\n)*\z/, "\n"
 
-  # CI runs the same specs. Rails points its CI at `bin/rails test`, which with test/ gone passes having
-  # run nothing, and at system tests, which need the Capybara this template removes: config/ci.rb
-  # (Rails 8.1+) always, the GitHub workflow unless --skip-ci -- 8.0 runs `test test:system` in one
-  # job, 8.1 adds a separate system-test job. With --skip-test neither file has a test step; ci.rb
-  # gets one, the workflow does not, as that would mean writing a whole job.
-  if File.exist?("config/ci.rb")
-    gsub_file "config/ci.rb", /^ *step "Tests: Rails".*\n/, ""
-    gsub_file "config/ci.rb", /^ *# Optional: Run system tests\n *# step "Tests: System".*\n\n?/, ""
-    inject_into_file "config/ci.rb", <<~STEPS.gsub(/^/, "  "), after: /\A.*^  step [^\n]*\n/m
-      step "Build: assets", "bin/rails javascript:build dartsass:build"
-      step "Tests: RSpec", "bundle exec rspec"
-    STEPS
-  end
-  workflow = ".github/workflows/ci.yml"
-  if File.exist?(workflow)
-    gsub_file workflow, %r{run: bin/rails db:test:prepare test(?: test:system)?\n},
-      "run: bin/rails db:test:prepare javascript:build dartsass:build && bundle exec rspec\n"
-    gsub_file workflow, /\n+  system-test:\n(?: {4}.*\n|\n)*\z/, "\n"
-
-    # npm resolves the components' workspaces through vendor/gems, which is not committed, so the
-    # links come first -- and need no Rails, unlike the builds above, which run where RAILS_ENV and
-    # DATABASE_URL are already set.
-    link_step = "      - name: Link the wulin components\n" \
-                "        run: bundle exec ruby script/link_wulin_gems.rb\n\n"
-    gsub_file(workflow, /^      - name: Run tests\n/) { |run_tests| link_step + run_tests }
+      # npm resolves the components' workspaces through vendor/gems, which is not committed, so the
+      # links come first -- and need no Rails, unlike the builds above, which run where RAILS_ENV and
+      # DATABASE_URL are already set.
+      link_step = "      - name: Link the wulin components\n" \
+                  "        run: bundle exec ruby script/link_wulin_gems.rb\n\n"
+      gsub_file(workflow, /^      - name: Run tests\n/) { |run_tests| link_step + run_tests }
+    end
   end
 
   # `app/screens` and `app/grids` from the start, even before anything lives in them. Rails builds
@@ -366,19 +463,17 @@ after_bundle do
   file "app/assets/stylesheets/application.sass",
     (uses + rules).join("\n\n") + "\n", force: true
 
-  file "app/controllers/application_controller.rb", <<~RB, force: true
+  # Assembled already in standard's shape -- a component with nothing to add leaves no blank line
+  # behind -- because a re-apply rewrites this file and does not run the formatter over the app.
+  controller_body = [
+    ["protect_from_forgery with: :exception", *@wulin_filters].join("\n"),
+    *@wulin_methods.map(&:strip),
+    "def self.define_menu\n  menu do |c|\n#{wulin_indent(@wulin_menus.map { |block| "#{block.strip}\n" }, 4)}  end\nend"
+  ].join("\n\n")
+  file "app/controllers/application_controller.rb", <<~RB + wulin_indent([controller_body], 2) + "\nend\n", force: true
     # frozen_string_literal: true
 
     class ApplicationController < ActionController::Base
-      protect_from_forgery with: :exception
-    #{wulin_indent(@wulin_filters, 2)}
-    #{wulin_indent(@wulin_methods, 2)}
-      def self.define_menu
-        menu do |c|
-    #{wulin_indent(@wulin_menus, 6)}
-        end
-      end
-    end
   RB
 
   @wulin_post.each(&:call)
@@ -404,18 +499,20 @@ after_bundle do
   # so it carries the note about a README left alone.
   #
   # The committed README counts, not only the file on disk: `rails new . --force` into a repository
-  # that already has one has replaced it with Rails' placeholder before this runs.
+  # that already has one has replaced it with Rails' placeholder before this runs. A README identical
+  # to the docs/wulin_app.md an earlier run wrote is this template's own too, so a re-apply updates it.
   render = ->(name) { ERB.new(wulin_read("templates/#{name}.erb"), trim_mode: "-").result(binding) }
   readme = render.call("README.md")
+  previous = File.exist?("docs/wulin_app.md") ? File.read("docs/wulin_app.md") : nil
   file "docs/wulin_app.md", readme, force: true
 
-  placeholder = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") }
+  ours = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") || text == previous }
   committed = File.exist?(".git") ? `git show HEAD:README.md 2>/dev/null` : ""
   on_disk = File.exist?("README.md") ? File.read("README.md") : ""
-  if !placeholder.call(committed)
+  if !ours.call(committed)
     file "README.md", committed, force: true
     wulin_note "README.md was kept as the repository had it -- what this template would have written is in docs/wulin_app.md"
-  elsif placeholder.call(on_disk)
+  elsif ours.call(on_disk)
     file "README.md", readme, force: true
   else
     wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
@@ -430,8 +527,10 @@ after_bundle do
 
   # The generated app declares `standard`, and Rails writes its files for
   # rubocop-rails-omakase -- 23 offences in a bare `rails new`. This is where the two meet.
-  # Not gated: a formatter's exit code says what is left to tidy, not whether the app exists.
-  run "bundle exec standardrb --fix || true"
+  # Only when the app is created: on a re-apply the code is the app's own, and adding a component is
+  # no reason to reformat it. `|| true` because the exit code says what is left to tidy, not whether
+  # the app works.
+  run "bundle exec standardrb --fix || true" unless @wulin_scaffolded_before
 
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
   @wulin_notes.each { |note| say "  - #{note}", :yellow }

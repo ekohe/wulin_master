@@ -6,22 +6,22 @@
 
 wulin_vendor "wulin_master"
 
-gem "bcrypt"
-gem "dartsass-rails"
+wulin_gem "bcrypt"
+wulin_gem "dartsass-rails"
 
 # json 3.0 changed JSON.parse to accept only 1 argument; Rails 8.1's
 # ActiveSupport::JSON.decode passes 2. Every request that touches the session
 # (including csrf_meta_tags) dies with ArgumentError.
-gem "json", "< 3.0"
+wulin_gem "json", "< 3.0"
 
 # The production assets:precompile hook. This template drives esbuild itself, so
 # jsbundling-rails' installer is not relied on (with --skip-javascript it never
 # runs) -- only the gem and the rake task it hooks are needed.
-gem "jsbundling-rails" unless File.read("Gemfile").include?("jsbundling-rails")
+wulin_gem "jsbundling-rails"
 
 # Runs Procfile.dev via bin/dev. In the Gemfile rather than jsbundling's runtime
 # `gem install foreman`, so the runtime container gets it from bundle install.
-gem "foreman", group: :development unless File.read("Gemfile").include?('gem "foreman"')
+wulin_gem "foreman", group: :development
 
 # dartsass-rails only asks for sass-embedded ~> 1.63, so it resolves to the
 # newest release. sass-embedded 1.98 raised its floor to macOS 14: on anything
@@ -31,7 +31,7 @@ gem "foreman", group: :development unless File.read("Gemfile").include?('gem "fo
 # unaffected and should not be held back, so only pin where it actually bites.
 if RbConfig::CONFIG["host_os"].include?("darwin") && `sw_vers -productVersion`.to_i < 14
   say_status :pin, "sass-embedded < 1.98 (dart-sass needs macOS 14)", :yellow
-  gem "sass-embedded", "< 1.98"
+  wulin_gem "sass-embedded", "< 1.98"
   wulin_note "sass-embedded is pinned below 1.98 because this app was generated on macOS #{`sw_vers -productVersion`.to_i}; 1.98 raised dart-sass's floor to macOS 14. Drop the pin when everyone is on 14+"
 end
 
@@ -69,17 +69,19 @@ RB
 # APP_CONFIG has to exist before the gems load: config/initializers/wulin_master.rb
 # reads it, and wulin_audit touches it on every write. The rescue keeps a missing
 # or malformed app_config.yml from being a boot failure.
-inject_into_file "config/application.rb", <<~RB, before: "Bundler.require(*Rails.groups)"
-  begin
-    require_relative "app_config_loader"
-    APP_CONFIG = AppConfigLoader.load
-  rescue StandardError => e
-    APP_CONFIG = {}
-    puts e.message
-    puts "config/app_config.yml is not configured -- copy config/app_config.example.yml over it."
-  end
+unless wulin_written?("config/application.rb", "AppConfigLoader.load")
+  inject_into_file "config/application.rb", <<~RB, before: "Bundler.require(*Rails.groups)"
+    begin
+      require_relative "app_config_loader"
+      APP_CONFIG = AppConfigLoader.load
+    rescue StandardError => e
+      APP_CONFIG = {}
+      puts e.message
+      puts "config/app_config.yml is not configured -- copy config/app_config.example.yml over it."
+    end
 
-RB
+  RB
+end
 
 # material-icons keeps its webfonts inside node_modules and the compiled CSS
 # refers to them by bare filename, so they have to be copied where Propshaft
@@ -107,29 +109,32 @@ empty_directory "app/assets/fonts"
 # The esbuild and dart-sass output directory. `-j esbuild` creates it; --skip-javascript does not.
 create_file "app/assets/builds/.keep", ""
 
-initializer "wulin_master_assets.rb", <<~RB
-  # frozen_string_literal: true
+# Created once: the components inject their own builds and load paths into it.
+unless File.exist?("config/initializers/wulin_master_assets.rb")
+  initializer "wulin_master_assets.rb", <<~RB
+    # frozen_string_literal: true
 
-  require "dartsass-rails"
+    require "dartsass-rails"
 
-  Rails.application.configure do
-    config.assets.paths << Rails.root.join("app/assets/builds")
-    config.assets.paths << Rails.root.join("app/assets/fonts")
-    config.assets.precompile += %w[*.woff *.woff2]
+    Rails.application.configure do
+      config.assets.paths << Rails.root.join("app/assets/builds")
+      config.assets.paths << Rails.root.join("app/assets/fonts")
+      config.assets.precompile += %w[*.woff *.woff2]
 
-    config.dartsass.builds = {"application.sass" => "application.css"}
+      config.dartsass.builds = {"application.sass" => "application.css"}
 
-    # Three load paths, all of them load-bearing:
-    #   node_modules  -- master.sass @use's npm packages by bare name
-    #   app/assets/stylesheets -- where generate_theme_color_css writes
-    #     _theme.generated.scss, which master.sass reads $color-theme from
-    #   the gem's own stylesheets -- its SlickGrid partials @import "base"
-    #     and friends relative to that directory
-    config.dartsass.build_options << "--load-path=node_modules"
-    config.dartsass.build_options << "--load-path=app/assets/stylesheets"
-    config.dartsass.build_options << "--load-path=vendor/gems/wulin_master/app/assets/stylesheets"
-  end
-RB
+      # Three load paths, all of them load-bearing:
+      #   node_modules  -- master.sass @use's npm packages by bare name
+      #   app/assets/stylesheets -- where generate_theme_color_css writes
+      #     _theme.generated.scss, which master.sass reads $color-theme from
+      #   the gem's own stylesheets -- its SlickGrid partials @import "base"
+      #     and friends relative to that directory
+      config.dartsass.build_options << "--load-path=node_modules"
+      config.dartsass.build_options << "--load-path=app/assets/stylesheets"
+      config.dartsass.build_options << "--load-path=vendor/gems/wulin_master/app/assets/stylesheets"
+    end
+  RB
+end
 
 # Rails' .gitignore lists none of these, and under --skip-javascript nothing else adds
 # them -- so without this the first commit carries node_modules.
