@@ -27,7 +27,7 @@ gem_group :development, :test do
   gem "factory_bot_rails"
 end
 
-# The develop branches are identical on both hosts, so everything comes
+# The branches tracked here are identical on both hosts, so everything comes
 # from one place.
 @wulin_git_base = "git@gitlab.ekohe.com:ekohe/wulin"
 @wulin_templates = File.expand_path("templates", __dir__)
@@ -37,15 +37,15 @@ end
 @wulin_catalog = [
   {name: "wulin_master", branch: "v3", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth", branch: "rails8", required: true,
+  {name: "wulin_auth", branch: "main", required: true,
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", branch: "develop",
+  {name: "wulin_permits", branch: "main",
    summary: "users, roles, privileges, per-screen permissions"},
-  {name: "wulin_queue", branch: "develop", needs: %w[wulin_permits],
+  {name: "wulin_queue", branch: "main", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
-  {name: "wulin_audit", branch: "develop",
+  {name: "wulin_audit", branch: "main",
    summary: "audit trail for every model write, plus request action logs"},
-  {name: "wulin_excel", branch: "develop",
+  {name: "wulin_excel", branch: "main",
    summary: "Excel export button on grid toolbars"}
 ]
 
