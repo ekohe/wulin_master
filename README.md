@@ -106,12 +106,12 @@ and asks which of the Wulin components you want alongside it:
 rails new wulin_app --skip-hotwire --skip-solid --database=postgresql --skip-javascript -m ./template.rb
 ```
 
-`--skip-solid` matters if you say yes to `wulin_queue`: Rails 8 otherwise
-generates its own Solid Queue setup in a separate queue database, and
-wulin_queue's migration creates the same tables in the primary one.
-
-`--skip-javascript` is required, not a preference; the header of `template.rb`
-says what any other JavaScript option breaks.
+`--skip-javascript`, `--skip-solid` and `--database=postgresql` are required,
+not preferences: the template refuses to run without them, and its header says
+what each one prevents. `--skip-solid`, for one, matters if you say yes to
+`wulin_queue`: Rails 8 otherwise generates its own Solid Queue setup in a
+separate queue database, and wulin_queue's migration creates the same tables in
+the primary one.
 
 Each component is a file under `templates/`, and the questions can be skipped:
 

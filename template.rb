@@ -6,22 +6,28 @@
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
-# --skip-javascript is required. This template owns the JavaScript build -- package.json,
-# Procfile.dev, bin/dev and app/assets/builds -- and any other choice installs a second one between
-# this body and after_bundle: importmap's pins, or a jsbundling installer that rewrites those files
-# with whatever package manager it finds (under Yarn 4, a Plug'n'Play manifest that esbuild then
-# resolves through, so none of the gems' npm imports resolve). Refused up front rather than at the
-# first build.
-unless options[:skip_javascript]
-  raise Thor::Error, "This template builds the JavaScript itself: run `rails new` with " \
-    "--skip-javascript (this run asked for #{options[:javascript]})."
+# The flags in the command above are the ones this template depends on. A run without one is
+# refused before this template changes anything, rather than finishing as a broken app. `rails new`
+# has already written the app by then, so it has to be removed before running again:
+#
+# --skip-javascript  This template owns the JavaScript build -- package.json, Procfile.dev, bin/dev
+#                    and app/assets/builds -- and any other choice installs a second one between
+#                    this body and after_bundle: importmap's pins, or a jsbundling installer that
+#                    rewrites those files with whatever package manager it finds (under Yarn 4, a
+#                    Plug'n'Play manifest esbuild then resolves through, so no gem import resolves).
+# --skip-solid       wulin_queue owns Solid Queue's schema in the primary database. Without the flag
+#                    Rails writes a production database.yml for four databases and runs Solid's
+#                    installers.
+# --database=...     wulin_audit's tables use jsonb columns.
+missing = {
+  "--skip-javascript" => options[:skip_javascript],
+  "--skip-solid" => options[:skip_solid],
+  "--database=postgresql" => options[:database] == "postgresql"
+}.reject { |_, given| given }.keys
+if missing.any?
+  raise Thor::Error, "This template needs `rails new` run with #{missing.join(" ")} -- the header of " \
+    "template.rb says why. Remove the generated app and run it again."
 end
-
-# Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
-# owns the Solid Queue schema in the primary database, so strip the duplicate.
-gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
-gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
-gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 
 # Remove gems we don't use.
 %w[debug rubocop-rails-omakase web-console capybara selenium-webdriver tzinfo-data].each do |name|
@@ -128,10 +134,15 @@ def wulin_selection
 
   chosen = if requested == "all"
     optional.map { |c| c[:name] }
-  elsif requested.empty?
+  elsif !requested.empty?
+    requested.split(",").map(&:strip).reject(&:empty?)
+  elsif $stdin.tty?
     optional.select { |c| yes?("Install #{c[:name]}? (#{c[:summary]}) [y/N]") }.map { |c| c[:name] }
   else
-    requested.split(",").map(&:strip).reject(&:empty?)
+    # Asking a closed stdin reads EOF and answers no to everything, which looks like a
+    # successful build of an app missing every optional component.
+    say_status :components, "stdin is not a tty and WULIN_COMPONENTS is unset -- installing only #{@wulin_catalog.select { |c| c[:required] }.map { |c| c[:name] }.join(", ")}", :yellow
+    []
   end
 
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
@@ -285,14 +296,40 @@ after_bundle do
 
   @wulin_db_post.each(&:call)
 
-  # Rails ships a placeholder checklist. Render templates/*.md.erb instead.
-  %w[README.md AGENTS.md].each do |name|
-    template_path = File.join(@wulin_templates, "#{name}.erb")
-    file name, ERB.new(File.read(template_path), trim_mode: "-").result(binding), force: true
+  # README.md belongs to whoever created the repository, which may already have written one. So the
+  # generated description always goes to docs/wulin_app.md, and claims README.md only while it is
+  # still Rails' placeholder. AGENTS.md is this template's own file either way, and is rendered last
+  # so it carries the note about a README left alone.
+  #
+  # The committed README counts, not only the file on disk: `rails new . --force` into a repository
+  # that already has one has replaced it with Rails' placeholder before this runs.
+  render = ->(name) { ERB.new(File.read(File.join(@wulin_templates, "#{name}.erb")), trim_mode: "-").result(binding) }
+  readme = render.call("README.md")
+  file "docs/wulin_app.md", readme, force: true
+
+  placeholder = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") }
+  committed = File.exist?(".git") ? `git show HEAD:README.md 2>/dev/null` : ""
+  on_disk = File.exist?("README.md") ? File.read("README.md") : ""
+  if !placeholder.call(committed)
+    file "README.md", committed, force: true
+    wulin_note "README.md was kept as the repository had it -- what this template would have written is in docs/wulin_app.md"
+  elsif placeholder.call(on_disk)
+    file "README.md", readme, force: true
+  else
+    wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
   end
 
-  # Format all generated Ruby files.
-  run "bundle exec standardrb --fix"
+  file "AGENTS.md", render.call("AGENTS.md"), force: true
+
+  # Rails writes STDOUT here; standard wants $stdout and classes the rewrite unsafe, so
+  # `--fix` leaves it. They are the same object, and it is the one offence below that the
+  # formatter cannot clear.
+  gsub_file "config/environments/production.rb", "logger(STDOUT)", "logger($stdout)"
+
+  # The generated app declares `standard`, and Rails writes its files for
+  # rubocop-rails-omakase -- 23 offences in a bare `rails new`. This is where the two meet.
+  # Not gated: a formatter's exit code says what is left to tidy, not whether the app exists.
+  run "bundle exec standardrb --fix || true"
 
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
   @wulin_notes.each { |note| say "  - #{note}", :yellow }
