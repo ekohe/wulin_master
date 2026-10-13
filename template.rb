@@ -315,12 +315,23 @@ after_bundle do
   if File.exist?("config/ci.rb")
     gsub_file "config/ci.rb", /^ *step "Tests: Rails".*\n/, ""
     gsub_file "config/ci.rb", /^ *# Optional: Run system tests\n *# step "Tests: System".*\n\n?/, ""
-    inject_into_file "config/ci.rb", %(  step "Tests: RSpec", "bundle exec rspec"\n), after: /\A.*^  step [^\n]*\n/m
+    inject_into_file "config/ci.rb", <<~STEPS.gsub(/^/, "  "), after: /\A.*^  step [^\n]*\n/m
+      step "Build: assets", "bin/rails javascript:build dartsass:build"
+      step "Tests: RSpec", "bundle exec rspec"
+    STEPS
   end
   workflow = ".github/workflows/ci.yml"
   if File.exist?(workflow)
-    gsub_file workflow, %r{run: bin/rails db:test:prepare test(?: test:system)?\n}, "run: bin/rails db:test:prepare && bundle exec rspec\n"
+    gsub_file workflow, %r{run: bin/rails db:test:prepare test(?: test:system)?\n},
+      "run: bin/rails db:test:prepare javascript:build dartsass:build && bundle exec rspec\n"
     gsub_file workflow, /\n+  system-test:\n(?: {4}.*\n|\n)*\z/, "\n"
+
+    # npm resolves the components' workspaces through vendor/gems, which is not committed, so the
+    # links come first -- and need no Rails, unlike the builds above, which run where RAILS_ENV and
+    # DATABASE_URL are already set.
+    link_step = "      - name: Link the wulin components\n" \
+                "        run: bundle exec ruby script/link_wulin_gems.rb\n\n"
+    gsub_file(workflow, /^      - name: Run tests\n/) { |run_tests| link_step + run_tests }
   end
 
   # `app/screens` and `app/grids` from the start, even before anything lives in them. Rails builds
