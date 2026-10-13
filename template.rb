@@ -6,22 +6,28 @@
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 #
-# --skip-javascript is required. This template owns the JavaScript build -- package.json,
-# Procfile.dev, bin/dev and app/assets/builds -- and any other choice installs a second one between
-# this body and after_bundle: importmap's pins, or a jsbundling installer that rewrites those files
-# with whatever package manager it finds (under Yarn 4, a Plug'n'Play manifest that esbuild then
-# resolves through, so none of the gems' npm imports resolve). Refused up front rather than at the
-# first build.
-unless options[:skip_javascript]
-  raise Thor::Error, "This template builds the JavaScript itself: run `rails new` with " \
-    "--skip-javascript (this run asked for #{options[:javascript]})."
+# The flags in the command above are the ones this template depends on. A run without one is
+# refused before this template changes anything, rather than finishing as a broken app. `rails new`
+# has already written the app by then, so it has to be removed before running again:
+#
+# --skip-javascript  This template owns the JavaScript build -- package.json, Procfile.dev, bin/dev
+#                    and app/assets/builds -- and any other choice installs a second one between
+#                    this body and after_bundle: importmap's pins, or a jsbundling installer that
+#                    rewrites those files with whatever package manager it finds (under Yarn 4, a
+#                    Plug'n'Play manifest esbuild then resolves through, so no gem import resolves).
+# --skip-solid       wulin_queue owns Solid Queue's schema in the primary database. Without the flag
+#                    Rails writes a production database.yml for four databases and runs Solid's
+#                    installers.
+# --database=...     wulin_audit's tables use jsonb columns.
+missing = {
+  "--skip-javascript" => options[:skip_javascript],
+  "--skip-solid" => options[:skip_solid],
+  "--database=postgresql" => options[:database] == "postgresql"
+}.reject { |_, given| given }.keys
+if missing.any?
+  raise Thor::Error, "This template needs `rails new` run with #{missing.join(" ")} -- the header of " \
+    "template.rb says why. Remove the generated app and run it again."
 end
-
-# Rails 8 adds solid_queue/solid_cache/solid_cable by default. wulin_queue
-# owns the Solid Queue schema in the primary database, so strip the duplicate.
-gsub_file "Gemfile", /^gem "solid_queue"\n/, ""
-gsub_file "Gemfile", /^gem "solid_cache"\n/, ""
-gsub_file "Gemfile", /^gem "solid_cable"\n/, ""
 
 # Remove gems we don't use.
 %w[debug rubocop-rails-omakase web-console capybara selenium-webdriver tzinfo-data].each do |name|
