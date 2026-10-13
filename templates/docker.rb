@@ -222,6 +222,11 @@ file "docker-compose.yml", <<~YAML, force: true
         DB_HOST: db
         POSTGRES_USER: ${POSTGRES_USER:-postgres}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+        # wulin_auth's db:seed creates the first admin from these: taken from the environment
+        # `docker compose up` runs in when it sets them -- a fresh clone has no .env -- and from .env
+        # otherwise. Empty when neither has them, and the seed then says so.
+        ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
         # Every interface, on the container port the mapping above and EXPOSE name. Rails would
         # otherwise bind localhost, unreachable through the mapping, and a PORT in .env would move
         # the server off the port the mapping and the healthcheck point at.

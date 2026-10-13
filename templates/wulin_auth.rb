@@ -107,12 +107,75 @@ wulin_post do
   # via a separate app-level migration.
   generate :migration, "AddAdminToUsers admin:boolean"
 
+  # The first admin's sign-in. .env holds it for docker compose -- gitignored, and kept out of the
+  # image by .dockerignore -- and the environment `docker compose up` runs in can hand it over
+  # instead, since a fresh clone has no .env. Each value comes from the scaffold's own environment,
+  # then from what .env already holds, and only a missing password is generated -- never a fixed
+  # default, which would be a known password in every app.
+  #
+  # Single-quoted in .env: compose reads a quoted value literally, where an unquoted one loses
+  # everything after a `#` and expands `$`, so the app would not get the password the scaffold seeded.
+  #
+  # Keyed on the variable rather than left to Thor, which skips only an identical block: an app made
+  # by an earlier version of this template, re-applied, would get a second pair.
+  unless File.read(".env.example").match?(/^ADMIN_EMAIL=/)
+    append_to_file ".env.example", <<~ENV
+
+      # The first admin, created by db:seed. Fill in the password on a fresh checkout.
+      ADMIN_EMAIL='admin@example.com'
+      ADMIN_PASSWORD=''
+    ENV
+  end
+  dotenv = File.read(".env")
+  held = ->(key) { (value = dotenv[/^#{key}=(.*)$/, 1].to_s)[/\A'(.*)'\z/, 1] || value }
+  given = ->(key) { ENV[key].to_s }
+  email = [given.call("ADMIN_EMAIL").strip, held.call("ADMIN_EMAIL").strip, "admin@example.com"].find { |v| !v.empty? }
+  password = [given.call("ADMIN_PASSWORD"), held.call("ADMIN_PASSWORD"), SecureRandom.alphanumeric(20)].find { |v| !v.empty? }
+  [email, password].each do |value|
+    next unless value.include?("'") || value.match?(/[\r\n]/)
+
+    raise Thor::Error, "ADMIN_EMAIL / ADMIN_PASSWORD cannot contain a single quote or a line break: " \
+      ".env writes them single-quoted, so docker compose reads them literally"
+  end
+  if [held.call("ADMIN_EMAIL"), held.call("ADMIN_PASSWORD")] != [email, password]
+    gsub_file ".env", /^ADMIN_(EMAIL|PASSWORD)=.*\n/, "", verbose: false
+    append_to_file ".env", "ADMIN_EMAIL='#{email}'\nADMIN_PASSWORD='#{password}'\n", verbose: false
+  end
+  # The scaffold's own db:seed runs in this process's environment.
+  ENV["ADMIN_EMAIL"] = email
+  ENV["ADMIN_PASSWORD"] = password
+
+  # The environment first -- compose, or a deploy's secrets -- then the two ADMIN_ lines of .env, so
+  # `bin/rails db:seed` on this machine needs nothing exported. Only those two: the rest of .env is
+  # the container's. Without the bang: a password wulin_auth's complexity check rejects leaves a
+  # message, not a db:prepare that fails and takes the container's boot down with it.
   append_to_file "db/seeds.rb", <<~RB
-    admin_password = SecureRandom.alphanumeric(16)
-    User.find_or_create_by!(email: "admin@example.com") do |user|
-      user.password = admin_password
-      user.admin = true
+    dotenv = Rails.root.join(".env").then { |path| path.exist? ? path.read : "" }
+    admin_setting = lambda do |key|
+      value = ENV[key].to_s
+      next value unless value.strip.empty?
+
+      held = dotenv[/^\#{key}=(.*)$/, 1].to_s
+      held[/\\A'(.*)'\\z/, 1] || held
     end
-    puts "Admin user: admin@example.com / \#{admin_password}"
+    admin_email = admin_setting.call("ADMIN_EMAIL").strip
+    admin_password = admin_setting.call("ADMIN_PASSWORD")
+    if admin_email.empty? || admin_password.empty?
+      puts "No admin seeded: set ADMIN_EMAIL and ADMIN_PASSWORD, in the environment or in .env, then seed again."
+    else
+      admin = User.find_or_create_by(email: admin_email) do |user|
+        user.password = admin_password
+        user.admin = true
+      end
+      if !admin.persisted?
+        puts "Admin user \#{admin_email} NOT created: \#{admin.errors.full_messages.to_sentence}"
+      elsif admin.previously_new_record?
+        puts "Admin user \#{admin_email} created (password: ADMIN_PASSWORD)"
+      else
+        puts "Admin user \#{admin_email} already exists -- its password was not changed"
+      end
+    end
   RB
 end
+
+wulin_note "wulin_auth: the first admin signs in with ADMIN_EMAIL / ADMIN_PASSWORD -- from .env (gitignored), or from the environment `docker compose up` runs in; db:seed creates that account and leaves an existing one alone"
