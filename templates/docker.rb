@@ -252,7 +252,47 @@ file "docker-compose.yml", <<~YAML, force: true
     node_modules:
 YAML
 
-wulin_note "docker: Rails' own Dockerfile (production/Kamal) needs Node added before it works -- the app was scaffolded --skip-javascript, so that image has no node, and assets:precompile runs `npm run build`. Dockerfile.dev and docker-compose.yml are the development stack and are unaffected"
+# Rails' own Dockerfile is the production image, written for an app without JavaScript (this one is
+# made --skip-javascript): its build stage has no Node, and nothing in it links vendor/gems, so
+# assets:precompile -- which runs `npm run build` -- cannot work. Both go into the build stage only;
+# the final stage copies the built assets and the links, not Node. The links resolve there because
+# that stage copies BUNDLE_PATH too.
+#
+# The lines are anchors Rails owns, so one that moves fails the scaffold here rather than leaving
+# an image that cannot build. The Ruby stays the Dockerfile's own: building gems FROM the wulin base
+# would compile them for its Ruby and copy them into an image running another.
+if File.exist?("Dockerfile")
+  [
+    [:before, /^# Install application gems\n/, <<~DOCKERFILE],
+      # Node for the asset build only: the final stage below copies what it built, not Node.
+      ARG NODE_MAJOR=22
+      RUN apt-get update -qq && \\
+          apt-get install --no-install-recommends -y gnupg && \\
+          mkdir -p /etc/apt/keyrings && \\
+          curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \\
+          echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" > /etc/apt/sources.list.d/nodesource.list && \\
+          apt-get update -qq && \\
+          apt-get install --no-install-recommends -y nodejs && \\
+          rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+    DOCKERFILE
+    [:before, /^# Precompiling assets for production/, <<~DOCKERFILE],
+      # The components are reached as vendor/gems, linked here because a git gem's path carries
+      # this image's checkout; npm resolves their workspaces through the links.
+      RUN bundle exec ruby script/link_wulin_gems.rb && npm ci
+
+    DOCKERFILE
+    # Rails writes this line itself only for an app it set up with a JavaScript bundler. The assets
+    # are in public/assets now, and the final stage copies /rails whole.
+    [:after, /^RUN SECRET_KEY_BASE_DUMMY=1 \.\/bin\/rails assets:precompile\n/, "\nRUN rm -rf node_modules\n"]
+  ].each do |position, anchor, lines|
+    unless File.read("Dockerfile").match?(anchor)
+      raise Thor::Error, "Dockerfile has no line matching #{anchor.inspect} -- Rails has changed it, " \
+        "and the production image would not build its assets"
+    end
+    inject_into_file "Dockerfile", lines, position => anchor
+  end
+end
 wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build -f docker/base.Dockerfile -t wulin-base:local .\n      docker compose up --build"
 wulin_note "docker: the entrypoint runs db:prepare on every boot -- it creates and seeds the database the first time and only migrates it after, so no database setup step is needed"
 wulin_note "docker: the container runs bin/dev, which builds the javascript and CSS on start and watches them -- `rails server` alone would raise Propshaft::MissingAssetError on every page"
