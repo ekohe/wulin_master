@@ -128,10 +128,15 @@ def wulin_selection
 
   chosen = if requested == "all"
     optional.map { |c| c[:name] }
-  elsif requested.empty?
+  elsif !requested.empty?
+    requested.split(",").map(&:strip).reject(&:empty?)
+  elsif $stdin.tty?
     optional.select { |c| yes?("Install #{c[:name]}? (#{c[:summary]}) [y/N]") }.map { |c| c[:name] }
   else
-    requested.split(",").map(&:strip).reject(&:empty?)
+    # Asking a closed stdin reads EOF and answers no to everything, which looks like a
+    # successful build of an app missing every optional component.
+    say_status :components, "stdin is not a tty and WULIN_COMPONENTS is unset -- installing only #{@wulin_catalog.select { |c| c[:required] }.map { |c| c[:name] }.join(", ")}", :yellow
+    []
   end
 
   unknown = chosen - @wulin_catalog.map { |c| c[:name] }
