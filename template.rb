@@ -20,8 +20,11 @@ end
 # Strip empty group blocks left behind after removing gems.
 gsub_file "Gemfile", /^group :[^\n]+\n(#[^\n]*\n|\s*\n)*end\n/, ""
 
+# RSpec and factory_bot are every app's test stack, whichever components it selects.
 gem_group :development, :test do
   gem "standard"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 # The develop branches are identical on both hosts, so everything comes
@@ -163,6 +166,45 @@ after_bundle do
   # wulin_master:install writes its own ApplicationController with a stub menu,
   # so this has to come after it and replace the file wholesale.
   rails_command "generate wulin_master:install"
+
+  # RSpec is the test framework whatever `rails new` was passed: without --skip-test it also wrote
+  # Minitest's test/, which nothing here runs.
+  remove_dir "test"
+  rails_command "generate rspec:install"
+
+  # What `rspec:install` leaves undone: factory_bot's syntax methods are not included, and the
+  # support-file loader in rails_helper is commented out, so `create(:thing)` raises NoMethodError.
+  # The loader is appended, not uncommented: its commented line has moved between rspec-rails
+  # versions, and `uncomment_lines` on a pattern that no longer matches silently does nothing.
+  append_to_file "spec/rails_helper.rb", <<~RB
+
+    # Loads spec/support (rspec:install ships this line commented out).
+    Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }
+  RB
+
+  file "spec/support/factory_bot.rb", <<~RB
+    # frozen_string_literal: true
+
+    RSpec.configure do |config|
+      config.include FactoryBot::Syntax::Methods
+    end
+  RB
+
+  # CI runs the same specs. Rails points its CI at `bin/rails test`, which with test/ gone passes having
+  # run nothing, and at system tests, which need the Capybara this template removes: config/ci.rb
+  # (Rails 8.1+) always, the GitHub workflow unless --skip-ci -- 8.0 runs `test test:system` in one
+  # job, 8.1 adds a separate system-test job. With --skip-test neither file has a test step; ci.rb
+  # gets one, the workflow does not, as that would mean writing a whole job.
+  if File.exist?("config/ci.rb")
+    gsub_file "config/ci.rb", /^ *step "Tests: Rails".*\n/, ""
+    gsub_file "config/ci.rb", /^ *# Optional: Run system tests\n *# step "Tests: System".*\n\n?/, ""
+    inject_into_file "config/ci.rb", %(  step "Tests: RSpec", "bundle exec rspec"\n), after: /\A.*^  step [^\n]*\n/m
+  end
+  workflow = ".github/workflows/ci.yml"
+  if File.exist?(workflow)
+    gsub_file workflow, %r{run: bin/rails db:test:prepare test(?: test:system)?\n}, "run: bin/rails db:test:prepare && bundle exec rspec\n"
+    gsub_file workflow, /\n+  system-test:\n(?: {4}.*\n|\n)*\z/, "\n"
+  end
 
   # `app/screens` and `app/grids` from the start, even before anything lives in them. Rails builds
   # its autoload paths from the directories under `app/` that exist AT BOOT, so a directory the

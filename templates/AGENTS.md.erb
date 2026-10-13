@@ -9,6 +9,7 @@ Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node 
 - **Assets**: esbuild (JS) + dart-sass (CSS) + Propshaft (serving)
 - **Auth**: wulin_auth (session-based email/password)
 - **Linter**: Standard (`bundle exec standardrb`)
+- **Tests**: RSpec + factory_bot under `spec/` (no Minitest `test/`)
 
 ## Commands
 
@@ -16,6 +17,7 @@ Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node 
 bin/dev                    # start server + asset watchers
 yarn build                 # one-off JS build
 bin/rails dartsass:build   # one-off CSS build
+bundle exec rspec          # run the specs
 bundle exec standardrb     # lint
 bundle exec standardrb --fix  # lint + auto-fix
 bin/rails db:migrate       # run migrations (engines included)
