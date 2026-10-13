@@ -290,11 +290,30 @@ after_bundle do
 
   @wulin_db_post.each(&:call)
 
-  # Rails ships a placeholder checklist. Render templates/*.md.erb instead.
-  %w[README.md AGENTS.md].each do |name|
-    template_path = File.join(@wulin_templates, "#{name}.erb")
-    file name, ERB.new(File.read(template_path), trim_mode: "-").result(binding), force: true
+  # README.md belongs to whoever created the repository, which may already have written one. So the
+  # generated description always goes to docs/wulin_app.md, and claims README.md only while it is
+  # still Rails' placeholder. AGENTS.md is this template's own file either way, and is rendered last
+  # so it carries the note about a README left alone.
+  #
+  # The committed README counts, not only the file on disk: `rails new . --force` into a repository
+  # that already has one has replaced it with Rails' placeholder before this runs.
+  render = ->(name) { ERB.new(File.read(File.join(@wulin_templates, "#{name}.erb")), trim_mode: "-").result(binding) }
+  readme = render.call("README.md")
+  file "docs/wulin_app.md", readme, force: true
+
+  placeholder = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") }
+  committed = File.exist?(".git") ? `git show HEAD:README.md 2>/dev/null` : ""
+  on_disk = File.exist?("README.md") ? File.read("README.md") : ""
+  if !placeholder.call(committed)
+    file "README.md", committed, force: true
+    wulin_note "README.md was kept as the repository had it -- what this template would have written is in docs/wulin_app.md"
+  elsif placeholder.call(on_disk)
+    file "README.md", readme, force: true
+  else
+    wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
   end
+
+  file "AGENTS.md", render.call("AGENTS.md"), force: true
 
   # Format all generated Ruby files.
   run "bundle exec standardrb --fix"
