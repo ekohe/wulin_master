@@ -360,3 +360,8 @@ var compareArray = function (x, y) {
 };
 
 WulinMaster.ActionManager.register(WulinMaster.actions.Edit);
+
+// esbuild scopes each file; ceres edit_activity.js and atlas update_uniform_item_transaction.js call these as globals.
+window.showFlagCheckBox = showFlagCheckBox;
+window.checkTheBox = checkTheBox;
+window.grepValues = grepValues;
