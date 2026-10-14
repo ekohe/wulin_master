@@ -174,17 +174,14 @@ wulin_post do
       end
     end
   RB
-  # A block of its own, so a re-apply replaces it rather than appending a second copy. Earlier
-  # templates appended theirs unmarked; one left above this would create the account first with a
-  # password of its own, and this one would then find it there and leave it alone.
-  seeds = File.read("db/seeds.rb")
-  legacy = [
-    /^admin_password = SecureRandom\.alphanumeric\(16\)\n.*?^puts "Admin user: admin@example\.com \/ .*?\n/m,
-    /^first_account = begin\n.*?^if first_account\n.*?^end\n/m
-  ]
-  cleaned = legacy.reduce(seeds) { |text, pattern| text.sub(pattern, "") }
-  create_file "db/seeds.rb", cleaned, force: true unless cleaned == seeds
-  wulin_block "db/seeds.rb", "wulin_auth/first_admin", seed
+  # A block of its own, so a re-apply replaces it rather than appending a second copy. Ahead of the
+  # app's own code: an app from an earlier template has an unmarked admin seed of its own, and
+  # whichever runs first on an empty database decides the password.
+  own_code = File.read("db/seeds.rb").lines.any? { |line| !line.strip.empty? && !line.lstrip.start_with?("#") }
+  if own_code && !wulin_written?("db/seeds.rb", "# wulin:begin wulin_auth/first_admin")
+    wulin_note "wulin_auth: db/seeds.rb had code of its own and no wulin_auth/first_admin block, so the block was put ahead of that code -- if that code also creates an admin, remove it; an account it already created keeps its password, so reset that or seed an empty database", run: true
+  end
+  wulin_block "db/seeds.rb", "wulin_auth/first_admin", seed, ahead: true
 end
 
 wulin_note "wulin_auth: the first admin signs in with ADMIN_EMAIL / ADMIN_PASSWORD -- from .env (gitignored), or from the environment `docker compose up` runs in; db:seed creates that account and leaves an existing one alone"

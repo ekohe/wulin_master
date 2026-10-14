@@ -101,7 +101,8 @@ end
 @wulin_app_config = []   # YAML sections for config/app_config.yml
 @wulin_post = []         # runs after bundle, before the database is set up
 @wulin_db_post = []      # runs after db:migrate, for anything needing tables
-@wulin_notes = []        # printed last, once everything has run
+@wulin_notes = []        # printed last, once everything has run, and kept in AGENTS.md
+@wulin_run_notes = []    # printed last too, but about this run only, so kept nowhere
 @wulin_workspaces = []   # npm workspaces besides wulin_master's, for components with npm dependencies
 @wulin_entries = []      # esbuild entry points besides app/javascript/application.js
 
@@ -173,20 +174,22 @@ def wulin_written?(path, marker)
   File.exist?(path) && File.read(path).include?(marker)
 end
 
-# A block this template owns inside a file the app writes to as well, replaced whole on every run and
-# appended the first time. It is found by `# wulin:begin <id>` and `# wulin:end <id>` alone, so the
-# explanation after the first marker may change between versions of this template; the id may not.
-def wulin_block(path, id, content)
+# A block this template owns inside a file the app writes to as well, replaced whole on every run. It
+# is found by `# wulin:begin <id>` and `# wulin:end <id>` alone, so the explanation after the first
+# marker may change between versions of this template; the id may not.
+#
+# The first time, it is appended -- or, with `ahead: true`, put after the file's leading comments and
+# ahead of any code or other block, for a block that has to run before whatever the app already does.
+def wulin_block(path, id, content, ahead: false)
   body = "# wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it\n" \
     "#{content}# wulin:end #{id}\n"
   block = /^# wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^# wulin:end #{Regexp.escape(id)}\n/m
   text = File.exist?(path) ? File.read(path) : ""
-  text = if text.match?(block)
-    text.sub(block) { body }
-  else
-    [text.chomp, body].reject(&:empty?).join("\n\n")
-  end
-  create_file path, text, force: true
+  return create_file(path, text.sub(block) { body }, force: true) if text.match?(block)
+
+  header = ahead ? text[/\A(?:[ \t]*(?:#(?! wulin:begin ).*)?\n)*/] : text
+  parts = [header, body, text.delete_prefix(header)].map(&:strip).reject(&:empty?)
+  create_file path, "#{parts.join("\n\n")}\n", force: true
 end
 
 # package.json is the app's as much as this template's. A workspace or a package the template needs is
@@ -233,8 +236,10 @@ def wulin_db_post(&block)
   @wulin_db_post << block
 end
 
-def wulin_note(text)
-  @wulin_notes << text
+# What anyone working on the app should know. `run: true` for what only this run did -- the app's
+# documents are rewritten on every run and would lose it on the next one.
+def wulin_note(text, run: false)
+  (run ? @wulin_run_notes : @wulin_notes) << text
 end
 
 # A component whose JavaScript imports npm packages of its own. Its package.json joins the app's
@@ -528,27 +533,29 @@ after_bundle do
 
   # README.md belongs to whoever created the repository, which may already have written one. So the
   # generated description always goes to docs/wulin_app.md, and claims README.md only while it is
-  # still Rails' placeholder. AGENTS.md is this template's own file either way, and is rendered last
-  # so it carries the note about a README left alone.
+  # still Rails' placeholder, and only when the app is created: on a re-apply it is the app's.
+  # AGENTS.md is this template's own file either way, and is rendered last so it carries the note
+  # about a README that is not the generated one.
   #
   # The committed README counts, not only the file on disk: `rails new . --force` into a repository
-  # that already has one has replaced it with Rails' placeholder before this runs. A README identical
-  # to the docs/wulin_app.md an earlier run wrote is this template's own too, so a re-apply updates it.
+  # that already has one has replaced it with Rails' placeholder before this runs.
   render = ->(name) { ERB.new(wulin_read("templates/#{name}.erb"), trim_mode: "-").result(binding) }
   readme = render.call("README.md")
-  previous = File.exist?("docs/wulin_app.md") ? File.read("docs/wulin_app.md") : nil
   file "docs/wulin_app.md", readme, force: true
 
-  ours = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") || text == previous }
-  committed = File.exist?(".git") ? `git show HEAD:README.md 2>/dev/null` : ""
-  on_disk = File.exist?("README.md") ? File.read("README.md") : ""
-  if !ours.call(committed)
-    file "README.md", committed, force: true
-    wulin_note "README.md was kept as the repository had it -- what this template would have written is in docs/wulin_app.md"
-  elsif ours.call(on_disk)
-    file "README.md", readme, force: true
-  else
-    wulin_note "README.md was left as it was -- what this template would have written is in docs/wulin_app.md"
+  unless @wulin_scaffolded_before
+    placeholder = ->(text) { text.strip.empty? || text.include?("Things you may want to cover:") }
+    committed = File.exist?(".git") ? `git show HEAD:README.md 2>/dev/null` : ""
+    on_disk = File.exist?("README.md") ? File.read("README.md") : ""
+    if !placeholder.call(committed)
+      file "README.md", committed, force: true
+    elsif placeholder.call(on_disk)
+      file "README.md", readme, force: true
+    end
+  end
+  # Off what the files say, not what this run did, so the next run writes the same AGENTS.md.
+  unless File.exist?("README.md") && File.read("README.md") == readme
+    wulin_note "README.md is not what this template writes -- that is docs/wulin_app.md, rewritten on every run"
   end
 
   file "AGENTS.md", render.call("AGENTS.md"), force: true
@@ -566,5 +573,5 @@ after_bundle do
   run "bundle exec standardrb --fix || true" unless @wulin_scaffolded_before
 
   say "\nWulin components installed: #{@wulin_install.map { |c| c[:name] }.join(", ")}", :green
-  @wulin_notes.each { |note| say "  - #{note}", :yellow }
+  (@wulin_notes + @wulin_run_notes).each { |note| say "  - #{note}", :yellow }
 end
