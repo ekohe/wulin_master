@@ -137,14 +137,15 @@ def wulin_vendor(name)
   # wulin_master carries a branch and no ref on purpose: it is this repository, served from the same
   # branch as the gem it vendors.
   #
-  # The branch goes in beside the ref. Bundler installs the ref either way; the branch is what
-  # `bundle config local.<name>` checks a local checkout against, and without it pointing the app at a
-  # copy of the gem being edited is refused outright.
+  # A pinned component gets its ref and no branch. Given both, Bundler 2.6 clones only the branch's
+  # tip, depth 1, and then cannot find the ref in that clone once the branch has moved past it: every
+  # fresh install fails with "not our ref". So `bundle config local.<name>` does not apply to these;
+  # point the line at the checkout with `path:` while editing the gem.
   #
   # `gem` APPENDS and bundler refuses the same gem twice, so a changed declaration replaces the old
   # one -- which is how a moved pin lands. An unchanged one is left where it is, so re-applying the
   # template is no change to the Gemfile.
-  source = {github: "ekohe/#{name}", branch: branch, ref: ref}.compact
+  source = ref ? {github: "ekohe/#{name}", ref: ref} : {github: "ekohe/#{name}", branch: branch}
   line = %(gem "#{name}", ) + source.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
   return if File.read("Gemfile").lines.map(&:chomp).include?(line)
 
