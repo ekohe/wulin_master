@@ -634,6 +634,8 @@
     function refresh() {
       pagingOptionsChanged = true;
       clear();
+      // rowsChanged() requests the rows in the grid viewport; a stale scroll position would request an offset past the new total
+      if (grid) grid.scrollTo(0);
       rowsChanged();
     }
 
