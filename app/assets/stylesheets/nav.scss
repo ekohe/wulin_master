@@ -58,11 +58,18 @@
       min-height: unset;
       line-height: 1rem;
       font-size: 15px;
+      // The app bar rules for links and icons (height 47px, line-height 50px)
+      // also match these dropdown items and push the icon below its label.
       a {
+        display: flex;
+        align-items: center;
+        height: auto;
         color: #4d4d4e;
         padding: 7px 15px;
         span.material-icons {
           position: static;
+          height: auto;
+          line-height: inherit;
           font-size: $font-size-middle;
           margin-right: 16px;
         }
