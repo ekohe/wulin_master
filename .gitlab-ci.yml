@@ -64,3 +64,30 @@ components_pins:
   before_script: []
   script:
     - ruby script/check_components.rb
+
+# Re-applying the template is how a component reaches an app that already exists, so every component
+# template has to run twice without appending, injecting or overwriting a second time. Only when the
+# templates change: it scaffolds an app and re-applies twice, over the network, and takes minutes.
+template_reapply:
+  stage: test
+  rules:
+    - changes:
+        - template.rb
+        - templates/**/*
+        - components.lock.yml
+        - script/check_reapply.rb
+  variables:
+    PGHOST: postgres
+    PGUSER: postgres
+  before_script:
+    - apt-get update -qy
+    - apt-get install -qy git curl gnupg libpq-dev
+    - |
+      mkdir -p /etc/apt/keyrings
+      curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+      echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
+      apt-get update -qy
+      apt-get install -qy nodejs
+    - gem install rails -v "~> 8.1" --no-document
+  script:
+    - ruby script/check_reapply.rb
