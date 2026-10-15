@@ -7,9 +7,11 @@
 wulin_vendor "wulin_agent"
 
 # The chat UI is React, and the gem ships its source rather than a bundle. Its package.json joins the
-# workspaces so React and the rest install into node_modules, and the app's own esbuild bundles the
-# .esm.js entry like any other component's.
+# workspaces so its packages install into node_modules, and the app's own esbuild bundles the .esm.js
+# entry like any other component's. React itself is a peer of the gem: the app depends on it, so the
+# bundle holds one React, at the version the app chooses.
 wulin_workspace "vendor/gems/wulin_agent"
+wulin_npm "react" => "^19.0.0", "react-dom" => "^19.0.0"
 wulin_js "../../vendor/gems/wulin_agent/app/javascript/wulin_agent.esm.js"
 
 # Plain CSS, @use'd without its extension so dart-sass loads it as a module rather than leaving a
