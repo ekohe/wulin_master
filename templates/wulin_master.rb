@@ -193,7 +193,7 @@ wulin_post do
     "private" => true,
     "workspaces" => ["vendor/gems/wulin_master", *@wulin_workspaces],
     "devDependencies" => {"esbuild" => "^0.28.0"},
-    "dependencies" => {"rails-ujs" => "^5.2.0"},
+    "dependencies" => {"rails-ujs" => "^5.2.0", **@wulin_npm},
     "scripts" => {
       "build" => "#{esbuild} --minify",
       "build:watch" => "#{esbuild} --watch=forever",

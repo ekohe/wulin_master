@@ -104,6 +104,7 @@ end
 @wulin_notes = []        # printed last, once everything has run, and kept in AGENTS.md
 @wulin_run_notes = []    # printed last too, but about this run only, so kept nowhere
 @wulin_workspaces = []   # npm workspaces besides wulin_master's, for components with npm dependencies
+@wulin_npm = {}          # packages the app itself depends on, for components' npm peer dependencies
 @wulin_entries = []      # esbuild entry points besides app/javascript/application.js
 
 # A file shipping next to this template, read from disk or over HTTPS depending on how
@@ -198,10 +199,15 @@ end
 def wulin_package_json(package)
   if File.exist?("package.json")
     app = JSON.parse(File.read("package.json"))
+    # A package the app has installed without declaring it -- npm put it there as a workspace's peer --
+    # is declared at the version installed, not at the template's: re-applying this does not move an app
+    # on React 18 to 19.
+    installed = File.exist?("package-lock.json") ? JSON.parse(File.read("package-lock.json")).fetch("packages", {}) : {}
+    as_installed = ->(deps) { deps.to_h { |name, range| [name, installed.dig("node_modules/#{name}", "version")&.then { |version| "^#{version}" } || range] } }
     package = app.merge(
       "workspaces" => app.fetch("workspaces", []) | package["workspaces"],
-      "dependencies" => package["dependencies"].merge(app.fetch("dependencies", {})),
-      "devDependencies" => package["devDependencies"].merge(app.fetch("devDependencies", {})),
+      "dependencies" => as_installed.call(package["dependencies"]).merge(app.fetch("dependencies", {})),
+      "devDependencies" => as_installed.call(package["devDependencies"]).merge(app.fetch("devDependencies", {})),
       "scripts" => app.fetch("scripts", {}).merge(package["scripts"])
     )
   end
@@ -247,6 +253,13 @@ end
 # resolves them -- the same way wulin_master's jQuery and Materialize arrive.
 def wulin_workspace(path)
   @wulin_workspaces << path
+end
+
+# A package the app itself must depend on: a workspace's peer dependency, which the bundle has to
+# hold exactly once (React). npm would install a missing peer on its own, but at whatever version
+# the peer range allows; declared here it is the app's, and an app's own version of it is kept.
+def wulin_npm(packages)
+  @wulin_npm.merge!(packages)
 end
 
 # A page that loads a bundle of its own rather than application.js -- the login page.
