@@ -15,6 +15,24 @@
 # before anything is written, because that file is created further down.
 @wulin_scaffolded_before = File.exist?("config/app_config.example.yml")
 
+# `rails app:template` names the app after its directory -- `workspace`, where a container mounts it
+# there. Re-applied, the app keeps the name it was created with, which its databases carry. Read from
+# there rather than from the app's module: `underscore` cannot give back the digits' underscore, so
+# `reapply_123`'s Reapply123 comes back as `reapply123`.
+if @wulin_scaffolded_before
+  @app_name = File.read("config/database.yml")[/^\s*database:\s*(\w+)_development\s*$/, 1] if File.exist?("config/database.yml")
+  @app_name ||= Rails.application.class.module_parent_name.underscore if defined?(Rails) && Rails.application
+end
+
+if @wulin_scaffolded_before && File.exist?("app/controllers/application_controller.rb") &&
+    !File.read("app/controllers/application_controller.rb").include?("include WulinComponents")
+  raise Thor::Error, "app/controllers/application_controller.rb does not include WulinComponents: this app was " \
+    "made by a template that wrote the components' code into it, and re-applying this one would add it a " \
+    "second time. Move the components' filters, methods and menu groups out of it, include WulinComponents " \
+    "and call `wulin_component_menus` in its `menu do` block; take the components' imports out of " \
+    "application.js and application.sass; then re-apply."
+end
+
 # The flags in the command above are the ones this template depends on. A run without one is
 # refused before this template changes anything, rather than finishing as a broken app. `rails new`
 # has already written the app by then, so it has to be removed before running again. Not on a
@@ -169,6 +187,38 @@ def wulin_gem(name, *args, **opts)
   wanted = args.map(&:inspect) + opts.map { |key, value| "#{key}: #{value.inspect}" }
   missing = wanted.reject { |part| declared.include?(part) }
   wulin_note "Gemfile declares #{name} without #{missing.join(", ")}, which this template asks for -- left as it is" if missing.any?
+end
+
+# Points the app's own entry file at the template's file for it: *line* goes first, ahead of anything the
+# app wrote. Created holding only that line.
+def wulin_adopt(path, line)
+  text = File.exist?(path) ? File.read(path) : ""
+  return if text.start_with?(line)
+
+  text = text.sub(line, "").strip
+  create_file path, text.empty? ? line : "#{line}\n#{text}\n", force: true
+end
+
+# ApplicationController is the app's, and includes WulinComponents for the components' part. Written
+# once, when the app is created -- wulin_master:install's stub is replaced whole.
+def wulin_adopt_controller
+  path = "app/controllers/application_controller.rb"
+  return if File.exist?(path) && File.read(path).include?("include WulinComponents")
+
+  create_file path, <<~RB, force: true
+    # frozen_string_literal: true
+
+    class ApplicationController < ActionController::Base
+      protect_from_forgery with: :exception
+      include WulinComponents
+
+      def self.define_menu
+        menu do |c|
+          wulin_component_menus
+        end
+      end
+    end
+  RB
 end
 
 def wulin_written?(path, marker)
@@ -497,11 +547,14 @@ after_bundle do
   create_file "app/screens/.keep"
   create_file "app/grids/.keep"
 
-  file "app/javascript/application.js", <<~JS, force: true
-    // wulin_master must be first: the other components attach to its globals
-    // (WulinMaster.actions, gridManager, Ui, displayErrorMessage) at load time.
+  file "app/javascript/wulin_components.js", <<~JS, force: true
+    // The installed wulin components, written by the wulin template and rewritten when it is
+    // re-applied -- your own imports go in application.js. wulin_master must be first: the other
+    // components attach to its globals (WulinMaster.actions, gridManager, Ui, displayErrorMessage)
+    // at load time.
     #{@wulin_js.map { |path| "import \"#{path}\"" }.join("\n")}
   JS
+  wulin_adopt "app/javascript/application.js", %(import "./wulin_components"\n)
 
   # Sass refuses an @use after any other rule, and the components arrive in catalog order -- so
   # wulin_permits' inline rules would otherwise land between wulin_master's @use and a later
@@ -510,22 +563,34 @@ after_bundle do
   # One block, one kind: a block that opened with @use and then declared rules would be sorted with
   # the @uses and put its rules back in front of the next component's. A component contributing both
   # calls wulin_sass twice.
+  #
+  # A partial, so dart-sass builds it only where application.sass @uses it.
   uses, rules = @wulin_sass.map(&:strip).partition { |block| block.start_with?("@use ") }
-  file "app/assets/stylesheets/application.sass",
-    (uses + rules).join("\n\n") + "\n", force: true
+  file "app/assets/stylesheets/_wulin_components.sass",
+    "// The installed wulin components, written by the wulin template and rewritten when it is\n" \
+    "// re-applied -- your own styles go in application.sass.\n" + (uses + rules).join("\n\n") + "\n", force: true
+  wulin_adopt "app/assets/stylesheets/application.sass", %(@use "wulin_components"\n)
 
   # Assembled already in standard's shape -- a component with nothing to add leaves no blank line
   # behind -- because a re-apply rewrites this file and does not run the formatter over the app.
-  controller_body = [
-    ["protect_from_forgery with: :exception", *@wulin_filters].join("\n"),
+  concern_body = [
+    (@wulin_filters.any? ? "included do\n#{wulin_indent(@wulin_filters.map { |f| "#{f}\n" }, 2)}end" : nil),
     *@wulin_methods.map(&:strip),
-    "def self.define_menu\n  menu do |c|\n#{wulin_indent(@wulin_menus.map { |block| "#{block.strip}\n" }, 4)}  end\nend"
-  ].join("\n\n")
-  file "app/controllers/application_controller.rb", <<~RB + wulin_indent([controller_body], 2) + "\nend\n", force: true
+    "class_methods do\n" \
+      "  # The components' menu groups, placed where define_menu calls this.\n" \
+      "  def wulin_component_menus\n#{wulin_indent(@wulin_menus.map { |block| "#{block.strip}\n" }, 4)}  end\nend"
+  ].compact.join("\n\n")
+  file "app/controllers/concerns/wulin_components.rb", <<~RB + wulin_indent([concern_body], 2) + "\nend\n", force: true
     # frozen_string_literal: true
 
-    class ApplicationController < ActionController::Base
+    # What the installed wulin components need from ApplicationController: their filters, the methods
+    # they call on it and their menu groups. Written by the wulin template and rewritten when it is
+    # re-applied -- ApplicationController is the app's.
+    module WulinComponents
+      extend ActiveSupport::Concern
+
   RB
+  wulin_adopt_controller
 
   @wulin_post.each(&:call)
 

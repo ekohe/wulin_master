@@ -38,8 +38,10 @@ automatically — do not run `install:migrations`.
 
 ### Assets
 
-- JS entry: `app/javascript/application.js` — imports each component's `.esm.js`
-- CSS entry: `app/assets/stylesheets/application.sass` — `@use`s each component
+- JS entry: `app/javascript/application.js` — yours; it imports `./wulin_components`, where the
+  template imports each component's `.esm.js`
+- CSS entry: `app/assets/stylesheets/application.sass` — yours; it `@use`s `wulin_components`, where
+  the template `@use`s each component
 - Output: `app/assets/builds/` (gitignored, built by esbuild and dart-sass)
 - npm deps come through the npm workspace in `package.json`, not gems
 
@@ -50,7 +52,8 @@ Gitignored — the committed copy is `config/app_config.example.yml`.
 
 ### Screens and menus
 
-Screens are registered in `ApplicationController.define_menu`. To add a screen:
+Screens are registered in `ApplicationController.define_menu`. `wulin_component_menus` there places the
+components' own groups. To add a screen:
 
 ```bash
 bin/rails generate wulin_master:screen_and_grid ModelName field1 field2:type
@@ -60,12 +63,15 @@ Then add `item ModelNameScreen` to the menu.
 
 ## Conventions
 
+- `app/javascript/wulin_components.js`, `app/assets/stylesheets/_wulin_components.sass` and
+  `app/controllers/concerns/wulin_components.rb` are rewritten whenever the template is re-applied to
+  add a component; make your changes in the files that include them
 - Do not modify files under `vendor/gems/` — those are symlinks into installed gems
 <% if @wulin_install.any? { |c| c[:name] == "wulin_auth" } -%>
 - `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`
 <% end -%>
 <% if @wulin_install.any? { |c| c[:name] == "wulin_permits" } -%>
-- `current_user` returns a `User` instance (overridden in `ApplicationController`)
+- `current_user` returns a `User` instance (overridden in `WulinComponents`)
 <% end -%>
 <% if @wulin_notes.any? -%>
 

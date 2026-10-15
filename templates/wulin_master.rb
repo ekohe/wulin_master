@@ -208,37 +208,39 @@ wulin_post do
 
   # wulin_master:install writes this file with every setting commented out.
   # Replace it with one that reads config/app_config.yml, so a deploy changes
-  # YAML rather than Ruby. This has to precede generate_theme_color_css below,
+  # YAML rather than Ruby -- once: after that it is the app's. This has to precede generate_theme_color_css below,
   # which reads config.color_theme.
-  file "config/initializers/wulin_master.rb", <<~RB, force: true
-    # frozen_string_literal: true
+  if !@wulin_scaffolded_before || !File.exist?("config/initializers/wulin_master.rb")
+    file "config/initializers/wulin_master.rb", <<~RB, force: true
+      # frozen_string_literal: true
 
-    # Settings live in config/app_config.yml under the wulin_master key. The
-    # fallbacks here are what the app runs on if that file is missing.
-    wulin = APP_CONFIG.fetch("wulin_master", {})
+      # Settings live in config/app_config.yml under the wulin_master key. The
+      # fallbacks here are what the app runs on if that file is missing.
+      wulin = APP_CONFIG.fetch("wulin_master", {})
 
-    WulinMaster.configure do |config|
-      config.app_title = wulin["app_title"].presence || "#{app_name.titleize}"
+      WulinMaster.configure do |config|
+        config.app_title = wulin["app_title"].presence || "#{app_name.titleize}"
 
-      # Must not be blank: wulin_master:generate_theme_color_css exits 1 if it is.
-      config.color_theme = wulin["color_theme"].presence || "blue"
-      config.master_detail_color_theme = wulin["master_detail_color_theme"].presence || "blue-grey"
+        # Must not be blank: wulin_master:generate_theme_color_css exits 1 if it is.
+        config.color_theme = wulin["color_theme"].presence || "blue"
+        config.master_detail_color_theme = wulin["master_detail_color_theme"].presence || "blue-grey"
 
-      config.button_mode = wulin["button_mode"].presence || "merged"
-      config.always_reset_form = !!wulin["always_reset_form"]
+        config.button_mode = wulin["button_mode"].presence || "merged"
+        config.always_reset_form = !!wulin["always_reset_form"]
 
-      # A proc so the year is evaluated per request rather than frozen at boot.
-      config.default_year = proc { wulin["default_year"].presence || Time.now.year }
+        # A proc so the year is evaluated per request rather than frozen at boot.
+        config.default_year = proc { wulin["default_year"].presence || Time.now.year }
 
-      if wulin["app_title_height"].present?
-        config.app_title_height = wulin["app_title_height"]
+        if wulin["app_title_height"].present?
+          config.app_title_height = wulin["app_title_height"]
+        end
+
+        if wulin["nav_sidebar_partial_path"].present?
+          config.nav_sidebar_partial_path = wulin["nav_sidebar_partial_path"]
+        end
       end
-
-      if wulin["nav_sidebar_partial_path"].present?
-        config.nav_sidebar_partial_path = wulin["nav_sidebar_partial_path"]
-      end
-    end
-  RB
+    RB
+  end
 
   # npm, and no yarn.lock. The components declare their npm dependencies in the gems' OWN
   # package.json and arrive as workspaces, so the manager has to follow a workspace through the

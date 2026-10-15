@@ -33,33 +33,38 @@ unless File.exist?(".gitignore") && File.read(".gitignore").include?("!/.env.exa
   GIT
 end
 
+# database.yml and docker-compose.yml are written when the app is created and are the app's after that:
+# a re-apply leaves them as the app has them.
+#
 # One file for the container and for a local machine. Every connection setting comes from the
 # environment and is otherwise left to libpq: on a local machine that is Rails' own default -- the
 # socket, as the OS user -- and in the container compose supplies all of them, with or without a
 # .env. `.presence` because compose passes an unset variable through as an empty string.
-file "config/database.yml", <<~YAML, force: true
-  default: &default
-    adapter: postgresql
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    host: <%= ENV["DB_HOST"].presence %>
-    port: <%= ENV["DB_PORT"].presence %>
-    username: <%= ENV["POSTGRES_USER"].presence %>
-    password: <%= ENV["POSTGRES_PASSWORD"].presence %>
+if !@wulin_scaffolded_before || !File.exist?("config/database.yml")
+  file "config/database.yml", <<~YAML, force: true
+    default: &default
+      adapter: postgresql
+      encoding: unicode
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+      host: <%= ENV["DB_HOST"].presence %>
+      port: <%= ENV["DB_PORT"].presence %>
+      username: <%= ENV["POSTGRES_USER"].presence %>
+      password: <%= ENV["POSTGRES_PASSWORD"].presence %>
 
-  development:
-    <<: *default
-    database: #{app_name}_development
+    development:
+      <<: *default
+      database: #{app_name}_development
 
-  test:
-    <<: *default
-    database: #{app_name}_test
+    test:
+      <<: *default
+      database: #{app_name}_test
 
-  # A deploy sets DB_HOST, POSTGRES_USER and POSTGRES_PASSWORD; nothing here names a value for it.
-  production:
-    <<: *default
-    database: #{app_name}_production
-YAML
+    # A deploy sets DB_HOST, POSTGRES_USER and POSTGRES_PASSWORD; nothing here names a value for it.
+    production:
+      <<: *default
+      database: #{app_name}_production
+  YAML
+end
 
 # A committed file, not a Dockerfile heredoc: `COPY <<'EOF'` needs BuildKit, and this
 # builds on the legacy builder, where it fails with "no source files were specified".
@@ -181,91 +186,93 @@ unless wulin_written?(environment_config, 'config.hosts << "app"')
   end
 end
 
-file "docker-compose.yml", <<~YAML, force: true
-  name: #{app_name}
+if !@wulin_scaffolded_before || !File.exist?("docker-compose.yml")
+  file "docker-compose.yml", <<~YAML, force: true
+    name: #{app_name}
 
-  services:
-    db:
-      image: postgres:16-alpine
-      # A named volume, never a path under the project: a checkout is cleaned and re-cloned,
-      # and a data directory that disappears mid-run corrupts itself.
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      environment:
-        POSTGRES_USER: ${POSTGRES_USER:-postgres}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-        POSTGRES_HOST_AUTH_METHOD: trust
-        PGDATA: /var/lib/postgresql/data/pgdata
-      healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
-        interval: 5s
-        timeout: 5s
-        retries: 10
+    services:
+      db:
+        image: postgres:16-alpine
+        # A named volume, never a path under the project: a checkout is cleaned and re-cloned,
+        # and a data directory that disappears mid-run corrupts itself.
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+        environment:
+          POSTGRES_USER: ${POSTGRES_USER:-postgres}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+          POSTGRES_HOST_AUTH_METHOD: trust
+          PGDATA: /var/lib/postgresql/data/pgdata
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
+          interval: 5s
+          timeout: 5s
+          retries: 10
 
-    app:
-      build:
-        context: .
-        dockerfile: Dockerfile.dev
-        target: development
-        args:
-          # The tag base.Dockerfile produces, so `docker compose build` works with no
-          # registry credentials. Set BASE_IMAGE to use a published base instead.
-          BASE_IMAGE: ${BASE_IMAGE:-wulin-base:local}
-      volumes:
-        - .:/rails
-        # Named volumes, not host paths: Docker seeds these from the image, so what was
-        # installed at build time is already there. A host bind starts empty, shadows it,
-        # and forces a full reinstall on every first boot.
-        - bundle_cache:/usr/local/bundle
-        - node_modules:/rails/node_modules
-      ports:
-        # Overridable (PORT=3001 docker compose up) so two apps can run side by side.
-        # The container port stays 3000, matching EXPOSE and Procfile.dev.
-        - "${PORT:-3000}:3000"
-      env_file:
-        - path: .env
-          required: false
-      environment:
-        # The same credentials the db service is created with, so the app connects whether or not
-        # there is a .env -- a fresh clone has none, it is gitignored.
-        DB_HOST: db
-        POSTGRES_USER: ${POSTGRES_USER:-postgres}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-        # wulin_auth's db:seed creates the first admin from these: taken from the environment
-        # `docker compose up` runs in when it sets them -- a fresh clone has no .env -- and from .env
-        # otherwise. Empty when neither has them, and the seed then says so.
-        ADMIN_EMAIL: ${ADMIN_EMAIL:-}
-        ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-        # Every interface, on the container port the mapping above and EXPOSE name. Rails would
-        # otherwise bind localhost, unreachable through the mapping, and a PORT in .env would move
-        # the server off the port the mapping and the healthcheck point at.
-        BINDING: 0.0.0.0
-        PORT: "3000"
-      # `bin/dev` runs foreman as PID 1, and foreman answers ANY child exiting by shutting the rest
-      # down -- so one watcher crashing, or anything that makes the web process exit, ends the
-      # container with status 0, and nothing inside can restart it: a `touch tmp/restart.txt` that
-      # takes the web process down takes the container with it. `unless-stopped` rather than `on-failure`
-      # because that exit IS a zero. An app that cannot boot will loop here, which the healthcheck
-      # below reports and is the louder failure of the two.
-      restart: unless-stopped
-      depends_on:
-        db:
-          condition: service_healthy
-      # Answers on the port rather than merely having a process -- whatever waits on this
-      # container waits to make a request. /up is Rails' own route, so it needs no
-      # application routes and no database.
-      healthcheck:
-        test: ["CMD-SHELL", "curl -fsS -o /dev/null http://localhost:3000/up"]
-        interval: 10s
-        timeout: 5s
-        retries: 30
-        start_period: 180s
+      app:
+        build:
+          context: .
+          dockerfile: Dockerfile.dev
+          target: development
+          args:
+            # The tag base.Dockerfile produces, so `docker compose build` works with no
+            # registry credentials. Set BASE_IMAGE to use a published base instead.
+            BASE_IMAGE: ${BASE_IMAGE:-wulin-base:local}
+        volumes:
+          - .:/rails
+          # Named volumes, not host paths: Docker seeds these from the image, so what was
+          # installed at build time is already there. A host bind starts empty, shadows it,
+          # and forces a full reinstall on every first boot.
+          - bundle_cache:/usr/local/bundle
+          - node_modules:/rails/node_modules
+        ports:
+          # Overridable (PORT=3001 docker compose up) so two apps can run side by side.
+          # The container port stays 3000, matching EXPOSE and Procfile.dev.
+          - "${PORT:-3000}:3000"
+        env_file:
+          - path: .env
+            required: false
+        environment:
+          # The same credentials the db service is created with, so the app connects whether or not
+          # there is a .env -- a fresh clone has none, it is gitignored.
+          DB_HOST: db
+          POSTGRES_USER: ${POSTGRES_USER:-postgres}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+          # wulin_auth's db:seed creates the first admin from these: taken from the environment
+          # `docker compose up` runs in when it sets them -- a fresh clone has no .env -- and from .env
+          # otherwise. Empty when neither has them, and the seed then says so.
+          ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+          ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+          # Every interface, on the container port the mapping above and EXPOSE name. Rails would
+          # otherwise bind localhost, unreachable through the mapping, and a PORT in .env would move
+          # the server off the port the mapping and the healthcheck point at.
+          BINDING: 0.0.0.0
+          PORT: "3000"
+        # `bin/dev` runs foreman as PID 1, and foreman answers ANY child exiting by shutting the rest
+        # down -- so one watcher crashing, or anything that makes the web process exit, ends the
+        # container with status 0, and nothing inside can restart it: a `touch tmp/restart.txt` that
+        # takes the web process down takes the container with it. `unless-stopped` rather than `on-failure`
+        # because that exit IS a zero. An app that cannot boot will loop here, which the healthcheck
+        # below reports and is the louder failure of the two.
+        restart: unless-stopped
+        depends_on:
+          db:
+            condition: service_healthy
+        # Answers on the port rather than merely having a process -- whatever waits on this
+        # container waits to make a request. /up is Rails' own route, so it needs no
+        # application routes and no database.
+        healthcheck:
+          test: ["CMD-SHELL", "curl -fsS -o /dev/null http://localhost:3000/up"]
+          interval: 10s
+          timeout: 5s
+          retries: 30
+          start_period: 180s
 
-  volumes:
-    postgres_data:
-    bundle_cache:
-    node_modules:
-YAML
+    volumes:
+      postgres_data:
+      bundle_cache:
+      node_modules:
+  YAML
+end
 
 # Rails' own Dockerfile is the production image, written for an app without JavaScript (this one is
 # made --skip-javascript): its build stage has no Node, and nothing in it links vendor/gems, so
