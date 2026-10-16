@@ -186,6 +186,16 @@ unless wulin_written?(environment_config, 'config.hosts << "app"')
   end
 end
 
+unless wulin_written?(environment_config, "ActionDispatch::DebugLocks")
+  inject_into_file environment_config, after: "Rails.application.configure do\n" do
+    <<-RB
+  # /rails/locks: which thread holds Rails' code-reload lock, for an app that has stopped answering.
+  config.middleware.insert_before Rack::Sendfile, ActionDispatch::DebugLocks
+
+    RB
+  end
+end
+
 if !@wulin_scaffolded_before || !File.exist?("docker-compose.yml")
   file "docker-compose.yml", <<~YAML, force: true
     name: #{app_name}

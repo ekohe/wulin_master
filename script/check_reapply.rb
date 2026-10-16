@@ -111,6 +111,8 @@ Dir.mktmpdir("wulin_reapply") do |root|
       'exit(User.find_by(email: ENV["ADMIN_EMAIL"])&.authenticate(ENV["ADMIN_PASSWORD"]) ? 0 : 1)', chdir: app
     step "no pending migrations", {}, "bin/rails", "runner",
       "exit(ActiveRecord::MigrationContext.new(ActiveRecord::Tasks::DatabaseTasks.migrations_paths).needs_migration? ? 1 : 0)", chdir: app
+    step "a hung app can say who holds the reload lock", {}, "bin/rails", "runner",
+      "exit(Rails.application.middleware.include?(ActionDispatch::DebugLocks) ? 0 : 1)", chdir: app
     check("the databases are still the app's, not the directory's") do
       read(app, "config/database.yml").include?("database: #{name}_development") &&
         read(app, "docker-compose.yml").start_with?("name: #{name}\n")
