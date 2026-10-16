@@ -11,10 +11,10 @@
 # record of a run, not a property of the file. `script/check_components.rb --bump` clears it, and
 # the check fails until somebody re-runs the recipe below and commits the date with the new refs; a
 # change to how components are vendored leaves it just as stale, by hand.
-verified_at: "2026-10-15"
+verified_at: "2026-10-16"
 verified_by: >-
   A real `rails new` with WULIN_COMPONENTS naming every optional component, against this template:
-  each one vendored at the ref below, 32 migrations applied, and each engine's own model resolving
+  each one vendored at the ref below, 33 migrations applied, and each engine's own model resolving
   under RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process,
   WulinAgent::Conversation.
 verify_with: |-
@@ -31,7 +31,7 @@ components:
     ref: 680a67e2c209f15ef112dc876d361006dcc97acb
   wulin_permits:
     branch: main
-    ref: 0f4e07af9b7e12c633387101b917ebc3d1b2ca9e
+    ref: 4fba2f8f2ec72630d7642e67150c6f00a62c6614
   wulin_queue:
     branch: main
     ref: 3371ac47c0d1282d9a0c1d459fc21d75ffa42707

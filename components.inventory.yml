@@ -64,7 +64,7 @@ wulin_permits:
   - UserScreen
   esm:
   - wulin_permits.esm.js
-  migrations: 6
+  migrations: 7
   unfilled_hooks:
     require_admin:
     - permission_all_users
