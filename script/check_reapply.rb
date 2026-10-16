@@ -124,6 +124,14 @@ Dir.mktmpdir("wulin_reapply") do |root|
     end
     step "the components' menu groups and methods load", {}, "bin/rails", "runner",
       "WulinMaster::ScreenController.wulin_component_menus; exit(WulinMaster::ScreenController.method_defined?(:require_admin) ? 0 : 1)", chdir: app
+    # wulin_permits' migrations create two views, which the test database -- loaded from db/schema.rb,
+    # not migrated -- has only if the dump carries them.
+    check("the schema holds wulin_permits' views") do
+      %w[user_all_permissions permission_all_users].all? { |v| read(app, "db/schema.rb").include?(%(create_view "#{v}")) }
+    end
+    step "prepare the test database from the schema", {"RAILS_ENV" => "test"}, "bin/rails", "db:prepare", chdir: app
+    step "the test database has the views", {"RAILS_ENV" => "test"}, "bin/rails", "runner",
+      "exit((%w[user_all_permissions permission_all_users] - ActiveRecord::Base.connection.views).empty? ? 0 : 1)", chdir: app
     check("the app's own import and style are built along with every component's") do
       script, css = read(app, "app/assets/builds/application.js"), read(app, "app/assets/builds/application.css")
       read(app, "app/javascript/application.js").include?(%(import "./own")) && script.include?("appOwnScript") &&
