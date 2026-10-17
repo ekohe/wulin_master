@@ -36,6 +36,12 @@ describe WulinMaster::ScreenAndGridGenerator do
     File.read(File.join(@root, "app/grids/member_grid.rb"))
   end
 
+  it "derives the model from the app's ApplicationRecord" do
+    generate "Member", "first_name:string"
+
+    expect(model).to include("class Member < ApplicationRecord")
+  end
+
   it "makes a reference a foreign key the model belongs to" do
     generate "Member", "first_name:string", "team:references"
 
