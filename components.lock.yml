@@ -31,7 +31,7 @@ components:
     ref: 680a67e2c209f15ef112dc876d361006dcc97acb
   wulin_permits:
     branch: main
-    ref: 4fba2f8f2ec72630d7642e67150c6f00a62c6614
+    ref: 7cede796782aa456aba6a5f1a28e907b591b9591
   wulin_queue:
     branch: main
     ref: 3371ac47c0d1282d9a0c1d459fc21d75ffa42707
