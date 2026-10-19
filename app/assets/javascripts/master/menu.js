@@ -100,7 +100,7 @@ window.cleanUpEditors = function cleanUpEditors(id = false) {
   }
 }
 
-function trackGoogleAnalytics() {
+window.trackGoogleAnalytics = function trackGoogleAnalytics() {
   if (typeof (ga) != 'undefined') {
     ga('send', 'pageview', currentUrl);
   }
