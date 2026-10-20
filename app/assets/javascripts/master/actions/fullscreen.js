@@ -42,11 +42,11 @@ const transform = ($target, currentContainer) => {
 }
 
 const switchIcon = ($target) => {
-  let $icon = $target.find('a.fullscreen_action, i.material-icons')
+  let $icon = $target.find('.material-icons')
   let iconText = $icon.text()
   $icon.text(iconText === 'fullscreen' ? 'fullscreen_exit' : 'fullscreen')
   // split button mode we should switch icon label
-  let $iconLabel = $target.find('a.fullscreen_action, span')
+  let $iconLabel = $target.find('span:not(.material-icons)')
   let iconLabelText = $iconLabel.text()
   $iconLabel.text(
     iconLabelText === 'Fullscreen' ? 'Exit Fullscreen' : 'Fullscreen'
