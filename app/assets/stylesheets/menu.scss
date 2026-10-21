@@ -162,6 +162,12 @@
               opacity: 1;
             }
 
+            // The reverse link stays in the flow at the right edge (41px wide):
+            // keep the pin left of it so it does not cover the reverse icon.
+            &:has(> a.reverse) .pin-toggle {
+              right: 49px;
+            }
+
             a.reverse {
               flex-shrink: 0;
               width: auto;
