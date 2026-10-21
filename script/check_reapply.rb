@@ -122,7 +122,7 @@ Dir.mktmpdir("wulin_reapply") do |root|
     check("the app's menu group stays, and the components' groups are placed beside it") do
       controller = read(app, "app/controllers/application_controller.rb")
       controller.include?('submenu "Directory"') && controller.scan("include WulinComponents").one? &&
-        read(app, "app/controllers/concerns/wulin_components.rb").include?('submenu "Settings"')
+        read(app, "app/controllers/concerns/wulin_components.rb").include?('submenu "Access Control"')
     end
     step "the components' menu groups and methods load", {}, "bin/rails", "runner",
       "WulinMaster::ScreenController.wulin_component_menus; exit(WulinMaster::ScreenController.method_defined?(:require_admin) ? 0 : 1)", chdir: app

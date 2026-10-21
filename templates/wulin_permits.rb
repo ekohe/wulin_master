@@ -44,15 +44,27 @@ wulin_method <<~RB
   end
 RB
 
-# PermissionScreen is deliberately not linked: wulin_permits'
-# PermissionsController is an empty class with no controller_for_screen, so
-# screen_classes is nil and /permissions raises NoMethodError in
-# wulin_master's Variables#screen. See the note at the bottom of this file.
+# Users get roles, roles get privileges, privileges get permissions. UserScreen, RoleScreen and the
+# legacy MasterUserDetailPrivilegeScreen stay in the gem, off a new app's menu.
+#
+# Each item opens its screen's own path, and its reverse is the paired screen's path; the join
+# routes beside them serve detail-grid data, not pages. MasterPrivilegeRoleScreen's own path,
+# /privileges_roles, is not a route, so its reverse opens on /roles. The paths are literals:
+# wulin_component_menus is a class method, with no request to call route helpers on.
 wulin_menu <<~RB
-  submenu "Settings" do
-    item UserScreen, icon: :people
-    item RoleScreen, icon: :assignment_ind
-    item PrivilegeScreen, icon: :vpn_key
+  submenu "Access Control" do
+    item MasterUserDetailRoleScreen, icon: :group_add,
+      reverse: "/roles?screen=MasterRoleDetailUserScreen"
+    item MasterRolePrivilegeScreen, icon: :vpn_key,
+      reverse: "/roles?screen=MasterPrivilegeRoleScreen",
+      label: "Roles / Privileges"
+    item PrivilegeScreen, icon: :fingerprint,
+      reverse: "/permissions?screen=MasterPermissionPrivilegeScreen",
+      label: "Privileges / Permissions"
+    item MasterUserDetailPermissionScreen, icon: :lock,
+      reverse: "/permission_all_users?screen=MasterPermissionDetailUserScreen",
+      label: "Permissions / Users"
+    item PermissionScreen, icon: :security
   end
 RB
 
@@ -79,4 +91,3 @@ end
 
 wulin_note "wulin_permits: require_admin is a placeholder -- replace it, and User/current_user, with your real auth"
 wulin_note "wulin_permits: its routes are unnamespaced (resources :users, :roles, :permissions) and will collide with host routes of the same name"
-wulin_note "wulin_permits: /permissions 500s upstream -- PermissionsController needs `controller_for_screen PermissionScreen`, so it is left out of the menu"
