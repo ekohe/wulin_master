@@ -70,6 +70,7 @@
         // Second level menu
         ul {
           li.item {
+            position: relative;
             display: flex;
             align-items: center;
             overflow: hidden;
@@ -94,7 +95,8 @@
               overflow: visible !important;
               outline: none;
 
-              span {
+              // The icon is a span too; it must not get the label padding.
+              span:not(.material-icons) {
                 padding-left: 10px;
                 font-size: 13px;
               }
@@ -108,16 +110,22 @@
               }
             }
 
+            // Out of the flow so the hidden button does not narrow the label.
             .pin-toggle {
+              position: absolute;
+              top: 50%;
+              right: 8px;
+              // Above the link: materialize gives .waves-effect z-index 1.
+              z-index: 2;
+              transform: translateY(-50%);
               display: inline-flex;
               align-items: center;
               justify-content: center;
-              flex-shrink: 0;
               opacity: 0;
               width: 26px;
               height: 26px;
-              margin-right: 8px;
               border-radius: 6px;
+              background-color: materialize_color.color("grey", "lighten-3");
               transition: opacity 0.2s ease, background-color 0.2s ease;
               cursor: pointer;
 
