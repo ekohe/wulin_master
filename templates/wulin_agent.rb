@@ -32,7 +32,7 @@ wulin_app_config <<~YAML
   #   toolbar_enabled: true      # false: reach the assistant from the menu only
   #   thinking_effort: high      # reasoning effort; levels depend on the model (none..max on gpt-6-luna)
   #   temperature: 0.7           # non-reasoning models only; the agent drops it for models that refuse it
-  #   mcp_allowed_hosts:         # hostnames /wulin_agent/mcp answers on once deployed
+  #   mcp_allowed_hosts:         # optional: the hosts /wulin_agent/mcp answers on besides loopback (default: config.hosts)
   #     - your-app.example.com
 YAML
 
@@ -72,4 +72,4 @@ wulin_post do
 end
 
 wulin_note "wulin_agent: the AI key is read at boot -- OPENAI_API_KEY, or ANTHROPIC_API_KEY / GEMINI_API_KEY with WULIN_AGENT_MODEL. Export it on a local machine, put it in .env under docker compose, or inject it into the container's environment; Rails credentials (openai.api_key, ...) work too. Until one is set every chat turn answers with an error"
-wulin_note "wulin_agent: /wulin_agent/mcp runs write tools without asking -- issue MCP tokens only to trusted clients, and list the deployed hostnames under wulin_agent.mcp_allowed_hosts in config/app_config.yml"
+wulin_note "wulin_agent: /wulin_agent/mcp runs write tools without asking -- issue MCP tokens only to trusted clients. It answers on the hosts config.hosts allows, and only on loopback (localhost, 127.0.0.1, ::1) while that is empty, as it is in production by default: once deployed, set config.hosts in config/environments/production.rb, or list the hosts under wulin_agent.mcp_allowed_hosts in config/app_config.yml"
