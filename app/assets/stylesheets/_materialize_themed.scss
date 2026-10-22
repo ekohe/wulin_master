@@ -1,0 +1,15 @@
+// Materialize 1.0 reads $primary-color and $secondary-color only from the same
+// global scope as its @import of components/variables. master.sass is a Sass
+// module, so assigning those variables there never reaches Materialize and
+// every component that uses $primary-color (tabs, pagination, blockquotes)
+// falls back to materialize-red. This file stays on @import so the theme
+// colour from _theme.generated.scss is the one that gets compiled in.
+// $primary-color cannot be a CSS var(): Materialize passes it to lighten().
+
+@import "theme.generated";
+@import "materialize-css/sass/components/color-variables";
+
+$primary-color: color($color-theme, "lighten-2") !default;
+$secondary-color: color($color-theme, "base") !default;
+
+@import "materialize-css/sass/materialize";
