@@ -157,7 +157,13 @@ function selectMenuItem(url) {
       var href = $(this).find("a.waves-effect, a:not(.reverse)").first().attr("href");
       return href === path;
     });
-    if (!$items.length) return; // unknown URL (e.g. a reverse view): keep the current highlight
+    // A reverse view loaded directly (reload, bookmark) belongs to the item that links to it
+    if (!$items.length) {
+      $items = $("#menu li.item").filter(function() {
+        return $(this).find("a.reverse").attr("href") === path;
+      });
+    }
+    if (!$items.length) return; // unknown URL: keep the current highlight
     $active = $items.filter(".active").first(); // keep the copy already highlighted
     if (!$active.length) $active = $items.filter(":visible").first();
     if (!$active.length) $active = $items.first();
