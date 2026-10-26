@@ -164,10 +164,13 @@ window.Ui = {
     // I think we can comment the follow line code.
     // $(`${scope} input[type=text]`).parent().addClass('input-field');
 
-    // make label active for input with value
+    // make label active for input or select with value
+    // (select2 hides the select, so a preset option has no input to detect)
     $(`${scope} .field`)
       .filter(function () {
-        return !!$(this).find('input').val();
+        if ($(this).find('input').val()) return true;
+        const selected = $(this).find('select').val();
+        return Array.isArray(selected) ? selected.length > 0 : !!selected;
       })
       .find('label')
       .addClass('active');
