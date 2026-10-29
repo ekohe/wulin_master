@@ -1,5 +1,5 @@
 // jQuery UI Setup - This file ensures jQuery UI is globally available
-import ui from 'jquery-ui'
+import 'jquery-ui'
 import 'jquery-ui/ui/widgets/mouse'
 import 'jquery-ui/ui/plugin'
 import 'jquery-ui/ui/widget'
@@ -7,8 +7,6 @@ import 'jquery-ui/ui/data'
 import 'jquery-ui/ui/scroll-parent'
 import 'jquery-ui/ui/widgets/resizable'
 import 'jquery-ui/ui/widgets/sortable'
-
-window.$.ui = ui
 
 // Add keyCode constants that are missing from the jQuery UI import
 if (!$.ui.keyCode) {
