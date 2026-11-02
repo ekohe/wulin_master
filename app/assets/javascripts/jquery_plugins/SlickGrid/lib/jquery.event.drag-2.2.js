@@ -44,6 +44,9 @@
     // the key name for stored drag data
     datakey: "dragdata",
 
+    // event properties drag handlers read after originalEvent is removed
+    eventProps: "pageX pageY clientX clientY screenX screenY offsetX offsetY which button altKey ctrlKey metaKey shiftKey".split( " " ),
+
     // prevent bubbling for better performance
     noBubble: true,
 
@@ -236,6 +239,10 @@
       len = !isNaN( x ) ? x : dd.interactions.length;
       // modify the event type
       event.type = type;
+      // jQuery 3 reads these lazily from originalEvent; keep them as own values
+      $.each( drag.eventProps, function( i, prop ){
+        event[ prop ] = event[ prop ];
+      });
       // remove the original event
       event.originalEvent = null;
       // initialize the results
