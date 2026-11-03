@@ -35,6 +35,12 @@ wulin_auth:
   esm:
   - wulin_auth.esm.js
   migrations: 2
+wulin_oauth:
+  screens:
+  - AddUserScreen
+  esm:
+  - wulin_oauth.esm.js
+  migrations: 0
 wulin_permits:
   screens:
   - AddPermissionToPrivilegeScreen

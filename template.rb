@@ -5,6 +5,9 @@
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
+#   WULIN_COMPONENTS=wulin_oauth,wulin_audit WULIN_DOCKER=0 rails new ... -m ./template.rb
+#
+# `all` is every component but wulin_oauth, the alternative to wulin_auth; name it to get it instead.
 
 # `rails app:template LOCATION=...` re-applies this to an app that exists, which is how a component
 # SELECTED LATER arrives. The steps that CREATE the app are skipped on this flag: they append a line
@@ -102,12 +105,20 @@ end
 #
 # Install order, and it matters: wulin_permits must land before wulin_queue so the Permission model
 # exists when the queue migrations seed it.
+#
+# An entry of `needs` that is itself a list is satisfied by any one of its names; when none is
+# selected the first is added. `conflicts` are components the same app cannot also have, and
+# `all: false` keeps a component out of WULIN_COMPONENTS=all -- the alternative to one that is in it.
 @wulin_catalog = [
   {name: "wulin_master", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth",
+  {name: "wulin_auth", conflicts: %w[wulin_oauth],
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", needs: %w[wulin_auth],
+  # The users live in the OAuth provider (mima), not in this app's database. It extends wulin_permits'
+  # UsersController and UserGrid, so it cannot run without that gem.
+  {name: "wulin_oauth", needs: %w[wulin_permits], conflicts: %w[wulin_auth], all: false,
+   summary: "sign-in through the OAuth provider (mima), instead of wulin_auth"},
+  {name: "wulin_permits", needs: [%w[wulin_auth wulin_oauth]],
    summary: "users, roles, privileges, per-screen permissions"},
   {name: "wulin_queue", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
@@ -229,6 +240,11 @@ def wulin_adopt_controller
       end
     end
   RB
+end
+
+# For a component template whose wiring depends on another's, as wulin_permits' does on the auth one.
+def wulin_installs?(name)
+  @wulin_install.any? { |c| c[:name] == name }
 end
 
 def wulin_written?(path, marker)
@@ -358,7 +374,7 @@ def wulin_selection
   optional = @wulin_catalog.reject { |c| c[:required] }
 
   chosen = if requested == "all"
-    optional.map { |c| c[:name] }
+    optional.reject { |c| c[:all] == false }.map { |c| c[:name] }
   elsif !requested.empty?
     requested.split(",").map(&:strip).reject(&:empty?)
   elsif $stdin.tty?
@@ -381,12 +397,21 @@ def wulin_selection
   #
   # `each` over the array being appended to, not a copy of it: it walks by index against the current
   # length, so a dependency added here is visited too and the chain is followed to its end.
+  #
+  # A need that lists alternatives is met by any of them already chosen -- wulin_oauth brings
+  # wulin_permits, whose "wulin_auth or wulin_oauth" it then answers -- and otherwise gets the first.
   chosen.each do |name|
-    @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |dep|
-      next if chosen.include?(dep)
-      chosen << dep
-      say "  + #{dep} (#{name} needs it to run)", :yellow
+    @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |need|
+      options = Array(need)
+      next if (options & chosen).any?
+      chosen << options.first
+      say "  + #{options.first} (#{name} needs #{options.join(" or ")} to run)", :yellow
     end
+  end
+
+  @wulin_catalog.each do |c|
+    clash = chosen.include?(c[:name]) && (c[:conflicts].to_a & chosen).first
+    raise Thor::Error, "#{c[:name]} and #{clash} cannot both be installed -- choose one" if clash
   end
 
   @wulin_catalog.select { |c| c[:required] || chosen.include?(c[:name]) }

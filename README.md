@@ -130,6 +130,7 @@ is a marked block, so an app's own text there survives a re-apply.
 | --- | --- |
 | `wulin_master` | always installed: grids, screens, menus, this asset pipeline |
 | `wulin_auth` | login/logout, `current_user`, password reset |
+| `wulin_oauth` | sign-in through the OAuth provider (mima) instead of `wulin_auth`; pulls in `wulin_permits`. Not part of `all` -- name it |
 | `wulin_permits` | users, roles, privileges, per-screen permissions |
 | `wulin_queue` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
 | `wulin_audit` | audit trail for every model write, plus request action logs |
