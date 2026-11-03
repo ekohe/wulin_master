@@ -241,10 +241,13 @@ end
 #
 # The first time, it is appended -- or, with `ahead: true`, put after the file's leading comments and
 # ahead of any code or other block, for a block that has to run before whatever the app already does.
-def wulin_block(path, id, content, ahead: false)
-  body = "# wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it\n" \
-    "#{content}# wulin:end #{id}\n"
-  block = /^# wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^# wulin:end #{Regexp.escape(id)}\n/m
+#
+# `markdown: true` writes the markers as HTML comments, for a Markdown file.
+def wulin_block(path, id, content, ahead: false, markdown: false)
+  open, close = markdown ? ["<!-- ", " -->"] : ["# ", ""]
+  body = "#{open}wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it#{close}\n" \
+    "#{content}#{open}wulin:end #{id}#{close}\n"
+  block = /^#{Regexp.escape(open)}wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^#{Regexp.escape(open)}wulin:end #{Regexp.escape(id)}#{Regexp.escape(close)}\n/m
   text = File.exist?(path) ? File.read(path) : ""
   return create_file(path, text.sub(block) { body }, force: true) if text.match?(block)
 
@@ -646,7 +649,12 @@ after_bundle do
     wulin_note "README.md is not what this template writes -- that is docs/wulin_app.md, rewritten on every run"
   end
 
-  file "AGENTS.md", render.call("AGENTS.md"), force: true
+  # AGENTS.md is shared: the app's own text stays, and the template's part -- the marked block -- is
+  # rewritten on every run.
+  if File.exist?("AGENTS.md") && !wulin_written?("AGENTS.md", "<!-- wulin:begin agents ")
+    say_status :agents, "AGENTS.md has no wulin block -- appending it after the existing text; if an earlier template wrote that text, delete the old copy", :yellow
+  end
+  wulin_block "AGENTS.md", "agents", render.call("AGENTS.md"), markdown: true
 
   # Rails writes STDOUT here; standard wants $stdout and classes the rewrite unsafe, so
   # `--fix` leaves it. They are the same object, and it is the one offence below that the
