@@ -5,6 +5,9 @@
 #
 #   WULIN_COMPONENTS=all rails new ... -m ./template.rb
 #   WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
+#   WULIN_COMPONENTS=wulin_oauth,wulin_audit WULIN_DOCKER=0 rails new ... -m ./template.rb
+#
+# `all` is every component but wulin_oauth, the alternative to wulin_auth; name it to get it instead.
 
 # `rails app:template LOCATION=...` re-applies this to an app that exists, which is how a component
 # SELECTED LATER arrives. The steps that CREATE the app are skipped on this flag: they append a line
@@ -14,6 +17,16 @@
 # one this template writes, so a Rails app built some other way is scaffolded into. Read at the top,
 # before anything is written, because that file is created further down.
 @wulin_scaffolded_before = File.exist?("config/app_config.example.yml")
+
+# WULIN_DOCKER=0 leaves out the container stack (templates/docker_stack.rb): Dockerfile.dev, compose
+# and the entrypoint, for an app that is deployed some other way. .env and database.yml still come.
+# Re-applied without it, the app keeps the choice it was made with -- the stack is there or it is not
+# -- so adding a component later does not bring the stack back; WULIN_DOCKER=1 adds it on purpose.
+@wulin_docker = if ENV.key?("WULIN_DOCKER")
+  ENV["WULIN_DOCKER"] != "0"
+else
+  !@wulin_scaffolded_before || File.exist?("Dockerfile.dev")
+end
 
 # `rails app:template` names the app after its directory -- `workspace`, where a container mounts it
 # there. Re-applied, the app keeps the name it was created with, which its databases carry. Read from
@@ -92,12 +105,20 @@ end
 #
 # Install order, and it matters: wulin_permits must land before wulin_queue so the Permission model
 # exists when the queue migrations seed it.
+#
+# An entry of `needs` that is itself a list is satisfied by any one of its names; when none is
+# selected the first is added. `conflicts` are components the same app cannot also have, and
+# `all: false` keeps a component out of WULIN_COMPONENTS=all -- the alternative to one that is in it.
 @wulin_catalog = [
   {name: "wulin_master", required: true,
    summary: "grids, screens, menus, the esbuild/dart-sass pipeline"},
-  {name: "wulin_auth",
+  {name: "wulin_auth", conflicts: %w[wulin_oauth],
    summary: "login/logout, current_user, password reset"},
-  {name: "wulin_permits", needs: %w[wulin_auth],
+  # The users live in the OAuth provider (mima), not in this app's database. It extends wulin_permits'
+  # UsersController and UserGrid, so it cannot run without that gem.
+  {name: "wulin_oauth", needs: %w[wulin_permits], conflicts: %w[wulin_auth], all: false,
+   summary: "sign-in through the OAuth provider (mima), instead of wulin_auth"},
+  {name: "wulin_permits", needs: [%w[wulin_auth wulin_oauth]],
    summary: "users, roles, privileges, per-screen permissions"},
   {name: "wulin_queue", needs: %w[wulin_permits],
    summary: "Solid Queue job screens: pending, failed, scheduled, processes"},
@@ -221,6 +242,11 @@ def wulin_adopt_controller
   RB
 end
 
+# For a component template whose wiring depends on another's, as wulin_permits' does on the auth one.
+def wulin_installs?(name)
+  @wulin_install.any? { |c| c[:name] == name }
+end
+
 def wulin_written?(path, marker)
   File.exist?(path) && File.read(path).include?(marker)
 end
@@ -231,10 +257,13 @@ end
 #
 # The first time, it is appended -- or, with `ahead: true`, put after the file's leading comments and
 # ahead of any code or other block, for a block that has to run before whatever the app already does.
-def wulin_block(path, id, content, ahead: false)
-  body = "# wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it\n" \
-    "#{content}# wulin:end #{id}\n"
-  block = /^# wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^# wulin:end #{Regexp.escape(id)}\n/m
+#
+# `markdown: true` writes the markers as HTML comments, for a Markdown file.
+def wulin_block(path, id, content, ahead: false, markdown: false)
+  open, close = markdown ? ["<!-- ", " -->"] : ["# ", ""]
+  body = "#{open}wulin:begin #{id} -- rewritten when the template is re-applied; edit outside it#{close}\n" \
+    "#{content}#{open}wulin:end #{id}#{close}\n"
+  block = /^#{Regexp.escape(open)}wulin:begin #{Regexp.escape(id)}(?: [^\n]*)?\n.*?^#{Regexp.escape(open)}wulin:end #{Regexp.escape(id)}#{Regexp.escape(close)}\n/m
   text = File.exist?(path) ? File.read(path) : ""
   return create_file(path, text.sub(block) { body }, force: true) if text.match?(block)
 
@@ -345,7 +374,7 @@ def wulin_selection
   optional = @wulin_catalog.reject { |c| c[:required] }
 
   chosen = if requested == "all"
-    optional.map { |c| c[:name] }
+    optional.reject { |c| c[:all] == false }.map { |c| c[:name] }
   elsif !requested.empty?
     requested.split(",").map(&:strip).reject(&:empty?)
   elsif $stdin.tty?
@@ -368,12 +397,21 @@ def wulin_selection
   #
   # `each` over the array being appended to, not a copy of it: it walks by index against the current
   # length, so a dependency added here is visited too and the chain is followed to its end.
+  #
+  # A need that lists alternatives is met by any of them already chosen -- wulin_oauth brings
+  # wulin_permits, whose "wulin_auth or wulin_oauth" it then answers -- and otherwise gets the first.
   chosen.each do |name|
-    @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |dep|
-      next if chosen.include?(dep)
-      chosen << dep
-      say "  + #{dep} (#{name} needs it to run)", :yellow
+    @wulin_catalog.find { |c| c[:name] == name }[:needs].to_a.each do |need|
+      options = Array(need)
+      next if (options & chosen).any?
+      chosen << options.first
+      say "  + #{options.first} (#{name} needs #{options.join(" or ")} to run)", :yellow
     end
+  end
+
+  @wulin_catalog.each do |c|
+    clash = chosen.include?(c[:name]) && (c[:conflicts].to_a & chosen).first
+    raise Thor::Error, "#{c[:name]} and #{clash} cannot both be installed -- choose one" if clash
   end
 
   @wulin_catalog.select { |c| c[:required] || chosen.include?(c[:name]) }
@@ -636,7 +674,12 @@ after_bundle do
     wulin_note "README.md is not what this template writes -- that is docs/wulin_app.md, rewritten on every run"
   end
 
-  file "AGENTS.md", render.call("AGENTS.md"), force: true
+  # AGENTS.md is shared: the app's own text stays, and the template's part -- the marked block -- is
+  # rewritten on every run.
+  if File.exist?("AGENTS.md") && !wulin_written?("AGENTS.md", "<!-- wulin:begin agents ")
+    say_status :agents, "AGENTS.md has no wulin block -- appending it after the existing text; if an earlier template wrote that text, delete the old copy", :yellow
+  end
+  wulin_block "AGENTS.md", "agents", render.call("AGENTS.md"), markdown: true
 
   # Rails writes STDOUT here; standard wants $stdout and classes the rewrite unsafe, so
   # `--fix` leaves it. They are the same object, and it is the one offence below that the

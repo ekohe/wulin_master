@@ -1,8 +1,8 @@
 # wulin_permits -- users, roles, privileges and per-screen permissions.
 #
 # This gem assumes a host app that already has an authentication layer, which is why it needs
-# wulin_auth: app/grids/user_grid.rb runs `model User` in the class body and its grids call
-# user.admin?, user.email and User.find_by_ids. It has no generators and no fallbacks: wulin_auth
+# wulin_auth or wulin_oauth: app/grids/user_grid.rb runs `model User` in the class body and its grids
+# call user.admin?, user.email and User.find_by_ids. It has no generators and no fallbacks: wulin_auth
 # brings the User model and the columns, and the names the gem calls but defines nowhere are supplied
 # below.
 
@@ -33,16 +33,21 @@ SASS
 # wulin_auth's current_user returns WulinAuth::User.find(...), while the engine includes the
 # permission methods into the app's User subclass -- so the object the enforcement callback is handed
 # would not carry the methods it calls. Override current_user to return a User instance.
-wulin_method <<~RB
-  def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = session[:user_id] ? User.find_by(id: session[:user_id]) : nil
-  end
+#
+# Under wulin_oauth neither is written: its own current_user and require_admin are the real ones, and
+# its User is not an ActiveRecord model to find_by.
+if wulin_installs?("wulin_auth")
+  wulin_method <<~RB
+    def current_user
+      return @current_user if defined?(@current_user)
+      @current_user = session[:user_id] ? User.find_by(id: session[:user_id]) : nil
+    end
 
-  def require_admin
-    head :forbidden unless current_user&.admin?
-  end
-RB
+    def require_admin
+      head :forbidden unless current_user&.admin?
+    end
+  RB
+end
 
 # Users get roles, roles get privileges, privileges get permissions. UserScreen, RoleScreen and the
 # legacy MasterUserDetailPrivilegeScreen stay in the gem, off a new app's menu.
@@ -70,8 +75,9 @@ RB
 
 wulin_post do
   # Called from the query_initialized callback of roles_users, permission_all_users and
-  # users_privileges, so it runs as those grids load. Defined in no gem on this stack.
-  unless wulin_written?("app/models/user.rb", "def self.find_by_ids")
+  # users_privileges, so it runs as those grids load. Defined in no gem on this stack but
+  # wulin_oauth, whose User has it and lives in the gem, not in app/models.
+  if wulin_installs?("wulin_auth") && !wulin_written?("app/models/user.rb", "def self.find_by_ids")
     inject_into_class "app/models/user.rb", "User", <<~RB
       def self.find_by_ids(ids)
         where(id: ids)
@@ -89,5 +95,5 @@ wulin_db_post do
   rails_command "wulin_permits:load_permission"
 end
 
-wulin_note "wulin_permits: require_admin is a placeholder -- replace it, and User/current_user, with your real auth"
+wulin_note "wulin_permits: require_admin is a placeholder -- replace it, and User/current_user, with your real auth" if wulin_installs?("wulin_auth")
 wulin_note "wulin_permits: its routes are unnamespaced (resources :users, :roles, :permissions) and will collide with host routes of the same name"

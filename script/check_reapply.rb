@@ -86,13 +86,14 @@ Dir.mktmpdir("wulin_reapply") do |root|
     edit(app, "app/javascript/own.js") { "window.appOwnScript = true\n" }
     edit(app, "app/javascript/application.js") { |text| "#{text}import \"./own\"\n" }
     edit(app, "app/assets/stylesheets/application.sass") { |text| "#{text}\n.app-own-style\n  color: red\n" }
+    edit(app, "AGENTS.md") { |text| "#{text}\n## App rules\n\nEvery new action is gated by a permission.\n" }
     step "install React 18", {}, "npm", "install", "--silent", "react@18.3.1", "react-dom@18.3.1", chdir: app
     manifest = File.join(app, "package.json")
     package = JSON.parse(File.read(manifest))
     package["dependencies"] = package["dependencies"].except("react", "react-dom")
     File.write(manifest, "#{JSON.pretty_generate(package)}\n")
     commit app, "scaffold, with an earlier template's admin seed and an undeclared React 18"
-    title = read(app, "AGENTS.md").lines.first
+    title = read(app, "AGENTS.md").lines.find { |line| line.start_with?("# ") }
 
     output = step "re-apply for every component", ADMIN.merge("WULIN_COMPONENTS" => "all"),
       "bin/rails", "app:template", "LOCATION=#{TEMPLATE}", chdir: app
@@ -118,7 +119,12 @@ Dir.mktmpdir("wulin_reapply") do |root|
         read(app, "docker-compose.yml").start_with?("name: #{name}\n")
     end
     # The name has digits, which the app's module cannot give back: reapply_123 is Reapply123.
-    check("the app is still called what it was created as") { read(app, "AGENTS.md").lines.first == title }
+    check("the app is still called what it was created as") { read(app, "AGENTS.md").lines.find { |line| line.start_with?("# ") } == title }
+    check("the app's own AGENTS.md text stays beside the template's block") do
+      agents = read(app, "AGENTS.md")
+      agents.include?("Every new action is gated by a permission.") && agents.scan("<!-- wulin:begin agents ").one? &&
+        agents.include?("wulin_audit")
+    end
     check("the app's menu group stays, and the components' groups are placed beside it") do
       controller = read(app, "app/controllers/application_controller.rb")
       controller.include?('submenu "Directory"') && controller.scan("include WulinComponents").one? &&

@@ -120,10 +120,17 @@ WULIN_COMPONENTS=all rails new ... -m ./template.rb
 WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 ```
 
+`WULIN_DOCKER=0` leaves out the container stack (`Dockerfile.dev`, `docker-compose.yml`, the
+entrypoint, the production `Dockerfile` changes) for an app deployed some other way; `.env` and
+`database.yml` are written either way. A re-apply keeps the app's choice unless `WULIN_DOCKER` is
+set: `WULIN_DOCKER=1` adds the stack to an app made without it. The template's part of `AGENTS.md`
+is a marked block, so an app's own text there survives a re-apply.
+
 | component | what it adds |
 | --- | --- |
 | `wulin_master` | always installed: grids, screens, menus, this asset pipeline |
 | `wulin_auth` | login/logout, `current_user`, password reset |
+| `wulin_oauth` | sign-in through the OAuth provider (mima) instead of `wulin_auth`; pulls in `wulin_permits`. Not part of `all` -- name it |
 | `wulin_permits` | users, roles, privileges, per-screen permissions |
 | `wulin_queue` | Solid Queue job screens; pulls in `wulin_permits`, whose `Permission` model its migration seeds |
 | `wulin_audit` | audit trail for every model write, plus request action logs |

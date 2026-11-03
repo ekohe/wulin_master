@@ -7,7 +7,11 @@ Rails <%= Rails::VERSION::STRING %> / Ruby <%= RUBY_VERSION %> / Node <%= `node 
 - **Framework**: Wulin Master (SlickGrid-based admin grids, screens, menus)
 - **Database**: PostgreSQL
 - **Assets**: esbuild (JS) + dart-sass (CSS) + Propshaft (serving)
+<% if @wulin_install.any? { |c| c[:name] == "wulin_oauth" } -%>
+- **Auth**: wulin_oauth (sign-in through the OAuth provider; users live there, not in this database)
+<% else -%>
 - **Auth**: wulin_auth (session-based email/password)
+<% end -%>
 - **Linter**: Standard (`bundle exec standardrb`)
 - **Tests**: RSpec + factory_bot under `spec/` (no Minitest `test/`)
 
@@ -70,7 +74,11 @@ Then add `item ModelNameScreen` to the menu.
 <% if @wulin_install.any? { |c| c[:name] == "wulin_auth" } -%>
 - `User` inherits from `WulinAuth::User`; extend it in `app/models/user.rb`
 <% end -%>
-<% if @wulin_install.any? { |c| c[:name] == "wulin_permits" } -%>
+<% if @wulin_install.any? { |c| c[:name] == "wulin_oauth" } -%>
+- `User` is wulin_oauth's ActiveModel class over the provider's users; `current_user` and
+  `require_admin` come from its controller mixin, and `User.current_user` is set per request in
+  `WulinComponents`
+<% elsif @wulin_install.any? { |c| c[:name] == "wulin_permits" } -%>
 - `current_user` returns a `User` instance (overridden in `WulinComponents`)
 <% end -%>
 <% if @wulin_notes.any? -%>
