@@ -15,6 +15,16 @@
 # before anything is written, because that file is created further down.
 @wulin_scaffolded_before = File.exist?("config/app_config.example.yml")
 
+# WULIN_DOCKER=0 leaves out the container stack (templates/docker_stack.rb): Dockerfile.dev, compose
+# and the entrypoint, for an app that is deployed some other way. .env and database.yml still come.
+# Re-applied without it, the app keeps the choice it was made with -- the stack is there or it is not
+# -- so adding a component later does not bring the stack back; WULIN_DOCKER=1 adds it on purpose.
+@wulin_docker = if ENV.key?("WULIN_DOCKER")
+  ENV["WULIN_DOCKER"] != "0"
+else
+  !@wulin_scaffolded_before || File.exist?("Dockerfile.dev")
+end
+
 # `rails app:template` names the app after its directory -- `workspace`, where a container mounts it
 # there. Re-applied, the app keeps the name it was created with, which its databases carry. Read from
 # there rather than from the app's module: `underscore` cannot give back the digits' underscore, so
