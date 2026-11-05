@@ -125,6 +125,9 @@ Dir.mktmpdir("wulin_reapply") do |root|
       agents.include?("Every new action is gated by a permission.") && agents.scan("<!-- wulin:begin agents ").one? &&
         agents.include?("wulin_audit")
     end
+    check("bin/setup builds the assets once, though the scaffold and the re-apply both injected it") do
+      read(app, "bin/setup").scan("javascript:build dartsass:build").one?
+    end
     check("the app's menu group stays, and the components' groups are placed beside it") do
       controller = read(app, "app/controllers/application_controller.rb")
       controller.include?('submenu "Directory"') && controller.scan("include WulinComponents").one? &&

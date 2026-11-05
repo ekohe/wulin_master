@@ -532,6 +532,16 @@ after_bundle do
     RUBY
   end
 
+  # The first build, before bin/setup hands over to bin/dev: its watchers start alongside the server,
+  # and a page requested before their first pass raises Propshaft::MissingAssetError.
+  unless wulin_written?("bin/setup", "javascript:build")
+    inject_into_file "bin/setup", after: %(  system!("npm install")\n) do
+      <<-RUBY
+  system!("bin/rails javascript:build dartsass:build")
+      RUBY
+    end
+  end
+
   # wulin_master:install writes its own ApplicationController with a stub menu,
   # so this has to come after it and replace the file wholesale. Skipped on an app that exists: it
   # also copies a homepage controller and prepends a root route, and a second root is a route the
