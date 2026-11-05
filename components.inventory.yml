@@ -87,12 +87,13 @@ wulin_queue:
   migrations: 3
 wulin_audit:
   screens:
+  - ActionLogAnalysisScreen
   - ActionLogScreen
   - AuditLogScreen
   - RecordAuditScreen
   esm:
   - wulin_audit.esm.js
-  migrations: 6
+  migrations: 8
 wulin_excel:
   screens: []
   esm:
