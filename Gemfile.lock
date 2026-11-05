@@ -244,7 +244,7 @@ GEM
     minitest (5.25.5)
     multi_test (1.1.0)
     nenv (0.3.0)
-    net-imap (0.5.10)
+    net-imap (0.6.8)
       date
       net-protocol
     net-pop (0.1.2)
