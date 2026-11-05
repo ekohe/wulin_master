@@ -18,8 +18,10 @@ Gem::Specification.new do |s|
   s.executables = []
   s.require_paths = ["lib"]
 
+  s.required_ruby_version = ">= 3.4"
+
   s.add_dependency "haml-rails"
-  s.add_dependency "rails"
+  s.add_dependency "rails", ">= 8.1"
   s.add_dependency "responders"
   s.add_dependency "dartsass-rails"
   s.add_development_dependency "capybara"
@@ -30,7 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "generator_spec"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
-  s.add_development_dependency "pg", "~> 0.18"
   s.add_development_dependency "poltergeist"
   s.add_development_dependency "puma"
   s.add_development_dependency "rspec-rails"

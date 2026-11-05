@@ -11,6 +11,8 @@ group :development, :test do
   gem "pg"
   gem "pry"
   gem "pry-byebug"
+  # byebug and pry `require "readline"`, which Ruby 4.0 no longer ships; this loads reline for it.
+  gem "readline"
   gem "rails-controller-testing"
   gem "rspec-activemodel-mocks"
   gem "standard"

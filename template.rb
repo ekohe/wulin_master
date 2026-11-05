@@ -71,6 +71,13 @@ if missing.any? && !@wulin_scaffolded_before
     "template.rb says why. Remove the generated app and run it again."
 end
 
+# Checked here, on a re-apply too: bundler would otherwise refuse the components only after this
+# template had rewritten the app's files around them.
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.4") || Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("8.1")
+  raise Thor::Error, "The wulin v3 components need Ruby >= 3.4 and Rails >= 8.1; this is Ruby #{RUBY_VERSION}, " \
+    "Rails #{Rails::VERSION::STRING}."
+end
+
 require "json"
 require "open-uri"
 require "shellwords"
