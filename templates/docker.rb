@@ -50,6 +50,9 @@ if !@wulin_scaffolded_before || !File.exist?("config/database.yml")
     development:
       <<: *default
       database: #{app_name}_development
+      # libpq 18 on macOS negotiates GSS encryption through frameworks that are not fork-safe, and
+      # Solid Queue forks its workers, so their first query segfaults. Nothing here uses Kerberos.
+      gssencmode: disable
 
     test:
       <<: *default
@@ -60,6 +63,9 @@ if !@wulin_scaffolded_before || !File.exist?("config/database.yml")
       <<: *default
       database: #{app_name}_production
   YAML
+end
+if File.exist?("config/database.yml") && !File.read("config/database.yml").include?("gssencmode")
+  wulin_note "config/database.yml: developing on macOS with libpq 18, add `gssencmode: disable` to development -- otherwise Solid Queue's forked workers segfault on their first query", run: true
 end
 
 environment_config = "config/environments/development.rb"
