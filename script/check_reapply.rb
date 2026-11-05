@@ -130,6 +130,9 @@ Dir.mktmpdir("wulin_reapply") do |root|
       controller.include?('submenu "Directory"') && controller.scan("include WulinComponents").one? &&
         read(app, "app/controllers/concerns/wulin_components.rb").include?('submenu "Access Control"')
     end
+    check("AppConfigsScreen is listed under Settings once wulin_permits gates it") do
+      read(app, "app/controllers/concerns/wulin_components.rb").include?("item AppConfigsScreen")
+    end
     step "the components' menu groups and methods load", {}, "bin/rails", "runner",
       "WulinMaster::ScreenController.wulin_component_menus; exit(WulinMaster::ScreenController.method_defined?(:require_admin) ? 0 : 1)", chdir: app
     # wulin_permits' migrations create two views, which the test database -- loaded from db/schema.rb,
@@ -152,6 +155,19 @@ Dir.mktmpdir("wulin_reapply") do |root|
     changed = IO.popen(%w[git status --porcelain], chdir: app, &:read)
     abort "FAIL: a second re-apply changed\n#{changed}#{IO.popen(%w[git diff], chdir: app, &:read)}" unless changed.empty?
     puts "OK: a second re-apply changed nothing"
+
+    # As an app whose own menu already lists AppConfigsScreen, as mrl's does.
+    edit(app, "app/controllers/application_controller.rb") do |text|
+      text.sub(/^( *)item "Home", url: "\/"\n/) { "#{$&}#{$1}item AppConfigsScreen\n" }
+    end
+    commit app, "the app lists AppConfigsScreen itself"
+    step "re-apply with the app listing AppConfigsScreen", ADMIN.merge("WULIN_COMPONENTS" => "all"),
+      "bin/rails", "app:template", "LOCATION=#{TEMPLATE}", chdir: app
+    check("a screen the app's own menu lists is not listed a second time") do
+      read(app, "app/controllers/application_controller.rb").include?("item AppConfigsScreen") &&
+        !read(app, "app/controllers/concerns/wulin_components.rb").include?("AppConfigsScreen")
+    end
+    commit app, "re-applied over the app's own AppConfigsScreen"
 
     # As an app made by a template that wrote the components' code into ApplicationController has it.
     edit(app, "app/controllers/application_controller.rb") { |text| text.sub(/^ *include WulinComponents\n/, "") }
