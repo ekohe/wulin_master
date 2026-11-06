@@ -1640,7 +1640,7 @@ if (typeof Slick === "undefined") {
         $showMoreTrigger.append($moreContainer);
         header.append($showMoreTrigger)
         $showMoreTrigger.hide();
-        $showMoreBtn.dropdown({alignment: 'right'});
+        $showMoreBtn.dropdown({alignment: 'right', coverTrigger: false});
         var $sortableHandle = $(`<div class='slick-sortable-handle' />`)
         header.append($sortableHandle)
         if (m.sortable) {
