@@ -13,8 +13,11 @@
 # template for every component, as a component chosen later arrives, and checks that the first admin
 # is the one ADMIN_EMAIL / ADMIN_PASSWORD name rather than the one that older seed creates, that the
 # app is still on its one React 18 and keeps its databases, and that what it wrote is still there
-# beside the components' wiring. Last, re-applies once more and requires a clean tree: a component
+# beside the components' wiring. Then re-applies once more and requires a clean tree: a component
 # template that appends, injects or overwrites without checking what is already there fails there.
+# Last, re-applies over a component declared the app's own way -- in a group, single-quoted -- which
+# has to be rewritten in place rather than declared twice, and over one declared by path, which has
+# to be left as it is.
 #
 # Needs what a scaffold needs: rails, node with npm, a PostgreSQL the default database.yml reaches
 # (PGHOST / PGUSER), and network for the pinned components. Exit status is the whole interface.
@@ -171,6 +174,33 @@ Dir.mktmpdir("wulin_reapply") do |root|
         !read(app, "app/controllers/concerns/wulin_components.rb").include?("AppConfigsScreen")
     end
     commit app, "re-applied over the app's own AppConfigsScreen"
+
+    # As an app that wrote a component's declaration its own way: quoted otherwise, inside a group.
+    canonical = read(app, "Gemfile")[/^gem "wulin_permits", .*$/]
+    edit(app, "Gemfile") do |text|
+      text.sub("#{canonical}\n", "").sub(/^group :development, :test do\n/) { "#{$&}  #{canonical.tr('"', "'")}\n" }
+    end
+    position = read(app, "Gemfile").lines.index { |line| line.include?("'wulin_permits'") }
+    commit app, "the app declares wulin_permits in a group, single-quoted"
+    step "re-apply over the app's own declaration of a component", ADMIN.merge("WULIN_COMPONENTS" => "all"),
+      "bin/rails", "app:template", "LOCATION=#{TEMPLATE}", chdir: app
+    check("a component's declaration is rewritten where it stands, not declared a second time") do
+      lines = read(app, "Gemfile").lines
+      lines.count { |line| line.match?(/^\s*gem ["']wulin_permits["']/) } == 1 && lines[position] == "  #{canonical}\n"
+    end
+    commit app, "re-applied over the app's own declaration of wulin_permits"
+
+    # As an app editing a component in place: declared by path, at a checkout of its own.
+    checkout = IO.popen(["bundle", "exec", "ruby", "-e", "print Gem.loaded_specs.fetch('wulin_excel').full_gem_path"], chdir: app, &:read)
+    edit(app, "Gemfile") { |text| text.sub(/^gem "wulin_excel", .*$/) { %(gem "wulin_excel", path: "#{checkout}") } }
+    step "install wulin_excel from its path", {}, "bundle", "install", "--quiet", chdir: app
+    gemfile = read(app, "Gemfile")
+    commit app, "the app edits wulin_excel in place"
+    output = step "re-apply over a component declared by path", ADMIN.merge("WULIN_COMPONENTS" => "all"),
+      "bin/rails", "app:template", "LOCATION=#{TEMPLATE}", chdir: app
+    check("a component declared by path is left as the app has it, and said so") do
+      read(app, "Gemfile") == gemfile && output.include?("wulin_excel is declared with path:")
+    end
 
     # As an app made by a template that wrote the components' code into ApplicationController has it.
     edit(app, "app/controllers/application_controller.rb") { |text| text.sub(/^ *include WulinComponents\n/, "") }
