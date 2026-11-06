@@ -5,10 +5,6 @@
 
 wulin_vendor "wulin_audit"
 
-# The gem does `require "haml-rails"` at load but only lists it as a development
-# dependency, so without this the app raises LoadError on boot.
-wulin_gem "haml-rails"
-
 wulin_js "../../vendor/gems/wulin_audit/app/javascript/wulin_audit.esm.js"
 
 # The gem's audit.css.scss uses image-url(), a sass-rails function dart-sass
