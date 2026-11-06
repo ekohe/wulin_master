@@ -188,17 +188,26 @@ def wulin_vendor(name)
   # A pinned component gets its ref and no branch. Given both, Bundler 2.6 clones only the branch's
   # tip, depth 1, and then cannot find the ref in that clone once the branch has moved past it: every
   # fresh install fails with "not our ref". So `bundle config local.<name>` does not apply to these;
-  # point the line at the checkout with `path:` while editing the gem.
+  # point the line at the checkout with `path:` while editing the gem. A re-apply leaves a `path:`
+  # line where it stands: rewriting it would drop that checkout, and appending the github line beside
+  # it is the double declaration bundler refuses.
   #
-  # `gem` APPENDS and bundler refuses the same gem twice, so a changed declaration replaces the old
-  # one -- which is how a moved pin lands. An unchanged one is left where it is, so re-applying the
-  # template is no change to the Gemfile.
+  # Any other declaration -- in any quoting, inside a group or not -- is rewritten where it stands, so
+  # a moved pin changes that one line. An unchanged one is left alone, so re-applying the template is
+  # no change to the Gemfile.
   source = ref ? {github: "ekohe/#{name}", ref: ref} : {github: "ekohe/#{name}", branch: branch}
   line = %(gem "#{name}", ) + source.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
-  return if File.read("Gemfile").lines.map(&:chomp).include?(line)
+  declarations = File.read("Gemfile").scan(/^[ \t]*gem ["']#{Regexp.escape(name)}["'].*$/)
+  return gem(name, **source) if declarations.empty?
+  # Said on every run: a forgotten `path:` line otherwise keeps the component off its pin for good.
+  if declarations.any? { |declaration| declaration.sub(/#.*/, "").match?(/\bpath:|:path\s*=>/) }
+    return wulin_note "#{name} is declared with path: -- left as it is, not moved to #{ref ? ref[0, 8] : branch} as components.lock.yml pins it", run: true
+  end
 
-  gsub_file "Gemfile", /^gem "#{name}",.*\n/, "", verbose: false
-  gem name, **source
+  declared = declarations.first
+  return if declared.strip == line
+
+  gsub_file "Gemfile", declared, declared[/\A[ \t]*/] + line, verbose: false
 end
 
 # Re-applying runs every component template again, over files the first run wrote and
@@ -473,6 +482,16 @@ if @wulin_scaffolded_before
 end
 
 after_bundle do
+  # wulin_master follows its branch, and the `bundle install` just run keeps the revision the app
+  # locked when it was made -- so on a re-apply the gem would stay behind the template wiring it.
+  # Moved to the branch tip, alone: --conservative leaves Rails and every other shared dependency
+  # where the lock has them. Bundler 4's `update --conservative` moves the lock but leaves the new git
+  # revision unchecked-out, so the app no longer boots until `bundle install` fetches it.
+  if @wulin_scaffolded_before
+    run "bundle update wulin_master --conservative", abort_on_failure: true
+    run "bundle install --quiet", abort_on_failure: true
+  end
+
   # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
   # container and changes on every bump. esbuild, dart-sass and this template's own conventions all
   # address the components as `vendor/gems/<name>`, so that stable path is linked at the real
