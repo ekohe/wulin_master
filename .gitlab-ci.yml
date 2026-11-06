@@ -1,16 +1,25 @@
-image: ruby:3.4.4
+# Floating tags: the tests follow the newest patch of each supported Ruby without a commit per release.
+image: ruby:$RUBY_VERSION
+
+.ruby_matrix:
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["3.4", "4.0"]
 
 services:
   - postgres:latest
 
 variables:
+  RUBY_VERSION: "4.0"
   POSTGRES_DB: wulin_app_test
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ''
   POSTGRES_HOST_AUTH_METHOD: trust
 
+# Per Ruby: vendor/bundle holds native extensions compiled for one Ruby, which the other cannot load.
 cache:
   key:
+    prefix: ruby-$RUBY_VERSION
     files:
       - Gemfile.lock
   paths:
@@ -36,11 +45,13 @@ before_script:
   - bundle check || bundle install --jobs 8
 
 assets_precompile:
+  extends: .ruby_matrix
   stage: test
   script:
     - RAILS_ENV=development bundle exec rake assets:precompile
 
 rspec:
+  extends: .ruby_matrix
   stage: test
   script:
     - RAILS_ENV=test bundle exec rake db:drop db:create db:migrate

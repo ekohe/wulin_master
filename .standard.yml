@@ -2,6 +2,7 @@ fix: false              # default: false
 parallel: true          # default: false
 format: progress        # default: Standard::Formatter
 default_ignores: false  # default: true
+ruby_version: 3.4      # the gemspec's floor: lint for the oldest Ruby the code must run on
 
 ignore:                 # default: []
   - "vendor/bundle/**/*"

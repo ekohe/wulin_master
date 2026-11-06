@@ -38,6 +38,21 @@ end
 wulin_js "../../vendor/gems/wulin_master/app/javascript/wulin_master.esm.js"
 wulin_sass '@use "../../../vendor/gems/wulin_master/app/assets/stylesheets/master"'
 
+# AppConfigsScreen edits the app's settings and has no authorized? of its own -- wulin_permits gives
+# it one (app_configs#read). Without that gem every signed-in user would see it, so it is listed
+# only alongside it, and not a second time where the app's own menu already lists it.
+unless wulin_written?("app/controllers/application_controller.rb", "AppConfigsScreen")
+  if wulin_installs?("wulin_permits")
+    wulin_menu <<~RB
+      submenu "Settings" do
+        item AppConfigsScreen, icon: :settings_input_composite
+      end
+    RB
+  else
+    wulin_note "wulin_master: AppConfigsScreen (/wulin_master/app_configs) is not on the menu -- without wulin_permits it has no permission check, so add it behind your own"
+  end
+end
+
 wulin_app_config <<~YAML
   wulin_master:
     app_title: "#{app_name.titleize}"

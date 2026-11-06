@@ -71,6 +71,13 @@ if missing.any? && !@wulin_scaffolded_before
     "template.rb says why. Remove the generated app and run it again."
 end
 
+# Checked here, on a re-apply too: bundler would otherwise refuse the components only after this
+# template had rewritten the app's files around them.
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.4") || Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("8.1")
+  raise Thor::Error, "The wulin v3 components need Ruby >= 3.4 and Rails >= 8.1; this is Ruby #{RUBY_VERSION}, " \
+    "Rails #{Rails::VERSION::STRING}."
+end
+
 require "json"
 require "open-uri"
 require "shellwords"
@@ -488,9 +495,20 @@ after_bundle do
     specs = Bundler.load.specs.select { |s| s.name.start_with?("wulin_") }
     abort("no wulin gems in the bundle — run bundle install first") if specs.empty?
 
+    # Only a link this script made is replaced. A wulin gem the app declares with
+    # `path: "vendor/gems/<name>"` (wulin_wiki, or a component being edited in place) IS the
+    # directory, and removing it to make a link would delete that checkout.
     specs.each do |spec|
       link = File.join(target, spec.name)
-      FileUtils.rm_rf(link)
+      if File.symlink?(link)
+        File.delete(link)
+      elsif File.exist?(link)
+        if File.realpath(link) == File.realpath(spec.full_gem_path)
+          puts "\#{spec.name} is a path gem in vendor/gems -- left as it is"
+          next
+        end
+        abort("vendor/gems/\#{spec.name} is a directory, not a link -- move it away and run this again")
+      end
       FileUtils.ln_s(spec.full_gem_path, link)
       puts "\#{spec.name} -> \#{spec.full_gem_path}"
     end
@@ -512,6 +530,16 @@ after_bundle do
   system!("bundle exec ruby script/link_wulin_gems.rb")
   system!("npm install")
     RUBY
+  end
+
+  # The first build, before bin/setup hands over to bin/dev: its watchers start alongside the server,
+  # and a page requested before their first pass raises Propshaft::MissingAssetError.
+  unless wulin_written?("bin/setup", "javascript:build")
+    inject_into_file "bin/setup", after: %(  system!("npm install")\n) do
+      <<-RUBY
+  system!("bin/rails javascript:build dartsass:build")
+      RUBY
+    end
   end
 
   # wulin_master:install writes its own ApplicationController with a stub menu,

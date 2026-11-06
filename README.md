@@ -17,6 +17,7 @@ and other tools to make grids easy to build as well as flexible configurations.
     - [6. Include Wulin Master Javascript and Stylesheets](#6-include-wulin-master-javascript-and-stylesheets)
       - [On an app still using Sprockets](#on-an-app-still-using-sprockets)
       - [Note for macOS 12 and older](#note-for-macos-12-and-older)
+  - [Ruby and Rails versions](#ruby-and-rails-versions)
   - [Getting Started](#getting-started)
     - [1. Generate resource files](#1-generate-resource-files)
     - [2. Run migration](#2-run-migration)
@@ -258,6 +259,10 @@ disappears. Require `jquery` first so Sprockets deduplicates it.
 `sass-embedded` ships a Dart VM binary, and builds from 1.7x onwards refuse to
 start below macOS 14 (`VM initialization failed`). Pin `sass-embedded` to
 `~> 1.69.7` until every machine is on macOS 14 or newer.
+
+## Ruby and Rails versions
+
+The wulin v3 components need Ruby >= 3.4 and Rails >= 8.1; their CI runs the newest 3.4 and 4.0.
 
 ## Getting Started
 

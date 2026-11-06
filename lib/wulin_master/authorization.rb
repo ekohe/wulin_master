@@ -20,6 +20,9 @@ module WulinMaster
   module Authorization
     extend ActiveSupport::Concern
 
+    # Stands in for wulin_permits' Permission in the 401 message when that gem is not installed.
+    RequiredPermission = Data.define(:name)
+
     # Called as before_action
     def require_authorization
       return true unless respond_to?(:current_user)
@@ -63,7 +66,7 @@ module WulinMaster
       #
       # return the permission record if we have the Permission model
       #
-      @required_permission ||= defined?(Permission) ? wulin_permits_required_permission : OpenStruct.new(name: [controller_name, action_name].join("#"))
+      @required_permission ||= defined?(Permission) ? wulin_permits_required_permission : RequiredPermission.new(name: [controller_name, action_name].join("#"))
     end
   end
 end
