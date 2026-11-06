@@ -482,6 +482,16 @@ if @wulin_scaffolded_before
 end
 
 after_bundle do
+  # wulin_master follows its branch, and the `bundle install` just run keeps the revision the app
+  # locked when it was made -- so on a re-apply the gem would stay behind the template wiring it.
+  # Moved to the branch tip, alone: --conservative leaves Rails and every other shared dependency
+  # where the lock has them. Bundler 4's `update --conservative` moves the lock but leaves the new git
+  # revision unchecked-out, so the app no longer boots until `bundle install` fetches it.
+  if @wulin_scaffolded_before
+    run "bundle update wulin_master --conservative", abort_on_failure: true
+    run "bundle install --quiet", abort_on_failure: true
+  end
+
   # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
   # container and changes on every bump. esbuild, dart-sass and this template's own conventions all
   # address the components as `vendor/gems/<name>`, so that stable path is linked at the real

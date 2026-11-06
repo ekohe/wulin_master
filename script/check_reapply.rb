@@ -6,18 +6,19 @@
 #
 #   ruby script/check_reapply.rb
 #
-# Scaffolds an app with wulin_master alone, in a directory not named after it, and gives it two things
-# an app made by an earlier template has: the admin seed that template wrote, unmarked, and React 18
-# installed but not declared, as npm left it when wulin_agent still brought React itself. And three an
+# Scaffolds an app with wulin_master alone, in a directory not named after it, and gives it three things
+# an app made by an earlier template has: the admin seed that template wrote, unmarked, React 18
+# installed but not declared, as npm left it when wulin_agent still brought React itself, and a lock
+# holding wulin_master one commit behind its branch, which the re-apply has to move. And three an
 # app's own development adds: a menu group, a JavaScript import and a style. Then re-applies the
 # template for every component, as a component chosen later arrives, and checks that the first admin
 # is the one ADMIN_EMAIL / ADMIN_PASSWORD name rather than the one that older seed creates, that the
-# app is still on its one React 18 and keeps its databases, and that what it wrote is still there
-# beside the components' wiring. Then re-applies once more and requires a clean tree: a component
-# template that appends, injects or overwrites without checking what is already there fails there.
-# Last, re-applies over a component declared the app's own way -- in a group, single-quoted -- which
-# has to be rewritten in place rather than declared twice, and over one declared by path, which has
-# to be left as it is.
+# app is still on its one React 18 and keeps its databases, on wulin_master's branch tip, and that
+# what it wrote is still there beside the components' wiring. Then re-applies once more and requires
+# a clean tree: a component template that appends, injects or overwrites without checking what is
+# already there fails there. Last, re-applies over a component declared the app's own way -- in a
+# group, single-quoted -- which has to be rewritten in place rather than declared twice, and over one
+# declared by path, which has to be left as it is.
 #
 # Needs what a scaffold needs: rails, node with npm, a PostgreSQL the default database.yml reaches
 # (PGHOST / PGUSER), and network for the pinned components. Exit status is the whole interface.
@@ -73,6 +74,9 @@ end
 
 def read(app, path) = File.read(File.join(app, path))
 
+MASTER_LOCK = %r{(remote: https://github\.com/ekohe/wulin_master\.git\n  revision: )(\h+)}
+def locked_master(app) = read(app, "Gemfile.lock")[MASTER_LOCK, 2]
+
 Dir.mktmpdir("wulin_reapply") do |root|
   # A directory named otherwise, as a container mounts every app at /workspace: the name a re-apply
   # must keep is the app's, which its databases are named after.
@@ -95,7 +99,17 @@ Dir.mktmpdir("wulin_reapply") do |root|
     package = JSON.parse(File.read(manifest))
     package["dependencies"] = package["dependencies"].except("react", "react-dom")
     File.write(manifest, "#{JSON.pretty_generate(package)}\n")
-    commit app, "scaffold, with an earlier template's admin seed and an undeclared React 18"
+    # As an app made before wulin_master's branch last moved: its lock holds the commit before the tip.
+    step "fetch wulin_master's last two v3 commits", {}, "git", "clone", "--quiet", "--bare", "--depth", "2",
+      "--branch", "v3", "https://github.com/ekohe/wulin_master.git", "wulin_master.git", chdir: root
+    tip, previous = %w[HEAD HEAD~1].map { |rev| IO.popen(["git", "rev-parse", rev], chdir: File.join(root, "wulin_master.git"), &:read).strip }
+    abort "FAIL: v3's last two commits were not read" unless [tip, previous].all? { |rev| rev.match?(/\A\h{40}\z/) }
+    edit(app, "Gemfile.lock") { |text| text.sub(MASTER_LOCK) { "#{$1}#{previous}" } }
+    step "install the earlier wulin_master", {}, "bundle", "install", "--quiet", chdir: app
+    # bundle install must keep the revision just written. Floating back to the tip here would make the
+    # re-apply look successful without having moved anything.
+    check("the earlier revision stays locked until the re-apply") { locked_master(app) == previous }
+    commit app, "scaffold, with an earlier template's admin seed, an undeclared React 18 and an older wulin_master"
     title = read(app, "AGENTS.md").lines.find { |line| line.start_with?("# ") }
 
     output = step "re-apply for every component", ADMIN.merge("WULIN_COMPONENTS" => "all"),
@@ -106,6 +120,11 @@ Dir.mktmpdir("wulin_reapply") do |root|
       ours && earlier && ours < earlier
     end
     check("the earlier seed is reported") { output.include?("had code of its own and no wulin_auth/first_admin block") }
+    check("wulin_master moves to its branch tip with the template, and is checked out") do
+      locked_master(app) == tip && previous != tip &&
+        system("bundle", "exec", "ruby", "-e", "exit(Gem.loaded_specs.fetch('wulin_master').full_gem_path.end_with?('#{tip[0, 12]}'))",
+          chdir: app, out: File::NULL, err: File::NULL)
+    end
     check("the app keeps the React it had, declared, and holds one copy of it") do
       declared = JSON.parse(File.read(manifest))["dependencies"].values_at("react", "react-dom")
       tree = JSON.parse(IO.popen(%w[npm ls react --all --json], chdir: app, &:read))
