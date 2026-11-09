@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# The gemspec requires it too, but an app evaluates only a path gem's gemspec, not a git gem's.
+require "wulin_master/version"
 require "wulin_master/engine" if defined?(Rails)
 
 require "haml"
