@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wulin_master (2.0.0)
+    wulin_master (3.0.0)
       dartsass-rails
       haml-rails
       rails (>= 8.1)

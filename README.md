@@ -127,6 +127,10 @@ entrypoint, the production `Dockerfile` changes) for an app deployed some other 
 set: `WULIN_DOCKER=1` adds the stack to an app made without it. The template's part of `AGENTS.md`
 is a marked block, so an app's own text there survives a re-apply.
 
+An app from the previous wulin generation -- components as submodules or `path:` gems, assets
+wired by hand -- is moved onto this template once, by the procedure in
+`skills/wulin-v3-upgrade/SKILL.md`; after that, upgrading it is re-applying the template.
+
 | component | what it adds |
 | --- | --- |
 | `wulin_master` | always installed: grids, screens, menus, this asset pipeline |
