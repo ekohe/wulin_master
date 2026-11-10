@@ -484,12 +484,18 @@ end
 after_bundle do
   # wulin_master follows its branch, and the `bundle install` just run keeps the revision the app
   # locked when it was made -- so on a re-apply the gem would stay behind the template wiring it.
-  # Moved to the branch tip, alone: --conservative leaves Rails and every other shared dependency
-  # where the lock has them. Bundler 4's `update --conservative` moves the lock but leaves the new git
-  # revision unchecked-out, so the app no longer boots until `bundle install` fetches it.
+  # Moved to the branch tip by source, not by name: `--source` re-reads the gemspec at the new revision
+  # and leaves every other gem where the lock has it. Updated by name (`update` or `lock --update`, with
+  # --conservative), the revision moves but the version stays the old lock's. In the environment this
+  # process started with, as Rails runs its own bundle commands: this one's RUBYOPT=-rbundler/setup would
+  # set the child up on the old lock, whose wulin_master lib the new gemspec's
+  # `require "wulin_master/version"` then reads. Either way a tip that changed the version left a lock
+  # Bundler 4 cannot install and Bundler 2 rewrites on the next run.
   if @wulin_scaffolded_before
-    run "bundle update wulin_master --conservative", abort_on_failure: true
-    run "bundle install --quiet", abort_on_failure: true
+    Bundler.with_original_env do
+      run "bundle update --source wulin_master", abort_on_failure: true
+      run "bundle install --quiet", abort_on_failure: true
+    end
   end
 
   # A Bundler git gem lives under a path carrying a commit SHA, which differs between host and
