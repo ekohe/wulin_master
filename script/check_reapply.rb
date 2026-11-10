@@ -25,6 +25,7 @@
 
 require "json"
 require "tmpdir"
+require "yaml"
 
 TEMPLATE = File.expand_path("../template.rb", __dir__)
 NEW_FLAGS = %w[--skip-hotwire --skip-solid --database=postgresql --skip-javascript --skip-ci --skip-test].freeze
@@ -74,6 +75,8 @@ end
 
 def read(app, path) = File.read(File.join(app, path))
 
+# The branch apps track wulin_master on: what components.lock.yml gives the template, read from there.
+MASTER_BRANCH = YAML.load_file(File.expand_path("../components.lock.yml", __dir__)).dig("components", "wulin_master", "branch")
 MASTER_LOCK = %r{(remote: https://github\.com/ekohe/wulin_master\.git\n  revision: )(\h+)}
 def locked_master(app) = read(app, "Gemfile.lock")[MASTER_LOCK, 2]
 
@@ -100,11 +103,18 @@ Dir.mktmpdir("wulin_reapply") do |root|
     package["dependencies"] = package["dependencies"].except("react", "react-dom")
     File.write(manifest, "#{JSON.pretty_generate(package)}\n")
     # As an app made before wulin_master's branch last moved: its lock holds the commit before the tip.
-    step "fetch wulin_master's last two v3 commits", {}, "git", "clone", "--quiet", "--bare", "--depth", "2",
-      "--branch", "v3", "https://github.com/ekohe/wulin_master.git", "wulin_master.git", chdir: root
+    step "fetch wulin_master's last two #{MASTER_BRANCH} commits", {}, "git", "clone", "--quiet", "--bare", "--depth", "2",
+      "--branch", MASTER_BRANCH, "https://github.com/ekohe/wulin_master.git", "wulin_master.git", chdir: root
     tip, previous = %w[HEAD HEAD~1].map { |rev| IO.popen(["git", "rev-parse", rev], chdir: File.join(root, "wulin_master.git"), &:read).strip }
-    abort "FAIL: v3's last two commits were not read" unless [tip, previous].all? { |rev| rev.match?(/\A\h{40}\z/) }
-    edit(app, "Gemfile.lock") { |text| text.sub(MASTER_LOCK) { "#{$1}#{previous}" } }
+    abort "FAIL: #{MASTER_BRANCH}'s last two commits were not read" unless [tip, previous].all? { |rev| rev.match?(/\A\h{40}\z/) }
+    # Bundler writes that lock from the earlier commit's own gemspec -- revision, version, dependencies --
+    # so nothing about it is guessed from the tip. Only the source is then put back to the branch the
+    # app tracks, which is what that branch pointing at the commit looked like.
+    tracked = read(app, "Gemfile")[/^gem "wulin_master", .*$/]
+    edit(app, "Gemfile") { |text| text.sub(tracked, tracked.sub(%(branch: "#{MASTER_BRANCH}"), %(ref: "#{previous}"))) }
+    step "lock the earlier wulin_master", {}, "bundle", "lock", "--update", "wulin_master", chdir: app
+    edit(app, "Gemfile") { |text| text.sub(/^gem "wulin_master", .*$/, tracked) }
+    edit(app, "Gemfile.lock") { |text| text.sub("\n  ref: #{previous}\n", "\n  branch: #{MASTER_BRANCH}\n") }
     step "install the earlier wulin_master", {}, "bundle", "install", "--quiet", chdir: app
     # bundle install must keep the revision just written. Floating back to the tip here would make the
     # re-apply look successful without having moved anything.
