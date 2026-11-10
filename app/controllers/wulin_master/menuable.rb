@@ -14,8 +14,25 @@ module WulinMaster
     end
 
     module ClassMethods
-      attr_accessor :menu_block, :context
-      attr_writer :menu
+      attr_accessor :menu_block
+
+      # Puma serves requests on threads that share this class, so the menu
+      # being built belongs to the current thread, not to the class.
+      def building_menu
+        Thread.current[:wulin_master_building_menu] ||= {}
+      end
+
+      def context
+        building_menu[:context]
+      end
+
+      def context=(controller)
+        building_menu[:context] = controller
+      end
+
+      def menu=(menu)
+        building_menu[:menu] = menu
+      end
 
       # Menu definition
       def menu(&block)
@@ -25,16 +42,16 @@ module WulinMaster
       # Called within the block
       def submenu(title = nil)
         if block_given?
-          @submenu = SubMenu.new(title)
+          building_menu[:submenu] = SubMenu.new(title)
           yield
-          @menu << @submenu if @submenu.present?
-          @submenu = nil
+          building_menu[:menu] << building_menu[:submenu] if building_menu[:submenu].present?
+          building_menu[:submenu] = nil
         end
-        @submenu
+        building_menu[:submenu]
       end
 
       def item(title_or_screen_class, options = {})
-        return unless @menu
+        return unless building_menu[:menu]
         screen_instance = title_or_screen_class.new(context) if title_or_screen_class.is_a?(Class)
         authorized_proc = options.delete(:authorized?)
 
@@ -57,15 +74,15 @@ module WulinMaster
           end
         end
         options[:screen_name] = screen_instance.try(:name)
-        if @submenu
-          @submenu << MenuEntry.new(title, path, **options)
+        if building_menu[:submenu]
+          building_menu[:submenu] << MenuEntry.new(title, path, **options)
         else
-          @menu << MenuEntry.new(title, path, **options)
+          building_menu[:menu] << MenuEntry.new(title, path, **options)
         end
       end
 
       def prepare_menu
-        @menu
+        building_menu[:menu]
       end
     end
   end
