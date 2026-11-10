@@ -21,15 +21,14 @@ describe HomepageController, type: :controller do
   before :each do
     @menu = WulinMaster::Menu.new
     @submenu = WulinMaster::SubMenu.new("Posts")
-    # @menu and @submenu live on the controller *class*, so RSpec does not reset
-    # them between examples. "should add item to submenu if submenu is not nil"
-    # assigns @submenu and never clears it -- item() doesn't either -- so a later
+    # The menu being built lives in the current thread, so RSpec does not reset
+    # it between examples. "should add item to submenu if submenu is not nil"
+    # assigns a submenu and never clears it -- item() doesn't either -- so a later
     # example inherited a leftover SubMenu. Empty, so it inspects as [], but
     # truthy, which sent item() down the submenu branch and broke
     # "should add item to menu if submenu is nil" whenever the random order put
-    # the two in that sequence. Clear both so every example starts from nil.
-    controller.class.instance_variable_set(:@menu, nil)
-    controller.class.instance_variable_set(:@submenu, nil)
+    # the two in that sequence. Clear it so every example starts from nil.
+    Thread.current[:wulin_master_building_menu] = nil
     allow_message_expectations_on_nil
     allow(controller.class).to receive(:define_menu)
   end
@@ -67,7 +66,7 @@ describe HomepageController, type: :controller do
     it "should add item to submenu if submenu is not nil" do
       controller.class.menu { mock_block }
       controller.class.menu = @menu
-      controller.class.instance_variable_set(:@submenu, @submenu)
+      controller.class.building_menu[:submenu] = @submenu
       allow(mock_item).to receive(:title).and_return("Post")
       expect(WulinMaster::MenuEntry).to receive(:new).with("Post", "/", screen_name: nil).and_return(mock_entry)
       expect(@submenu).to receive(:<<).with(mock_entry)
