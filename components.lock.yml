@@ -15,14 +15,14 @@
 # it ran on in the app, so this moves new apps only.
 ruby: "4.0"
 
-verified_at: "2026-11-06"
+verified_at: "2026-11-12"
 verified_by: >-
   A real `rails new` with WULIN_COMPONENTS naming every optional component, against this template:
-  each one vendored at the ref below, 36 migrations applied, and each engine's own model resolving
+  each one vendored at the ref below, 37 migrations applied, and each engine's own model resolving
   under RAILS_ENV=test — WulinAuth::User, Privilege, WulinAudit::AuditLog, WulinQueue::Process,
   WulinAgent::Conversation. `all` leaves out wulin_oauth, so it gets a scaffold of its own in place of
-  wulin_auth: 33 migrations, User resolving to wulin_oauth's provider-backed class, and wulin_permits'
-  UsersController carrying the gem's invite action. Both on Ruby 3.4.12 and 4.0.9, Rails 8.1.4.1.
+  wulin_auth: 34 migrations, User resolving to wulin_oauth's provider-backed class, and wulin_permits'
+  UsersController carrying the gem's invite action. Both on Ruby 4.0.6, Rails 8.1.4.1.
 verify_with: |-
   WULIN_COMPONENTS=all \
     rails new /tmp/verify --force --quiet --name=verify --skip-hotwire --skip-solid \
@@ -57,4 +57,4 @@ components:
     ref: 4d4bf515696196ca11cff0eaa2adbd2b89be701c
   wulin_agent:
     branch: main
-    ref: db0c7a6e4673bb0da0047716bdae098073a72368
+    ref: c2eecc0be6c63f29935c094a583317e88b33dcf3

@@ -103,4 +103,4 @@ wulin_agent:
   screens: []
   esm:
   - wulin_agent.esm.js
-  migrations: 10
+  migrations: 11
