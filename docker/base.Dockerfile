@@ -4,18 +4,18 @@
 # app can build it from its own checkout with no registry access and no dependency on how
 # the gem got there:
 #
-#   docker build -f docker/base.Dockerfile -t wulin-base:local .
+#   docker build --pull -f docker/base.Dockerfile -t wulin-base:ruby-<series> .
 #   docker compose up --build
 #
-# `wulin-base:local` is what the generated compose file defaults BASE_IMAGE to.
+# `wulin-base:ruby-<series>` is what the generated compose file defaults BASE_IMAGE to.
 #
 # No `# syntax=docker/dockerfile:1`: that opts into the BuildKit frontend, and this has
 # to build on the legacy builder too.
 
-# Nothing enforces a match with the app: `rails new` writes a .ruby-version, but Rails'
-# Gemfile has no `ruby` directive, so bundler never compares them. Tracks the Ruby the
-# gem's own CI runs.
-ARG RUBY_VERSION=3.4.4
+# The template writes the app's Ruby series here; this copy names none, so it cannot be built
+# on a Ruby the app does not run. The series' newest patch keeps its ABI, so gems compiled in a
+# bundle volume still load; the tag only moves on a pull, hence --pull.
+ARG RUBY_VERSION
 
 FROM ruby:${RUBY_VERSION}-slim
 

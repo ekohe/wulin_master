@@ -6,19 +6,19 @@
 #
 #   ruby script/check_reapply.rb
 #
-# Scaffolds an app with wulin_master alone, in a directory not named after it, and gives it three things
+# Scaffolds an app with wulin_master alone, in a directory not named after it, and gives it four things
 # an app made by an earlier template has: the admin seed that template wrote, unmarked, React 18
-# installed but not declared, as npm left it when wulin_agent still brought React itself, and a lock
-# holding wulin_master one commit behind its branch, which the re-apply has to move. And three an
-# app's own development adds: a menu group, a JavaScript import and a style. Then re-applies the
-# template for every component, as a component chosen later arrives, and checks that the first admin
-# is the one ADMIN_EMAIL / ADMIN_PASSWORD name rather than the one that older seed creates, that the
-# app is still on its one React 18 and keeps its databases, on wulin_master's branch tip, and that
-# what it wrote is still there beside the components' wiring. Then re-applies once more and requires
-# a clean tree: a component template that appends, injects or overwrites without checking what is
-# already there fails there. Last, re-applies over a component declared the app's own way -- in a
-# group, single-quoted -- which has to be rewritten in place rather than declared twice, and over one
-# declared by path, which has to be left as it is.
+# installed but not declared, as npm left it when wulin_agent still brought React itself, a compose file
+# defaulting to the one base tag every Ruby shared, and a lock holding wulin_master one commit behind
+# its branch, which the re-apply has to move. And three an app's own development adds: a menu group, a
+# JavaScript import and a style. Then re-applies the template for every component, as a component chosen
+# later arrives, and checks that the first admin is the one ADMIN_EMAIL / ADMIN_PASSWORD name rather
+# than the one that older seed creates, that the app is still on its one React 18 and keeps its
+# databases, on wulin_master's branch tip, and that what it wrote is still there beside the components'
+# wiring. Then re-applies once more and requires a clean tree: a component template that appends,
+# injects or overwrites without checking what is already there fails there. Last, re-applies over a
+# component declared the app's own way -- in a group, single-quoted -- which has to be rewritten in
+# place rather than declared twice, and over one declared by path, which has to be left as it is.
 #
 # Needs what a scaffold needs: rails, node with npm, a PostgreSQL the default database.yml reaches
 # (PGHOST / PGUSER), and network for the pinned components. Exit status is the whole interface.
@@ -97,6 +97,7 @@ Dir.mktmpdir("wulin_reapply") do |root|
     edit(app, "app/javascript/application.js") { |text| "#{text}import \"./own\"\n" }
     edit(app, "app/assets/stylesheets/application.sass") { |text| "#{text}\n.app-own-style\n  color: red\n" }
     edit(app, "AGENTS.md") { |text| "#{text}\n## App rules\n\nEvery new action is gated by a permission.\n" }
+    edit(app, "docker-compose.yml") { |text| text.sub(/\$\{BASE_IMAGE:-[^}]+\}/, "${BASE_IMAGE:-wulin-base:local}") }
     step "install React 18", {}, "npm", "install", "--silent", "react@18.3.1", "react-dom@18.3.1", chdir: app
     manifest = File.join(app, "package.json")
     package = JSON.parse(File.read(manifest))
@@ -119,7 +120,7 @@ Dir.mktmpdir("wulin_reapply") do |root|
     # bundle install must keep the revision just written. Floating back to the tip here would make the
     # re-apply look successful without having moved anything.
     check("the earlier revision stays locked until the re-apply") { locked_master(app) == previous }
-    commit app, "scaffold, with an earlier template's admin seed, an undeclared React 18 and an older wulin_master"
+    commit app, "scaffold, with an earlier template's admin seed, an undeclared React 18, the shared base tag and an older wulin_master"
     title = read(app, "AGENTS.md").lines.find { |line| line.start_with?("# ") }
 
     output = step "re-apply for every component", ADMIN.merge("WULIN_COMPONENTS" => "all"),
@@ -149,6 +150,12 @@ Dir.mktmpdir("wulin_reapply") do |root|
     check("the databases are still the app's, not the directory's") do
       read(app, "config/database.yml").include?("database: #{name}_development") &&
         read(app, "docker-compose.yml").start_with?("name: #{name}\n")
+    end
+    check("the dev stack builds the Ruby series .ruby-version names, under a tag that names it") do
+      series = read(app, ".ruby-version")[/\d+\.\d+/]
+      read(app, "docker/base.Dockerfile").include?("\nARG RUBY_VERSION=#{series}\n") &&
+        read(app, "Dockerfile.dev").include?("ARG BASE_IMAGE=wulin-base:ruby-#{series}\n") &&
+        read(app, "docker-compose.yml").include?("${BASE_IMAGE:-wulin-base:ruby-#{series}}")
     end
     # The name has digits, which the app's module cannot give back: reapply_123 is Reapply123.
     check("the app is still called what it was created as") { read(app, "AGENTS.md").lines.find { |line| line.start_with?("# ") } == title }
@@ -195,13 +202,17 @@ Dir.mktmpdir("wulin_reapply") do |root|
     edit(app, "app/controllers/application_controller.rb") do |text|
       text.sub(/^( *)item "Home", url: "\/"\n/) { "#{$&}#{$1}item AppConfigsScreen\n" }
     end
-    commit app, "the app lists AppConfigsScreen itself"
+    # And whose compose file defaults to a base it publishes itself, as the previous generation's did.
+    registry_base = "${BASE_IMAGE:-registry.example.com/wulin/base:own}"
+    edit(app, "docker-compose.yml") { |text| text.sub(/\$\{BASE_IMAGE:-[^}]+\}/, registry_base) }
+    commit app, "the app lists AppConfigsScreen itself, and builds on its own published base"
     step "re-apply with the app listing AppConfigsScreen", ADMIN.merge("WULIN_COMPONENTS" => "all"),
       "bin/rails", "app:template", "LOCATION=#{TEMPLATE}", chdir: app
     check("a screen the app's own menu lists is not listed a second time") do
       read(app, "app/controllers/application_controller.rb").include?("item AppConfigsScreen") &&
         !read(app, "app/controllers/concerns/wulin_components.rb").include?("AppConfigsScreen")
     end
+    check("a base the app publishes itself stays its compose default") { read(app, "docker-compose.yml").include?(registry_base) }
     commit app, "re-applied over the app's own AppConfigsScreen"
 
     # As an app that wrote a component's declaration its own way: quoted otherwise, inside a group.
