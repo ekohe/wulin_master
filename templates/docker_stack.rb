@@ -60,13 +60,20 @@ chmod "bin/docker-entrypoint-dev.sh", 0o755
 # gem. An app has to be buildable from its own checkout: a recipe that lives inside a vendored
 # dependency is gone the moment the bundle cannot be installed, and a published base image is not
 # always reachable.
-file "docker/base.Dockerfile", wulin_read("docker/base.Dockerfile"), force: true
+#
+# Built on the series of the app's .ruby-version (else the Ruby running this template), and tagged
+# by it, so apps on two series share a host.
+ruby_series = File.exist?(".ruby-version") && File.read(".ruby-version")[/\d+\.\d+/]
+ruby_series ||= RUBY_VERSION[/\A\d+\.\d+/]
+base_tag = "wulin-base:ruby-#{ruby_series}"
+file "docker/base.Dockerfile",
+  wulin_read("docker/base.Dockerfile").sub(/^ARG RUBY_VERSION\b.*$/, "ARG RUBY_VERSION=#{ruby_series}"), force: true
 
 # FROM the shared base this app now carries the recipe for; see docker/base.Dockerfile for
 # what it is and how to build it.
 # No `# syntax=` line here either -- that opts into BuildKit.
 file "Dockerfile.dev", <<~DOCKERFILE, force: true
-  ARG BASE_IMAGE=wulin-base:local
+  ARG BASE_IMAGE=#{base_tag}
   FROM ${BASE_IMAGE} AS base
 
   FROM base AS deps
@@ -155,7 +162,7 @@ if !@wulin_scaffolded_before || !File.exist?("docker-compose.yml")
           args:
             # The tag base.Dockerfile produces, so `docker compose build` works with no
             # registry credentials. Set BASE_IMAGE to use a published base instead.
-            BASE_IMAGE: ${BASE_IMAGE:-wulin-base:local}
+            BASE_IMAGE: ${BASE_IMAGE:-#{base_tag}}
         volumes:
           - .:/rails
           # Named volumes, not host paths: Docker seeds these from the image, so what was
@@ -211,6 +218,10 @@ if !@wulin_scaffolded_before || !File.exist?("docker-compose.yml")
       bundle_cache:
       node_modules:
   YAML
+else
+  # The compose file is the app's once written, but the base it defaults to follows .ruby-version --
+  # only a default this template wrote: one the app points at its own registry image stays.
+  gsub_file "docker-compose.yml", /\$\{BASE_IMAGE:-wulin-base:[^}]+\}/, "${BASE_IMAGE:-#{base_tag}}", verbose: false
 end
 
 # Rails' own Dockerfile is the production image, written for an app without JavaScript (this one is
@@ -254,6 +265,6 @@ if File.exist?("Dockerfile")
     inject_into_file "Dockerfile", lines, position => anchor
   end
 end
-wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build -f docker/base.Dockerfile -t wulin-base:local .\n      docker compose up --build"
+wulin_note "docker: build the shared base once, then bring the stack up --\n      docker build --pull -f docker/base.Dockerfile -t #{base_tag} .\n      docker compose up --build"
 wulin_note "docker: the entrypoint runs db:prepare on every boot -- it creates and seeds the database the first time and only migrates it after, so no database setup step is needed"
 wulin_note "docker: the container runs bin/dev, which builds the javascript and CSS on start and watches them -- `rails server` alone would raise Propshaft::MissingAssetError on every page"

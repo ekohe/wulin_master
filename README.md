@@ -124,8 +124,9 @@ WULIN_COMPONENTS=wulin_audit,wulin_excel rails new ... -m ./template.rb
 `WULIN_DOCKER=0` leaves out the container stack (`Dockerfile.dev`, `docker-compose.yml`, the
 entrypoint, the production `Dockerfile` changes) for an app deployed some other way; `.env` and
 `database.yml` are written either way. A re-apply keeps the app's choice unless `WULIN_DOCKER` is
-set: `WULIN_DOCKER=1` adds the stack to an app made without it. The template's part of `AGENTS.md`
-is a marked block, so an app's own text there survives a re-apply.
+set: `WULIN_DOCKER=1` adds the stack to an app made without it. The stack's base image runs the
+Ruby series the app's `.ruby-version` names, at that series' newest patch. The template's part of
+`AGENTS.md` is a marked block, so an app's own text there survives a re-apply.
 
 An app from the previous wulin generation -- components as submodules or `path:` gems, assets
 wired by hand -- is moved onto this template once, by the procedure in
@@ -267,6 +268,10 @@ start below macOS 14 (`VM initialization failed`). Pin `sass-embedded` to
 ## Ruby and Rails versions
 
 The wulin v3 components need Ruby >= 3.4 and Rails >= 8.1; their CI runs the newest 3.4 and 4.0.
+
+A new app is created on the Ruby series `components.lock.yml` names (`ruby`): wulin-forge asks Nexus
+for a dev image on it, so `rails new` runs on that series and pins its patch in the app's
+`.ruby-version` and production `Dockerfile`. From then on the app's `.ruby-version` decides.
 
 ## Getting Started
 
