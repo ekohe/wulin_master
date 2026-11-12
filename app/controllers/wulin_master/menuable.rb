@@ -6,6 +6,9 @@ module WulinMaster
 
     # Generate menu
     def menu
+      # The thread outlives the request: a submenu left on it by a build that
+      # raised would take this build's top-level items.
+      self.class.building_menu.clear
       self.class.menu = Menu.new
       self.class.context = self
       self.class.menu_block&.call(self)

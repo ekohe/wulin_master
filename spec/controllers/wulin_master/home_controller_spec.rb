@@ -21,16 +21,14 @@ describe HomepageController, type: :controller do
   before :each do
     @menu = WulinMaster::Menu.new
     @submenu = WulinMaster::SubMenu.new("Posts")
-    # The menu being built lives in the current thread, so RSpec does not reset
-    # it between examples. "should add item to submenu if submenu is not nil"
-    # assigns a submenu and never clears it -- item() doesn't either -- so a later
-    # example inherited a leftover SubMenu. Empty, so it inspects as [], but
-    # truthy, which sent item() down the submenu branch and broke
-    # "should add item to menu if submenu is nil" whenever the random order put
-    # the two in that sequence. Clear it so every example starts from nil.
-    Thread.current[:wulin_master_building_menu] = nil
     allow_message_expectations_on_nil
     allow(controller.class).to receive(:define_menu)
+  end
+
+  # The menu being built lives in the current thread, which RSpec does not reset.
+  # Examples here write that state and call item() directly, without menu() to clean up.
+  after :each do
+    Thread.current[:wulin_master_building_menu] = nil
   end
 
   describe "get :index" do
