@@ -26,4 +26,15 @@ describe WulinMaster::Menuable do
     expect(first_menu.value.map(&:title)).to eq(["Menu for first"])
     expect(second_menu.map(&:title)).to eq(["Menu for second"])
   end
+
+  it "builds the whole menu after a build on the same thread raised inside a submenu" do
+    controller_class = Class.new(WulinMaster::HomeController) { attr_accessor :broken }
+    controller_class.menu do |c|
+      c.class.submenu("Reports") { raise "boom" } if c.broken
+      c.class.item "Home", url: "/"
+    end
+
+    expect { controller_class.new.tap { |c| c.broken = true }.menu }.to raise_error("boom")
+    expect(controller_class.new.menu.map(&:title)).to eq(["Home"])
+  end
 end
