@@ -199,7 +199,10 @@ module WulinMaster
     # Rails 7 will check the model is inherited from ActiveRecord::Base, it will raise an error if not
     #
     def reflection
-      @reflection ||= model.reflections[(@options[:through] || @name).to_s]
+      unless defined?(@reflection)
+        reflection_name = (@options[:through] || @name).to_s
+        @reflection = model.reflections[reflection_name]
+      end
 
       return nil if @reflection.nil?
 
