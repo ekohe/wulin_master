@@ -47,6 +47,12 @@ module WulinMaster
       options[:always_include] || false
     end
 
+    # A column with a false `if:` is left out of the grid, its column picker and its forms
+    def included?
+      condition = options.fetch(:if, true)
+      condition.is_a?(Proc) ? condition.call : condition
+    end
+
     def relation_klass_name
       @relation_klass_name ||= reflection.klass.name
     end

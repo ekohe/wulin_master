@@ -49,12 +49,12 @@ module WulinMaster
     # Returns columns
     def columns
       screen_name = params[:screen]
-      return self.class.columns_pool if screen_name.blank?
+      return self.class.columns_pool.select(&:included?) if screen_name.blank?
 
       all_columns = self.class.columns_pool.dup
 
       all_columns.select do |column|
-        column.valid_in_screen(screen_name)
+        column.valid_in_screen(screen_name) && column.included?
       end
     end
   end
