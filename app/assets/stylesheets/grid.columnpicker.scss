@@ -20,7 +20,9 @@
     background: inherit;
     margin-top: auto; // Stick to bottom
     padding: 10px 0;
-    text-align: right;
+    border-top: 1px solid $border-color;
+    display: flex;
+    justify-content: flex-end;
   }
 
   li {
@@ -39,16 +41,9 @@
     }
 
     .drag-handle {
-      color: $label-color;
+      color: $border-color;
       cursor: grab;
     }
-  }
-  hr {
-    border-style: inset;
-    border-width: 0.5px;
-    border-color: $border-color;
-    opacity: 0.2;
-    margin: 0;
   }
   #reset_to_default {
     margin: 0 $columnpicker-li-padding;
