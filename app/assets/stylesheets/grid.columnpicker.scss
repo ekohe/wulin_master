@@ -20,12 +20,28 @@
     background: inherit;
     margin-top: auto; // Stick to bottom
     padding: 10px 0;
+    text-align: right;
   }
 
   li {
     list-style: none;
     padding-left: $columnpicker-li-padding;
     padding-right: $columnpicker-li-padding;
+    display: flex;
+    align-items: center;
+
+    &.ui-sortable-helper {
+      background-color: #fff;
+    }
+
+    label {
+      flex: 1;
+    }
+
+    .drag-handle {
+      color: $label-color;
+      cursor: grab;
+    }
   }
   hr {
     border-style: inset;
@@ -35,22 +51,10 @@
     margin: 0;
   }
   #reset_to_default {
-    padding: 8px $columnpicker-li-padding;
-    color: $label-color;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px; // Space between icon and text
-    text-decoration: none;
+    margin: 0 $columnpicker-li-padding;
 
-    span.material-icons {
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    span {
-      font-size: $font-size-small-middle;
-      line-height: 1;
+    i.left {
+      margin-right: 4px;
     }
   }
 }
