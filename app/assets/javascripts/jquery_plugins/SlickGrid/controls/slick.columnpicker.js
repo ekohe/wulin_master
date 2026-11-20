@@ -353,7 +353,7 @@
 
       // Append columns checkbox
       for (var i = 0; i < columns.length; i++) {
-        $li = $("<li />").appendTo($columnContainer);
+        $li = $("<li />").data("column-id", columns[i].id).appendTo($columnContainer);
         // Ekohe Edit: MD implementation
         // $input = $("<input type='checkbox' />").data("column-id", columns[i].id);
         $input = $("<input type='checkbox' />")
@@ -374,13 +374,21 @@
           .appendTo($li);
 
         $li.children().wrapAll($('<label />'));
+        $("<i class='material-icons drag-handle'>drag_indicator</i>").appendTo($li);
       }
+
+      // Ekohe Add: Drag a row by its handle to move the column
+      $columnContainer.sortable({
+        axis: "y",
+        handle: ".drag-handle",
+        update: wulinReorderColumns
+      });
 
       // Ekohe Add: Create sticky footer container for reset section
       var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
       $("<hr/>").appendTo($footerContainer);
-      var $a = $("<a id='reset_to_default' href='#' />").appendTo($footerContainer);
-      var $icon = $("<i class='material-icons'>replay</i>").appendTo($a);
+      var $a = $("<a id='reset_to_default' href='#' class='btn btn-small waves-effect waves-light' />").appendTo($footerContainer);
+      var $icon = $("<i class='material-icons left'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
       $a.on("click", function (e) {
         // Keep the click inside this handler: the picker also listens on $menu
@@ -511,6 +519,42 @@
         $(grid.getHeaders()).find('input').keyup();
       }
       grid.filterPanel.generateFilters();
+    }
+
+    // Ekohe Add: Apply the picker list order to the grid. Hidden columns move
+    // too: grid.allColumns gives their saved position.
+    function wulinReorderColumns() {
+      var $columnContainer = $menu.find('.column-container');
+      var columnsById = {};
+      $.each(columns, function (i, column) { columnsById[column.id] = column; });
+      columns = $columnContainer.children('li').map(function () {
+        return columnsById[$(this).data('column-id')];
+      }).get();
+      grid.allColumns = columns;
+
+      // Pinned columns stay first, in their new order
+      var pinnedColumns = grid.getPinnedColumns();
+      var visibleColumns = columns.filter(function (column) {
+        return grid.getColumnIndex(column.id) != null;
+      });
+      var pinnedVisibleCols = visibleColumns.filter(function (column) {
+        return pinnedColumns.indexOf(column.column_name) !== -1;
+      });
+      var unpinnedVisibleCols = visibleColumns.filter(function (column) {
+        return pinnedColumns.indexOf(column.column_name) === -1;
+      });
+      grid.getOptions().pinnedColumns = pinnedVisibleCols.map(function (column) { return column.column_name; });
+
+      grid.setColumns(pinnedVisibleCols.concat(unpinnedVisibleCols));
+      // Saves the order and the pinned order, like a header drag
+      grid.trigger(grid.onColumnsReordered, {grid: grid});
+
+      // A column dropped above the pinned ones goes after them in the grid,
+      // and updateColumnOrder has updated columns to match. wulinUpdateColumn
+      // pairs each checkbox with columns[i], so the list must follow columns.
+      var $items = {};
+      $columnContainer.children('li').each(function () { $items[$(this).data('column-id')] = this; });
+      $columnContainer.append(columns.map(function (column) { return $items[column.id]; }));
     }
 
     function forceLayoutRecalculation() {
