@@ -386,7 +386,6 @@
 
       // Ekohe Add: Create sticky footer container for reset section
       var $footerContainer = $("<div class='footer-container' />").appendTo($menu);
-      $("<hr/>").appendTo($footerContainer);
       var $a = $("<a id='reset_to_default' href='#' class='btn btn-small waves-effect waves-light' />").appendTo($footerContainer);
       var $icon = $("<i class='material-icons left'>replay</i>").appendTo($a);
       $("<span />").html("REINITIALIZE").appendTo($a);
