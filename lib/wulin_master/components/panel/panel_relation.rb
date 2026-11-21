@@ -29,6 +29,12 @@ module WulinMaster
         relations_pool[options[:screen]] ||= {}
         relations_pool[options[:screen]].merge!(exclusion_grid: grid_name)
       end
+
+      def vertical(value, options = {})
+        return unless options[:screen]
+        relations_pool[options[:screen]] ||= {}
+        relations_pool[options[:screen]].merge!(vertical: value)
+      end
     end
 
     # ----------------------------- Instance Methods ------------------------------------
@@ -38,6 +44,10 @@ module WulinMaster
 
     def exclusion_grid
       params["screen"] ? self.class.relations_pool[params["screen"]][:exclusion_grid] : nil
+    end
+
+    def vertical
+      params["screen"] ? self.class.relations_pool[params["screen"]][:vertical] : nil
     end
   end
 end
