@@ -4,6 +4,10 @@ require "wulin_master/components/grid/column/sql_adapter"
 
 module WulinMaster
   module ColumnFilter
+    NUMERIC_TYPES = %i[integer float decimal].freeze
+    # A whole filter value such as "<200" or ">= 12.5"
+    NUMERIC_COMPARISON = /\A\s*(<=|>=|<|>|=)\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+))\s*\z/
+
     # Apply a where condition on the query to filter the result set with the filtering value
     def apply_filter(query, filtering_value, filtering_operator = "equals")
       adapter = WulinMaster::SqlAdapter.new(model, query)
@@ -56,6 +60,9 @@ module WulinMaster
         end
 
         column_type = column_type(reflection.klass, source)
+        if NUMERIC_TYPES.include?(column_type) && (comparison = filtering_value.to_s.match(NUMERIC_COMPARISON))
+          return query.where("#{relation_table_name}.#{source} #{comparison[1]} ?", numeric_filter_value(comparison[2]))
+        end
         # for string column
         normal_type = %i[integer float decimal boolean date datetime].include?(column_type)
         return apply_association_subquery_filter(query, filtering_value, filtering_operator) if association_subquery_filter?(column_type)
@@ -64,6 +71,12 @@ module WulinMaster
         filtering_value = format_filtering_value(filtering_value, column_type)
         apply_equation_filter(query, filtering_operator, filtering_value, column_type.to_s, adapter) if %w[equals not_equals].include? filtering_operator
       end
+    end
+
+    # Bound as a number, not a quoted string: PostgreSQL rejects `integer_column < '2.5'`.
+    # Whole numbers stay Integer so `integer_column = 5` can still use its index.
+    def numeric_filter_value(text)
+      text.match?(/\A[-+]?\d+\z/) ? text.to_i : text.to_d
     end
 
     def association_subquery_filter?(column_type)
@@ -253,11 +266,11 @@ module WulinMaster
       else
         # number
         if %w[integer float decimal].include?(sql_type.to_s) &&
-            table_column? &&
+            (table_column? || @options[:sql_expression]) &&
             operator &&
             text.match(/\A[-+]?[0-9]*\.?[0-9]+\Z/)
           operator = "<>" if operator == "NOT ILIKE"
-          query.where(["#{field} #{operator} ?", text])
+          query.where(["#{@options[:sql_expression] || field} #{operator} ?", numeric_filter_value(text)])
         # string etc.
         else
           # Use IN/NOT IN for numeric columns: matches number(,number)*

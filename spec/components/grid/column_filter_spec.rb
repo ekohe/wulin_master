@@ -138,6 +138,69 @@ describe WulinMaster::ColumnFilter do
     end
   end
 
+  describe "#filter_without_reflection for numeric columns backed by sql_expression" do
+    let(:fc) { FakeClass.new(:confirmed_amount, GridStateGrid, sql_type: :decimal, sql_expression: "budgets.confirmed_amount") }
+    let(:adapter) { WulinMaster::SqlAdapter.new(WulinMaster::GridState, query) }
+
+    it "compares against the sql_expression with the given operator" do
+      final_query = fc.send(:filter_without_reflection, query, "<200", "equals", :decimal, adapter)
+
+      expect(final_query.to_sql).to include("budgets.confirmed_amount < 200")
+      expect(final_query.to_sql).not_to include("ILIKE")
+    end
+
+    it "supports decimals and a space after the operator" do
+      final_query = fc.send(:filter_without_reflection, query, ">= 200.50", "equals", :decimal, adapter)
+
+      expect(final_query.to_sql).to include("budgets.confirmed_amount >= 200.5")
+    end
+
+    it "uses equality when no operator is given" do
+      final_query = fc.send(:filter_without_reflection, query, "200", "equals", :decimal, adapter)
+
+      expect(final_query.to_sql).to include("budgets.confirmed_amount = 200")
+    end
+  end
+
+  describe "#apply_filter on a numeric association column" do
+    let(:column) { FakeClass.new(:total_nights_confirmed, GridStateGrid, through: :hotel_budget) }
+    let(:reflection) do
+      instance_double(
+        ActiveRecord::Reflection::HasOneReflection,
+        macro: :has_one,
+        klass: WulinMaster::GridState
+      )
+    end
+
+    before do
+      allow(column).to receive(:reflection).and_return(reflection)
+      allow(column).to receive(:source).and_return(:id)
+      allow(column).to receive(:column_type).and_return(:integer)
+    end
+
+    %w[< > <= >=].each do |operator|
+      it "applies #{operator} as a numeric comparison" do
+        final_query = column.apply_filter(query, "#{operator}3000", "equals")
+
+        expect(final_query.to_sql).to include("grid_states.id #{operator} 3000")
+        expect(final_query.to_sql).not_to include("= 0")
+      end
+    end
+
+    it "binds a decimal threshold as a number so an integer column does not reject it" do
+      final_query = column.apply_filter(query, "<2.5", "equals")
+
+      expect(final_query.to_sql).to include("grid_states.id < 2.5")
+      expect(final_query.to_sql).not_to include("'2.5'")
+    end
+
+    it "keeps plain values as an equality filter" do
+      final_query = column.apply_filter(query, "3000", "equals")
+
+      expect(final_query.to_sql).to include('"grid_states"."id" = 3000')
+    end
+  end
+
   describe "#apply_filter with belongs_to include/exclude" do
     let(:column) { FakeClass.new(:room, GridStateGrid) }
     let(:belongs_to_reflection) do
