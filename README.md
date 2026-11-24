@@ -30,6 +30,7 @@ and other tools to make grids easy to build as well as flexible configurations.
       - [Basic grid configuration](#basic-grid-configuration)
       - [Column options](#column-options)
       - [Grid styles](#grid-styles)
+      - [Resize the two grids of a screen](#resize-the-two-grids-of-a-screen)
       - [Grid options](#grid-options)
       - [Grid actions](#grid-actions)
       - [Grid behaviors](#grid-behaviors)
@@ -711,11 +712,11 @@ The following are the available style methods:
 
 `:height`
 
-Sets the height of the component. The value can be a number (default unit is `px`) or a percentage string.
+Sets the height of the component. The value can be a number (default unit is `px`), a percentage string, or a Proc that takes the component and returns the height on each render.
 
 `:width`
 
-Sets the width of the component. The value can be a number (default unit is `px`) or a percentage string.
+Sets the width of the component. The value can be a number (default unit is `px`), a percentage string, or a Proc that takes the component and returns the width on each render.
 
 `:css`
 
@@ -724,6 +725,42 @@ Sets the whole style of the component. The value is a string of css styles, such
 `:fill_window`
 
 Determines whether the component fills the whole window or not. The default value is true.
+
+#### Resize the two grids of a screen
+
+A screen with exactly two grids and no panel shows a line on the border between the grids. Users drag it to resize the grids: the widths when the grids are side by side, the heights when they are stacked. A double-click on the line goes back to the sizes set in the screen class.
+
+To turn it off on a screen, use `resizable false`. The screen then shows no line and ignores the sizes saved before:
+
+```ruby
+class PostScreen < WulinMaster::Screen
+  resizable false
+
+  grid PostGrid, width: "40%"
+  grid CommentGrid, width: "60%"
+end
+```
+
+The sizes are saved per user and screen in the `user_preferences` table, with the screen class as `name`:
+
+```
+name:  "PostScreen"
+value: {"PostGrid": {"width": "35%"}, "CommentGrid": {"width": "65%"}}
+```
+
+`Screen.grid` turns the `width:` and `height:` options into procs that return the saved size of the grid on that screen, or the option value. A grid on several screens keeps a separate size on each screen.
+
+Each grid keeps a minimum size in pixels: `min_width` (default 300) when the grids are side by side, `min_height` (default 200) when they are stacked. 200 px keeps the toolbar, the column header, the pager and about 3 rows. Set them on the screen to change them:
+
+```ruby
+grid PostGrid, height: "40%", min_height: 300
+```
+
+When the grids are side by side, a drag folds the toolbar buttons that do not fit into the more button, as a window resize does. It also keeps each grid wide enough for its title, its header filters and the more button.
+
+When a grid is below its minimum on load, for example a size saved on a bigger window, the other grid gets smaller.
+
+If the grids use absolute positioning, anchor the second grid with `right: 0` (or `bottom: 0`), not a fixed `left:` or `top:` offset, so it follows the new size.
 
 #### Grid options
 

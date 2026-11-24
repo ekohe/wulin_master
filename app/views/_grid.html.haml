@@ -1,4 +1,4 @@
-.grid_container{:id => "grid_#{grid.name}", :name => "#{grid.name}",:style => grid.style}
+.grid_container{:id => "grid_#{grid.name}", :name => "#{grid.name}",:style => grid.style, :data => {:grid_class => grid.class.name, :screen => grid.screen.class.name, :resizable => grid.screen.class.resizable.to_s, :min_width => grid.custom_config[:min_width], :min_height => grid.custom_config[:min_height]}}
   - unless grid.hide_header?
     :ruby
       user_id = current_user? ? current_user.id : -1

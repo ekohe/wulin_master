@@ -26,6 +26,11 @@ module WulinMaster
         new_path ? @path = new_path : @path || '/' + to_s.gsub(/Screen/, '').underscore.pluralize
       end
 
+      # `resizable false` removes the line between the two grids, and the saved sizes no longer apply
+      def resizable(value = nil)
+        value.nil? ? @resizable != false : (@resizable = value)
+      end
+
       # Add a grid config to a screen
       def grid(klass, options = {})
         @components_pool ||= []
@@ -34,6 +39,14 @@ module WulinMaster
         @components_pool << klass
         options[:width] ||= '100%'
         options[:height] ||= '100%'
+        # Pixel sizes a user cannot drag the grid below: 200 px keeps the toolbar, header, pager and about 3 rows
+        options[:min_width] ||= 300
+        options[:min_height] ||= 200
+        # A size the user dragged on this screen wins over the size set here
+        %w[width height].each do |size|
+          value = options[size.to_sym]
+          options[size.to_sym] = ->(grid) { grid.screen.grid_sizes.dig(grid.class.name, size) || value }
+        end
         @grid_configs << {class: klass}.merge(options)
         options.each do |k, v|
           klass.apply_config(k, v, screen: name)
@@ -90,6 +103,14 @@ module WulinMaster
         grids_and_panels.sort_by! { |e| self.class.components_pool.index(e.class) }
         grids_and_panels.select! { |x| x.class.name == params[:grid] } if params[:grid].present?
         grids_and_panels
+      end
+    end
+
+    # Grid sizes the user dragged on this screen, keyed by grid class: {"PersonGrid" => {"width" => "35%"}}
+    def grid_sizes
+      @grid_sizes ||= begin
+        preference = self.class.resizable && current_user && UserPreference.find_by(user_id: current_user.id, name: self.class.name)
+        preference ? JSON.parse(preference.value) : {}
       end
     end
 

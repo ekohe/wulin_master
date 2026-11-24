@@ -19,16 +19,13 @@ module WulinMaster
       # Set new component height
       def height(new_height, options = {})
         fill_window(false, options)
-        height_str = "height: #{new_height};"
-        add_style(height_str, options[:screen])
+        add_style(size_style("height", new_height), options[:screen])
       end
 
       # Set new component width
       def width(new_width, options = {})
         fill_window(false, options)
-        width_str = "width: #{new_width};"
-
-        add_style(width_str, options[:screen])
+        add_style(size_style("width", new_width), options[:screen])
       end
 
       # Set fill window mode
@@ -39,6 +36,11 @@ module WulinMaster
       # Set custom CSS
       def css(style, options = {})
         add_style(style.to_s, options[:screen])
+      end
+
+      # A Proc size is called with the component on each render
+      def size_style(property, value)
+        value.is_a?(Proc) ? ->(component) { "#{property}: #{value.call(component)};" } : "#{property}: #{value};"
       end
 
       # Add a style into component of different screens
@@ -70,10 +72,11 @@ module WulinMaster
       common_style_without_fill_window = common_style - [FILL_WINDOW_CSS]
       if screen = params.try(:[], :screen)
         screen_style = self.class.styles_pool[screen] || []
-        (screen_style.blank? ? common_style : (common_style_without_fill_window + screen_style)).uniq.join(" ")
+        styles = (screen_style.blank? ? common_style : (common_style_without_fill_window + screen_style)).uniq
       else
-        common_style.join(" ")
+        styles = common_style
       end
+      styles.map { |s| s.is_a?(Proc) ? s.call(self) : s }.join(" ")
     end
 
     # Returns true if one component is set to fill window. The template will just render the previous components of the screen.

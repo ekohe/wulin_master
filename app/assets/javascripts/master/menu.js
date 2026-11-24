@@ -70,6 +70,7 @@ window.load_page = function load_page(url) {
 
       // Inject screen content
       $("#screen_content").html(html);
+      ScreenSplitter.init();
       updateDocumentTitle();
 
       setTimeout(function() {

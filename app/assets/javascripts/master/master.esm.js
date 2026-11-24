@@ -75,6 +75,7 @@ import './menu.js'
 import './panel.js'
 import './remotemodel.js'
 import './row_detail_templates.js'
+import './screen_splitter.js'
 import './ui_helper.js'
 import './grid_manager.js'
 
