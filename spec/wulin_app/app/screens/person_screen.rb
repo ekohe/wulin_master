@@ -6,6 +6,6 @@ class PersonScreen < WulinMaster::Screen
   path "/people"
 
   grid PersonGrid, width: "50%"
-  grid PostGrid, width: "50%", master_grid: "PersonGrid", eager_loading: false
+  grid PostGrid, width: "50%", min_width: 400, master_grid: "PersonGrid", eager_loading: false
   # panel PostFormPanel, width: '40%'
 end

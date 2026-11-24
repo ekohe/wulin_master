@@ -82,3 +82,35 @@
     }
   }
 }
+
+/* Border between the two grids of a screen, see screen_splitter.js */
+
+// A 1px line in the middle of a 5px grab area
+.screen-splitter {
+  position: absolute;
+  z-index: 10;
+  background: $border-color;
+  background-clip: content-box;
+}
+
+.screen-splitter-width {
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  padding: 0 2px;
+  margin-left: -2px;
+  cursor: col-resize;
+}
+
+.screen-splitter-height {
+  left: 0;
+  right: 0;
+  height: 5px;
+  padding: 2px 0;
+  margin-top: -2px;
+  cursor: row-resize;
+}
+
+.screen-splitter-dragging {
+  user-select: none;
+}
