@@ -18,6 +18,8 @@ body {
   bottom: 0;
   right: 0;
   text-align: center;
+  // Scrolls #screen_content sideways when ScreenSplitter gives it a min-width, without moving the nav and menu
+  overflow-x: auto;
 }
 
 #screen_content {

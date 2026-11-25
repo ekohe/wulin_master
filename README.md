@@ -758,7 +758,7 @@ grid PostGrid, height: "40%", min_height: 300
 
 When the grids are side by side, a drag folds the toolbar buttons that do not fit into the more button, as a window resize does. It also keeps each grid wide enough for its title, its header filters and the more button.
 
-When a grid is below its minimum on load, for example a size saved on a bigger window, the other grid gets smaller.
+On load and on a window resize, when a grid would be below its minimum (for example a size saved on a bigger window), the other grid gets smaller. This is not saved, so a bigger window brings the saved size back. When the grids are side by side and the window is too narrow for both minimums, the screen keeps their sum as its minimum width and scrolls sideways.
 
 If the grids use absolute positioning, anchor the second grid with `right: 0` (or `bottom: 0`), not a fixed `left:` or `top:` offset, so it follows the new size.
 
